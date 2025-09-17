@@ -26,9 +26,12 @@ import {
   Add,
   MoreVert,
   Edit,
-  Delete
+  Delete,
+  AttachFile,
+  Image,
+  PictureAsPdf
 } from '@mui/icons-material';
-import { Announcement } from '@shared/schema';
+import { Announcement, AnnouncementFileWithUser } from '@shared/schema';
 import AnnouncementModal from '../components/modals/AnnouncementModal';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/use-toast';
@@ -47,7 +50,7 @@ export default function AnnouncementsPage() {
   const [announcementToDelete, setAnnouncementToDelete] = useState<Announcement | null>(null);
 
   // Fetch announcements
-  const announcementsQuery = useQuery({
+  const announcementsQuery = useQuery<Announcement[]>({
     queryKey: ['/api/announcements'],
     retry: 1,
   });
@@ -121,11 +124,86 @@ export default function AnnouncementsPage() {
     }
   };
 
-  const handleSaveAnnouncement = (announcementData: any) => {
-    if (selectedAnnouncement) {
-      updateAnnouncementMutation.mutate({ id: selectedAnnouncement.id, ...announcementData });
-    } else {
-      createAnnouncementMutation.mutate(announcementData);
+  // File upload mutation
+  const uploadFilesMutation = useMutation({
+    mutationFn: async ({ announcementId, files }: { announcementId: string; files: File[] }) => {
+      const uploadPromises = files.map(async (file) => {
+        const fileType = getFileType(file.name);
+        const response = await apiRequest('POST', `/api/announcements/${announcementId}/files`, {
+          fileName: file.name,
+          fileType,
+          fileSize: file.size,
+        });
+        return response.json();
+      });
+      
+      return Promise.all(uploadPromises);
+    },
+    onSuccess: (data, { files }) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/announcements'] });
+      toast({ 
+        title: 'Uspjeh', 
+        description: `${files.length} fajl(ova) je uspješno učitano` 
+      });
+    },
+    onError: () => {
+      toast({ 
+        title: 'Greška', 
+        description: 'Greška pri učitavanju fajlova', 
+        variant: 'destructive' 
+      });
+    }
+  });
+
+  const getFileType = (fileName: string): string => {
+    const extension = fileName.split('.').pop()?.toLowerCase();
+    switch (extension) {
+      case 'jpg':
+      case 'jpeg':
+      case 'png':
+        return 'image';
+      case 'pdf':
+        return 'pdf';
+      default:
+        return 'document';
+    }
+  };
+
+  const handleSaveAnnouncement = async (announcementData: any, selectedFiles: File[]) => {
+    try {
+      let announcementId: string;
+      
+      if (selectedAnnouncement) {
+        // Update existing announcement
+        const result = await new Promise<any>((resolve, reject) => {
+          updateAnnouncementMutation.mutate(
+            { id: selectedAnnouncement.id, ...announcementData },
+            {
+              onSuccess: resolve,
+              onError: reject
+            }
+          );
+        });
+        announcementId = selectedAnnouncement.id;
+      } else {
+        // Create new announcement
+        const result = await new Promise<any>((resolve, reject) => {
+          createAnnouncementMutation.mutate(announcementData, {
+            onSuccess: resolve,
+            onError: reject
+          });
+        });
+        announcementId = result.id;
+      }
+      
+      // Upload files if any were selected
+      if (selectedFiles.length > 0) {
+        await uploadFilesMutation.mutateAsync({ announcementId, files: selectedFiles });
+      }
+      
+      setModalOpen(false);
+    } catch (error) {
+      console.error('Error saving announcement:', error);
     }
   };
 
@@ -151,6 +229,54 @@ export default function AnnouncementsPage() {
       default:
         return <Chip label={status} color="default" size="small" />;
     }
+  };
+
+  // Component to display attachment count for an announcement
+  const AnnouncementAttachments = ({ announcementId }: { announcementId: string }) => {
+    const attachmentsQuery = useQuery<AnnouncementFileWithUser[]>({
+      queryKey: ['/api/announcements', announcementId, 'files'],
+      retry: 1,
+    });
+
+    if (attachmentsQuery.isLoading) {
+      return <CircularProgress size={16} />;
+    }
+
+    if (attachmentsQuery.error || !attachmentsQuery.data) {
+      return <Typography variant="caption">-</Typography>;
+    }
+
+    const files = attachmentsQuery.data;
+    if (files.length === 0) {
+      return <Typography variant="caption">-</Typography>;
+    }
+
+    // Count file types
+    const imageCount = files.filter((f) => f.fileType === 'image').length;
+    const pdfCount = files.filter((f) => f.fileType === 'pdf').length;
+
+    return (
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        {imageCount > 0 && (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <Image fontSize="small" color="primary" />
+            <Typography variant="caption">{imageCount}</Typography>
+          </Box>
+        )}
+        {pdfCount > 0 && (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <PictureAsPdf fontSize="small" color="error" />
+            <Typography variant="caption">{pdfCount}</Typography>
+          </Box>
+        )}
+        {files.length > imageCount + pdfCount && (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <AttachFile fontSize="small" />
+            <Typography variant="caption">{files.length - imageCount - pdfCount}</Typography>
+          </Box>
+        )}
+      </Box>
+    );
   };
 
   if (announcementsQuery.isLoading) {
@@ -194,6 +320,7 @@ export default function AnnouncementsPage() {
                 <TableCell sx={{ fontWeight: 600 }}>Autor</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Datum Objave</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Prilozi</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
               </TableRow>
             </TableHead>
@@ -211,6 +338,9 @@ export default function AnnouncementsPage() {
                     {getStatusChip(announcement.status, announcement.isFeatured || false)}
                   </TableCell>
                   <TableCell>
+                    <AnnouncementAttachments announcementId={announcement.id} />
+                  </TableCell>
+                  <TableCell>
                     <IconButton
                       onClick={(e) => handleMenuOpen(e, announcement)}
                       data-testid={`menu-announcement-${announcement.id}`}
@@ -222,7 +352,7 @@ export default function AnnouncementsPage() {
               ))}
               {(announcementsQuery.data || []).length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5} sx={{ textAlign: 'center', py: 4 }}>
+                  <TableCell colSpan={6} sx={{ textAlign: 'center', py: 4 }}>
                     <Typography color="text.secondary">
                       Nema obavijesti
                     </Typography>

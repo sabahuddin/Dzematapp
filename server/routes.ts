@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { requireAuth, requireAdmin } from "./index";
-import { insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertGroupFileSchema } from "@shared/schema";
+import { insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertGroupFileSchema, insertAnnouncementFileSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Authentication routes
@@ -714,6 +714,135 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const deleted = await storage.deleteGroupFile(id);
+      if (!deleted) {
+        return res.status(404).json({ message: "File not found" });
+      }
+      res.json({ message: "File deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete file" });
+    }
+  });
+
+  // Announcement Files
+  app.get("/api/announcements/:announcementId/files", async (req, res) => {
+    try {
+      const { announcementId } = req.params;
+      
+      // Check if announcement exists
+      const announcement = await storage.getAnnouncement(announcementId);
+      if (!announcement) {
+        return res.status(404).json({ message: "Announcement not found" });
+      }
+
+      const files = await storage.getAnnouncementFiles(announcementId);
+      
+      // Get user details for each file
+      const filesWithUserDetails = await Promise.all(
+        files.map(async (file) => {
+          const user = await storage.getUser(file.uploadedById);
+          return {
+            ...file,
+            uploadedBy: user ? { 
+              id: user.id, 
+              firstName: user.firstName, 
+              lastName: user.lastName 
+            } : null
+          };
+        })
+      );
+      
+      res.json(filesWithUserDetails);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch announcement files" });
+    }
+  });
+
+  app.post("/api/announcements/:announcementId/files", requireAuth, async (req, res) => {
+    try {
+      const { announcementId } = req.params;
+      const { fileName, fileType, fileSize } = req.body;
+
+      if (!fileName || !fileType || !fileSize) {
+        return res.status(400).json({ message: "fileName, fileType, and fileSize are required" });
+      }
+
+      // Use authenticated user's ID - prevents identity spoofing
+      const uploadedById = req.user!.id;
+      const user = req.user!;
+
+      // Validate file type for security
+      const allowedFileTypes = ['image', 'pdf', 'document'];
+      if (!allowedFileTypes.includes(fileType)) {
+        return res.status(400).json({ message: "Invalid file type. Allowed types: image, pdf, document" });
+      }
+
+      // Validate file size (10MB limit)
+      if (fileSize > 10 * 1024 * 1024) {
+        return res.status(400).json({ message: "File size too large. Maximum 10MB allowed" });
+      }
+
+      // Check if announcement exists
+      const announcement = await storage.getAnnouncement(announcementId);
+      if (!announcement) {
+        return res.status(404).json({ message: "Announcement not found" });
+      }
+
+      // Only admins can upload files to announcements
+      if (!user.isAdmin) {
+        return res.status(403).json({ message: "Forbidden: Only admins can upload announcement files" });
+      }
+
+      // Generate secure file path server-side
+      const sanitizedFileName = fileName.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const timestamp = Date.now();
+      const secureFilePath = `/uploads/announcements/${announcementId}/${timestamp}_${sanitizedFileName}`;
+
+      const fileData = insertAnnouncementFileSchema.parse({
+        announcementId,
+        uploadedById,
+        fileName: sanitizedFileName,
+        fileType,
+        fileSize,
+        filePath: secureFilePath
+      });
+      
+      const file = await storage.createAnnouncementFile(fileData);
+      
+      // Get user details for the response
+      const fileWithUser = {
+        ...file,
+        uploadedBy: { 
+          id: user.id, 
+          firstName: user.firstName, 
+          lastName: user.lastName 
+        }
+      };
+      
+      res.json(fileWithUser);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid file data" });
+    }
+  });
+
+  app.delete("/api/announcement-files/:id", requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      // Get the file to check ownership
+      const file = await storage.getAnnouncementFile(id);
+      if (!file) {
+        return res.status(404).json({ message: "File not found" });
+      }
+
+      // Check authorization: admin or file uploader
+      const isAdmin = req.user!.isAdmin;
+      const isUploader = file.uploadedById === req.user!.id;
+
+      if (!isAdmin && !isUploader) {
+        return res.status(403).json({ message: "Forbidden: Only admins or file uploaders can delete files" });
+      }
+
+      const deleted = await storage.deleteAnnouncementFile(id);
       if (!deleted) {
         return res.status(404).json({ message: "File not found" });
       }

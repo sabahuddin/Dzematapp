@@ -19,6 +19,8 @@ import {
   type InsertTaskComment,
   type GroupFile,
   type InsertGroupFile,
+  type AnnouncementFile,
+  type InsertAnnouncementFile,
   type Activity
 } from "@shared/schema";
 import { randomUUID } from "crypto";
@@ -92,6 +94,12 @@ export interface IStorage {
   getGroupFiles(workGroupId: string): Promise<GroupFile[]>;
   deleteGroupFile(id: string): Promise<boolean>;
   
+  // Announcement Files
+  createAnnouncementFile(file: InsertAnnouncementFile): Promise<AnnouncementFile>;
+  getAnnouncementFile(id: string): Promise<AnnouncementFile | undefined>;
+  getAnnouncementFiles(announcementId: string): Promise<AnnouncementFile[]>;
+  deleteAnnouncementFile(id: string): Promise<boolean>;
+  
   // Activities
   createActivity(activity: { type: string; description: string; userId?: string }): Promise<Activity>;
   getRecentActivities(limit?: number): Promise<Activity[]>;
@@ -114,6 +122,7 @@ export class MemStorage implements IStorage {
   private accessRequests: Map<string, AccessRequest> = new Map();
   private taskComments: Map<string, TaskComment> = new Map();
   private groupFiles: Map<string, GroupFile> = new Map();
+  private announcementFiles: Map<string, AnnouncementFile> = new Map();
   private activities: Map<string, Activity> = new Map();
 
   constructor() {
@@ -684,6 +693,44 @@ export class MemStorage implements IStorage {
 
   async deleteGroupFile(id: string): Promise<boolean> {
     return this.groupFiles.delete(id);
+  }
+
+  // Announcement Files
+  async createAnnouncementFile(insertFile: InsertAnnouncementFile): Promise<AnnouncementFile> {
+    const id = randomUUID();
+    const file: AnnouncementFile = {
+      id,
+      announcementId: insertFile.announcementId,
+      uploadedById: insertFile.uploadedById,
+      fileName: insertFile.fileName,
+      fileType: insertFile.fileType,
+      fileSize: insertFile.fileSize,
+      filePath: insertFile.filePath,
+      uploadedAt: new Date()
+    };
+    this.announcementFiles.set(id, file);
+    
+    await this.createActivity({
+      type: "announcement",
+      description: `Fajl dodao u obavijest: ${file.fileName}`,
+      userId: file.uploadedById
+    });
+    
+    return file;
+  }
+
+  async getAnnouncementFile(id: string): Promise<AnnouncementFile | undefined> {
+    return this.announcementFiles.get(id);
+  }
+
+  async getAnnouncementFiles(announcementId: string): Promise<AnnouncementFile[]> {
+    return Array.from(this.announcementFiles.values())
+      .filter(file => file.announcementId === announcementId)
+      .sort((a, b) => new Date(b.uploadedAt!).getTime() - new Date(a.uploadedAt!).getTime());
+  }
+
+  async deleteAnnouncementFile(id: string): Promise<boolean> {
+    return this.announcementFiles.delete(id);
   }
 }
 
