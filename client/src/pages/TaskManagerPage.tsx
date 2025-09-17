@@ -34,7 +34,7 @@ import {
   Check,
   Close
 } from '@mui/icons-material';
-import { WorkGroup, AccessRequest, Task } from '@shared/schema';
+import { WorkGroup, AccessRequest, Task, WorkGroupMember, User } from '@shared/schema';
 import WorkGroupModal from '../components/modals/WorkGroupModal';
 import MemberManagementDialog from '../components/MemberManagementDialog';
 import { useAuth } from '../hooks/useAuth';
@@ -67,6 +67,79 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
+interface WorkGroupCardProps {
+  workGroup: WorkGroup;
+  onManageMembers: (workGroup: WorkGroup) => void;
+  onManageTasks: (workGroup: WorkGroup) => void;
+}
+
+function WorkGroupCard({ workGroup, onManageMembers, onManageTasks }: WorkGroupCardProps) {
+  // Hook to get member count for this work group  
+  const memberCountQuery = useQuery({
+    queryKey: ['/api/work-groups', workGroup.id, 'members'],
+    select: (data: Array<WorkGroupMember & { user: User }>) => data?.length || 0,
+    retry: 1,
+  });
+
+  return (
+    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+      <Card 
+        sx={{ 
+          height: '100%',
+          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+          '&:hover': {
+            transform: 'translateY(-2px)',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.12)'
+          }
+        }}
+      >
+        <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+          <Typography variant="h6" sx={{ fontWeight: 600, mb: 1.5 }}>
+            {workGroup.name}
+          </Typography>
+          
+          <Typography 
+            variant="body2" 
+            color="text.secondary" 
+            sx={{ mb: 2, flex: 1 }}
+          >
+            {workGroup.description}
+          </Typography>
+          
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <People sx={{ fontSize: 16, mr: 0.5, color: 'text.secondary' }} />
+            <Typography variant="body2" color="text.secondary">
+              {memberCountQuery.isLoading ? (
+                <CircularProgress size={12} sx={{ mr: 0.5 }} />
+              ) : (
+                `${memberCountQuery.data || 0} članova`
+              )}
+            </Typography>
+          </Box>
+          
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <Button
+              variant="contained"
+              startIcon={<ManageAccounts />}
+              onClick={() => onManageMembers(workGroup)}
+              data-testid={`button-manage-members-${workGroup.id}`}
+            >
+              Upravljaj Članovima
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => onManageTasks(workGroup)}
+              data-testid={`button-manage-tasks-${workGroup.id}`}
+            >
+              Upravljaj Zadacima
+            </Button>
+          </Box>
+        </CardContent>
+      </Card>
+    </Grid>
+  );
+}
+
 export default function TaskManagerPage() {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -80,19 +153,19 @@ export default function TaskManagerPage() {
   const [menuRequest, setMenuRequest] = useState<AccessRequest | null>(null);
 
   // Fetch work groups
-  const workGroupsQuery = useQuery({
+  const workGroupsQuery = useQuery<WorkGroup[]>({
     queryKey: ['/api/work-groups'],
     retry: 1,
   });
 
   // Fetch access requests
-  const accessRequestsQuery = useQuery({
+  const accessRequestsQuery = useQuery<AccessRequest[]>({
     queryKey: ['/api/access-requests'],
     retry: 1,
   });
 
   // Fetch users for access request names
-  const usersQuery = useQuery({
+  const usersQuery = useQuery<User[]>({
     queryKey: ['/api/users'],
     retry: 1,
   });
@@ -179,14 +252,6 @@ export default function TaskManagerPage() {
     handleMenuClose();
   };
 
-  // Hook to get member count for a work group
-  const useMemberCount = (workGroupId: string) => {
-    return useQuery({
-      queryKey: ['/api/work-groups', workGroupId, 'members'],
-      select: (data) => data?.length || 0,
-      retry: 1,
-    });
-  };
 
   // Get user name from users data
   const getUserName = (userId: string) => {
@@ -237,67 +302,14 @@ export default function TaskManagerPage() {
         </Box>
 
         <Grid container spacing={3}>
-          {workGroupsQuery.data?.map((workGroup: WorkGroup) => {
-            const memberCountQuery = useMemberCount(workGroup.id);
-            
-            return (
-              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={workGroup.id}>
-                <Card 
-                  sx={{ 
-                    height: '100%',
-                    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                    '&:hover': {
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 4px 16px rgba(0,0,0,0.12)'
-                    }
-                  }}
-                >
-                  <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 1.5 }}>
-                      {workGroup.name}
-                    </Typography>
-                    
-                    <Typography 
-                      variant="body2" 
-                      color="text.secondary" 
-                      sx={{ mb: 2, flex: 1 }}
-                    >
-                      {workGroup.description}
-                    </Typography>
-                    
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                      <People sx={{ fontSize: 16, mr: 0.5, color: 'text.secondary' }} />
-                      <Typography variant="body2" color="text.secondary">
-                        {memberCountQuery.isLoading ? (
-                          <CircularProgress size={12} sx={{ mr: 0.5 }} />
-                        ) : (
-                          `${memberCountQuery.data || 0} članova`
-                        )}
-                      </Typography>
-                    </Box>
-                    
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                      <Button
-                        variant="contained"
-                        startIcon={<ManageAccounts />}
-                        onClick={() => handleManageMembers(workGroup)}
-                        data-testid={`button-manage-members-${workGroup.id}`}
-                      >
-                        Upravljaj Članovima
-                      </Button>
-                      <Button
-                        variant="outlined"
-                        onClick={() => handleManageGroupTasks(workGroup)}
-                        data-testid={`button-manage-tasks-${workGroup.id}`}
-                      >
-                        Upravljaj Zadacima
-                      </Button>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-            );
-          })}
+          {workGroupsQuery.data?.map((workGroup: WorkGroup) => (
+            <WorkGroupCard 
+              key={workGroup.id}
+              workGroup={workGroup}
+              onManageMembers={handleManageMembers}
+              onManageTasks={handleManageGroupTasks}
+            />
+          ))}
           
           {(!workGroupsQuery.data || workGroupsQuery.data.length === 0) && (
             <Grid size={{ xs: 12 }}>
