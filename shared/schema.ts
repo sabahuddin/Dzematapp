@@ -124,6 +124,11 @@ export const insertWorkGroupSchema = createInsertSchema(workGroups).omit({
   createdAt: true,
 });
 
+export const insertWorkGroupMemberSchema = createInsertSchema(workGroupMembers).omit({
+  id: true,
+  joinedAt: true,
+});
+
 export const insertTaskSchema = createInsertSchema(tasks).omit({
   id: true,
   createdAt: true,
@@ -145,6 +150,8 @@ export type EventRsvp = typeof eventRsvps.$inferSelect;
 export type InsertEventRsvp = z.infer<typeof insertEventRsvpSchema>;
 export type WorkGroup = typeof workGroups.$inferSelect;
 export type InsertWorkGroup = z.infer<typeof insertWorkGroupSchema>;
+export type WorkGroupMember = typeof workGroupMembers.$inferSelect;
+export type InsertWorkGroupMember = z.infer<typeof insertWorkGroupMemberSchema>;
 export type Task = typeof tasks.$inferSelect;
 export type InsertTask = z.infer<typeof insertTaskSchema>;
 export type AccessRequest = typeof accessRequests.$inferSelect;
