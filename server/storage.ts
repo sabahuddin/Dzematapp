@@ -9,6 +9,8 @@ import {
   type InsertEventRsvp,
   type WorkGroup,
   type InsertWorkGroup,
+  type WorkGroupMember,
+  type InsertWorkGroupMember,
   type Task,
   type InsertTask,
   type AccessRequest,
@@ -52,6 +54,13 @@ export interface IStorage {
   deleteWorkGroup(id: string): Promise<boolean>;
   getAllWorkGroups(): Promise<WorkGroup[]>;
   
+  // Work Group Members
+  addMemberToWorkGroup(workGroupId: string, userId: string): Promise<WorkGroupMember>;
+  removeMemberFromWorkGroup(workGroupId: string, userId: string): Promise<boolean>;
+  getWorkGroupMembers(workGroupId: string): Promise<WorkGroupMember[]>;
+  getUserWorkGroups(userId: string): Promise<WorkGroupMember[]>;
+  isUserMemberOfWorkGroup(workGroupId: string, userId: string): Promise<boolean>;
+  
   // Tasks
   getTask(id: string): Promise<Task | undefined>;
   createTask(task: InsertTask): Promise<Task>;
@@ -81,6 +90,7 @@ export class MemStorage implements IStorage {
   private events: Map<string, Event> = new Map();
   private eventRsvps: Map<string, EventRsvp> = new Map();
   private workGroups: Map<string, WorkGroup> = new Map();
+  private workGroupMembers: Map<string, WorkGroupMember> = new Map();
   private tasks: Map<string, Task> = new Map();
   private accessRequests: Map<string, AccessRequest> = new Map();
   private activities: Map<string, Activity> = new Map();
@@ -354,6 +364,69 @@ export class MemStorage implements IStorage {
 
   async getAllWorkGroups(): Promise<WorkGroup[]> {
     return Array.from(this.workGroups.values());
+  }
+
+  // Work Group Members
+  async addMemberToWorkGroup(workGroupId: string, userId: string): Promise<WorkGroupMember> {
+    // Check if user is already a member
+    const existingMembership = Array.from(this.workGroupMembers.values())
+      .find(member => member.workGroupId === workGroupId && member.userId === userId);
+    
+    if (existingMembership) {
+      return existingMembership;
+    }
+
+    const id = randomUUID();
+    const workGroupMember: WorkGroupMember = {
+      id,
+      workGroupId,
+      userId,
+      joinedAt: new Date()
+    };
+    this.workGroupMembers.set(id, workGroupMember);
+    
+    await this.createActivity({
+      type: "workgroup",
+      description: `Korisnik dodao u radnu grupu`,
+      userId
+    });
+    
+    return workGroupMember;
+  }
+
+  async removeMemberFromWorkGroup(workGroupId: string, userId: string): Promise<boolean> {
+    const member = Array.from(this.workGroupMembers.values())
+      .find(m => m.workGroupId === workGroupId && m.userId === userId);
+    
+    if (member) {
+      const deleted = this.workGroupMembers.delete(member.id);
+      
+      if (deleted) {
+        await this.createActivity({
+          type: "workgroup",
+          description: `Korisnik uklonjen iz radne grupe`,
+          userId
+        });
+      }
+      
+      return deleted;
+    }
+    return false;
+  }
+
+  async getWorkGroupMembers(workGroupId: string): Promise<WorkGroupMember[]> {
+    return Array.from(this.workGroupMembers.values())
+      .filter(member => member.workGroupId === workGroupId);
+  }
+
+  async getUserWorkGroups(userId: string): Promise<WorkGroupMember[]> {
+    return Array.from(this.workGroupMembers.values())
+      .filter(member => member.userId === userId);
+  }
+
+  async isUserMemberOfWorkGroup(workGroupId: string, userId: string): Promise<boolean> {
+    return Array.from(this.workGroupMembers.values())
+      .some(member => member.workGroupId === workGroupId && member.userId === userId);
   }
 
   // Tasks
