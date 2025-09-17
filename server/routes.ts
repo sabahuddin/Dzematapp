@@ -238,6 +238,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Work group not found" });
       }
 
+      // Authorization check: Only admins or group moderators can add members
+      const isAdmin = req.user!.isAdmin;
+      const isModerator = await storage.isUserModeratorOfWorkGroup(id, req.user!.id);
+      
+      if (!isAdmin && !isModerator) {
+        return res.status(403).json({ message: "Forbidden: Only admins or group moderators can add members" });
+      }
+
       // Check if user exists
       const user = await storage.getUser(userId);
       if (!user) {
@@ -265,6 +273,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const workGroup = await storage.getWorkGroup(id);
       if (!workGroup) {
         return res.status(404).json({ message: "Work group not found" });
+      }
+
+      // Authorization check: Only admins or group moderators can remove members
+      // Or users can remove themselves
+      const isAdmin = req.user!.isAdmin;
+      const isModerator = await storage.isUserModeratorOfWorkGroup(id, req.user!.id);
+      const isSelfRemoval = userId === req.user!.id;
+      
+      if (!isAdmin && !isModerator && !isSelfRemoval) {
+        return res.status(403).json({ message: "Forbidden: Only admins, group moderators, or the user themselves can remove members" });
       }
 
       // Check if user exists
@@ -405,6 +423,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/tasks", requireAuth, async (req, res) => {
     try {
       const taskData = insertTaskSchema.parse(req.body);
+      
+      // Check if work group exists
+      const workGroup = await storage.getWorkGroup(taskData.workGroupId);
+      if (!workGroup) {
+        return res.status(404).json({ message: "Work group not found" });
+      }
+
+      // Authorization check: Only admins or group moderators can create tasks
+      const isAdmin = req.user!.isAdmin;
+      const isModerator = await storage.isUserModeratorOfWorkGroup(taskData.workGroupId, req.user!.id);
+      
+      if (!isAdmin && !isModerator) {
+        return res.status(403).json({ message: "Forbidden: Only admins or group moderators can create tasks" });
+      }
+
       const task = await storage.createTask(taskData);
       res.json(task);
     } catch (error) {
@@ -416,6 +449,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { id } = req.params;
       const taskData = insertTaskSchema.partial().parse(req.body);
+      
+      // Get existing task to check work group
+      const existingTask = await storage.getTask(id);
+      if (!existingTask) {
+        return res.status(404).json({ message: "Task not found" });
+      }
+
+      // Authorization check: Only admins or group moderators can update tasks
+      const isAdmin = req.user!.isAdmin;
+      const isModerator = await storage.isUserModeratorOfWorkGroup(existingTask.workGroupId, req.user!.id);
+      
+      if (!isAdmin && !isModerator) {
+        return res.status(403).json({ message: "Forbidden: Only admins or group moderators can update tasks" });
+      }
+
       const task = await storage.updateTask(id, taskData);
       if (!task) {
         return res.status(404).json({ message: "Task not found" });
@@ -463,17 +511,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/tasks/:taskId/comments", requireAuth, async (req, res) => {
     try {
       const { taskId } = req.params;
-      const { content, userId } = req.body;
+      const { content } = req.body;
 
-      if (!content || !userId) {
-        return res.status(400).json({ message: "Content and userId are required" });
+      if (!content) {
+        return res.status(400).json({ message: "Content is required" });
       }
 
-      // Check if user exists
-      const user = await storage.getUser(userId);
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
+      // Use authenticated user's ID - prevents identity spoofing
+      const userId = req.user!.id;
+      const user = req.user!;
 
       // Check if task exists
       const task = await storage.getTask(taskId);
@@ -481,10 +527,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Task not found" });
       }
 
-      // Check if user is a member of the work group this task belongs to
-      const isMember = await storage.isUserMemberOfWorkGroup(task.workGroupId, userId);
-      if (!isMember) {
-        return res.status(403).json({ message: "Forbidden: Only work group members can comment on tasks" });
+      // Check if user is a member of the work group this task belongs to (admins can comment on any task)
+      if (!user.isAdmin) {
+        const isMember = await storage.isUserMemberOfWorkGroup(task.workGroupId, userId);
+        if (!isMember) {
+          return res.status(403).json({ message: "Forbidden: Only work group members can comment on tasks" });
+        }
       }
 
       const commentData = insertTaskCommentSchema.parse({ taskId, userId, content });
@@ -578,11 +626,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/work-groups/:workGroupId/files", requireAuth, async (req, res) => {
     try {
       const { workGroupId } = req.params;
-      const { fileName, fileType, fileSize, uploadedById } = req.body;
+      const { fileName, fileType, fileSize } = req.body;
 
-      if (!fileName || !fileType || !fileSize || !uploadedById) {
-        return res.status(400).json({ message: "fileName, fileType, fileSize, and uploadedById are required" });
+      if (!fileName || !fileType || !fileSize) {
+        return res.status(400).json({ message: "fileName, fileType, and fileSize are required" });
       }
+
+      // Use authenticated user's ID - prevents identity spoofing
+      const uploadedById = req.user!.id;
+      const user = req.user!;
 
       // Validate file type for security
       const allowedFileTypes = ['image', 'pdf', 'document'];
@@ -595,22 +647,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "File size too large. Maximum 10MB allowed" });
       }
 
-      // Check if uploading user exists
-      const user = await storage.getUser(uploadedById);
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
       // Check if work group exists
       const workGroup = await storage.getWorkGroup(workGroupId);
       if (!workGroup) {
         return res.status(404).json({ message: "Work group not found" });
       }
 
-      // Check if user is a member of the work group
-      const isMember = await storage.isUserMemberOfWorkGroup(workGroupId, uploadedById);
-      if (!isMember) {
-        return res.status(403).json({ message: "Forbidden: Only work group members can upload files" });
+      // Check if user is a member of the work group (admins can upload to any group)
+      if (!user.isAdmin) {
+        const isMember = await storage.isUserMemberOfWorkGroup(workGroupId, uploadedById);
+        if (!isMember) {
+          return res.status(403).json({ message: "Forbidden: Only work group members can upload files" });
+        }
       }
 
       // Generate secure file path server-side

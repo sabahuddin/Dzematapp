@@ -24,7 +24,8 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions
+  DialogActions,
+  TextField
 } from '@mui/material';
 import {
   GroupAdd,
@@ -148,6 +149,7 @@ export default function TaskManagerPage() {
   const [tabValue, setTabValue] = useState(0);
   const [workGroupModalOpen, setWorkGroupModalOpen] = useState(false);
   const [memberManagementDialogOpen, setMemberManagementDialogOpen] = useState(false);
+  const [taskManagementDialogOpen, setTaskManagementDialogOpen] = useState(false);
   const [selectedWorkGroup, setSelectedWorkGroup] = useState<WorkGroup | null>(null);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [menuRequest, setMenuRequest] = useState<AccessRequest | null>(null);
@@ -220,12 +222,8 @@ export default function TaskManagerPage() {
   };
 
   const handleManageGroupTasks = (workGroup: WorkGroup) => {
-    // In a real app, this would navigate to a task management page for the specific group
-    toast({ 
-      title: 'Info', 
-      description: `Upravljanje zadacima za grupu: ${workGroup.name}`,
-      variant: 'default'
-    });
+    setSelectedWorkGroup(workGroup);
+    setTaskManagementDialogOpen(true);
   };
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, request: AccessRequest) => {
@@ -417,6 +415,509 @@ export default function TaskManagerPage() {
         open={memberManagementDialogOpen && selectedWorkGroup !== null}
         onClose={() => setMemberManagementDialogOpen(false)}
         workGroup={selectedWorkGroup || { id: '', name: '', description: '', createdAt: new Date() }}
+      />
+      
+      {/* Task Management Dialog */}
+      <Dialog
+        open={taskManagementDialogOpen && selectedWorkGroup !== null}
+        onClose={() => setTaskManagementDialogOpen(false)}
+        maxWidth="lg"
+        fullWidth
+        sx={{
+          '& .MuiDialog-paper': {
+            height: '80vh',
+            maxHeight: '800px'
+          }
+        }}
+      >
+        <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Typography variant="h6">
+            Upravljanje Zadacima - {selectedWorkGroup?.name}
+          </Typography>
+          <IconButton
+            onClick={() => setTaskManagementDialogOpen(false)}
+            data-testid="button-close-task-management"
+          >
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent sx={{ padding: 0 }}>
+          <TaskManagementContent
+            workGroup={selectedWorkGroup}
+            currentUser={user}
+            onClose={() => setTaskManagementDialogOpen(false)}
+          />
+        </DialogContent>
+      </Dialog>
+    </Box>
+  );
+}
+
+interface TaskCreateDialogProps {
+  open: boolean;
+  onClose: () => void;
+  workGroup: WorkGroup | null;
+  members: any[];
+  onSave: (taskData: any) => void;
+}
+
+function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCreateDialogProps) {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [assignedToId, setAssignedToId] = useState('');
+  const [dueDate, setDueDate] = useState('');
+
+  const handleSubmit = () => {
+    if (!title || !workGroup) return;
+    
+    const taskData = {
+      title,
+      description,
+      workGroupId: workGroup.id,
+      assignedToId: assignedToId || null,
+      dueDate: dueDate ? new Date(dueDate) : null
+    };
+    
+    onSave(taskData);
+    setTitle('');
+    setDescription('');
+    setAssignedToId('');
+    setDueDate('');
+  };
+
+  return (
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+      <DialogTitle>Kreiraj Novi Zadatak</DialogTitle>
+      <DialogContent>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 2 }}>
+          <TextField
+            label="Naziv zadatka"
+            value={title}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
+            fullWidth
+            required
+            data-testid="input-task-title"
+          />
+          <TextField
+            label="Opis zadatka"
+            value={description}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)}
+            fullWidth
+            multiline
+            rows={3}
+            data-testid="input-task-description"
+          />
+          <TextField
+            select
+            label="Dodijeli članu"
+            value={assignedToId}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAssignedToId(e.target.value)}
+            fullWidth
+            data-testid="select-task-assignee"
+          >
+            <MenuItem value="">Bez dodijeljenja</MenuItem>
+            {members?.map((member: any) => (
+              <MenuItem key={member.userId} value={member.userId}>
+                {member.user ? `${member.user.firstName} ${member.user.lastName}` : 'Nepoznat korisnik'}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            label="Rok izvršavanja"
+            type="date"
+            value={dueDate}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDueDate(e.target.value)}
+            InputLabelProps={{ shrink: true }}
+            fullWidth
+            data-testid="input-task-due-date"
+          />
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} data-testid="button-cancel-task">Otkaži</Button>
+        <Button 
+          onClick={handleSubmit} 
+          variant="contained" 
+          disabled={!title}
+          data-testid="button-save-task"
+        >
+          Sačuvaj
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
+interface TaskDetailDialogProps {
+  open: boolean;
+  onClose: () => void;
+  task: any;
+  workGroup: WorkGroup | null;
+  currentUser: any;
+}
+
+function TaskDetailDialog({ open, onClose, task, workGroup, currentUser }: TaskDetailDialogProps) {
+  const { toast } = useToast();
+  const [newComment, setNewComment] = useState('');
+  const queryClient = useQueryClient();
+
+  // Fetch task comments
+  const commentsQuery = useQuery({
+    queryKey: ['/api/tasks', task?.id, 'comments'],
+    enabled: !!task?.id && open,
+    retry: 1,
+  });
+
+  // Fetch group files
+  const filesQuery = useQuery({
+    queryKey: ['/api/work-groups', workGroup?.id, 'files'],
+    enabled: !!workGroup?.id && open,
+    retry: 1,
+  });
+
+  // Add comment mutation
+  const addCommentMutation = useMutation({
+    mutationFn: async (content: string) => {
+      const response = await apiRequest('POST', `/api/tasks/${task.id}/comments`, { content });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/tasks', task.id, 'comments'] });
+      setNewComment('');
+      toast({ title: 'Uspjeh', description: 'Komentar je dodan' });
+    },
+    onError: () => {
+      toast({ title: 'Greška', description: 'Greška pri dodavanju komentara', variant: 'destructive' });
+    }
+  });
+
+  const handleAddComment = () => {
+    if (!newComment.trim()) return;
+    addCommentMutation.mutate(newComment.trim());
+  };
+
+  if (!task) return null;
+
+  return (
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+      <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Typography variant="h6">{task.title}</Typography>
+        <IconButton onClick={onClose}>
+          <Close />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          {/* Task Description */}
+          <Box>
+            <Typography variant="body1" sx={{ mb: 2 }}>{task.description}</Typography>
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+              <Chip label={`Status: ${task.status}`} />
+              {task.assignedToId && (
+                <Chip label={`Dodijeljeno: ${task.assignedToId}`} variant="outlined" />
+              )}
+              {task.dueDate && (
+                <Chip 
+                  label={`Rok: ${new Date(task.dueDate).toLocaleDateString('hr-HR')}`} 
+                  variant="outlined" 
+                />
+              )}
+            </Box>
+          </Box>
+
+          {/* Comments Section */}
+          <Box>
+            <Typography variant="h6" sx={{ mb: 2 }}>Komentari</Typography>
+            
+            {/* Add Comment */}
+            <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
+              <TextField
+                placeholder="Dodaj komentar..."
+                value={newComment}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewComment(e.target.value)}
+                fullWidth
+                size="small"
+                data-testid="input-new-comment"
+              />
+              <Button 
+                onClick={handleAddComment} 
+                variant="contained" 
+                disabled={!newComment.trim()}
+                data-testid="button-add-comment"
+              >
+                Dodaj
+              </Button>
+            </Box>
+
+            {/* Comments List */}
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, maxHeight: 200, overflowY: 'auto' }}>
+              {commentsQuery.data && Array.isArray(commentsQuery.data) && commentsQuery.data.length > 0 ? (
+                commentsQuery.data.map((comment: any) => (
+                  <Card key={comment.id} variant="outlined">
+                    <CardContent sx={{ py: 1 }}>
+                      <Typography variant="caption" color="text.secondary">
+                        {comment.user ? `${comment.user.firstName} ${comment.user.lastName}` : 'Nepoznat korisnik'} • {new Date(comment.createdAt).toLocaleDateString('hr-HR')}
+                      </Typography>
+                      <Typography variant="body2" sx={{ mt: 0.5 }}>
+                        {comment.content}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
+                  Nema komentara
+                </Typography>
+              )}
+            </Box>
+          </Box>
+
+          {/* Files Section */}
+          <Box>
+            <Typography variant="h6" sx={{ mb: 2 }}>Fajlovi grupe</Typography>
+            {filesQuery.data && Array.isArray(filesQuery.data) && filesQuery.data.length > 0 ? (
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                {filesQuery.data.map((file: any) => (
+                  <Card key={file.id} variant="outlined">
+                    <CardContent sx={{ py: 1 }}>
+                      <Typography variant="body2">{file.fileName}</Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        {file.uploadedBy ? `${file.uploadedBy.firstName} ${file.uploadedBy.lastName}` : 'Nepoznat korisnik'} • {new Date(file.uploadedAt).toLocaleDateString('hr-HR')}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                ))}
+              </Box>
+            ) : (
+              <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
+                Nema fajlova
+              </Typography>
+            )}
+          </Box>
+        </Box>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+interface TaskManagementContentProps {
+  workGroup: WorkGroup | null;
+  currentUser: any;
+  onClose: () => void;
+}
+
+function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManagementContentProps) {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [selectedTask, setSelectedTask] = useState<any>(null);
+  const [createTaskOpen, setCreateTaskOpen] = useState(false);
+  const [taskDetailOpen, setTaskDetailOpen] = useState(false);
+
+  // Fetch tasks for the work group
+  const tasksQuery = useQuery({
+    queryKey: ['/api/work-groups', workGroup?.id, 'tasks'],
+    enabled: !!workGroup?.id,
+    retry: 1,
+  });
+
+  // Fetch work group members to check moderator status
+  const membersQuery = useQuery({
+    queryKey: ['/api/work-groups', workGroup?.id, 'members'],
+    enabled: !!workGroup?.id,
+    retry: 1,
+  });
+
+  // Check if current user is moderator or admin
+  const isModeratorOrAdmin = () => {
+    if (!currentUser || !membersQuery.data) return false;
+    if (currentUser.isAdmin) return true;
+    
+    const userMembership = Array.isArray(membersQuery.data) ? membersQuery.data.find((member: any) => member.userId === currentUser.id) : null;
+    return userMembership?.isModerator || false;
+  };
+
+  // Create task mutation
+  const createTaskMutation = useMutation({
+    mutationFn: async (taskData: any) => {
+      const response = await apiRequest('POST', '/api/tasks', taskData);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/work-groups', workGroup?.id, 'tasks'] });
+      toast({ title: 'Uspjeh', description: 'Zadatak je uspješno kreiran' });
+      setCreateTaskOpen(false);
+    },
+    onError: () => {
+      toast({ title: 'Greška', description: 'Greška pri kreiranju zadatka', variant: 'destructive' });
+    }
+  });
+
+  // Update task status mutation
+  const updateTaskMutation = useMutation({
+    mutationFn: async ({ taskId, status }: { taskId: string; status: string }) => {
+      const response = await apiRequest('PUT', `/api/tasks/${taskId}`, { status });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/work-groups', workGroup?.id, 'tasks'] });
+      toast({ title: 'Uspjeh', description: 'Status zadatka je ažuriran' });
+    },
+    onError: () => {
+      toast({ title: 'Greška', description: 'Greška pri ažuriranju zadatka', variant: 'destructive' });
+    }
+  });
+
+  const handleCreateTask = () => {
+    setCreateTaskOpen(true);
+  };
+
+  const handleTaskClick = (task: any) => {
+    setSelectedTask(task);
+    setTaskDetailOpen(true);
+  };
+
+  const handleMarkCompleted = (taskId: string) => {
+    updateTaskMutation.mutate({ taskId, status: 'completed' });
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'completed': return 'success';
+      case 'in_progress': return 'warning';
+      default: return 'default';
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'completed': return 'Završeno';
+      case 'in_progress': return 'U tijeku';
+      default: return 'Za uraditi';
+    }
+  };
+
+  if (tasksQuery.isLoading || membersQuery.isLoading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  return (
+    <Box sx={{ p: 3 }}>
+      {/* Header with Create Task Button */}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Typography variant="h6" sx={{ fontWeight: 600 }}>
+          Zadaci ({Array.isArray(tasksQuery.data) ? tasksQuery.data.length : 0})
+        </Typography>
+        {isModeratorOrAdmin() && (
+          <Button
+            variant="contained"
+            onClick={handleCreateTask}
+            data-testid="button-create-task"
+          >
+            Kreiraj Novi Zadatak
+          </Button>
+        )}
+      </Box>
+
+      {/* Task List */}
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        {Array.isArray(tasksQuery.data) && tasksQuery.data.length > 0 ? (
+          tasksQuery.data.map((task: any) => (
+            <Card 
+              key={task.id}
+              sx={{ 
+                cursor: 'pointer',
+                '&:hover': { backgroundColor: 'action.hover' }
+              }}
+              onClick={() => handleTaskClick(task)}
+            >
+              <CardContent>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+                  <Box sx={{ flex: 1 }}>
+                    <Typography variant="h6" sx={{ mb: 1 }}>
+                      {task.title}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                      {task.description}
+                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                      <Chip
+                        label={getStatusLabel(task.status)}
+                        color={getStatusColor(task.status) as any}
+                        size="small"
+                      />
+                      {task.assignedToId && (
+                        <Typography variant="caption" color="text.secondary">
+                          Dodijeljeno: {task.assignedToId}
+                        </Typography>
+                      )}
+                      {task.dueDate && (
+                        <Typography variant="caption" color="text.secondary">
+                          Rok: {new Date(task.dueDate).toLocaleDateString('hr-HR')}
+                        </Typography>
+                      )}
+                    </Box>
+                  </Box>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                    {task.status !== 'completed' && task.assignedToId === currentUser?.id && (
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        color="success"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleMarkCompleted(task.id);
+                        }}
+                        data-testid={`button-complete-task-${task.id}`}
+                      >
+                        Označiti kao završeno
+                      </Button>
+                    )}
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
+          ))
+        ) : (
+          <Card>
+            <CardContent sx={{ textAlign: 'center', py: 6 }}>
+              <Typography color="text.secondary">
+                Nema zadataka za ovu grupu
+              </Typography>
+              {isModeratorOrAdmin() && (
+                <Button
+                  variant="contained"
+                  onClick={handleCreateTask}
+                  sx={{ mt: 2 }}
+                  data-testid="button-create-first-task"
+                >
+                  Kreiraj Prvi Zadatak
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+        )}
+      </Box>
+
+      {/* Create Task Dialog */}
+      <TaskCreateDialog
+        open={createTaskOpen}
+        onClose={() => setCreateTaskOpen(false)}
+        workGroup={workGroup}
+        members={Array.isArray(membersQuery.data) ? membersQuery.data : []}
+        onSave={createTaskMutation.mutate}
+      />
+
+      {/* Task Detail Dialog */}
+      <TaskDetailDialog
+        open={taskDetailOpen}
+        onClose={() => setTaskDetailOpen(false)}
+        task={selectedTask}
+        workGroup={workGroup}
+        currentUser={currentUser}
       />
     </Box>
   );
