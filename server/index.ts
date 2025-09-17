@@ -1,10 +1,87 @@
 import express, { type Request, Response, NextFunction } from "express";
+import session from "express-session";
+import MemoryStore from "memorystore";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { storage } from "./storage";
+import type { User } from "@shared/schema";
+
+// Extend Express Request interface to include user
+declare global {
+  namespace Express {
+    interface Request {
+      user?: User;
+    }
+  }
+}
+
+// Extend session to include user data
+declare module "express-session" {
+  interface SessionData {
+    userId?: string;
+  }
+}
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Initialize memory store for sessions
+const MemStore = MemoryStore(session);
+
+// Session configuration
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'dev-secret-key-change-in-production',
+  store: new MemStore({
+    checkPeriod: 86400000 // Prune expired entries every 24h
+  }),
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: false, // Set to true in production with HTTPS
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  },
+  name: 'sessionId' // Name of the session cookie
+}));
+
+// Authentication middleware - checks session and sets req.user if authenticated
+app.use(async (req, res, next) => {
+  if (req.session.userId) {
+    try {
+      const user = await storage.getUser(req.session.userId);
+      if (user) {
+        req.user = user;
+      } else {
+        // User no longer exists, clear the session
+        req.session.userId = undefined;
+      }
+    } catch (error) {
+      console.error('Error loading user from session:', error);
+      req.session.userId = undefined;
+    }
+  }
+  next();
+});
+
+// Helper middleware to require authentication
+export const requireAuth = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.user) {
+    return res.status(401).json({ message: "Authentication required" });
+  }
+  next();
+};
+
+// Helper middleware to require admin privileges
+export const requireAdmin = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.user) {
+    return res.status(401).json({ message: "Authentication required" });
+  }
+  if (!req.user.isAdmin) {
+    return res.status(403).json({ message: "Admin privileges required" });
+  }
+  next();
+};
 
 app.use((req, res, next) => {
   const start = Date.now();

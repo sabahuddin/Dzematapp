@@ -82,11 +82,13 @@ export interface IStorage {
   
   // Task Comments
   createTaskComment(comment: InsertTaskComment): Promise<TaskComment>;
+  getTaskComment(id: string): Promise<TaskComment | undefined>;
   getTaskComments(taskId: string): Promise<TaskComment[]>;
   deleteTaskComment(id: string): Promise<boolean>;
   
   // Group Files
   createGroupFile(file: InsertGroupFile): Promise<GroupFile>;
+  getGroupFile(id: string): Promise<GroupFile | undefined>;
   getGroupFiles(workGroupId: string): Promise<GroupFile[]>;
   deleteGroupFile(id: string): Promise<boolean>;
   
@@ -632,6 +634,10 @@ export class MemStorage implements IStorage {
     return comment;
   }
 
+  async getTaskComment(id: string): Promise<TaskComment | undefined> {
+    return this.taskComments.get(id);
+  }
+
   async getTaskComments(taskId: string): Promise<TaskComment[]> {
     return Array.from(this.taskComments.values())
       .filter(comment => comment.taskId === taskId)
@@ -664,6 +670,10 @@ export class MemStorage implements IStorage {
     });
     
     return file;
+  }
+
+  async getGroupFile(id: string): Promise<GroupFile | undefined> {
+    return this.groupFiles.get(id);
   }
 
   async getGroupFiles(workGroupId: string): Promise<GroupFile[]> {
