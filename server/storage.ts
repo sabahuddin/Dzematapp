@@ -15,6 +15,10 @@ import {
   type InsertTask,
   type AccessRequest,
   type InsertAccessRequest,
+  type TaskComment,
+  type InsertTaskComment,
+  type GroupFile,
+  type InsertGroupFile,
   type Activity
 } from "@shared/schema";
 import { randomUUID } from "crypto";
@@ -60,6 +64,9 @@ export interface IStorage {
   getWorkGroupMembers(workGroupId: string): Promise<WorkGroupMember[]>;
   getUserWorkGroups(userId: string): Promise<WorkGroupMember[]>;
   isUserMemberOfWorkGroup(workGroupId: string, userId: string): Promise<boolean>;
+  setModerator(workGroupId: string, userId: string, isModerator: boolean): Promise<WorkGroupMember | undefined>;
+  getWorkGroupModerators(workGroupId: string): Promise<WorkGroupMember[]>;
+  isUserModeratorOfWorkGroup(workGroupId: string, userId: string): Promise<boolean>;
   
   // Tasks
   getTask(id: string): Promise<Task | undefined>;
@@ -72,6 +79,16 @@ export interface IStorage {
   createAccessRequest(request: InsertAccessRequest): Promise<AccessRequest>;
   updateAccessRequest(id: string, status: string): Promise<AccessRequest | undefined>;
   getAllAccessRequests(): Promise<AccessRequest[]>;
+  
+  // Task Comments
+  createTaskComment(comment: InsertTaskComment): Promise<TaskComment>;
+  getTaskComments(taskId: string): Promise<TaskComment[]>;
+  deleteTaskComment(id: string): Promise<boolean>;
+  
+  // Group Files
+  createGroupFile(file: InsertGroupFile): Promise<GroupFile>;
+  getGroupFiles(workGroupId: string): Promise<GroupFile[]>;
+  deleteGroupFile(id: string): Promise<boolean>;
   
   // Activities
   createActivity(activity: { type: string; description: string; userId?: string }): Promise<Activity>;
@@ -93,6 +110,8 @@ export class MemStorage implements IStorage {
   private workGroupMembers: Map<string, WorkGroupMember> = new Map();
   private tasks: Map<string, Task> = new Map();
   private accessRequests: Map<string, AccessRequest> = new Map();
+  private taskComments: Map<string, TaskComment> = new Map();
+  private groupFiles: Map<string, GroupFile> = new Map();
   private activities: Map<string, Activity> = new Map();
 
   constructor() {
@@ -188,7 +207,12 @@ export class MemStorage implements IStorage {
       id,
       membershipDate: new Date(),
       status: insertUser.status || "active",
-      isAdmin: false
+      isAdmin: false,
+      address: insertUser.address ?? null,
+      city: insertUser.city ?? null,
+      postalCode: insertUser.postalCode ?? null,
+      dateOfBirth: insertUser.dateOfBirth ?? null,
+      occupation: insertUser.occupation ?? null
     };
     this.users.set(id, user);
     
@@ -381,6 +405,7 @@ export class MemStorage implements IStorage {
       id,
       workGroupId,
       userId,
+      isModerator: false,
       joinedAt: new Date()
     };
     this.workGroupMembers.set(id, workGroupMember);
@@ -553,6 +578,102 @@ export class MemStorage implements IStorage {
   async getActiveTasksCount(): Promise<number> {
     return Array.from(this.tasks.values())
       .filter(task => task.status !== "completed").length;
+  }
+
+  // Moderator management methods
+  async setModerator(workGroupId: string, userId: string, isModerator: boolean): Promise<WorkGroupMember | undefined> {
+    const member = Array.from(this.workGroupMembers.values())
+      .find(m => m.workGroupId === workGroupId && m.userId === userId);
+    
+    if (member) {
+      const updatedMember = { ...member, isModerator };
+      this.workGroupMembers.set(member.id, updatedMember);
+      
+      await this.createActivity({
+        type: "workgroup",
+        description: `Korisnik ${isModerator ? 'označen kao moderator' : 'uklonjen kao moderator'}`,
+        userId
+      });
+      
+      return updatedMember;
+    }
+    return undefined;
+  }
+
+  async getWorkGroupModerators(workGroupId: string): Promise<WorkGroupMember[]> {
+    return Array.from(this.workGroupMembers.values())
+      .filter(member => member.workGroupId === workGroupId && member.isModerator);
+  }
+
+  async isUserModeratorOfWorkGroup(workGroupId: string, userId: string): Promise<boolean> {
+    const member = Array.from(this.workGroupMembers.values())
+      .find(m => m.workGroupId === workGroupId && m.userId === userId);
+    return member ? !!member.isModerator : false;
+  }
+
+  // Task comment methods
+  async createTaskComment(insertComment: InsertTaskComment): Promise<TaskComment> {
+    const id = randomUUID();
+    const comment: TaskComment = {
+      id,
+      taskId: insertComment.taskId,
+      userId: insertComment.userId,
+      content: insertComment.content,
+      createdAt: new Date()
+    };
+    this.taskComments.set(id, comment);
+    
+    await this.createActivity({
+      type: "task",
+      description: `Komentar dodao na zadatak`,
+      userId: comment.userId
+    });
+    
+    return comment;
+  }
+
+  async getTaskComments(taskId: string): Promise<TaskComment[]> {
+    return Array.from(this.taskComments.values())
+      .filter(comment => comment.taskId === taskId)
+      .sort((a, b) => new Date(a.createdAt!).getTime() - new Date(b.createdAt!).getTime());
+  }
+
+  async deleteTaskComment(id: string): Promise<boolean> {
+    return this.taskComments.delete(id);
+  }
+
+  // Group file methods
+  async createGroupFile(insertFile: InsertGroupFile): Promise<GroupFile> {
+    const id = randomUUID();
+    const file: GroupFile = {
+      id,
+      workGroupId: insertFile.workGroupId,
+      uploadedById: insertFile.uploadedById,
+      fileName: insertFile.fileName,
+      fileType: insertFile.fileType,
+      fileSize: insertFile.fileSize,
+      filePath: insertFile.filePath,
+      uploadedAt: new Date()
+    };
+    this.groupFiles.set(id, file);
+    
+    await this.createActivity({
+      type: "workgroup",
+      description: `Fajl učitao: ${file.fileName}`,
+      userId: file.uploadedById
+    });
+    
+    return file;
+  }
+
+  async getGroupFiles(workGroupId: string): Promise<GroupFile[]> {
+    return Array.from(this.groupFiles.values())
+      .filter(file => file.workGroupId === workGroupId)
+      .sort((a, b) => new Date(b.uploadedAt!).getTime() - new Date(a.uploadedAt!).getTime());
+  }
+
+  async deleteGroupFile(id: string): Promise<boolean> {
+    return this.groupFiles.delete(id);
   }
 }
 

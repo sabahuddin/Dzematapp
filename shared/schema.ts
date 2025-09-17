@@ -63,6 +63,7 @@ export const workGroupMembers = pgTable("work_group_members", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   workGroupId: varchar("work_group_id").notNull().references(() => workGroups.id),
   userId: varchar("user_id").notNull().references(() => users.id),
+  isModerator: boolean("is_moderator").default(false),
   joinedAt: timestamp("joined_at").defaultNow(),
 });
 
@@ -83,6 +84,25 @@ export const accessRequests = pgTable("access_requests", {
   workGroupId: varchar("work_group_id").notNull().references(() => workGroups.id),
   status: text("status").notNull().default("pending"), // pending, approved, rejected
   requestDate: timestamp("request_date").defaultNow(),
+});
+
+export const taskComments = pgTable("task_comments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  taskId: varchar("task_id").notNull().references(() => tasks.id),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const groupFiles = pgTable("group_files", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  workGroupId: varchar("work_group_id").notNull().references(() => workGroups.id),
+  uploadedById: varchar("uploaded_by_id").notNull().references(() => users.id),
+  fileName: text("file_name").notNull(),
+  fileType: text("file_type").notNull(), // image, pdf, document
+  fileSize: integer("file_size").notNull(),
+  filePath: text("file_path").notNull(),
+  uploadedAt: timestamp("uploaded_at").defaultNow(),
 });
 
 export const activities = pgTable("activities", {
@@ -139,6 +159,16 @@ export const insertAccessRequestSchema = createInsertSchema(accessRequests).omit
   requestDate: true,
 });
 
+export const insertTaskCommentSchema = createInsertSchema(taskComments).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertGroupFileSchema = createInsertSchema(groupFiles).omit({
+  id: true,
+  uploadedAt: true,
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -156,4 +186,8 @@ export type Task = typeof tasks.$inferSelect;
 export type InsertTask = z.infer<typeof insertTaskSchema>;
 export type AccessRequest = typeof accessRequests.$inferSelect;
 export type InsertAccessRequest = z.infer<typeof insertAccessRequestSchema>;
+export type TaskComment = typeof taskComments.$inferSelect;
+export type InsertTaskComment = z.infer<typeof insertTaskCommentSchema>;
+export type GroupFile = typeof groupFiles.$inferSelect;
+export type InsertGroupFile = z.infer<typeof insertGroupFileSchema>;
 export type Activity = typeof activities.$inferSelect;
