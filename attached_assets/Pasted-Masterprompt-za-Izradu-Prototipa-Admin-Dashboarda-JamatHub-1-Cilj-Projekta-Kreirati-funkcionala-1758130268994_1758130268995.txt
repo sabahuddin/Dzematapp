@@ -1,0 +1,123 @@
+Masterprompt za Izradu Prototipa Admin Dashboarda "JamatHub"
+
+1. Cilj Projekta:
+Kreirati funkcionalan prototip web-baziranog Admin Dashboarda za aplikaciju "JamatHub". Dashboard mora biti responzivan (prilagođen za desktop i tablet) i omogućiti administratorima upravljanje korisnicima, sadržajem i aktivnostima unutar aplikacije.
+
+2. Tehnološki Sklop:
+
+Framework: React.js (koristeći Vite za postavljanje projekta).
+
+Jezik: TypeScript.
+
+UI Biblioteka: Material-UI (MUI). Koristiti MUI komponente za sve elemente sučelja (tabele, forme, dugmad, navigaciju) kako bi se osigurao konzistentan i profesionalan izgled.
+
+Navigacija (Routing): Koristiti React Router DOM.
+
+Podaci: Budući da backend API još ne postoji, za potrebe ovog prototipa, koristiti isključivo lažne (mock) podatke. Kreirati TypeScript datoteke s izmišljenim podacima (npr. nizove objekata za korisnike, obavijesti, događaje, itd.) koje će komponente koristiti za prikaz.
+
+3. Osnovni Izgled (Layout):
+Aplikacija treba imati standardni dashboard layout koji se sastoji od tri glavna dijela:
+
+Trajna Bočna Navigacija (Sidebar): S lijeve strane, s linkovima na sve glavne module. Treba biti sklopiva (collapsible).
+
+Gornja Traka (AppBar): Sadrži naziv trenutne stranice, ime prijavljenog administratora s padajućim izbornikom za "Moj Profil" i "Odjava".
+
+Glavni Sadržaj: Centralni dio ekrana gdje se prikazuje sadržaj odabrane stranice.
+
+4. Stranice (Pages/Modules) i Njihove Specifikacije:
+
+(A) Stranica za Prijavu (Login Page):
+
+Jednostavna forma centrirana na stranici.
+
+Polja: "Email" i "Šifra" (koristiti MUI TextField).
+
+Dugme: "Prijavi se" (koristiti MUI Button s variant="contained").
+
+Klikom na dugme, simulirati uspješnu prijavu i preusmjeriti korisnika na glavnu Dashboard stranicu.
+
+(B) Početna Stranica (Dashboard Home):
+
+Koristiti MUI Grid za raspored elemenata.
+
+Prikazati 4 kartice (MUI Card) sa statističkim podacima: "Ukupan Broj Korisnika", "Nove Obavijesti (zadnjih 7 dana)", "Nadolazeći Događaji", "Aktivni Zadaci". Svaka kartica treba imati ikonicu, broj i naziv.
+
+Ispod kartica, prikazati tabelu (MUI Table) s "Posljednjim Aktivnostima" (npr. "Novi korisnik registrovan: Ime Prezime", "Nova obavijest objavljena: Naslov obavijesti").
+
+(C) Stranica "Korisnici" (User Management):
+
+Koristiti moćnu tabelu MUI DataGrid za prikaz korisnika.
+
+Kolone: Ime i Prezime, Korisničko ime, Email, Datum članstva, Status (koristiti MUI Chip komponentu s bojama, npr. zelena za 'Aktivan', siva za 'Neaktivan').
+
+Funkcionalnosti Tabele: Omogućiti sortiranje po svim kolonama, filtriranje (pretraga po imenu/emailu) i paginaciju.
+
+Akcije:
+
+Iznad tabele, dugme "Dodaj Novog Korisnika".
+
+U svakom redu tabele, meni s akcijama: "Uredi" i "Deaktiviraj/Aktiviraj".
+
+Modalni Prozor (Dialog) za Dodavanje/Uređivanje Korisnika:
+
+Otvara se klikom na "Dodaj Novog Korisnika" ili "Uredi".
+
+Sadrži formu s MUI TextField poljima za sve podatke o korisniku (Ime, Prezime, Korisničko ime, Šifra, Email, Adresa, Grad, Poštanski broj, Datum rođenja, Zanimanje, itd.).
+
+Dugmad "Spremi" i "Odustani".
+
+(D) Stranica "Obavijesti" (Announcements Management):
+
+Koristiti MUI DataGrid za prikaz obavijesti.
+
+Kolone: Naslov, Autor, Datum Objave, Status (npr. "Istaknuta", "Arhivirana").
+
+Akcije: Iznad tabele, dugme "Kreiraj Obavijest". U svakom redu, meni s akcijama: "Uredi" i "Obriši".
+
+Modalni Prozor za Dodavanje/Uređivanje Obavijesti:
+
+Polja za Naslov (MUI TextField) i Sadržaj (MUI TextField s multiline opcijom, kao jednostavni rich text editor).
+
+Prekidač (MUI Switch) za opciju "Istaknuta Obavijest".
+
+(E) Stranica "Događaji" (Events Management):
+
+Koristiti MUI DataGrid za prikaz događaja.
+
+Kolone: Naziv Događaja, Datum i Vrijeme, Lokacija, Broj Prijavljenih (RSVP).
+
+Akcije: Iznad tabele, dugme "Kreiraj Događaj". U svakom redu, meni s akcijama: "Uredi", "Obriši", i "Vidi Prijave".
+
+Modalni Prozor za Dodavanje/Uređivanje Događaja:
+
+Polja za Naziv, Detaljan Opis, Lokaciju, Datum i Vrijeme (koristiti MUI Date/Time Picker komponente).
+
+Prekidači (MUI Switch) za "Omogući Prijavu Dolaska (RSVP)" i "Zahtijevaj Broj Odraslih/Djece".
+
+Modalni Prozor "Vidi Prijave": Otvara se klikom na akciju i prikazuje listu korisnika koji su se prijavili na događaj, s podacima o broju odraslih i djece.
+
+(F) Stranica "Task Manager":
+
+Ova stranica treba imati unutarnju navigaciju s tabovima (koristiti MUI Tabs).
+
+Tab 1: "Radne Grupe":
+
+Prikazati listu radnih grupa koristeći MUI Card komponente. Svaka kartica prikazuje Naziv grupe, kratak Opis, broj članova i link/dugme za "Upravljaj Zadacima".
+
+Iznad liste, dugme "Kreiraj Novu Grupu".
+
+Tab 2: "Zahtjevi za Pristup":
+
+Tabela s listom korisnika koji su zatražili pristup nekoj od radnih grupa.
+
+Kolone: Ime Korisnika, Naziv Grupe, Datum Zahtjeva.
+
+Akcije: Dugmad "Odobri" i "Odbij" za svaki zahtjev.
+
+(Prikaz Zadataka unutar Grupe): Klikom na "Upravljaj Zadacima" na kartici grupe, preusmjeriti na novu stranicu koja prikazuje sve zadatke te grupe u MUI DataGrid tabeli.
+
+Kolone: Naziv Zadatka, Status (koristiti MUI Chip), Rok, Zaduženi Članovi.
+
+Omogućiti kreiranje, uređivanje i dodjeljivanje zadataka članovima tima unutar te grupe.
+
+Molim te, generiraj React/TypeScript kod za ovaj prototip koristeći Material-UI komponente i lažne podatke za prikaz.
