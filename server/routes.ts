@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertTaskSchema, insertAccessRequestSchema } from "@shared/schema";
+import { insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Authentication routes
@@ -188,6 +188,102 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(workGroup);
     } catch (error) {
       res.status(400).json({ message: "Invalid work group data" });
+    }
+  });
+
+  // Work Group Members routes
+  app.post("/api/work-groups/:id/members", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { userId } = req.body;
+
+      if (!userId) {
+        return res.status(400).json({ message: "User ID is required" });
+      }
+
+      // Check if work group exists
+      const workGroup = await storage.getWorkGroup(id);
+      if (!workGroup) {
+        return res.status(404).json({ message: "Work group not found" });
+      }
+
+      // Check if user exists
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Check if user is already a member
+      const isAlreadyMember = await storage.isUserMemberOfWorkGroup(id, userId);
+      if (isAlreadyMember) {
+        return res.status(409).json({ message: "User is already a member of this work group" });
+      }
+
+      const member = await storage.addMemberToWorkGroup(id, userId);
+      res.json(member);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to add member to work group" });
+    }
+  });
+
+  app.delete("/api/work-groups/:id/members/:userId", async (req, res) => {
+    try {
+      const { id, userId } = req.params;
+
+      // Check if work group exists
+      const workGroup = await storage.getWorkGroup(id);
+      if (!workGroup) {
+        return res.status(404).json({ message: "Work group not found" });
+      }
+
+      // Check if user exists
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const removed = await storage.removeMemberFromWorkGroup(id, userId);
+      if (!removed) {
+        return res.status(404).json({ message: "User is not a member of this work group" });
+      }
+
+      res.json({ message: "Member removed from work group successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to remove member from work group" });
+    }
+  });
+
+  app.get("/api/work-groups/:id/members", async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      // Check if work group exists
+      const workGroup = await storage.getWorkGroup(id);
+      if (!workGroup) {
+        return res.status(404).json({ message: "Work group not found" });
+      }
+
+      const members = await storage.getWorkGroupMembers(id);
+      res.json(members);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch work group members" });
+    }
+  });
+
+  app.get("/api/users/:id/work-groups", async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      // Check if user exists
+      const user = await storage.getUser(id);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const userWorkGroups = await storage.getUserWorkGroups(id);
+      res.json(userWorkGroups);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch user work groups" });
     }
   });
 
