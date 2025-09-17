@@ -413,13 +413,11 @@ export default function TaskManagerPage() {
       />
       
       {/* Member Management Dialog */}
-      {selectedWorkGroup && (
-        <MemberManagementDialog
-          open={memberManagementDialogOpen}
-          onClose={() => setMemberManagementDialogOpen(false)}
-          workGroup={selectedWorkGroup}
-        />
-      )}
+      <MemberManagementDialog
+        open={memberManagementDialogOpen && selectedWorkGroup !== null}
+        onClose={() => setMemberManagementDialogOpen(false)}
+        workGroup={selectedWorkGroup || { id: '', name: '', description: '', createdAt: new Date() }}
+      />
     </Box>
   );
 }
