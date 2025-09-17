@@ -21,7 +21,9 @@ import {
   type InsertGroupFile,
   type AnnouncementFile,
   type InsertAnnouncementFile,
-  type Activity
+  type Activity,
+  type FamilyRelationship,
+  type InsertFamilyRelationship
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -104,6 +106,13 @@ export interface IStorage {
   createActivity(activity: { type: string; description: string; userId?: string }): Promise<Activity>;
   getRecentActivities(limit?: number): Promise<Activity[]>;
   
+  // Family Relationships
+  createFamilyRelationship(relationship: InsertFamilyRelationship): Promise<FamilyRelationship>;
+  getFamilyRelationship(id: string): Promise<FamilyRelationship | undefined>;
+  getUserFamilyRelationships(userId: string): Promise<FamilyRelationship[]>;
+  deleteFamilyRelationship(id: string): Promise<boolean>;
+  getFamilyMembersByRelationship(userId: string, relationship: string): Promise<FamilyRelationship[]>;
+
   // Statistics
   getUserCount(): Promise<number>;
   getNewAnnouncementsCount(days: number): Promise<number>;
@@ -124,6 +133,7 @@ export class MemStorage implements IStorage {
   private groupFiles: Map<string, GroupFile> = new Map();
   private announcementFiles: Map<string, AnnouncementFile> = new Map();
   private activities: Map<string, Activity> = new Map();
+  private familyRelationships: Map<string, FamilyRelationship> = new Map();
 
   constructor() {
     this.initializeData();
@@ -138,13 +148,14 @@ export class MemStorage implements IStorage {
       username: "admin",
       email: "admin@jamathub.com",
       password: "admin123", // In real app, this would be hashed
+      photo: null,
       address: null,
       city: null,
       postalCode: null,
       dateOfBirth: null,
       occupation: null,
       membershipDate: new Date(),
-      status: "active",
+      status: "aktivan",
       isAdmin: true
     };
     this.users.set(adminUser.id, adminUser);
@@ -169,13 +180,14 @@ export class MemStorage implements IStorage {
         username: userData.username,
         email: userData.email,
         password: "password123",
+        photo: null,
         address: null,
         city: null,
         postalCode: null,
         dateOfBirth: null,
         occupation: null,
         membershipDate: new Date(),
-        status: userData.username === "stefan.jovanovic" ? "inactive" : "active",
+        status: userData.username === "stefan.jovanovic" ? "pasivan" : "aktivan",
         isAdmin: false
       };
       this.users.set(user.id, user);
@@ -217,8 +229,9 @@ export class MemStorage implements IStorage {
       ...insertUser,
       id,
       membershipDate: new Date(),
-      status: insertUser.status || "active",
+      status: insertUser.status || "aktivan",
       isAdmin: false,
+      photo: insertUser.photo ?? null,
       address: insertUser.address ?? null,
       city: insertUser.city ?? null,
       postalCode: insertUser.postalCode ?? null,
@@ -731,6 +744,50 @@ export class MemStorage implements IStorage {
 
   async deleteAnnouncementFile(id: string): Promise<boolean> {
     return this.announcementFiles.delete(id);
+  }
+
+  // Family Relationships
+  async createFamilyRelationship(insertRelationship: InsertFamilyRelationship): Promise<FamilyRelationship> {
+    const id = randomUUID();
+    const relationship: FamilyRelationship = {
+      id,
+      userId: insertRelationship.userId,
+      relatedUserId: insertRelationship.relatedUserId,
+      relationship: insertRelationship.relationship,
+      createdAt: new Date()
+    };
+    this.familyRelationships.set(id, relationship);
+    
+    await this.createActivity({
+      type: "registration",
+      description: `Dodan porodični odnos: ${relationship.relationship}`,
+      userId: relationship.userId
+    });
+    
+    return relationship;
+  }
+
+  async getFamilyRelationship(id: string): Promise<FamilyRelationship | undefined> {
+    return this.familyRelationships.get(id);
+  }
+
+  async getUserFamilyRelationships(userId: string): Promise<FamilyRelationship[]> {
+    return Array.from(this.familyRelationships.values())
+      .filter(rel => rel.userId === userId || rel.relatedUserId === userId)
+      .sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
+  }
+
+  async deleteFamilyRelationship(id: string): Promise<boolean> {
+    return this.familyRelationships.delete(id);
+  }
+
+  async getFamilyMembersByRelationship(userId: string, relationship: string): Promise<FamilyRelationship[]> {
+    return Array.from(this.familyRelationships.values())
+      .filter(rel => 
+        (rel.userId === userId || rel.relatedUserId === userId) && 
+        rel.relationship === relationship
+      )
+      .sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
   }
 }
 

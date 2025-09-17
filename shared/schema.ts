@@ -10,14 +10,23 @@ export const users = pgTable("users", {
   username: text("username").notNull().unique(),
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
+  photo: text("photo"), // URL/path to profile photo
   address: text("address"),
   city: text("city"),
   postalCode: text("postal_code"),
   dateOfBirth: text("date_of_birth"),
   occupation: text("occupation"),
   membershipDate: timestamp("membership_date").defaultNow(),
-  status: text("status").notNull().default("active"), // active, inactive
+  status: text("status").notNull().default("aktivan"), // aktivan, pasivan, član porodice
   isAdmin: boolean("is_admin").default(false),
+});
+
+export const familyRelationships = pgTable("family_relationships", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  relatedUserId: varchar("related_user_id").notNull().references(() => users.id),
+  relationship: text("relationship").notNull(), // supružnik, dijete, roditelj, brat, sestra, ostalo
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const announcements = pgTable("announcements", {
@@ -185,6 +194,11 @@ export const insertAnnouncementFileSchema = createInsertSchema(announcementFiles
   uploadedAt: true,
 });
 
+export const insertFamilyRelationshipSchema = createInsertSchema(familyRelationships).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -208,6 +222,8 @@ export type GroupFile = typeof groupFiles.$inferSelect;
 export type InsertGroupFile = z.infer<typeof insertGroupFileSchema>;
 export type AnnouncementFile = typeof announcementFiles.$inferSelect;
 export type InsertAnnouncementFile = z.infer<typeof insertAnnouncementFileSchema>;
+export type FamilyRelationship = typeof familyRelationships.$inferSelect;
+export type InsertFamilyRelationship = z.infer<typeof insertFamilyRelationshipSchema>;
 
 // API response types for files with user details
 export type AnnouncementFileWithUser = AnnouncementFile & {

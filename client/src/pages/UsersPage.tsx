@@ -17,14 +17,17 @@ import {
   MenuItem,
   Typography,
   Alert,
-  CircularProgress
+  CircularProgress,
+  Avatar
 } from '@mui/material';
 import {
   PersonAdd,
   MoreVert,
   Edit,
   Block,
-  CheckCircle
+  CheckCircle,
+  Person,
+  Groups
 } from '@mui/icons-material';
 import { User } from '@shared/schema';
 import UserModal from '../components/modals/UserModal';
@@ -91,9 +94,34 @@ export default function UsersPage() {
   };
 
   const handleToggleUserStatus = (user: User) => {
-    const newStatus = user.status === 'active' ? 'inactive' : 'active';
+    let newStatus;
+    if (user.status === 'aktivan') {
+      newStatus = 'pasivan';
+    } else if (user.status === 'pasivan') {
+      newStatus = 'aktivan';
+    } else {
+      newStatus = 'aktivan'; // default for family members
+    }
     updateUserMutation.mutate({ id: user.id, status: newStatus });
     handleMenuClose();
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'aktivan': return 'Aktivan';
+      case 'pasivan': return 'Pasivan';
+      case 'član porodice': return 'Član porodice';
+      default: return status;
+    }
+  };
+
+  const getStatusColor = (status: string): 'success' | 'error' | 'warning' | 'info' => {
+    switch (status) {
+      case 'aktivan': return 'success';
+      case 'pasivan': return 'error';
+      case 'član porodice': return 'info';
+      default: return 'warning';
+    }
   };
 
   const handleSaveUser = (userData: any) => {
@@ -114,7 +142,7 @@ export default function UsersPage() {
     setMenuUser(null);
   };
 
-  const filteredUsers = (usersQuery.data || []).filter((user: User) =>
+  const filteredUsers = ((usersQuery.data as User[]) || []).filter((user: User) =>
     user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -168,11 +196,12 @@ export default function UsersPage() {
           <Table>
             <TableHead>
               <TableRow sx={{ bgcolor: '#f8f9fa' }}>
-                <TableCell sx={{ fontWeight: 600 }}>Ime i Prezime</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Korisnik</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Korisničko ime</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Email</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Datum članstva</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Status članstva</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Porodica</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
               </TableRow>
             </TableHead>
@@ -180,7 +209,23 @@ export default function UsersPage() {
               {filteredUsers.map((user: User) => (
                 <TableRow key={user.id}>
                   <TableCell>
-                    {user.firstName} {user.lastName}
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                      <Avatar 
+                        src={user.photo || undefined} 
+                        sx={{ width: 40, height: 40 }}
+                        data-testid={`avatar-${user.id}`}
+                      >
+                        <Person />
+                      </Avatar>
+                      <Box>
+                        <Typography variant="body2" fontWeight={500}>
+                          {user.firstName} {user.lastName}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {user.isAdmin ? 'Administrator' : 'Korisnik'}
+                        </Typography>
+                      </Box>
+                    </Box>
                   </TableCell>
                   <TableCell>{user.username}</TableCell>
                   <TableCell>{user.email}</TableCell>
@@ -189,10 +234,23 @@ export default function UsersPage() {
                   </TableCell>
                   <TableCell>
                     <Chip
-                      label={user.status === 'active' ? 'Aktivan' : 'Neaktivan'}
-                      color={user.status === 'active' ? 'success' : 'error'}
+                      label={getStatusLabel(user.status)}
+                      color={getStatusColor(user.status)}
                       size="small"
+                      data-testid={`status-${user.id}`}
                     />
+                  </TableCell>
+                  <TableCell>
+                    <IconButton 
+                      size="small"
+                      onClick={() => {
+                        // Navigate to family relationships (placeholder for now)
+                      }}
+                      data-testid={`family-${user.id}`}
+                      title="Vidi članove porodice"
+                    >
+                      <Groups />
+                    </IconButton>
                   </TableCell>
                   <TableCell>
                     <IconButton
@@ -206,7 +264,7 @@ export default function UsersPage() {
               ))}
               {filteredUsers.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} sx={{ textAlign: 'center', py: 4 }}>
+                  <TableCell colSpan={7} sx={{ textAlign: 'center', py: 4 }}>
                     <Typography color="text.secondary">
                       {searchTerm ? 'Nema korisnika koji odgovaraju pretrazi' : 'Nema korisnika'}
                     </Typography>
@@ -232,15 +290,15 @@ export default function UsersPage() {
           onClick={() => menuUser && handleToggleUserStatus(menuUser)}
           data-testid="menu-toggle-status"
         >
-          {menuUser?.status === 'active' ? (
+          {menuUser?.status === 'aktivan' ? (
             <>
               <Block sx={{ mr: 1 }} />
-              Deaktiviraj
+              Postavi kao pasivan
             </>
           ) : (
             <>
               <CheckCircle sx={{ mr: 1 }} />
-              Aktiviraj
+              Postavi kao aktivan
             </>
           )}
         </MenuItem>

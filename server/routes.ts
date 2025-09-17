@@ -1,10 +1,64 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import multer from "multer";
+import path from "path";
+import { promises as fs } from "fs";
 import { storage } from "./storage";
 import { requireAuth, requireAdmin } from "./index";
-import { insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertGroupFileSchema, insertAnnouncementFileSchema } from "@shared/schema";
+import { insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertGroupFileSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema } from "@shared/schema";
+
+// Configure multer for photo uploads
+const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'photos');
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: async (req, file, cb) => {
+      try {
+        await fs.mkdir(uploadDir, { recursive: true });
+        cb(null, uploadDir);
+      } catch (error) {
+        cb(error, '');
+      }
+    },
+    filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      const extension = path.extname(file.originalname);
+      cb(null, `user-photo-${uniqueSuffix}${extension}`);
+    }
+  }),
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+    files: 1
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (allowedMimes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files (JPEG, PNG, GIF, WebP) are allowed'));
+    }
+  }
+});
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Photo upload route
+  app.post("/api/upload/photo", requireAuth, upload.single('photo'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
+
+      const photoUrl = `/uploads/photos/${req.file.filename}`;
+      
+      res.json({ 
+        message: "Photo uploaded successfully",
+        photoUrl: photoUrl 
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to upload photo" });
+    }
+  });
+
   // Authentication routes
   app.post("/api/auth/login", async (req, res) => {
     try {
@@ -914,6 +968,69 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch statistics" });
+    }
+  });
+
+  // Family Relationships routes
+  app.get("/api/family-relationships/:userId", requireAuth, async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const relationships = await storage.getUserFamilyRelationships(userId);
+      
+      // Get user details for each relationship
+      const relationshipsWithUsers = await Promise.all(
+        relationships.map(async (rel) => {
+          const relatedUser = await storage.getUser(
+            rel.userId === userId ? rel.relatedUserId : rel.userId
+          );
+          return {
+            ...rel,
+            relatedUser: relatedUser ? {
+              id: relatedUser.id,
+              firstName: relatedUser.firstName,
+              lastName: relatedUser.lastName,
+              photo: relatedUser.photo
+            } : null
+          };
+        })
+      );
+      
+      res.json(relationshipsWithUsers);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch family relationships" });
+    }
+  });
+
+  app.post("/api/family-relationships", requireAuth, async (req, res) => {
+    try {
+      const relationshipData = insertFamilyRelationshipSchema.parse(req.body);
+      const relationship = await storage.createFamilyRelationship(relationshipData);
+      res.json(relationship);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid family relationship data" });
+    }
+  });
+
+  app.delete("/api/family-relationships/:id", requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const deleted = await storage.deleteFamilyRelationship(id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Family relationship not found" });
+      }
+      res.json({ message: "Family relationship deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete family relationship" });
+    }
+  });
+
+  app.get("/api/family-relationships/by-type/:userId/:relationship", requireAuth, async (req, res) => {
+    try {
+      const { userId, relationship } = req.params;
+      const relationships = await storage.getFamilyMembersByRelationship(userId, relationship);
+      res.json(relationships);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch family members by relationship" });
     }
   });
 
