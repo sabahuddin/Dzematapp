@@ -36,6 +36,7 @@ import {
 } from '@mui/icons-material';
 import { WorkGroup, AccessRequest, Task } from '@shared/schema';
 import WorkGroupModal from '../components/modals/WorkGroupModal';
+import MemberManagementDialog from '../components/MemberManagementDialog';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/use-toast';
 import { apiRequest } from '../lib/queryClient';
@@ -73,6 +74,7 @@ export default function TaskManagerPage() {
   
   const [tabValue, setTabValue] = useState(0);
   const [workGroupModalOpen, setWorkGroupModalOpen] = useState(false);
+  const [memberManagementDialogOpen, setMemberManagementDialogOpen] = useState(false);
   const [selectedWorkGroup, setSelectedWorkGroup] = useState<WorkGroup | null>(null);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [menuRequest, setMenuRequest] = useState<AccessRequest | null>(null);
@@ -86,6 +88,12 @@ export default function TaskManagerPage() {
   // Fetch access requests
   const accessRequestsQuery = useQuery({
     queryKey: ['/api/access-requests'],
+    retry: 1,
+  });
+
+  // Fetch users for access request names
+  const usersQuery = useQuery({
+    queryKey: ['/api/users'],
     retry: 1,
   });
 
@@ -133,6 +141,11 @@ export default function TaskManagerPage() {
     createWorkGroupMutation.mutate(workGroupData);
   };
 
+  const handleManageMembers = (workGroup: WorkGroup) => {
+    setSelectedWorkGroup(workGroup);
+    setMemberManagementDialogOpen(true);
+  };
+
   const handleManageGroupTasks = (workGroup: WorkGroup) => {
     // In a real app, this would navigate to a task management page for the specific group
     toast({ 
@@ -166,27 +179,22 @@ export default function TaskManagerPage() {
     handleMenuClose();
   };
 
-  // Mock member counts for work groups (in real app, this would come from API)
-  const getMemberCount = (workGroupName: string) => {
-    const mockCounts: { [key: string]: number } = {
-      'Organizacija događaja': 8,
-      'Održavanje objekta': 5,
-      'Edukacija i program': 12
-    };
-    return mockCounts[workGroupName] || 0;
+  // Hook to get member count for a work group
+  const useMemberCount = (workGroupId: string) => {
+    return useQuery({
+      queryKey: ['/api/work-groups', workGroupId, 'members'],
+      select: (data) => data?.length || 0,
+      retry: 1,
+    });
   };
 
-  // Mock user names for access requests (in real app, this would come from joined user data)
+  // Get user name from users data
   const getUserName = (userId: string) => {
-    const mockUsers: { [key: string]: string } = {
-      user1: 'Marko Petrović',
-      user2: 'Amina Hodžić',
-      user3: 'Enes Mustafić'
-    };
-    return mockUsers[userId] || 'Nepoznat korisnik';
+    const user = usersQuery.data?.find((u: any) => u.id === userId);
+    return user ? `${user.firstName} ${user.lastName}` : 'Nepoznat korisnik';
   };
 
-  if (workGroupsQuery.isLoading || accessRequestsQuery.isLoading) {
+  if (workGroupsQuery.isLoading || accessRequestsQuery.isLoading || usersQuery.isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
         <CircularProgress />
@@ -194,7 +202,7 @@ export default function TaskManagerPage() {
     );
   }
 
-  if (workGroupsQuery.error || accessRequestsQuery.error) {
+  if (workGroupsQuery.error || accessRequestsQuery.error || usersQuery.error) {
     return (
       <Alert severity="error">
         Greška pri učitavanju podataka. Molimo pokušajte ponovo.
@@ -229,49 +237,67 @@ export default function TaskManagerPage() {
         </Box>
 
         <Grid container spacing={3}>
-          {workGroupsQuery.data?.map((workGroup: WorkGroup) => (
-            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={workGroup.id}>
-              <Card 
-                sx={{ 
-                  height: '100%',
-                  transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                  '&:hover': {
-                    transform: 'translateY(-2px)',
-                    boxShadow: '0 4px 16px rgba(0,0,0,0.12)'
-                  }
-                }}
-              >
-                <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                  <Typography variant="h6" sx={{ fontWeight: 600, mb: 1.5 }}>
-                    {workGroup.name}
-                  </Typography>
-                  
-                  <Typography 
-                    variant="body2" 
-                    color="text.secondary" 
-                    sx={{ mb: 2, flex: 1 }}
-                  >
-                    {workGroup.description}
-                  </Typography>
-                  
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <People sx={{ fontSize: 16, mr: 0.5, color: 'text.secondary' }} />
-                    <Typography variant="body2" color="text.secondary">
-                      {getMemberCount(workGroup.name)} članova
+          {workGroupsQuery.data?.map((workGroup: WorkGroup) => {
+            const memberCountQuery = useMemberCount(workGroup.id);
+            
+            return (
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={workGroup.id}>
+                <Card 
+                  sx={{ 
+                    height: '100%',
+                    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                    '&:hover': {
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 4px 16px rgba(0,0,0,0.12)'
+                    }
+                  }}
+                >
+                  <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 1.5 }}>
+                      {workGroup.name}
                     </Typography>
-                  </Box>
-                  
-                  <Button
-                    variant="contained"
-                    onClick={() => handleManageGroupTasks(workGroup)}
-                    data-testid={`button-manage-tasks-${workGroup.id}`}
-                  >
-                    Upravljaj Zadacima
-                  </Button>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
+                    
+                    <Typography 
+                      variant="body2" 
+                      color="text.secondary" 
+                      sx={{ mb: 2, flex: 1 }}
+                    >
+                      {workGroup.description}
+                    </Typography>
+                    
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                      <People sx={{ fontSize: 16, mr: 0.5, color: 'text.secondary' }} />
+                      <Typography variant="body2" color="text.secondary">
+                        {memberCountQuery.isLoading ? (
+                          <CircularProgress size={12} sx={{ mr: 0.5 }} />
+                        ) : (
+                          `${memberCountQuery.data || 0} članova`
+                        )}
+                      </Typography>
+                    </Box>
+                    
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                      <Button
+                        variant="contained"
+                        startIcon={<ManageAccounts />}
+                        onClick={() => handleManageMembers(workGroup)}
+                        data-testid={`button-manage-members-${workGroup.id}`}
+                      >
+                        Upravljaj Članovima
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        onClick={() => handleManageGroupTasks(workGroup)}
+                        data-testid={`button-manage-tasks-${workGroup.id}`}
+                      >
+                        Upravljaj Zadacima
+                      </Button>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+            );
+          })}
           
           {(!workGroupsQuery.data || workGroupsQuery.data.length === 0) && (
             <Grid size={{ xs: 12 }}>
@@ -373,6 +399,15 @@ export default function TaskManagerPage() {
         onSave={handleSaveWorkGroup}
         workGroup={selectedWorkGroup}
       />
+      
+      {/* Member Management Dialog */}
+      {selectedWorkGroup && (
+        <MemberManagementDialog
+          open={memberManagementDialogOpen}
+          onClose={() => setMemberManagementDialogOpen(false)}
+          workGroup={selectedWorkGroup}
+        />
+      )}
     </Box>
   );
 }
