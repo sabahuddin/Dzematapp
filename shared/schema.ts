@@ -172,6 +172,12 @@ export const insertWorkGroupMemberSchema = createInsertSchema(workGroupMembers).
 export const insertTaskSchema = createInsertSchema(tasks).omit({
   id: true,
   createdAt: true,
+}).extend({
+  dueDate: z.union([
+    z.date(),
+    z.string().transform((str) => new Date(str)),
+    z.null()
+  ]).optional()
 });
 
 export const insertAccessRequestSchema = createInsertSchema(accessRequests).omit({
