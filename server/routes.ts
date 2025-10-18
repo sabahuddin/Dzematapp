@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import multer from "multer";
 import path from "path";
 import { promises as fs } from "fs";
+import * as XLSX from "xlsx";
 import { storage } from "./storage";
 import { requireAuth, requireAdmin } from "./index";
 import { insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertGroupFileSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema } from "@shared/schema";
@@ -149,6 +150,207 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ ...user, password: undefined });
     } catch (error) {
       res.status(400).json({ message: "Invalid user data" });
+    }
+  });
+
+  // Bulk upload endpoints
+  const xlsxUpload = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+      fileSize: 10 * 1024 * 1024,
+    },
+    fileFilter: (req, file, cb) => {
+      const allowedMimes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
+      if (allowedMimes.includes(file.mimetype)) {
+        cb(null, true);
+      } else {
+        cb(new Error('Only Excel files (.xlsx, .xls) are allowed'));
+      }
+    }
+  });
+
+  app.get("/api/users/template", requireAuth, async (req, res) => {
+    try {
+      const workbook = XLSX.utils.book_new();
+      
+      const templateData = [
+        ["Ime", "Prezime", "Email", "Telefon", "Zanimanje", "Adresa", "Član od", "Kategorije", "Status članstva", "Razlog pasivnosti"],
+        ["Marko", "Marković", "marko@example.com", "+387 61 123 456", "Inženjer", "Sarajevo, BiH", "2024-01-15", "Muškarci", "aktivan", ""],
+        ["Ana", "Anić", "ana@example.com", "+387 62 234 567", "Nastavnica", "Zenica, BiH", "2023-06-20", "Žene,Roditelji", "aktivan", ""]
+      ];
+
+      const worksheet = XLSX.utils.aoa_to_sheet(templateData);
+      
+      worksheet['!cols'] = [
+        { wch: 15 },
+        { wch: 15 },
+        { wch: 25 },
+        { wch: 18 },
+        { wch: 20 },
+        { wch: 25 },
+        { wch: 15 },
+        { wch: 20 },
+        { wch: 18 },
+        { wch: 20 }
+      ];
+
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Korisnici");
+      
+      const buffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+      
+      res.setHeader('Content-Disposition', 'attachment; filename="JamatHub_Template.xlsx"');
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.send(buffer);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to generate template" });
+    }
+  });
+
+  app.post("/api/users/bulk-upload", requireAdmin, xlsxUpload.single('file'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
+
+      const workbook = XLSX.read(req.file.buffer, { type: 'buffer' });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const data = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[][];
+
+      if (data.length < 2) {
+        return res.status(400).json({ message: "Fajl ne sadrži podatke" });
+      }
+
+      const headers = data[0];
+      const rows = data.slice(1);
+
+      const results = {
+        success: [] as any[],
+        errors: [] as { row: number; errors: string[] }[]
+      };
+
+      for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        const rowNumber = i + 2;
+
+        if (!row || row.every(cell => !cell)) {
+          continue;
+        }
+
+        const errors: string[] = [];
+        
+        const firstName = row[0]?.toString().trim() || '';
+        const lastName = row[1]?.toString().trim() || '';
+        const email = row[2]?.toString().trim() || '';
+        const phone = row[3]?.toString().trim() || '';
+        const occupation = row[4]?.toString().trim() || '';
+        const address = row[5]?.toString().trim() || '';
+        const membershipDateStr = row[6]?.toString().trim() || '';
+        const categoriesStr = row[7]?.toString().trim() || '';
+        const status = row[8]?.toString().trim() || 'aktivan';
+        const inactiveReason = row[9]?.toString().trim() || '';
+
+        if (!firstName) {
+          errors.push("Ime je obavezno polje");
+        }
+        if (!lastName) {
+          errors.push("Prezime je obavezno polje");
+        }
+        
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          errors.push("Neispravan format email adrese");
+        }
+
+        const validStatuses = ['aktivan', 'pasivan', 'član porodice'];
+        if (status && !validStatuses.includes(status.toLowerCase())) {
+          errors.push(`Status članstva mora biti: ${validStatuses.join(', ')}`);
+        }
+
+        let membershipDate: Date | null = null;
+        if (membershipDateStr) {
+          try {
+            if (typeof membershipDateStr === 'number') {
+              membershipDate = XLSX.SSF.parse_date_code(membershipDateStr);
+              membershipDate = new Date(membershipDate.y, membershipDate.m - 1, membershipDate.d);
+            } else {
+              membershipDate = new Date(membershipDateStr);
+              if (isNaN(membershipDate.getTime())) {
+                throw new Error('Invalid date');
+              }
+            }
+          } catch {
+            errors.push("Neispravan format datuma za 'Član od' (koristite format: YYYY-MM-DD)");
+          }
+        }
+
+        const categories = categoriesStr ? categoriesStr.split(',').map(c => c.trim()).filter(c => c) : [];
+
+        if (errors.length > 0) {
+          results.errors.push({ row: rowNumber, errors });
+          continue;
+        }
+
+        const username = `${firstName.toLowerCase()}.${lastName.toLowerCase()}`.replace(/\s+/g, '');
+        let finalUsername = username;
+        let counter = 1;
+        
+        while (await storage.getUserByUsername(finalUsername)) {
+          finalUsername = `${username}${counter}`;
+          counter++;
+        }
+
+        if (email && await storage.getUserByEmail(email)) {
+          results.errors.push({ 
+            row: rowNumber, 
+            errors: [`Email adresa '${email}' već postoji u sistemu`] 
+          });
+          continue;
+        }
+
+        try {
+          const newUser = await storage.createUser({
+            firstName,
+            lastName,
+            username: finalUsername,
+            email: email || undefined,
+            password: 'password123',
+            phone: phone || undefined,
+            occupation: occupation || undefined,
+            address: address || undefined,
+            membershipDate: membershipDate || undefined,
+            categories,
+            status: status.toLowerCase() as any,
+            inactiveReason: inactiveReason || undefined,
+            isAdmin: false,
+            photo: undefined,
+            city: undefined,
+            postalCode: undefined,
+            dateOfBirth: undefined
+          });
+          
+          results.success.push({
+            row: rowNumber,
+            user: { 
+              firstName: newUser.firstName, 
+              lastName: newUser.lastName, 
+              username: newUser.username 
+            }
+          });
+        } catch (error: any) {
+          results.errors.push({ 
+            row: rowNumber, 
+            errors: [`Greška pri kreiranju korisnika: ${error.message || 'Nepoznata greška'}`] 
+          });
+        }
+      }
+
+      res.json({
+        successCount: results.success.length,
+        errorCount: results.errors.length,
+        results
+      });
+    } catch (error: any) {
+      res.status(500).json({ message: `Greška pri obradi fajla: ${error.message}` });
     }
   });
 

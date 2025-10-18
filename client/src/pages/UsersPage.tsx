@@ -28,10 +28,12 @@ import {
   Block,
   CheckCircle,
   Person,
-  Groups
+  Groups,
+  Upload
 } from '@mui/icons-material';
 import { User } from '@shared/schema';
 import UserModal from '../components/modals/UserModal';
+import BulkUploadModal from '../components/modals/BulkUploadModal';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/use-toast';
 import { apiRequest } from '../lib/queryClient';
@@ -44,6 +46,7 @@ export default function UsersPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [bulkUploadModalOpen, setBulkUploadModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [menuUser, setMenuUser] = useState<User | null>(null);
@@ -185,14 +188,24 @@ export default function UsersPage() {
         <Typography variant="h5" sx={{ fontWeight: 600 }}>
           Upravljanje Korisnicima
         </Typography>
-        <Button
-          variant="contained"
-          startIcon={<PersonAdd />}
-          onClick={handleCreateUser}
-          data-testid="button-add-user"
-        >
-          Dodaj Novog Korisnika
-        </Button>
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <Button
+            variant="outlined"
+            startIcon={<Upload />}
+            onClick={() => setBulkUploadModalOpen(true)}
+            data-testid="button-bulk-upload"
+          >
+            Bulk Upload
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<PersonAdd />}
+            onClick={handleCreateUser}
+            data-testid="button-add-user"
+          >
+            Dodaj Novog Korisnika
+          </Button>
+        </Box>
       </Box>
 
       <Card>
@@ -378,6 +391,12 @@ export default function UsersPage() {
         onClose={() => setModalOpen(false)}
         onSave={handleSaveUser}
         user={selectedUser}
+      />
+
+      {/* Bulk Upload Modal */}
+      <BulkUploadModal
+        open={bulkUploadModalOpen}
+        onClose={() => setBulkUploadModalOpen(false)}
       />
     </Box>
   );
