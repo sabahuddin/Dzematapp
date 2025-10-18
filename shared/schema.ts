@@ -160,6 +160,9 @@ export const organizationSettings = pgTable("organization_settings", {
   instagramUrl: text("instagram_url"),
   youtubeUrl: text("youtube_url"),
   twitterUrl: text("twitter_url"),
+  livestreamUrl: text("livestream_url"),
+  livestreamEnabled: boolean("livestream_enabled").default(false).notNull(),
+  livestreamTitle: text("livestream_title"),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
