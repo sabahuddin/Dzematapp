@@ -44,6 +44,15 @@ interface UserModalProps {
 
 export default function UserModal({ open, onClose, onSave, user }: UserModalProps) {
   const { user: currentUser } = useAuth();
+  
+  // Check if current user is editing their own profile
+  const isEditingSelf = user && currentUser && user.id === currentUser.id;
+  
+  // Check if current user is a regular member (Član) editing their profile
+  const isMemberEditingSelf = isEditingSelf && 
+    currentUser?.roles?.includes('clan') && 
+    !currentUser?.isAdmin;
+  
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -439,6 +448,7 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
                 onChange={handleChange('membershipDate')}
                 InputLabelProps={{ shrink: true }}
                 helperText={!user ? "Ostavite prazno za današnji datum" : ""}
+                disabled={isMemberEditingSelf}
                 data-testid="input-membershipDate"
               />
             </Grid>
@@ -450,6 +460,7 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
                   value={formData.status}
                   label="Status članstva"
                   onChange={(e) => handleChange('status')(e as any)}
+                  disabled={isMemberEditingSelf}
                   data-testid="select-status"
                 >
                   {statusOptions.map(option => (
@@ -482,41 +493,43 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
               </Grid>
             )}
             
-            {/* Row 7: Kategorije i Uloge (50-50) */}
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <Autocomplete
-                multiple
-                freeSolo
-                options={predefinedCategories}
-                value={formData.categories}
-                onChange={(event, newValue) => {
-                  setFormData(prev => ({ ...prev, categories: newValue }));
-                }}
-                renderTags={(value, getTagProps) =>
-                  value.map((option, index) => (
-                    <Chip
-                      label={option}
-                      {...getTagProps({ index })}
-                      data-testid={`chip-category-${index}`}
-                    />
-                  ))
-                }
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant="outlined"
-                    label="Kategorije"
-                    placeholder="Odaberite ili unesite kategoriju"
-                    data-testid="input-categories"
-                  />
-                )}
-                data-testid="autocomplete-categories"
-              />
-            </Grid>
-            
-            {/* Uloge - Only visible to admin (50%) */}
-            {currentUser?.isAdmin && (
+            {/* Row 7: Kategorije (50%) - Hide for members editing themselves */}
+            {!isMemberEditingSelf && (
               <Grid size={{ xs: 12, sm: 6 }}>
+                <Autocomplete
+                  multiple
+                  freeSolo
+                  options={predefinedCategories}
+                  value={formData.categories}
+                  onChange={(event, newValue) => {
+                    setFormData(prev => ({ ...prev, categories: newValue }));
+                  }}
+                  renderTags={(value, getTagProps) =>
+                    value.map((option, index) => (
+                      <Chip
+                        label={option}
+                        {...getTagProps({ index })}
+                        data-testid={`chip-category-${index}`}
+                      />
+                    ))
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      label="Kategorije"
+                      placeholder="Odaberite ili unesite kategoriju"
+                      data-testid="input-categories"
+                    />
+                  )}
+                  data-testid="autocomplete-categories"
+                />
+              </Grid>
+            )}
+            
+            {/* Uloge - Admin can edit, Member can only view their own */}
+            {(currentUser?.isAdmin || isMemberEditingSelf) && (
+              <Grid size={{ xs: 12, sm: isMemberEditingSelf ? 12 : 6 }}>
                 <FormControl fullWidth>
                   <InputLabel>Uloge</InputLabel>
                   <Select
@@ -530,6 +543,7 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
                       }));
                     }}
                     label="Uloge"
+                    disabled={isMemberEditingSelf}
                     renderValue={(selected) => (
                       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                         {(selected as string[]).map((value) => {
