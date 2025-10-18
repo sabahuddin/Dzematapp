@@ -25,8 +25,13 @@ import {
   Hub,
   Menu,
   Mail,
-  QuestionAnswer
+  QuestionAnswer,
+  Radio,
+  Phone,
+  Email,
+  LocationOn
 } from '@mui/icons-material';
+import { SiFacebook, SiInstagram, SiYoutube, SiTwitter } from 'react-icons/si';
 
 interface SidebarProps {
   open: boolean;
@@ -44,6 +49,7 @@ const menuItems = [
   { path: '/tasks', label: 'Task Manager', icon: Task },
   { path: '/messages', label: 'Poruke', icon: Mail, showBadge: true },
   { path: '/ask-imam', label: 'Pitaj imama', icon: QuestionAnswer },
+  { path: '/livestream', label: 'Livestream', icon: Radio },
 ];
 
 export default function Sidebar({ open, collapsed, onToggle, onClose, width }: SidebarProps) {
@@ -130,6 +136,110 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
           );
         })}
       </List>
+
+      {/* Info Section and Social Media */}
+      {!collapsed && (
+        <Box sx={{ borderTop: '1px solid #e0e0e0', p: 2 }}>
+          {/* Džemat Info */}
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1, color: '#1976d2' }}>
+              Informacije
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
+              <Box sx={{ display: 'flex', alignItems: 'start', gap: 1 }}>
+                <LocationOn sx={{ fontSize: 16, color: 'text.secondary', mt: 0.25 }} />
+                <Box>
+                  <Typography variant="caption" sx={{ fontWeight: 600, display: 'block' }}>
+                    Islamska Zajednica
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                    Ulica Džemata 123
+                  </Typography>
+                </Box>
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Phone sx={{ fontSize: 16, color: 'text.secondary' }} />
+                <Typography variant="caption" color="text.secondary">
+                  +387 33 123 456
+                </Typography>
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Email sx={{ fontSize: 16, color: 'text.secondary' }} />
+                <Typography variant="caption" color="text.secondary">
+                  info@dzemat.ba
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
+
+          <Divider sx={{ my: 1.5 }} />
+
+          {/* Social Media Icons */}
+          <Box>
+            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1, color: '#1976d2' }}>
+              Društvene mreže
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-start' }}>
+              <IconButton
+                component="a"
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                size="small"
+                sx={{ 
+                  color: '#1877f2',
+                  '&:hover': { bgcolor: '#e3f2fd' }
+                }}
+                data-testid="social-facebook"
+              >
+                <SiFacebook size={20} />
+              </IconButton>
+              <IconButton
+                component="a"
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                size="small"
+                sx={{ 
+                  color: '#e4405f',
+                  '&:hover': { bgcolor: '#fce4ec' }
+                }}
+                data-testid="social-instagram"
+              >
+                <SiInstagram size={20} />
+              </IconButton>
+              <IconButton
+                component="a"
+                href="https://youtube.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                size="small"
+                sx={{ 
+                  color: '#ff0000',
+                  '&:hover': { bgcolor: '#ffebee' }
+                }}
+                data-testid="social-youtube"
+              >
+                <SiYoutube size={20} />
+              </IconButton>
+              <IconButton
+                component="a"
+                href="https://twitter.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                size="small"
+                sx={{ 
+                  color: '#1da1f2',
+                  '&:hover': { bgcolor: '#e3f2fd' }
+                }}
+                data-testid="social-twitter"
+              >
+                <SiTwitter size={20} />
+              </IconButton>
+            </Box>
+          </Box>
+        </Box>
+      )}
     </Box>
   );
 

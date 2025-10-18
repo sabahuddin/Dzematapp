@@ -18,6 +18,7 @@ import EventsPage from "@/pages/EventsPage";
 import TaskManagerPage from "@/pages/TaskManagerPage";
 import MessagesPage from "@/pages/MessagesPage";
 import AskImamPage from "@/pages/AskImamPage";
+import LivestreamPage from "@/pages/LivestreamPage";
 import NotFound from "@/pages/not-found";
 
 // Layout
@@ -174,6 +175,12 @@ function Router() {
       <Route path="/ask-imam">
         <ProtectedRoute>
           <AskImamPage />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path="/livestream">
+        <ProtectedRoute>
+          <LivestreamPage />
         </ProtectedRoute>
       </Route>
       
