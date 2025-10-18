@@ -23,6 +23,7 @@ import { Announcement, AnnouncementFileWithUser } from '@shared/schema';
 import { useQuery } from '@tanstack/react-query';
 import { useToast } from '../../hooks/use-toast';
 import { apiRequest } from '../../lib/queryClient';
+import RichTextEditor from '../ui/rich-text-editor';
 
 interface AnnouncementModalProps {
   open: boolean;
@@ -255,14 +256,11 @@ export default function AnnouncementModal({
               data-testid="input-title"
             />
             
-            <TextField
-              fullWidth
-              variant="outlined"
-              label="Sadržaj"
+            <RichTextEditor
               value={formData.content}
-              onChange={handleChange('content')}
-              multiline
-              rows={6}
+              onChange={(value) => setFormData(prev => ({ ...prev, content: value }))}
+              label="Sadržaj"
+              placeholder="Unesite sadržaj obavijesti..."
               required
               data-testid="input-content"
             />

@@ -78,6 +78,7 @@ export interface IStorage {
   updateTask(id: string, task: Partial<InsertTask>): Promise<Task | undefined>;
   deleteTask(id: string): Promise<boolean>;
   getTasksByWorkGroup(workGroupId: string): Promise<Task[]>;
+  getAllTasksWithWorkGroup(userId: string, isAdmin: boolean): Promise<Array<Task & { workGroup: WorkGroup }>>;
   
   // Access Requests
   createAccessRequest(request: InsertAccessRequest): Promise<AccessRequest>;
@@ -206,6 +207,7 @@ export class MemStorage implements IStorage {
       { name: "Edukacija i program", description: "Grupa koja se bavi edukacijskim aktivnostima i programima za djecu i odrasle." }
     ];
 
+    const workGroupIds: string[] = [];
     workGroupsData.forEach(groupData => {
       const workGroup: WorkGroup = {
         id: randomUUID(),
@@ -213,7 +215,101 @@ export class MemStorage implements IStorage {
         createdAt: new Date()
       };
       this.workGroups.set(workGroup.id, workGroup);
+      workGroupIds.push(workGroup.id);
     });
+
+    // Add sample members and moderators
+    const usersList = Array.from(this.users.values()).filter(u => !u.isAdmin);
+    if (usersList.length > 0 && workGroupIds.length > 0) {
+      // Make first user moderator of first group
+      const member1: WorkGroupMember = {
+        id: randomUUID(),
+        workGroupId: workGroupIds[0],
+        userId: usersList[0].id,
+        isModerator: true,
+        joinedAt: new Date()
+      };
+      this.workGroupMembers.set(member1.id, member1);
+
+      // Make second user regular member of first group
+      if (usersList.length > 1) {
+        const member2: WorkGroupMember = {
+          id: randomUUID(),
+          workGroupId: workGroupIds[0],
+          userId: usersList[1].id,
+          isModerator: false,
+          joinedAt: new Date()
+        };
+        this.workGroupMembers.set(member2.id, member2);
+      }
+
+      // Make second user moderator of second group
+      if (usersList.length > 1 && workGroupIds.length > 1) {
+        const member3: WorkGroupMember = {
+          id: randomUUID(),
+          workGroupId: workGroupIds[1],
+          userId: usersList[1].id,
+          isModerator: true,
+          joinedAt: new Date()
+        };
+        this.workGroupMembers.set(member3.id, member3);
+      }
+    }
+
+    // Add sample tasks
+    if (workGroupIds.length > 0 && usersList.length > 0) {
+      const sampleTasks = [
+        { 
+          title: "Organizacija iftar programa", 
+          description: "Potrebno je organizirati iftar program za 100 ljudi",
+          workGroupId: workGroupIds[0],
+          assignedToId: usersList[0]?.id,
+          status: "u_toku",
+          dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days from now
+        },
+        { 
+          title: "Popravka toaleta", 
+          description: "Popraviti oštećene toalete u prizemlju",
+          workGroupId: workGroupIds[1] || workGroupIds[0],
+          assignedToId: usersList[1]?.id,
+          status: "na_cekanju",
+          dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000) // 3 days from now
+        },
+        { 
+          title: "Priprema obrazovnog materijala", 
+          description: "Kreirati materijale za obrazovne aktivnosti",
+          workGroupId: workGroupIds[2] || workGroupIds[0],
+          assignedToId: usersList[0]?.id,
+          status: "završeno",
+          dueDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) // 2 days ago
+        },
+        { 
+          title: "Čišćenje prostora nakon događaja", 
+          description: "Očistiti prostor nakon završenog događaja",
+          workGroupId: workGroupIds[0],
+          assignedToId: usersList[1]?.id,
+          status: "završeno",
+          dueDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000) // 5 days ago
+        },
+        { 
+          title: "Nabavka nove opreme", 
+          description: "Nabaviti novu opremu za održavanje",
+          workGroupId: workGroupIds[1] || workGroupIds[0],
+          assignedToId: null,
+          status: "arhiva",
+          dueDate: null
+        }
+      ];
+
+      sampleTasks.forEach(taskData => {
+        const task: Task = {
+          id: randomUUID(),
+          ...taskData,
+          createdAt: new Date()
+        };
+        this.tasks.set(task.id, task);
+      });
+    }
   }
 
   // Users
@@ -542,6 +638,29 @@ export class MemStorage implements IStorage {
 
   async getTasksByWorkGroup(workGroupId: string): Promise<Task[]> {
     return Array.from(this.tasks.values()).filter(task => task.workGroupId === workGroupId);
+  }
+
+  async getAllTasksWithWorkGroup(userId: string, isAdmin: boolean): Promise<Array<Task & { workGroup: WorkGroup }>> {
+    const allTasks = Array.from(this.tasks.values());
+    
+    if (isAdmin) {
+      return allTasks.map(task => {
+        const workGroup = this.workGroups.get(task.workGroupId);
+        return { ...task, workGroup: workGroup! };
+      }).filter(task => task.workGroup);
+    } else {
+      const userModeratedGroups = Array.from(this.workGroupMembers.values())
+        .filter(member => member.userId === userId && member.isModerator)
+        .map(member => member.workGroupId);
+      
+      return allTasks
+        .filter(task => userModeratedGroups.includes(task.workGroupId))
+        .map(task => {
+          const workGroup = this.workGroups.get(task.workGroupId);
+          return { ...task, workGroup: workGroup! };
+        })
+        .filter(task => task.workGroup);
+    }
   }
 
   // Access Requests

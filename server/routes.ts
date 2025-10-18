@@ -474,6 +474,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/tasks/dashboard", requireAuth, async (req, res) => {
+    try {
+      const userId = req.user!.id;
+      const isAdmin = req.user!.isAdmin || false;
+      
+      const tasks = await storage.getAllTasksWithWorkGroup(userId, isAdmin);
+      res.json(tasks);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch dashboard tasks" });
+    }
+  });
+
   app.post("/api/tasks", requireAuth, async (req, res) => {
     try {
       const taskData = insertTaskSchema.parse(req.body);

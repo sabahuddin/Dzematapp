@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { Event } from '@shared/schema';
+import RichTextEditor from '../ui/rich-text-editor';
 
 interface EventModalProps {
   open: boolean;
@@ -112,14 +113,11 @@ export default function EventModal({
               data-testid="input-name"
             />
             
-            <TextField
-              fullWidth
-              variant="outlined"
-              label="Detaljan Opis"
+            <RichTextEditor
               value={formData.description}
-              onChange={handleChange('description')}
-              multiline
-              rows={4}
+              onChange={(value) => setFormData(prev => ({ ...prev, description: value }))}
+              label="Detaljan Opis"
+              placeholder="Unesite detaljan opis događaja..."
               data-testid="input-description"
             />
             

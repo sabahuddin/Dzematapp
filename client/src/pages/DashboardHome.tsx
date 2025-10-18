@@ -15,7 +15,8 @@ import {
   Chip,
   Paper,
   CircularProgress,
-  Alert
+  Alert,
+  Divider
 } from '@mui/material';
 import {
   People,
@@ -29,6 +30,8 @@ import {
   getActivityTypeChip, 
   formatTimeAgo 
 } from '../data/mockData';
+import TasksDashboard from '../components/TasksDashboard';
+import { useAuth } from '../hooks/useAuth';
 
 const StatCard = ({ icon, title, value, color }: {
   icon: React.ReactNode;
@@ -65,6 +68,8 @@ const StatCard = ({ icon, title, value, color }: {
 );
 
 export default function DashboardHome() {
+  const { user } = useAuth();
+  
   // In a real app, these would be actual API calls
   const statisticsQuery = useQuery({
     queryKey: ['/api/statistics'],
@@ -140,6 +145,13 @@ export default function DashboardHome() {
           />
         </Grid>
       </Grid>
+
+      {/* Tasks Dashboard for Admins and Moderators */}
+      <Box sx={{ my: 4 }}>
+        <TasksDashboard />
+      </Box>
+
+      <Divider sx={{ my: 4 }} />
 
       {/* Recent Activities Table */}
       <Card>
