@@ -137,13 +137,13 @@ export default function MessagesPage() {
 
         <TabsContent value="received" className="space-y-4">
           {isLoading ? (
-            <Card>
+            <Card className="bg-card border-2">
               <CardContent className="p-6">
                 <p className="text-center text-muted-foreground">Učitavanje poruka...</p>
               </CardContent>
             </Card>
           ) : filteredMessages.length === 0 ? (
-            <Card>
+            <Card className="bg-card border-2">
               <CardContent className="p-6">
                 <p className="text-center text-muted-foreground">Nema primljenih poruka</p>
               </CardContent>
@@ -152,8 +152,8 @@ export default function MessagesPage() {
             filteredMessages.map((message) => (
               <Card
                 key={message.id}
-                className={`cursor-pointer transition-colors hover:bg-accent ${
-                  !message.isRead ? "border-primary" : ""
+                className={`cursor-pointer transition-all hover:shadow-md bg-card border-2 ${
+                  !message.isRead ? "border-primary shadow-sm" : "border-border"
                 }`}
                 onClick={() => handleMessageClick(message)}
                 data-testid={`card-message-${message.id}`}
@@ -202,13 +202,13 @@ export default function MessagesPage() {
 
         <TabsContent value="sent" className="space-y-4">
           {isLoading ? (
-            <Card>
+            <Card className="bg-card border-2">
               <CardContent className="p-6">
                 <p className="text-center text-muted-foreground">Učitavanje poruka...</p>
               </CardContent>
             </Card>
           ) : filteredMessages.length === 0 ? (
-            <Card>
+            <Card className="bg-card border-2">
               <CardContent className="p-6">
                 <p className="text-center text-muted-foreground">Nema poslanih poruka</p>
               </CardContent>
@@ -217,7 +217,7 @@ export default function MessagesPage() {
             filteredMessages.map((message) => (
               <Card
                 key={message.id}
-                className="cursor-pointer transition-colors hover:bg-accent"
+                className="cursor-pointer transition-all hover:shadow-md bg-card border-2 border-border"
                 onClick={() => handleMessageClick(message)}
                 data-testid={`card-message-${message.id}`}
               >
