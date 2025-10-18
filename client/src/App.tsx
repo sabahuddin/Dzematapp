@@ -69,6 +69,20 @@ const theme = createTheme({
         displayEmpty: true,
       },
     },
+    MuiInputLabel: {
+      defaultProps: {
+        shrink: true,
+      },
+    },
+    MuiFormControl: {
+      styleOverrides: {
+        root: {
+          '& .MuiOutlinedInput-root': {
+            borderRadius: 8,
+          },
+        },
+      },
+    },
     MuiCard: {
       styleOverrides: {
         root: {

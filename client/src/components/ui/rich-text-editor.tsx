@@ -25,6 +25,55 @@ export default function RichTextEditor({
   const [previewOpen, setPreviewOpen] = useState(false);
   const quillRef = useRef<ReactQuill>(null);
 
+  // Function to resize image based on screen size
+  const resizeImage = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          // Determine max width based on screen size
+          const screenWidth = window.innerWidth;
+          let maxWidth = 1024; // Desktop default
+          
+          if (screenWidth < 768) {
+            maxWidth = 480; // Mobile
+          } else if (screenWidth < 1024) {
+            maxWidth = 720; // Tablet
+          }
+
+          // Calculate new dimensions
+          let width = img.width;
+          let height = img.height;
+          
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width;
+            width = maxWidth;
+          }
+
+          // Create canvas and resize
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            // Convert to base64 with quality 0.8 to reduce size
+            const resizedBase64 = canvas.toDataURL('image/jpeg', 0.8);
+            resolve(resizedBase64);
+          } else {
+            reject(new Error('Failed to get canvas context'));
+          }
+        };
+        img.onerror = () => reject(new Error('Failed to load image'));
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = () => reject(new Error('Failed to read file'));
+      reader.readAsDataURL(file);
+    });
+  };
+
   // Image upload handler
   const imageHandler = () => {
     const input = document.createElement('input');
@@ -35,23 +84,27 @@ export default function RichTextEditor({
     input.onchange = async () => {
       const file = input.files?.[0];
       if (file) {
-        // Check file size (max 2MB)
-        if (file.size > 2 * 1024 * 1024) {
-          alert('Slika je prevelika. Maksimalna veličina je 2MB.');
+        // Check file size (max 10MB for original file)
+        if (file.size > 10 * 1024 * 1024) {
+          alert('Slika je prevelika. Maksimalna veličina je 10MB.');
           return;
         }
 
-        // Convert to base64
-        const reader = new FileReader();
-        reader.onload = () => {
+        try {
+          // Resize and convert to base64
+          const resizedBase64 = await resizeImage(file);
+          
+          // Insert into editor
           const quill = quillRef.current?.getEditor();
           if (quill) {
             const range = quill.getSelection(true);
-            quill.insertEmbed(range.index, 'image', reader.result);
+            quill.insertEmbed(range.index, 'image', resizedBase64);
             quill.setSelection(range.index + 1, 0);
           }
-        };
-        reader.readAsDataURL(file);
+        } catch (error) {
+          console.error('Error resizing image:', error);
+          alert('Greška pri obradi slike. Pokušajte ponovo.');
+        }
       }
     };
   };
