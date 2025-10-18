@@ -79,6 +79,7 @@ export default function WorkGroupModal({
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
             <TextField
               fullWidth
+              variant="outlined"
               label="Naziv Grupe"
               value={formData.name}
               onChange={handleChange('name')}
@@ -88,6 +89,7 @@ export default function WorkGroupModal({
             
             <TextField
               fullWidth
+              variant="outlined"
               label="Opis"
               value={formData.description}
               onChange={handleChange('description')}

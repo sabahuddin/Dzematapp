@@ -86,6 +86,7 @@ export default function LoginPage() {
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                 <TextField
                   fullWidth
+                  variant="outlined"
                   label="Email"
                   type="email"
                   value={formData.email}
@@ -97,6 +98,7 @@ export default function LoginPage() {
 
                 <TextField
                   fullWidth
+                  variant="outlined"
                   label="Šifra"
                   type="password"
                   value={formData.password}

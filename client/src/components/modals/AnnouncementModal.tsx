@@ -247,6 +247,7 @@ export default function AnnouncementModal({
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
             <TextField
               fullWidth
+              variant="outlined"
               label="Naslov"
               value={formData.title}
               onChange={handleChange('title')}
@@ -256,6 +257,7 @@ export default function AnnouncementModal({
             
             <TextField
               fullWidth
+              variant="outlined"
               label="Sadržaj"
               value={formData.content}
               onChange={handleChange('content')}

@@ -491,6 +491,7 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 2 }}>
           <TextField
+            variant="outlined"
             label="Naziv zadatka"
             value={title}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
@@ -499,6 +500,7 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
             data-testid="input-task-title"
           />
           <TextField
+            variant="outlined"
             label="Opis zadatka"
             value={description}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)}
@@ -508,6 +510,7 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
             data-testid="input-task-description"
           />
           <TextField
+            variant="outlined"
             select
             label="Dodijeli članu"
             value={assignedToId}
@@ -523,6 +526,7 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
             ))}
           </TextField>
           <TextField
+            variant="outlined"
             label="Rok izvršavanja"
             type="date"
             value={dueDate}
@@ -632,6 +636,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser }: TaskD
             {/* Add Comment */}
             <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
               <TextField
+                variant="outlined"
                 placeholder="Dodaj komentar..."
                 value={newComment}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewComment(e.target.value)}

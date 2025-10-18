@@ -275,6 +275,7 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
+                variant="outlined"
                 label="Ime"
                 value={formData.firstName}
                 onChange={handleChange('firstName')}
@@ -286,6 +287,7 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
+                variant="outlined"
                 label="Prezime"
                 value={formData.lastName}
                 onChange={handleChange('lastName')}
@@ -297,6 +299,7 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
+                variant="outlined"
                 label="Korisničko ime"
                 value={formData.username}
                 onChange={handleChange('username')}
@@ -308,6 +311,7 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
+                variant="outlined"
                 label="Email"
                 type="email"
                 value={formData.email}
@@ -319,6 +323,7 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
+                variant="outlined"
                 label="Telefon"
                 type="tel"
                 value={formData.phone}
@@ -331,6 +336,7 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
             <Grid size={{ xs: 12 }}>
               <TextField
                 fullWidth
+                variant="outlined"
                 label="Šifra"
                 type="password"
                 value={formData.password}
@@ -344,6 +350,7 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
             <Grid size={{ xs: 12 }}>
               <TextField
                 fullWidth
+                variant="outlined"
                 label="Adresa"
                 value={formData.address}
                 onChange={handleChange('address')}
@@ -354,6 +361,7 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
+                variant="outlined"
                 label="Grad"
                 value={formData.city}
                 onChange={handleChange('city')}
@@ -364,6 +372,7 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
+                variant="outlined"
                 label="Poštanski broj"
                 value={formData.postalCode}
                 onChange={handleChange('postalCode')}
@@ -374,6 +383,7 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
+                variant="outlined"
                 label="Datum rođenja"
                 type="date"
                 value={formData.dateOfBirth}
@@ -386,6 +396,7 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
+                variant="outlined"
                 label="Zanimanje"
                 value={formData.occupation}
                 onChange={handleChange('occupation')}
@@ -396,6 +407,7 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
+                variant="outlined"
                 label="Član od"
                 type="date"
                 value={formData.membershipDate}
@@ -467,6 +479,7 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
                 renderInput={(params) => (
                   <TextField
                     {...params}
+                    variant="outlined"
                     label="Kategorije"
                     placeholder="Odaberite ili unesite kategoriju"
                     data-testid="input-categories"

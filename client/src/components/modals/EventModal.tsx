@@ -104,6 +104,7 @@ export default function EventModal({
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
             <TextField
               fullWidth
+              variant="outlined"
               label="Naziv Događaja"
               value={formData.name}
               onChange={handleChange('name')}
@@ -113,6 +114,7 @@ export default function EventModal({
             
             <TextField
               fullWidth
+              variant="outlined"
               label="Detaljan Opis"
               value={formData.description}
               onChange={handleChange('description')}
@@ -125,6 +127,7 @@ export default function EventModal({
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
+                  variant="outlined"
                   label="Lokacija"
                   value={formData.location}
                   onChange={handleChange('location')}
@@ -136,6 +139,7 @@ export default function EventModal({
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
+                  variant="outlined"
                   label="Datum i Vrijeme"
                   type="datetime-local"
                   value={formData.dateTime}
@@ -149,6 +153,7 @@ export default function EventModal({
             
             <TextField
               fullWidth
+              variant="outlined"
               label="Maksimalan broj učesnika"
               type="number"
               value={formData.maxAttendees}

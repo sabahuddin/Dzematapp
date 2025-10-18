@@ -114,7 +114,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
 
     // Filter by search term
     const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
-    const email = user.email.toLowerCase();
+    const email = user.email?.toLowerCase() || '';
     const username = user.username.toLowerCase();
     const search = searchTerm.toLowerCase();
     
@@ -195,6 +195,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
           <Box>
             <TextField
               fullWidth
+              variant="outlined"
               label="Pretražite korisnike"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -271,6 +272,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
+                  variant="outlined"
                   label="Ime"
                   value={newUserData.firstName}
                   onChange={handleNewUserChange('firstName')}
@@ -282,6 +284,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
+                  variant="outlined"
                   label="Prezime"
                   value={newUserData.lastName}
                   onChange={handleNewUserChange('lastName')}
@@ -293,6 +296,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
+                  variant="outlined"
                   label="Korisničko ime"
                   value={newUserData.username}
                   onChange={handleNewUserChange('username')}
@@ -304,6 +308,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
+                  variant="outlined"
                   label="Email"
                   type="email"
                   value={newUserData.email}
@@ -316,6 +321,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
+                  variant="outlined"
                   label="Šifra"
                   type="password"
                   value={newUserData.password}

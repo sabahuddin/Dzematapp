@@ -198,6 +198,7 @@ export default function UsersPage() {
       <Card>
         <Box sx={{ p: 3, borderBottom: '1px solid #e0e0e0', display: 'flex', gap: 2, flexWrap: 'wrap' }}>
           <TextField
+            variant="outlined"
             placeholder="Pretraži po imenu, emailu ili telefonu..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -212,6 +213,7 @@ export default function UsersPage() {
             renderInput={(params) => (
               <TextField
                 {...params}
+                variant="outlined"
                 placeholder="Filtriraj po kategorijama"
                 data-testid="input-category-filter"
               />
