@@ -186,15 +186,15 @@ export default function EventModal({
               
               <Grid size={{ xs: 12, sm: 6 }}>
                 <FormControl fullWidth variant="outlined">
-                  <InputLabel>Podsetnik</InputLabel>
+                  <InputLabel>Podsjetnik</InputLabel>
                   <Select
                     value={formData.reminderTime}
                     onChange={(e) => setFormData(prev => ({ ...prev, reminderTime: e.target.value }))}
-                    label="Podsetnik"
+                    label="Podsjetnik"
                     data-testid="select-reminderTime"
                   >
                     <MenuItem value="">
-                      <em>Bez podsetnika</em>
+                      <em>Bez podsjetnika</em>
                     </MenuItem>
                     <MenuItem value="7_days">7 dana prije</MenuItem>
                     <MenuItem value="24_hours">24 sata prije</MenuItem>
