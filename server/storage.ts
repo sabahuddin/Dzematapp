@@ -183,9 +183,9 @@ export class MemStorage implements IStorage {
   private createSampleData() {
     // Sample users
     const sampleUsers = [
-      { firstName: "Marko", lastName: "Petrović", username: "marko.petrovic", email: "marko@example.com", roles: ["moderator", "clan_radne_grupe"] },
+      { firstName: "Marko", lastName: "Petrović", username: "marko.petrovic", email: "marko@example.com", roles: ["clan"] },
       { firstName: "Ana", lastName: "Marić", username: "ana.maric", email: "ana@example.com", roles: ["clan_io"] },
-      { firstName: "Stefan", lastName: "Jovanović", username: "stefan.jovanovic", email: "stefan@example.com", roles: [] }
+      { firstName: "Stefan", lastName: "Jovanović", username: "stefan.jovanovic", email: "stefan@example.com", roles: ["clan"] }
     ];
 
     sampleUsers.forEach(userData => {
@@ -443,6 +443,7 @@ export class MemStorage implements IStorage {
       requireAdultsChildren: insertEvent.requireAdultsChildren !== undefined ? insertEvent.requireAdultsChildren : false,
       maxAttendees: insertEvent.maxAttendees || null,
       reminderTime: insertEvent.reminderTime || null,
+      categories: insertEvent.categories || null,
       createdById: insertEvent.createdById,
       createdAt: new Date()
     };
