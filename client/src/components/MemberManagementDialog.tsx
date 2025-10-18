@@ -24,12 +24,15 @@ import {
   PersonAdd, 
   PersonRemove,
   Email,
-  CalendarMonth
+  CalendarMonth,
+  Star,
+  StarBorder
 } from '@mui/icons-material';
 import { WorkGroup, WorkGroupMember, User } from '@shared/schema';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import AddMemberModal from './modals/AddMemberModal';
+import { useAuth } from '@/hooks/useAuth';
 
 interface MemberManagementDialogProps {
   open: boolean;
@@ -45,6 +48,7 @@ export default function MemberManagementDialog({
   const [addMemberModalOpen, setAddMemberModalOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { user: currentUser } = useAuth();
 
   // Fetch work group members
   const membersQuery = useQuery<Array<WorkGroupMember & { user: User }>>({
@@ -75,9 +79,42 @@ export default function MemberManagementDialog({
     }
   });
 
+  // Toggle moderator mutation
+  const toggleModeratorMutation = useMutation({
+    mutationFn: async ({ userId, isModerator }: { userId: string; isModerator: boolean }) => {
+      const response = await apiRequest('PUT', `/api/work-groups/${workGroup.id}/members/${userId}/moderator`, {
+        isModerator
+      });
+      return response.json();
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/work-groups', workGroup.id, 'members'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/work-groups'] });
+      const action = variables.isModerator ? 'postavljen' : 'uklonjen';
+      toast({ 
+        title: 'Uspjeh', 
+        description: `Moderator status je ${action}` 
+      });
+    },
+    onError: () => {
+      toast({ 
+        title: 'Greška', 
+        description: 'Greška pri izmjeni moderator statusa', 
+        variant: 'destructive' 
+      });
+    }
+  });
+
   const handleRemoveMember = (userId: string, userName: string) => {
     if (confirm(`Jeste li sigurni da želite ukloniti ${userName} iz grupe?`)) {
       removeMemberMutation.mutate(userId);
+    }
+  };
+
+  const handleToggleModerator = (userId: string, currentStatus: boolean, userName: string) => {
+    const action = currentStatus ? 'ukloniti moderator status' : 'postaviti kao moderatora';
+    if (confirm(`Jeste li sigurni da želite ${action} za ${userName}?`)) {
+      toggleModeratorMutation.mutate({ userId, isModerator: !currentStatus });
     }
   };
 
@@ -188,6 +225,7 @@ export default function MemberManagementDialog({
               <List sx={{ maxHeight: 400, overflow: 'auto' }}>
                 {(membersQuery.data as any[]).map((member: any, index: number) => {
                   const user = member.user || member; // Handle different response structures
+                  const isModerator = member.isModerator || false;
                   return (
                     <ListItem 
                       key={member.id || index}
@@ -202,9 +240,21 @@ export default function MemberManagementDialog({
                     >
                       <ListItemText
                         primary={
-                          <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
-                            {user.firstName} {user.lastName}
-                          </Typography>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
+                              {user.firstName} {user.lastName}
+                            </Typography>
+                            {isModerator && (
+                              <Chip 
+                                icon={<Star sx={{ fontSize: 16 }} />}
+                                label="Moderator" 
+                                size="small" 
+                                color="warning"
+                                sx={{ fontWeight: 600 }}
+                                data-testid={`chip-moderator-${user.id}`}
+                              />
+                            )}
+                          </Box>
                         }
                         secondary={
                           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, mt: 0.5 }}>
@@ -224,25 +274,49 @@ export default function MemberManagementDialog({
                         }
                       />
                       <ListItemSecondaryAction>
-                        <IconButton
-                          edge="end"
-                          onClick={() => handleRemoveMember(user.id, `${user.firstName} ${user.lastName}`)}
-                          disabled={removeMemberMutation.isPending}
-                          sx={{ 
-                            color: 'error.main',
-                            '&:hover': {
-                              bgcolor: 'error.light',
-                              color: 'error.contrastText'
-                            }
-                          }}
-                          data-testid={`button-remove-member-${user.id}`}
-                        >
-                          {removeMemberMutation.isPending ? (
-                            <CircularProgress size={20} />
-                          ) : (
-                            <PersonRemove />
+                        <Box sx={{ display: 'flex', gap: 1 }}>
+                          {currentUser?.isAdmin && (
+                            <IconButton
+                              onClick={() => handleToggleModerator(user.id, isModerator, `${user.firstName} ${user.lastName}`)}
+                              disabled={toggleModeratorMutation.isPending}
+                              sx={{ 
+                                color: isModerator ? 'warning.main' : 'text.secondary',
+                                '&:hover': {
+                                  bgcolor: isModerator ? 'warning.light' : 'action.hover'
+                                }
+                              }}
+                              data-testid={`button-toggle-moderator-${user.id}`}
+                              title={isModerator ? 'Ukloni moderator status' : 'Postavi kao moderatora'}
+                            >
+                              {toggleModeratorMutation.isPending ? (
+                                <CircularProgress size={20} />
+                              ) : isModerator ? (
+                                <Star />
+                              ) : (
+                                <StarBorder />
+                              )}
+                            </IconButton>
                           )}
-                        </IconButton>
+                          <IconButton
+                            edge="end"
+                            onClick={() => handleRemoveMember(user.id, `${user.firstName} ${user.lastName}`)}
+                            disabled={removeMemberMutation.isPending}
+                            sx={{ 
+                              color: 'error.main',
+                              '&:hover': {
+                                bgcolor: 'error.light',
+                                color: 'error.contrastText'
+                              }
+                            }}
+                            data-testid={`button-remove-member-${user.id}`}
+                          >
+                            {removeMemberMutation.isPending ? (
+                              <CircularProgress size={20} />
+                            ) : (
+                              <PersonRemove />
+                            )}
+                          </IconButton>
+                        </Box>
                       </ListItemSecondaryAction>
                     </ListItem>
                   );
