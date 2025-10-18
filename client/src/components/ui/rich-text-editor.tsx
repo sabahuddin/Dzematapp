@@ -1,7 +1,7 @@
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, useEffect } from 'react';
 import ReactQuill from 'react-quill';
-import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
-import { Visibility } from '@mui/icons-material';
+import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton } from '@mui/material';
+import { Visibility, Close } from '@mui/icons-material';
 
 interface RichTextEditorProps {
   value: string;
@@ -23,44 +23,26 @@ export default function RichTextEditor({
   'data-testid': dataTestId,
 }: RichTextEditorProps) {
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [imageModalOpen, setImageModalOpen] = useState(false);
+  const [selectedImageSrc, setSelectedImageSrc] = useState('');
   const quillRef = useRef<ReactQuill>(null);
 
-  // Function to resize image based on selected size
-  const resizeImage = (file: File, size: 'small' | 'medium' | 'large'): Promise<string> => {
+  // Convert image to base64 with compression
+  const convertImageToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = new Image();
         img.onload = () => {
-          // Determine max width based on selected size
-          let maxWidth = 480; // Small default
-          
-          if (size === 'medium') {
-            maxWidth = 720;
-          } else if (size === 'large') {
-            maxWidth = 1024;
-          }
-
-          // Calculate new dimensions
-          let width = img.width;
-          let height = img.height;
-          
-          if (width > maxWidth) {
-            height = (height * maxWidth) / width;
-            width = maxWidth;
-          }
-
-          // Create canvas and resize
           const canvas = document.createElement('canvas');
-          canvas.width = width;
-          canvas.height = height;
+          canvas.width = img.width;
+          canvas.height = img.height;
           const ctx = canvas.getContext('2d');
           
           if (ctx) {
-            ctx.drawImage(img, 0, 0, width, height);
-            // Convert to base64 with quality 0.8 to reduce size
-            const resizedBase64 = canvas.toDataURL('image/jpeg', 0.8);
-            resolve(resizedBase64);
+            ctx.drawImage(img, 0, 0);
+            const base64 = canvas.toDataURL('image/jpeg', 0.85);
+            resolve(base64);
           } else {
             reject(new Error('Failed to get canvas context'));
           }
@@ -73,113 +55,36 @@ export default function RichTextEditor({
     });
   };
 
-  // Image upload handler with size selection
+  // Image upload handler
   const imageHandler = () => {
-    // Create size selection dialog
-    const dialog = document.createElement('div');
-    dialog.style.cssText = `
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      padding: 24px;
-      border-radius: 8px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-      z-index: 10000;
-      min-width: 300px;
-    `;
-    
-    dialog.innerHTML = `
-      <h3 style="margin: 0 0 16px 0; font-size: 18px; font-weight: 600; color: #333;">Odaberite veličinu slike</h3>
-      <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px;">
-        <button class="size-btn" data-size="small" style="padding: 12px; border: 2px solid #e0e0e0; border-radius: 6px; background: white; cursor: pointer; font-size: 14px; transition: all 0.2s;">
-          Mala (480px)
-        </button>
-        <button class="size-btn" data-size="medium" style="padding: 12px; border: 2px solid #e0e0e0; border-radius: 6px; background: white; cursor: pointer; font-size: 14px; transition: all 0.2s;">
-          Srednja (720px)
-        </button>
-        <button class="size-btn" data-size="large" style="padding: 12px; border: 2px solid #e0e0e0; border-radius: 6px; background: white; cursor: pointer; font-size: 14px; transition: all 0.2s;">
-          Velika (1024px)
-        </button>
-      </div>
-      <button class="cancel-btn" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; background: #f5f5f5; cursor: pointer; font-size: 14px;">
-        Odustani
-      </button>
-    `;
-    
-    const overlay = document.createElement('div');
-    overlay.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 9999;
-    `;
-    
-    document.body.appendChild(overlay);
-    document.body.appendChild(dialog);
-    
-    // Add hover effects
-    const buttons = dialog.querySelectorAll('.size-btn');
-    buttons.forEach(btn => {
-      btn.addEventListener('mouseenter', () => {
-        (btn as HTMLElement).style.borderColor = '#1976d2';
-        (btn as HTMLElement).style.background = '#f0f7ff';
-      });
-      btn.addEventListener('mouseleave', () => {
-        (btn as HTMLElement).style.borderColor = '#e0e0e0';
-        (btn as HTMLElement).style.background = 'white';
-      });
-      
-      btn.addEventListener('click', async () => {
-        const size = (btn as HTMLElement).dataset.size as 'small' | 'medium' | 'large';
-        document.body.removeChild(overlay);
-        document.body.removeChild(dialog);
-        
-        const input = document.createElement('input');
-        input.setAttribute('type', 'file');
-        input.setAttribute('accept', 'image/*');
-        input.click();
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
+    input.click();
 
-        input.onchange = async () => {
-          const file = input.files?.[0];
-          if (file) {
-            if (file.size > 10 * 1024 * 1024) {
-              alert('Slika je prevelika. Maksimalna veličina je 10MB.');
-              return;
-            }
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (file) {
+        if (file.size > 10 * 1024 * 1024) {
+          alert('Slika je prevelika. Maksimalna veličina je 10MB.');
+          return;
+        }
 
-            try {
-              const resizedBase64 = await resizeImage(file, size);
-              
-              const quill = quillRef.current?.getEditor();
-              if (quill) {
-                const range = quill.getSelection(true);
-                quill.insertEmbed(range.index, 'image', resizedBase64);
-                quill.setSelection(range.index + 1, 0);
-              }
-            } catch (error) {
-              console.error('Error resizing image:', error);
-              alert('Greška pri obradi slike. Pokušajte ponovo.');
-            }
+        try {
+          const base64 = await convertImageToBase64(file);
+          
+          const quill = quillRef.current?.getEditor();
+          if (quill) {
+            const range = quill.getSelection(true);
+            quill.insertEmbed(range.index, 'image', base64);
+            quill.setSelection(range.index + 1, 0);
           }
-        };
-      });
-    });
-    
-    const cancelBtn = dialog.querySelector('.cancel-btn');
-    cancelBtn?.addEventListener('click', () => {
-      document.body.removeChild(overlay);
-      document.body.removeChild(dialog);
-    });
-    
-    overlay.addEventListener('click', () => {
-      document.body.removeChild(overlay);
-      document.body.removeChild(dialog);
-    });
+        } catch (error) {
+          console.error('Error processing image:', error);
+          alert('Greška pri obradi slike. Pokušajte ponovo.');
+        }
+      }
+    };
   };
 
   const modules = useMemo(() => ({
@@ -201,6 +106,26 @@ export default function RichTextEditor({
     'list', 'bullet',
     'link', 'image'
   ];
+
+  // Add click handlers to images for full-size preview
+  useEffect(() => {
+    const handleImageClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'IMG') {
+        const imgSrc = (target as HTMLImageElement).src;
+        setSelectedImageSrc(imgSrc);
+        setImageModalOpen(true);
+      }
+    };
+
+    const editorElement = quillRef.current?.getEditor()?.root;
+    if (editorElement) {
+      editorElement.addEventListener('click', handleImageClick as EventListener);
+      return () => {
+        editorElement.removeEventListener('click', handleImageClick as EventListener);
+      };
+    }
+  }, [value]);
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -243,10 +168,16 @@ export default function RichTextEditor({
             color: 'rgba(0, 0, 0, 0.38)',
           },
           '& .ql-editor img': {
-            maxWidth: '100%',
+            width: '80%',
             height: 'auto',
             display: 'block',
-            margin: '10px 0',
+            margin: '10px auto',
+            cursor: 'pointer',
+            borderRadius: '4px',
+            transition: 'opacity 0.2s',
+            '&:hover': {
+              opacity: 0.9,
+            }
           }
         }}
         data-testid={dataTestId}
@@ -298,13 +229,25 @@ export default function RichTextEditor({
               '& em': { fontStyle: 'italic' },
               '& u': { textDecoration: 'underline' },
               '& img': { 
-                maxWidth: '100%', 
+                width: '80%', 
                 height: 'auto',
                 display: 'block',
-                margin: '10px 0',
+                margin: '10px auto',
+                cursor: 'pointer',
+                borderRadius: '4px',
+                '&:hover': {
+                  opacity: 0.9,
+                }
               }
             }}
             dangerouslySetInnerHTML={{ __html: value }}
+            onClick={(e) => {
+              const target = e.target as HTMLElement;
+              if (target.tagName === 'IMG') {
+                setSelectedImageSrc((target as HTMLImageElement).src);
+                setImageModalOpen(true);
+              }
+            }}
             data-testid={`${dataTestId}-preview-content`}
           />
         </DialogContent>
@@ -317,6 +260,52 @@ export default function RichTextEditor({
             Zatvori
           </Button>
         </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={imageModalOpen}
+        onClose={() => setImageModalOpen(false)}
+        maxWidth="lg"
+        fullWidth
+        PaperProps={{
+          sx: { 
+            borderRadius: 2,
+            bgcolor: 'rgba(0, 0, 0, 0.9)',
+            maxWidth: '90vw',
+            maxHeight: '90vh'
+          }
+        }}
+      >
+        <IconButton
+          onClick={() => setImageModalOpen(false)}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: 'white',
+            bgcolor: 'rgba(255, 255, 255, 0.1)',
+            '&:hover': {
+              bgcolor: 'rgba(255, 255, 255, 0.2)',
+            },
+            zIndex: 1
+          }}
+          data-testid="button-close-image-modal"
+        >
+          <Close />
+        </IconButton>
+        <DialogContent sx={{ p: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Box
+            component="img"
+            src={selectedImageSrc}
+            alt="Puna veličina"
+            sx={{
+              maxWidth: '100%',
+              maxHeight: '85vh',
+              objectFit: 'contain'
+            }}
+            data-testid="image-full-size"
+          />
+        </DialogContent>
       </Dialog>
     </Box>
   );
