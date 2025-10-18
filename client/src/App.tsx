@@ -50,6 +50,25 @@ const theme = createTheme({
     },
   },
   components: {
+    MuiTextField: {
+      defaultProps: {
+        InputLabelProps: {
+          shrink: true,
+        },
+      },
+      styleOverrides: {
+        root: {
+          '& .MuiOutlinedInput-root': {
+            borderRadius: 8,
+          },
+        },
+      },
+    },
+    MuiSelect: {
+      defaultProps: {
+        displayEmpty: true,
+      },
+    },
     MuiCard: {
       styleOverrides: {
         root: {
