@@ -8,8 +8,9 @@ export const users = pgTable("users", {
   firstName: text("first_name").notNull(),
   lastName: text("last_name").notNull(),
   username: text("username").notNull().unique(),
-  email: text("email").notNull().unique(),
+  email: text("email").unique(),
   password: text("password").notNull(),
+  phone: text("phone"),
   photo: text("photo"), // URL/path to profile photo
   address: text("address"),
   city: text("city"),

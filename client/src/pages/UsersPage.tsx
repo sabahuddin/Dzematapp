@@ -145,8 +145,9 @@ export default function UsersPage() {
   const filteredUsers = ((usersQuery.data as User[]) || []).filter((user: User) =>
     user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.username.toLowerCase().includes(searchTerm.toLowerCase())
+    (user.email && user.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (user.phone && user.phone.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   if (usersQuery.isLoading) {
@@ -184,10 +185,10 @@ export default function UsersPage() {
       <Card>
         <Box sx={{ p: 3, borderBottom: '1px solid #e0e0e0' }}>
           <TextField
-            placeholder="Pretraži po imenu ili emailu..."
+            placeholder="Pretraži po imenu, emailu ili telefonu..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            sx={{ width: 300 }}
+            sx={{ width: 350 }}
             data-testid="input-search"
           />
         </Box>
@@ -199,7 +200,8 @@ export default function UsersPage() {
                 <TableCell sx={{ fontWeight: 600 }}>Korisnik</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Korisničko ime</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Email</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Datum članstva</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Telefon</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Član od</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Status članstva</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Porodica</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
@@ -228,7 +230,18 @@ export default function UsersPage() {
                     </Box>
                   </TableCell>
                   <TableCell>{user.username}</TableCell>
-                  <TableCell>{user.email}</TableCell>
+                  <TableCell>{user.email || '-'}</TableCell>
+                  <TableCell>
+                    {user.phone ? (
+                      <a 
+                        href={`tel:${user.phone}`} 
+                        style={{ textDecoration: 'none', color: '#1976d2' }}
+                        data-testid={`phone-link-${user.id}`}
+                      >
+                        {user.phone}
+                      </a>
+                    ) : '-'}
+                  </TableCell>
                   <TableCell>
                     {user.membershipDate ? new Date(user.membershipDate).toLocaleDateString('hr-HR') : '-'}
                   </TableCell>
@@ -264,7 +277,7 @@ export default function UsersPage() {
               ))}
               {filteredUsers.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={7} sx={{ textAlign: 'center', py: 4 }}>
+                  <TableCell colSpan={8} sx={{ textAlign: 'center', py: 4 }}>
                     <Typography color="text.secondary">
                       {searchTerm ? 'Nema korisnika koji odgovaraju pretrazi' : 'Nema korisnika'}
                     </Typography>

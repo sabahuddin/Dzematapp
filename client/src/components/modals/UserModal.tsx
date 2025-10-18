@@ -46,12 +46,14 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
     username: '',
     email: '',
     password: '',
+    phone: '',
     photo: '',
     address: '',
     city: '',
     postalCode: '',
     dateOfBirth: '',
     occupation: '',
+    membershipDate: '',
     status: 'aktivan'
   });
   const [photoFile, setPhotoFile] = useState<File | null>(null);
@@ -68,12 +70,14 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
         username: user.username || '',
         email: user.email || '',
         password: '', // Don't populate password for security
+        phone: user.phone || '',
         photo: user.photo || '',
         address: user.address || '',
         city: user.city || '',
         postalCode: user.postalCode || '',
         dateOfBirth: user.dateOfBirth || '',
         occupation: user.occupation || '',
+        membershipDate: user.membershipDate ? new Date(user.membershipDate).toISOString().split('T')[0] : '',
         status: user.status || 'aktivan'
       });
       setPhotoPreview(user.photo || '');
@@ -85,12 +89,14 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
         username: '',
         email: '',
         password: '',
+        phone: '',
         photo: '',
         address: '',
         city: '',
         postalCode: '',
         dateOfBirth: '',
         occupation: '',
+        membershipDate: '',
         status: 'aktivan'
       });
       setPhotoPreview('');
@@ -139,7 +145,7 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     
-    let finalFormData = { ...formData };
+    let finalFormData: any = { ...formData };
     
     // Upload photo if a new one was selected
     if (photoFile) {
@@ -148,8 +154,22 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
         finalFormData.photo = photoUrl;
       } catch (error) {
         console.error('Photo upload failed:', error);
-        // Continue without photo
       }
+    }
+    
+    // Convert membershipDate string to Date if provided, otherwise remove it
+    if (finalFormData.membershipDate && finalFormData.membershipDate !== '') {
+      finalFormData.membershipDate = new Date(finalFormData.membershipDate);
+    } else {
+      delete finalFormData.membershipDate;
+    }
+    
+    // Clean up empty strings to null for optional fields
+    if (!finalFormData.email || finalFormData.email === '') {
+      finalFormData.email = null;
+    }
+    if (!finalFormData.phone || finalFormData.phone === '') {
+      finalFormData.phone = null;
     }
     
     onSave(finalFormData);
@@ -256,8 +276,19 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
                 type="email"
                 value={formData.email}
                 onChange={handleChange('email')}
-                required
                 data-testid="input-email"
+              />
+            </Grid>
+            
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField
+                fullWidth
+                label="Telefon"
+                type="tel"
+                value={formData.phone}
+                onChange={handleChange('phone')}
+                placeholder="+381 60 123 4567"
+                data-testid="input-phone"
               />
             </Grid>
             
@@ -323,6 +354,19 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
                 value={formData.occupation}
                 onChange={handleChange('occupation')}
                 data-testid="input-occupation"
+              />
+            </Grid>
+            
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField
+                fullWidth
+                label="Član od"
+                type="date"
+                value={formData.membershipDate}
+                onChange={handleChange('membershipDate')}
+                InputLabelProps={{ shrink: true }}
+                helperText={!user ? "Ostavite prazno za današnji datum" : ""}
+                data-testid="input-membershipDate"
               />
             </Grid>
             
