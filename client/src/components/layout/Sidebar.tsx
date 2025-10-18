@@ -31,7 +31,7 @@ import {
   Email,
   LocationOn
 } from '@mui/icons-material';
-import { SiFacebook, SiInstagram, SiYoutube, SiTwitter } from 'react-icons/si';
+import { SiFacebook, SiInstagram, SiYoutube, SiX } from 'react-icons/si';
 
 interface SidebarProps {
   open: boolean;
@@ -229,12 +229,12 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
                 rel="noopener noreferrer"
                 size="small"
                 sx={{ 
-                  color: '#1da1f2',
-                  '&:hover': { bgcolor: '#e3f2fd' }
+                  color: '#000000',
+                  '&:hover': { bgcolor: '#f5f5f5' }
                 }}
                 data-testid="social-twitter"
               >
-                <SiTwitter size={20} />
+                <SiX size={20} />
               </IconButton>
             </Box>
           </Box>
