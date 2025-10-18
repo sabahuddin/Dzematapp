@@ -25,7 +25,9 @@ import {
   type FamilyRelationship,
   type InsertFamilyRelationship,
   type Message,
-  type InsertMessage
+  type InsertMessage,
+  type OrganizationSettings,
+  type InsertOrganizationSettings
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -124,6 +126,10 @@ export interface IStorage {
   deleteMessage(messageId: string): Promise<boolean>;
   getUnreadCount(userId: string): Promise<number>;
 
+  // Organization Settings
+  getOrganizationSettings(): Promise<OrganizationSettings | undefined>;
+  updateOrganizationSettings(settings: Partial<InsertOrganizationSettings>): Promise<OrganizationSettings>;
+
   // Statistics
   getUserCount(): Promise<number>;
   getNewAnnouncementsCount(days: number): Promise<number>;
@@ -146,6 +152,7 @@ export class MemStorage implements IStorage {
   private activities: Map<string, Activity> = new Map();
   private familyRelationships: Map<string, FamilyRelationship> = new Map();
   private messages: Map<string, Message> = new Map();
+  private organizationSettings: OrganizationSettings | null = null;
 
   constructor() {
     this.initializeData();
@@ -175,6 +182,20 @@ export class MemStorage implements IStorage {
       isAdmin: true
     };
     this.users.set(adminUser.id, adminUser);
+
+    // Initialize organization settings
+    this.organizationSettings = {
+      id: randomUUID(),
+      name: "Islamska Zajednica",
+      address: "Ulica Džemata 123",
+      phone: "+387 33 123 456",
+      email: "info@dzemat.ba",
+      facebookUrl: null,
+      instagramUrl: null,
+      youtubeUrl: null,
+      twitterUrl: null,
+      updatedAt: new Date()
+    };
 
     // Create sample data
     this.createSampleData();
@@ -1014,6 +1035,37 @@ export class MemStorage implements IStorage {
       !msg.isRead && 
       (msg.recipientId === userId || msg.category)
     ).length;
+  }
+
+  // Organization Settings
+  async getOrganizationSettings(): Promise<OrganizationSettings | undefined> {
+    return this.organizationSettings || undefined;
+  }
+
+  async updateOrganizationSettings(settings: Partial<InsertOrganizationSettings>): Promise<OrganizationSettings> {
+    if (!this.organizationSettings) {
+      // Create new settings if none exist
+      this.organizationSettings = {
+        id: randomUUID(),
+        name: settings.name || "Islamska Zajednica",
+        address: settings.address || "Ulica Džemata 123",
+        phone: settings.phone || "+387 33 123 456",
+        email: settings.email || "info@dzemat.ba",
+        facebookUrl: settings.facebookUrl || null,
+        instagramUrl: settings.instagramUrl || null,
+        youtubeUrl: settings.youtubeUrl || null,
+        twitterUrl: settings.twitterUrl || null,
+        updatedAt: new Date()
+      };
+    } else {
+      // Update existing settings
+      this.organizationSettings = {
+        ...this.organizationSettings,
+        ...settings,
+        updatedAt: new Date()
+      };
+    }
+    return this.organizationSettings;
   }
 }
 

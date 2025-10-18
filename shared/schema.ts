@@ -150,6 +150,19 @@ export const messages = pgTable("messages", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const organizationSettings = pgTable("organization_settings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull().default("Islamska Zajednica"),
+  address: text("address").notNull().default("Ulica Džemata 123"),
+  phone: text("phone").notNull().default("+387 33 123 456"),
+  email: text("email").notNull().default("info@dzemat.ba"),
+  facebookUrl: text("facebook_url"),
+  instagramUrl: text("instagram_url"),
+  youtubeUrl: text("youtube_url"),
+  twitterUrl: text("twitter_url"),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -228,6 +241,11 @@ export const insertMessageSchema = createInsertSchema(messages).omit({
   isRead: true,
 });
 
+export const insertOrganizationSettingsSchema = createInsertSchema(organizationSettings).omit({
+  id: true,
+  updatedAt: true,
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -255,6 +273,8 @@ export type FamilyRelationship = typeof familyRelationships.$inferSelect;
 export type InsertFamilyRelationship = z.infer<typeof insertFamilyRelationshipSchema>;
 export type Message = typeof messages.$inferSelect;
 export type InsertMessage = z.infer<typeof insertMessageSchema>;
+export type OrganizationSettings = typeof organizationSettings.$inferSelect;
+export type InsertOrganizationSettings = z.infer<typeof insertOrganizationSettingsSchema>;
 
 // API response types for files with user details
 export type AnnouncementFileWithUser = AnnouncementFile & {
