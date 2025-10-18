@@ -157,6 +157,8 @@ export class MemStorage implements IStorage {
       occupation: null,
       membershipDate: new Date(),
       status: "aktivan",
+      inactiveReason: null,
+      categories: [],
       isAdmin: true
     };
     this.users.set(adminUser.id, adminUser);
@@ -190,6 +192,8 @@ export class MemStorage implements IStorage {
         occupation: null,
         membershipDate: new Date(),
         status: userData.username === "stefan.jovanovic" ? "pasivan" : "aktivan",
+        inactiveReason: userData.username === "stefan.jovanovic" ? "Drugi džemat" : null,
+        categories: userData.username === "marko.petrovic" ? ["Muškarci"] : userData.username === "ana.maric" ? ["Žene", "Roditelji"] : [],
         isAdmin: false
       };
       this.users.set(user.id, user);
@@ -240,7 +244,9 @@ export class MemStorage implements IStorage {
       city: insertUser.city ?? null,
       postalCode: insertUser.postalCode ?? null,
       dateOfBirth: insertUser.dateOfBirth ?? null,
-      occupation: insertUser.occupation ?? null
+      occupation: insertUser.occupation ?? null,
+      inactiveReason: insertUser.inactiveReason ?? null,
+      categories: insertUser.categories ?? []
     };
     this.users.set(id, user);
     

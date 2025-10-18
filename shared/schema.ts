@@ -19,6 +19,8 @@ export const users = pgTable("users", {
   occupation: text("occupation"),
   membershipDate: timestamp("membership_date").defaultNow(),
   status: text("status").notNull().default("aktivan"), // aktivan, pasivan, član porodice
+  inactiveReason: text("inactive_reason"), // Smrt, Drugi džemat, Isključen, Nepoznato
+  categories: text("categories").array(), // Muškarci, Žene, Roditelji, Omladina, custom
   isAdmin: boolean("is_admin").default(false),
 });
 

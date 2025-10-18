@@ -18,7 +18,8 @@ import {
   Typography,
   Alert,
   CircularProgress,
-  Avatar
+  Avatar,
+  Autocomplete
 } from '@mui/material';
 import {
   PersonAdd,
@@ -41,10 +42,13 @@ export default function UsersPage() {
   const queryClient = useQueryClient();
   
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [menuUser, setMenuUser] = useState<User | null>(null);
+
+  const predefinedCategories = ['Svi', 'Muškarci', 'Žene', 'Roditelji', 'Omladina'];
 
   // Fetch users
   const usersQuery = useQuery({
@@ -142,13 +146,22 @@ export default function UsersPage() {
     setMenuUser(null);
   };
 
-  const filteredUsers = ((usersQuery.data as User[]) || []).filter((user: User) =>
-    user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (user.email && user.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (user.phone && user.phone.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const filteredUsers = ((usersQuery.data as User[]) || []).filter((user: User) => {
+    // Text search filter
+    const matchesSearch = 
+      user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (user.email && user.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (user.phone && user.phone.toLowerCase().includes(searchTerm.toLowerCase()));
+    
+    // Category filter
+    const matchesCategory = selectedCategories.length === 0 || 
+      selectedCategories.includes('Svi') ||
+      (user.categories && selectedCategories.some(cat => user.categories?.includes(cat)));
+    
+    return matchesSearch && matchesCategory;
+  });
 
   if (usersQuery.isLoading) {
     return (
@@ -183,13 +196,28 @@ export default function UsersPage() {
       </Box>
 
       <Card>
-        <Box sx={{ p: 3, borderBottom: '1px solid #e0e0e0' }}>
+        <Box sx={{ p: 3, borderBottom: '1px solid #e0e0e0', display: 'flex', gap: 2, flexWrap: 'wrap' }}>
           <TextField
             placeholder="Pretraži po imenu, emailu ili telefonu..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             sx={{ width: 350 }}
             data-testid="input-search"
+          />
+          <Autocomplete
+            multiple
+            options={predefinedCategories}
+            value={selectedCategories}
+            onChange={(event, newValue) => setSelectedCategories(newValue)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                placeholder="Filtriraj po kategorijama"
+                data-testid="input-category-filter"
+              />
+            )}
+            sx={{ width: 350 }}
+            data-testid="autocomplete-category-filter"
           />
         </Box>
 
@@ -203,6 +231,7 @@ export default function UsersPage() {
                 <TableCell sx={{ fontWeight: 600 }}>Telefon</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Član od</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Status članstva</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Kategorije</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Porodica</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
               </TableRow>
@@ -246,12 +275,36 @@ export default function UsersPage() {
                     {user.membershipDate ? new Date(user.membershipDate).toLocaleDateString('hr-HR') : '-'}
                   </TableCell>
                   <TableCell>
-                    <Chip
-                      label={getStatusLabel(user.status)}
-                      color={getStatusColor(user.status)}
-                      size="small"
-                      data-testid={`status-${user.id}`}
-                    />
+                    <Box>
+                      <Chip
+                        label={getStatusLabel(user.status)}
+                        color={getStatusColor(user.status)}
+                        size="small"
+                        data-testid={`status-${user.id}`}
+                      />
+                      {user.status === 'pasivan' && user.inactiveReason && (
+                        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }} data-testid={`inactive-reason-${user.id}`}>
+                          {user.inactiveReason}
+                        </Typography>
+                      )}
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+                      {user.categories && user.categories.length > 0 ? (
+                        user.categories.map((category, index) => (
+                          <Chip
+                            key={index}
+                            label={category}
+                            size="small"
+                            variant="outlined"
+                            data-testid={`category-${user.id}-${index}`}
+                          />
+                        ))
+                      ) : (
+                        <Typography variant="body2" color="text.secondary">-</Typography>
+                      )}
+                    </Box>
                   </TableCell>
                   <TableCell>
                     <IconButton 
@@ -277,9 +330,9 @@ export default function UsersPage() {
               ))}
               {filteredUsers.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={8} sx={{ textAlign: 'center', py: 4 }}>
+                  <TableCell colSpan={9} sx={{ textAlign: 'center', py: 4 }}>
                     <Typography color="text.secondary">
-                      {searchTerm ? 'Nema korisnika koji odgovaraju pretrazi' : 'Nema korisnika'}
+                      {searchTerm || selectedCategories.length > 0 ? 'Nema korisnika koji odgovaraju pretrazi' : 'Nema korisnika'}
                     </Typography>
                   </TableCell>
                 </TableRow>

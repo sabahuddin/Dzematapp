@@ -18,7 +18,8 @@ import {
   Select,
   MenuItem,
   FormControl,
-  InputLabel
+  InputLabel,
+  Autocomplete
 } from '@mui/material';
 import {
   Close,
@@ -54,7 +55,9 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
     dateOfBirth: '',
     occupation: '',
     membershipDate: '',
-    status: 'aktivan'
+    status: 'aktivan',
+    inactiveReason: null as string | null,
+    categories: [] as string[]
   });
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string>('');
@@ -78,7 +81,9 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
         dateOfBirth: user.dateOfBirth || '',
         occupation: user.occupation || '',
         membershipDate: user.membershipDate ? new Date(user.membershipDate).toISOString().split('T')[0] : '',
-        status: user.status || 'aktivan'
+        status: user.status || 'aktivan',
+        inactiveReason: user.inactiveReason || null,
+        categories: user.categories || []
       });
       setPhotoPreview(user.photo || '');
     } else {
@@ -97,7 +102,9 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
         dateOfBirth: '',
         occupation: '',
         membershipDate: '',
-        status: 'aktivan'
+        status: 'aktivan',
+        inactiveReason: null,
+        categories: []
       });
       setPhotoPreview('');
       setPhotoFile(null);
@@ -109,11 +116,30 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
     enabled: !!user?.id,
   });
 
+  const predefinedCategories = ['Muškarci', 'Žene', 'Roditelji', 'Omladina'];
+
+  const inactiveReasonOptions = [
+    { value: 'Smrt', label: 'Smrt' },
+    { value: 'Drugi džemat', label: 'Drugi džemat' },
+    { value: 'Isključen', label: 'Isključen' },
+    { value: 'Nepoznato', label: 'Nepoznato' }
+  ];
+
   const handleChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement | { value: unknown }>) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: event.target.value
-    }));
+    const value = event.target.value;
+    setFormData(prev => {
+      const updated = {
+        ...prev,
+        [field]: value
+      };
+      
+      // If status changes and it's not "pasivan", reset inactiveReason
+      if (field === 'status' && value !== 'pasivan') {
+        updated.inactiveReason = null;
+      }
+      
+      return updated;
+    });
   };
 
   const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -170,6 +196,16 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
     }
     if (!finalFormData.phone || finalFormData.phone === '') {
       finalFormData.phone = null;
+    }
+    
+    // Ensure inactiveReason is null if status is not "pasivan"
+    if (finalFormData.status !== 'pasivan') {
+      finalFormData.inactiveReason = null;
+    }
+    
+    // Ensure categories is an empty array if not set
+    if (!finalFormData.categories || finalFormData.categories.length === 0) {
+      finalFormData.categories = [];
     }
     
     onSave(finalFormData);
@@ -386,6 +422,58 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
                   ))}
                 </Select>
               </FormControl>
+            </Grid>
+            
+            {/* Inactive Reason - Only shown when status is "pasivan" */}
+            {formData.status === 'pasivan' && (
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <FormControl fullWidth>
+                  <InputLabel>Razlog pasivnosti</InputLabel>
+                  <Select
+                    value={formData.inactiveReason || ''}
+                    label="Razlog pasivnosti"
+                    onChange={(e) => setFormData(prev => ({ ...prev, inactiveReason: e.target.value as string }))}
+                    data-testid="select-inactive-reason"
+                  >
+                    {inactiveReasonOptions.map(option => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+            )}
+            
+            {/* Categories Multi-Select */}
+            <Grid size={{ xs: 12 }}>
+              <Autocomplete
+                multiple
+                freeSolo
+                options={predefinedCategories}
+                value={formData.categories}
+                onChange={(event, newValue) => {
+                  setFormData(prev => ({ ...prev, categories: newValue }));
+                }}
+                renderTags={(value, getTagProps) =>
+                  value.map((option, index) => (
+                    <Chip
+                      label={option}
+                      {...getTagProps({ index })}
+                      data-testid={`chip-category-${index}`}
+                    />
+                  ))
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Kategorije"
+                    placeholder="Odaberite ili unesite kategoriju"
+                    data-testid="input-categories"
+                  />
+                )}
+                data-testid="autocomplete-categories"
+              />
             </Grid>
             
             {/* Family Members Section */}
