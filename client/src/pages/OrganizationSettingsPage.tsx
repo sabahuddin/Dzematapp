@@ -9,7 +9,9 @@ import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import type { OrganizationSettings, InsertOrganizationSettings } from "@shared/schema";
 import { insertOrganizationSettingsSchema } from "@shared/schema";
-import { Settings, Building, Phone, Mail, Facebook, Instagram, Youtube, Twitter } from "lucide-react";
+import { Settings, Building, Phone, Mail, Facebook, Instagram, Youtube, Twitter, Radio } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function OrganizationSettingsPage() {
   const { toast } = useToast();
@@ -28,7 +30,10 @@ export default function OrganizationSettingsPage() {
       facebookUrl: settings.facebookUrl || "",
       instagramUrl: settings.instagramUrl || "",
       youtubeUrl: settings.youtubeUrl || "",
-      twitterUrl: settings.twitterUrl || ""
+      twitterUrl: settings.twitterUrl || "",
+      livestreamUrl: settings.livestreamUrl || "",
+      livestreamEnabled: settings.livestreamEnabled || false,
+      livestreamTitle: settings.livestreamTitle || ""
     } : undefined
   });
 
@@ -62,7 +67,9 @@ export default function OrganizationSettingsPage() {
       facebookUrl: data.facebookUrl?.trim() || null,
       instagramUrl: data.instagramUrl?.trim() || null,
       youtubeUrl: data.youtubeUrl?.trim() || null,
-      twitterUrl: data.twitterUrl?.trim() || null
+      twitterUrl: data.twitterUrl?.trim() || null,
+      livestreamUrl: data.livestreamUrl?.trim() || null,
+      livestreamTitle: data.livestreamTitle?.trim() || null
     };
     updateMutation.mutate(sanitizedData);
   };
@@ -286,6 +293,79 @@ export default function OrganizationSettingsPage() {
                     />
                   </Box>
                 </Box>
+              </Box>
+            </Box>
+
+            {/* Livestream Settings */}
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="h6" sx={{ mb: 2, display: "flex", alignItems: "center", gap: 1 }}>
+                <Radio size={20} />
+                Livestream podešavanja
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <FormField
+                  control={form.control}
+                  name="livestreamEnabled"
+                  render={({ field }) => (
+                    <FormItem>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            data-testid="switch-livestream-enabled"
+                          />
+                        </FormControl>
+                        <FormLabel className="!mt-0 cursor-pointer" onClick={() => field.onChange(!field.value)}>
+                          Livestream aktivan
+                        </FormLabel>
+                      </Box>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="livestreamTitle"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Naslov livestream-a (opciono)</FormLabel>
+                      <FormControl>
+                        <Input 
+                          {...field} 
+                          value={field.value || ""}
+                          placeholder="Npr. Petak hutba uživo" 
+                          data-testid="input-livestream-title"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="livestreamUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Livestream URL ili embed kod</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          {...field} 
+                          value={field.value || ""}
+                          placeholder="Unesite YouTube/Facebook/Twitch embed kod ili URL"
+                          rows={4}
+                          data-testid="input-livestream-url"
+                        />
+                      </FormControl>
+                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
+                        Možete unijeti YouTube embed kod (npr. &lt;iframe src="..."&gt;) ili direktan URL
+                      </Typography>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </Box>
             </Box>
 
