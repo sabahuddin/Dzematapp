@@ -284,37 +284,31 @@
   }
 
   /* Fix for TextField label positioning - proper spacing from border */
-  .MuiInputLabel-outlined {
-    background-color: var(--mui-background-paper);
+  .MuiInputLabel-outlined,
+  .MuiTextField-root .MuiInputLabel-outlined,
+  .MuiFormControl-root .MuiInputLabel-outlined,
+  .MuiAutocomplete-root .MuiInputLabel-outlined {
+    background-color: var(--mui-background-paper) !important;
     padding-left: 8px !important;
     padding-right: 8px !important;
   }
 
-  .MuiInputLabel-outlined.MuiInputLabel-shrink {
-    background-color: var(--mui-background-paper);
+  .MuiInputLabel-outlined.MuiInputLabel-shrink,
+  .MuiTextField-root .MuiInputLabel-outlined.MuiInputLabel-shrink,
+  .MuiFormControl-root .MuiInputLabel-outlined.MuiInputLabel-shrink,
+  .MuiAutocomplete-root .MuiInputLabel-outlined.MuiInputLabel-shrink {
+    background-color: var(--mui-background-paper) !important;
     padding-left: 8px !important;
     padding-right: 8px !important;
   }
 
   /* Ensure notched outline has proper spacing for label - this creates the gap */
-  .MuiOutlinedInput-notchedOutline legend {
+  .MuiOutlinedInput-notchedOutline legend,
+  .MuiTextField-root .MuiOutlinedInput-notchedOutline legend,
+  .MuiFormControl-root .MuiOutlinedInput-notchedOutline legend {
     padding-left: 6px !important;
     padding-right: 6px !important;
     margin-left: 2px !important;
-  }
-
-  /* Autocomplete label fix */
-  .MuiAutocomplete-root .MuiInputLabel-outlined {
-    background-color: var(--mui-background-paper);
-    padding-left: 8px !important;
-    padding-right: 8px !important;
-  }
-
-  /* Select label fix */
-  .MuiFormControl-root .MuiInputLabel-outlined {
-    background-color: var(--mui-background-paper);
-    padding-left: 8px !important;
-    padding-right: 8px !important;
   }
 
   /* Sidebar customizations */
