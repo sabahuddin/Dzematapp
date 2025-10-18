@@ -29,9 +29,12 @@ import {
   Radio,
   Phone,
   Email,
-  LocationOn
+  LocationOn,
+  Settings
 } from '@mui/icons-material';
 import { SiFacebook, SiInstagram, SiYoutube, SiX } from 'react-icons/si';
+import { useAuth } from '@/contexts/AuthContext';
+import type { OrganizationSettings } from '@shared/schema';
 
 interface SidebarProps {
   open: boolean;
@@ -50,16 +53,22 @@ const menuItems = [
   { path: '/messages', label: 'Poruke', icon: Mail, showBadge: true },
   { path: '/ask-imam', label: 'Pitaj imama', icon: QuestionAnswer },
   { path: '/livestream', label: 'Livestream', icon: Radio },
+  { path: '/organization-settings', label: 'Org. podaci', icon: Settings, adminOnly: true },
 ];
 
 export default function Sidebar({ open, collapsed, onToggle, onClose, width }: SidebarProps) {
   const [location, setLocation] = useLocation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const { user } = useAuth();
 
   const { data: unreadCount } = useQuery<{ count: number }>({
     queryKey: ['/api/messages/unread-count'],
     refetchInterval: 30000,
+  });
+
+  const { data: orgSettings } = useQuery<OrganizationSettings>({
+    queryKey: ['/api/organization-settings'],
   });
 
   const handleNavigation = (path: string) => {
@@ -100,6 +109,11 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
       {/* Navigation */}
       <List sx={{ py: 2, flex: 1 }}>
         {menuItems.map((item) => {
+          // Hide admin-only items from non-admin users
+          if (item.adminOnly && !user?.isAdmin) {
+            return null;
+          }
+
           const Icon = item.icon;
           const isActive = location === item.path;
           const showUnreadBadge = item.showBadge && unreadCount && unreadCount.count > 0;
@@ -150,23 +164,23 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
                 <LocationOn sx={{ fontSize: 16, color: 'text.secondary', mt: 0.25 }} />
                 <Box>
                   <Typography variant="caption" sx={{ fontWeight: 600, display: 'block' }}>
-                    Islamska Zajednica
+                    {orgSettings?.name || 'Islamska Zajednica'}
                   </Typography>
                   <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                    Ulica Džemata 123
+                    {orgSettings?.address || 'Ulica Džemata 123'}
                   </Typography>
                 </Box>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Phone sx={{ fontSize: 16, color: 'text.secondary' }} />
                 <Typography variant="caption" color="text.secondary">
-                  +387 33 123 456
+                  {orgSettings?.phone || '+387 33 123 456'}
                 </Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Email sx={{ fontSize: 16, color: 'text.secondary' }} />
                 <Typography variant="caption" color="text.secondary">
-                  info@dzemat.ba
+                  {orgSettings?.email || 'info@dzemat.ba'}
                 </Typography>
               </Box>
             </Box>
@@ -175,69 +189,79 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
           <Divider sx={{ my: 1.5 }} />
 
           {/* Social Media Icons */}
-          <Box>
-            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1, color: '#1976d2' }}>
-              Društvene mreže
-            </Typography>
-            <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-start' }}>
-              <IconButton
-                component="a"
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                size="small"
-                sx={{ 
-                  color: '#1877f2',
-                  '&:hover': { bgcolor: '#e3f2fd' }
-                }}
-                data-testid="social-facebook"
-              >
-                <SiFacebook size={20} />
-              </IconButton>
-              <IconButton
-                component="a"
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                size="small"
-                sx={{ 
-                  color: '#e4405f',
-                  '&:hover': { bgcolor: '#fce4ec' }
-                }}
-                data-testid="social-instagram"
-              >
-                <SiInstagram size={20} />
-              </IconButton>
-              <IconButton
-                component="a"
-                href="https://youtube.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                size="small"
-                sx={{ 
-                  color: '#ff0000',
-                  '&:hover': { bgcolor: '#ffebee' }
-                }}
-                data-testid="social-youtube"
-              >
-                <SiYoutube size={20} />
-              </IconButton>
-              <IconButton
-                component="a"
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                size="small"
-                sx={{ 
-                  color: '#000000',
-                  '&:hover': { bgcolor: '#f5f5f5' }
-                }}
-                data-testid="social-twitter"
-              >
-                <SiX size={20} />
-              </IconButton>
+          {(orgSettings?.facebookUrl || orgSettings?.instagramUrl || orgSettings?.youtubeUrl || orgSettings?.twitterUrl) && (
+            <Box>
+              <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1, color: '#1976d2' }}>
+                Društvene mreže
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-start' }}>
+                {orgSettings?.facebookUrl && (
+                  <IconButton
+                    component="a"
+                    href={orgSettings.facebookUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    size="small"
+                    sx={{ 
+                      color: '#1877f2',
+                      '&:hover': { bgcolor: '#e3f2fd' }
+                    }}
+                    data-testid="social-facebook"
+                  >
+                    <SiFacebook size={20} />
+                  </IconButton>
+                )}
+                {orgSettings?.instagramUrl && (
+                  <IconButton
+                    component="a"
+                    href={orgSettings.instagramUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    size="small"
+                    sx={{ 
+                      color: '#e4405f',
+                      '&:hover': { bgcolor: '#fce4ec' }
+                    }}
+                    data-testid="social-instagram"
+                  >
+                    <SiInstagram size={20} />
+                  </IconButton>
+                )}
+                {orgSettings?.youtubeUrl && (
+                  <IconButton
+                    component="a"
+                    href={orgSettings.youtubeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    size="small"
+                    sx={{ 
+                      color: '#ff0000',
+                      '&:hover': { bgcolor: '#ffebee' }
+                    }}
+                    data-testid="social-youtube"
+                  >
+                    <SiYoutube size={20} />
+                  </IconButton>
+                )}
+                {orgSettings?.twitterUrl && (
+                  <IconButton
+                    component="a"
+                    href={orgSettings.twitterUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    size="small"
+                    sx={{ 
+                      color: '#000000',
+                      '&:hover': { bgcolor: '#f5f5f5' }
+                    }}
+                    data-testid="social-twitter"
+                  >
+                    <SiX size={20} />
+                  </IconButton>
+                )}
+              </Box>
             </Box>
-          </Box>
+          )}
         </Box>
       )}
     </Box>

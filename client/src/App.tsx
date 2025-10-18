@@ -19,6 +19,7 @@ import TaskManagerPage from "@/pages/TaskManagerPage";
 import MessagesPage from "@/pages/MessagesPage";
 import AskImamPage from "@/pages/AskImamPage";
 import LivestreamPage from "@/pages/LivestreamPage";
+import OrganizationSettingsPage from "@/pages/OrganizationSettingsPage";
 import NotFound from "@/pages/not-found";
 
 // Layout
@@ -181,6 +182,12 @@ function Router() {
       <Route path="/livestream">
         <ProtectedRoute>
           <LivestreamPage />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path="/organization-settings">
+        <ProtectedRoute>
+          <OrganizationSettingsPage />
         </ProtectedRoute>
       </Route>
       
