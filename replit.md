@@ -45,10 +45,11 @@ Simple session-based authentication system:
 
 - **Strategy**: Basic email/password authentication
 - **Session Management**: Client-side storage using localStorage
-- **Authorization**: Role-based access control with three user roles:
+- **Authorization**: Role-based access control with four user roles:
   - **Admin**: Full system control and permissions management
   - **Član IO** (Executive Board Member): Can create and manage announcements and events
-  - **Član** (Member): Basic member access
+  - **Član** (Member): Basic member access - **default role for new users**
+  - **Član porodice** (Family Member): Family member access
 - **Work Group Moderators**: Admins can assign moderators directly within work groups (future user-facing app feature)
 - **Security**: Basic password validation (prototype level)
 

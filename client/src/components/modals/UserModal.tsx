@@ -110,7 +110,7 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
         status: 'aktivan',
         inactiveReason: null,
         categories: [],
-        roles: []
+        roles: ['clan']
       });
       setPhotoPreview('');
       setPhotoFile(null);
@@ -127,7 +127,8 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
   const availableRoles = [
     { value: 'admin', label: 'Admin' },
     { value: 'clan_io', label: 'Član IO' },
-    { value: 'clan', label: 'Član' }
+    { value: 'clan', label: 'Član' },
+    { value: 'clan_porodice', label: 'Član porodice' }
   ];
 
   const inactiveReasonOptions = [
