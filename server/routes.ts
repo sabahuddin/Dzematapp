@@ -17,7 +17,7 @@ const upload = multer({
         await fs.mkdir(uploadDir, { recursive: true });
         cb(null, uploadDir);
       } catch (error) {
-        cb(error, '');
+        cb(error as Error, '');
       }
     },
     filename: (req, file, cb) => {
@@ -511,11 +511,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Authorization check: Only admins or group moderators can update tasks
+      // OR assigned users can update status to na_cekanju
       const isAdmin = req.user!.isAdmin;
       const isModerator = await storage.isUserModeratorOfWorkGroup(existingTask.workGroupId, req.user!.id);
+      const isAssignedUser = existingTask.assignedToId === req.user!.id;
       
+      // If not admin or moderator, only allow assigned user to change status to na_cekanju
       if (!isAdmin && !isModerator) {
-        return res.status(403).json({ message: "Forbidden: Only admins or group moderators can update tasks" });
+        if (!isAssignedUser || Object.keys(taskData).length !== 1 || !taskData.status || taskData.status !== 'na_cekanju') {
+          return res.status(403).json({ message: "Forbidden: Only admins or group moderators can update tasks" });
+        }
       }
 
       const task = await storage.updateTask(id, taskData);
@@ -525,6 +530,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(task);
     } catch (error) {
       res.status(400).json({ message: "Invalid task data" });
+    }
+  });
+
+  app.delete("/api/tasks/:id", requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      // Get existing task to check work group
+      const existingTask = await storage.getTask(id);
+      if (!existingTask) {
+        return res.status(404).json({ message: "Task not found" });
+      }
+
+      // Authorization check: Only admins or group moderators can delete tasks
+      const isAdmin = req.user!.isAdmin;
+      const isModerator = await storage.isUserModeratorOfWorkGroup(existingTask.workGroupId, req.user!.id);
+      
+      if (!isAdmin && !isModerator) {
+        return res.status(403).json({ message: "Forbidden: Only admins or group moderators can delete tasks" });
+      }
+
+      const deleted = await storage.deleteTask(id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Task not found" });
+      }
+      res.json({ message: "Task deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete task" });
     }
   });
 

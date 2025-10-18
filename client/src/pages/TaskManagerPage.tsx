@@ -465,6 +465,7 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [assignedToId, setAssignedToId] = useState('');
+  const [status, setStatus] = useState('u_toku');
   const [dueDate, setDueDate] = useState('');
 
   const handleSubmit = () => {
@@ -475,6 +476,7 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
       description,
       workGroupId: workGroup.id,
       assignedToId: assignedToId || null,
+      status,
       dueDate: dueDate ? new Date(dueDate) : null
     };
     
@@ -482,6 +484,7 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
     setTitle('');
     setDescription('');
     setAssignedToId('');
+    setStatus('u_toku');
     setDueDate('');
   };
 
@@ -509,6 +512,21 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
             rows={3}
             data-testid="input-task-description"
           />
+          <TextField
+            variant="outlined"
+            select
+            label="Status"
+            value={status}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setStatus(e.target.value)}
+            fullWidth
+            data-testid="select-task-status"
+          >
+            <MenuItem value="u_toku">U toku</MenuItem>
+            <MenuItem value="na_cekanju">Na čekanju</MenuItem>
+            <MenuItem value="završeno">Završeno</MenuItem>
+            <MenuItem value="otkazano">Otkazano</MenuItem>
+            <MenuItem value="arhiva">Arhiva</MenuItem>
+          </TextField>
           <TextField
             variant="outlined"
             select
@@ -558,12 +576,32 @@ interface TaskDetailDialogProps {
   task: any;
   workGroup: WorkGroup | null;
   currentUser: any;
+  isModeratorOrAdmin: boolean;
+  members: any[];
+  onTaskUpdated: () => void;
 }
 
-function TaskDetailDialog({ open, onClose, task, workGroup, currentUser }: TaskDetailDialogProps) {
+function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModeratorOrAdmin, members, onTaskUpdated }: TaskDetailDialogProps) {
   const { toast } = useToast();
   const [newComment, setNewComment] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedTitle, setEditedTitle] = useState('');
+  const [editedDescription, setEditedDescription] = useState('');
+  const [editedStatus, setEditedStatus] = useState('');
+  const [editedAssignedToId, setEditedAssignedToId] = useState('');
+  const [editedDueDate, setEditedDueDate] = useState('');
   const queryClient = useQueryClient();
+
+  // Initialize edit form when task changes
+  React.useEffect(() => {
+    if (task) {
+      setEditedTitle(task.title || '');
+      setEditedDescription(task.description || '');
+      setEditedStatus(task.status || 'u_toku');
+      setEditedAssignedToId(task.assignedToId || '');
+      setEditedDueDate(task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : '');
+    }
+  }, [task]);
 
   // Fetch task comments
   const commentsQuery = useQuery({
@@ -595,110 +633,339 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser }: TaskD
     }
   });
 
+  // Update task mutation
+  const updateTaskMutation = useMutation({
+    mutationFn: async (taskData: any) => {
+      const response = await apiRequest('PUT', `/api/tasks/${task.id}`, taskData);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/work-groups', workGroup?.id, 'tasks'] });
+      toast({ title: 'Uspjeh', description: 'Zadatak je ažuriran' });
+      setIsEditing(false);
+      onTaskUpdated();
+    },
+    onError: () => {
+      toast({ title: 'Greška', description: 'Greška pri ažuriranju zadatka', variant: 'destructive' });
+    }
+  });
+
+  // Delete task mutation
+  const deleteTaskMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest('DELETE', `/api/tasks/${task.id}`, {});
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/work-groups', workGroup?.id, 'tasks'] });
+      toast({ title: 'Uspjeh', description: 'Zadatak je obrisan' });
+      onClose();
+      onTaskUpdated();
+    },
+    onError: () => {
+      toast({ title: 'Greška', description: 'Greška pri brisanju zadatka', variant: 'destructive' });
+    }
+  });
+
   const handleAddComment = () => {
     if (!newComment.trim()) return;
     addCommentMutation.mutate(newComment.trim());
   };
 
+  const handleSaveEdit = () => {
+    if (!editedTitle.trim()) return;
+    
+    const taskData = {
+      title: editedTitle,
+      description: editedDescription,
+      status: editedStatus,
+      assignedToId: editedAssignedToId || null,
+      dueDate: editedDueDate ? new Date(editedDueDate) : null,
+    };
+    
+    updateTaskMutation.mutate(taskData);
+  };
+
+  const handleMarkPending = () => {
+    updateTaskMutation.mutate({ status: 'na_cekanju' });
+  };
+
+  const handleApproveTask = () => {
+    updateTaskMutation.mutate({ status: 'završeno' });
+  };
+
+  const handleDeleteTask = () => {
+    if (window.confirm('Da li ste sigurni da želite obrisati ovaj zadatak?')) {
+      deleteTaskMutation.mutate();
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'u_toku': return 'primary';
+      case 'na_cekanju': return 'warning';
+      case 'završeno': return 'success';
+      case 'otkazano': return 'error';
+      case 'arhiva': return 'default';
+      default: return 'default';
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'u_toku': return 'U toku';
+      case 'na_cekanju': return 'Na čekanju';
+      case 'završeno': return 'Završeno';
+      case 'otkazano': return 'Otkazano';
+      case 'arhiva': return 'Arhiva';
+      default: return status;
+    }
+  };
+
+  const getAssignedUserName = (userId: string) => {
+    const member = members?.find((m: any) => m.userId === userId);
+    return member?.user ? `${member.user.firstName} ${member.user.lastName}` : 'Nepoznat korisnik';
+  };
+
   if (!task) return null;
+
+  const isAssignedUser = currentUser?.id === task.assignedToId;
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="h6">{task.title}</Typography>
-        <IconButton onClick={onClose}>
-          <Close />
-        </IconButton>
+        <Typography variant="h6">{isEditing ? 'Uredi Zadatak' : task.title}</Typography>
+        <Box sx={{ display: 'flex', gap: 1 }}>
+          {!isEditing && isModeratorOrAdmin && (
+            <>
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() => setIsEditing(true)}
+                data-testid="button-edit-task"
+              >
+                Uredi
+              </Button>
+              <Button
+                variant="outlined"
+                size="small"
+                color="error"
+                onClick={handleDeleteTask}
+                data-testid="button-delete-task"
+              >
+                Obriši
+              </Button>
+            </>
+          )}
+          <IconButton onClick={onClose}>
+            <Close />
+          </IconButton>
+        </Box>
       </DialogTitle>
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-          {/* Task Description */}
-          <Box>
-            <Typography variant="body1" sx={{ mb: 2 }}>{task.description}</Typography>
-            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-              <Chip label={`Status: ${task.status}`} />
-              {task.assignedToId && (
-                <Chip label={`Dodijeljeno: ${task.assignedToId}`} variant="outlined" />
-              )}
-              {task.dueDate && (
-                <Chip 
-                  label={`Rok: ${new Date(task.dueDate).toLocaleDateString('hr-HR')}`} 
-                  variant="outlined" 
-                />
-              )}
-            </Box>
-          </Box>
-
-          {/* Comments Section */}
-          <Box>
-            <Typography variant="h6" sx={{ mb: 2 }}>Komentari</Typography>
-            
-            {/* Add Comment */}
-            <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
+          {/* Task Details / Edit Form */}
+          {isEditing ? (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               <TextField
                 variant="outlined"
-                placeholder="Dodaj komentar..."
-                value={newComment}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewComment(e.target.value)}
+                label="Naziv zadatka"
+                value={editedTitle}
+                onChange={(e) => setEditedTitle(e.target.value)}
                 fullWidth
-                size="small"
-                data-testid="input-new-comment"
+                required
+                data-testid="input-edit-task-title"
               />
-              <Button 
-                onClick={handleAddComment} 
-                variant="contained" 
-                disabled={!newComment.trim()}
-                data-testid="button-add-comment"
+              <TextField
+                variant="outlined"
+                label="Opis zadatka"
+                value={editedDescription}
+                onChange={(e) => setEditedDescription(e.target.value)}
+                fullWidth
+                multiline
+                rows={3}
+                data-testid="input-edit-task-description"
+              />
+              <TextField
+                variant="outlined"
+                select
+                label="Status"
+                value={editedStatus}
+                onChange={(e) => setEditedStatus(e.target.value)}
+                fullWidth
+                data-testid="select-edit-task-status"
               >
-                Dodaj
-              </Button>
+                <MenuItem value="u_toku">U toku</MenuItem>
+                <MenuItem value="na_cekanju">Na čekanju</MenuItem>
+                <MenuItem value="završeno">Završeno</MenuItem>
+                <MenuItem value="otkazano">Otkazano</MenuItem>
+                <MenuItem value="arhiva">Arhiva</MenuItem>
+              </TextField>
+              <TextField
+                variant="outlined"
+                select
+                label="Dodijeli članu"
+                value={editedAssignedToId}
+                onChange={(e) => setEditedAssignedToId(e.target.value)}
+                fullWidth
+                data-testid="select-edit-task-assignee"
+              >
+                <MenuItem value="">Bez dodijeljenja</MenuItem>
+                {members?.map((member: any) => (
+                  <MenuItem key={member.userId} value={member.userId}>
+                    {member.user ? `${member.user.firstName} ${member.user.lastName}` : 'Nepoznat korisnik'}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <TextField
+                variant="outlined"
+                label="Rok izvršavanja"
+                type="date"
+                value={editedDueDate}
+                onChange={(e) => setEditedDueDate(e.target.value)}
+                InputLabelProps={{ shrink: true }}
+                fullWidth
+                data-testid="input-edit-task-due-date"
+              />
+              <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
+                <Button onClick={() => setIsEditing(false)} data-testid="button-cancel-edit">
+                  Otkaži
+                </Button>
+                <Button 
+                  onClick={handleSaveEdit} 
+                  variant="contained"
+                  disabled={!editedTitle.trim()}
+                  data-testid="button-save-edit"
+                >
+                  Sačuvaj
+                </Button>
+              </Box>
             </Box>
+          ) : (
+            <Box>
+              <Typography variant="body1" sx={{ mb: 2 }}>{task.description}</Typography>
+              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 2 }}>
+                <Chip 
+                  label={getStatusLabel(task.status)} 
+                  color={getStatusColor(task.status) as any}
+                  data-testid="chip-task-status"
+                />
+                {task.assignedToId && (
+                  <Chip 
+                    label={`Dodijeljeno: ${getAssignedUserName(task.assignedToId)}`} 
+                    variant="outlined"
+                    data-testid="chip-task-assigned"
+                  />
+                )}
+                {task.dueDate && (
+                  <Chip 
+                    label={`Rok: ${new Date(task.dueDate).toLocaleDateString('hr-HR')}`} 
+                    variant="outlined"
+                    data-testid="chip-task-due-date"
+                  />
+                )}
+              </Box>
+              
+              {/* Action Buttons */}
+              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                {isAssignedUser && task.status !== 'na_cekanju' && task.status !== 'završeno' && (
+                  <Button
+                    variant="contained"
+                    color="warning"
+                    onClick={handleMarkPending}
+                    data-testid="button-mark-pending"
+                  >
+                    Označiti kao završeno
+                  </Button>
+                )}
+                {isModeratorOrAdmin && task.status === 'na_cekanju' && (
+                  <Button
+                    variant="contained"
+                    color="success"
+                    onClick={handleApproveTask}
+                    data-testid="button-approve-task"
+                  >
+                    Odobri kao završeno
+                  </Button>
+                )}
+              </Box>
+            </Box>
+          )}
 
-            {/* Comments List */}
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, maxHeight: 200, overflowY: 'auto' }}>
-              {commentsQuery.data && Array.isArray(commentsQuery.data) && commentsQuery.data.length > 0 ? (
-                commentsQuery.data.map((comment: any) => (
-                  <Card key={comment.id} variant="outlined">
-                    <CardContent sx={{ py: 1 }}>
-                      <Typography variant="caption" color="text.secondary">
-                        {comment.user ? `${comment.user.firstName} ${comment.user.lastName}` : 'Nepoznat korisnik'} • {new Date(comment.createdAt).toLocaleDateString('hr-HR')}
-                      </Typography>
-                      <Typography variant="body2" sx={{ mt: 0.5 }}>
-                        {comment.content}
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                ))
+          {/* Comments Section */}
+          {!isEditing && (
+            <Box>
+              <Typography variant="h6" sx={{ mb: 2 }}>Komentari</Typography>
+              
+              {/* Add Comment */}
+              <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
+                <TextField
+                  variant="outlined"
+                  placeholder="Dodaj komentar..."
+                  value={newComment}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewComment(e.target.value)}
+                  fullWidth
+                  size="small"
+                  data-testid="input-new-comment"
+                />
+                <Button 
+                  onClick={handleAddComment} 
+                  variant="contained" 
+                  disabled={!newComment.trim()}
+                  data-testid="button-add-comment"
+                >
+                  Dodaj
+                </Button>
+              </Box>
+
+              {/* Comments List */}
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, maxHeight: 200, overflowY: 'auto' }}>
+                {commentsQuery.data && Array.isArray(commentsQuery.data) && commentsQuery.data.length > 0 ? (
+                  commentsQuery.data.map((comment: any) => (
+                    <Card key={comment.id} variant="outlined">
+                      <CardContent sx={{ py: 1 }}>
+                        <Typography variant="caption" color="text.secondary">
+                          {comment.user ? `${comment.user.firstName} ${comment.user.lastName}` : 'Nepoznat korisnik'} • {new Date(comment.createdAt).toLocaleDateString('hr-HR')}
+                        </Typography>
+                        <Typography variant="body2" sx={{ mt: 0.5 }}>
+                          {comment.content}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  ))
+                ) : (
+                  <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
+                    Nema komentara
+                  </Typography>
+                )}
+              </Box>
+            </Box>
+          )}
+
+          {/* Files Section */}
+          {!isEditing && (
+            <Box>
+              <Typography variant="h6" sx={{ mb: 2 }}>Fajlovi grupe</Typography>
+              {filesQuery.data && Array.isArray(filesQuery.data) && filesQuery.data.length > 0 ? (
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                  {filesQuery.data.map((file: any) => (
+                    <Card key={file.id} variant="outlined">
+                      <CardContent sx={{ py: 1 }}>
+                        <Typography variant="body2">{file.fileName}</Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {file.uploadedBy ? `${file.uploadedBy.firstName} ${file.uploadedBy.lastName}` : 'Nepoznat korisnik'} • {new Date(file.uploadedAt).toLocaleDateString('hr-HR')}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </Box>
               ) : (
                 <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
-                  Nema komentara
+                  Nema fajlova
                 </Typography>
               )}
             </Box>
-          </Box>
-
-          {/* Files Section */}
-          <Box>
-            <Typography variant="h6" sx={{ mb: 2 }}>Fajlovi grupe</Typography>
-            {filesQuery.data && Array.isArray(filesQuery.data) && filesQuery.data.length > 0 ? (
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                {filesQuery.data.map((file: any) => (
-                  <Card key={file.id} variant="outlined">
-                    <CardContent sx={{ py: 1 }}>
-                      <Typography variant="body2">{file.fileName}</Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {file.uploadedBy ? `${file.uploadedBy.firstName} ${file.uploadedBy.lastName}` : 'Nepoznat korisnik'} • {new Date(file.uploadedAt).toLocaleDateString('hr-HR')}
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                ))}
-              </Box>
-            ) : (
-              <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
-                Nema fajlova
-              </Typography>
-            )}
-          </Box>
+          )}
         </Box>
       </DialogContent>
     </Dialog>
@@ -782,22 +1049,28 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
   };
 
   const handleMarkCompleted = (taskId: string) => {
-    updateTaskMutation.mutate({ taskId, status: 'completed' });
+    updateTaskMutation.mutate({ taskId, status: 'na_cekanju' });
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return 'success';
-      case 'in_progress': return 'warning';
+      case 'u_toku': return 'primary';
+      case 'na_cekanju': return 'warning';
+      case 'završeno': return 'success';
+      case 'otkazano': return 'error';
+      case 'arhiva': return 'default';
       default: return 'default';
     }
   };
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case 'completed': return 'Završeno';
-      case 'in_progress': return 'U tijeku';
-      default: return 'Za uraditi';
+      case 'u_toku': return 'U toku';
+      case 'na_cekanju': return 'Na čekanju';
+      case 'završeno': return 'Završeno';
+      case 'otkazano': return 'Otkazano';
+      case 'arhiva': return 'Arhiva';
+      default: return status;
     }
   };
 
@@ -867,11 +1140,11 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
                     </Box>
                   </Box>
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                    {task.status !== 'completed' && task.assignedToId === currentUser?.id && (
+                    {task.status !== 'završeno' && task.status !== 'na_cekanju' && task.assignedToId === currentUser?.id && (
                       <Button
                         size="small"
                         variant="outlined"
-                        color="success"
+                        color="warning"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleMarkCompleted(task.id);
@@ -919,10 +1192,18 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
       {/* Task Detail Dialog */}
       <TaskDetailDialog
         open={taskDetailOpen}
-        onClose={() => setTaskDetailOpen(false)}
+        onClose={() => {
+          setTaskDetailOpen(false);
+          setSelectedTask(null);
+        }}
         task={selectedTask}
         workGroup={workGroup}
         currentUser={currentUser}
+        isModeratorOrAdmin={isModeratorOrAdmin()}
+        members={Array.isArray(membersQuery.data) ? membersQuery.data : []}
+        onTaskUpdated={() => {
+          queryClient.invalidateQueries({ queryKey: ['/api/work-groups', workGroup?.id, 'tasks'] });
+        }}
       />
     </Box>
   );

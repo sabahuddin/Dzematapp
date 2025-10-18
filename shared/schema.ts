@@ -85,7 +85,7 @@ export const tasks = pgTable("tasks", {
   description: text("description"),
   workGroupId: varchar("work_group_id").notNull().references(() => workGroups.id),
   assignedToId: varchar("assigned_to_id").references(() => users.id),
-  status: text("status").notNull().default("todo"), // todo, in_progress, completed
+  status: text("status").notNull().default("u_toku"), // u_toku, na_cekanju, završeno, otkazano, arhiva
   dueDate: timestamp("due_date"),
   createdAt: timestamp("created_at").defaultNow(),
 });
