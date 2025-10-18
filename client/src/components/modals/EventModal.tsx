@@ -14,7 +14,9 @@ import {
   MenuItem,
   Select,
   FormControl,
-  InputLabel
+  InputLabel,
+  Autocomplete,
+  Chip
 } from '@mui/material';
 import { Close, CalendarMonth } from '@mui/icons-material';
 import { Event } from '@shared/schema';
@@ -44,8 +46,20 @@ export default function EventModal({
     rsvpEnabled: true,
     requireAdultsChildren: false,
     maxAttendees: '',
-    reminderTime: ''
+    reminderTime: '',
+    categories: [] as string[]
   });
+
+  const predefinedCategories = [
+    'Iftar',
+    'Mevlud',
+    'Edukacija',
+    'Sport',
+    'Humanitarno',
+    'Omladina',
+    'Halka',
+    'Socijalno'
+  ];
 
   useEffect(() => {
     if (event) {
@@ -57,7 +71,8 @@ export default function EventModal({
         rsvpEnabled: event.rsvpEnabled ?? true,
         requireAdultsChildren: event.requireAdultsChildren ?? false,
         maxAttendees: event.maxAttendees?.toString() || '',
-        reminderTime: event.reminderTime || ''
+        reminderTime: event.reminderTime || '',
+        categories: event.categories || []
       });
     } else {
       setFormData({
@@ -68,7 +83,8 @@ export default function EventModal({
         rsvpEnabled: true,
         requireAdultsChildren: false,
         maxAttendees: '',
-        reminderTime: ''
+        reminderTime: '',
+        categories: []
       });
     }
   }, [event, open]);
@@ -87,7 +103,8 @@ export default function EventModal({
       createdById,
       dateTime: new Date(formData.dateTime).toISOString(),
       maxAttendees: formData.maxAttendees ? parseInt(formData.maxAttendees, 10) : null,
-      reminderTime: formData.reminderTime || null
+      reminderTime: formData.reminderTime || null,
+      categories: formData.categories.length > 0 ? formData.categories : null
     });
     onClose();
   };
@@ -140,6 +157,35 @@ export default function EventModal({
               label="Detaljan Opis"
               placeholder="Unesite detaljan opis događaja..."
               data-testid="input-description"
+            />
+
+            <Autocomplete
+              multiple
+              freeSolo
+              options={predefinedCategories}
+              value={formData.categories}
+              onChange={(event, newValue) => {
+                setFormData(prev => ({ ...prev, categories: newValue }));
+              }}
+              renderTags={(value, getTagProps) =>
+                value.map((option, index) => (
+                  <Chip
+                    label={option}
+                    {...getTagProps({ index })}
+                    data-testid={`chip-category-${index}`}
+                  />
+                ))
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  label="Kategorije"
+                  placeholder="Odaberite ili unesite kategoriju"
+                  data-testid="input-categories"
+                />
+              )}
+              data-testid="autocomplete-categories"
             />
             
             <Grid container spacing={2}>
