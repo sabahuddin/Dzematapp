@@ -283,34 +283,32 @@
     border-width: 2px !important;
   }
 
-  /* Fix for TextField label positioning - proper spacing from border */
-  .MuiInputLabel-outlined,
-  .MuiTextField-root .MuiInputLabel-outlined,
-  .MuiFormControl-root .MuiInputLabel-outlined,
-  .MuiAutocomplete-root .MuiInputLabel-outlined {
-    background-color: var(--mui-background-paper) !important;
+  /* GLOBAL FIX: TextField label spacing - works for ALL forms in the app */
+  label.MuiInputLabel-outlined {
+    background-color: white !important;
     padding-left: 10px !important;
     padding-right: 10px !important;
     margin-left: 2px !important;
   }
 
-  .MuiInputLabel-outlined.MuiInputLabel-shrink,
-  .MuiTextField-root .MuiInputLabel-outlined.MuiInputLabel-shrink,
-  .MuiFormControl-root .MuiInputLabel-outlined.MuiInputLabel-shrink,
-  .MuiAutocomplete-root .MuiInputLabel-outlined.MuiInputLabel-shrink {
-    background-color: var(--mui-background-paper) !important;
+  label.MuiInputLabel-outlined.MuiInputLabel-shrink {
+    background-color: white !important;
     padding-left: 10px !important;
     padding-right: 10px !important;
     margin-left: 2px !important;
   }
 
-  /* Ensure notched outline has proper spacing for label - this creates the gap */
-  .MuiOutlinedInput-notchedOutline legend,
-  .MuiTextField-root .MuiOutlinedInput-notchedOutline legend,
-  .MuiFormControl-root .MuiOutlinedInput-notchedOutline legend {
+  /* GLOBAL FIX: Border gap for label - works for ALL forms */
+  .MuiOutlinedInput-notchedOutline > legend {
     padding-left: 8px !important;
     padding-right: 8px !important;
     margin-left: 4px !important;
+  }
+  
+  /* Dark mode support */
+  .dark label.MuiInputLabel-outlined,
+  .dark label.MuiInputLabel-outlined.MuiInputLabel-shrink {
+    background-color: var(--mui-background-paper) !important;
   }
 
   /* Sidebar customizations */
