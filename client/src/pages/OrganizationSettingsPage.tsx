@@ -1,7 +1,7 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Box, Container, Typography, Paper, Grid, Alert } from "@mui/material";
+import { Box, Container, Typography, Paper, Alert } from "@mui/material";
 import { Button } from "@/components/ui/button";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -14,9 +14,9 @@ import { Settings, Building, Phone, Mail, Facebook, Instagram, Youtube, Twitter 
 export default function OrganizationSettingsPage() {
   const { toast } = useToast();
 
-  const { data: settings, isLoading } = useQuery<OrganizationSettings>({
+  const { data: settings, isLoading } = useQuery({
     queryKey: ["/api/organization-settings"]
-  });
+  }) as { data: OrganizationSettings | undefined; isLoading: boolean };
 
   const form = useForm<InsertOrganizationSettings>({
     resolver: zodResolver(insertOrganizationSettingsSchema),
@@ -34,10 +34,10 @@ export default function OrganizationSettingsPage() {
 
   const updateMutation = useMutation({
     mutationFn: async (data: InsertOrganizationSettings) => {
-      return await apiRequest<OrganizationSettings>("/api/organization-settings", {
+      return await apiRequest("/api/organization-settings", {
         method: "PUT",
         body: JSON.stringify(data)
-      });
+      }) as OrganizationSettings;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/organization-settings"] });
@@ -97,46 +97,42 @@ export default function OrganizationSettingsPage() {
                 <Building size={20} />
                 Osnovni podaci
               </Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Naziv organizacije</FormLabel>
-                        <FormControl>
-                          <Input 
-                            {...field} 
-                            placeholder="Islamska Zajednica" 
-                            data-testid="input-org-name"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <FormField
-                    control={form.control}
-                    name="address"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Adresa</FormLabel>
-                        <FormControl>
-                          <Input 
-                            {...field} 
-                            placeholder="Ulica Džemata 123" 
-                            data-testid="input-org-address"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </Grid>
-              </Grid>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Naziv organizacije</FormLabel>
+                      <FormControl>
+                        <Input 
+                          {...field} 
+                          placeholder="Islamska Zajednica" 
+                          data-testid="input-org-name"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="address"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Adresa</FormLabel>
+                      <FormControl>
+                        <Input 
+                          {...field} 
+                          placeholder="Ulica Džemata 123" 
+                          data-testid="input-org-address"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </Box>
             </Box>
 
             {/* Contact Information */}
@@ -145,8 +141,8 @@ export default function OrganizationSettingsPage() {
                 <Phone size={20} />
                 Kontakt podaci
               </Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={6}>
+              <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 2 }}>
+                <Box sx={{ flex: 1 }}>
                   <FormField
                     control={form.control}
                     name="phone"
@@ -164,8 +160,8 @@ export default function OrganizationSettingsPage() {
                       </FormItem>
                     )}
                   />
-                </Grid>
-                <Grid item xs={12} md={6}>
+                </Box>
+                <Box sx={{ flex: 1 }}>
                   <FormField
                     control={form.control}
                     name="email"
@@ -184,8 +180,8 @@ export default function OrganizationSettingsPage() {
                       </FormItem>
                     )}
                   />
-                </Grid>
-              </Grid>
+                </Box>
+              </Box>
             </Box>
 
             {/* Social Media */}
@@ -193,100 +189,104 @@ export default function OrganizationSettingsPage() {
               <Typography variant="h6" sx={{ mb: 2 }}>
                 Društvene mreže
               </Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={6}>
-                  <FormField
-                    control={form.control}
-                    name="facebookUrl"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="flex items-center gap-2">
-                          <Facebook size={16} />
-                          Facebook URL
-                        </FormLabel>
-                        <FormControl>
-                          <Input 
-                            {...field} 
-                            value={field.value || ""}
-                            placeholder="https://facebook.com/vasa-stranica" 
-                            data-testid="input-org-facebook"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <FormField
-                    control={form.control}
-                    name="instagramUrl"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="flex items-center gap-2">
-                          <Instagram size={16} />
-                          Instagram URL
-                        </FormLabel>
-                        <FormControl>
-                          <Input 
-                            {...field} 
-                            value={field.value || ""}
-                            placeholder="https://instagram.com/vas-nalog" 
-                            data-testid="input-org-instagram"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <FormField
-                    control={form.control}
-                    name="youtubeUrl"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="flex items-center gap-2">
-                          <Youtube size={16} />
-                          YouTube URL
-                        </FormLabel>
-                        <FormControl>
-                          <Input 
-                            {...field} 
-                            value={field.value || ""}
-                            placeholder="https://youtube.com/@vas-kanal" 
-                            data-testid="input-org-youtube"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <FormField
-                    control={form.control}
-                    name="twitterUrl"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="flex items-center gap-2">
-                          <Twitter size={16} />
-                          X (Twitter) URL
-                        </FormLabel>
-                        <FormControl>
-                          <Input 
-                            {...field} 
-                            value={field.value || ""}
-                            placeholder="https://x.com/vas-nalog" 
-                            data-testid="input-org-twitter"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </Grid>
-              </Grid>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 2 }}>
+                  <Box sx={{ flex: 1 }}>
+                    <FormField
+                      control={form.control}
+                      name="facebookUrl"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center gap-2">
+                            <Facebook size={16} />
+                            Facebook URL
+                          </FormLabel>
+                          <FormControl>
+                            <Input 
+                              {...field} 
+                              value={field.value || ""}
+                              placeholder="https://facebook.com/vasa-stranica" 
+                              data-testid="input-org-facebook"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </Box>
+                  <Box sx={{ flex: 1 }}>
+                    <FormField
+                      control={form.control}
+                      name="instagramUrl"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center gap-2">
+                            <Instagram size={16} />
+                            Instagram URL
+                          </FormLabel>
+                          <FormControl>
+                            <Input 
+                              {...field} 
+                              value={field.value || ""}
+                              placeholder="https://instagram.com/vas-nalog" 
+                              data-testid="input-org-instagram"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </Box>
+                </Box>
+                <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 2 }}>
+                  <Box sx={{ flex: 1 }}>
+                    <FormField
+                      control={form.control}
+                      name="youtubeUrl"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center gap-2">
+                            <Youtube size={16} />
+                            YouTube URL
+                          </FormLabel>
+                          <FormControl>
+                            <Input 
+                              {...field} 
+                              value={field.value || ""}
+                              placeholder="https://youtube.com/@vas-kanal" 
+                              data-testid="input-org-youtube"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </Box>
+                  <Box sx={{ flex: 1 }}>
+                    <FormField
+                      control={form.control}
+                      name="twitterUrl"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center gap-2">
+                            <Twitter size={16} />
+                            X (Twitter) URL
+                          </FormLabel>
+                          <FormControl>
+                            <Input 
+                              {...field} 
+                              value={field.value || ""}
+                              placeholder="https://x.com/vas-nalog" 
+                              data-testid="input-org-twitter"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </Box>
+                </Box>
+              </Box>
             </Box>
 
             <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
