@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Box,
@@ -23,7 +23,11 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   Paper,
-  Chip
+  Chip,
+  FormControl,
+  InputLabel,
+  Select,
+  SelectChangeEvent
 } from '@mui/material';
 import {
   Add,
@@ -266,6 +270,7 @@ export default function EventsPage() {
   const [eventToDelete, setEventToDelete] = useState<Event | null>(null);
   const [rsvpDialogOpen, setRsvpDialogOpen] = useState(false);
   const [selectedEventRsvps, setSelectedEventRsvps] = useState<EventRsvp[]>([]);
+  const [categoryFilter, setCategoryFilter] = useState<string>('');
 
   const eventsQuery = useQuery<Event[]>({
     queryKey: ['/api/events'],
@@ -397,6 +402,29 @@ export default function EventsPage() {
     return mockCounts[event.name] || 0;
   };
 
+  // Get all unique categories from events
+  const allCategories = useMemo(() => {
+    const categories = new Set<string>();
+    (eventsQuery.data || []).forEach(event => {
+      if (event.categories) {
+        event.categories.forEach(cat => categories.add(cat));
+      }
+    });
+    return Array.from(categories).sort();
+  }, [eventsQuery.data]);
+
+  // Filter events by category
+  const filteredEvents = useMemo(() => {
+    if (!categoryFilter) return eventsQuery.data || [];
+    return (eventsQuery.data || []).filter(event => 
+      event.categories && event.categories.includes(categoryFilter)
+    );
+  }, [eventsQuery.data, categoryFilter]);
+
+  const handleCategoryChange = (event: SelectChangeEvent<string>) => {
+    setCategoryFilter(event.target.value);
+  };
+
   if (eventsQuery.isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
@@ -448,6 +476,39 @@ export default function EventsPage() {
         </Box>
       </Box>
 
+      {/* Category Filter */}
+      {allCategories.length > 0 && (
+        <Box sx={{ mb: 3 }}>
+          <FormControl sx={{ minWidth: 250 }}>
+            <InputLabel>Filtriraj po kategoriji</InputLabel>
+            <Select
+              value={categoryFilter}
+              onChange={handleCategoryChange}
+              label="Filtriraj po kategoriji"
+              data-testid="select-category-filter"
+            >
+              <MenuItem value="">
+                <em>Sve kategorije</em>
+              </MenuItem>
+              {allCategories.map(category => (
+                <MenuItem key={category} value={category}>
+                  {category}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          {categoryFilter && (
+            <Chip
+              label={`Filter: ${categoryFilter}`}
+              onDelete={() => setCategoryFilter('')}
+              sx={{ ml: 2 }}
+              color="primary"
+              data-testid="chip-active-filter"
+            />
+          )}
+        </Box>
+      )}
+
       {viewMode === 'list' && (
         <Card>
           <TableContainer>
@@ -457,12 +518,13 @@ export default function EventsPage() {
                   <TableCell sx={{ fontWeight: 600 }}>Naziv Događaja</TableCell>
                   <TableCell sx={{ fontWeight: 600 }}>Datum i Vrijeme</TableCell>
                   <TableCell sx={{ fontWeight: 600 }}>Lokacija</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Kategorije</TableCell>
                   <TableCell sx={{ fontWeight: 600 }}>RSVP</TableCell>
                   <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {(eventsQuery.data || []).map((event: Event) => {
+                {filteredEvents.map((event: Event) => {
                   const rsvpCount = getRsvpCount(event);
                   const maxAttendees = event.maxAttendees || '∞';
                   return (
@@ -470,6 +532,24 @@ export default function EventsPage() {
                       <TableCell>{event.name}</TableCell>
                       <TableCell>{formatDateTime(event.dateTime.toString())}</TableCell>
                       <TableCell>{event.location}</TableCell>
+                      <TableCell>
+                        {event.categories && event.categories.length > 0 ? (
+                          <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+                            {event.categories.map((cat, idx) => (
+                              <Chip 
+                                key={idx} 
+                                label={cat} 
+                                size="small" 
+                                color="primary"
+                                variant="outlined"
+                                data-testid={`chip-event-category-${idx}`}
+                              />
+                            ))}
+                          </Box>
+                        ) : (
+                          <Typography variant="body2" color="text.secondary">-</Typography>
+                        )}
+                      </TableCell>
                       <TableCell>
                         {event.rsvpEnabled ? `${rsvpCount}/${maxAttendees}` : 'Onemogućeno'}
                       </TableCell>
@@ -484,11 +564,11 @@ export default function EventsPage() {
                     </TableRow>
                   );
                 })}
-                {(eventsQuery.data || []).length === 0 && (
+                {filteredEvents.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={5} sx={{ textAlign: 'center', py: 4 }}>
+                    <TableCell colSpan={6} sx={{ textAlign: 'center', py: 4 }}>
                       <Typography color="text.secondary">
-                        Nema događaja
+                        {categoryFilter ? 'Nema događaja za odabranu kategoriju' : 'Nema događaja'}
                       </Typography>
                     </TableCell>
                   </TableRow>
@@ -500,11 +580,11 @@ export default function EventsPage() {
       )}
 
       {viewMode === 'week' && (
-        <WeekView events={eventsQuery.data || []} onEventClick={handleEventClick} />
+        <WeekView events={filteredEvents} onEventClick={handleEventClick} />
       )}
 
       {viewMode === 'month' && (
-        <MonthView events={eventsQuery.data || []} onEventClick={handleEventClick} />
+        <MonthView events={filteredEvents} onEventClick={handleEventClick} />
       )}
 
       <Menu
