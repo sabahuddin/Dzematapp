@@ -138,6 +138,17 @@ export const activities = pgTable("activities", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const messages = pgTable("messages", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  senderId: varchar("sender_id").references(() => users.id).notNull(),
+  recipientId: varchar("recipient_id").references(() => users.id),
+  category: text("category"),
+  subject: text("subject").notNull(),
+  content: text("content").notNull(),
+  isRead: boolean("is_read").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -210,6 +221,12 @@ export const insertFamilyRelationshipSchema = createInsertSchema(familyRelations
   createdAt: true,
 });
 
+export const insertMessageSchema = createInsertSchema(messages).omit({
+  id: true,
+  createdAt: true,
+  isRead: true,
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -235,6 +252,8 @@ export type AnnouncementFile = typeof announcementFiles.$inferSelect;
 export type InsertAnnouncementFile = z.infer<typeof insertAnnouncementFileSchema>;
 export type FamilyRelationship = typeof familyRelationships.$inferSelect;
 export type InsertFamilyRelationship = z.infer<typeof insertFamilyRelationshipSchema>;
+export type Message = typeof messages.$inferSelect;
+export type InsertMessage = z.infer<typeof insertMessageSchema>;
 
 // API response types for files with user details
 export type AnnouncementFileWithUser = AnnouncementFile & {

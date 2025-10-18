@@ -16,6 +16,7 @@ import UsersPage from "@/pages/UsersPage";
 import AnnouncementsPage from "@/pages/AnnouncementsPage";
 import EventsPage from "@/pages/EventsPage";
 import TaskManagerPage from "@/pages/TaskManagerPage";
+import MessagesPage from "@/pages/MessagesPage";
 import NotFound from "@/pages/not-found";
 
 // Layout
@@ -127,6 +128,12 @@ function Router() {
       <Route path="/tasks">
         <ProtectedRoute>
           <TaskManagerPage />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path="/messages">
+        <ProtectedRoute>
+          <MessagesPage />
         </ProtectedRoute>
       </Route>
       

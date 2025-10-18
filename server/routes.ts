@@ -6,7 +6,7 @@ import { promises as fs } from "fs";
 import * as XLSX from "xlsx";
 import { storage } from "./storage";
 import { requireAuth, requireAdmin } from "./index";
-import { insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertGroupFileSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema } from "@shared/schema";
+import { insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertGroupFileSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema } from "@shared/schema";
 
 // Configure multer for photo uploads
 const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'photos');
@@ -1320,6 +1320,127 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(relationships);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch family members by relationship" });
+    }
+  });
+
+  // Messages routes
+  app.get("/api/messages", requireAuth, async (req, res) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const messages = await storage.getMessages(req.user.id);
+      
+      const messagesWithSenderInfo = await Promise.all(
+        messages.map(async (msg) => {
+          const sender = await storage.getUser(msg.senderId);
+          const recipient = msg.recipientId ? await storage.getUser(msg.recipientId) : null;
+          
+          return {
+            ...msg,
+            sender: sender ? {
+              id: sender.id,
+              firstName: sender.firstName,
+              lastName: sender.lastName
+            } : null,
+            recipient: recipient ? {
+              id: recipient.id,
+              firstName: recipient.firstName,
+              lastName: recipient.lastName
+            } : null
+          };
+        })
+      );
+      
+      res.json(messagesWithSenderInfo);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch messages" });
+    }
+  });
+
+  app.get("/api/messages/unread-count", requireAuth, async (req, res) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const count = await storage.getUnreadCount(req.user.id);
+      res.json({ count });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch unread count" });
+    }
+  });
+
+  app.post("/api/messages", requireAuth, async (req, res) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const messageData = insertMessageSchema.parse(req.body);
+
+      if (messageData.senderId !== req.user.id) {
+        return res.status(403).json({ message: "Cannot send message as another user" });
+      }
+
+      if (messageData.recipientId === req.user.id) {
+        return res.status(400).json({ message: "Cannot send message to yourself" });
+      }
+
+      if (messageData.category && !messageData.recipientId) {
+        const hasPermission = req.user.isAdmin || req.user.roles?.includes('clan_io');
+        if (!hasPermission) {
+          return res.status(403).json({ message: "Only admins and IO members can send category messages" });
+        }
+      }
+
+      if (!messageData.recipientId && !messageData.category) {
+        return res.status(400).json({ message: "Must specify either recipient or category" });
+      }
+
+      const message = await storage.createMessage(messageData);
+      res.json(message);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid message data" });
+    }
+  });
+
+  app.put("/api/messages/:id/read", requireAuth, async (req, res) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const { id } = req.params;
+      const message = await storage.markAsRead(id, req.user.id);
+      
+      if (!message) {
+        return res.status(404).json({ message: "Message not found or you don't have permission" });
+      }
+
+      res.json(message);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to mark message as read" });
+    }
+  });
+
+  app.delete("/api/messages/:id", requireAuth, async (req, res) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const { id } = req.params;
+      const deleted = await storage.deleteMessage(id);
+      
+      if (!deleted) {
+        return res.status(404).json({ message: "Message not found" });
+      }
+
+      res.json({ message: "Message deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete message" });
     }
   });
 

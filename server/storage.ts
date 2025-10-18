@@ -23,7 +23,9 @@ import {
   type InsertAnnouncementFile,
   type Activity,
   type FamilyRelationship,
-  type InsertFamilyRelationship
+  type InsertFamilyRelationship,
+  type Message,
+  type InsertMessage
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -115,6 +117,13 @@ export interface IStorage {
   deleteFamilyRelationship(id: string): Promise<boolean>;
   getFamilyMembersByRelationship(userId: string, relationship: string): Promise<FamilyRelationship[]>;
 
+  // Messages
+  getMessages(userId: string): Promise<Message[]>;
+  createMessage(messageData: InsertMessage): Promise<Message>;
+  markAsRead(messageId: string, userId: string): Promise<Message | undefined>;
+  deleteMessage(messageId: string): Promise<boolean>;
+  getUnreadCount(userId: string): Promise<number>;
+
   // Statistics
   getUserCount(): Promise<number>;
   getNewAnnouncementsCount(days: number): Promise<number>;
@@ -136,6 +145,7 @@ export class MemStorage implements IStorage {
   private announcementFiles: Map<string, AnnouncementFile> = new Map();
   private activities: Map<string, Activity> = new Map();
   private familyRelationships: Map<string, FamilyRelationship> = new Map();
+  private messages: Map<string, Message> = new Map();
 
   constructor() {
     this.initializeData();
@@ -935,6 +945,74 @@ export class MemStorage implements IStorage {
         rel.relationship === relationship
       )
       .sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
+  }
+
+  // Message methods
+  async getMessages(userId: string): Promise<Message[]> {
+    const user = await this.getUser(userId);
+    const userCategories = user?.categories || [];
+    
+    return Array.from(this.messages.values())
+      .filter(msg => 
+        msg.senderId === userId || 
+        msg.recipientId === userId || 
+        (msg.category && userCategories.includes(msg.category))
+      )
+      .sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
+  }
+
+  async createMessage(insertMessage: InsertMessage): Promise<Message> {
+    const id = randomUUID();
+    const message: Message = {
+      id,
+      senderId: insertMessage.senderId,
+      recipientId: insertMessage.recipientId || null,
+      category: insertMessage.category || null,
+      subject: insertMessage.subject,
+      content: insertMessage.content,
+      isRead: false,
+      createdAt: new Date()
+    };
+    this.messages.set(id, message);
+    
+    await this.createActivity({
+      type: "message",
+      description: `Poruka poslana: ${message.subject}`,
+      userId: message.senderId
+    });
+    
+    return message;
+  }
+
+  async markAsRead(messageId: string, userId: string): Promise<Message | undefined> {
+    const message = this.messages.get(messageId);
+    if (!message) return undefined;
+    
+    const user = await this.getUser(userId);
+    const userCategories = user?.categories || [];
+    
+    if (message.recipientId === userId || (message.category && userCategories.includes(message.category))) {
+      const updatedMessage: Message = {
+        ...message,
+        isRead: true
+      };
+      this.messages.set(messageId, updatedMessage);
+      return updatedMessage;
+    }
+    
+    return undefined;
+  }
+
+  async deleteMessage(messageId: string): Promise<boolean> {
+    return this.messages.delete(messageId);
+  }
+
+  async getUnreadCount(userId: string): Promise<number> {
+    const messages = await this.getMessages(userId);
+    return messages.filter(msg => 
+      !msg.isRead && 
+      (msg.recipientId === userId || msg.category)
+    ).length;
   }
 }
 

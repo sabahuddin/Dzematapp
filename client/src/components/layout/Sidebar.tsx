@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocation } from 'wouter';
+import { useQuery } from '@tanstack/react-query';
 import {
   Drawer,
   List,
@@ -12,7 +13,8 @@ import {
   IconButton,
   useTheme,
   useMediaQuery,
-  Divider
+  Divider,
+  Badge
 } from '@mui/material';
 import {
   Dashboard,
@@ -21,7 +23,8 @@ import {
   Event,
   Task,
   Hub,
-  Menu
+  Menu,
+  Mail
 } from '@mui/icons-material';
 
 interface SidebarProps {
@@ -38,12 +41,18 @@ const menuItems = [
   { path: '/announcements', label: 'Obavijesti', icon: Campaign },
   { path: '/events', label: 'Događaji', icon: Event },
   { path: '/tasks', label: 'Task Manager', icon: Task },
+  { path: '/messages', label: 'Poruke', icon: Mail, showBadge: true },
 ];
 
 export default function Sidebar({ open, collapsed, onToggle, onClose, width }: SidebarProps) {
   const [location, setLocation] = useLocation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  const { data: unreadCount } = useQuery<{ count: number }>({
+    queryKey: ['/api/messages/unread-count'],
+    refetchInterval: 30000,
+  });
 
   const handleNavigation = (path: string) => {
     setLocation(path);
@@ -85,6 +94,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = location === item.path;
+          const showUnreadBadge = item.showBadge && unreadCount && unreadCount.count > 0;
           
           return (
             <ListItem key={item.path} disablePadding>
@@ -104,7 +114,13 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
                 data-testid={`nav-${item.path.slice(1)}`}
               >
                 <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
-                  <Icon />
+                  {showUnreadBadge ? (
+                    <Badge badgeContent={unreadCount.count} color="error" data-testid="badge-unread-messages">
+                      <Icon />
+                    </Badge>
+                  ) : (
+                    <Icon />
+                  )}
                 </ListItemIcon>
                 {!collapsed && <ListItemText primary={item.label} />}
               </ListItemButton>
