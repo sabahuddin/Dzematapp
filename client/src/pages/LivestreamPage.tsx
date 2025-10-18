@@ -1,141 +1,226 @@
+import { useQuery } from "@tanstack/react-query";
+import { Container, Box, Typography, Paper, Alert } from "@mui/material";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Radio, PlayCircle, Calendar, Clock } from "lucide-react";
+import { Radio, PlayCircle, AlertCircle } from "lucide-react";
+import type { OrganizationSettings } from "@shared/schema";
 
 export default function LivestreamPage() {
+  const { data: settings, isLoading } = useQuery({
+    queryKey: ["/api/organization-settings"]
+  }) as { data: OrganizationSettings | undefined; isLoading: boolean };
+
+  // Check if the content is an iframe embed or a URL
+  const isEmbedCode = (content: string) => {
+    return content.trim().startsWith('<iframe') || content.includes('<embed');
+  };
+
+  // Extract YouTube video ID from URL if it's a YouTube link
+  const getYouTubeEmbedUrl = (url: string) => {
+    const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+    const match = url.match(youtubeRegex);
+    if (match && match[1]) {
+      return `https://www.youtube.com/embed/${match[1]}?autoplay=1`;
+    }
+    return null;
+  };
+
+  const renderLivestream = () => {
+    if (!settings?.livestreamUrl) {
+      return null;
+    }
+
+    const content = settings.livestreamUrl.trim();
+
+    // If it's an embed code, render it directly
+    if (isEmbedCode(content)) {
+      return (
+        <Box 
+          sx={{ 
+            aspectRatio: '16/9', 
+            width: '100%',
+            '& iframe': {
+              width: '100%',
+              height: '100%',
+              border: 'none',
+              borderRadius: '8px'
+            }
+          }}
+          dangerouslySetInnerHTML={{ __html: content }}
+          data-testid="livestream-embed"
+        />
+      );
+    }
+
+    // Try to extract YouTube embed URL
+    const youtubeEmbed = getYouTubeEmbedUrl(content);
+    if (youtubeEmbed) {
+      return (
+        <Box sx={{ aspectRatio: '16/9', width: '100%' }}>
+          <iframe
+            src={youtubeEmbed}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            style={{
+              width: '100%',
+              height: '100%',
+              border: 'none',
+              borderRadius: '8px'
+            }}
+            data-testid="livestream-youtube"
+          />
+        </Box>
+      );
+    }
+
+    // If it's a regular URL, show it as a link
+    return (
+      <Box 
+        sx={{ 
+          aspectRatio: '16/9', 
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          bgcolor: 'grey.100',
+          borderRadius: '8px',
+          p: 3
+        }}
+      >
+        <Box sx={{ textAlign: 'center' }}>
+          <PlayCircle size={48} className="mx-auto mb-4 text-muted-foreground" />
+          <Typography variant="body1" gutterBottom>
+            Livestream je dostupan na vanjskoj platformi
+          </Typography>
+          <a 
+            href={content} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-primary hover:underline"
+            data-testid="livestream-external-link"
+          >
+            Otvori livestream
+          </a>
+        </Box>
+      </Box>
+    );
+  };
+
+  if (isLoading) {
+    return (
+      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Typography>Učitavanje...</Typography>
+      </Container>
+    );
+  }
+
   return (
-    <div className="p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Livestream</h1>
-        <p className="text-muted-foreground">
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      <Box sx={{ mb: 3 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
+          <Radio size={32} />
+          <Typography variant="h4" component="h1">
+            Livestream
+          </Typography>
+        </Box>
+        <Typography variant="body1" color="text.secondary">
           Pratite LIVE dešavanja iz džemata
-        </p>
-      </div>
+        </Typography>
+      </Box>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        {/* Live Stream Card */}
-        <Card className="border-2 border-primary/20">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <Radio className="h-5 w-5 text-primary animate-pulse" />
-                LIVE Prenos
-              </CardTitle>
-              <Badge variant="destructive" className="animate-pulse">
-                <span className="flex items-center gap-1">
-                  <span className="h-2 w-2 bg-white rounded-full"></span>
-                  USKORO
-                </span>
-              </Badge>
-            </div>
-            <CardDescription>
-              Video i audio prijenos dešavanja iz džemata
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="aspect-video bg-muted rounded-lg flex items-center justify-center mb-4">
-              <div className="text-center space-y-4">
-                <PlayCircle className="h-16 w-16 mx-auto text-muted-foreground" />
-                <p className="text-muted-foreground">
-                  Live stream funkcionalnost će biti dostupna uskoro
-                </p>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">
-                Ovdje će korisnici moći pratiti:
-              </p>
-              <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
-                <li>Dženaza namaza</li>
-                <li>Predavanja i hutbe</li>
-                <li>Specijalni događaji</li>
-                <li>Teravija namaza (Ramazan)</li>
-              </ul>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Upcoming Schedule Card */}
+      {settings?.livestreamEnabled && settings?.livestreamUrl ? (
+        <>
+          {settings.livestreamTitle && (
+            <Alert severity="info" sx={{ mb: 3 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Badge variant="destructive" className="animate-pulse">
+                  <span className="flex items-center gap-1">
+                    <span className="h-2 w-2 bg-white rounded-full"></span>
+                    UŽIVO
+                  </span>
+                </Badge>
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  {settings.livestreamTitle}
+                </Typography>
+              </Box>
+            </Alert>
+          )}
+          
+          <Paper sx={{ p: 3, mb: 3 }}>
+            {renderLivestream()}
+          </Paper>
+        </>
+      ) : (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Calendar className="h-5 w-5" />
-              Raspored Prijenosa
+              <AlertCircle className="h-5 w-5" />
+              Trenutno nema aktivnog livestream-a
             </CardTitle>
             <CardDescription>
-              Planirani live prijenosi
+              Livestream će biti dostupan kada administrator aktivira prenos
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              <div className="p-4 bg-muted rounded-lg">
-                <div className="flex items-start justify-between mb-2">
-                  <div>
-                    <h4 className="font-semibold">Hutba - Džuma namaz</h4>
-                    <p className="text-sm text-muted-foreground">Svaki petak</p>
-                  </div>
-                  <Badge variant="outline">Sedmično</Badge>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Clock className="h-4 w-4" />
-                  <span>13:00 - 13:30</span>
-                </div>
-              </div>
-
-              <div className="p-4 bg-muted rounded-lg opacity-60">
-                <div className="flex items-start justify-between mb-2">
-                  <div>
-                    <h4 className="font-semibold">Predavanje</h4>
-                    <p className="text-sm text-muted-foreground">Po najavi</p>
-                  </div>
-                  <Badge variant="outline">Povremeno</Badge>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Clock className="h-4 w-4" />
-                  <span>Vrijeme se objavljuje naknadno</span>
-                </div>
-              </div>
-
-              <div className="text-center pt-4">
-                <Button variant="outline" disabled>
-                  <PlayCircle className="h-4 w-4 mr-2" />
-                  Pokreni Livestream
-                </Button>
-                <p className="text-xs text-muted-foreground mt-2">
-                  (Funkcionalnost u razvoju)
-                </p>
-              </div>
-            </div>
+            <Box sx={{ 
+              aspectRatio: '16/9', 
+              bgcolor: 'grey.100', 
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              mb: 3
+            }}>
+              <Box sx={{ textAlign: 'center', p: 4 }}>
+                <PlayCircle size={64} className="mx-auto mb-4 text-muted-foreground" />
+                <Typography variant="h6" gutterBottom>
+                  Livestream nije aktivan
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Ovdje će biti prikazan prenos kada administrator postavi livestream
+                </Typography>
+              </Box>
+            </Box>
+            
+            <Box sx={{ bgcolor: 'grey.50', p: 3, borderRadius: '8px' }}>
+              <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 600 }}>
+                Ovdje možete pratiti:
+              </Typography>
+              <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
+                <li>Dženaza namaza</li>
+                <li>Hutbe i predavanja</li>
+                <li>Specijalne događaje</li>
+                <li>Teravija namaza (Ramazan)</li>
+              </ul>
+            </Box>
           </CardContent>
         </Card>
-      </div>
+      )}
 
       {/* Info Section */}
-      <Card>
+      <Card sx={{ mt: 3 }}>
         <CardHeader>
           <CardTitle>O Live Prijenosu</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="prose prose-sm max-w-none">
-            <p className="text-muted-foreground">
-              Livestream funkcionalnost omogućava svim članovima džemata i zainteresovanim osobama
-              da prate važna dešavanja direktno sa bilo kojeg uređaja. Sistem će podržavati i video
-              i audio prijenos, sa opcijama za arhiviranje važnih prijenosa.
-            </p>
-            <div className="mt-4 p-4 bg-muted rounded-lg">
-              <h4 className="font-semibold mb-2">Planirane mogućnosti:</h4>
-              <ul className="space-y-1">
-                <li>✓ Live video i audio prijenos</li>
-                <li>✓ Chat za gledaoce</li>
-                <li>✓ Arhiva snimaka</li>
-                <li>✓ Notifikacije o početku prijenosa</li>
-                <li>✓ Višejezična podrška</li>
-              </ul>
-            </div>
-          </div>
+          <Typography variant="body2" color="text.secondary" paragraph>
+            Livestream funkcionalnost omogućava svim članovima džemata i zainteresovanim osobama
+            da prate važna dešavanja direktno sa bilo kojeg uređaja.
+          </Typography>
+          <Box sx={{ bgcolor: 'grey.50', p: 3, borderRadius: '8px', mt: 2 }}>
+            <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 600 }}>
+              Podržane platforme:
+            </Typography>
+            <ul className="space-y-1 text-sm text-muted-foreground">
+              <li>✓ YouTube Live</li>
+              <li>✓ Facebook Live</li>
+              <li>✓ Twitch</li>
+              <li>✓ Direktan embed kod</li>
+              <li>✓ Ostale streaming platforme</li>
+            </ul>
+          </Box>
         </CardContent>
       </Card>
-    </div>
+    </Container>
   );
 }
