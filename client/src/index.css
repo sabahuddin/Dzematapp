@@ -283,32 +283,51 @@
     border-width: 2px !important;
   }
 
-  /* GLOBAL FIX: TextField label spacing - works for ALL forms in the app */
-  label.MuiInputLabel-outlined {
-    background-color: white !important;
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-    margin-left: 2px !important;
+  /* GLOBAL FIX: Force ALL labels to stay ABOVE the field (like shadcn forms) */
+  .MuiTextField-root label.MuiInputLabel-outlined,
+  .MuiFormControl-root label.MuiInputLabel-outlined {
+    position: relative !important;
+    transform: none !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    color: rgba(0, 0, 0, 0.87) !important;
+    margin-bottom: 6px !important;
+    display: block !important;
+    background-color: transparent !important;
+    padding: 0 !important;
   }
 
-  label.MuiInputLabel-outlined.MuiInputLabel-shrink {
-    background-color: white !important;
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-    margin-left: 2px !important;
+  /* Remove the shrink animation - label stays in place */
+  .MuiTextField-root label.MuiInputLabel-outlined.MuiInputLabel-shrink,
+  .MuiFormControl-root label.MuiInputLabel-outlined.MuiInputLabel-shrink {
+    position: relative !important;
+    transform: none !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    color: rgba(0, 0, 0, 0.87) !important;
+    margin-bottom: 6px !important;
+    display: block !important;
+    background-color: transparent !important;
+    padding: 0 !important;
   }
 
-  /* GLOBAL FIX: Border gap for label - works for ALL forms */
+  /* Hide the notch/legend since label is above now */
   .MuiOutlinedInput-notchedOutline > legend {
-    padding-left: 8px !important;
-    padding-right: 8px !important;
-    margin-left: 4px !important;
+    display: none !important;
+  }
+
+  /* Adjust the input field to account for label above */
+  .MuiTextField-root .MuiInputBase-root,
+  .MuiFormControl-root .MuiInputBase-root {
+    margin-top: 0 !important;
   }
   
   /* Dark mode support */
-  .dark label.MuiInputLabel-outlined,
-  .dark label.MuiInputLabel-outlined.MuiInputLabel-shrink {
-    background-color: var(--mui-background-paper) !important;
+  .dark .MuiTextField-root label.MuiInputLabel-outlined,
+  .dark .MuiFormControl-root label.MuiInputLabel-outlined,
+  .dark .MuiTextField-root label.MuiInputLabel-outlined.MuiInputLabel-shrink,
+  .dark .MuiFormControl-root label.MuiInputLabel-outlined.MuiInputLabel-shrink {
+    color: rgba(255, 255, 255, 0.87) !important;
   }
 
   /* Sidebar customizations */
