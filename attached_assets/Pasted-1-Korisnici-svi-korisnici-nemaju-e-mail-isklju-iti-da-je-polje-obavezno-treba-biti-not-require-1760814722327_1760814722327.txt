@@ -1,0 +1,22 @@
+1. Korisnici: svi korisnici nemaju e-mail. isključiti da je polje obavezno. treba biti - not required
+2. Korisnici: dodati polje: Telefon. Omogućiti da se klikom na broj moze pozvati tako da će se sa racunara/mobitela pokreniti aplikacija poziva.
+3. Korisnici: Dodati polje “Član od” (to će biti isto datum) poslje Status članstva.
+4. Korisnici: Kada odaberem da je član Pasivan - da se otvori novo polje i DropMenu (Smrt, Drugi džemat, Isključen, Nepoznato)
+5. Korisnici: Kategorije korisnika - Svi, Muškarci, Žene, Roditelji, Omladina,…) mogućnost dodavanja novih kategorija
+6. Korisnici: kada dodam fotografiju korisnika ne ostaje zapamćeno.
+7. Omogućiti Bulk upload korisika preko xlsx. Imati napravljen Tempalte koji se download i kada se popuni onda se upload
+8. Korisnici: Pretraga treba biti po riječi, a ne samo ime i e-mail. treba zanimanje, datum,…
+9. Kod svih formi: kada prvog popunjavanja nekog polja u formi , onda se naziv polja nađe ispod linije koja označava polje. vizuelno, ružno. Kada se kasnije edituje onda je sve ok.
+10. Obavijesti. Polje obavijesti treba možu uređivati bar osnovno (osnovni text editor i u njega da se moze ubaciti ilustracija). Imati opciju - preview, prije objavljivanja.
+11. Događaji. Polje Detaljan opis treba da se možu uređivati bar osnovno (osnovni text editor i u njega da se moze ubaciti ilustracija). Imati opciju - preview, prije objavljivanja. 
+12. Događaji: Dodati da se može poslati podsjetnik za događaj: 7 dana prije, 24 sata prije, 2 sata prije ili omogućiti da se doda u vlastiti (Google, iOS,…) kalendar i onda osoba sebi odredi hoće li dodatnu notifikaciju.
+13. Događaji: da se može vidjeti Lista, Sedmica, Mjesec
+14. Task manager (TM). Uređivanje grupe - pored dodati i izbrisati člana, treba nekome dodijeliti Moderatorska prava (može obrisati zadatke, može zadatak zaključiti kao završen (Done)
+15. TM - Admin ili Moderator može editovati zadatak u grupi. Može dodijeliti zadatak svim članovima grupe ili samo nekome. Moderator je odgovoran za zadatak. 
+16. TM - Član grupe može dodati fotografiju, komentirati i ako je sam zadužen dodati da je završio, ali se tad aktivira Na čekanju (Pending). Da je sve završeno odobrava Moderator ili Admin.
+17. Trebaju kategorije da li je zadatak: U toku, Na čekanju, Završeno, Otkazano,  Arhiva. U arhivu se prebacuju svi zadaci - kada moderator klikne na Završeno.
+18. TM. Jedna grupa će biti za moderatore. U toj grupi kada Admin doda zadatak svaki moderator može taj zadatak “Move” u svoju grupu i na taj način ga preuzeti. 
+19. TM. Treba da ima prikaz svih zadataka kod Admin Dashboard, a i kod Moderator dashboard. Da moze vidjeti status svih zadataka. Sada se to vidi ali se ne moze editirati. kada sve bude aktivno nadam se da će biti aktivno.
+20. Cijela platforma. Potrebno je napraviti: roles, permissions, access control.
+21. Roles: admin, moderator, član IO, član radne grupe
+22. Poruke: Svaki član može poslati privat poruku adminima. Admin može poslati privat poruku svakome pojedinačno, a može odabrati kategoriju korisnika i poslati samo njima poruku.
