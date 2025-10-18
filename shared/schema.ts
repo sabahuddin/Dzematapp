@@ -166,6 +166,29 @@ export const organizationSettings = pgTable("organization_settings", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+export const documents = pgTable("documents", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  description: text("description"),
+  fileName: text("file_name").notNull(),
+  filePath: text("file_path").notNull(),
+  fileSize: integer("file_size").notNull(),
+  uploadedById: varchar("uploaded_by_id").notNull().references(() => users.id),
+  uploadedAt: timestamp("uploaded_at").defaultNow().notNull(),
+});
+
+export const requests = pgTable("requests", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  requestType: text("request_type").notNull(), // wedding, mekteb, facility, akika
+  status: text("status").notNull().default("pending"), // pending, approved, rejected
+  formData: text("form_data").notNull(), // JSON string with form data
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  reviewedAt: timestamp("reviewed_at"),
+  reviewedById: varchar("reviewed_by_id").references(() => users.id),
+  adminNotes: text("admin_notes"),
+});
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -249,6 +272,17 @@ export const insertOrganizationSettingsSchema = createInsertSchema(organizationS
   updatedAt: true,
 });
 
+export const insertDocumentSchema = createInsertSchema(documents).omit({
+  id: true,
+  uploadedAt: true,
+});
+
+export const insertRequestSchema = createInsertSchema(requests).omit({
+  id: true,
+  createdAt: true,
+  reviewedAt: true,
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -278,6 +312,10 @@ export type Message = typeof messages.$inferSelect;
 export type InsertMessage = z.infer<typeof insertMessageSchema>;
 export type OrganizationSettings = typeof organizationSettings.$inferSelect;
 export type InsertOrganizationSettings = z.infer<typeof insertOrganizationSettingsSchema>;
+export type Document = typeof documents.$inferSelect;
+export type InsertDocument = z.infer<typeof insertDocumentSchema>;
+export type Request = typeof requests.$inferSelect;
+export type InsertRequest = z.infer<typeof insertRequestSchema>;
 
 // API response types for files with user details
 export type AnnouncementFileWithUser = AnnouncementFile & {
