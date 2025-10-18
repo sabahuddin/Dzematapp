@@ -1,12 +1,12 @@
 import { User, WorkGroupMember } from "@shared/schema";
 
-export type UserRole = "admin" | "clan_io" | "moderator" | "clan_radne_grupe";
+export type UserRole = "admin" | "clan_io" | "clan" | "clan_porodice";
 
 export const ROLE_LABELS: Record<UserRole, string> = {
   admin: "Admin",
   clan_io: "Član IO",
-  moderator: "Moderator",
-  clan_radne_grupe: "Član radne grupe"
+  clan: "Član",
+  clan_porodice: "Član porodice"
 };
 
 export function hasRole(user: User, role: UserRole): boolean {
@@ -57,27 +57,27 @@ export const Permissions = {
   },
 
   canCreateAnnouncement(ctx: PermissionContext): boolean {
-    return isAdmin(ctx.user) || isClanIO(ctx.user);
+    return isAdmin(ctx.user);
   },
 
   canEditAnnouncement(ctx: PermissionContext): boolean {
-    return isAdmin(ctx.user) || isClanIO(ctx.user);
+    return isAdmin(ctx.user);
   },
 
   canDeleteAnnouncement(ctx: PermissionContext): boolean {
-    return isAdmin(ctx.user) || isClanIO(ctx.user);
+    return isAdmin(ctx.user);
   },
 
   canCreateEvent(ctx: PermissionContext): boolean {
-    return isAdmin(ctx.user) || isClanIO(ctx.user);
+    return isAdmin(ctx.user);
   },
 
   canEditEvent(ctx: PermissionContext): boolean {
-    return isAdmin(ctx.user) || isClanIO(ctx.user);
+    return isAdmin(ctx.user);
   },
 
   canDeleteEvent(ctx: PermissionContext): boolean {
-    return isAdmin(ctx.user) || isClanIO(ctx.user);
+    return isAdmin(ctx.user);
   },
 
   canManageWorkGroupMembers(ctx: PermissionContext): boolean {
