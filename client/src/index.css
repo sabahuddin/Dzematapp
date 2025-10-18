@@ -283,6 +283,37 @@
     border-width: 2px !important;
   }
 
+  /* Fix for TextField label positioning */
+  .MuiInputLabel-outlined {
+    background-color: var(--mui-background-paper);
+    padding: 0 6px !important;
+    margin-left: -2px !important;
+  }
+
+  .MuiInputLabel-outlined.MuiInputLabel-shrink {
+    background-color: var(--mui-background-paper);
+    padding: 0 6px !important;
+  }
+
+  /* Ensure notched outline has proper spacing for label */
+  .MuiOutlinedInput-notchedOutline legend {
+    padding: 0 4px !important;
+  }
+
+  /* Autocomplete label fix */
+  .MuiAutocomplete-root .MuiInputLabel-outlined {
+    background-color: var(--mui-background-paper);
+    padding: 0 6px !important;
+    margin-left: -2px !important;
+  }
+
+  /* Select label fix */
+  .MuiFormControl-root .MuiInputLabel-outlined {
+    background-color: var(--mui-background-paper);
+    padding: 0 6px !important;
+    margin-left: -2px !important;
+  }
+
   /* Sidebar customizations */
   .MuiListItemButton-root.Mui-selected {
     background-color: #e3f2fd !important;
