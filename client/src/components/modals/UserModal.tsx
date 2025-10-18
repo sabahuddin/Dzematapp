@@ -19,7 +19,8 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  Autocomplete
+  Autocomplete,
+  SelectChangeEvent
 } from '@mui/material';
 import {
   Close,
@@ -32,6 +33,7 @@ import { User, FamilyRelationship } from '@shared/schema';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import FamilySelectionDialog from './FamilySelectionDialog';
+import { useAuth } from '@/hooks/useAuth';
 
 interface UserModalProps {
   open: boolean;
@@ -41,6 +43,7 @@ interface UserModalProps {
 }
 
 export default function UserModal({ open, onClose, onSave, user }: UserModalProps) {
+  const { user: currentUser } = useAuth();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -57,7 +60,8 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
     membershipDate: '',
     status: 'aktivan',
     inactiveReason: null as string | null,
-    categories: [] as string[]
+    categories: [] as string[],
+    roles: [] as string[]
   });
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string>('');
@@ -83,7 +87,8 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
         membershipDate: user.membershipDate ? new Date(user.membershipDate).toISOString().split('T')[0] : '',
         status: user.status || 'aktivan',
         inactiveReason: user.inactiveReason || null,
-        categories: user.categories || []
+        categories: user.categories || [],
+        roles: user.roles || []
       });
       setPhotoPreview(user.photo || '');
     } else {
@@ -104,7 +109,8 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
         membershipDate: '',
         status: 'aktivan',
         inactiveReason: null,
-        categories: []
+        categories: [],
+        roles: []
       });
       setPhotoPreview('');
       setPhotoFile(null);
@@ -117,6 +123,13 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
   });
 
   const predefinedCategories = ['Muškarci', 'Žene', 'Roditelji', 'Omladina'];
+
+  const availableRoles = [
+    { value: 'admin', label: 'Admin' },
+    { value: 'clan_io', label: 'Član IO' },
+    { value: 'moderator', label: 'Moderator' },
+    { value: 'clan_radne_grupe', label: 'Član radne grupe' }
+  ];
 
   const inactiveReasonOptions = [
     { value: 'Smrt', label: 'Smrt' },
@@ -206,6 +219,11 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
     // Ensure categories is an empty array if not set
     if (!finalFormData.categories || finalFormData.categories.length === 0) {
       finalFormData.categories = [];
+    }
+    
+    // Ensure roles is an empty array if not set
+    if (!finalFormData.roles || finalFormData.roles.length === 0) {
+      finalFormData.roles = [];
     }
     
     onSave(finalFormData);
@@ -488,6 +506,50 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
                 data-testid="autocomplete-categories"
               />
             </Grid>
+            
+            {/* Roles Multi-Select - Only visible to admin */}
+            {currentUser?.isAdmin && (
+              <Grid size={{ xs: 12 }}>
+                <FormControl fullWidth>
+                  <InputLabel>Uloge</InputLabel>
+                  <Select
+                    multiple
+                    value={formData.roles}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setFormData(prev => ({ 
+                        ...prev, 
+                        roles: typeof value === 'string' ? value.split(',') : value as string[]
+                      }));
+                    }}
+                    label="Uloge"
+                    renderValue={(selected) => (
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                        {(selected as string[]).map((value) => {
+                          const role = availableRoles.find(r => r.value === value);
+                          return (
+                            <Chip 
+                              key={value} 
+                              label={role?.label || value} 
+                              size="small"
+                              color="primary"
+                              variant="outlined"
+                            />
+                          );
+                        })}
+                      </Box>
+                    )}
+                    data-testid="select-roles"
+                  >
+                    {availableRoles.map((role) => (
+                      <MenuItem key={role.value} value={role.value}>
+                        {role.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+            )}
             
             {/* Family Members Section */}
             {user && (

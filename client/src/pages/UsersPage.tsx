@@ -131,6 +131,26 @@ export default function UsersPage() {
     }
   };
 
+  const getRoleLabel = (role: string): string => {
+    const roleLabels: Record<string, string> = {
+      'admin': 'Admin',
+      'clan_io': 'Član IO',
+      'moderator': 'Moderator',
+      'clan_radne_grupe': 'Član radne grupe'
+    };
+    return roleLabels[role] || role;
+  };
+
+  const getRoleColor = (role: string): 'default' | 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info' => {
+    switch (role) {
+      case 'admin': return 'error';
+      case 'clan_io': return 'primary';
+      case 'moderator': return 'warning';
+      case 'clan_radne_grupe': return 'success';
+      default: return 'default';
+    }
+  };
+
   const handleSaveUser = (userData: any) => {
     if (selectedUser) {
       updateUserMutation.mutate({ id: selectedUser.id, ...userData });
@@ -247,6 +267,7 @@ export default function UsersPage() {
                 <TableCell sx={{ fontWeight: 600 }}>Član od</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Status članstva</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Kategorije</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Uloge</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Porodica</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
               </TableRow>
@@ -322,6 +343,23 @@ export default function UsersPage() {
                     </Box>
                   </TableCell>
                   <TableCell>
+                    <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+                      {user.roles && user.roles.length > 0 ? (
+                        user.roles.map((role, index) => (
+                          <Chip
+                            key={index}
+                            label={getRoleLabel(role)}
+                            size="small"
+                            color={getRoleColor(role)}
+                            data-testid={`role-${user.id}-${index}`}
+                          />
+                        ))
+                      ) : (
+                        <Typography variant="body2" color="text.secondary">-</Typography>
+                      )}
+                    </Box>
+                  </TableCell>
+                  <TableCell>
                     <IconButton 
                       size="small"
                       onClick={() => {
@@ -345,7 +383,7 @@ export default function UsersPage() {
               ))}
               {filteredUsers.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={9} sx={{ textAlign: 'center', py: 4 }}>
+                  <TableCell colSpan={10} sx={{ textAlign: 'center', py: 4 }}>
                     <Typography color="text.secondary">
                       {searchTerm || selectedCategories.length > 0 ? 'Nema korisnika koji odgovaraju pretrazi' : 'Nema korisnika'}
                     </Typography>

@@ -161,6 +161,7 @@ export class MemStorage implements IStorage {
       status: "aktivan",
       inactiveReason: null,
       categories: [],
+      roles: ["admin"],
       isAdmin: true
     };
     this.users.set(adminUser.id, adminUser);
@@ -172,9 +173,9 @@ export class MemStorage implements IStorage {
   private createSampleData() {
     // Sample users
     const sampleUsers = [
-      { firstName: "Marko", lastName: "Petrović", username: "marko.petrovic", email: "marko@example.com" },
-      { firstName: "Ana", lastName: "Marić", username: "ana.maric", email: "ana@example.com" },
-      { firstName: "Stefan", lastName: "Jovanović", username: "stefan.jovanovic", email: "stefan@example.com" }
+      { firstName: "Marko", lastName: "Petrović", username: "marko.petrovic", email: "marko@example.com", roles: ["moderator", "clan_radne_grupe"] },
+      { firstName: "Ana", lastName: "Marić", username: "ana.maric", email: "ana@example.com", roles: ["clan_io"] },
+      { firstName: "Stefan", lastName: "Jovanović", username: "stefan.jovanovic", email: "stefan@example.com", roles: [] }
     ];
 
     sampleUsers.forEach(userData => {
@@ -196,6 +197,7 @@ export class MemStorage implements IStorage {
         status: userData.username === "stefan.jovanovic" ? "pasivan" : "aktivan",
         inactiveReason: userData.username === "stefan.jovanovic" ? "Drugi džemat" : null,
         categories: userData.username === "marko.petrovic" ? ["Muškarci"] : userData.username === "ana.maric" ? ["Žene", "Roditelji"] : [],
+        roles: userData.roles,
         isAdmin: false
       };
       this.users.set(user.id, user);
@@ -343,7 +345,8 @@ export class MemStorage implements IStorage {
       dateOfBirth: insertUser.dateOfBirth ?? null,
       occupation: insertUser.occupation ?? null,
       inactiveReason: insertUser.inactiveReason ?? null,
-      categories: insertUser.categories ?? []
+      categories: insertUser.categories ?? [],
+      roles: insertUser.roles ?? []
     };
     this.users.set(id, user);
     
