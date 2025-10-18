@@ -79,6 +79,7 @@ export interface IStorage {
   deleteTask(id: string): Promise<boolean>;
   getTasksByWorkGroup(workGroupId: string): Promise<Task[]>;
   getAllTasksWithWorkGroup(userId: string, isAdmin: boolean): Promise<Array<Task & { workGroup: WorkGroup }>>;
+  moveTaskToWorkGroup(taskId: string, newWorkGroupId: string): Promise<Task | undefined>;
   
   // Access Requests
   createAccessRequest(request: InsertAccessRequest): Promise<AccessRequest>;
@@ -662,6 +663,19 @@ export class MemStorage implements IStorage {
         })
         .filter(task => task.workGroup);
     }
+  }
+
+  async moveTaskToWorkGroup(taskId: string, newWorkGroupId: string): Promise<Task | undefined> {
+    const task = this.tasks.get(taskId);
+    if (!task) return undefined;
+
+    const newWorkGroup = this.workGroups.get(newWorkGroupId);
+    if (!newWorkGroup) return undefined;
+
+    const updatedTask = { ...task, workGroupId: newWorkGroupId };
+    this.tasks.set(taskId, updatedTask);
+    
+    return updatedTask;
   }
 
   // Access Requests

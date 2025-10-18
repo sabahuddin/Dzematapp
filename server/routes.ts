@@ -775,6 +775,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.patch("/api/tasks/:taskId/move", requireAuth, async (req, res) => {
+    try {
+      const { taskId } = req.params;
+      const { newWorkGroupId } = req.body;
+
+      if (!newWorkGroupId) {
+        return res.status(400).json({ message: "New work group ID is required" });
+      }
+
+      // Get existing task to check current work group
+      const existingTask = await storage.getTask(taskId);
+      if (!existingTask) {
+        return res.status(404).json({ message: "Task not found" });
+      }
+
+      // Authorization check: Only admins or moderators of current group can move tasks
+      const isAdmin = req.user!.isAdmin;
+      const isModerator = await storage.isUserModeratorOfWorkGroup(existingTask.workGroupId, req.user!.id);
+      
+      if (!isAdmin && !isModerator) {
+        return res.status(403).json({ message: "Forbidden: Only admins or group moderators can move tasks" });
+      }
+
+      // Check if new work group exists
+      const newWorkGroup = await storage.getWorkGroup(newWorkGroupId);
+      if (!newWorkGroup) {
+        return res.status(404).json({ message: "New work group not found" });
+      }
+
+      // Move the task
+      const movedTask = await storage.moveTaskToWorkGroup(taskId, newWorkGroupId);
+      if (!movedTask) {
+        return res.status(500).json({ message: "Failed to move task" });
+      }
+
+      res.json(movedTask);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to move task" });
+    }
+  });
+
   // Task Comments routes
   app.get("/api/tasks/:taskId/comments", async (req, res) => {
     try {

@@ -585,6 +585,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
   const { toast } = useToast();
   const [newComment, setNewComment] = useState('');
   const [isEditing, setIsEditing] = useState(false);
+  const [moveModalOpen, setMoveModalOpen] = useState(false);
   const [editedTitle, setEditedTitle] = useState('');
   const [editedDescription, setEditedDescription] = useState('');
   const [editedStatus, setEditedStatus] = useState('');
@@ -745,6 +746,14 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                 data-testid="button-edit-task"
               >
                 Uredi
+              </Button>
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() => setMoveModalOpen(true)}
+                data-testid="button-move-task"
+              >
+                Premjesti
               </Button>
               <Button
                 variant="outlined"
@@ -968,6 +977,131 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
           )}
         </Box>
       </DialogContent>
+      <MoveTaskModal
+        open={moveModalOpen}
+        onClose={() => setMoveModalOpen(false)}
+        task={task}
+        currentWorkGroup={workGroup}
+        onMoveSuccess={onTaskUpdated}
+      />
+    </Dialog>
+  );
+}
+
+interface MoveTaskModalProps {
+  open: boolean;
+  onClose: () => void;
+  task: any;
+  currentWorkGroup: WorkGroup | null;
+  onMoveSuccess: () => void;
+}
+
+function MoveTaskModal({ open, onClose, task, currentWorkGroup, onMoveSuccess }: MoveTaskModalProps) {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [selectedWorkGroupId, setSelectedWorkGroupId] = useState('');
+
+  const workGroupsQuery = useQuery<WorkGroup[]>({
+    queryKey: ['/api/work-groups'],
+    enabled: open,
+    retry: 1,
+  });
+
+  const moveTaskMutation = useMutation({
+    mutationFn: async (newWorkGroupId: string) => {
+      const response = await apiRequest('PATCH', `/api/tasks/${task.id}/move`, { newWorkGroupId });
+      return response.json();
+    },
+    onSuccess: (data) => {
+      const newWorkGroup = workGroupsQuery.data?.find(wg => wg.id === selectedWorkGroupId);
+      queryClient.invalidateQueries({ queryKey: ['/api/work-groups'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/tasks'] });
+      toast({ 
+        title: 'Uspjeh', 
+        description: `Zadatak uspješno premješten u ${newWorkGroup?.name || 'novu grupu'}` 
+      });
+      onMoveSuccess();
+      onClose();
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: 'Greška', 
+        description: error.message || 'Greška pri premještanju zadatka', 
+        variant: 'destructive' 
+      });
+    }
+  });
+
+  const handleMove = () => {
+    if (!selectedWorkGroupId) {
+      toast({ 
+        title: 'Greška', 
+        description: 'Molimo odaberite radnu grupu', 
+        variant: 'destructive' 
+      });
+      return;
+    }
+    moveTaskMutation.mutate(selectedWorkGroupId);
+  };
+
+  const availableWorkGroups = workGroupsQuery.data?.filter(
+    wg => wg.id !== currentWorkGroup?.id
+  ) || [];
+
+  return (
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+      <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Typography variant="h6">Premjesti Zadatak</Typography>
+        <IconButton onClick={onClose}>
+          <Close />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 2 }}>
+          <Typography variant="body2" color="text.secondary">
+            Premjesti zadatak "{task?.title}" u drugu radnu grupu
+          </Typography>
+          <TextField
+            variant="outlined"
+            select
+            label="Odaberite radnu grupu"
+            value={selectedWorkGroupId}
+            onChange={(e) => setSelectedWorkGroupId(e.target.value)}
+            fullWidth
+            disabled={moveTaskMutation.isPending || workGroupsQuery.isLoading}
+            data-testid="select-move-work-group"
+          >
+            {workGroupsQuery.isLoading ? (
+              <MenuItem value="" disabled>Učitavanje...</MenuItem>
+            ) : availableWorkGroups.length === 0 ? (
+              <MenuItem value="" disabled>Nema dostupnih grupa</MenuItem>
+            ) : (
+              availableWorkGroups.map((workGroup) => (
+                <MenuItem key={workGroup.id} value={workGroup.id}>
+                  {workGroup.name}
+                </MenuItem>
+              ))
+            )}
+          </TextField>
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button 
+          onClick={onClose} 
+          disabled={moveTaskMutation.isPending}
+          data-testid="button-cancel-move"
+        >
+          Odustani
+        </Button>
+        <Button 
+          onClick={handleMove} 
+          variant="contained"
+          disabled={moveTaskMutation.isPending || !selectedWorkGroupId}
+          data-testid="button-confirm-move"
+        >
+          {moveTaskMutation.isPending ? 'Premještanje...' : 'Potvrdi'}
+        </Button>
+      </DialogActions>
     </Dialog>
   );
 }
