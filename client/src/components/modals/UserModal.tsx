@@ -290,6 +290,8 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
               </Box>
               <Divider sx={{ mb: 2 }} />
             </Grid>
+
+            {/* Row 1: Ime i Prezime (50-50) */}
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
@@ -313,91 +315,8 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
                 data-testid="input-lastName"
               />
             </Grid>
-            
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                fullWidth
-                variant="outlined"
-                label="Korisničko ime"
-                value={formData.username}
-                onChange={handleChange('username')}
-                required
-                data-testid="input-username"
-              />
-            </Grid>
-            
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                fullWidth
-                variant="outlined"
-                label="Email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange('email')}
-                data-testid="input-email"
-              />
-            </Grid>
-            
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                fullWidth
-                variant="outlined"
-                label="Telefon"
-                type="tel"
-                value={formData.phone}
-                onChange={handleChange('phone')}
-                placeholder="+381 60 123 4567"
-                data-testid="input-phone"
-              />
-            </Grid>
-            
-            <Grid size={{ xs: 12 }}>
-              <TextField
-                fullWidth
-                variant="outlined"
-                label="Šifra"
-                type="password"
-                value={formData.password}
-                onChange={handleChange('password')}
-                required={!user}
-                helperText={user ? "Ostavite prazno da zadržite postojeću šifru" : ""}
-                data-testid="input-password"
-              />
-            </Grid>
-            
-            <Grid size={{ xs: 12 }}>
-              <TextField
-                fullWidth
-                variant="outlined"
-                label="Adresa"
-                value={formData.address}
-                onChange={handleChange('address')}
-                data-testid="input-address"
-              />
-            </Grid>
-            
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                fullWidth
-                variant="outlined"
-                label="Grad"
-                value={formData.city}
-                onChange={handleChange('city')}
-                data-testid="input-city"
-              />
-            </Grid>
-            
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                fullWidth
-                variant="outlined"
-                label="Poštanski broj"
-                value={formData.postalCode}
-                onChange={handleChange('postalCode')}
-                data-testid="input-postalCode"
-              />
-            </Grid>
-            
+
+            {/* Row 2: Datum rođenja i Zanimanje (50-50) */}
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
@@ -421,7 +340,95 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
                 data-testid="input-occupation"
               />
             </Grid>
+
+            {/* Row 3: Korisničko ime i Šifra (50-50) */}
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                label="Korisničko ime"
+                value={formData.username}
+                onChange={handleChange('username')}
+                required
+                data-testid="input-username"
+              />
+            </Grid>
             
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                label="Šifra"
+                type="password"
+                value={formData.password}
+                onChange={handleChange('password')}
+                required={!user}
+                helperText={user ? "Ostavite prazno da zadržite postojeću šifru" : ""}
+                data-testid="input-password"
+              />
+            </Grid>
+
+            {/* Row 4: Telefon i Email (50-50) */}
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                label="Telefon"
+                type="tel"
+                value={formData.phone}
+                onChange={handleChange('phone')}
+                placeholder="+381 60 123 4567"
+                data-testid="input-phone"
+              />
+            </Grid>
+            
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                label="Email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange('email')}
+                data-testid="input-email"
+              />
+            </Grid>
+
+            {/* Row 5: Adresa, Grad, Poštanski broj (40-40-20) */}
+            <Grid size={{ xs: 12, sm: 4.8 }}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                label="Adresa"
+                value={formData.address}
+                onChange={handleChange('address')}
+                data-testid="input-address"
+              />
+            </Grid>
+            
+            <Grid size={{ xs: 12, sm: 4.8 }}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                label="Grad"
+                value={formData.city}
+                onChange={handleChange('city')}
+                data-testid="input-city"
+              />
+            </Grid>
+            
+            <Grid size={{ xs: 12, sm: 2.4 }}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                label="Poštanski broj"
+                value={formData.postalCode}
+                onChange={handleChange('postalCode')}
+                data-testid="input-postalCode"
+              />
+            </Grid>
+
+            {/* Row 6: Član od i Status članstva (50-50) */}
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
@@ -454,7 +461,7 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
               </FormControl>
             </Grid>
             
-            {/* Inactive Reason - Only shown when status is "pasivan" */}
+            {/* Razlog pasivnosti - Only shown when status is "pasivan" */}
             {formData.status === 'pasivan' && (
               <Grid size={{ xs: 12, sm: 6 }}>
                 <FormControl fullWidth>
@@ -475,8 +482,8 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
               </Grid>
             )}
             
-            {/* Categories Multi-Select */}
-            <Grid size={{ xs: 12 }}>
+            {/* Row 7: Kategorije i Uloge (50-50) */}
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Autocomplete
                 multiple
                 freeSolo
@@ -507,9 +514,9 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
               />
             </Grid>
             
-            {/* Roles Multi-Select - Only visible to admin */}
+            {/* Uloge - Only visible to admin (50%) */}
             {currentUser?.isAdmin && (
-              <Grid size={{ xs: 12 }}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <FormControl fullWidth>
                   <InputLabel>Uloge</InputLabel>
                   <Select
