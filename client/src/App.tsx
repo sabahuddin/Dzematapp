@@ -17,6 +17,7 @@ import AnnouncementsPage from "@/pages/AnnouncementsPage";
 import EventsPage from "@/pages/EventsPage";
 import TaskManagerPage from "@/pages/TaskManagerPage";
 import MessagesPage from "@/pages/MessagesPage";
+import AskImamPage from "@/pages/AskImamPage";
 import NotFound from "@/pages/not-found";
 
 // Layout
@@ -167,6 +168,12 @@ function Router() {
       <Route path="/messages">
         <ProtectedRoute>
           <MessagesPage />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path="/ask-imam">
+        <ProtectedRoute>
+          <AskImamPage />
         </ProtectedRoute>
       </Route>
       

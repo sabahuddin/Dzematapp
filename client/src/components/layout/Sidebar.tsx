@@ -24,7 +24,8 @@ import {
   Task,
   Hub,
   Menu,
-  Mail
+  Mail,
+  QuestionAnswer
 } from '@mui/icons-material';
 
 interface SidebarProps {
@@ -42,6 +43,7 @@ const menuItems = [
   { path: '/events', label: 'Događaji', icon: Event },
   { path: '/tasks', label: 'Task Manager', icon: Task },
   { path: '/messages', label: 'Poruke', icon: Mail, showBadge: true },
+  { path: '/ask-imam', label: 'Pitaj imama', icon: QuestionAnswer },
 ];
 
 export default function Sidebar({ open, collapsed, onToggle, onClose, width }: SidebarProps) {
