@@ -198,11 +198,12 @@ export default function LivestreamPage() {
       )}
 
       {/* Info Section */}
-      <Card sx={{ mt: 3 }}>
-        <CardHeader>
-          <CardTitle>O Live Prijenosu</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <Box sx={{ mt: 3 }}>
+        <Card>
+          <CardHeader>
+            <CardTitle>O Live Prijenosu</CardTitle>
+          </CardHeader>
+          <CardContent>
           <Typography variant="body2" color="text.secondary" paragraph>
             Livestream funkcionalnost omogućava svim članovima džemata i zainteresovanim osobama
             da prate važna dešavanja direktno sa bilo kojeg uređaja.
@@ -220,7 +221,8 @@ export default function LivestreamPage() {
             </ul>
           </Box>
         </CardContent>
-      </Card>
+        </Card>
+      </Box>
     </Container>
   );
 }

@@ -39,10 +39,13 @@ export default function OrganizationSettingsPage() {
 
   const updateMutation = useMutation({
     mutationFn: async (data: InsertOrganizationSettings) => {
-      return await apiRequest("/api/organization-settings", {
+      const response = await fetch("/api/organization-settings", {
         method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
-      }) as OrganizationSettings;
+      });
+      if (!response.ok) throw new Error("Failed to update settings");
+      return await response.json() as OrganizationSettings;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/organization-settings"] });
