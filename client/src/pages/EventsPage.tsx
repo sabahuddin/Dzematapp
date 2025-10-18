@@ -19,14 +19,21 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions
+  DialogActions,
+  ToggleButton,
+  ToggleButtonGroup,
+  Paper,
+  Chip
 } from '@mui/material';
 import {
   Add,
   MoreVert,
   Edit,
   Delete,
-  Visibility
+  Visibility,
+  ViewList,
+  ViewWeek,
+  CalendarMonth
 } from '@mui/icons-material';
 import { Event, EventRsvp } from '@shared/schema';
 import EventModal from '../components/modals/EventModal';
@@ -34,11 +41,223 @@ import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/use-toast';
 import { apiRequest } from '../lib/queryClient';
 
+type ViewMode = 'list' | 'week' | 'month';
+
+function WeekView({ 
+  events, 
+  onEventClick 
+}: { 
+  events: Event[]; 
+  onEventClick: (event: Event) => void 
+}) {
+  const today = new Date();
+  const startOfWeek = new Date(today);
+  startOfWeek.setDate(today.getDate() - today.getDay());
+  
+  const weekDays = Array.from({ length: 7 }, (_, i) => {
+    const date = new Date(startOfWeek);
+    date.setDate(startOfWeek.getDate() + i);
+    return date;
+  });
+  
+  const getEventsForDay = (date: Date) => {
+    return events.filter(event => {
+      const eventDate = new Date(event.dateTime);
+      return eventDate.toDateString() === date.toDateString();
+    });
+  };
+  
+  return (
+    <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 1 }}>
+      {weekDays.map((day, index) => {
+        const dayEvents = getEventsForDay(day);
+        const isToday = day.toDateString() === today.toDateString();
+        
+        return (
+          <Paper 
+            key={index} 
+            sx={{ 
+              p: 2, 
+              minHeight: 200,
+              bgcolor: isToday ? '#f0f7ff' : '#fff',
+              border: isToday ? '2px solid #1976d2' : '1px solid #e0e0e0'
+            }}
+            data-testid={`week-day-${index}`}
+          >
+            <Typography 
+              variant="subtitle2" 
+              sx={{ 
+                fontWeight: 600, 
+                mb: 1,
+                color: isToday ? '#1976d2' : 'text.primary'
+              }}
+            >
+              {day.toLocaleDateString('hr-HR', { weekday: 'short' })}
+            </Typography>
+            <Typography variant="caption" sx={{ display: 'block', mb: 2 }}>
+              {day.toLocaleDateString('hr-HR', { day: 'numeric', month: 'short' })}
+            </Typography>
+            
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              {dayEvents.map(event => (
+                <Card
+                  key={event.id}
+                  sx={{ 
+                    p: 1, 
+                    cursor: 'pointer',
+                    bgcolor: '#1976d2',
+                    color: 'white',
+                    '&:hover': { opacity: 0.9 }
+                  }}
+                  onClick={() => onEventClick(event)}
+                  data-testid={`week-event-${event.id}`}
+                >
+                  <Typography variant="caption" sx={{ fontWeight: 600, display: 'block' }}>
+                    {new Date(event.dateTime).toLocaleTimeString('hr-HR', { 
+                      hour: '2-digit', 
+                      minute: '2-digit' 
+                    })}
+                  </Typography>
+                  <Typography variant="caption" sx={{ fontSize: '0.7rem' }}>
+                    {event.name}
+                  </Typography>
+                </Card>
+              ))}
+            </Box>
+          </Paper>
+        );
+      })}
+    </Box>
+  );
+}
+
+function MonthView({ 
+  events, 
+  onEventClick 
+}: { 
+  events: Event[]; 
+  onEventClick: (event: Event) => void 
+}) {
+  const today = new Date();
+  const [currentMonth, setCurrentMonth] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
+  
+  const getDaysInMonth = () => {
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const startDate = new Date(firstDay);
+    startDate.setDate(firstDay.getDate() - firstDay.getDay());
+    
+    const days = [];
+    const currentDate = new Date(startDate);
+    
+    for (let i = 0; i < 42; i++) {
+      days.push(new Date(currentDate));
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    
+    return days;
+  };
+  
+  const getEventsForDay = (date: Date) => {
+    return events.filter(event => {
+      const eventDate = new Date(event.dateTime);
+      return eventDate.toDateString() === date.toDateString();
+    });
+  };
+  
+  const handlePrevMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
+  };
+  
+  const handleNextMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
+  };
+  
+  const days = getDaysInMonth();
+  const weekDays = ['Ned', 'Pon', 'Uto', 'Sri', 'Čet', 'Pet', 'Sub'];
+  
+  return (
+    <Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Button onClick={handlePrevMonth} data-testid="button-prev-month">
+          Prethodni
+        </Button>
+        <Typography variant="h6">
+          {currentMonth.toLocaleDateString('hr-HR', { month: 'long', year: 'numeric' })}
+        </Typography>
+        <Button onClick={handleNextMonth} data-testid="button-next-month">
+          Sljedeći
+        </Button>
+      </Box>
+      
+      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 1 }}>
+        {weekDays.map(day => (
+          <Box key={day} sx={{ p: 1, textAlign: 'center', fontWeight: 600 }}>
+            {day}
+          </Box>
+        ))}
+        
+        {days.map((day, index) => {
+          const dayEvents = getEventsForDay(day);
+          const isToday = day.toDateString() === today.toDateString();
+          const isCurrentMonth = day.getMonth() === currentMonth.getMonth();
+          
+          return (
+            <Paper
+              key={index}
+              sx={{
+                p: 1,
+                minHeight: 100,
+                bgcolor: isToday ? '#f0f7ff' : '#fff',
+                border: isToday ? '2px solid #1976d2' : '1px solid #e0e0e0',
+                opacity: isCurrentMonth ? 1 : 0.5
+              }}
+              data-testid={`month-day-${index}`}
+            >
+              <Typography 
+                variant="caption" 
+                sx={{ 
+                  fontWeight: isToday ? 600 : 400,
+                  color: isToday ? '#1976d2' : 'text.secondary'
+                }}
+              >
+                {day.getDate()}
+              </Typography>
+              
+              <Box sx={{ mt: 0.5 }}>
+                {dayEvents.map(event => (
+                  <Chip
+                    key={event.id}
+                    label={event.name}
+                    size="small"
+                    sx={{ 
+                      fontSize: '0.65rem',
+                      height: 20,
+                      mb: 0.5,
+                      width: '100%',
+                      cursor: 'pointer'
+                    }}
+                    onClick={() => onEventClick(event)}
+                    data-testid={`month-event-${event.id}`}
+                  />
+                ))}
+              </Box>
+            </Paper>
+          );
+        })}
+      </Box>
+    </Box>
+  );
+}
+
 export default function EventsPage() {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
+  const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
@@ -48,13 +267,11 @@ export default function EventsPage() {
   const [rsvpDialogOpen, setRsvpDialogOpen] = useState(false);
   const [selectedEventRsvps, setSelectedEventRsvps] = useState<EventRsvp[]>([]);
 
-  // Fetch events
-  const eventsQuery = useQuery({
+  const eventsQuery = useQuery<Event[]>({
     queryKey: ['/api/events'],
     retry: 1,
   });
 
-  // Create event mutation
   const createEventMutation = useMutation({
     mutationFn: async (eventData: any) => {
       const response = await apiRequest('POST', '/api/events', eventData);
@@ -69,7 +286,6 @@ export default function EventsPage() {
     }
   });
 
-  // Update event mutation
   const updateEventMutation = useMutation({
     mutationFn: async ({ id, ...eventData }: any) => {
       const response = await apiRequest('PUT', `/api/events/${id}`, eventData);
@@ -84,7 +300,6 @@ export default function EventsPage() {
     }
   });
 
-  // Delete event mutation
   const deleteEventMutation = useMutation({
     mutationFn: async (id: string) => {
       await apiRequest('DELETE', `/api/events/${id}`);
@@ -98,7 +313,6 @@ export default function EventsPage() {
     }
   });
 
-  // Fetch event RSVPs
   const fetchEventRsvps = async (eventId: string) => {
     const response = await fetch(`/api/events/${eventId}/rsvps`);
     if (!response.ok) throw new Error('Failed to fetch RSVPs');
@@ -159,6 +373,11 @@ export default function EventsPage() {
     setMenuEvent(null);
   };
 
+  const handleEventClick = (event: Event) => {
+    setSelectedEvent(event);
+    setModalOpen(true);
+  };
+
   const formatDateTime = (dateTime: string) => {
     return new Date(dateTime).toLocaleString('hr-HR', {
       year: 'numeric',
@@ -169,9 +388,7 @@ export default function EventsPage() {
     });
   };
 
-  // Mock RSVP count for demo purposes
   const getRsvpCount = (event: Event) => {
-    // In real app, this would come from the event data or separate query
     const mockCounts: { [key: string]: number } = {
       'Skupština džamije': 45,
       'Iftar program': 120,
@@ -202,66 +419,94 @@ export default function EventsPage() {
         <Typography variant="h5" sx={{ fontWeight: 600 }}>
           Upravljanje Događajima
         </Typography>
-        <Button
-          variant="contained"
-          startIcon={<Add />}
-          onClick={handleCreateEvent}
-          data-testid="button-add-event"
-        >
-          Kreiraj Događaj
-        </Button>
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+          <ToggleButtonGroup
+            value={viewMode}
+            exclusive
+            onChange={(_, newMode) => newMode && setViewMode(newMode)}
+            size="small"
+          >
+            <ToggleButton value="list" data-testid="view-toggle-list">
+              <ViewList sx={{ mr: 0.5 }} /> Lista
+            </ToggleButton>
+            <ToggleButton value="week" data-testid="view-toggle-week">
+              <ViewWeek sx={{ mr: 0.5 }} /> Sedmica
+            </ToggleButton>
+            <ToggleButton value="month" data-testid="view-toggle-month">
+              <CalendarMonth sx={{ mr: 0.5 }} /> Mjesec
+            </ToggleButton>
+          </ToggleButtonGroup>
+          
+          <Button
+            variant="contained"
+            startIcon={<Add />}
+            onClick={handleCreateEvent}
+            data-testid="button-add-event"
+          >
+            Kreiraj Događaj
+          </Button>
+        </Box>
       </Box>
 
-      <Card>
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow sx={{ bgcolor: '#f8f9fa' }}>
-                <TableCell sx={{ fontWeight: 600 }}>Naziv Događaja</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Datum i Vrijeme</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Lokacija</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>RSVP</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {(eventsQuery.data || []).map((event: Event) => {
-                const rsvpCount = getRsvpCount(event);
-                const maxAttendees = event.maxAttendees || '∞';
-                return (
-                  <TableRow key={event.id}>
-                    <TableCell>{event.name}</TableCell>
-                    <TableCell>{formatDateTime(event.dateTime.toString())}</TableCell>
-                    <TableCell>{event.location}</TableCell>
-                    <TableCell>
-                      {event.rsvpEnabled ? `${rsvpCount}/${maxAttendees}` : 'Onemogućeno'}
-                    </TableCell>
-                    <TableCell>
-                      <IconButton
-                        onClick={(e) => handleMenuOpen(e, event)}
-                        data-testid={`menu-event-${event.id}`}
-                      >
-                        <MoreVert />
-                      </IconButton>
+      {viewMode === 'list' && (
+        <Card>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow sx={{ bgcolor: '#f8f9fa' }}>
+                  <TableCell sx={{ fontWeight: 600 }}>Naziv Događaja</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Datum i Vrijeme</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Lokacija</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>RSVP</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {(eventsQuery.data || []).map((event: Event) => {
+                  const rsvpCount = getRsvpCount(event);
+                  const maxAttendees = event.maxAttendees || '∞';
+                  return (
+                    <TableRow key={event.id}>
+                      <TableCell>{event.name}</TableCell>
+                      <TableCell>{formatDateTime(event.dateTime.toString())}</TableCell>
+                      <TableCell>{event.location}</TableCell>
+                      <TableCell>
+                        {event.rsvpEnabled ? `${rsvpCount}/${maxAttendees}` : 'Onemogućeno'}
+                      </TableCell>
+                      <TableCell>
+                        <IconButton
+                          onClick={(e) => handleMenuOpen(e, event)}
+                          data-testid={`menu-event-${event.id}`}
+                        >
+                          <MoreVert />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+                {(eventsQuery.data || []).length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={5} sx={{ textAlign: 'center', py: 4 }}>
+                      <Typography color="text.secondary">
+                        Nema događaja
+                      </Typography>
                     </TableCell>
                   </TableRow>
-                );
-              })}
-              {(eventsQuery.data || []).length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={5} sx={{ textAlign: 'center', py: 4 }}>
-                    <Typography color="text.secondary">
-                      Nema događaja
-                    </Typography>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Card>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Card>
+      )}
 
-      {/* Event Actions Menu */}
+      {viewMode === 'week' && (
+        <WeekView events={eventsQuery.data || []} onEventClick={handleEventClick} />
+      )}
+
+      {viewMode === 'month' && (
+        <MonthView events={eventsQuery.data || []} onEventClick={handleEventClick} />
+      )}
+
       <Menu
         anchorEl={menuAnchor}
         open={Boolean(menuAnchor)}
@@ -281,7 +526,6 @@ export default function EventsPage() {
         </MenuItem>
       </Menu>
 
-      {/* Delete Confirmation Dialog */}
       <Dialog
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
@@ -307,7 +551,6 @@ export default function EventsPage() {
         </DialogActions>
       </Dialog>
 
-      {/* RSVP View Dialog */}
       <Dialog
         open={rsvpDialogOpen}
         onClose={() => setRsvpDialogOpen(false)}
@@ -352,7 +595,6 @@ export default function EventsPage() {
         </DialogActions>
       </Dialog>
 
-      {/* Event Modal */}
       <EventModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}

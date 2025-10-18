@@ -428,6 +428,7 @@ export class MemStorage implements IStorage {
       rsvpEnabled: insertEvent.rsvpEnabled !== undefined ? insertEvent.rsvpEnabled : true,
       requireAdultsChildren: insertEvent.requireAdultsChildren !== undefined ? insertEvent.requireAdultsChildren : false,
       maxAttendees: insertEvent.maxAttendees || null,
+      reminderTime: insertEvent.reminderTime || null,
       createdById: insertEvent.createdById,
       createdAt: new Date()
     };

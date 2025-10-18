@@ -10,11 +10,16 @@ import {
   Switch,
   IconButton,
   Box,
-  Grid
+  Grid,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel
 } from '@mui/material';
-import { Close } from '@mui/icons-material';
+import { Close, CalendarMonth } from '@mui/icons-material';
 import { Event } from '@shared/schema';
 import RichTextEditor from '../ui/rich-text-editor';
+import { downloadICS } from '@/lib/icsGenerator';
 
 interface EventModalProps {
   open: boolean;
@@ -38,7 +43,8 @@ export default function EventModal({
     dateTime: '',
     rsvpEnabled: true,
     requireAdultsChildren: false,
-    maxAttendees: ''
+    maxAttendees: '',
+    reminderTime: ''
   });
 
   useEffect(() => {
@@ -50,7 +56,8 @@ export default function EventModal({
         dateTime: event.dateTime ? new Date(event.dateTime).toISOString().slice(0, 16) : '',
         rsvpEnabled: event.rsvpEnabled ?? true,
         requireAdultsChildren: event.requireAdultsChildren ?? false,
-        maxAttendees: event.maxAttendees?.toString() || ''
+        maxAttendees: event.maxAttendees?.toString() || '',
+        reminderTime: event.reminderTime || ''
       });
     } else {
       setFormData({
@@ -60,7 +67,8 @@ export default function EventModal({
         dateTime: '',
         rsvpEnabled: true,
         requireAdultsChildren: false,
-        maxAttendees: ''
+        maxAttendees: '',
+        reminderTime: ''
       });
     }
   }, [event, open]);
@@ -78,9 +86,22 @@ export default function EventModal({
       ...formData,
       createdById,
       dateTime: new Date(formData.dateTime).toISOString(),
-      maxAttendees: formData.maxAttendees ? parseInt(formData.maxAttendees, 10) : null
+      maxAttendees: formData.maxAttendees ? parseInt(formData.maxAttendees, 10) : null,
+      reminderTime: formData.reminderTime || null
     });
     onClose();
+  };
+
+  const handleAddToCalendar = () => {
+    if (formData.name && formData.location && formData.dateTime) {
+      downloadICS({
+        name: formData.name,
+        description: formData.description,
+        location: formData.location,
+        dateTime: new Date(formData.dateTime),
+        reminderTime: formData.reminderTime || null
+      });
+    }
   };
 
   return (
@@ -149,16 +170,39 @@ export default function EventModal({
               </Grid>
             </Grid>
             
-            <TextField
-              fullWidth
-              variant="outlined"
-              label="Maksimalan broj učesnika"
-              type="number"
-              value={formData.maxAttendees}
-              onChange={handleChange('maxAttendees')}
-              helperText="Ostavite prazno za neograničeno"
-              data-testid="input-maxAttendees"
-            />
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  label="Maksimalan broj učesnika"
+                  type="number"
+                  value={formData.maxAttendees}
+                  onChange={handleChange('maxAttendees')}
+                  helperText="Ostavite prazno za neograničeno"
+                  data-testid="input-maxAttendees"
+                />
+              </Grid>
+              
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <FormControl fullWidth variant="outlined">
+                  <InputLabel>Podsetnik</InputLabel>
+                  <Select
+                    value={formData.reminderTime}
+                    onChange={(e) => setFormData(prev => ({ ...prev, reminderTime: e.target.value }))}
+                    label="Podsetnik"
+                    data-testid="select-reminderTime"
+                  >
+                    <MenuItem value="">
+                      <em>Bez podsetnika</em>
+                    </MenuItem>
+                    <MenuItem value="7_days">7 dana prije</MenuItem>
+                    <MenuItem value="24_hours">24 sata prije</MenuItem>
+                    <MenuItem value="2_hours">2 sata prije</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+            </Grid>
             
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               <FormControlLabel
@@ -186,21 +230,32 @@ export default function EventModal({
           </Box>
         </DialogContent>
         
-        <DialogActions sx={{ p: 3 }}>
+        <DialogActions sx={{ p: 3, justifyContent: 'space-between' }}>
           <Button 
-            onClick={onClose} 
+            onClick={handleAddToCalendar}
             variant="outlined"
-            data-testid="button-cancel"
+            startIcon={<CalendarMonth />}
+            disabled={!formData.name || !formData.location || !formData.dateTime}
+            data-testid="button-add-to-calendar"
           >
-            Odustani
+            Dodaj u Kalendar
           </Button>
-          <Button 
-            type="submit" 
-            variant="contained"
-            data-testid="button-save"
-          >
-            Spremi
-          </Button>
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <Button 
+              onClick={onClose} 
+              variant="outlined"
+              data-testid="button-cancel"
+            >
+              Odustani
+            </Button>
+            <Button 
+              type="submit" 
+              variant="contained"
+              data-testid="button-save"
+            >
+              Spremi
+            </Button>
+          </Box>
         </DialogActions>
       </form>
     </Dialog>

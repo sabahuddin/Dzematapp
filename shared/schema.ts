@@ -51,6 +51,7 @@ export const events = pgTable("events", {
   rsvpEnabled: boolean("rsvp_enabled").default(true),
   requireAdultsChildren: boolean("require_adults_children").default(false),
   maxAttendees: integer("max_attendees"),
+  reminderTime: text("reminder_time"), // null, "7_days", "24_hours", "2_hours"
   createdById: varchar("created_by_id").notNull().references(() => users.id),
   createdAt: timestamp("created_at").defaultNow(),
 });
