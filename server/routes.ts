@@ -6,7 +6,7 @@ import { promises as fs } from "fs";
 import * as XLSX from "xlsx";
 import { storage } from "./storage";
 import { requireAuth, requireAdmin } from "./index";
-import { insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertGroupFileSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema } from "@shared/schema";
+import { insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertGroupFileSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema } from "@shared/schema";
 
 // Configure multer for photo uploads
 const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'photos');
@@ -1441,6 +1441,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ message: "Message deleted successfully" });
     } catch (error) {
       res.status(500).json({ message: "Failed to delete message" });
+    }
+  });
+
+  // Organization Settings routes
+  app.get("/api/organization-settings", async (req, res) => {
+    try {
+      const settings = await storage.getOrganizationSettings();
+      if (!settings) {
+        return res.status(404).json({ message: "Organization settings not found" });
+      }
+      res.json(settings);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get organization settings" });
+    }
+  });
+
+  app.put("/api/organization-settings", requireAdmin, async (req, res) => {
+    try {
+      const settingsData = insertOrganizationSettingsSchema.parse(req.body);
+      const updatedSettings = await storage.updateOrganizationSettings(settingsData);
+      res.json(updatedSettings);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid organization settings data" });
     }
   });
 
