@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import ReactQuill from 'react-quill';
 import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { Visibility } from '@mui/icons-material';
@@ -23,20 +23,57 @@ export default function RichTextEditor({
   'data-testid': dataTestId,
 }: RichTextEditorProps) {
   const [previewOpen, setPreviewOpen] = useState(false);
+  const quillRef = useRef<ReactQuill>(null);
 
-  const modules = {
-    toolbar: [
-      ['bold', 'italic', 'underline'],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      ['link'],
-      ['clean']
-    ],
+  // Image upload handler
+  const imageHandler = () => {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (file) {
+        // Check file size (max 2MB)
+        if (file.size > 2 * 1024 * 1024) {
+          alert('Slika je prevelika. Maksimalna veličina je 2MB.');
+          return;
+        }
+
+        // Convert to base64
+        const reader = new FileReader();
+        reader.onload = () => {
+          const quill = quillRef.current?.getEditor();
+          if (quill) {
+            const range = quill.getSelection(true);
+            quill.insertEmbed(range.index, 'image', reader.result);
+            quill.setSelection(range.index + 1, 0);
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    };
   };
+
+  const modules = useMemo(() => ({
+    toolbar: {
+      container: [
+        ['bold', 'italic', 'underline'],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        ['link', 'image'],
+        ['clean']
+      ],
+      handlers: {
+        image: imageHandler
+      }
+    },
+  }), []);
 
   const formats = [
     'bold', 'italic', 'underline',
     'list', 'bullet',
-    'link'
+    'link', 'image'
   ];
 
   return (
@@ -78,11 +115,18 @@ export default function RichTextEditor({
           '& .ql-editor.ql-blank::before': {
             fontStyle: 'normal',
             color: 'rgba(0, 0, 0, 0.38)',
+          },
+          '& .ql-editor img': {
+            maxWidth: '100%',
+            height: 'auto',
+            display: 'block',
+            margin: '10px 0',
           }
         }}
         data-testid={dataTestId}
       >
         <ReactQuill
+          ref={quillRef}
           theme="snow"
           value={value}
           onChange={onChange}
@@ -127,6 +171,12 @@ export default function RichTextEditor({
               '& strong': { fontWeight: 'bold' },
               '& em': { fontStyle: 'italic' },
               '& u': { textDecoration: 'underline' },
+              '& img': { 
+                maxWidth: '100%', 
+                height: 'auto',
+                display: 'block',
+                margin: '10px 0',
+              }
             }}
             dangerouslySetInnerHTML={{ __html: value }}
             data-testid={`${dataTestId}-preview-content`}
