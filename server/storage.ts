@@ -194,6 +194,9 @@ export class MemStorage implements IStorage {
       instagramUrl: null,
       youtubeUrl: null,
       twitterUrl: null,
+      livestreamUrl: null,
+      livestreamEnabled: false,
+      livestreamTitle: null,
       updatedAt: new Date()
     };
 
@@ -1055,6 +1058,9 @@ export class MemStorage implements IStorage {
         instagramUrl: settings.instagramUrl || null,
         youtubeUrl: settings.youtubeUrl || null,
         twitterUrl: settings.twitterUrl || null,
+        livestreamUrl: settings.livestreamUrl || null,
+        livestreamEnabled: settings.livestreamEnabled || false,
+        livestreamTitle: settings.livestreamTitle || null,
         updatedAt: new Date()
       };
     } else {
