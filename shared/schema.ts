@@ -21,7 +21,7 @@ export const users = pgTable("users", {
   status: text("status").notNull().default("aktivan"), // aktivan, pasivan, član porodice
   inactiveReason: text("inactive_reason"), // Smrt, Drugi džemat, Isključen, Nepoznato
   categories: text("categories").array(), // Muškarci, Žene, Roditelji, Omladina, custom
-  roles: text("roles").array().default(sql`ARRAY[]::text[]`), // admin, clan_io, moderator, clan_radne_grupe
+  roles: text("roles").array().default(sql`ARRAY[]::text[]`), // admin, clan_io, clan (moderator se dodeljuje u grupi)
   isAdmin: boolean("is_admin").default(false),
 });
 

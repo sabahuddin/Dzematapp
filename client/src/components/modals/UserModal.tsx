@@ -127,8 +127,7 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
   const availableRoles = [
     { value: 'admin', label: 'Admin' },
     { value: 'clan_io', label: 'Član IO' },
-    { value: 'moderator', label: 'Moderator' },
-    { value: 'clan_radne_grupe', label: 'Član radne grupe' }
+    { value: 'clan', label: 'Član' }
   ];
 
   const inactiveReasonOptions = [
