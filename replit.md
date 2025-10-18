@@ -47,8 +47,13 @@ Simple session-based authentication system:
 - **Session Management**: Client-side storage using localStorage
 - **Authorization**: Role-based access control with four user roles:
   - **Admin**: Full system control and permissions management
-  - **Član IO** (Executive Board Member): Can create and manage announcements and events
+  - **Član IO** (Executive Board Member): Can view work group activities (read-only access)
   - **Član** (Member): Basic member access - **default role for new users**
+    - Can edit their own: Photo, Address, Postal Code, City, Occupation, Password, Phone, Email
+    - Can view but not edit: Membership Date, Status
+    - Cannot view: Categories
+    - Can view their own roles
+    - Can add family members (requires admin approval)
   - **Član porodice** (Family Member): Family member access
 - **Work Group Moderators**: Admins can assign moderators directly within work groups (future user-facing app feature)
 - **Security**: Basic password validation (prototype level)

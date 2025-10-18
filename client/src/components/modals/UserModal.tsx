@@ -49,9 +49,11 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
   const isEditingSelf = user && currentUser && user.id === currentUser.id;
   
   // Check if current user is a regular member (Član) editing their profile
-  const isMemberEditingSelf = isEditingSelf && 
+  const isMemberEditingSelf = Boolean(
+    isEditingSelf && 
     currentUser?.roles?.includes('clan') && 
-    !currentUser?.isAdmin;
+    !currentUser?.isAdmin
+  );
   
   const [formData, setFormData] = useState({
     firstName: '',

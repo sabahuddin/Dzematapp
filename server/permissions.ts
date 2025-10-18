@@ -29,8 +29,12 @@ export function isClanIO(user: User): boolean {
   return hasRole(user, "clan_io");
 }
 
-export function isModerator(user: User): boolean {
-  return hasRole(user, "moderator");
+export function isClan(user: User): boolean {
+  return hasRole(user, "clan");
+}
+
+export function isClanPorodice(user: User): boolean {
+  return hasRole(user, "clan_porodice");
 }
 
 export interface PermissionContext {
