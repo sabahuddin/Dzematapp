@@ -283,35 +283,38 @@
     border-width: 2px !important;
   }
 
-  /* Fix for TextField label positioning */
+  /* Fix for TextField label positioning - proper spacing from border */
   .MuiInputLabel-outlined {
     background-color: var(--mui-background-paper);
-    padding: 0 6px !important;
-    margin-left: -2px !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
   }
 
   .MuiInputLabel-outlined.MuiInputLabel-shrink {
     background-color: var(--mui-background-paper);
-    padding: 0 6px !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
   }
 
-  /* Ensure notched outline has proper spacing for label */
+  /* Ensure notched outline has proper spacing for label - this creates the gap */
   .MuiOutlinedInput-notchedOutline legend {
-    padding: 0 4px !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+    margin-left: 2px !important;
   }
 
   /* Autocomplete label fix */
   .MuiAutocomplete-root .MuiInputLabel-outlined {
     background-color: var(--mui-background-paper);
-    padding: 0 6px !important;
-    margin-left: -2px !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
   }
 
   /* Select label fix */
   .MuiFormControl-root .MuiInputLabel-outlined {
     background-color: var(--mui-background-paper);
-    padding: 0 6px !important;
-    margin-left: -2px !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
   }
 
   /* Sidebar customizations */
