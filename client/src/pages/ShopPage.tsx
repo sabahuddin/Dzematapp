@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Box, Tabs, Tab, Typography, Card, CardContent, CardMedia, Button, Chip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField, MenuItem, ImageList, ImageListItem, Select, FormControl, InputLabel } from "@mui/material";
-import { Add, Delete, ShoppingCart, Store, CardGiftcard, CloudUpload, Edit, Close } from "@mui/icons-material";
+import { Add, Delete, ShoppingCart, Store, CardGiftcard, CloudUpload, Edit, Close, ContentCopy } from "@mui/icons-material";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -171,6 +171,29 @@ export default function ShopPage() {
     },
     onError: () => {
       toast({ title: "Greška pri brisanju artikla", variant: "destructive" });
+    }
+  });
+
+  // Duplicate product mutation
+  const duplicateProductMutation = useMutation({
+    mutationFn: async (product: ShopProductWithUser) => {
+      return await apiRequest('POST', '/api/shop/products', {
+        name: product.name,
+        photos: product.photos || [],
+        size: product.size,
+        quantity: product.quantity,
+        color: product.color,
+        notes: product.notes,
+        price: product.price,
+        createdById: user!.id
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/shop/products'] });
+      toast({ title: "Artikal kopiran" });
+    },
+    onError: () => {
+      toast({ title: "Greška pri kopiranju artikla", variant: "destructive" });
     }
   });
 
@@ -433,13 +456,23 @@ export default function ShopPage() {
                           </Button>
                         )}
                         {isAdmin && (
-                          <IconButton
-                            color="error"
-                            onClick={() => deleteProductMutation.mutate(product.id)}
-                            data-testid={`button-delete-product-${product.id}`}
-                          >
-                            <Delete />
-                          </IconButton>
+                          <>
+                            <IconButton
+                              color="primary"
+                              onClick={() => duplicateProductMutation.mutate(product)}
+                              data-testid={`button-duplicate-product-${product.id}`}
+                              title="Kopiraj artikal"
+                            >
+                              <ContentCopy />
+                            </IconButton>
+                            <IconButton
+                              color="error"
+                              onClick={() => deleteProductMutation.mutate(product.id)}
+                              data-testid={`button-delete-product-${product.id}`}
+                            >
+                              <Delete />
+                            </IconButton>
+                          </>
                         )}
                       </Box>
                     </CardContent>
