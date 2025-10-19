@@ -1221,7 +1221,7 @@ export class MemStorage implements IStorage {
     const newProduct: ShopProduct = {
       id: randomUUID(),
       name: product.name,
-      image: product.image || null,
+      photos: product.photos || null,
       size: product.size || null,
       quantity: product.quantity || 0,
       color: product.color || null,
@@ -1265,7 +1265,8 @@ export class MemStorage implements IStorage {
     const newItem: MarketplaceItem = {
       id: randomUUID(),
       name: item.name,
-      image: item.image || null,
+      description: item.description || null,
+      photos: item.photos || null,
       type: item.type,
       userId: item.userId,
       createdAt: new Date()
