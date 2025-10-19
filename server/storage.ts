@@ -448,6 +448,12 @@ export class MemStorage implements IStorage {
     if (!user) return undefined;
 
     const updatedUser = { ...user, ...updateData };
+    console.log('=== UPDATE USER DEBUG ===');
+    console.log('User ID:', id);
+    console.log('Update Data:', updateData);
+    console.log('isAdmin in updateData:', updateData.isAdmin);
+    console.log('Updated User isAdmin:', updatedUser.isAdmin);
+    console.log('========================');
     this.users.set(id, updatedUser);
     return updatedUser;
   }
