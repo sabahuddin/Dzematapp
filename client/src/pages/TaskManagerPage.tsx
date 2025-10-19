@@ -650,10 +650,12 @@ interface TaskDetailDialogProps {
 function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModeratorOrAdmin, members, onTaskUpdated }: TaskDetailDialogProps) {
   const { toast } = useToast();
   const [newComment, setNewComment] = useState('');
+  const [commentImage, setCommentImage] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [moveModalOpen, setMoveModalOpen] = useState(false);
   const [editedTitle, setEditedTitle] = useState('');
   const [editedDescription, setEditedDescription] = useState('');
+  const [editedDescriptionImage, setEditedDescriptionImage] = useState<string | null>(null);
   const [editedStatus, setEditedStatus] = useState('');
   const [editedAssignedToId, setEditedAssignedToId] = useState('');
   const [editedDueDate, setEditedDueDate] = useState('');
@@ -664,11 +666,34 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
     if (task) {
       setEditedTitle(task.title || '');
       setEditedDescription(task.description || '');
+      setEditedDescriptionImage(task.descriptionImage || null);
       setEditedStatus(task.status || 'u_toku');
       setEditedAssignedToId(task.assignedToId || '');
       setEditedDueDate(task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : '');
     }
   }, [task]);
+
+  const handleCommentImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setCommentImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleEditImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setEditedDescriptionImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   // Fetch task comments
   const commentsQuery = useQuery({
@@ -686,13 +711,14 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
 
   // Add comment mutation
   const addCommentMutation = useMutation({
-    mutationFn: async (content: string) => {
-      const response = await apiRequest('POST', `/api/tasks/${task.id}/comments`, { content });
+    mutationFn: async (commentData: { content: string; commentImage?: string | null }) => {
+      const response = await apiRequest('POST', `/api/tasks/${task.id}/comments`, commentData);
       return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/tasks', task.id, 'comments'] });
       setNewComment('');
+      setCommentImage(null);
       toast({ title: 'Uspjeh', description: 'Komentar je dodan' });
     },
     onError: () => {
@@ -736,7 +762,10 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
 
   const handleAddComment = () => {
     if (!newComment.trim()) return;
-    addCommentMutation.mutate(newComment.trim());
+    addCommentMutation.mutate({ 
+      content: newComment.trim(),
+      commentImage: commentImage || null
+    });
   };
 
   const handleSaveEdit = () => {
@@ -745,6 +774,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
     const taskData = {
       title: editedTitle,
       description: editedDescription,
+      descriptionImage: editedDescriptionImage || null,
       status: editedStatus,
       assignedToId: editedAssignedToId || null,
       dueDate: editedDueDate ? new Date(editedDueDate) : null,
@@ -861,6 +891,58 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                 rows={3}
                 data-testid="input-edit-task-description"
               />
+              
+              <Box>
+                <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+                  Slika (opciono)
+                </Typography>
+                <Button
+                  variant="outlined"
+                  component="label"
+                  fullWidth
+                  sx={{ justifyContent: 'flex-start', textTransform: 'none' }}
+                  data-testid="button-upload-edit-task-image"
+                >
+                  {editedDescriptionImage ? 'Promijeni sliku' : 'Dodaj sliku'}
+                  <input
+                    type="file"
+                    hidden
+                    accept="image/*"
+                    onChange={handleEditImageUpload}
+                  />
+                </Button>
+                {editedDescriptionImage && (
+                  <Box sx={{ mt: 2, position: 'relative' }}>
+                    <Box
+                      component="img"
+                      src={editedDescriptionImage}
+                      alt="Task preview"
+                      sx={{
+                        width: '100%',
+                        maxHeight: 200,
+                        objectFit: 'cover',
+                        borderRadius: 1,
+                        border: '2px solid #1976d2'
+                      }}
+                    />
+                    <IconButton
+                      size="small"
+                      sx={{
+                        position: 'absolute',
+                        top: 8,
+                        right: 8,
+                        bgcolor: 'background.paper',
+                        '&:hover': { bgcolor: 'error.light', color: 'white' }
+                      }}
+                      onClick={() => setEditedDescriptionImage(null)}
+                      data-testid="button-remove-edit-task-image"
+                    >
+                      <Close fontSize="small" />
+                    </IconButton>
+                  </Box>
+                )}
+              </Box>
+              
               <TextField
                 variant="outlined"
                 select
@@ -919,6 +1001,24 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
           ) : (
             <Box>
               <Typography variant="body1" sx={{ mb: 2 }}>{task.description}</Typography>
+              
+              {task.descriptionImage && (
+                <Box sx={{ mb: 2 }}>
+                  <Box
+                    component="img"
+                    src={task.descriptionImage}
+                    alt="Task image"
+                    sx={{
+                      width: '100%',
+                      maxHeight: 300,
+                      objectFit: 'cover',
+                      borderRadius: 1,
+                      border: '2px solid #1976d2'
+                    }}
+                  />
+                </Box>
+              )}
+              
               <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 2 }}>
                 <Chip 
                   label={getStatusLabel(task.status)} 
@@ -973,28 +1073,74 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
               <Typography variant="h6" sx={{ mb: 2 }}>Komentari</Typography>
               
               {/* Add Comment */}
-              <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
-                <TextField
-                  variant="outlined"
-                  placeholder="Dodaj komentar..."
-                  value={newComment}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewComment(e.target.value)}
-                  fullWidth
-                  size="small"
-                  data-testid="input-new-comment"
-                />
-                <Button 
-                  onClick={handleAddComment} 
-                  variant="contained" 
-                  disabled={!newComment.trim()}
-                  data-testid="button-add-comment"
-                >
-                  Dodaj
-                </Button>
+              <Box sx={{ mb: 2 }}>
+                <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
+                  <TextField
+                    variant="outlined"
+                    placeholder="Dodaj komentar..."
+                    value={newComment}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewComment(e.target.value)}
+                    fullWidth
+                    size="small"
+                    data-testid="input-new-comment"
+                  />
+                  <Button 
+                    onClick={handleAddComment} 
+                    variant="contained" 
+                    disabled={!newComment.trim()}
+                    data-testid="button-add-comment"
+                  >
+                    Dodaj
+                  </Button>
+                </Box>
+                
+                <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                  <Button
+                    variant="outlined"
+                    component="label"
+                    size="small"
+                    sx={{ textTransform: 'none' }}
+                    data-testid="button-upload-comment-image"
+                  >
+                    {commentImage ? 'Promijeni sliku' : 'Dodaj sliku'}
+                    <input
+                      type="file"
+                      hidden
+                      accept="image/*"
+                      onChange={handleCommentImageUpload}
+                    />
+                  </Button>
+                  {commentImage && (
+                    <IconButton
+                      size="small"
+                      onClick={() => setCommentImage(null)}
+                      data-testid="button-remove-comment-image"
+                    >
+                      <Close fontSize="small" />
+                    </IconButton>
+                  )}
+                </Box>
+                
+                {commentImage && (
+                  <Box sx={{ mt: 1 }}>
+                    <Box
+                      component="img"
+                      src={commentImage}
+                      alt="Comment preview"
+                      sx={{
+                        width: '100%',
+                        maxHeight: 150,
+                        objectFit: 'cover',
+                        borderRadius: 1,
+                        border: '2px solid #1976d2'
+                      }}
+                    />
+                  </Box>
+                )}
               </Box>
 
               {/* Comments List */}
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, maxHeight: 200, overflowY: 'auto' }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, maxHeight: 300, overflowY: 'auto' }}>
                 {commentsQuery.data && Array.isArray(commentsQuery.data) && commentsQuery.data.length > 0 ? (
                   commentsQuery.data.map((comment: any) => (
                     <Card key={comment.id} variant="outlined">
@@ -1005,6 +1151,22 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                         <Typography variant="body2" sx={{ mt: 0.5 }}>
                           {comment.content}
                         </Typography>
+                        {comment.commentImage && (
+                          <Box sx={{ mt: 1 }}>
+                            <Box
+                              component="img"
+                              src={comment.commentImage}
+                              alt="Comment image"
+                              sx={{
+                                width: '100%',
+                                maxHeight: 200,
+                                objectFit: 'cover',
+                                borderRadius: 1,
+                                border: '2px solid #1976d2'
+                              }}
+                            />
+                          </Box>
+                        )}
                       </CardContent>
                     </Card>
                   ))
