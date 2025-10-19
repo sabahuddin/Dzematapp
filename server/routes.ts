@@ -41,7 +41,60 @@ const upload = multer({
   }
 });
 
+// Configure multer for shop photos (multiple files)
+const shopUploadDir = path.join(process.cwd(), 'public', 'uploads', 'shop');
+
+const shopUpload = multer({
+  storage: multer.diskStorage({
+    destination: async (req, file, cb) => {
+      try {
+        await fs.mkdir(shopUploadDir, { recursive: true });
+        cb(null, shopUploadDir);
+      } catch (error) {
+        cb(error as Error, '');
+      }
+    },
+    filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      const extension = path.extname(file.originalname);
+      cb(null, `shop-${uniqueSuffix}${extension}`);
+    }
+  }),
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB per file
+    files: 10 // max 10 files
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (allowedMimes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files (JPEG, PNG, GIF, WebP) are allowed'));
+    }
+  }
+});
+
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Shop photos upload route (multiple files)
+  app.post("/api/upload/shop-photos", requireAuth, shopUpload.array('photos', 10), async (req, res) => {
+    try {
+      const files = req.files as Express.Multer.File[];
+      
+      if (!files || files.length === 0) {
+        return res.status(400).json({ message: "No files uploaded" });
+      }
+
+      const photoUrls = files.map(file => `/uploads/shop/${file.filename}`);
+      
+      res.json({ 
+        message: "Photos uploaded successfully",
+        photoUrls: photoUrls 
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to upload photos" });
+    }
+  });
+
   // Photo upload route
   app.post("/api/upload/photo", requireAuth, upload.single('photo'), async (req, res) => {
     try {
