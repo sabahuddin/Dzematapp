@@ -85,6 +85,44 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
   
   const queryClient = useQueryClient();
 
+  // Convert date from "19. 10. 1976." format to "1976-10-19" (ISO format for input[type=date])
+  const convertDateToISO = (dateStr: string | null | undefined): string => {
+    if (!dateStr) return '';
+    
+    // If already in ISO format, return as is
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+      return dateStr;
+    }
+    
+    // Parse "19. 10. 1976." or "19.10.1976" format
+    const match = dateStr.match(/(\d{1,2})\.\s*(\d{1,2})\.\s*(\d{4})/);
+    if (match) {
+      const [, day, month, year] = match;
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    }
+    
+    return '';
+  };
+
+  // Convert date from "1976-10-19" (ISO) to "19. 10. 1976." format
+  const convertDateFromISO = (dateStr: string | null | undefined): string => {
+    if (!dateStr) return '';
+    
+    // If already in formatted format, return as is
+    if (/\d{1,2}\.\s*\d{1,2}\.\s*\d{4}/.test(dateStr)) {
+      return dateStr;
+    }
+    
+    // Parse ISO format "1976-10-19"
+    const match = dateStr.match(/(\d{4})-(\d{2})-(\d{2})/);
+    if (match) {
+      const [, year, month, day] = match;
+      return `${parseInt(day)}. ${parseInt(month)}. ${year}.`;
+    }
+    
+    return dateStr;
+  };
+
   useEffect(() => {
     if (user) {
       setFormData({
@@ -98,7 +136,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
         address: user.address || '',
         city: user.city || '',
         postalCode: user.postalCode || '',
-        dateOfBirth: user.dateOfBirth || '',
+        dateOfBirth: convertDateToISO(user.dateOfBirth),
         occupation: user.occupation || '',
         membershipDate: user.membershipDate ? new Date(user.membershipDate).toISOString().split('T')[0] : '',
         status: user.status || 'aktivan',
@@ -229,8 +267,11 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
     if (!finalFormData.phone || finalFormData.phone === '') {
       finalFormData.phone = null;
     }
+    // Convert dateOfBirth from ISO format to "DD. MM. YYYY." format
     if (!finalFormData.dateOfBirth || finalFormData.dateOfBirth === '') {
       finalFormData.dateOfBirth = null;
+    } else {
+      finalFormData.dateOfBirth = convertDateFromISO(finalFormData.dateOfBirth);
     }
     if (!finalFormData.address || finalFormData.address === '') {
       finalFormData.address = null;
