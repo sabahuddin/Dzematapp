@@ -140,7 +140,7 @@ export default function UsersPage() {
       'clan': 'Član',
       'clan_porodice': 'Član porodice',
       'moderator': 'Moderator',
-      'clan_radne_grupe': 'Član radne grupe'
+      'clan_radne_grupe': 'Član sekcije'
     };
     return roleLabels[role] || role;
   };

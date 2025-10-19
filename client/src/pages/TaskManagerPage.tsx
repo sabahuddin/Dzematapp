@@ -193,10 +193,10 @@ export default function TaskManagerPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/work-groups'] });
-      toast({ title: 'Uspjeh', description: 'Radna grupa je uspješno kreirana' });
+      toast({ title: 'Uspjeh', description: 'Sekcija je uspješno kreirana' });
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri kreiranju radne grupe', variant: 'destructive' });
+      toast({ title: 'Greška', description: 'Greška pri kreiranju sekcije', variant: 'destructive' });
     }
   });
 

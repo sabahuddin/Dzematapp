@@ -57,7 +57,7 @@ export default function AddMemberModal({ open, onClose, workGroup }: AddMemberMo
       queryClient.invalidateQueries({ queryKey: ['/api/work-groups'] });
       toast({ 
         title: 'Uspjeh', 
-        description: 'Član je uspješno dodan u radnu grupu' 
+        description: 'Član je uspješno dodan u sekciju' 
       });
       setSelectedUserId('');
       onClose();
