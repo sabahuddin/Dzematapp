@@ -314,8 +314,14 @@ export default function TasksDashboard() {
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
           {Object.values(tasksByWorkGroup).map(({ workGroup, tasks }) => (
             <Box key={workGroup.id} data-testid={`workgroup-section-${workGroup.id}`}>
-              <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              <Box sx={{ 
+                mb: 2, 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 1,
+                flexWrap: 'wrap'
+              }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, wordBreak: 'break-word' }}>
                   {workGroup.name}
                 </Typography>
                 <Chip
@@ -326,13 +332,13 @@ export default function TasksDashboard() {
                 />
               </Box>
               {workGroup.description && (
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2, wordBreak: 'break-word' }}>
                   {workGroup.description}
                 </Typography>
               )}
               <Grid container spacing={2}>
                 {tasks.map(task => (
-                  <Grid size={{ xs: 12, sm: 6, md: 4 }} key={task.id}>
+                  <Grid size={{ xs: 12, md: 4 }} key={task.id}>
                     <TaskCard task={task} />
                   </Grid>
                 ))}
