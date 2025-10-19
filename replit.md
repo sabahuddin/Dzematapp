@@ -5,6 +5,9 @@ JamatHub is a web-based admin dashboard application built for managing mosque co
 # Recent Changes
 
 ## October 19, 2025
+- **Login Authentication Update**: Changed login from email to username-based authentication. Login field now displays "Korisničko ime" instead of "E-mail" and is no longer required. Backend updated to use `getUserByUsername` method.
+- **Guest Access Implementation**: Added guest access option on login page allowing non-members to view announcements, events, and membership application form without authentication. New route: `/guest` (publicly accessible).
+- **Layout Improvements**: Fixed sidebar spacing issues - removed double margin when sidebar expands/collapses by eliminating manual margin-left on content area.
 - **Livestream Settings Separation**: Created dedicated LivestreamSettingsPage for admin-only access with detailed instructions. Removed livestream configuration from OrganizationSettingsPage. New route: `/livestream-settings` (admin-only).
 
 # User Preferences
@@ -48,8 +51,9 @@ The application uses a PostgreSQL database with Drizzle ORM:
 
 Simple session-based authentication system:
 
-- **Strategy**: Basic email/password authentication
-- **Session Management**: Client-side storage using localStorage
+- **Strategy**: Username/password authentication (changed from email-based)
+- **Session Management**: Server-side sessions with Express session middleware
+- **Guest Access**: Public access to announcements, events, and membership application form
 - **Authorization**: Role-based access control with four user roles:
   - **Admin**: Full system control and permissions management
   - **Član IO** (Executive Board Member): Can view work group activities (read-only access)
@@ -66,10 +70,20 @@ Simple session-based authentication system:
 ## Key Features and Modules
 
 1. **User Management**: Complete CRUD operations for user accounts with profile management
-2. **Announcements**: Content management system for community announcements
-3. **Events**: Event creation and management with RSVP functionality
+2. **Announcements**: Content management system for community announcements (publicly viewable by guests)
+3. **Events**: Event creation and management with RSVP functionality (publicly viewable by guests)
 4. **Task Manager**: Work group management and task assignment system
 5. **Dashboard Analytics**: Statistical overview with activity tracking
+6. **Guest Access**: Public-facing interface for viewing announcements, events, and submitting membership applications
+
+## Demo Credentials
+
+For testing purposes, the following demo accounts are available:
+
+- **Admin**: username: `admin`, password: `admin123`
+- **Član (Member)**: username: `marko.petrovic`, password: `password123`
+- **Član IO (Board Member)**: username: `ana.maric`, password: `password123`
+- **Guest Access**: Click "Gost" button on login page (no credentials required)
 
 ## Development Tools and Workflow
 
