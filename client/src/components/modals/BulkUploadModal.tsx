@@ -59,7 +59,7 @@ export default function BulkUploadModal({ open, onClose }: BulkUploadModalProps)
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'JamatHub_Template.xlsx';
+      a.download = 'DzematApp_Template.xlsx';
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);

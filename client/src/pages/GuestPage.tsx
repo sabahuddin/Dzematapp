@@ -70,7 +70,7 @@ export default function GuestPage() {
         <Toolbar>
           <Hub sx={{ mr: 2 }} />
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            JamatHub - Gost pristup
+            DžematApp - Gost pristup
           </Typography>
           <Button color="inherit" onClick={handleBackToLogin} data-testid="button-back-to-login">
             Nazad na prijavu

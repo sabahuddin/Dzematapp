@@ -57,7 +57,7 @@ const menuItems = [
   { path: '/messages', label: 'Poruke', icon: Mail, showBadge: true },
   { path: '/ask-imam', label: 'Pitaj imama', icon: QuestionAnswer },
   { path: '/documents', label: 'Dokumenti', icon: Description },
-  { path: '/shop', label: 'Prodavnica', icon: Store },
+  { path: '/shop', label: 'Shop', icon: Store },
   { path: '/requests', label: 'Zahtjevi i prijave', icon: Assignment },
   { path: '/livestream', label: 'Livestream', icon: Radio },
   { path: '/livestream-settings', label: 'Livestream uprav.', icon: Radio, adminOnly: true },

@@ -72,7 +72,7 @@ export default function LoginPage() {
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, mb: 1 }}>
                 <Hub sx={{ color: '#1976d2', fontSize: 32 }} />
                 <Typography variant="h4" sx={{ fontWeight: 600, color: '#1976d2' }}>
-                  JamatHub
+                  DžematApp
                 </Typography>
               </Box>
               <Typography variant="body2" color="text.secondary">

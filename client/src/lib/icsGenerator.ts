@@ -48,11 +48,11 @@ export function generateICS(event: ICSEvent): string {
   let icsContent = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//JamatHub//Event Calendar//EN',
+    'PRODID:-//DžematApp//Event Calendar//EN',
     'CALSCALE:GREGORIAN',
     'METHOD:PUBLISH',
     'BEGIN:VEVENT',
-    `UID:${Date.now()}@jamathub.com`,
+    `UID:${Date.now()}@dzematapp.com`,
     `DTSTAMP:${formatICSDate(now)}`,
     `DTSTART:${formatICSDate(startDate)}`,
     `DTEND:${formatICSDate(endDate)}`,

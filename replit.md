@@ -1,6 +1,6 @@
 # Overview
 
-JamatHub is a web-based admin dashboard application built for managing mosque community operations. The application serves as a comprehensive management system for administrators to handle users, announcements, events, work groups, and tasks. It features a modern, responsive interface designed for desktop and tablet use, with Material-UI components providing a consistent and professional appearance.
+DžematApp is a web-based admin dashboard application built for managing mosque community operations. The application serves as a comprehensive management system for administrators to handle users, announcements, events, work groups, and tasks. It features a modern, responsive interface designed for desktop and tablet use, with Material-UI components providing a consistent and professional appearance.
 
 # Recent Changes
 

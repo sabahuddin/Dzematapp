@@ -195,7 +195,7 @@ export const requests = pgTable("requests", {
 export const shopProducts = pgTable("shop_products", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
-  image: text("image"),
+  photos: text("photos").array(), // array of photo URLs (max 10)
   size: text("size"),
   quantity: integer("quantity").default(0),
   color: text("color"),
@@ -208,7 +208,8 @@ export const shopProducts = pgTable("shop_products", {
 export const marketplaceItems = pgTable("marketplace_items", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
-  image: text("image"),
+  description: text("description"),
+  photos: text("photos").array(), // array of photo URLs (max 3)
   type: text("type").notNull(), // sell, gift
   userId: varchar("user_id").notNull().references(() => users.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),
