@@ -47,9 +47,15 @@ app.use(session({
 
 // Authentication middleware - checks session and sets req.user if authenticated
 app.use(async (req, res, next) => {
+  console.log('=== AUTH MIDDLEWARE ===');
+  console.log('Session ID:', req.sessionID);
+  console.log('Session userId:', req.session.userId);
+  console.log('Session data:', req.session);
+  
   if (req.session.userId) {
     try {
       const user = await storage.getUser(req.session.userId);
+      console.log('User found:', user ? user.username : 'NOT FOUND');
       if (user) {
         // Set isAdmin to true if user has "imam" or "admin" role
         const hasImamRole = user.roles?.includes('imam') || false;
@@ -57,6 +63,7 @@ app.use(async (req, res, next) => {
           ...user,
           isAdmin: user.isAdmin || hasImamRole
         };
+        console.log('req.user set - isAdmin:', req.user.isAdmin);
       } else {
         // User no longer exists, clear the session
         req.session.userId = undefined;
@@ -66,6 +73,7 @@ app.use(async (req, res, next) => {
       req.session.userId = undefined;
     }
   }
+  console.log('======================');
   next();
 });
 
