@@ -21,6 +21,7 @@ import AskImamPage from "@/pages/AskImamPage";
 import DocumentsPage from "@/pages/DocumentsPage";
 import RequestsPage from "@/pages/RequestsPage";
 import LivestreamPage from "@/pages/LivestreamPage";
+import LivestreamSettingsPage from "@/pages/LivestreamSettingsPage";
 import OrganizationSettingsPage from "@/pages/OrganizationSettingsPage";
 import NotFound from "@/pages/not-found";
 
@@ -216,6 +217,12 @@ function Router() {
       <Route path="/livestream">
         <ProtectedRoute>
           <LivestreamPage />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path="/livestream-settings">
+        <ProtectedRoute>
+          <LivestreamSettingsPage />
         </ProtectedRoute>
       </Route>
       

@@ -57,6 +57,7 @@ const menuItems = [
   { path: '/documents', label: 'Dokumenti', icon: Description },
   { path: '/requests', label: 'Zahtjevi i prijave', icon: Assignment },
   { path: '/livestream', label: 'Livestream', icon: Radio },
+  { path: '/livestream-settings', label: 'Livestream uprav.', icon: Radio, adminOnly: true },
   { path: '/organization-settings', label: 'Org. podaci', icon: Settings, adminOnly: true },
 ];
 
