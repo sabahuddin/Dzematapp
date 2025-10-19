@@ -464,9 +464,21 @@ interface TaskCreateDialogProps {
 function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCreateDialogProps) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [descriptionImage, setDescriptionImage] = useState<string | null>(null);
   const [assignedToId, setAssignedToId] = useState('');
   const [status, setStatus] = useState('u_toku');
   const [dueDate, setDueDate] = useState('');
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setDescriptionImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSubmit = () => {
     if (!title || !workGroup) return;
@@ -474,6 +486,7 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
     const taskData = {
       title,
       description,
+      descriptionImage: descriptionImage || null,
       workGroupId: workGroup.id,
       assignedToId: assignedToId || null,
       status,
@@ -483,6 +496,7 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
     onSave(taskData);
     setTitle('');
     setDescription('');
+    setDescriptionImage(null);
     setAssignedToId('');
     setStatus('u_toku');
     setDueDate('');
@@ -512,6 +526,58 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
             rows={3}
             data-testid="input-task-description"
           />
+          
+          <Box>
+            <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+              Slika (opciono)
+            </Typography>
+            <Button
+              variant="outlined"
+              component="label"
+              fullWidth
+              sx={{ justifyContent: 'flex-start', textTransform: 'none' }}
+              data-testid="button-upload-task-image"
+            >
+              {descriptionImage ? 'Promijeni sliku' : 'Dodaj sliku'}
+              <input
+                type="file"
+                hidden
+                accept="image/*"
+                onChange={handleImageUpload}
+              />
+            </Button>
+            {descriptionImage && (
+              <Box sx={{ mt: 2, position: 'relative' }}>
+                <Box
+                  component="img"
+                  src={descriptionImage}
+                  alt="Task preview"
+                  sx={{
+                    width: '100%',
+                    maxHeight: 200,
+                    objectFit: 'cover',
+                    borderRadius: 1,
+                    border: '2px solid #1976d2'
+                  }}
+                />
+                <IconButton
+                  size="small"
+                  sx={{
+                    position: 'absolute',
+                    top: 8,
+                    right: 8,
+                    bgcolor: 'background.paper',
+                    '&:hover': { bgcolor: 'error.light', color: 'white' }
+                  }}
+                  onClick={() => setDescriptionImage(null)}
+                  data-testid="button-remove-task-image"
+                >
+                  <Close fontSize="small" />
+                </IconButton>
+              </Box>
+            )}
+          </Box>
+          
           <TextField
             variant="outlined"
             select

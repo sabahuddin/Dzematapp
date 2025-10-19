@@ -86,6 +86,7 @@ export const tasks = pgTable("tasks", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   title: text("title").notNull(),
   description: text("description"),
+  descriptionImage: text("description_image"),
   workGroupId: varchar("work_group_id").notNull().references(() => workGroups.id),
   assignedToId: varchar("assigned_to_id").references(() => users.id),
   status: text("status").notNull().default("u_toku"), // u_toku, na_cekanju, završeno, otkazano, arhiva
@@ -106,6 +107,7 @@ export const taskComments = pgTable("task_comments", {
   taskId: varchar("task_id").notNull().references(() => tasks.id),
   userId: varchar("user_id").notNull().references(() => users.id),
   content: text("content").notNull(),
+  commentImage: text("comment_image"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
