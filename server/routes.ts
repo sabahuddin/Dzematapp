@@ -1680,6 +1680,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.put("/api/marketplace/items/:id", requireAuth, async (req, res) => {
+    try {
+      const item = await storage.getMarketplaceItem(req.params.id);
+      if (!item) {
+        return res.status(404).json({ message: "Item not found" });
+      }
+      
+      // Allow update only by owner or admin
+      const user = await storage.getUser(req.session.userId!);
+      const isAdmin = user && (user.isAdmin || user.roles?.includes('admin') || user.roles?.includes('imam'));
+      if (item.userId !== req.session.userId && !isAdmin) {
+        return res.status(403).json({ message: "Not authorized" });
+      }
+
+      const updatedItem = await storage.updateMarketplaceItem(req.params.id, req.body);
+      if (!updatedItem) {
+        return res.status(404).json({ message: "Item not found" });
+      }
+      res.json(updatedItem);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update item" });
+    }
+  });
+
   app.delete("/api/marketplace/items/:id", requireAuth, async (req, res) => {
     try {
       const item = await storage.getMarketplaceItem(req.params.id);

@@ -166,6 +166,7 @@ export interface IStorage {
   getMarketplaceItem(id: string): Promise<MarketplaceItem | undefined>;
   getAllMarketplaceItems(): Promise<MarketplaceItem[]>;
   getUserMarketplaceItems(userId: string): Promise<MarketplaceItem[]>;
+  updateMarketplaceItem(id: string, updates: Partial<InsertMarketplaceItem>): Promise<MarketplaceItem | undefined>;
   deleteMarketplaceItem(id: string): Promise<boolean>;
 
   // Product Purchase Requests
@@ -1289,6 +1290,18 @@ export class MemStorage implements IStorage {
     return Array.from(this.marketplaceItems.values())
       .filter(item => item.userId === userId)
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async updateMarketplaceItem(id: string, updates: Partial<InsertMarketplaceItem>): Promise<MarketplaceItem | undefined> {
+    const item = this.marketplaceItems.get(id);
+    if (!item) return undefined;
+
+    const updatedItem: MarketplaceItem = {
+      ...item,
+      ...updates
+    };
+    this.marketplaceItems.set(id, updatedItem);
+    return updatedItem;
   }
 
   async deleteMarketplaceItem(id: string): Promise<boolean> {
