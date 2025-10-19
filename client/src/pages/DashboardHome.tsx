@@ -196,7 +196,7 @@ export default function DashboardHome() {
                       {latestAnnouncement.title}
                     </Typography>
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                      {format(new Date(latestAnnouncement.publishedAt), 'dd.MM.yyyy HH:mm')}
+                      {latestAnnouncement.publishDate && format(new Date(latestAnnouncement.publishDate), 'dd.MM.yyyy HH:mm')}
                     </Typography>
                     <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
                       {latestAnnouncement.content}
