@@ -6,7 +6,7 @@ import { promises as fs } from "fs";
 import * as XLSX from "xlsx";
 import { storage } from "./storage";
 import { requireAuth, requireAdmin } from "./index";
-import { insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertGroupFileSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema } from "@shared/schema";
+import { insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertGroupFileSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema } from "@shared/schema";
 
 // Configure multer for photo uploads
 const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'photos');
@@ -1464,6 +1464,91 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(updatedSettings);
     } catch (error) {
       res.status(400).json({ message: "Invalid organization settings data" });
+    }
+  });
+
+  // Documents routes
+  app.get("/api/documents", requireAuth, async (req, res) => {
+    try {
+      const documents = await storage.getAllDocuments();
+      res.json(documents);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get documents" });
+    }
+  });
+
+  app.post("/api/documents", requireAdmin, async (req, res) => {
+    try {
+      const documentData = insertDocumentSchema.parse(req.body);
+      const document = await storage.createDocument(documentData);
+      res.status(201).json(document);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid document data" });
+    }
+  });
+
+  app.delete("/api/documents/:id", requireAdmin, async (req, res) => {
+    try {
+      const deleted = await storage.deleteDocument(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Document not found" });
+      }
+      res.json({ message: "Document deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete document" });
+    }
+  });
+
+  // Requests routes
+  app.get("/api/requests", requireAdmin, async (req, res) => {
+    try {
+      const requests = await storage.getAllRequests();
+      res.json(requests);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get requests" });
+    }
+  });
+
+  app.get("/api/requests/my", requireAuth, async (req, res) => {
+    try {
+      const userId = req.session.userId!;
+      const requests = await storage.getUserRequests(userId);
+      res.json(requests);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get user requests" });
+    }
+  });
+
+  app.post("/api/requests", requireAuth, async (req, res) => {
+    try {
+      const userId = req.session.userId!;
+      const requestData = insertRequestSchema.parse({
+        ...req.body,
+        userId
+      });
+      const request = await storage.createRequest(requestData);
+      res.status(201).json(request);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid request data" });
+    }
+  });
+
+  app.put("/api/requests/:id/status", requireAdmin, async (req, res) => {
+    try {
+      const { status, adminNotes } = req.body;
+      const reviewedById = req.session.userId!;
+      const request = await storage.updateRequestStatus(
+        req.params.id,
+        status,
+        reviewedById,
+        adminNotes
+      );
+      if (!request) {
+        return res.status(404).json({ message: "Request not found" });
+      }
+      res.json(request);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update request status" });
     }
   });
 
