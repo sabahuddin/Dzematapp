@@ -27,7 +27,11 @@ import {
   type Message,
   type InsertMessage,
   type OrganizationSettings,
-  type InsertOrganizationSettings
+  type InsertOrganizationSettings,
+  type Document,
+  type InsertDocument,
+  type Request,
+  type InsertRequest
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -130,6 +134,20 @@ export interface IStorage {
   getOrganizationSettings(): Promise<OrganizationSettings | undefined>;
   updateOrganizationSettings(settings: Partial<InsertOrganizationSettings>): Promise<OrganizationSettings>;
 
+  // Documents
+  createDocument(document: InsertDocument): Promise<Document>;
+  getDocument(id: string): Promise<Document | undefined>;
+  getAllDocuments(): Promise<Document[]>;
+  deleteDocument(id: string): Promise<boolean>;
+
+  // Requests
+  createRequest(request: InsertRequest): Promise<Request>;
+  getRequest(id: string): Promise<Request | undefined>;
+  getAllRequests(): Promise<Request[]>;
+  getUserRequests(userId: string): Promise<Request[]>;
+  updateRequest(id: string, updates: Partial<InsertRequest>): Promise<Request | undefined>;
+  updateRequestStatus(id: string, status: string, reviewedById?: string, adminNotes?: string): Promise<Request | undefined>;
+
   // Statistics
   getUserCount(): Promise<number>;
   getNewAnnouncementsCount(days: number): Promise<number>;
@@ -153,6 +171,8 @@ export class MemStorage implements IStorage {
   private familyRelationships: Map<string, FamilyRelationship> = new Map();
   private messages: Map<string, Message> = new Map();
   private organizationSettings: OrganizationSettings | null = null;
+  private documents: Map<string, Document> = new Map();
+  private requests: Map<string, Request> = new Map();
 
   constructor() {
     this.initializeData();
@@ -1072,6 +1092,86 @@ export class MemStorage implements IStorage {
       };
     }
     return this.organizationSettings;
+  }
+
+  // Documents
+  async createDocument(document: InsertDocument): Promise<Document> {
+    const newDocument: Document = {
+      id: randomUUID(),
+      ...document,
+      uploadedAt: new Date()
+    };
+    this.documents.set(newDocument.id, newDocument);
+    return newDocument;
+  }
+
+  async getDocument(id: string): Promise<Document | undefined> {
+    return this.documents.get(id);
+  }
+
+  async getAllDocuments(): Promise<Document[]> {
+    return Array.from(this.documents.values()).sort((a, b) => 
+      b.uploadedAt.getTime() - a.uploadedAt.getTime()
+    );
+  }
+
+  async deleteDocument(id: string): Promise<boolean> {
+    return this.documents.delete(id);
+  }
+
+  // Requests
+  async createRequest(request: InsertRequest): Promise<Request> {
+    const newRequest: Request = {
+      id: randomUUID(),
+      ...request,
+      createdAt: new Date(),
+      reviewedAt: null
+    };
+    this.requests.set(newRequest.id, newRequest);
+    return newRequest;
+  }
+
+  async getRequest(id: string): Promise<Request | undefined> {
+    return this.requests.get(id);
+  }
+
+  async getAllRequests(): Promise<Request[]> {
+    return Array.from(this.requests.values()).sort((a, b) => 
+      b.createdAt.getTime() - a.createdAt.getTime()
+    );
+  }
+
+  async getUserRequests(userId: string): Promise<Request[]> {
+    return Array.from(this.requests.values())
+      .filter(request => request.userId === userId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async updateRequest(id: string, updates: Partial<InsertRequest>): Promise<Request | undefined> {
+    const request = this.requests.get(id);
+    if (!request) return undefined;
+
+    const updatedRequest: Request = {
+      ...request,
+      ...updates
+    };
+    this.requests.set(id, updatedRequest);
+    return updatedRequest;
+  }
+
+  async updateRequestStatus(id: string, status: string, reviewedById?: string, adminNotes?: string): Promise<Request | undefined> {
+    const request = this.requests.get(id);
+    if (!request) return undefined;
+
+    const updatedRequest: Request = {
+      ...request,
+      status,
+      reviewedAt: new Date(),
+      reviewedById: reviewedById || null,
+      adminNotes: adminNotes || null
+    };
+    this.requests.set(id, updatedRequest);
+    return updatedRequest;
   }
 }
 
