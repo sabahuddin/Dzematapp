@@ -285,6 +285,7 @@ export default function AnnouncementModal({
                   variant="outlined"
                   label="Kategorije"
                   placeholder="Izaberite ili unesite kategorije"
+                  InputLabelProps={{ shrink: true }}
                   data-testid="input-categories"
                 />
               )}

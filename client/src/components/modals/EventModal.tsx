@@ -187,6 +187,7 @@ export default function EventModal({
                   variant="outlined"
                   label="Kategorije"
                   placeholder="Odaberite ili unesite kategoriju"
+                  InputLabelProps={{ shrink: true }}
                   data-testid="input-categories"
                 />
               )}

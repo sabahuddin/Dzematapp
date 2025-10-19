@@ -590,6 +590,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                       variant="outlined"
                       label="Kategorije"
                       placeholder="Odaberite ili unesite kategoriju"
+                      InputLabelProps={{ shrink: true }}
                       data-testid="input-categories"
                     />
                   )}
