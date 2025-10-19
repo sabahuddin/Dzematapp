@@ -362,6 +362,7 @@ export class MemStorage implements IStorage {
         const task: Task = {
           id: randomUUID(),
           ...taskData,
+          descriptionImage: null,
           createdAt: new Date()
         };
         this.tasks.set(task.id, task);
@@ -655,6 +656,7 @@ export class MemStorage implements IStorage {
       id,
       title: insertTask.title,
       description: insertTask.description || null,
+      descriptionImage: insertTask.descriptionImage || null,
       workGroupId: insertTask.workGroupId,
       assignedToId: insertTask.assignedToId || null,
       status: insertTask.status || "todo",
@@ -845,6 +847,7 @@ export class MemStorage implements IStorage {
       taskId: insertComment.taskId,
       userId: insertComment.userId,
       content: insertComment.content,
+      commentImage: insertComment.commentImage || null,
       createdAt: new Date()
     };
     this.taskComments.set(id, comment);
