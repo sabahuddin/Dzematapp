@@ -85,7 +85,13 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
   };
 
   const sidebarContent = (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <Box sx={{ 
+      height: '100%', 
+      display: 'flex', 
+      flexDirection: 'column',
+      width: '100%',
+      overflowX: 'hidden'
+    }}>
       {/* Header */}
       <Box 
         sx={{ 
@@ -94,7 +100,8 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
           display: 'flex',
           alignItems: 'center',
           gap: 1.5,
-          minHeight: 64
+          minHeight: 64,
+          width: '100%'
         }}
       >
         <Hub sx={{ color: '#1976d2', fontSize: 24 }} />
@@ -113,7 +120,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
       </Box>
 
       {/* Navigation */}
-      <List sx={{ py: 2, flex: 1 }}>
+      <List sx={{ py: 2, flex: 1, width: '100%', overflowX: 'hidden' }}>
         {menuItems.map((item) => {
           // Hide admin-only items from non-admin users
           if (item.adminOnly && !user?.isAdmin) {
@@ -134,6 +141,8 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
                 color: isActive ? '#1976d2' : '#666',
                 borderRight: isActive ? '3px solid #1976d2' : 'none',
                 justifyContent: collapsed ? 'center' : 'flex-start',
+                px: collapsed ? 0 : 2,
+                minWidth: 0,
                 '&:hover': {
                   bgcolor: '#f5f5f5',
                   color: '#1976d2'
@@ -155,7 +164,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
           );
 
           return (
-            <ListItem key={item.path} disablePadding>
+            <ListItem key={item.path} disablePadding sx={{ width: '100%', maxWidth: '100%' }}>
               {collapsed ? (
                 <Tooltip title={item.label} placement="right">
                   {buttonContent}
@@ -313,6 +322,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
         '& .MuiDrawer-paper': {
           width: width,
           boxSizing: 'border-box',
+          overflowX: 'hidden',
           transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.standard,
