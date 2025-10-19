@@ -192,6 +192,37 @@ export const requests = pgTable("requests", {
   adminNotes: text("admin_notes"),
 });
 
+export const shopProducts = pgTable("shop_products", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  image: text("image"),
+  size: text("size"),
+  quantity: integer("quantity").default(0),
+  color: text("color"),
+  notes: text("notes"),
+  price: text("price"), // stored as text to support various formats
+  createdById: varchar("created_by_id").notNull().references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const marketplaceItems = pgTable("marketplace_items", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  image: text("image"),
+  type: text("type").notNull(), // sell, gift
+  userId: varchar("user_id").notNull().references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const productPurchaseRequests = pgTable("product_purchase_requests", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  productId: varchar("product_id").notNull().references(() => shopProducts.id),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  quantity: integer("quantity").default(1).notNull(),
+  status: text("status").notNull().default("pending"), // pending, approved, rejected
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -286,6 +317,21 @@ export const insertRequestSchema = createInsertSchema(requests).omit({
   reviewedAt: true,
 });
 
+export const insertShopProductSchema = createInsertSchema(shopProducts).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertMarketplaceItemSchema = createInsertSchema(marketplaceItems).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertProductPurchaseRequestSchema = createInsertSchema(productPurchaseRequests).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -319,6 +365,12 @@ export type Document = typeof documents.$inferSelect;
 export type InsertDocument = z.infer<typeof insertDocumentSchema>;
 export type Request = typeof requests.$inferSelect;
 export type InsertRequest = z.infer<typeof insertRequestSchema>;
+export type ShopProduct = typeof shopProducts.$inferSelect;
+export type InsertShopProduct = z.infer<typeof insertShopProductSchema>;
+export type MarketplaceItem = typeof marketplaceItems.$inferSelect;
+export type InsertMarketplaceItem = z.infer<typeof insertMarketplaceItemSchema>;
+export type ProductPurchaseRequest = typeof productPurchaseRequests.$inferSelect;
+export type InsertProductPurchaseRequest = z.infer<typeof insertProductPurchaseRequestSchema>;
 
 // API response types for files with user details
 export type AnnouncementFileWithUser = AnnouncementFile & {
@@ -330,3 +382,28 @@ export type AnnouncementFileWithUser = AnnouncementFile & {
 };
 
 export type Activity = typeof activities.$inferSelect;
+
+export type ShopProductWithCreator = ShopProduct & {
+  creator: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  } | null;
+};
+
+export type MarketplaceItemWithUser = MarketplaceItem & {
+  user: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  } | null;
+};
+
+export type ProductPurchaseRequestWithDetails = ProductPurchaseRequest & {
+  product: ShopProduct | null;
+  user: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  } | null;
+};
