@@ -85,7 +85,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
   
   const queryClient = useQueryClient();
 
-  // Convert date from "19. 10. 1976." format to "1976-10-19" (ISO format for input[type=date])
+  // Convert date from "19.10.1999." format to "1999-10-19" (ISO format for input[type=date])
   const convertDateToISO = (dateStr: string | null | undefined): string => {
     if (!dateStr) return '';
     
@@ -94,18 +94,17 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
       return dateStr;
     }
     
-    // Parse "19. 10. 1976." or "19.10.1976" format (with optional trailing dot)
+    // Parse "19.10.1999." or "19. 10. 1999." format (with/without spaces, optional trailing dot)
     const match = dateStr.match(/(\d{1,2})\.\s*(\d{1,2})\.\s*(\d{4})\.?/);
     if (match) {
       const [, day, month, year] = match;
       return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
     }
     
-    console.log('Failed to convert date:', dateStr);
     return '';
   };
 
-  // Convert date from "1976-10-19" (ISO) to "19. 10. 1976." format
+  // Convert date from "1999-10-19" (ISO) to "19.10.1999." format
   const convertDateFromISO = (dateStr: string | null | undefined): string => {
     if (!dateStr) return '';
     
@@ -114,11 +113,11 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
       return dateStr;
     }
     
-    // Parse ISO format "1976-10-19"
+    // Parse ISO format "1999-10-19"
     const match = dateStr.match(/(\d{4})-(\d{2})-(\d{2})/);
     if (match) {
       const [, year, month, day] = match;
-      return `${parseInt(day)}. ${parseInt(month)}. ${year}.`;
+      return `${parseInt(day)}.${parseInt(month)}.${year}.`;
     }
     
     return dateStr;
