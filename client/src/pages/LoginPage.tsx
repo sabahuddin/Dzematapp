@@ -15,7 +15,7 @@ import { useAuth } from '../hooks/useAuth';
 
 export default function LoginPage() {
   const [, setLocation] = useLocation();
-  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [formData, setFormData] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
@@ -31,17 +31,21 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const success = await login(formData.email, formData.password);
+      const success = await login(formData.username, formData.password);
       if (success) {
         setLocation('/dashboard');
       } else {
-        setError('Nevažeći email ili šifra');
+        setError('Nevažeće korisničko ime ili šifra');
       }
     } catch (err) {
       setError('Greška pri prijavljivanju');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGuestAccess = () => {
+    setLocation('/guest');
   };
 
   return (
@@ -87,13 +91,12 @@ export default function LoginPage() {
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label="Email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange('email')}
-                  placeholder="admin@jamathub.com"
-                  required
-                  data-testid="input-email"
+                  label="Korisničko ime"
+                  type="text"
+                  value={formData.username}
+                  onChange={handleChange('username')}
+                  placeholder="admin"
+                  data-testid="input-username"
                 />
 
                 <TextField
@@ -119,6 +122,17 @@ export default function LoginPage() {
                 >
                   {loading ? 'Prijavljivanje...' : 'Prijavi se'}
                 </Button>
+
+                <Button
+                  variant="outlined"
+                  size="large"
+                  fullWidth
+                  onClick={handleGuestAccess}
+                  sx={{ py: 1.5, fontSize: '1rem' }}
+                  data-testid="button-guest"
+                >
+                  Gost
+                </Button>
               </Box>
             </form>
 
@@ -127,7 +141,7 @@ export default function LoginPage() {
                 Demo podaci:
               </Typography>
               <Typography variant="caption" color="text.secondary">
-                Email: admin@jamathub.com | Šifra: admin123
+                Korisničko ime: admin | Šifra: admin123
               </Typography>
             </Box>
           </CardContent>
