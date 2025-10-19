@@ -26,6 +26,7 @@ interface AppBarProps {
 export default function AppBar({ onMenuClick }: AppBarProps) {
   const { user, logout } = useAuth();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const isMobile = window.innerWidth < 900;
 
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -57,11 +58,25 @@ export default function AppBar({ onMenuClick }: AppBarProps) {
       }}
     >
       <Toolbar>
+        {isMobile && (
+          <IconButton
+            edge="start"
+            onClick={onMenuClick}
+            sx={{ 
+              mr: 2,
+              '&:hover': { bgcolor: 'rgba(0,0,0,0.04)' }
+            }}
+            data-testid="menu-button"
+          >
+            <MenuIcon />
+          </IconButton>
+        )}
+        
         <Box sx={{ flex: 1 }}>
           <Typography variant="h6" component="h1" sx={{ fontWeight: 600 }}>
             {getPageTitle()}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" color="text.secondary" sx={{ display: { xs: 'none', sm: 'block' } }}>
             Dobrodošli u JamatHub Admin Panel
           </Typography>
         </Box>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Container, Typography, Box, Card, CardContent, CardHeader, IconButton, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@mui/material";
-import { Download, Delete, Upload, FileText } from "lucide-react";
+import { Download, Delete, Upload, FileText, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/contexts/AuthContext";
@@ -111,6 +111,10 @@ export default function DocumentsPage() {
     });
   };
 
+  const handleViewPdf = (doc: Document) => {
+    window.open(doc.filePath, "_blank");
+  };
+
   const handleDownload = (doc: Document) => {
     const link = document.createElement("a");
     link.href = doc.filePath;
@@ -174,6 +178,14 @@ export default function DocumentsPage() {
                 subheader={`Dodato: ${formatDate(doc.uploadedAt)} • ${formatFileSize(doc.fileSize)}`}
                 action={
                   <Box>
+                    <IconButton
+                      onClick={() => handleViewPdf(doc)}
+                      data-testid={`button-view-${doc.id}`}
+                      title="Pregledaj PDF"
+                      color="primary"
+                    >
+                      <Eye />
+                    </IconButton>
                     <IconButton
                       onClick={() => handleDownload(doc)}
                       data-testid={`button-download-${doc.id}`}
