@@ -363,6 +363,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                 value={formData.dateOfBirth}
                 onChange={handleChange('dateOfBirth')}
                 InputLabelProps={{ shrink: true }}
+                helperText="Format: dan.mjesec.godina (dd.mm.yyyy)"
                 data-testid="input-dateOfBirth"
               />
             </Grid>
