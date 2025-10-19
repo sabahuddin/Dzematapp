@@ -9,6 +9,14 @@ DžematApp is a web-based admin dashboard application built for managing mosque 
 - **Guest Access Implementation**: Added guest access option on login page allowing non-members to view announcements, events, and membership application form without authentication. New route: `/guest` (publicly accessible).
 - **Layout Improvements**: Fixed sidebar spacing issues - removed double margin when sidebar expands/collapses by eliminating manual margin-left on content area.
 - **Livestream Settings Separation**: Created dedicated LivestreamSettingsPage for admin-only access with detailed instructions. Removed livestream configuration from OrganizationSettingsPage. New route: `/livestream-settings` (admin-only).
+- **Superadmin Management**: Added ability for superadmins to grant admin privileges to other users. New "Superadmin pristup" toggle in UserModal allows current admins to set `isAdmin` flag on other user accounts, enabling them to manage all users and system settings.
+- **Shop Features Enhancement**: 
+  - Photo upload support (10 photos for admin products, 3 for member marketplace items)
+  - Fullscreen image viewer for all shop photos
+  - Edit functionality for marketplace item owners
+  - Enhanced purchase modal with size/quantity/color selection and total price calculation
+  - Admin shop tab renamed from "Prodajem" to "DžematShop"
+- **Global Terminology Update**: Renamed "Radna grupa" to "Sekcija" throughout the application.
 
 # User Preferences
 

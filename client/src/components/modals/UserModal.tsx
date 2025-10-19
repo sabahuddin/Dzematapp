@@ -20,7 +20,9 @@ import {
   FormControl,
   InputLabel,
   Autocomplete,
-  SelectChangeEvent
+  SelectChangeEvent,
+  FormControlLabel,
+  Switch
 } from '@mui/material';
 import {
   Close,
@@ -74,7 +76,8 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
     status: 'aktivan',
     inactiveReason: null as string | null,
     categories: [] as string[],
-    roles: [] as string[]
+    roles: [] as string[],
+    isAdmin: false
   });
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string>('');
@@ -101,7 +104,8 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
         status: user.status || 'aktivan',
         inactiveReason: user.inactiveReason || null,
         categories: user.categories || [],
-        roles: user.roles || []
+        roles: user.roles || [],
+        isAdmin: user.isAdmin || false
       });
       setPhotoPreview(user.photo || '');
     } else {
@@ -123,7 +127,8 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
         status: 'aktivan',
         inactiveReason: null,
         categories: [],
-        roles: ['clan']
+        roles: ['clan'],
+        isAdmin: false
       });
       setPhotoPreview('');
       setPhotoFile(null);
@@ -574,6 +579,27 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                     ))}
                   </Select>
                 </FormControl>
+              </Grid>
+            )}
+            
+            {/* Admin Toggle - Only for superadmin */}
+            {currentUser?.isAdmin && !isMemberEditingSelf && (
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={formData.isAdmin}
+                      onChange={(e) => setFormData(prev => ({ ...prev, isAdmin: e.target.checked }))}
+                      color="primary"
+                      data-testid="switch-isAdmin"
+                    />
+                  }
+                  label="Superadmin pristup"
+                  sx={{ mt: 1 }}
+                />
+                <Typography variant="caption" color="text.secondary" display="block" sx={{ ml: 4 }}>
+                  Superadmin može dodavati i uređivati sve korisnike
+                </Typography>
               </Grid>
             )}
             
