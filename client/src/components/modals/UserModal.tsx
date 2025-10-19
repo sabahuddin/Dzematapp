@@ -229,6 +229,24 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
     if (!finalFormData.phone || finalFormData.phone === '') {
       finalFormData.phone = null;
     }
+    if (!finalFormData.dateOfBirth || finalFormData.dateOfBirth === '') {
+      finalFormData.dateOfBirth = null;
+    }
+    if (!finalFormData.address || finalFormData.address === '') {
+      finalFormData.address = null;
+    }
+    if (!finalFormData.city || finalFormData.city === '') {
+      finalFormData.city = null;
+    }
+    if (!finalFormData.postalCode || finalFormData.postalCode === '') {
+      finalFormData.postalCode = null;
+    }
+    if (!finalFormData.occupation || finalFormData.occupation === '') {
+      finalFormData.occupation = null;
+    }
+    if (!finalFormData.photo || finalFormData.photo === '') {
+      finalFormData.photo = null;
+    }
     
     // Ensure inactiveReason is null if status is not "pasivan"
     if (finalFormData.status !== 'pasivan') {
