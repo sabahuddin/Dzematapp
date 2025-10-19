@@ -41,6 +41,7 @@ export const announcements = pgTable("announcements", {
   publishDate: timestamp("publish_date").defaultNow(),
   status: text("status").notNull().default("published"), // published, featured, archived
   isFeatured: boolean("is_featured").default(false),
+  categories: text("categories").array(), // Džemat, IZBCH, IZ, Ostalo, custom
 });
 
 export const events = pgTable("events", {

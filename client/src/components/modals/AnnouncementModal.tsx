@@ -16,7 +16,8 @@ import {
   ListItemText,
   ListItemSecondaryAction,
   Chip,
-  Alert
+  Alert,
+  Autocomplete
 } from '@mui/material';
 import { Close, CloudUpload, Delete, AttachFile, Image, PictureAsPdf } from '@mui/icons-material';
 import { Announcement, AnnouncementFileWithUser } from '@shared/schema';
@@ -45,10 +46,13 @@ export default function AnnouncementModal({
     title: '',
     content: '',
     isFeatured: false,
-    status: 'published'
+    status: 'published',
+    categories: [] as string[]
   });
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
+  
+  const predefinedCategories = ['Džemat', 'IZBCH', 'IZ', 'Ostalo'];
 
   // Fetch existing announcement files when editing
   const announcementFilesQuery = useQuery<AnnouncementFileWithUser[]>({
@@ -63,14 +67,16 @@ export default function AnnouncementModal({
         title: announcement.title || '',
         content: announcement.content || '',
         isFeatured: announcement.isFeatured || false,
-        status: announcement.status || 'published'
+        status: announcement.status || 'published',
+        categories: announcement.categories || []
       });
     } else {
       setFormData({
         title: '',
         content: '',
         isFeatured: false,
-        status: 'published'
+        status: 'published',
+        categories: []
       });
     }
     // Clear selected files when modal opens/closes
@@ -254,6 +260,36 @@ export default function AnnouncementModal({
               onChange={handleChange('title')}
               required
               data-testid="input-title"
+            />
+            
+            <Autocomplete
+              multiple
+              freeSolo
+              options={predefinedCategories}
+              value={formData.categories}
+              onChange={(event, newValue) => {
+                setFormData(prev => ({ ...prev, categories: newValue }));
+              }}
+              renderTags={(value, getTagProps) =>
+                value.map((option, index) => (
+                  <Chip
+                    label={option}
+                    {...getTagProps({ index })}
+                    key={option}
+                  />
+                ))
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  label="Kategorije"
+                  placeholder="Izaberite ili unesite kategorije"
+                  data-testid="input-categories"
+                />
+              )}
+              sx={{ width: '100%' }}
+              data-testid="autocomplete-categories"
             />
             
             <RichTextEditor

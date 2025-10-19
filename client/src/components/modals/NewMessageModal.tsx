@@ -65,7 +65,7 @@ export default function NewMessageModal({ isOpen, onClose, replyTo }: NewMessage
   const form = useForm<MessageFormData>({
     resolver: zodResolver(messageFormSchema),
     defaultValues: {
-      messageType: "private",
+      messageType: canSendCategoryMessages ? "private" : "private",
       recipientId: "",
       category: "",
       subject: "",
@@ -135,33 +135,33 @@ export default function NewMessageModal({ isOpen, onClose, replyTo }: NewMessage
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="messageType"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tip poruke</FormLabel>
-                  <Select
-                    value={field.value}
-                    onValueChange={field.onChange}
-                    disabled={!!replyTo}
-                  >
-                    <FormControl>
-                      <SelectTrigger data-testid="select-message-type">
-                        <SelectValue placeholder="Izaberite tip poruke" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="private">Privatna</SelectItem>
-                      {canSendCategoryMessages && (
+            {canSendCategoryMessages && (
+              <FormField
+                control={form.control}
+                name="messageType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tip poruke</FormLabel>
+                    <Select
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      disabled={!!replyTo}
+                    >
+                      <FormControl>
+                        <SelectTrigger data-testid="select-message-type">
+                          <SelectValue placeholder="Izaberite tip poruke" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="private">Privatna</SelectItem>
                         <SelectItem value="category">Kategorijska</SelectItem>
-                      )}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             {messageType === "private" && (
               <FormField

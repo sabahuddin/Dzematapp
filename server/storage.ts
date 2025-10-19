@@ -441,7 +441,8 @@ export class MemStorage implements IStorage {
       authorId: insertAnnouncement.authorId,
       publishDate: new Date(),
       status: insertAnnouncement.status || "published",
-      isFeatured: insertAnnouncement.isFeatured || false
+      isFeatured: insertAnnouncement.isFeatured || false,
+      categories: insertAnnouncement.categories || []
     };
     this.announcements.set(id, announcement);
     
