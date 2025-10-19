@@ -147,7 +147,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
       });
       setPhotoPreview(user.photo || '');
     } else {
-      // Reset form for new user
+      // Reset form for new user with default dates for Safari compatibility
       setFormData({
         firstName: '',
         lastName: '',
@@ -159,9 +159,9 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
         address: '',
         city: '',
         postalCode: '',
-        dateOfBirth: '',
+        dateOfBirth: '1900-01-01',
         occupation: '',
-        membershipDate: '',
+        membershipDate: '1900-01-01',
         status: 'aktivan',
         inactiveReason: null,
         categories: [],
@@ -404,6 +404,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                 value={formData.dateOfBirth}
                 onChange={handleChange('dateOfBirth')}
                 InputLabelProps={{ shrink: true }}
+                inputProps={{ step: 1 }}
                 data-testid="input-dateOfBirth"
               />
             </Grid>
@@ -516,6 +517,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                 value={formData.membershipDate}
                 onChange={handleChange('membershipDate')}
                 InputLabelProps={{ shrink: true }}
+                inputProps={{ step: 1 }}
                 helperText={!user ? "Ostavite prazno za današnji datum" : ""}
                 disabled={isMemberEditingSelf}
                 data-testid="input-membershipDate"
