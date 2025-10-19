@@ -31,7 +31,13 @@ import {
   type Document,
   type InsertDocument,
   type Request,
-  type InsertRequest
+  type InsertRequest,
+  type ShopProduct,
+  type InsertShopProduct,
+  type MarketplaceItem,
+  type InsertMarketplaceItem,
+  type ProductPurchaseRequest,
+  type InsertProductPurchaseRequest
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -148,6 +154,25 @@ export interface IStorage {
   updateRequest(id: string, updates: Partial<InsertRequest>): Promise<Request | undefined>;
   updateRequestStatus(id: string, status: string, reviewedById?: string, adminNotes?: string): Promise<Request | undefined>;
 
+  // Shop Products
+  createShopProduct(product: InsertShopProduct): Promise<ShopProduct>;
+  getShopProduct(id: string): Promise<ShopProduct | undefined>;
+  getAllShopProducts(): Promise<ShopProduct[]>;
+  updateShopProduct(id: string, updates: Partial<InsertShopProduct>): Promise<ShopProduct | undefined>;
+  deleteShopProduct(id: string): Promise<boolean>;
+
+  // Marketplace Items
+  createMarketplaceItem(item: InsertMarketplaceItem): Promise<MarketplaceItem>;
+  getMarketplaceItem(id: string): Promise<MarketplaceItem | undefined>;
+  getAllMarketplaceItems(): Promise<MarketplaceItem[]>;
+  getUserMarketplaceItems(userId: string): Promise<MarketplaceItem[]>;
+  deleteMarketplaceItem(id: string): Promise<boolean>;
+
+  // Product Purchase Requests
+  createProductPurchaseRequest(request: InsertProductPurchaseRequest): Promise<ProductPurchaseRequest>;
+  getAllProductPurchaseRequests(): Promise<ProductPurchaseRequest[]>;
+  updateProductPurchaseRequest(id: string, status: string): Promise<ProductPurchaseRequest | undefined>;
+
   // Statistics
   getUserCount(): Promise<number>;
   getNewAnnouncementsCount(days: number): Promise<number>;
@@ -173,6 +198,9 @@ export class MemStorage implements IStorage {
   private organizationSettings: OrganizationSettings | null = null;
   private documents: Map<string, Document> = new Map();
   private requests: Map<string, Request> = new Map();
+  private shopProducts: Map<string, ShopProduct> = new Map();
+  private marketplaceItems: Map<string, MarketplaceItem> = new Map();
+  private productPurchaseRequests: Map<string, ProductPurchaseRequest> = new Map();
 
   constructor() {
     this.initializeData();
@@ -1185,6 +1213,116 @@ export class MemStorage implements IStorage {
       adminNotes: adminNotes || null
     };
     this.requests.set(id, updatedRequest);
+    return updatedRequest;
+  }
+
+  // Shop Products
+  async createShopProduct(product: InsertShopProduct): Promise<ShopProduct> {
+    const newProduct: ShopProduct = {
+      id: randomUUID(),
+      name: product.name,
+      image: product.image || null,
+      size: product.size || null,
+      quantity: product.quantity || 0,
+      color: product.color || null,
+      notes: product.notes || null,
+      price: product.price || null,
+      createdById: product.createdById,
+      createdAt: new Date()
+    };
+    this.shopProducts.set(newProduct.id, newProduct);
+    return newProduct;
+  }
+
+  async getShopProduct(id: string): Promise<ShopProduct | undefined> {
+    return this.shopProducts.get(id);
+  }
+
+  async getAllShopProducts(): Promise<ShopProduct[]> {
+    return Array.from(this.shopProducts.values()).sort((a, b) => 
+      b.createdAt.getTime() - a.createdAt.getTime()
+    );
+  }
+
+  async updateShopProduct(id: string, updates: Partial<InsertShopProduct>): Promise<ShopProduct | undefined> {
+    const product = this.shopProducts.get(id);
+    if (!product) return undefined;
+
+    const updatedProduct: ShopProduct = {
+      ...product,
+      ...updates
+    };
+    this.shopProducts.set(id, updatedProduct);
+    return updatedProduct;
+  }
+
+  async deleteShopProduct(id: string): Promise<boolean> {
+    return this.shopProducts.delete(id);
+  }
+
+  // Marketplace Items
+  async createMarketplaceItem(item: InsertMarketplaceItem): Promise<MarketplaceItem> {
+    const newItem: MarketplaceItem = {
+      id: randomUUID(),
+      name: item.name,
+      image: item.image || null,
+      type: item.type,
+      userId: item.userId,
+      createdAt: new Date()
+    };
+    this.marketplaceItems.set(newItem.id, newItem);
+    return newItem;
+  }
+
+  async getMarketplaceItem(id: string): Promise<MarketplaceItem | undefined> {
+    return this.marketplaceItems.get(id);
+  }
+
+  async getAllMarketplaceItems(): Promise<MarketplaceItem[]> {
+    return Array.from(this.marketplaceItems.values()).sort((a, b) => 
+      b.createdAt.getTime() - a.createdAt.getTime()
+    );
+  }
+
+  async getUserMarketplaceItems(userId: string): Promise<MarketplaceItem[]> {
+    return Array.from(this.marketplaceItems.values())
+      .filter(item => item.userId === userId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async deleteMarketplaceItem(id: string): Promise<boolean> {
+    return this.marketplaceItems.delete(id);
+  }
+
+  // Product Purchase Requests
+  async createProductPurchaseRequest(request: InsertProductPurchaseRequest): Promise<ProductPurchaseRequest> {
+    const newRequest: ProductPurchaseRequest = {
+      id: randomUUID(),
+      productId: request.productId,
+      userId: request.userId,
+      quantity: request.quantity || 1,
+      status: request.status || "pending",
+      createdAt: new Date()
+    };
+    this.productPurchaseRequests.set(newRequest.id, newRequest);
+    return newRequest;
+  }
+
+  async getAllProductPurchaseRequests(): Promise<ProductPurchaseRequest[]> {
+    return Array.from(this.productPurchaseRequests.values()).sort((a, b) => 
+      b.createdAt.getTime() - a.createdAt.getTime()
+    );
+  }
+
+  async updateProductPurchaseRequest(id: string, status: string): Promise<ProductPurchaseRequest | undefined> {
+    const request = this.productPurchaseRequests.get(id);
+    if (!request) return undefined;
+
+    const updatedRequest: ProductPurchaseRequest = {
+      ...request,
+      status
+    };
+    this.productPurchaseRequests.set(id, updatedRequest);
     return updatedRequest;
   }
 }

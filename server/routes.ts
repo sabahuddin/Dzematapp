@@ -275,8 +275,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (membershipDateStr) {
           try {
             if (typeof membershipDateStr === 'number') {
-              membershipDate = XLSX.SSF.parse_date_code(membershipDateStr);
-              membershipDate = new Date(membershipDate.y, membershipDate.m - 1, membershipDate.d);
+              const parsedDate = XLSX.SSF.parse_date_code(membershipDateStr) as any;
+              membershipDate = new Date(parsedDate.y, parsedDate.m - 1, parsedDate.d);
             } else {
               membershipDate = new Date(membershipDateStr);
               if (isNaN(membershipDate.getTime())) {
@@ -288,7 +288,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
 
-        const categories = categoriesStr ? categoriesStr.split(',').map(c => c.trim()).filter(c => c) : [];
+        const categories = categoriesStr ? categoriesStr.split(',').map((c: string) => c.trim()).filter((c: string) => c) : [];
 
         if (errors.length > 0) {
           results.errors.push({ row: rowNumber, errors });
@@ -322,7 +322,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
             phone: phone || undefined,
             occupation: occupation || undefined,
             address: address || undefined,
-            membershipDate: membershipDate || undefined,
             categories,
             status: status.toLowerCase() as any,
             inactiveReason: inactiveReason || undefined,
