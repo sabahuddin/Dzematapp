@@ -535,6 +535,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/events/:id/rsvp", requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { adultsCount, childrenCount } = req.body;
+      
+      const rsvpData = {
+        eventId: id,
+        userId: req.user!.id,
+        adultsCount: adultsCount || 1,
+        childrenCount: childrenCount || 0
+      };
+      
+      const rsvp = await storage.createEventRsvp(rsvpData);
+      res.json(rsvp);
+    } catch (error) {
+      res.status(400).json({ message: "Failed to create RSVP" });
+    }
+  });
+
+  app.put("/api/events/:eventId/rsvp/:rsvpId", requireAuth, async (req, res) => {
+    try {
+      const { rsvpId } = req.params;
+      const { adultsCount, childrenCount } = req.body;
+      
+      const rsvp = await storage.updateEventRsvp(rsvpId, {
+        adultsCount,
+        childrenCount
+      });
+      
+      if (!rsvp) {
+        return res.status(404).json({ message: "RSVP not found" });
+      }
+      
+      res.json(rsvp);
+    } catch (error) {
+      res.status(400).json({ message: "Failed to update RSVP" });
+    }
+  });
+
+  app.delete("/api/events/:eventId/rsvp/:rsvpId", requireAuth, async (req, res) => {
+    try {
+      const { rsvpId } = req.params;
+      const deleted = await storage.deleteEventRsvp(rsvpId);
+      
+      if (!deleted) {
+        return res.status(404).json({ message: "RSVP not found" });
+      }
+      
+      res.json({ message: "RSVP deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete RSVP" });
+    }
+  });
+
+  app.get("/api/events/:eventId/user-rsvp", requireAuth, async (req, res) => {
+    try {
+      const { eventId } = req.params;
+      const rsvp = await storage.getUserEventRsvp(eventId, req.user!.id);
+      res.json(rsvp);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch user RSVP" });
+    }
+  });
+
   // Work Groups routes
   app.get("/api/work-groups", async (req, res) => {
     try {

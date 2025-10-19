@@ -67,7 +67,9 @@ export interface IStorage {
   // Event RSVPs
   createEventRsvp(rsvp: InsertEventRsvp): Promise<EventRsvp>;
   getEventRsvps(eventId: string): Promise<EventRsvp[]>;
-  deleteEventRsvp(eventId: string, userId: string): Promise<boolean>;
+  getUserEventRsvp(eventId: string, userId: string): Promise<EventRsvp | null>;
+  updateEventRsvp(id: string, updates: { adultsCount?: number; childrenCount?: number }): Promise<EventRsvp | undefined>;
+  deleteEventRsvp(id: string): Promise<boolean>;
   
   // Work Groups
   getWorkGroup(id: string): Promise<WorkGroup | undefined>;
@@ -569,12 +571,22 @@ export class MemStorage implements IStorage {
     return Array.from(this.eventRsvps.values()).filter(rsvp => rsvp.eventId === eventId);
   }
 
-  async deleteEventRsvp(eventId: string, userId: string): Promise<boolean> {
+  async getUserEventRsvp(eventId: string, userId: string): Promise<EventRsvp | null> {
     const rsvp = Array.from(this.eventRsvps.values()).find(r => r.eventId === eventId && r.userId === userId);
-    if (rsvp) {
-      return this.eventRsvps.delete(rsvp.id);
-    }
-    return false;
+    return rsvp || null;
+  }
+
+  async updateEventRsvp(id: string, updates: { adultsCount?: number; childrenCount?: number }): Promise<EventRsvp | undefined> {
+    const rsvp = this.eventRsvps.get(id);
+    if (!rsvp) return undefined;
+
+    const updatedRsvp = { ...rsvp, ...updates };
+    this.eventRsvps.set(id, updatedRsvp);
+    return updatedRsvp;
+  }
+
+  async deleteEventRsvp(id: string): Promise<boolean> {
+    return this.eventRsvps.delete(id);
   }
 
   // Work Groups

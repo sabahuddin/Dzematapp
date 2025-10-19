@@ -41,6 +41,7 @@ import {
 } from '@mui/icons-material';
 import { Event, EventRsvp } from '@shared/schema';
 import EventModal from '../components/modals/EventModal';
+import EventRSVPModal from '../components/modals/EventRSVPModal';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/use-toast';
 import { apiRequest } from '../lib/queryClient';
@@ -306,6 +307,8 @@ export default function EventsPage() {
   const [rsvpDialogOpen, setRsvpDialogOpen] = useState(false);
   const [selectedEventRsvps, setSelectedEventRsvps] = useState<EventRsvp[]>([]);
   const [categoryFilter, setCategoryFilter] = useState<string>('');
+  const [rsvpModalOpen, setRsvpModalOpen] = useState(false);
+  const [rsvpEvent, setRsvpEvent] = useState<Event | null>(null);
 
   const eventsQuery = useQuery<Event[]>({
     queryKey: ['/api/events'],
@@ -416,6 +419,12 @@ export default function EventsPage() {
   const handleEventClick = (event: Event) => {
     setSelectedEvent(event);
     setModalOpen(true);
+  };
+
+  const handleRsvpClick = (event: Event) => {
+    setRsvpEvent(event);
+    setRsvpModalOpen(true);
+    handleMenuClose();
   };
 
   const formatDateTime = (dateTime: string) => {
@@ -629,18 +638,28 @@ export default function EventsPage() {
         open={Boolean(menuAnchor)}
         onClose={handleMenuClose}
       >
-        <MenuItem onClick={() => menuEvent && handleEditEvent(menuEvent)} data-testid="menu-edit">
-          <Edit sx={{ mr: 1 }} />
-          Uredi
-        </MenuItem>
-        <MenuItem onClick={() => menuEvent && handleViewRsvps(menuEvent)} data-testid="menu-view-rsvps">
-          <Visibility sx={{ mr: 1 }} />
-          Vidi Prijave
-        </MenuItem>
-        <MenuItem onClick={() => menuEvent && handleDeleteClick(menuEvent)} data-testid="menu-delete">
-          <Delete sx={{ mr: 1 }} />
-          Obriši
-        </MenuItem>
+        {menuEvent?.rsvpEnabled && (
+          <MenuItem onClick={() => menuEvent && handleRsvpClick(menuEvent)} data-testid="menu-rsvp">
+            <Add sx={{ mr: 1 }} />
+            Prijavi se
+          </MenuItem>
+        )}
+        {user?.isAdmin && (
+          <>
+            <MenuItem onClick={() => menuEvent && handleEditEvent(menuEvent)} data-testid="menu-edit">
+              <Edit sx={{ mr: 1 }} />
+              Uredi
+            </MenuItem>
+            <MenuItem onClick={() => menuEvent && handleViewRsvps(menuEvent)} data-testid="menu-view-rsvps">
+              <Visibility sx={{ mr: 1 }} />
+              Vidi Prijave
+            </MenuItem>
+            <MenuItem onClick={() => menuEvent && handleDeleteClick(menuEvent)} data-testid="menu-delete">
+              <Delete sx={{ mr: 1 }} />
+              Obriši
+            </MenuItem>
+          </>
+        )}
       </Menu>
 
       <Dialog
@@ -719,6 +738,14 @@ export default function EventsPage() {
         event={selectedEvent}
         createdById={user?.id || ''}
       />
+
+      {rsvpEvent && (
+        <EventRSVPModal
+          open={rsvpModalOpen}
+          onClose={() => setRsvpModalOpen(false)}
+          event={rsvpEvent}
+        />
+      )}
     </Box>
   );
 }
