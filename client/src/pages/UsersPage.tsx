@@ -19,7 +19,8 @@ import {
   Alert,
   CircularProgress,
   Avatar,
-  Autocomplete
+  Autocomplete,
+  Grid
 } from '@mui/material';
 import {
   PersonAdd,
@@ -207,63 +208,259 @@ export default function UsersPage() {
     );
   }
 
+  // Member Profile View
+  if (!currentUser?.isAdmin && filteredUsers.length > 0) {
+    const myProfile = filteredUsers[0];
+    
+    return (
+      <Box>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Typography variant="h5" sx={{ fontWeight: 600 }}>
+            Moj Profil
+          </Typography>
+        </Box>
+
+        <Card>
+          {/* Profile Header with Photo and Edit Button */}
+          <Box sx={{ p: 4, borderBottom: '1px solid #e0e0e0' }}>
+            <Box sx={{ display: 'flex', gap: 3, alignItems: 'flex-start' }}>
+              <Avatar 
+                src={myProfile.photo || undefined} 
+                sx={{ width: 120, height: 120 }}
+                data-testid="profile-avatar"
+              >
+                <Person sx={{ fontSize: 60 }} />
+              </Avatar>
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="h4" sx={{ fontWeight: 600, mb: 1 }}>
+                  {myProfile.firstName} {myProfile.lastName}
+                </Typography>
+                <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
+                  {myProfile.email || 'Email nije unesen'}
+                </Typography>
+                <Button
+                  variant="contained"
+                  startIcon={<Edit />}
+                  onClick={() => handleEditUser(myProfile)}
+                  data-testid="button-edit-profile"
+                >
+                  Uredi
+                </Button>
+              </Box>
+            </Box>
+          </Box>
+
+          {/* Profile Details */}
+          <Box sx={{ p: 4 }}>
+            <Grid container spacing={3}>
+              {/* Personal Information */}
+              <Grid size={{ xs: 12 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+                  Lični podaci
+                </Typography>
+              </Grid>
+              
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Typography variant="caption" color="text.secondary">
+                  Ime
+                </Typography>
+                <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                  {myProfile.firstName}
+                </Typography>
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Typography variant="caption" color="text.secondary">
+                  Prezime
+                </Typography>
+                <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                  {myProfile.lastName}
+                </Typography>
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Typography variant="caption" color="text.secondary">
+                  Korisničko ime
+                </Typography>
+                <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                  {myProfile.username}
+                </Typography>
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Typography variant="caption" color="text.secondary">
+                  Email
+                </Typography>
+                <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                  {myProfile.email || '-'}
+                </Typography>
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Typography variant="caption" color="text.secondary">
+                  Telefon
+                </Typography>
+                <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                  {myProfile.phone || '-'}
+                </Typography>
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Typography variant="caption" color="text.secondary">
+                  Adresa
+                </Typography>
+                <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                  {myProfile.address || '-'}
+                </Typography>
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Typography variant="caption" color="text.secondary">
+                  Poštanski broj
+                </Typography>
+                <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                  {myProfile.postalCode || '-'}
+                </Typography>
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Typography variant="caption" color="text.secondary">
+                  Grad
+                </Typography>
+                <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                  {myProfile.city || '-'}
+                </Typography>
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Typography variant="caption" color="text.secondary">
+                  Zanimanje
+                </Typography>
+                <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                  {myProfile.occupation || '-'}
+                </Typography>
+              </Grid>
+
+              {/* Membership Information */}
+              <Grid size={{ xs: 12 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, mt: 2 }}>
+                  Informacije o članstvu
+                </Typography>
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Typography variant="caption" color="text.secondary">
+                  Član od
+                </Typography>
+                <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                  {myProfile.membershipDate ? new Date(myProfile.membershipDate).toLocaleDateString('hr-HR') : '-'}
+                </Typography>
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Typography variant="caption" color="text.secondary">
+                  Status članstva
+                </Typography>
+                <Box sx={{ mt: 0.5 }}>
+                  <Chip
+                    label={getStatusLabel(myProfile.status)}
+                    color={getStatusColor(myProfile.status)}
+                    size="small"
+                  />
+                </Box>
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Typography variant="caption" color="text.secondary">
+                  Uloge
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mt: 0.5 }}>
+                  {myProfile.roles && myProfile.roles.length > 0 ? (
+                    myProfile.roles.map((role, index) => (
+                      <Chip
+                        key={index}
+                        label={getRoleLabel(role)}
+                        size="small"
+                        color={getRoleColor(role)}
+                      />
+                    ))
+                  ) : (
+                    <Typography variant="body1" sx={{ fontWeight: 500 }}>-</Typography>
+                  )}
+                </Box>
+              </Grid>
+            </Grid>
+          </Box>
+        </Card>
+
+        {/* Modals */}
+        {modalOpen && (
+          <UserModal
+            open={modalOpen}
+            onClose={() => setModalOpen(false)}
+            user={selectedUser}
+            onSave={handleSaveUser}
+            isMemberView={true}
+          />
+        )}
+      </Box>
+    );
+  }
+
+  // Admin View
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h5" sx={{ fontWeight: 600 }}>
-          {currentUser?.isAdmin ? 'Upravljanje Korisnicima' : 'Moj Profil'}
+          Upravljanje Korisnicima
         </Typography>
-        {currentUser?.isAdmin && (
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            <Button
-              variant="outlined"
-              startIcon={<Upload />}
-              onClick={() => setBulkUploadModalOpen(true)}
-              data-testid="button-bulk-upload"
-            >
-              Bulk Upload
-            </Button>
-            <Button
-              variant="contained"
-              startIcon={<PersonAdd />}
-              onClick={handleCreateUser}
-              data-testid="button-add-user"
-            >
-              Dodaj Novog Korisnika
-            </Button>
-          </Box>
-        )}
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <Button
+            variant="outlined"
+            startIcon={<Upload />}
+            onClick={() => setBulkUploadModalOpen(true)}
+            data-testid="button-bulk-upload"
+          >
+            Bulk Upload
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<PersonAdd />}
+            onClick={handleCreateUser}
+            data-testid="button-add-user"
+          >
+            Dodaj Novog Korisnika
+          </Button>
+        </Box>
       </Box>
 
       <Card>
-        {currentUser?.isAdmin && (
-          <Box sx={{ p: 3, borderBottom: '1px solid #e0e0e0', display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-            <TextField
-              variant="outlined"
-              placeholder="Pretraži po imenu, emailu ili telefonu..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              sx={{ width: 350 }}
-              data-testid="input-search"
-            />
-            <Autocomplete
-              multiple
-              options={predefinedCategories}
-              value={selectedCategories}
-              onChange={(event, newValue) => setSelectedCategories(newValue)}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  placeholder="Filtriraj po kategorijama"
-                  data-testid="input-category-filter"
-                />
-              )}
-              sx={{ width: 350 }}
-              data-testid="autocomplete-category-filter"
-            />
-          </Box>
-        )}
+        <Box sx={{ p: 3, borderBottom: '1px solid #e0e0e0', display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+          <TextField
+            variant="outlined"
+            placeholder="Pretraži po imenu, emailu ili telefonu..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            sx={{ width: 350 }}
+            data-testid="input-search"
+          />
+          <Autocomplete
+            multiple
+            options={predefinedCategories}
+            value={selectedCategories}
+            onChange={(event, newValue) => setSelectedCategories(newValue)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="outlined"
+                placeholder="Filtriraj po kategorijama"
+                data-testid="input-category-filter"
+              />
+            )}
+            sx={{ width: 350 }}
+            data-testid="autocomplete-category-filter"
+          />
+        </Box>
 
         <TableContainer>
           <Table>

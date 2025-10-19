@@ -40,9 +40,10 @@ interface UserModalProps {
   onClose: () => void;
   onSave: (userData: any) => void;
   user?: User | null;
+  isMemberView?: boolean;
 }
 
-export default function UserModal({ open, onClose, onSave, user }: UserModalProps) {
+export default function UserModal({ open, onClose, onSave, user, isMemberView = false }: UserModalProps) {
   const { user: currentUser } = useAuth();
   
   // Check if current user is editing their own profile
@@ -50,9 +51,10 @@ export default function UserModal({ open, onClose, onSave, user }: UserModalProp
   
   // Check if current user is a regular member (Član) editing their profile
   const isMemberEditingSelf = Boolean(
-    isEditingSelf && 
+    isMemberView ||
+    (isEditingSelf && 
     currentUser?.roles?.includes('clan') && 
-    !currentUser?.isAdmin
+    !currentUser?.isAdmin)
   );
   
   const [formData, setFormData] = useState({
