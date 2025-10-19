@@ -500,14 +500,16 @@ export default function EventsPage() {
             </ToggleButton>
           </ToggleButtonGroup>
           
-          <Button
-            variant="contained"
-            startIcon={<Add />}
-            onClick={handleCreateEvent}
-            data-testid="button-add-event"
-          >
-            Kreiraj Događaj
-          </Button>
+          {user?.isAdmin && (
+            <Button
+              variant="contained"
+              startIcon={<Add />}
+              onClick={handleCreateEvent}
+              data-testid="button-add-event"
+            >
+              Kreiraj Događaj
+            </Button>
+          )}
         </Box>
       </Box>
 

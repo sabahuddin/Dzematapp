@@ -170,7 +170,12 @@ export default function UsersPage() {
   };
 
   const filteredUsers = ((usersQuery.data as User[]) || []).filter((user: User) => {
-    // Text search filter
+    // For non-admin users, show only their own profile
+    if (!currentUser?.isAdmin) {
+      return user.id === currentUser?.id;
+    }
+    
+    // Text search filter (admin only)
     const matchesSearch = 
       user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -178,7 +183,7 @@ export default function UsersPage() {
       user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (user.phone && user.phone.toLowerCase().includes(searchTerm.toLowerCase()));
     
-    // Category filter
+    // Category filter (admin only)
     const matchesCategory = selectedCategories.length === 0 || 
       selectedCategories.includes('Svi') ||
       (user.categories && selectedCategories.some(cat => user.categories?.includes(cat)));
@@ -206,55 +211,59 @@ export default function UsersPage() {
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h5" sx={{ fontWeight: 600 }}>
-          Upravljanje Korisnicima
+          {currentUser?.isAdmin ? 'Upravljanje Korisnicima' : 'Moj Profil'}
         </Typography>
-        <Box sx={{ display: 'flex', gap: 2 }}>
-          <Button
-            variant="outlined"
-            startIcon={<Upload />}
-            onClick={() => setBulkUploadModalOpen(true)}
-            data-testid="button-bulk-upload"
-          >
-            Bulk Upload
-          </Button>
-          <Button
-            variant="contained"
-            startIcon={<PersonAdd />}
-            onClick={handleCreateUser}
-            data-testid="button-add-user"
-          >
-            Dodaj Novog Korisnika
-          </Button>
-        </Box>
+        {currentUser?.isAdmin && (
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <Button
+              variant="outlined"
+              startIcon={<Upload />}
+              onClick={() => setBulkUploadModalOpen(true)}
+              data-testid="button-bulk-upload"
+            >
+              Bulk Upload
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<PersonAdd />}
+              onClick={handleCreateUser}
+              data-testid="button-add-user"
+            >
+              Dodaj Novog Korisnika
+            </Button>
+          </Box>
+        )}
       </Box>
 
       <Card>
-        <Box sx={{ p: 3, borderBottom: '1px solid #e0e0e0', display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-          <TextField
-            variant="outlined"
-            placeholder="Pretraži po imenu, emailu ili telefonu..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            sx={{ width: 350 }}
-            data-testid="input-search"
-          />
-          <Autocomplete
-            multiple
-            options={predefinedCategories}
-            value={selectedCategories}
-            onChange={(event, newValue) => setSelectedCategories(newValue)}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant="outlined"
-                placeholder="Filtriraj po kategorijama"
-                data-testid="input-category-filter"
-              />
-            )}
-            sx={{ width: 350 }}
-            data-testid="autocomplete-category-filter"
-          />
-        </Box>
+        {currentUser?.isAdmin && (
+          <Box sx={{ p: 3, borderBottom: '1px solid #e0e0e0', display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+            <TextField
+              variant="outlined"
+              placeholder="Pretraži po imenu, emailu ili telefonu..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              sx={{ width: 350 }}
+              data-testid="input-search"
+            />
+            <Autocomplete
+              multiple
+              options={predefinedCategories}
+              value={selectedCategories}
+              onChange={(event, newValue) => setSelectedCategories(newValue)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  placeholder="Filtriraj po kategorijama"
+                  data-testid="input-category-filter"
+                />
+              )}
+              sx={{ width: 350 }}
+              data-testid="autocomplete-category-filter"
+            />
+          </Box>
+        )}
 
         <TableContainer>
           <Table>

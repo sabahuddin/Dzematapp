@@ -301,14 +301,16 @@ export default function AnnouncementsPage() {
         <Typography variant="h5" sx={{ fontWeight: 600 }}>
           Upravljanje Obavijestima
         </Typography>
-        <Button
-          variant="contained"
-          startIcon={<Add />}
-          onClick={handleCreateAnnouncement}
-          data-testid="button-add-announcement"
-        >
-          Kreiraj Obavijest
-        </Button>
+        {user?.isAdmin && (
+          <Button
+            variant="contained"
+            startIcon={<Add />}
+            onClick={handleCreateAnnouncement}
+            data-testid="button-add-announcement"
+          >
+            Kreiraj Obavijest
+          </Button>
+        )}
       </Box>
 
       <Card>
