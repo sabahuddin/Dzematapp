@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Box, Tabs, Tab, Typography, Card, CardContent, CardMedia, Button, Chip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField, MenuItem } from "@mui/material";
-import { Add, Delete, ShoppingCart, Store, CardGiftcard } from "@mui/icons-material";
+import { Box, Tabs, Tab, Typography, Card, CardContent, CardMedia, Button, Chip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField, MenuItem, ImageList, ImageListItem } from "@mui/material";
+import { Add, Delete, ShoppingCart, Store, CardGiftcard, CloudUpload } from "@mui/icons-material";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -21,18 +21,22 @@ export default function ShopPage() {
   const [activeTab, setActiveTab] = useState(0);
   const [productModalOpen, setProductModalOpen] = useState(false);
   const [marketplaceModalOpen, setMarketplaceModalOpen] = useState(false);
+  const [uploadingPhotos, setUploadingPhotos] = useState(false);
+  
   const [productForm, setProductForm] = useState({
     name: "",
-    image: "",
+    photos: [] as string[],
     size: "",
     quantity: 0,
     color: "",
     notes: "",
-    price: 0
+    price: ""
   });
+  
   const [marketplaceForm, setMarketplaceForm] = useState({
     name: "",
-    image: "",
+    description: "",
+    photos: [] as string[],
     type: "sale" as "sale" | "gift"
   });
 
@@ -53,10 +57,74 @@ export default function ShopPage() {
     queryKey: ['/api/users'],
   });
 
+  // Photo upload handler
+  const handlePhotoUpload = async (files: FileList | null, isProduct: boolean) => {
+    if (!files || files.length === 0) return;
+
+    const maxFiles = isProduct ? 10 : 3;
+    const currentPhotos = isProduct ? productForm.photos : marketplaceForm.photos;
+
+    if (currentPhotos.length + files.length > maxFiles) {
+      toast({ 
+        title: "Previše slika", 
+        description: `Možete dodati maksimalno ${maxFiles} slika`,
+        variant: "destructive" 
+      });
+      return;
+    }
+
+    setUploadingPhotos(true);
+    const formData = new FormData();
+    
+    for (let i = 0; i < Math.min(files.length, maxFiles - currentPhotos.length); i++) {
+      formData.append('photos', files[i]);
+    }
+
+    try {
+      const response = await fetch('/api/upload/shop-photos', {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Upload failed');
+      }
+
+      const data = await response.json();
+      const newPhotos = [...currentPhotos, ...data.photoUrls];
+
+      if (isProduct) {
+        setProductForm({ ...productForm, photos: newPhotos });
+      } else {
+        setMarketplaceForm({ ...marketplaceForm, photos: newPhotos });
+      }
+
+      toast({ title: "Slike uspješno dodane" });
+    } catch (error) {
+      toast({ title: "Greška pri uploadovanju slika", variant: "destructive" });
+    } finally {
+      setUploadingPhotos(false);
+    }
+  };
+
+  const removePhoto = (index: number, isProduct: boolean) => {
+    if (isProduct) {
+      const newPhotos = productForm.photos.filter((_, i) => i !== index);
+      setProductForm({ ...productForm, photos: newPhotos });
+    } else {
+      const newPhotos = marketplaceForm.photos.filter((_, i) => i !== index);
+      setMarketplaceForm({ ...marketplaceForm, photos: newPhotos });
+    }
+  };
+
   // Create product mutation
   const createProductMutation = useMutation({
     mutationFn: async (productData: typeof productForm) => {
-      return await apiRequest('POST', '/api/shop/products', productData);
+      return await apiRequest('POST', '/api/shop/products', {
+        ...productData,
+        createdById: user!.id
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/shop/products'] });
@@ -64,12 +132,12 @@ export default function ShopPage() {
       setProductModalOpen(false);
       setProductForm({
         name: "",
-        image: "",
+        photos: [],
         size: "",
         quantity: 0,
         color: "",
         notes: "",
-        price: 0
+        price: ""
       });
     },
     onError: () => {
@@ -94,7 +162,10 @@ export default function ShopPage() {
   // Create marketplace item mutation
   const createMarketplaceItemMutation = useMutation({
     mutationFn: async (itemData: typeof marketplaceForm) => {
-      return await apiRequest('POST', '/api/marketplace/items', itemData);
+      return await apiRequest('POST', '/api/marketplace/items', {
+        ...itemData,
+        userId: user!.id
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/marketplace/items'] });
@@ -102,7 +173,8 @@ export default function ShopPage() {
       setMarketplaceModalOpen(false);
       setMarketplaceForm({
         name: "",
-        image: "",
+        description: "",
+        photos: [],
         type: "sale"
       });
     },
@@ -128,7 +200,11 @@ export default function ShopPage() {
   // Create purchase request mutation
   const createPurchaseRequestMutation = useMutation({
     mutationFn: async ({ productId, quantity }: { productId: string; quantity: number }) => {
-      return await apiRequest('POST', '/api/shop/purchase-requests', { productId, quantity });
+      return await apiRequest('POST', '/api/shop/purchase-requests', { 
+        productId, 
+        quantity,
+        userId: user!.id
+      });
     },
     onSuccess: () => {
       toast({ title: "Zahtjev za kupovinu poslat administratoru" });
@@ -139,10 +215,18 @@ export default function ShopPage() {
   });
 
   const handleCreateProduct = () => {
+    if (!productForm.name) {
+      toast({ title: "Naziv je obavezan", variant: "destructive" });
+      return;
+    }
     createProductMutation.mutate(productForm);
   };
 
   const handleCreateMarketplaceItem = () => {
+    if (!marketplaceForm.name) {
+      toast({ title: "Naziv je obavezan", variant: "destructive" });
+      return;
+    }
     createMarketplaceItemMutation.mutate(marketplaceForm);
   };
 
@@ -152,7 +236,14 @@ export default function ShopPage() {
 
   const handleContactUser = (itemUser: User | undefined) => {
     if (itemUser) {
-      toast({ title: `Kontaktirajte ${itemUser.firstName} ${itemUser.lastName}`, description: itemUser.phone || itemUser.email || "Nema dostupnih kontakt podataka" });
+      const contactInfo = [];
+      if (itemUser.phone) contactInfo.push(`Tel: ${itemUser.phone}`);
+      if (itemUser.email) contactInfo.push(`Email: ${itemUser.email}`);
+      
+      toast({ 
+        title: `Kontakt: ${itemUser.firstName} ${itemUser.lastName}`, 
+        description: contactInfo.length > 0 ? contactInfo.join(' | ') : "Nema dostupnih kontakt podataka"
+      });
     }
   };
 
@@ -166,16 +257,16 @@ export default function ShopPage() {
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom sx={{ mb: 3 }}>
-        Prodavnica
+        Shop
       </Typography>
 
       <Tabs value={activeTab} onChange={(_, newValue) => setActiveTab(newValue)} sx={{ mb: 3, borderBottom: 1, borderColor: 'divider' }}>
-        <Tab label="Kupujem" icon={<Store />} iconPosition="start" data-testid="tab-buy" />
+        <Tab label={isAdmin ? "Prodajem" : "Kupujem"} icon={<Store />} iconPosition="start" data-testid="tab-buy" />
         <Tab label="Prodajem" icon={<ShoppingCart />} iconPosition="start" data-testid="tab-sell" />
         <Tab label="Poklanjam" icon={<CardGiftcard />} iconPosition="start" data-testid="tab-gift" />
       </Tabs>
 
-      {/* Kupujem Tab */}
+      {/* Admin Prodajem Tab / Member Kupujem Tab */}
       {activeTab === 0 && (
         <Box>
           {isAdmin && (
@@ -197,13 +288,23 @@ export default function ShopPage() {
               {shopProducts?.map((product) => (
                 <Box key={product.id}>
                   <Card data-testid={`card-product-${product.id}`}>
-                    {product.image && (
-                      <CardMedia
-                        component="img"
-                        height="200"
-                        image={product.image}
-                        alt={product.name}
-                      />
+                    {product.photos && product.photos.length > 0 && (
+                      product.photos.length === 1 ? (
+                        <CardMedia
+                          component="img"
+                          height="200"
+                          image={product.photos[0]}
+                          alt={product.name}
+                        />
+                      ) : (
+                        <ImageList sx={{ height: 200 }} cols={2} rowHeight={100}>
+                          {product.photos.slice(0, 4).map((photo, idx) => (
+                            <ImageListItem key={idx}>
+                              <img src={photo} alt={`${product.name} ${idx + 1}`} />
+                            </ImageListItem>
+                          ))}
+                        </ImageList>
+                      )
                     )}
                     <CardContent>
                       <Typography variant="h6" gutterBottom data-testid={`text-product-name-${product.id}`}>
@@ -224,13 +325,13 @@ export default function ShopPage() {
                           Boja: {product.color}
                         </Typography>
                       )}
-                      {product.quantity !== null && (
+                      {product.quantity !== null && product.quantity !== undefined && (
                         <Typography variant="body2" color="text.secondary">
-                          Dostupno: {product.quantity}
+                          Na stanju: {product.quantity}
                         </Typography>
                       )}
                       {product.notes && (
-                        <Typography variant="body2" sx={{ mt: 1 }}>
+                        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
                           {product.notes}
                         </Typography>
                       )}
@@ -239,12 +340,10 @@ export default function ShopPage() {
                           <Button
                             variant="contained"
                             size="small"
-                            startIcon={<ShoppingCart />}
                             onClick={() => handlePurchaseRequest(product.id)}
-                            disabled={product.quantity === 0}
                             data-testid={`button-buy-${product.id}`}
                           >
-                            Kupi
+                            Pošalji zahtjev
                           </Button>
                         )}
                         {isAdmin && (
@@ -273,7 +372,7 @@ export default function ShopPage() {
             variant="contained"
             startIcon={<Add />}
             onClick={() => {
-              setMarketplaceForm({ ...marketplaceForm, type: "sale" });
+              setMarketplaceForm({ name: "", description: "", photos: [], type: "sale" });
               setMarketplaceModalOpen(true);
             }}
             sx={{ mb: 3 }}
@@ -291,18 +390,34 @@ export default function ShopPage() {
                 return (
                   <Box key={item.id}>
                     <Card data-testid={`card-sale-${item.id}`}>
-                      {item.image && (
-                        <CardMedia
-                          component="img"
-                          height="200"
-                          image={item.image}
-                          alt={item.name}
-                        />
+                      {item.photos && item.photos.length > 0 && (
+                        item.photos.length === 1 ? (
+                          <CardMedia
+                            component="img"
+                            height="200"
+                            image={item.photos[0]}
+                            alt={item.name}
+                          />
+                        ) : (
+                          <ImageList sx={{ height: 200 }} cols={2} rowHeight={100}>
+                            {item.photos.slice(0, 4).map((photo, idx) => (
+                              <ImageListItem key={idx}>
+                                <img src={photo} alt={`${item.name} ${idx + 1}`} />
+                              </ImageListItem>
+                            ))}
+                          </ImageList>
+                        )
                       )}
                       <CardContent>
                         <Typography variant="h6" gutterBottom data-testid={`text-sale-name-${item.id}`}>
                           {item.name}
                         </Typography>
+                        {item.description && (
+                          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                            {item.description}
+                          </Typography>
+                        )}
+                        <Chip label="Na prodaju" color="primary" size="small" sx={{ mb: 1 }} />
                         <Typography variant="body2" color="text.secondary">
                           Prodavač: {itemUser ? `${itemUser.firstName} ${itemUser.lastName}` : "Nepoznato"}
                         </Typography>
@@ -313,7 +428,7 @@ export default function ShopPage() {
                             onClick={() => handleContactUser(itemUser)}
                             data-testid={`button-contact-${item.id}`}
                           >
-                            Kontaktiraj me
+                            Pošalji poruku vlasniku
                           </Button>
                           {(isAdmin || item.userId === user?.id) && (
                             <IconButton
@@ -342,7 +457,7 @@ export default function ShopPage() {
             variant="contained"
             startIcon={<Add />}
             onClick={() => {
-              setMarketplaceForm({ ...marketplaceForm, type: "gift" });
+              setMarketplaceForm({ name: "", description: "", photos: [], type: "gift" });
               setMarketplaceModalOpen(true);
             }}
             sx={{ mb: 3 }}
@@ -360,18 +475,33 @@ export default function ShopPage() {
                 return (
                   <Box key={item.id}>
                     <Card data-testid={`card-gift-${item.id}`}>
-                      {item.image && (
-                        <CardMedia
-                          component="img"
-                          height="200"
-                          image={item.image}
-                          alt={item.name}
-                        />
+                      {item.photos && item.photos.length > 0 && (
+                        item.photos.length === 1 ? (
+                          <CardMedia
+                            component="img"
+                            height="200"
+                            image={item.photos[0]}
+                            alt={item.name}
+                          />
+                        ) : (
+                          <ImageList sx={{ height: 200 }} cols={2} rowHeight={100}>
+                            {item.photos.slice(0, 4).map((photo, idx) => (
+                              <ImageListItem key={idx}>
+                                <img src={photo} alt={`${item.name} ${idx + 1}`} />
+                              </ImageListItem>
+                            ))}
+                          </ImageList>
+                        )
                       )}
                       <CardContent>
                         <Typography variant="h6" gutterBottom data-testid={`text-gift-name-${item.id}`}>
                           {item.name}
                         </Typography>
+                        {item.description && (
+                          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                            {item.description}
+                          </Typography>
+                        )}
                         <Chip label="Poklon" color="success" size="small" sx={{ mb: 1 }} />
                         <Typography variant="body2" color="text.secondary">
                           Poklanja: {itemUser ? `${itemUser.firstName} ${itemUser.lastName}` : "Nepoznato"}
@@ -383,7 +513,7 @@ export default function ShopPage() {
                             onClick={() => handleContactUser(itemUser)}
                             data-testid={`button-contact-gift-${item.id}`}
                           >
-                            Kontaktiraj me
+                            Pošalji poruku vlasniku
                           </Button>
                           {(isAdmin || item.userId === user?.id) && (
                             <IconButton
@@ -405,7 +535,7 @@ export default function ShopPage() {
         </Box>
       )}
 
-      {/* Add Product Dialog */}
+      {/* Add Product Dialog (Admin only) */}
       <Dialog open={productModalOpen} onClose={() => setProductModalOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>Dodaj Artikal</DialogTitle>
         <DialogContent>
@@ -417,14 +547,43 @@ export default function ShopPage() {
             margin="normal"
             data-testid="input-product-name"
           />
-          <TextField
-            fullWidth
-            label="URL Slike"
-            value={productForm.image}
-            onChange={(e) => setProductForm({ ...productForm, image: e.target.value })}
-            margin="normal"
-            data-testid="input-product-image"
-          />
+          
+          <Box sx={{ mt: 2, mb: 2 }}>
+            <Button
+              variant="outlined"
+              component="label"
+              startIcon={<CloudUpload />}
+              fullWidth
+              disabled={uploadingPhotos || productForm.photos.length >= 10}
+              data-testid="button-upload-product-photos"
+            >
+              {uploadingPhotos ? "Uploadovanje..." : `Dodaj slike (${productForm.photos.length}/10)`}
+              <input
+                type="file"
+                hidden
+                multiple
+                accept="image/*"
+                onChange={(e) => handlePhotoUpload(e.target.files, true)}
+              />
+            </Button>
+            {productForm.photos.length > 0 && (
+              <ImageList sx={{ mt: 2, maxHeight: 200 }} cols={3} rowHeight={80}>
+                {productForm.photos.map((photo, idx) => (
+                  <ImageListItem key={idx}>
+                    <img src={photo} alt={`Upload ${idx + 1}`} />
+                    <IconButton
+                      sx={{ position: 'absolute', top: 0, right: 0, bgcolor: 'rgba(255,255,255,0.7)' }}
+                      size="small"
+                      onClick={() => removePhoto(idx, true)}
+                    >
+                      <Delete fontSize="small" />
+                    </IconButton>
+                  </ImageListItem>
+                ))}
+              </ImageList>
+            )}
+          </Box>
+
           <TextField
             fullWidth
             label="Veličina"
@@ -435,7 +594,7 @@ export default function ShopPage() {
           />
           <TextField
             fullWidth
-            label="Kolicina"
+            label="Količina"
             type="number"
             value={productForm.quantity}
             onChange={(e) => setProductForm({ ...productForm, quantity: parseInt(e.target.value) || 0 })}
@@ -453,9 +612,8 @@ export default function ShopPage() {
           <TextField
             fullWidth
             label="Cijena (KM)"
-            type="number"
             value={productForm.price}
-            onChange={(e) => setProductForm({ ...productForm, price: parseFloat(e.target.value) || 0 })}
+            onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
             margin="normal"
             data-testid="input-product-price"
           />
@@ -488,14 +646,53 @@ export default function ShopPage() {
             margin="normal"
             data-testid="input-marketplace-name"
           />
+          
           <TextField
             fullWidth
-            label="URL Slike"
-            value={marketplaceForm.image}
-            onChange={(e) => setMarketplaceForm({ ...marketplaceForm, image: e.target.value })}
+            label="Opis"
+            value={marketplaceForm.description}
+            onChange={(e) => setMarketplaceForm({ ...marketplaceForm, description: e.target.value })}
             margin="normal"
-            data-testid="input-marketplace-image"
+            multiline
+            rows={3}
+            data-testid="input-marketplace-description"
           />
+
+          <Box sx={{ mt: 2, mb: 2 }}>
+            <Button
+              variant="outlined"
+              component="label"
+              startIcon={<CloudUpload />}
+              fullWidth
+              disabled={uploadingPhotos || marketplaceForm.photos.length >= 3}
+              data-testid="button-upload-marketplace-photos"
+            >
+              {uploadingPhotos ? "Uploadovanje..." : `Dodaj slike (${marketplaceForm.photos.length}/3)`}
+              <input
+                type="file"
+                hidden
+                multiple
+                accept="image/*"
+                onChange={(e) => handlePhotoUpload(e.target.files, false)}
+              />
+            </Button>
+            {marketplaceForm.photos.length > 0 && (
+              <ImageList sx={{ mt: 2, maxHeight: 200 }} cols={3} rowHeight={80}>
+                {marketplaceForm.photos.map((photo, idx) => (
+                  <ImageListItem key={idx}>
+                    <img src={photo} alt={`Upload ${idx + 1}`} />
+                    <IconButton
+                      sx={{ position: 'absolute', top: 0, right: 0, bgcolor: 'rgba(255,255,255,0.7)' }}
+                      size="small"
+                      onClick={() => removePhoto(idx, false)}
+                    >
+                      <Delete fontSize="small" />
+                    </IconButton>
+                  </ImageListItem>
+                ))}
+              </ImageList>
+            )}
+          </Box>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setMarketplaceModalOpen(false)} data-testid="button-cancel-marketplace">Odustani</Button>
