@@ -51,12 +51,19 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           component="main" 
           sx={{ 
             flex: 1, 
-            p: 3, 
+            p: { xs: 2, sm: 3 },
             bgcolor: '#fafafa',
-            overflowY: 'auto'
+            overflowY: 'auto',
+            width: '100%',
+            maxWidth: '100%'
           }}
         >
-          {children}
+          <Box sx={{ 
+            margin: '0 auto',
+            width: '100%'
+          }}>
+            {children}
+          </Box>
         </Box>
       </Box>
     </Box>

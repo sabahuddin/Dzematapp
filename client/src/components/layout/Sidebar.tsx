@@ -14,7 +14,8 @@ import {
   useTheme,
   useMediaQuery,
   Divider,
-  Badge
+  Badge,
+  Tooltip
 } from '@mui/material';
 import {
   Dashboard,
@@ -123,34 +124,45 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
           const isActive = location === item.path;
           const showUnreadBadge = item.showBadge && unreadCount && unreadCount.count > 0;
           
+          const buttonContent = (
+            <ListItemButton
+              onClick={() => handleNavigation(item.path)}
+              sx={{
+                mx: 1,
+                borderRadius: 1,
+                bgcolor: isActive ? '#e3f2fd' : 'transparent',
+                color: isActive ? '#1976d2' : '#666',
+                borderRight: isActive ? '3px solid #1976d2' : 'none',
+                justifyContent: collapsed ? 'center' : 'flex-start',
+                '&:hover': {
+                  bgcolor: '#f5f5f5',
+                  color: '#1976d2'
+                }
+              }}
+              data-testid={`nav-${item.path.slice(1)}`}
+            >
+              <ListItemIcon sx={{ color: 'inherit', minWidth: collapsed ? 'auto' : 40, justifyContent: 'center' }}>
+                {showUnreadBadge ? (
+                  <Badge badgeContent={unreadCount.count} color="error" data-testid="badge-unread-messages">
+                    <Icon />
+                  </Badge>
+                ) : (
+                  <Icon />
+                )}
+              </ListItemIcon>
+              {!collapsed && <ListItemText primary={item.label} />}
+            </ListItemButton>
+          );
+
           return (
             <ListItem key={item.path} disablePadding>
-              <ListItemButton
-                onClick={() => handleNavigation(item.path)}
-                sx={{
-                  mx: 1,
-                  borderRadius: 1,
-                  bgcolor: isActive ? '#e3f2fd' : 'transparent',
-                  color: isActive ? '#1976d2' : '#666',
-                  borderRight: isActive ? '3px solid #1976d2' : 'none',
-                  '&:hover': {
-                    bgcolor: '#f5f5f5',
-                    color: '#1976d2'
-                  }
-                }}
-                data-testid={`nav-${item.path.slice(1)}`}
-              >
-                <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
-                  {showUnreadBadge ? (
-                    <Badge badgeContent={unreadCount.count} color="error" data-testid="badge-unread-messages">
-                      <Icon />
-                    </Badge>
-                  ) : (
-                    <Icon />
-                  )}
-                </ListItemIcon>
-                {!collapsed && <ListItemText primary={item.label} />}
-              </ListItemButton>
+              {collapsed ? (
+                <Tooltip title={item.label} placement="right">
+                  {buttonContent}
+                </Tooltip>
+              ) : (
+                buttonContent
+              )}
             </ListItem>
           );
         })}
