@@ -186,9 +186,9 @@ export default function NewMessageModal({ isOpen, onClose, replyTo }: NewMessage
                             // Don't show current user
                             if (u.id === user?.id) return false;
                             
-                            // For non-admin users, only show admins
-                            if (!user?.isAdmin) {
-                              return u.isAdmin;
+                            // For non-admin users, only show users with admin characteristics
+                            if (!user?.isAdmin && !user?.roles?.includes('admin') && !user?.roles?.includes('imam')) {
+                              return u.isAdmin || u.roles?.includes('admin') || u.roles?.includes('imam');
                             }
                             
                             return true;
