@@ -38,11 +38,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           flex: 1, 
           display: 'flex', 
           flexDirection: 'column',
-          ml: isMobile ? 0 : `${sidebarWidth}px`,
-          transition: theme.transitions.create(['margin'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.standard,
-          }),
+          width: '100%',
         }}
       >
         <AppBar onMenuClick={handleSidebarToggle} />
