@@ -127,6 +127,13 @@
 @layer base {
   * {
     @apply border-border;
+    box-sizing: border-box;
+  }
+
+  html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+    position: relative;
   }
 
   body {
@@ -259,6 +266,28 @@
   /* Modal and dialog customizations */
   .MuiDialog-paper {
     border-radius: 8px !important;
+  }
+
+  /* Prevent horizontal overflow on mobile */
+  .MuiContainer-root {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+
+  .MuiCard-root,
+  .MuiPaper-root,
+  .MuiBox-root {
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+
+  /* Code blocks with horizontal scroll */
+  pre, code {
+    max-width: 100%;
+    overflow-x: auto;
+    word-break: break-all;
+    white-space: pre-wrap;
   }
 
   .MuiDialogTitle-root {
