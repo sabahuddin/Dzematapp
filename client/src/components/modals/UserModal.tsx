@@ -94,13 +94,14 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
       return dateStr;
     }
     
-    // Parse "19. 10. 1976." or "19.10.1976" format
-    const match = dateStr.match(/(\d{1,2})\.\s*(\d{1,2})\.\s*(\d{4})/);
+    // Parse "19. 10. 1976." or "19.10.1976" format (with optional trailing dot)
+    const match = dateStr.match(/(\d{1,2})\.\s*(\d{1,2})\.\s*(\d{4})\.?/);
     if (match) {
       const [, day, month, year] = match;
       return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
     }
     
+    console.log('Failed to convert date:', dateStr);
     return '';
   };
 
