@@ -77,6 +77,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create session
       req.session.userId = user.id;
       
+      // Check if user has Imam role for admin privileges
+      const hasImamRole = user.roles?.includes('imam') || false;
+      
       res.json({ 
         user: { 
           id: user.id, 
@@ -84,7 +87,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           lastName: user.lastName, 
           email: user.email,
           roles: user.roles || [],
-          isAdmin: user.isAdmin 
+          isAdmin: user.isAdmin || hasImamRole 
         } 
       });
     } catch (error) {
@@ -112,6 +115,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           firstName: req.user.firstName, 
           lastName: req.user.lastName, 
           email: req.user.email,
+          roles: req.user.roles || [],
           isAdmin: req.user.isAdmin 
         } 
       });

@@ -135,7 +135,10 @@ export default function UsersPage() {
   const getRoleLabel = (role: string): string => {
     const roleLabels: Record<string, string> = {
       'admin': 'Admin',
+      'imam': 'Imam',
       'clan_io': 'Član IO',
+      'clan': 'Član',
+      'clan_porodice': 'Član porodice',
       'moderator': 'Moderator',
       'clan_radne_grupe': 'Član radne grupe'
     };
@@ -145,7 +148,10 @@ export default function UsersPage() {
   const getRoleColor = (role: string): 'default' | 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info' => {
     switch (role) {
       case 'admin': return 'error';
+      case 'imam': return 'error';
       case 'clan_io': return 'primary';
+      case 'clan': return 'success';
+      case 'clan_porodice': return 'info';
       case 'moderator': return 'warning';
       case 'clan_radne_grupe': return 'success';
       default: return 'default';

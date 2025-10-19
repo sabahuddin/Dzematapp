@@ -51,7 +51,12 @@ app.use(async (req, res, next) => {
     try {
       const user = await storage.getUser(req.session.userId);
       if (user) {
-        req.user = user;
+        // Set isAdmin to true if user has "imam" or "admin" role
+        const hasImamRole = user.roles?.includes('imam') || false;
+        req.user = {
+          ...user,
+          isAdmin: user.isAdmin || hasImamRole
+        };
       } else {
         // User no longer exists, clear the session
         req.session.userId = undefined;

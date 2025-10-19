@@ -139,6 +139,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
 
   const availableRoles = [
     { value: 'admin', label: 'Admin' },
+    { value: 'imam', label: 'Imam' },
     { value: 'clan_io', label: 'Član IO' },
     { value: 'clan', label: 'Član' },
     { value: 'clan_porodice', label: 'Član porodice' }

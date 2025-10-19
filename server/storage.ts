@@ -1102,7 +1102,12 @@ export class MemStorage implements IStorage {
   async createDocument(document: InsertDocument): Promise<Document> {
     const newDocument: Document = {
       id: randomUUID(),
-      ...document,
+      title: document.title,
+      description: document.description || null,
+      fileName: document.fileName,
+      filePath: document.filePath,
+      fileSize: document.fileSize,
+      uploadedById: document.uploadedById,
       uploadedAt: new Date()
     };
     this.documents.set(newDocument.id, newDocument);
@@ -1127,9 +1132,14 @@ export class MemStorage implements IStorage {
   async createRequest(request: InsertRequest): Promise<Request> {
     const newRequest: Request = {
       id: randomUUID(),
-      ...request,
+      userId: request.userId,
+      requestType: request.requestType,
+      status: request.status || "pending",
+      formData: request.formData,
       createdAt: new Date(),
-      reviewedAt: null
+      reviewedAt: null,
+      reviewedById: request.reviewedById || null,
+      adminNotes: request.adminNotes || null
     };
     this.requests.set(newRequest.id, newRequest);
     return newRequest;

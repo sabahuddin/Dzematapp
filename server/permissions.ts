@@ -1,16 +1,17 @@
 import { User, WorkGroupMember } from "@shared/schema";
 
-export type UserRole = "admin" | "clan_io" | "clan" | "clan_porodice";
+export type UserRole = "admin" | "imam" | "clan_io" | "clan" | "clan_porodice";
 
 export const ROLE_LABELS: Record<UserRole, string> = {
   admin: "Admin",
+  imam: "Imam",
   clan_io: "Član IO",
   clan: "Član",
   clan_porodice: "Član porodice"
 };
 
 export function hasRole(user: User, role: UserRole): boolean {
-  if (user.isAdmin && role === "admin") return true;
+  if (user.isAdmin && (role === "admin" || role === "imam")) return true;
   
   if (!user.roles || user.roles.length === 0) return false;
   
@@ -22,7 +23,8 @@ export function hasAnyRole(user: User, roles: UserRole[]): boolean {
 }
 
 export function isAdmin(user: User): boolean {
-  return user.isAdmin || hasRole(user, "admin");
+  // Admin or Imam roles have full admin privileges
+  return user.isAdmin || hasRole(user, "admin") || hasRole(user, "imam");
 }
 
 export function isClanIO(user: User): boolean {
