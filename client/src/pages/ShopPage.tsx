@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Box, Tabs, Tab, Typography, Card, CardContent, CardMedia, Button, Chip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField, MenuItem, ImageList, ImageListItem } from "@mui/material";
-import { Add, Delete, ShoppingCart, Store, CardGiftcard, CloudUpload } from "@mui/icons-material";
+import { Box, Tabs, Tab, Typography, Card, CardContent, CardMedia, Button, Chip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField, MenuItem, ImageList, ImageListItem, Select, FormControl, InputLabel } from "@mui/material";
+import { Add, Delete, ShoppingCart, Store, CardGiftcard, CloudUpload, Edit, Close } from "@mui/icons-material";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -21,7 +21,17 @@ export default function ShopPage() {
   const [activeTab, setActiveTab] = useState(0);
   const [productModalOpen, setProductModalOpen] = useState(false);
   const [marketplaceModalOpen, setMarketplaceModalOpen] = useState(false);
+  const [purchaseModalOpen, setPurchaseModalOpen] = useState(false);
+  const [fullscreenImageOpen, setFullscreenImageOpen] = useState(false);
+  const [fullscreenImage, setFullscreenImage] = useState("");
   const [uploadingPhotos, setUploadingPhotos] = useState(false);
+  const [editingMarketplaceItem, setEditingMarketplaceItem] = useState<MarketplaceItemWithUser | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<ShopProductWithUser | null>(null);
+  const [purchaseDetails, setPurchaseDetails] = useState({
+    size: "",
+    quantity: 1,
+    color: ""
+  });
   
   const [productForm, setProductForm] = useState({
     name: "",
@@ -118,6 +128,11 @@ export default function ShopPage() {
     }
   };
 
+  const openFullscreenImage = (imageUrl: string) => {
+    setFullscreenImage(imageUrl);
+    setFullscreenImageOpen(true);
+  };
+
   // Create product mutation
   const createProductMutation = useMutation({
     mutationFn: async (productData: typeof productForm) => {
@@ -171,6 +186,7 @@ export default function ShopPage() {
       queryClient.invalidateQueries({ queryKey: ['/api/marketplace/items'] });
       toast({ title: "Oglas uspješno dodan" });
       setMarketplaceModalOpen(false);
+      setEditingMarketplaceItem(null);
       setMarketplaceForm({
         name: "",
         description: "",
@@ -180,6 +196,28 @@ export default function ShopPage() {
     },
     onError: () => {
       toast({ title: "Greška pri dodavanju oglasa", variant: "destructive" });
+    }
+  });
+
+  // Update marketplace item mutation
+  const updateMarketplaceItemMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: typeof marketplaceForm }) => {
+      return await apiRequest('PUT', `/api/marketplace/items/${id}`, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/marketplace/items'] });
+      toast({ title: "Oglas uspješno ažuriran" });
+      setMarketplaceModalOpen(false);
+      setEditingMarketplaceItem(null);
+      setMarketplaceForm({
+        name: "",
+        description: "",
+        photos: [],
+        type: "sale"
+      });
+    },
+    onError: () => {
+      toast({ title: "Greška pri ažuriranju oglasa", variant: "destructive" });
     }
   });
 
@@ -199,7 +237,7 @@ export default function ShopPage() {
 
   // Create purchase request mutation
   const createPurchaseRequestMutation = useMutation({
-    mutationFn: async ({ productId, quantity }: { productId: string; quantity: number }) => {
+    mutationFn: async ({ productId, quantity, size, color }: { productId: string; quantity: number; size?: string; color?: string }) => {
       return await apiRequest('POST', '/api/shop/purchase-requests', { 
         productId, 
         quantity,
@@ -207,10 +245,16 @@ export default function ShopPage() {
       });
     },
     onSuccess: () => {
-      toast({ title: "Zahtjev za kupovinu poslat administratoru" });
+      toast({ 
+        title: "Narudžba poslana", 
+        description: "Uskoro ćete biti kontaktirani oko pojedinosti."
+      });
+      setPurchaseModalOpen(false);
+      setPurchaseDetails({ size: "", quantity: 1, color: "" });
+      setSelectedProduct(null);
     },
     onError: () => {
-      toast({ title: "Greška pri slanju zahtjeva", variant: "destructive" });
+      toast({ title: "Greška pri slanju narudžbe", variant: "destructive" });
     }
   });
 
@@ -222,16 +266,56 @@ export default function ShopPage() {
     createProductMutation.mutate(productForm);
   };
 
-  const handleCreateMarketplaceItem = () => {
+  const handleCreateOrUpdateMarketplaceItem = () => {
     if (!marketplaceForm.name) {
       toast({ title: "Naziv je obavezan", variant: "destructive" });
       return;
     }
-    createMarketplaceItemMutation.mutate(marketplaceForm);
+    
+    if (editingMarketplaceItem) {
+      updateMarketplaceItemMutation.mutate({ id: editingMarketplaceItem.id, data: marketplaceForm });
+    } else {
+      createMarketplaceItemMutation.mutate(marketplaceForm);
+    }
   };
 
-  const handlePurchaseRequest = (productId: string) => {
-    createPurchaseRequestMutation.mutate({ productId, quantity: 1 });
+  const handleEditMarketplaceItem = (item: MarketplaceItemWithUser) => {
+    setEditingMarketplaceItem(item);
+    setMarketplaceForm({
+      name: item.name,
+      description: item.description || "",
+      photos: item.photos || [],
+      type: item.type as "sale" | "gift"
+    });
+    setMarketplaceModalOpen(true);
+  };
+
+  const handleOpenPurchaseModal = (product: ShopProductWithUser) => {
+    setSelectedProduct(product);
+    setPurchaseDetails({
+      size: product.size || "",
+      quantity: 1,
+      color: product.color || ""
+    });
+    setPurchaseModalOpen(true);
+  };
+
+  const handleSubmitPurchase = () => {
+    if (!selectedProduct) return;
+    
+    createPurchaseRequestMutation.mutate({
+      productId: selectedProduct.id,
+      quantity: purchaseDetails.quantity,
+      size: purchaseDetails.size,
+      color: purchaseDetails.color
+    });
+  };
+
+  const calculateTotal = () => {
+    if (!selectedProduct || !selectedProduct.price) return "0";
+    const priceNumber = parseFloat(selectedProduct.price);
+    if (isNaN(priceNumber)) return selectedProduct.price;
+    return (priceNumber * purchaseDetails.quantity).toFixed(2);
   };
 
   const handleContactUser = (itemUser: User | undefined) => {
@@ -266,7 +350,7 @@ export default function ShopPage() {
         <Tab label="Poklanjam" icon={<CardGiftcard />} iconPosition="start" data-testid="tab-gift" />
       </Tabs>
 
-      {/* Admin Prodajem Tab / Member Kupujem Tab */}
+      {/* Admin DžematShop Tab / Member Kupujem Tab */}
       {activeTab === 0 && (
         <Box>
           {isAdmin && (
@@ -295,11 +379,13 @@ export default function ShopPage() {
                           height="200"
                           image={product.photos[0]}
                           alt={product.name}
+                          sx={{ cursor: 'pointer' }}
+                          onClick={() => openFullscreenImage(product.photos![0])}
                         />
                       ) : (
                         <ImageList sx={{ height: 200 }} cols={2} rowHeight={100}>
                           {product.photos.slice(0, 4).map((photo, idx) => (
-                            <ImageListItem key={idx}>
+                            <ImageListItem key={idx} sx={{ cursor: 'pointer' }} onClick={() => openFullscreenImage(photo)}>
                               <img src={photo} alt={`${product.name} ${idx + 1}`} />
                             </ImageListItem>
                           ))}
@@ -340,10 +426,10 @@ export default function ShopPage() {
                           <Button
                             variant="contained"
                             size="small"
-                            onClick={() => handlePurchaseRequest(product.id)}
+                            onClick={() => handleOpenPurchaseModal(product)}
                             data-testid={`button-buy-${product.id}`}
                           >
-                            Pošalji zahtjev
+                            Kupi
                           </Button>
                         )}
                         {isAdmin && (
@@ -372,6 +458,7 @@ export default function ShopPage() {
             variant="contained"
             startIcon={<Add />}
             onClick={() => {
+              setEditingMarketplaceItem(null);
               setMarketplaceForm({ name: "", description: "", photos: [], type: "sale" });
               setMarketplaceModalOpen(true);
             }}
@@ -387,6 +474,7 @@ export default function ShopPage() {
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 3 }}>
               {saleItems.map((item) => {
                 const itemUser = getUserById(item.userId);
+                const canEdit = item.userId === user?.id || isAdmin;
                 return (
                   <Box key={item.id}>
                     <Card data-testid={`card-sale-${item.id}`}>
@@ -397,11 +485,13 @@ export default function ShopPage() {
                             height="200"
                             image={item.photos[0]}
                             alt={item.name}
+                            sx={{ cursor: 'pointer' }}
+                            onClick={() => openFullscreenImage(item.photos![0])}
                           />
                         ) : (
                           <ImageList sx={{ height: 200 }} cols={2} rowHeight={100}>
                             {item.photos.slice(0, 4).map((photo, idx) => (
-                              <ImageListItem key={idx}>
+                              <ImageListItem key={idx} sx={{ cursor: 'pointer' }} onClick={() => openFullscreenImage(photo)}>
                                 <img src={photo} alt={`${item.name} ${idx + 1}`} />
                               </ImageListItem>
                             ))}
@@ -421,7 +511,7 @@ export default function ShopPage() {
                         <Typography variant="body2" color="text.secondary">
                           Prodavač: {itemUser ? `${itemUser.firstName} ${itemUser.lastName}` : "Nepoznato"}
                         </Typography>
-                        <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
+                        <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                           <Button
                             variant="contained"
                             size="small"
@@ -430,14 +520,23 @@ export default function ShopPage() {
                           >
                             Pošalji poruku vlasniku
                           </Button>
-                          {(isAdmin || item.userId === user?.id) && (
-                            <IconButton
-                              color="error"
-                              onClick={() => deleteMarketplaceItemMutation.mutate(item.id)}
-                              data-testid={`button-delete-sale-${item.id}`}
-                            >
-                              <Delete />
-                            </IconButton>
+                          {canEdit && (
+                            <>
+                              <IconButton
+                                color="primary"
+                                onClick={() => handleEditMarketplaceItem(item)}
+                                data-testid={`button-edit-sale-${item.id}`}
+                              >
+                                <Edit />
+                              </IconButton>
+                              <IconButton
+                                color="error"
+                                onClick={() => deleteMarketplaceItemMutation.mutate(item.id)}
+                                data-testid={`button-delete-sale-${item.id}`}
+                              >
+                                <Delete />
+                              </IconButton>
+                            </>
                           )}
                         </Box>
                       </CardContent>
@@ -457,6 +556,7 @@ export default function ShopPage() {
             variant="contained"
             startIcon={<Add />}
             onClick={() => {
+              setEditingMarketplaceItem(null);
               setMarketplaceForm({ name: "", description: "", photos: [], type: "gift" });
               setMarketplaceModalOpen(true);
             }}
@@ -472,6 +572,7 @@ export default function ShopPage() {
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 3 }}>
               {giftItems.map((item) => {
                 const itemUser = getUserById(item.userId);
+                const canEdit = item.userId === user?.id || isAdmin;
                 return (
                   <Box key={item.id}>
                     <Card data-testid={`card-gift-${item.id}`}>
@@ -482,11 +583,13 @@ export default function ShopPage() {
                             height="200"
                             image={item.photos[0]}
                             alt={item.name}
+                            sx={{ cursor: 'pointer' }}
+                            onClick={() => openFullscreenImage(item.photos![0])}
                           />
                         ) : (
                           <ImageList sx={{ height: 200 }} cols={2} rowHeight={100}>
                             {item.photos.slice(0, 4).map((photo, idx) => (
-                              <ImageListItem key={idx}>
+                              <ImageListItem key={idx} sx={{ cursor: 'pointer' }} onClick={() => openFullscreenImage(photo)}>
                                 <img src={photo} alt={`${item.name} ${idx + 1}`} />
                               </ImageListItem>
                             ))}
@@ -506,7 +609,7 @@ export default function ShopPage() {
                         <Typography variant="body2" color="text.secondary">
                           Poklanja: {itemUser ? `${itemUser.firstName} ${itemUser.lastName}` : "Nepoznato"}
                         </Typography>
-                        <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
+                        <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                           <Button
                             variant="contained"
                             size="small"
@@ -515,14 +618,23 @@ export default function ShopPage() {
                           >
                             Pošalji poruku vlasniku
                           </Button>
-                          {(isAdmin || item.userId === user?.id) && (
-                            <IconButton
-                              color="error"
-                              onClick={() => deleteMarketplaceItemMutation.mutate(item.id)}
-                              data-testid={`button-delete-gift-${item.id}`}
-                            >
-                              <Delete />
-                            </IconButton>
+                          {canEdit && (
+                            <>
+                              <IconButton
+                                color="primary"
+                                onClick={() => handleEditMarketplaceItem(item)}
+                                data-testid={`button-edit-gift-${item.id}`}
+                              >
+                                <Edit />
+                              </IconButton>
+                              <IconButton
+                                color="error"
+                                onClick={() => deleteMarketplaceItemMutation.mutate(item.id)}
+                                data-testid={`button-delete-gift-${item.id}`}
+                              >
+                                <Delete />
+                              </IconButton>
+                            </>
                           )}
                         </Box>
                       </CardContent>
@@ -634,9 +746,9 @@ export default function ShopPage() {
         </DialogActions>
       </Dialog>
 
-      {/* Add Marketplace Item Dialog */}
-      <Dialog open={marketplaceModalOpen} onClose={() => setMarketplaceModalOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>{marketplaceForm.type === "sale" ? "Dodaj Oglas za Prodaju" : "Dodaj Poklon"}</DialogTitle>
+      {/* Add/Edit Marketplace Item Dialog */}
+      <Dialog open={marketplaceModalOpen} onClose={() => { setMarketplaceModalOpen(false); setEditingMarketplaceItem(null); }} maxWidth="sm" fullWidth>
+        <DialogTitle>{editingMarketplaceItem ? "Uredi Oglas" : (marketplaceForm.type === "sale" ? "Dodaj Oglas za Prodaju" : "Dodaj Poklon")}</DialogTitle>
         <DialogContent>
           <TextField
             fullWidth
@@ -695,9 +807,117 @@ export default function ShopPage() {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setMarketplaceModalOpen(false)} data-testid="button-cancel-marketplace">Odustani</Button>
-          <Button onClick={handleCreateMarketplaceItem} variant="contained" data-testid="button-save-marketplace">Objavi</Button>
+          <Button onClick={() => { setMarketplaceModalOpen(false); setEditingMarketplaceItem(null); }} data-testid="button-cancel-marketplace">Odustani</Button>
+          <Button onClick={handleCreateOrUpdateMarketplaceItem} variant="contained" data-testid="button-save-marketplace">
+            {editingMarketplaceItem ? "Ažuriraj" : "Objavi"}
+          </Button>
         </DialogActions>
+      </Dialog>
+
+      {/* Purchase Modal */}
+      <Dialog open={purchaseModalOpen} onClose={() => setPurchaseModalOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Naruči {selectedProduct?.name}</DialogTitle>
+        <DialogContent>
+          {selectedProduct && (
+            <Box sx={{ pt: 2 }}>
+              <FormControl fullWidth margin="normal">
+                <InputLabel>Veličina</InputLabel>
+                <Select
+                  value={purchaseDetails.size}
+                  label="Veličina"
+                  onChange={(e) => setPurchaseDetails({ ...purchaseDetails, size: e.target.value })}
+                  data-testid="select-purchase-size"
+                >
+                  {selectedProduct.size && <MenuItem value={selectedProduct.size}>{selectedProduct.size}</MenuItem>}
+                  <MenuItem value="S">S</MenuItem>
+                  <MenuItem value="M">M</MenuItem>
+                  <MenuItem value="L">L</MenuItem>
+                  <MenuItem value="XL">XL</MenuItem>
+                  <MenuItem value="XXL">XXL</MenuItem>
+                </Select>
+              </FormControl>
+
+              <TextField
+                fullWidth
+                label="Količina"
+                type="number"
+                value={purchaseDetails.quantity}
+                onChange={(e) => setPurchaseDetails({ ...purchaseDetails, quantity: Math.max(1, parseInt(e.target.value) || 1) })}
+                margin="normal"
+                inputProps={{ min: 1 }}
+                data-testid="input-purchase-quantity"
+              />
+
+              <FormControl fullWidth margin="normal">
+                <InputLabel>Boja</InputLabel>
+                <Select
+                  value={purchaseDetails.color}
+                  label="Boja"
+                  onChange={(e) => setPurchaseDetails({ ...purchaseDetails, color: e.target.value })}
+                  data-testid="select-purchase-color"
+                >
+                  {selectedProduct.color && <MenuItem value={selectedProduct.color}>{selectedProduct.color}</MenuItem>}
+                  <MenuItem value="Crna">Crna</MenuItem>
+                  <MenuItem value="Bijela">Bijela</MenuItem>
+                  <MenuItem value="Plava">Plava</MenuItem>
+                  <MenuItem value="Crvena">Crvena</MenuItem>
+                  <MenuItem value="Zelena">Zelena</MenuItem>
+                </Select>
+              </FormControl>
+
+              <Box sx={{ mt: 3, p: 2, bgcolor: 'primary.light', borderRadius: 1 }}>
+                <Typography variant="h6" color="primary.contrastText">
+                  Ukupno: {calculateTotal()} KM
+                </Typography>
+              </Box>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setPurchaseModalOpen(false)} data-testid="button-cancel-purchase">Odustani</Button>
+          <Button onClick={handleSubmitPurchase} variant="contained" data-testid="button-submit-purchase">
+            Pošalji narudžbu
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Fullscreen Image Dialog */}
+      <Dialog 
+        open={fullscreenImageOpen} 
+        onClose={() => setFullscreenImageOpen(false)} 
+        maxWidth="lg"
+        fullWidth
+        PaperProps={{
+          sx: {
+            bgcolor: 'rgba(0,0,0,0.9)',
+            boxShadow: 'none'
+          }
+        }}
+      >
+        <IconButton
+          onClick={() => setFullscreenImageOpen(false)}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: 'white',
+            bgcolor: 'rgba(0,0,0,0.5)',
+            '&:hover': { bgcolor: 'rgba(0,0,0,0.7)' }
+          }}
+          data-testid="button-close-fullscreen"
+        >
+          <Close />
+        </IconButton>
+        <img 
+          src={fullscreenImage} 
+          alt="Fullscreen" 
+          style={{ 
+            width: '100%', 
+            height: 'auto', 
+            maxHeight: '90vh', 
+            objectFit: 'contain' 
+          }} 
+        />
       </Dialog>
     </Box>
   );
