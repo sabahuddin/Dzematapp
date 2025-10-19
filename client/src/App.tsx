@@ -18,6 +18,8 @@ import EventsPage from "@/pages/EventsPage";
 import TaskManagerPage from "@/pages/TaskManagerPage";
 import MessagesPage from "@/pages/MessagesPage";
 import AskImamPage from "@/pages/AskImamPage";
+import DocumentsPage from "@/pages/DocumentsPage";
+import RequestsPage from "@/pages/RequestsPage";
 import LivestreamPage from "@/pages/LivestreamPage";
 import OrganizationSettingsPage from "@/pages/OrganizationSettingsPage";
 import NotFound from "@/pages/not-found";
@@ -176,6 +178,18 @@ function Router() {
       <Route path="/ask-imam">
         <ProtectedRoute>
           <AskImamPage />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path="/documents">
+        <ProtectedRoute>
+          <DocumentsPage />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path="/requests">
+        <ProtectedRoute>
+          <RequestsPage />
         </ProtectedRoute>
       </Route>
       

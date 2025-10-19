@@ -3,8 +3,8 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { Container, Typography, Box, Card, CardContent, CardHeader, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Select, MenuItem, FormControl, InputLabel, Chip } from "@mui/material";
 import { FileText, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { queryClient, apiRequest } from "@/lib/queryClient";
-import { useAuth } from "@/hooks/use-auth";
+import { queryClient } from "@/lib/queryClient";
+import { useAuth } from "@/contexts/AuthContext";
 import type { Request } from "@shared/schema";
 
 const requestTypes = [
@@ -27,8 +27,9 @@ export default function RequestsPage() {
 
   const submitMutation = useMutation({
     mutationFn: async (data: { requestType: string; formData: Record<string, string> }) => {
-      return await apiRequest("/api/requests", {
+      const response = await fetch("/api/requests", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           requestType: data.requestType,
           formData: JSON.stringify(data.formData),
@@ -36,6 +37,8 @@ export default function RequestsPage() {
           userId: user!.id
         })
       });
+      if (!response.ok) throw new Error("Failed to submit request");
+      return await response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/requests/my"] });

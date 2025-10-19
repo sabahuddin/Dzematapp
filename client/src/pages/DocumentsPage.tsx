@@ -3,8 +3,8 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { Container, Typography, Box, Card, CardContent, CardHeader, IconButton, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@mui/material";
 import { Download, Delete, Upload, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { queryClient, apiRequest } from "@/lib/queryClient";
-import { useAuth } from "@/hooks/use-auth";
+import { queryClient } from "@/lib/queryClient";
+import { useAuth } from "@/contexts/AuthContext";
 import type { Document } from "@shared/schema";
 
 export default function DocumentsPage() {
@@ -28,8 +28,9 @@ export default function DocumentsPage() {
         reader.onload = async () => {
           try {
             const base64 = reader.result as string;
-            const response = await apiRequest("/api/documents", {
+            const response = await fetch("/api/documents", {
               method: "POST",
+              headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 title: data.title,
                 description: data.description || null,
@@ -39,7 +40,8 @@ export default function DocumentsPage() {
                 uploadedById: user!.id
               })
             });
-            resolve(response);
+            if (!response.ok) throw new Error("Failed to upload");
+            resolve(await response.json());
           } catch (error) {
             reject(error);
           }
@@ -68,9 +70,11 @@ export default function DocumentsPage() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      return await apiRequest(`/api/documents/${id}`, {
+      const response = await fetch(`/api/documents/${id}`, {
         method: "DELETE"
       });
+      if (!response.ok) throw new Error("Failed to delete");
+      return await response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
@@ -136,7 +140,7 @@ export default function DocumentsPage() {
         <Typography variant="h4" component="h1">
           Dokumenti
         </Typography>
-        {user?.role === "Admin" && (
+        {user?.isAdmin && (
           <Button
             variant="contained"
             startIcon={<Upload />}
@@ -177,7 +181,7 @@ export default function DocumentsPage() {
                     >
                       <Download />
                     </IconButton>
-                    {user?.role === "Admin" && (
+                    {user?.isAdmin && (
                       <IconButton
                         onClick={() => deleteMutation.mutate(doc.id)}
                         color="error"
