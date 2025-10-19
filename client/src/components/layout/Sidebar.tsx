@@ -49,10 +49,10 @@ interface SidebarProps {
 
 const menuItems = [
   { path: '/dashboard', label: 'Dashboard', icon: Dashboard },
-  { path: '/users', label: 'Korisnici', icon: People },
+  { path: '/users', label: 'Korisnici', labelForMember: 'Profil', icon: People },
   { path: '/announcements', label: 'Obavijesti', icon: Campaign },
   { path: '/events', label: 'Događaji', icon: Event },
-  { path: '/tasks', label: 'Task Manager', icon: Task },
+  { path: '/tasks', label: 'Sekcije', icon: Task, requiresWorkGroup: true },
   { path: '/messages', label: 'Poruke', icon: Mail, showBadge: true },
   { path: '/ask-imam', label: 'Pitaj imama', icon: QuestionAnswer },
   { path: '/documents', label: 'Dokumenti', icon: Description },
@@ -76,6 +76,23 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
   const { data: orgSettings } = useQuery<OrganizationSettings>({
     queryKey: ['/api/organization-settings'],
   });
+
+  // Check if user is member of any work group
+  const { data: allWorkGroups } = useQuery({
+    queryKey: ['/api/work-groups'],
+    enabled: !!user && !user.isAdmin,
+  });
+
+  const userWorkGroupIds = React.useMemo(() => {
+    if (!allWorkGroups || !user) return new Set<string>();
+    return new Set(
+      allWorkGroups
+        .filter((wg: any) => wg.members?.some((m: any) => m.userId === user.id))
+        .map((wg: any) => wg.id)
+    );
+  }, [allWorkGroups, user]);
+
+  const isMemberOfAnyWorkGroup = userWorkGroupIds.size > 0;
 
   const handleNavigation = (path: string) => {
     setLocation(path);
@@ -149,9 +166,17 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
             return null;
           }
 
+          // Hide work group section if user is not member of any work group
+          if (item.requiresWorkGroup && !user?.isAdmin && !isMemberOfAnyWorkGroup) {
+            return null;
+          }
+
           const Icon = item.icon;
           const isActive = location === item.path;
           const showUnreadBadge = item.showBadge && unreadCount && unreadCount.count > 0;
+          
+          // Use different label for non-admin users if labelForMember is defined
+          const displayLabel = (!user?.isAdmin && item.labelForMember) ? item.labelForMember : item.label;
           
           const buttonContent = (
             <ListItemButton
@@ -181,14 +206,14 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
                   <Icon />
                 )}
               </ListItemIcon>
-              {!collapsed && <ListItemText primary={item.label} />}
+              {!collapsed && <ListItemText primary={displayLabel} />}
             </ListItemButton>
           );
 
           return (
             <ListItem key={item.path} disablePadding sx={{ width: '100%', maxWidth: '100%' }}>
               {collapsed ? (
-                <Tooltip title={item.label} placement="right">
+                <Tooltip title={displayLabel} placement="right">
                   {buttonContent}
                 </Tooltip>
               ) : (

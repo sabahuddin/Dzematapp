@@ -160,17 +160,30 @@ export default function TaskManagerPage() {
     retry: 1,
   });
 
-  // Fetch access requests
+  // Fetch access requests (only for admins)
   const accessRequestsQuery = useQuery<AccessRequest[]>({
     queryKey: ['/api/access-requests'],
     retry: 1,
+    enabled: !!user?.isAdmin,
   });
 
-  // Fetch users for access request names
+  // Fetch users for access request names (only for admins)
   const usersQuery = useQuery<User[]>({
     queryKey: ['/api/users'],
     retry: 1,
+    enabled: !!user?.isAdmin,
   });
+
+  // Filter work groups to show only those where user is a member (for non-admins)
+  const userWorkGroups = React.useMemo(() => {
+    if (!workGroupsQuery.data) return [];
+    if (user?.isAdmin) return workGroupsQuery.data;
+    
+    // For non-admin users, show only work groups they are members of
+    return workGroupsQuery.data.filter((wg: any) => {
+      return wg.members?.some((m: any) => m.userId === user?.id);
+    });
+  }, [workGroupsQuery.data, user]);
 
   // Create work group mutation
   const createWorkGroupMutation = useMutation({
@@ -257,7 +270,11 @@ export default function TaskManagerPage() {
     return user ? `${user.firstName} ${user.lastName}` : 'Nepoznat korisnik';
   };
 
-  if (workGroupsQuery.isLoading || accessRequestsQuery.isLoading || usersQuery.isLoading) {
+  const isLoading = user?.isAdmin 
+    ? (workGroupsQuery.isLoading || accessRequestsQuery.isLoading || usersQuery.isLoading)
+    : workGroupsQuery.isLoading;
+
+  if (isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
         <CircularProgress />
@@ -265,7 +282,11 @@ export default function TaskManagerPage() {
     );
   }
 
-  if (workGroupsQuery.error || accessRequestsQuery.error || usersQuery.error) {
+  const hasError = user?.isAdmin
+    ? (workGroupsQuery.error || accessRequestsQuery.error || usersQuery.error)
+    : workGroupsQuery.error;
+
+  if (hasError) {
     return (
       <Alert severity="error">
         Greška pri učitavanju podataka. Molimo pokušajte ponovo.
@@ -276,31 +297,35 @@ export default function TaskManagerPage() {
   return (
     <Box>
       <Typography variant="h5" sx={{ fontWeight: 600, mb: 3 }}>
-        Task Manager
+        Sekcije
       </Typography>
 
-      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-        <Tabs value={tabValue} onChange={handleTabChange} aria-label="task manager tabs">
-          <Tab label="Radne Grupe" data-testid="tab-work-groups" />
-          <Tab label="Zahtjevi za Pristup" data-testid="tab-access-requests" />
-        </Tabs>
-      </Box>
+      {user?.isAdmin && (
+        <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+          <Tabs value={tabValue} onChange={handleTabChange} aria-label="task manager tabs">
+            <Tab label="Radne Grupe" data-testid="tab-work-groups" />
+            <Tab label="Zahtjevi za Pristup" data-testid="tab-access-requests" />
+          </Tabs>
+        </Box>
+      )}
 
       {/* Work Groups Tab */}
       <TabPanel value={tabValue} index={0}>
-        <Box sx={{ mb: 3 }}>
-          <Button
-            variant="contained"
-            startIcon={<GroupAdd />}
-            onClick={handleCreateWorkGroup}
-            data-testid="button-create-work-group"
-          >
-            Kreiraj Novu Grupu
-          </Button>
-        </Box>
+        {user?.isAdmin && (
+          <Box sx={{ mb: 3 }}>
+            <Button
+              variant="contained"
+              startIcon={<GroupAdd />}
+              onClick={handleCreateWorkGroup}
+              data-testid="button-create-work-group"
+            >
+              Kreiraj Novu Grupu
+            </Button>
+          </Box>
+        )}
 
         <Grid container spacing={3}>
-          {workGroupsQuery.data?.map((workGroup: WorkGroup) => (
+          {userWorkGroups.map((workGroup: WorkGroup) => (
             <WorkGroupCard 
               key={workGroup.id}
               workGroup={workGroup}
@@ -309,12 +334,12 @@ export default function TaskManagerPage() {
             />
           ))}
           
-          {(!workGroupsQuery.data || workGroupsQuery.data.length === 0) && (
+          {(!userWorkGroups || userWorkGroups.length === 0) && (
             <Grid size={{ xs: 12 }}>
               <Card>
                 <CardContent sx={{ textAlign: 'center', py: 6 }}>
                   <Typography color="text.secondary">
-                    Nema radnih grupa
+                    {user?.isAdmin ? 'Nema radnih grupa' : 'Niste član nijedne sekcije'}
                   </Typography>
                 </CardContent>
               </Card>
