@@ -24,6 +24,16 @@ DžematApp is a web-based admin dashboard application built for managing mosque 
   - **Duplicate/Copy functionality**: Admin can now duplicate shop products with a single click using the copy icon button
   - Admin shop tab renamed from "Prodajem" to "DžematShop"
 - **Global Terminology Update**: Renamed "Radna grupa" to "Sekcija" throughout the application.
+- **Event RSVP Implementation**: Full event registration functionality allowing users to RSVP for events
+  - Backend: POST/PUT/DELETE routes at `/api/events/:eventId/rsvp` for creating, updating, and deleting RSVPs
+  - Backend: GET route at `/api/events/:eventId/user-rsvp` to fetch current user's RSVP
+  - Frontend: EventRSVPModal component for user registration with adult and children counts
+  - Integration: "Prijavi se" menu option on events with rsvpEnabled flag
+  - Permission control: Menu shows admin options (edit, view RSVPs, delete) only to admins
+- **API Request Bug Fix**: Fixed critical bug where `apiRequest` was called with incorrect parameter order
+  - Correct signature: `apiRequest(method, url, data)` 
+  - Fixed in: AskImamPage (send question, reply, mark as read), MessagesPage (delete), NewMessageModal (create), MessageViewModal (mark as read), EventRSVPModal (create/update/delete)
+  - This fix resolves errors when sending messages and Imam Q&A questions
 
 # User Preferences
 

@@ -25,6 +25,7 @@ interface ImamMessage {
   id: string;
   senderId: string;
   recipientId: string | null;
+  category: string | null;
   subject: string;
   content: string;
   isRead: boolean;
@@ -93,7 +94,7 @@ export default function AskImamPage() {
       const adminUser = admins[0];
       if (!adminUser) throw new Error("No admin found");
       
-      return apiRequest("/api/messages", "POST", {
+      return apiRequest("POST", "/api/messages", {
         senderId: user!.id,
         recipientId: adminUser.id,
         subject: data.subject,
@@ -120,7 +121,7 @@ export default function AskImamPage() {
 
   const replyMutation = useMutation({
     mutationFn: (data: { messageId: string; content: string; originalSenderId: string }) => {
-      return apiRequest("/api/messages", "POST", {
+      return apiRequest("POST", "/api/messages", {
         senderId: user!.id,
         recipientId: data.originalSenderId,
         subject: `Re: ${selectedMessage?.subject}`,
@@ -146,7 +147,7 @@ export default function AskImamPage() {
 
   const markAsReadMutation = useMutation({
     mutationFn: (messageId: string) =>
-      apiRequest(`/api/messages/${messageId}/read`, "PUT"),
+      apiRequest("PUT", `/api/messages/${messageId}/read`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
       queryClient.invalidateQueries({ queryKey: ["/api/messages/unread-count"] });

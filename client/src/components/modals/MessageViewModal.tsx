@@ -40,7 +40,7 @@ export default function MessageViewModal({ message, onClose, onReply, onDelete }
 
   const markAsReadMutation = useMutation({
     mutationFn: (messageId: string) =>
-      apiRequest(`/api/messages/${messageId}/read`, "PUT"),
+      apiRequest("PUT", `/api/messages/${messageId}/read`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
       queryClient.invalidateQueries({ queryKey: ["/api/messages/unread-count"] });

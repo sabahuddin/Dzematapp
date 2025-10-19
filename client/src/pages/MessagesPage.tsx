@@ -47,7 +47,7 @@ export default function MessagesPage() {
 
   const deleteMutation = useMutation({
     mutationFn: (messageId: string) => 
-      apiRequest(`/api/messages/${messageId}`, "DELETE"),
+      apiRequest("DELETE", `/api/messages/${messageId}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
       queryClient.invalidateQueries({ queryKey: ["/api/messages/unread-count"] });
