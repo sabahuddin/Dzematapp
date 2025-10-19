@@ -65,6 +65,16 @@ const theme = createTheme({
         root: {
           '& .MuiOutlinedInput-root': {
             borderRadius: 8,
+            '& fieldset': {
+              borderColor: '#1976d2',
+              borderWidth: '2px',
+            },
+            '&:hover fieldset': {
+              borderColor: '#1565c0',
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: '#1976d2',
+            },
           },
         },
       },
@@ -84,6 +94,16 @@ const theme = createTheme({
         root: {
           '& .MuiOutlinedInput-root': {
             borderRadius: 8,
+            '& fieldset': {
+              borderColor: '#1976d2',
+              borderWidth: '2px',
+            },
+            '&:hover fieldset': {
+              borderColor: '#1565c0',
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: '#1976d2',
+            },
           },
         },
       },
