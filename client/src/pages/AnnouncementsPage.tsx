@@ -20,7 +20,15 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions
+  DialogActions,
+  TextField,
+  Autocomplete,
+  CardContent,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Divider
 } from '@mui/material';
 import {
   Add,
@@ -29,7 +37,8 @@ import {
   Delete,
   AttachFile,
   Image,
-  PictureAsPdf
+  PictureAsPdf,
+  Close
 } from '@mui/icons-material';
 import { Announcement, AnnouncementFileWithUser } from '@shared/schema';
 import AnnouncementModal from '../components/modals/AnnouncementModal';
@@ -48,6 +57,9 @@ export default function AnnouncementsPage() {
   const [menuAnnouncement, setMenuAnnouncement] = useState<Announcement | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [announcementToDelete, setAnnouncementToDelete] = useState<Announcement | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [showArchive, setShowArchive] = useState(false);
 
   // Fetch announcements
   const announcementsQuery = useQuery<Announcement[]>({
@@ -295,22 +307,244 @@ export default function AnnouncementsPage() {
     );
   }
 
+  const predefinedCategories = ['Džemat', 'IZBCH', 'IZ', 'Ostalo'];
+  
+  // Filter announcements
+  const filteredAnnouncements = (announcementsQuery.data || []).filter((announcement: Announcement) => {
+    const matchesSearch = searchTerm === '' || 
+      announcement.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      announcement.content.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesCategory = selectedCategories.length === 0 ||
+      (announcement.categories && announcement.categories.some(cat => selectedCategories.includes(cat)));
+    
+    return matchesSearch && matchesCategory;
+  });
+
+  // Sort announcements by date (newest first)
+  const sortedAnnouncements = [...filteredAnnouncements].sort((a, b) => {
+    const dateA = a.publishDate ? new Date(a.publishDate).getTime() : 0;
+    const dateB = b.publishDate ? new Date(b.publishDate).getTime() : 0;
+    return dateB - dateA;
+  });
+
+  const latestAnnouncement = sortedAnnouncements.length > 0 ? sortedAnnouncements[0] : null;
+  const archivedAnnouncements = sortedAnnouncements.slice(1);
+
+  // Member View - Shows latest announcement with archive
+  if (!user?.isAdmin) {
+    return (
+      <Box>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Typography variant="h5" sx={{ fontWeight: 600 }}>
+            Obavijesti
+          </Typography>
+        </Box>
+
+        {/* Search and Filter */}
+        <Box sx={{ mb: 3, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+          <TextField
+            variant="outlined"
+            placeholder="Pretraži obavijesti..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            sx={{ width: 350 }}
+            data-testid="input-search"
+          />
+          <Autocomplete
+            multiple
+            options={predefinedCategories}
+            value={selectedCategories}
+            onChange={(event, newValue) => setSelectedCategories(newValue)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="outlined"
+                placeholder="Filtriraj po kategorijama"
+                data-testid="input-category-filter"
+              />
+            )}
+            sx={{ width: 350 }}
+            data-testid="autocomplete-category-filter"
+          />
+        </Box>
+
+        {/* Latest Announcement */}
+        {latestAnnouncement ? (
+          <Card sx={{ mb: 3 }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                  {latestAnnouncement.title}
+                </Typography>
+                {latestAnnouncement.isFeatured && (
+                  <Chip label="Istaknuta" color="info" size="small" />
+                )}
+              </Box>
+              
+              {latestAnnouncement.categories && latestAnnouncement.categories.length > 0 && (
+                <Box sx={{ mb: 2, display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+                  {latestAnnouncement.categories.map((category, index) => (
+                    <Chip key={index} label={category} size="small" variant="outlined" />
+                  ))}
+                </Box>
+              )}
+              
+              <Typography variant="caption" color="text.secondary" sx={{ mb: 2, display: 'block' }}>
+                {latestAnnouncement.publishDate ? new Date(latestAnnouncement.publishDate).toLocaleDateString('hr-HR') : ''}
+              </Typography>
+              
+              <Typography 
+                variant="body1" 
+                sx={{ mt: 2 }}
+                dangerouslySetInnerHTML={{ __html: latestAnnouncement.content }}
+              />
+              
+              <Box sx={{ mt: 2 }}>
+                <AnnouncementAttachments announcementId={latestAnnouncement.id} />
+              </Box>
+            </CardContent>
+          </Card>
+        ) : (
+          <Alert severity="info">Nema objavljenih obavijesti</Alert>
+        )}
+
+        {/* Archive Button and List */}
+        {archivedAnnouncements.length > 0 && (
+          <Box>
+            <Button 
+              variant="outlined" 
+              onClick={() => setShowArchive(!showArchive)}
+              sx={{ mb: 2 }}
+              data-testid="button-toggle-archive"
+            >
+              {showArchive ? 'Sakrij Arhivu' : `Prikaži Arhivu (${archivedAnnouncements.length})`}
+            </Button>
+            
+            {showArchive && (
+              <Card>
+                <List>
+                  {archivedAnnouncements.map((announcement, index) => (
+                    <React.Fragment key={announcement.id}>
+                      <ListItem>
+                        <ListItemButton onClick={() => setSelectedAnnouncement(announcement)}>
+                          <ListItemText
+                            primary={announcement.title}
+                            secondary={
+                              <Box>
+                                <Typography variant="caption">
+                                  {announcement.publishDate ? new Date(announcement.publishDate).toLocaleDateString('hr-HR') : ''}
+                                </Typography>
+                                {announcement.categories && announcement.categories.length > 0 && (
+                                  <Box sx={{ mt: 0.5, display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+                                    {announcement.categories.map((cat, catIndex) => (
+                                      <Chip key={catIndex} label={cat} size="small" variant="outlined" />
+                                    ))}
+                                  </Box>
+                                )}
+                              </Box>
+                            }
+                          />
+                        </ListItemButton>
+                      </ListItem>
+                      {index < archivedAnnouncements.length - 1 && <Divider />}
+                    </React.Fragment>
+                  ))}
+                </List>
+              </Card>
+            )}
+          </Box>
+        )}
+
+        {/* Announcement Detail Dialog for Archive */}
+        <Dialog
+          open={selectedAnnouncement !== null && selectedAnnouncement.id !== latestAnnouncement?.id}
+          onClose={() => setSelectedAnnouncement(null)}
+          maxWidth="md"
+          fullWidth
+        >
+          {selectedAnnouncement && (
+            <>
+              <DialogTitle>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <Typography variant="h6">{selectedAnnouncement.title}</Typography>
+                  <IconButton onClick={() => setSelectedAnnouncement(null)}>
+                    <Close />
+                  </IconButton>
+                </Box>
+              </DialogTitle>
+              <DialogContent>
+                {selectedAnnouncement.categories && selectedAnnouncement.categories.length > 0 && (
+                  <Box sx={{ mb: 2, display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+                    {selectedAnnouncement.categories.map((category, index) => (
+                      <Chip key={index} label={category} size="small" variant="outlined" />
+                    ))}
+                  </Box>
+                )}
+                
+                <Typography variant="caption" color="text.secondary" sx={{ mb: 2, display: 'block' }}>
+                  {selectedAnnouncement.publishDate ? new Date(selectedAnnouncement.publishDate).toLocaleDateString('hr-HR') : ''}
+                </Typography>
+                
+                <Typography 
+                  variant="body1"
+                  dangerouslySetInnerHTML={{ __html: selectedAnnouncement.content }}
+                />
+                
+                <Box sx={{ mt: 2 }}>
+                  <AnnouncementAttachments announcementId={selectedAnnouncement.id} />
+                </Box>
+              </DialogContent>
+            </>
+          )}
+        </Dialog>
+      </Box>
+    );
+  }
+
+  // Admin View
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h5" sx={{ fontWeight: 600 }}>
           Upravljanje Obavijestima
         </Typography>
-        {user?.isAdmin && (
-          <Button
-            variant="contained"
-            startIcon={<Add />}
-            onClick={handleCreateAnnouncement}
-            data-testid="button-add-announcement"
-          >
-            Kreiraj Obavijest
-          </Button>
-        )}
+        <Button
+          variant="contained"
+          startIcon={<Add />}
+          onClick={handleCreateAnnouncement}
+          data-testid="button-add-announcement"
+        >
+          Kreiraj Obavijest
+        </Button>
+      </Box>
+
+      {/* Search and Filter for Admin */}
+      <Box sx={{ mb: 3, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+        <TextField
+          variant="outlined"
+          placeholder="Pretraži obavijesti..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          sx={{ width: 350 }}
+          data-testid="input-search-admin"
+        />
+        <Autocomplete
+          multiple
+          options={predefinedCategories}
+          value={selectedCategories}
+          onChange={(event, newValue) => setSelectedCategories(newValue)}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant="outlined"
+              placeholder="Filtriraj po kategorijama"
+              data-testid="input-category-filter-admin"
+            />
+          )}
+          sx={{ width: 350 }}
+          data-testid="autocomplete-category-filter-admin"
+        />
       </Box>
 
       <Card>
@@ -319,6 +553,7 @@ export default function AnnouncementsPage() {
             <TableHead>
               <TableRow sx={{ bgcolor: '#f8f9fa' }}>
                 <TableCell sx={{ fontWeight: 600 }}>Naslov</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Kategorije</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Autor</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Datum Objave</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
@@ -327,9 +562,20 @@ export default function AnnouncementsPage() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {(announcementsQuery.data || []).map((announcement: Announcement) => (
+              {sortedAnnouncements.map((announcement: Announcement) => (
                 <TableRow key={announcement.id}>
                   <TableCell>{announcement.title}</TableCell>
+                  <TableCell>
+                    {announcement.categories && announcement.categories.length > 0 ? (
+                      <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+                        {announcement.categories.map((category, index) => (
+                          <Chip key={index} label={category} size="small" variant="outlined" />
+                        ))}
+                      </Box>
+                    ) : (
+                      <Typography variant="caption" color="text.secondary">-</Typography>
+                    )}
+                  </TableCell>
                   <TableCell>
                     {user?.firstName} {user?.lastName}
                   </TableCell>
@@ -352,9 +598,9 @@ export default function AnnouncementsPage() {
                   </TableCell>
                 </TableRow>
               ))}
-              {(announcementsQuery.data || []).length === 0 && (
+              {sortedAnnouncements.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} sx={{ textAlign: 'center', py: 4 }}>
+                  <TableCell colSpan={7} sx={{ textAlign: 'center', py: 4 }}>
                     <Typography color="text.secondary">
                       Nema obavijesti
                     </Typography>
