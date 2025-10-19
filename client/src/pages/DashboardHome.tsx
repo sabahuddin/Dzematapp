@@ -147,11 +147,9 @@ export default function DashboardHome() {
       </Grid>
 
       {/* Tasks Dashboard for Admins and Moderators */}
-      <Box sx={{ my: 4 }}>
+      <Box sx={{ mb: 3 }}>
         <TasksDashboard />
       </Box>
-
-      <Divider sx={{ my: 4 }} />
 
       {/* Recent Activities Table */}
       <Card>
