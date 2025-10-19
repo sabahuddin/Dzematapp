@@ -75,11 +75,16 @@ export default function EventModal({
         categories: event.categories || []
       });
     } else {
+      // Set default datetime to now + 1 hour (rounded to next hour) for Safari compatibility
+      const now = new Date();
+      now.setHours(now.getHours() + 1, 0, 0, 0); // Next hour, rounded
+      const defaultDateTime = now.toISOString().slice(0, 16);
+      
       setFormData({
         name: '',
         description: '',
         location: '',
-        dateTime: '',
+        dateTime: defaultDateTime,
         rsvpEnabled: true,
         requireAdultsChildren: false,
         maxAttendees: '',
@@ -210,6 +215,7 @@ export default function EventModal({
                   value={formData.dateTime}
                   onChange={handleChange('dateTime')}
                   InputLabelProps={{ shrink: true }}
+                  inputProps={{ step: 60 }}
                   required
                   data-testid="input-dateTime"
                 />
