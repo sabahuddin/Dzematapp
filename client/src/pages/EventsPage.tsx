@@ -72,7 +72,16 @@ function WeekView({
   };
   
   return (
-    <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 1 }}>
+    <Box sx={{ 
+      display: 'grid', 
+      gridTemplateColumns: { 
+        xs: 'repeat(1, 1fr)',
+        sm: 'repeat(2, 1fr)',
+        md: 'repeat(4, 1fr)',
+        lg: 'repeat(7, 1fr)'
+      }, 
+      gap: 1 
+    }}>
       {weekDays.map((day, index) => {
         const dayEvents = getEventsForDay(day);
         const isToday = day.toDateString() === today.toDateString();
@@ -196,9 +205,23 @@ function MonthView({
         </Button>
       </Box>
       
-      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 1 }}>
+      <Box sx={{ 
+        display: 'grid', 
+        gridTemplateColumns: { 
+          xs: 'repeat(1, 1fr)',
+          sm: 'repeat(2, 1fr)',
+          md: 'repeat(4, 1fr)',
+          lg: 'repeat(7, 1fr)'
+        }, 
+        gap: 1 
+      }}>
         {weekDays.map(day => (
-          <Box key={day} sx={{ p: 1, textAlign: 'center', fontWeight: 600 }}>
+          <Box key={day} sx={{ 
+            p: 1, 
+            textAlign: 'center', 
+            fontWeight: 600,
+            display: { xs: 'none', lg: 'block' }
+          }}>
             {day}
           </Box>
         ))}
@@ -213,22 +236,34 @@ function MonthView({
               key={index}
               sx={{
                 p: 1,
-                minHeight: 100,
+                minHeight: { xs: 80, md: 100 },
                 bgcolor: isToday ? '#f0f7ff' : '#fff',
                 border: isToday ? '2px solid #1976d2' : '1px solid #e0e0e0',
                 opacity: isCurrentMonth ? 1 : 0.5
               }}
               data-testid={`month-day-${index}`}
             >
-              <Typography 
-                variant="caption" 
-                sx={{ 
-                  fontWeight: isToday ? 600 : 400,
-                  color: isToday ? '#1976d2' : 'text.secondary'
-                }}
-              >
-                {day.getDate()}
-              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
+                <Typography 
+                  variant="caption" 
+                  sx={{ 
+                    fontWeight: isToday ? 600 : 400,
+                    color: isToday ? '#1976d2' : 'text.secondary'
+                  }}
+                >
+                  {day.getDate()}
+                </Typography>
+                <Typography 
+                  variant="caption" 
+                  sx={{ 
+                    display: { xs: 'inline', lg: 'none' },
+                    fontSize: '0.7rem',
+                    color: 'text.secondary'
+                  }}
+                >
+                  {day.toLocaleDateString('hr-HR', { weekday: 'short' })}
+                </Typography>
+              </Box>
               
               <Box sx={{ mt: 0.5 }}>
                 {dayEvents.map(event => (
