@@ -33,7 +33,8 @@ import {
   LocationOn,
   Settings,
   Description,
-  Assignment
+  Assignment,
+  Store
 } from '@mui/icons-material';
 import { SiFacebook, SiInstagram, SiYoutube, SiX } from 'react-icons/si';
 import { useAuth } from '@/contexts/AuthContext';
@@ -56,6 +57,7 @@ const menuItems = [
   { path: '/messages', label: 'Poruke', icon: Mail, showBadge: true },
   { path: '/ask-imam', label: 'Pitaj imama', icon: QuestionAnswer },
   { path: '/documents', label: 'Dokumenti', icon: Description },
+  { path: '/shop', label: 'Prodavnica', icon: Store },
   { path: '/requests', label: 'Zahtjevi i prijave', icon: Assignment },
   { path: '/livestream', label: 'Livestream', icon: Radio },
   { path: '/livestream-settings', label: 'Livestream uprav.', icon: Radio, adminOnly: true },
@@ -84,7 +86,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
   });
 
   const userWorkGroupIds = React.useMemo(() => {
-    if (!allWorkGroups || !user) return new Set<string>();
+    if (!allWorkGroups || !Array.isArray(allWorkGroups) || !user) return new Set<string>();
     return new Set(
       allWorkGroups
         .filter((wg: any) => wg.members?.some((m: any) => m.userId === user.id))

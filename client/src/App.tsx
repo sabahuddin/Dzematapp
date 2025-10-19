@@ -20,6 +20,7 @@ import TaskManagerPage from "@/pages/TaskManagerPage";
 import MessagesPage from "@/pages/MessagesPage";
 import AskImamPage from "@/pages/AskImamPage";
 import DocumentsPage from "@/pages/DocumentsPage";
+import ShopPage from "@/pages/ShopPage";
 import RequestsPage from "@/pages/RequestsPage";
 import LivestreamPage from "@/pages/LivestreamPage";
 import LivestreamSettingsPage from "@/pages/LivestreamSettingsPage";
@@ -210,6 +211,12 @@ function Router() {
       <Route path="/documents">
         <ProtectedRoute>
           <DocumentsPage />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path="/shop">
+        <ProtectedRoute>
+          <ShopPage />
         </ProtectedRoute>
       </Route>
       

@@ -6,7 +6,7 @@ import { promises as fs } from "fs";
 import * as XLSX from "xlsx";
 import { storage } from "./storage";
 import { requireAuth, requireAdmin } from "./index";
-import { insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertGroupFileSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema } from "@shared/schema";
+import { insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertGroupFileSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema } from "@shared/schema";
 
 // Configure multer for photo uploads
 const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'photos');
@@ -1552,6 +1552,139 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(request);
     } catch (error) {
       res.status(500).json({ message: "Failed to update request status" });
+    }
+  });
+
+  // Shop Products routes
+  app.get("/api/shop/products", requireAuth, async (req, res) => {
+    try {
+      const products = await storage.getAllShopProducts();
+      res.json(products);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get products" });
+    }
+  });
+
+  app.post("/api/shop/products", requireAdmin, async (req, res) => {
+    try {
+      const createdById = req.session.userId!;
+      const productData = insertShopProductSchema.parse({
+        ...req.body,
+        createdById
+      });
+      const product = await storage.createShopProduct(productData);
+      res.status(201).json(product);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid product data" });
+    }
+  });
+
+  app.put("/api/shop/products/:id", requireAdmin, async (req, res) => {
+    try {
+      const product = await storage.updateShopProduct(req.params.id, req.body);
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+      res.json(product);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update product" });
+    }
+  });
+
+  app.delete("/api/shop/products/:id", requireAdmin, async (req, res) => {
+    try {
+      const deleted = await storage.deleteShopProduct(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete product" });
+    }
+  });
+
+  // Marketplace Items routes
+  app.get("/api/marketplace/items", requireAuth, async (req, res) => {
+    try {
+      const items = await storage.getAllMarketplaceItems();
+      res.json(items);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get marketplace items" });
+    }
+  });
+
+  app.post("/api/marketplace/items", requireAuth, async (req, res) => {
+    try {
+      const userId = req.session.userId!;
+      const itemData = insertMarketplaceItemSchema.parse({
+        ...req.body,
+        userId
+      });
+      const item = await storage.createMarketplaceItem(itemData);
+      res.status(201).json(item);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid item data" });
+    }
+  });
+
+  app.delete("/api/marketplace/items/:id", requireAuth, async (req, res) => {
+    try {
+      const item = await storage.getMarketplaceItem(req.params.id);
+      if (!item) {
+        return res.status(404).json({ message: "Item not found" });
+      }
+      
+      // Allow deletion only by owner or admin
+      const user = await storage.getUser(req.session.userId!);
+      const isAdmin = user && (user.isAdmin || user.roles?.includes('admin') || user.roles?.includes('imam'));
+      if (item.userId !== req.session.userId && !isAdmin) {
+        return res.status(403).json({ message: "Not authorized" });
+      }
+
+      const deleted = await storage.deleteMarketplaceItem(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Item not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete item" });
+    }
+  });
+
+  // Purchase Requests routes
+  app.get("/api/shop/purchase-requests", requireAdmin, async (req, res) => {
+    try {
+      const requests = await storage.getAllProductPurchaseRequests();
+      res.json(requests);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get purchase requests" });
+    }
+  });
+
+  app.post("/api/shop/purchase-requests", requireAuth, async (req, res) => {
+    try {
+      const userId = req.session.userId!;
+      const requestData = insertProductPurchaseRequestSchema.parse({
+        ...req.body,
+        userId
+      });
+      const request = await storage.createProductPurchaseRequest(requestData);
+      res.status(201).json(request);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid purchase request data" });
+    }
+  });
+
+  app.put("/api/shop/purchase-requests/:id/status", requireAdmin, async (req, res) => {
+    try {
+      const { status } = req.body;
+      const request = await storage.updateProductPurchaseRequest(req.params.id, status);
+      if (!request) {
+        return res.status(404).json({ message: "Purchase request not found" });
+      }
+      res.json(request);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update purchase request" });
     }
   });
 
