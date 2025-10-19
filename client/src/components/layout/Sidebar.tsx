@@ -101,7 +101,8 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
           alignItems: 'center',
           gap: 1.5,
           minHeight: 64,
-          width: '100%'
+          width: '100%',
+          justifyContent: collapsed ? 'center' : 'flex-start'
         }}
       >
         <Hub sx={{ color: '#1976d2', fontSize: 24 }} />
@@ -110,17 +111,38 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
             JamatHub
           </Typography>
         )}
-        <IconButton 
-          onClick={onToggle}
-          sx={{ ml: 'auto' }}
-          data-testid="sidebar-toggle"
-        >
-          <Menu />
-        </IconButton>
       </Box>
 
       {/* Navigation */}
       <List sx={{ py: 2, flex: 1, width: '100%', overflowX: 'hidden' }}>
+        {/* Toggle Button as First Item */}
+        <ListItem disablePadding sx={{ width: '100%', maxWidth: '100%', mb: 1 }}>
+          <ListItemButton
+            onClick={onToggle}
+            sx={{
+              mx: 1,
+              borderRadius: 1,
+              bgcolor: '#f5f5f5',
+              color: '#1976d2',
+              justifyContent: collapsed ? 'center' : 'flex-start',
+              px: collapsed ? 0 : 2,
+              minWidth: 0,
+              '&:hover': {
+                bgcolor: '#e3f2fd',
+                color: '#1976d2'
+              }
+            }}
+            data-testid="sidebar-toggle"
+          >
+            <ListItemIcon sx={{ color: 'inherit', minWidth: collapsed ? 'auto' : 40, justifyContent: 'center' }}>
+              <Menu />
+            </ListItemIcon>
+            {!collapsed && <ListItemText primary="Zatvori/Otvori" />}
+          </ListItemButton>
+        </ListItem>
+
+        <Divider sx={{ mb: 1 }} />
+
         {menuItems.map((item) => {
           // Hide admin-only items from non-admin users
           if (item.adminOnly && !user?.isAdmin) {
