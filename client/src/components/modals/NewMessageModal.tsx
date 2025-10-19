@@ -182,7 +182,17 @@ export default function NewMessageModal({ isOpen, onClose, replyTo }: NewMessage
                       </FormControl>
                       <SelectContent>
                         {users
-                          .filter((u) => u.id !== user?.id)
+                          .filter((u) => {
+                            // Don't show current user
+                            if (u.id === user?.id) return false;
+                            
+                            // For non-admin users, only show admins
+                            if (!user?.isAdmin) {
+                              return u.isAdmin;
+                            }
+                            
+                            return true;
+                          })
                           .map((u) => (
                             <SelectItem key={u.id} value={u.id}>
                               {u.firstName} {u.lastName} ({u.email})
