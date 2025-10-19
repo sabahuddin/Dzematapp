@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import express, { type Express } from "express";
 import { createServer, type Server } from "http";
 import multer from "multer";
 import path from "path";
@@ -75,6 +75,10 @@ const shopUpload = multer({
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Serve uploads directory as static files
+  const uploadsPath = path.join(process.cwd(), 'public', 'uploads');
+  app.use('/uploads', express.static(uploadsPath));
+  
   // Shop photos upload route (multiple files)
   app.post("/api/upload/shop-photos", requireAuth, shopUpload.array('photos', 10), async (req, res) => {
     try {
