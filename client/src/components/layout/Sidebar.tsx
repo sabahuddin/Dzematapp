@@ -30,7 +30,9 @@ import {
   Phone,
   Email,
   LocationOn,
-  Settings
+  Settings,
+  Description,
+  Assignment
 } from '@mui/icons-material';
 import { SiFacebook, SiInstagram, SiYoutube, SiX } from 'react-icons/si';
 import { useAuth } from '@/contexts/AuthContext';
@@ -52,6 +54,8 @@ const menuItems = [
   { path: '/tasks', label: 'Task Manager', icon: Task },
   { path: '/messages', label: 'Poruke', icon: Mail, showBadge: true },
   { path: '/ask-imam', label: 'Pitaj imama', icon: QuestionAnswer },
+  { path: '/documents', label: 'Dokumenti', icon: Description },
+  { path: '/requests', label: 'Zahtjevi i prijave', icon: Assignment },
   { path: '/livestream', label: 'Livestream', icon: Radio },
   { path: '/organization-settings', label: 'Org. podaci', icon: Settings, adminOnly: true },
 ];
