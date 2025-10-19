@@ -194,6 +194,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/users", requireAdmin, async (req, res) => {
     try {
       const userData = insertUserSchema.parse(req.body);
+      
+      // Check if username already exists
+      const existingUser = await storage.getUserByUsername(userData.username);
+      if (existingUser) {
+        return res.status(400).json({ message: "Korisničko ime već postoji" });
+      }
+      
       const user = await storage.createUser(userData);
       res.json({ ...user, password: undefined });
     } catch (error) {
@@ -205,6 +212,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { id } = req.params;
       const userData = insertUserSchema.partial().parse(req.body);
+      
+      // Check if username is being changed and if it already exists
+      if (userData.username) {
+        const existingUser = await storage.getUserByUsername(userData.username);
+        if (existingUser && existingUser.id !== id) {
+          return res.status(400).json({ message: "Korisničko ime već postoji" });
+        }
+      }
+      
       const user = await storage.updateUser(id, userData);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
