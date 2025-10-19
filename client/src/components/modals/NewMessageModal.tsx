@@ -58,7 +58,7 @@ export default function NewMessageModal({ isOpen, onClose, replyTo }: NewMessage
     enabled: isOpen,
   });
 
-  const canSendCategoryMessages = user?.isAdmin || user?.roles?.includes('clan_io');
+  const canSendCategoryMessages = user?.isAdmin;
 
   const categories = ["Muškarci", "Žene", "Roditelji", "Omladina"];
 
