@@ -60,7 +60,7 @@
   --mui-warning: #ed6c02;
   --mui-info: #0288d1;
   --mui-success: #2e7d32;
-  --mui-background-default: #fafafa;
+  --mui-background-default: #eeeeee;
   --mui-background-paper: #ffffff;
   --mui-text-primary: rgba(0, 0, 0, 0.87);
   --mui-text-secondary: rgba(0, 0, 0, 0.6);
@@ -141,7 +141,7 @@
     margin: 0;
     padding: 0;
     font-family: var(--font-sans);
-    background-color: #fafafa !important;
+    background-color: #eeeeee !important;
   }
 
   /* Material-UI component customizations */
