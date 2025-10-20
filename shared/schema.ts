@@ -23,6 +23,11 @@ export const users = pgTable("users", {
   categories: text("categories").array(), // Muškarci, Žene, Roditelji, Omladina, custom
   roles: text("roles").array().default(sql`ARRAY['clan']::text[]`), // admin, clan_io, clan, clan_porodice (moderator se dodeljuje u grupi)
   isAdmin: boolean("is_admin").default(false),
+  lastViewedShop: timestamp("last_viewed_shop"),
+  lastViewedEvents: timestamp("last_viewed_events"),
+  lastViewedAnnouncements: timestamp("last_viewed_announcements"),
+  lastViewedImamQuestions: timestamp("last_viewed_imam_questions"),
+  lastViewedTasks: timestamp("last_viewed_tasks"),
 });
 
 export const familyRelationships = pgTable("family_relationships", {
