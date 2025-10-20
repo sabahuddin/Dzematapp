@@ -13,8 +13,6 @@ import {
   TableRow,
   Chip,
   IconButton,
-  Menu,
-  MenuItem,
   Typography,
   Alert,
   CircularProgress,
@@ -30,7 +28,6 @@ import {
 import {
   GroupAdd,
   ManageAccounts,
-  MoreVert,
   People,
   Check,
   Close
@@ -168,8 +165,6 @@ export default function TaskManagerPage() {
   const [memberManagementDialogOpen, setMemberManagementDialogOpen] = useState(false);
   const [taskManagementDialogOpen, setTaskManagementDialogOpen] = useState(false);
   const [selectedWorkGroup, setSelectedWorkGroup] = useState<WorkGroup | null>(null);
-  const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-  const [menuRequest, setMenuRequest] = useState<AccessRequest | null>(null);
 
   // Fetch work groups
   const workGroupsQuery = useQuery<WorkGroup[]>({
@@ -276,28 +271,12 @@ export default function TaskManagerPage() {
     });
   };
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, request: AccessRequest) => {
-    setMenuAnchor(event.currentTarget);
-    setMenuRequest(request);
+  const handleApproveRequest = (requestId: string) => {
+    updateAccessRequestMutation.mutate({ id: requestId, status: 'approved' });
   };
 
-  const handleMenuClose = () => {
-    setMenuAnchor(null);
-    setMenuRequest(null);
-  };
-
-  const handleApproveRequest = () => {
-    if (menuRequest) {
-      updateAccessRequestMutation.mutate({ id: menuRequest.id, status: 'approved' });
-    }
-    handleMenuClose();
-  };
-
-  const handleRejectRequest = () => {
-    if (menuRequest) {
-      updateAccessRequestMutation.mutate({ id: menuRequest.id, status: 'rejected' });
-    }
-    handleMenuClose();
+  const handleRejectRequest = (requestId: string) => {
+    updateAccessRequestMutation.mutate({ id: requestId, status: 'rejected' });
   };
 
 
@@ -431,7 +410,7 @@ export default function TaskManagerPage() {
                               variant="contained"
                               size="small"
                               startIcon={<Check />}
-                              onClick={handleApproveRequest}
+                              onClick={() => handleApproveRequest(request.id)}
                               data-testid={`button-approve-${request.id}`}
                             >
                               Odobri
@@ -440,7 +419,7 @@ export default function TaskManagerPage() {
                               variant="outlined"
                               size="small"
                               startIcon={<Close />}
-                              onClick={handleRejectRequest}
+                              onClick={() => handleRejectRequest(request.id)}
                               data-testid={`button-reject-${request.id}`}
                             >
                               Odbij
