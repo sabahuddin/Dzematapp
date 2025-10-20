@@ -447,7 +447,7 @@ export default function UsersPage() {
             placeholder="Pretraži po imenu, emailu ili telefonu..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            sx={{ width: 350 }}
+            sx={{ minWidth: 250, flex: 1, maxWidth: 400 }}
             data-testid="input-search"
           />
           <Autocomplete
@@ -463,12 +463,12 @@ export default function UsersPage() {
                 data-testid="input-category-filter"
               />
             )}
-            sx={{ width: 350 }}
+            sx={{ minWidth: 250, flex: 1, maxWidth: 400 }}
             data-testid="autocomplete-category-filter"
           />
         </Box>
 
-        <TableContainer>
+        <TableContainer sx={{ overflowX: 'auto' }}>
           <Table>
             <TableHead>
               <TableRow sx={{ bgcolor: '#f8f9fa' }}>
