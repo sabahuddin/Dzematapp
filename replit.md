@@ -5,6 +5,16 @@ DžematApp is a web-based admin dashboard application built for managing mosque 
 # Recent Changes
 
 ## October 20, 2025
+- **Visual Contrast Enhancement**: Implemented global visual contrast between body background and form/card elements
+  - Body background: Light grey (#fafafa)
+  - All cards, dialogs, forms, inputs: Pure white (#ffffff)
+  - Border: 0 throughout the entire application
+  - Applied to: Card, Paper, Dialog, TextField, InputBase, Drawer, AppBar, Menu, Popover, Select
+  - Ensures consistent visual separation across all pages including user profile, messages, forms
+- **Access Request Auto-Membership**: Fixed bug where approving access request didn't automatically add user to work group
+  - Backend now calls `addMemberToWorkGroup` when request status is set to 'approved'
+  - User is automatically added as 'member' role upon approval
+- **TaskManagerPage Bug Fix**: Fixed MenuItem import error preventing application from loading work group details
 - **Terminology Finalization**: Completed comprehensive replacement of all remaining "Radna grupa/grupa" instances with "Sekcija" throughout the entire application
   - Updated user interface labels in: TasksDashboard, MemberManagementDialog, AddMemberModal, WorkGroupModal, TaskManagerPage
   - Affected components: Task overview headings, member management dialogs, success/error messages, form labels, and dropdown options
