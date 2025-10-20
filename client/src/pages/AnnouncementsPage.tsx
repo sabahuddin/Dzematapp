@@ -12,8 +12,6 @@ import {
   TableRow,
   Chip,
   IconButton,
-  Menu,
-  MenuItem,
   Typography,
   Alert,
   CircularProgress,
@@ -53,8 +51,6 @@ export default function AnnouncementsPage() {
   
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedAnnouncement, setSelectedAnnouncement] = useState<Announcement | null>(null);
-  const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-  const [menuAnnouncement, setMenuAnnouncement] = useState<Announcement | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [announcementToDelete, setAnnouncementToDelete] = useState<Announcement | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -222,15 +218,6 @@ export default function AnnouncementsPage() {
     }
   };
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, announcement: Announcement) => {
-    setMenuAnchor(event.currentTarget);
-    setMenuAnnouncement(announcement);
-  };
-
-  const handleMenuClose = () => {
-    setMenuAnchor(null);
-    setMenuAnnouncement(null);
-  };
 
   const getStatusChip = (status: string, isFeatured: boolean) => {
     if (isFeatured) {

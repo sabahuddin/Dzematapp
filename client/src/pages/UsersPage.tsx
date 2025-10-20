@@ -13,8 +13,6 @@ import {
   TableRow,
   Chip,
   IconButton,
-  Menu,
-  MenuItem,
   Typography,
   Alert,
   CircularProgress,
@@ -49,8 +47,6 @@ export default function UsersPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [bulkUploadModalOpen, setBulkUploadModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-  const [menuUser, setMenuUser] = useState<User | null>(null);
 
   const predefinedCategories = ['Svi', 'Muškarci', 'Žene', 'Roditelji', 'Omladina'];
 
@@ -98,20 +94,6 @@ export default function UsersPage() {
   const handleEditUser = (user: User) => {
     setSelectedUser(user);
     setModalOpen(true);
-    handleMenuClose();
-  };
-
-  const handleToggleUserStatus = (user: User) => {
-    let newStatus;
-    if (user.status === 'aktivan') {
-      newStatus = 'pasivan';
-    } else if (user.status === 'pasivan') {
-      newStatus = 'aktivan';
-    } else {
-      newStatus = 'aktivan'; // default for family members
-    }
-    updateUserMutation.mutate({ id: user.id, status: newStatus });
-    handleMenuClose();
   };
 
   const getStatusLabel = (status: string) => {
@@ -164,16 +146,6 @@ export default function UsersPage() {
     } else {
       createUserMutation.mutate(userData);
     }
-  };
-
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, user: User) => {
-    setMenuAnchor(event.currentTarget);
-    setMenuUser(user);
-  };
-
-  const handleMenuClose = () => {
-    setMenuAnchor(null);
-    setMenuUser(null);
   };
 
   const filteredUsers = ((usersQuery.data as User[]) || []).filter((user: User) => {
