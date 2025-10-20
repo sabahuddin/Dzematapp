@@ -1387,12 +1387,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // If approved, add the user as a member to the work group
       if (status === 'approved') {
-        await storage.addMemberToWorkGroup({
-          userId: request.userId,
-          workGroupId: request.workGroupId,
-          role: 'member',
-          joinedAt: new Date()
-        });
+        await storage.addMemberToWorkGroup(request.workGroupId, request.userId);
       }
       
       res.json(request);
