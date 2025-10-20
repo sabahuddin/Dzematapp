@@ -612,7 +612,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/work-groups", async (req, res) => {
     try {
       const workGroups = await storage.getAllWorkGroups();
-      res.json(workGroups);
+      
+      // Add members to each work group
+      const workGroupsWithMembers = await Promise.all(
+        workGroups.map(async (wg) => {
+          const members = await storage.getWorkGroupMembers(wg.id);
+          return {
+            ...wg,
+            members
+          };
+        })
+      );
+      
+      res.json(workGroupsWithMembers);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch work groups" });
     }
