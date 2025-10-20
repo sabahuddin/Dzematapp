@@ -2050,6 +2050,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Notifications routes
+  app.get("/api/notifications/unread", requireAuth, async (req, res) => {
+    try {
+      const userId = req.user!.id;
+      const counts = await storage.getAllNewItemsCounts(userId);
+      res.json(counts);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch notification counts" });
+    }
+  });
+
+  app.put("/api/notifications/mark-viewed/:type", requireAuth, async (req, res) => {
+    try {
+      const userId = req.user!.id;
+      const { type } = req.params;
+      
+      if (!['shop', 'events', 'announcements', 'imamQuestions', 'tasks'].includes(type)) {
+        return res.status(400).json({ message: "Invalid notification type" });
+      }
+      
+      const user = await storage.updateLastViewed(userId, type as any);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update last viewed timestamp" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
