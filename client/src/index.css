@@ -137,11 +137,11 @@
   }
 
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    @apply font-sans antialiased text-foreground;
     margin: 0;
     padding: 0;
     font-family: var(--font-sans);
-    background-color: var(--mui-background-default);
+    background-color: #fafafa !important;
   }
 
   /* Material-UI component customizations */
