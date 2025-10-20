@@ -23,7 +23,6 @@ import {
   Campaign,
   Event,
   Task,
-  Hub,
   Menu,
   Mail,
   QuestionAnswer,
@@ -39,6 +38,7 @@ import {
 import { SiFacebook, SiInstagram, SiYoutube, SiX } from 'react-icons/si';
 import { useAuth } from '@/contexts/AuthContext';
 import type { OrganizationSettings } from '@shared/schema';
+import mosqueLogoPath from '@assets/mosque-logo.png';
 
 interface SidebarProps {
   open: boolean;
@@ -124,10 +124,14 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
           justifyContent: collapsed ? 'center' : 'flex-start'
         }}
       >
-        <Hub sx={{ color: '#1976d2', fontSize: 24 }} />
+        <img 
+          src={mosqueLogoPath} 
+          alt="Mosque Logo" 
+          style={{ width: 32, height: 32, objectFit: 'contain' }}
+        />
         {!collapsed && (
           <Typography variant="h6" sx={{ fontWeight: 600, color: '#1976d2' }}>
-            JamatHub
+            DžematApp
           </Typography>
         )}
       </Box>
