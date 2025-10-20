@@ -195,6 +195,11 @@ export interface IStorage {
   getNewAnnouncementsCount(days: number): Promise<number>;
   getUpcomingEventsCount(): Promise<number>;
   getActiveTasksCount(): Promise<number>;
+
+  // Notifications
+  updateLastViewed(userId: string, type: 'shop' | 'events' | 'announcements' | 'imamQuestions' | 'tasks'): Promise<User | undefined>;
+  getNewItemsCount(userId: string, type: 'shop' | 'events' | 'announcements' | 'imamQuestions' | 'tasks'): Promise<number>;
+  getAllNewItemsCounts(userId: string): Promise<{ shop: number; events: number; announcements: number; imamQuestions: number; tasks: number }>;
 }
 
 export class MemStorage implements IStorage {
@@ -245,7 +250,12 @@ export class MemStorage implements IStorage {
       inactiveReason: null,
       categories: [],
       roles: ["admin"],
-      isAdmin: true
+      isAdmin: true,
+      lastViewedShop: null,
+      lastViewedEvents: null,
+      lastViewedAnnouncements: null,
+      lastViewedImamQuestions: null,
+      lastViewedTasks: null
     };
     this.users.set(adminUser.id, adminUser);
 
@@ -298,7 +308,12 @@ export class MemStorage implements IStorage {
         inactiveReason: userData.username === "huse.husic" ? "Drugi džemat" : null,
         categories: userData.username === "mujo.mujic" ? ["Muškarci"] : userData.username === "ali.alic" ? ["Žene", "Roditelji"] : [],
         roles: userData.roles,
-        isAdmin: false
+        isAdmin: false,
+        lastViewedShop: null,
+        lastViewedEvents: null,
+        lastViewedAnnouncements: null,
+        lastViewedImamQuestions: null,
+        lastViewedTasks: null
       };
       this.users.set(user.id, user);
     });
@@ -447,7 +462,12 @@ export class MemStorage implements IStorage {
       occupation: insertUser.occupation ?? null,
       inactiveReason: insertUser.inactiveReason ?? null,
       categories: insertUser.categories ?? [],
-      roles: insertUser.roles ?? []
+      roles: insertUser.roles ?? [],
+      lastViewedShop: null,
+      lastViewedEvents: null,
+      lastViewedAnnouncements: null,
+      lastViewedImamQuestions: null,
+      lastViewedTasks: null
     };
     this.users.set(id, user);
     
@@ -1513,6 +1533,96 @@ export class MemStorage implements IStorage {
     };
     this.productPurchaseRequests.set(id, updatedRequest);
     return updatedRequest;
+  }
+
+  // Notifications
+  async updateLastViewed(userId: string, type: 'shop' | 'events' | 'announcements' | 'imamQuestions' | 'tasks'): Promise<User | undefined> {
+    const user = this.users.get(userId);
+    if (!user) return undefined;
+
+    const now = new Date();
+    const updatedUser: User = { ...user };
+
+    switch (type) {
+      case 'shop':
+        updatedUser.lastViewedShop = now;
+        break;
+      case 'events':
+        updatedUser.lastViewedEvents = now;
+        break;
+      case 'announcements':
+        updatedUser.lastViewedAnnouncements = now;
+        break;
+      case 'imamQuestions':
+        updatedUser.lastViewedImamQuestions = now;
+        break;
+      case 'tasks':
+        updatedUser.lastViewedTasks = now;
+        break;
+    }
+
+    this.users.set(userId, updatedUser);
+    return updatedUser;
+  }
+
+  async getNewItemsCount(userId: string, type: 'shop' | 'events' | 'announcements' | 'imamQuestions' | 'tasks'): Promise<number> {
+    const user = this.users.get(userId);
+    if (!user) return 0;
+
+    let lastViewed: Date | null = null;
+    let items: any[] = [];
+
+    switch (type) {
+      case 'shop':
+        lastViewed = user.lastViewedShop;
+        items = Array.from(this.marketplaceItems.values()).filter(item => item.status === 'active');
+        break;
+      case 'events':
+        lastViewed = user.lastViewedEvents;
+        items = Array.from(this.events.values());
+        break;
+      case 'announcements':
+        lastViewed = user.lastViewedAnnouncements;
+        items = Array.from(this.announcements.values());
+        break;
+      case 'imamQuestions':
+        lastViewed = user.lastViewedImamQuestions;
+        items = Array.from(this.imamQuestions.values()).filter(q => !q.isRead);
+        break;
+      case 'tasks':
+        lastViewed = user.lastViewedTasks;
+        // Get tasks from user's work groups
+        const userWorkGroups = Array.from(this.workGroupMembers.values())
+          .filter(m => m.userId === userId)
+          .map(m => m.workGroupId);
+        items = Array.from(this.tasks.values()).filter(t => userWorkGroups.includes(t.workGroupId));
+        break;
+    }
+
+    if (!lastViewed) {
+      // If never viewed, all items are new
+      return items.length;
+    }
+
+    // Count items created after last viewed time
+    const newItems = items.filter(item => {
+      const itemDate = item.createdAt || item.publishDate;
+      return itemDate && itemDate.getTime() > lastViewed!.getTime();
+    });
+
+    return newItems.length;
+  }
+
+  async getAllNewItemsCounts(userId: string): Promise<{ shop: number; events: number; announcements: number; imamQuestions: number; tasks: number }> {
+    const [shop, events, announcements, imamQuestions, tasks] = await Promise.all([
+      this.getNewItemsCount(userId, 'shop'),
+      this.getNewItemsCount(userId, 'events'),
+      this.getNewItemsCount(userId, 'announcements'),
+      this.getNewItemsCount(userId, 'imamQuestions'),
+      this.getNewItemsCount(userId, 'tasks')
+    ]);
+
+    return { shop, events, announcements, imamQuestions, tasks };
   }
 }
 
