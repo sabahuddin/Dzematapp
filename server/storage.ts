@@ -1176,7 +1176,7 @@ export class MemStorage implements IStorage {
           ? lastMessage.recipientId 
           : lastMessage.senderId;
         
-        const otherUser = otherUserId ? await this.getUser(otherUserId) : null;
+        const otherUser = otherUserId ? (await this.getUser(otherUserId)) || null : null;
 
         return {
           threadId,
@@ -1224,7 +1224,7 @@ export class MemStorage implements IStorage {
       answer: null,
       isAnswered: false,
       isRead: false,
-      createdAt: new Date().toISOString(),
+      createdAt: new Date(),
       answeredAt: null,
     };
     this.imamQuestions.set(question.id, question);
@@ -1239,7 +1239,7 @@ export class MemStorage implements IStorage {
       ...question,
       answer,
       isAnswered: true,
-      answeredAt: new Date().toISOString(),
+      answeredAt: new Date(),
     };
     this.imamQuestions.set(questionId, updatedQuestion);
     return updatedQuestion;

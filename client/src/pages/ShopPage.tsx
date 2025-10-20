@@ -388,7 +388,6 @@ export default function ShopPage() {
       });
     },
     onSuccess: () => {
-      toast({ title: "Poruka uspješno poslana" });
       setContactDialogOpen(false);
       setContactMessage("");
       setContactPhone("");
