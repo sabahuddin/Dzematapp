@@ -421,7 +421,7 @@ export default function ShopPage() {
                       </Typography>
                       {product.price && (
                         <Typography variant="h5" color="primary" gutterBottom>
-                          {product.price} KM
+                          {product.price} CHF
                         </Typography>
                       )}
                       {product.size && (
@@ -756,7 +756,7 @@ export default function ShopPage() {
           />
           <TextField
             fullWidth
-            label="Cijena (KM)"
+            label="Cijena (CHF)"
             value={productForm.price}
             onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
             margin="normal"
@@ -900,7 +900,7 @@ export default function ShopPage() {
 
               <Box sx={{ mt: 3, p: 2, bgcolor: 'primary.light', borderRadius: 1 }}>
                 <Typography variant="h6" color="primary.contrastText">
-                  Ukupno: {calculateTotal()} KM
+                  Ukupno: {calculateTotal()} CHF
                 </Typography>
               </Box>
             </Box>
