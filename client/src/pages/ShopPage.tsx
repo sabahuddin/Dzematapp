@@ -35,8 +35,6 @@ export default function ShopPage() {
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
   const [contactUserId, setContactUserId] = useState<string | null>(null);
   const [contactMessage, setContactMessage] = useState("");
-  const [contactPhone, setContactPhone] = useState("");
-  const [contactName, setContactName] = useState("");
   
   const [productForm, setProductForm] = useState({
     name: "",
@@ -372,27 +370,22 @@ export default function ShopPage() {
     if (itemUser) {
       setContactUserId(itemUser.id);
       setContactMessage("");
-      setContactPhone("");
-      setContactName("");
       setContactDialogOpen(true);
     }
   };
 
   const sendContactMessageMutation = useMutation({
-    mutationFn: async (data: { recipientId: string; message: string; phone: string; name: string }) => {
-      const messageContent = `Ime i prezime: ${data.name}\nBroj telefona: ${data.phone}\n\nPoruka:\n${data.message}`;
+    mutationFn: async (data: { recipientId: string; message: string }) => {
       return apiRequest("POST", "/api/messages", {
         senderId: user!.id,
         recipientId: data.recipientId,
         subject: "Poruka sa Shop-a",
-        content: messageContent
+        content: data.message
       });
     },
     onSuccess: () => {
       setContactDialogOpen(false);
       setContactMessage("");
-      setContactPhone("");
-      setContactName("");
       setContactUserId(null);
     },
     onError: () => {
@@ -405,19 +398,17 @@ export default function ShopPage() {
   });
 
   const handleSendContactMessage = () => {
-    if (!contactUserId || !contactMessage.trim() || !contactPhone.trim() || !contactName.trim()) {
+    if (!contactUserId || !contactMessage.trim()) {
       toast({ 
         title: "Greška", 
-        description: "Molimo popunite sva polja", 
+        description: "Molimo unesite sadržaj poruke", 
         variant: "destructive" 
       });
       return;
     }
     sendContactMessageMutation.mutate({ 
       recipientId: contactUserId, 
-      message: contactMessage,
-      phone: contactPhone,
-      name: contactName
+      message: contactMessage
     });
   };
 
@@ -425,8 +416,8 @@ export default function ShopPage() {
     return users?.find(u => u.id === userId);
   };
 
-  const saleItems = marketplaceItems?.filter(item => item.type === "sale") || [];
-  const giftItems = marketplaceItems?.filter(item => item.type === "gift") || [];
+  const saleItems = marketplaceItems?.filter(item => item.type === "sale" && item.status === "active") || [];
+  const giftItems = marketplaceItems?.filter(item => item.type === "gift" && item.status === "active") || [];
 
   return (
     <Box sx={{ p: 3 }}>
@@ -621,7 +612,7 @@ export default function ShopPage() {
                               onClick={() => handleContactUser(itemUser)}
                               data-testid={`button-contact-${item.id}`}
                             >
-                              Kontaktiraj
+                              Pošalji poruku
                             </Button>
                           )}
                           {canEdit && (
@@ -727,7 +718,7 @@ export default function ShopPage() {
                               onClick={() => handleContactUser(itemUser)}
                               data-testid={`button-contact-gift-${item.id}`}
                             >
-                              Kontaktiraj
+                              Pošalji poruku
                             </Button>
                           )}
                           {canEdit && (
@@ -1057,32 +1048,11 @@ export default function ShopPage() {
         <DialogTitle>Pošalji poruku</DialogTitle>
         <DialogContent>
           <Box sx={{ pt: 2 }}>
-            <Typography variant="body2" color="primary" sx={{ mb: 3, fontWeight: 'medium' }}>
-              Vlasnik predmeta koji se prodaje/poklanja će vam se javiti.
-            </Typography>
-            <TextField
-              fullWidth
-              label="Ime i prezime"
-              value={contactName}
-              onChange={(e) => setContactName(e.target.value)}
-              placeholder="Unesite vaše ime i prezime..."
-              sx={{ mb: 2 }}
-              data-testid="input-contact-name"
-            />
-            <TextField
-              fullWidth
-              label="Broj telefona"
-              value={contactPhone}
-              onChange={(e) => setContactPhone(e.target.value)}
-              placeholder="Unesite vaš broj telefona..."
-              sx={{ mb: 2 }}
-              data-testid="input-contact-phone"
-            />
             <TextField
               fullWidth
               multiline
-              rows={6}
-              label="Poruka"
+              rows={8}
+              label="Sadržaj poruke"
               value={contactMessage}
               onChange={(e) => setContactMessage(e.target.value)}
               placeholder="Unesite vašu poruku..."
