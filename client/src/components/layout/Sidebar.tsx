@@ -76,6 +76,12 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     refetchInterval: 30000,
   });
 
+  const { data: notificationCounts } = useQuery<{ shop: number; events: number; announcements: number; imamQuestions: number; tasks: number }>({
+    queryKey: ['/api/notifications/unread'],
+    refetchInterval: 30000,
+    enabled: !!user,
+  });
+
   const { data: orgSettings } = useQuery<OrganizationSettings>({
     queryKey: ['/api/organization-settings'],
   });
@@ -180,7 +186,33 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
 
           const Icon = item.icon;
           const isActive = location === item.path;
-          const showUnreadBadge = item.showBadge && unreadCount && unreadCount.count > 0;
+          
+          // Determine badge count based on item path
+          let badgeCount = 0;
+          if (item.showBadge && notificationCounts) {
+            switch (item.path) {
+              case '/announcements':
+                badgeCount = notificationCounts.announcements;
+                break;
+              case '/events':
+                badgeCount = notificationCounts.events;
+                break;
+              case '/sections':
+                badgeCount = notificationCounts.tasks;
+                break;
+              case '/messages':
+                badgeCount = unreadCount?.count || 0;
+                break;
+              case '/ask-imam':
+                badgeCount = notificationCounts.imamQuestions;
+                break;
+              case '/shop':
+                badgeCount = notificationCounts.shop;
+                break;
+            }
+          }
+          
+          const showBadge = item.showBadge && badgeCount > 0;
           
           // Use different label for non-admin users if labelForMember is defined
           const displayLabel = (!user?.isAdmin && item.labelForMember) ? item.labelForMember : item.label;
@@ -205,8 +237,8 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
               data-testid={`nav-${item.path.slice(1)}`}
             >
               <ListItemIcon sx={{ color: 'inherit', minWidth: collapsed ? 'auto' : 40, justifyContent: 'center' }}>
-                {showUnreadBadge ? (
-                  <Badge badgeContent={unreadCount.count} color="error" data-testid="badge-unread-messages">
+                {showBadge ? (
+                  <Badge badgeContent={badgeCount} color="error" data-testid={`badge-${item.path.slice(1)}`}>
                     <Icon />
                   </Badge>
                 ) : (
