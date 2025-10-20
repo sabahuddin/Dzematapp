@@ -35,6 +35,8 @@ export default function ShopPage() {
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
   const [contactUserId, setContactUserId] = useState<string | null>(null);
   const [contactMessage, setContactMessage] = useState("");
+  const [contactPhone, setContactPhone] = useState("");
+  const [contactName, setContactName] = useState("");
   
   const [productForm, setProductForm] = useState({
     name: "",
@@ -50,7 +52,9 @@ export default function ShopPage() {
     name: "",
     description: "",
     photos: [] as string[],
-    type: "sale" as "sale" | "gift"
+    type: "sale" as "sale" | "gift",
+    price: "",
+    status: "active"
   });
 
   const isAdmin = user?.isAdmin || user?.roles?.includes('admin') || user?.roles?.includes('imam');
@@ -217,7 +221,9 @@ export default function ShopPage() {
         name: "",
         description: "",
         photos: [],
-        type: "sale"
+        type: "sale",
+        price: "",
+        status: "active"
       });
     },
     onError: () => {
@@ -239,7 +245,9 @@ export default function ShopPage() {
         name: "",
         description: "",
         photos: [],
-        type: "sale"
+        type: "sale",
+        price: "",
+        status: "active"
       });
     },
     onError: () => {
@@ -258,6 +266,20 @@ export default function ShopPage() {
     },
     onError: () => {
       toast({ title: "Greška pri brisanju oglasa", variant: "destructive" });
+    }
+  });
+
+  // Mark marketplace item as completed mutation
+  const completeMarketplaceItemMutation = useMutation({
+    mutationFn: async (itemId: string) => {
+      return await apiRequest('PUT', `/api/marketplace/items/${itemId}`, { status: "completed" });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/marketplace/items'] });
+      toast({ title: "Oglas označen kao završen" });
+    },
+    onError: () => {
+      toast({ title: "Greška pri označavanju oglasa", variant: "destructive" });
     }
   });
 
@@ -311,7 +333,9 @@ export default function ShopPage() {
       name: item.name,
       description: item.description || "",
       photos: item.photos || [],
-      type: item.type as "sale" | "gift"
+      type: item.type as "sale" | "gift",
+      price: item.price || "",
+      status: item.status || "active"
     });
     setMarketplaceModalOpen(true);
   };
@@ -348,22 +372,27 @@ export default function ShopPage() {
     if (itemUser) {
       setContactUserId(itemUser.id);
       setContactMessage("");
+      setContactPhone("");
+      setContactName("");
       setContactDialogOpen(true);
     }
   };
 
   const sendContactMessageMutation = useMutation({
-    mutationFn: async (data: { recipientId: string; message: string }) => {
+    mutationFn: async (data: { recipientId: string; message: string; phone: string; name: string }) => {
+      const messageContent = `Ime i prezime: ${data.name}\nBroj telefona: ${data.phone}\n\nPoruka:\n${data.message}`;
       return apiRequest("POST", "/api/messages", {
         recipientId: data.recipientId,
         subject: "Poruka sa Shop-a",
-        content: data.message
+        content: messageContent
       });
     },
     onSuccess: () => {
       toast({ title: "Poruka uspješno poslana" });
       setContactDialogOpen(false);
       setContactMessage("");
+      setContactPhone("");
+      setContactName("");
       setContactUserId(null);
     },
     onError: () => {
@@ -376,15 +405,20 @@ export default function ShopPage() {
   });
 
   const handleSendContactMessage = () => {
-    if (!contactUserId || !contactMessage.trim()) {
+    if (!contactUserId || !contactMessage.trim() || !contactPhone.trim() || !contactName.trim()) {
       toast({ 
         title: "Greška", 
-        description: "Molimo unesite poruku", 
+        description: "Molimo popunite sva polja", 
         variant: "destructive" 
       });
       return;
     }
-    sendContactMessageMutation.mutate({ recipientId: contactUserId, message: contactMessage });
+    sendContactMessageMutation.mutate({ 
+      recipientId: contactUserId, 
+      message: contactMessage,
+      phone: contactPhone,
+      name: contactName
+    });
   };
 
   const getUserById = (userId: string) => {
@@ -525,7 +559,7 @@ export default function ShopPage() {
             startIcon={<Add />}
             onClick={() => {
               setEditingMarketplaceItem(null);
-              setMarketplaceForm({ name: "", description: "", photos: [], type: "sale" });
+              setMarketplaceForm({ name: "", description: "", photos: [], type: "sale", price: "", status: "active" });
               setMarketplaceModalOpen(true);
             }}
             sx={{ mb: 3 }}
@@ -573,16 +607,23 @@ export default function ShopPage() {
                             {item.description}
                           </Typography>
                         )}
+                        {item.price && (
+                          <Typography variant="h6" color="primary" sx={{ mb: 1 }} data-testid={`text-sale-price-${item.id}`}>
+                            {item.price} CHF
+                          </Typography>
+                        )}
                         <Chip label="Na prodaju" color="primary" size="small" sx={{ mb: 1 }} />
                         <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                          <Button
-                            variant="contained"
-                            size="small"
-                            onClick={() => handleContactUser(itemUser)}
-                            data-testid={`button-contact-${item.id}`}
-                          >
-                            Kontaktiraj
-                          </Button>
+                          {item.userId !== user?.id && (
+                            <Button
+                              variant="contained"
+                              size="small"
+                              onClick={() => handleContactUser(itemUser)}
+                              data-testid={`button-contact-${item.id}`}
+                            >
+                              Kontaktiraj
+                            </Button>
+                          )}
                           {canEdit && (
                             <>
                               <IconButton
@@ -599,6 +640,15 @@ export default function ShopPage() {
                               >
                                 <Delete />
                               </IconButton>
+                              <Button
+                                variant="outlined"
+                                size="small"
+                                color="success"
+                                onClick={() => completeMarketplaceItemMutation.mutate(item.id)}
+                                data-testid={`button-complete-sale-${item.id}`}
+                              >
+                                Završeno
+                              </Button>
                             </>
                           )}
                         </Box>
@@ -620,7 +670,7 @@ export default function ShopPage() {
             startIcon={<Add />}
             onClick={() => {
               setEditingMarketplaceItem(null);
-              setMarketplaceForm({ name: "", description: "", photos: [], type: "gift" });
+              setMarketplaceForm({ name: "", description: "", photos: [], type: "gift", price: "", status: "active" });
               setMarketplaceModalOpen(true);
             }}
             sx={{ mb: 3 }}
@@ -670,14 +720,16 @@ export default function ShopPage() {
                         )}
                         <Chip label="Poklon" color="success" size="small" sx={{ mb: 1 }} />
                         <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                          <Button
-                            variant="contained"
-                            size="small"
-                            onClick={() => handleContactUser(itemUser)}
-                            data-testid={`button-contact-gift-${item.id}`}
-                          >
-                            Kontaktiraj
-                          </Button>
+                          {item.userId !== user?.id && (
+                            <Button
+                              variant="contained"
+                              size="small"
+                              onClick={() => handleContactUser(itemUser)}
+                              data-testid={`button-contact-gift-${item.id}`}
+                            >
+                              Kontaktiraj
+                            </Button>
+                          )}
                           {canEdit && (
                             <>
                               <IconButton
@@ -694,6 +746,15 @@ export default function ShopPage() {
                               >
                                 <Delete />
                               </IconButton>
+                              <Button
+                                variant="outlined"
+                                size="small"
+                                color="success"
+                                onClick={() => completeMarketplaceItemMutation.mutate(item.id)}
+                                data-testid={`button-complete-gift-${item.id}`}
+                              >
+                                Završeno
+                              </Button>
                             </>
                           )}
                         </Box>
@@ -829,6 +890,17 @@ export default function ShopPage() {
             rows={3}
             data-testid="input-marketplace-description"
           />
+
+          {marketplaceForm.type === "sale" && (
+            <TextField
+              fullWidth
+              label="Cijena (CHF)"
+              value={marketplaceForm.price}
+              onChange={(e) => setMarketplaceForm({ ...marketplaceForm, price: e.target.value })}
+              margin="normal"
+              data-testid="input-marketplace-price"
+            />
+          )}
 
           <Box sx={{ mt: 2, mb: 2 }}>
             <Button
@@ -985,9 +1057,27 @@ export default function ShopPage() {
         <DialogTitle>Pošalji poruku</DialogTitle>
         <DialogContent>
           <Box sx={{ pt: 2 }}>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              Unesite vašu poruku za vlasnika oglasa. Vaša poruka će biti poslana anonimno.
+            <Typography variant="body2" color="primary" sx={{ mb: 3, fontWeight: 'medium' }}>
+              Vlasnik predmeta koji se prodaje/poklanja će vam se javiti.
             </Typography>
+            <TextField
+              fullWidth
+              label="Ime i prezime"
+              value={contactName}
+              onChange={(e) => setContactName(e.target.value)}
+              placeholder="Unesite vaše ime i prezime..."
+              sx={{ mb: 2 }}
+              data-testid="input-contact-name"
+            />
+            <TextField
+              fullWidth
+              label="Broj telefona"
+              value={contactPhone}
+              onChange={(e) => setContactPhone(e.target.value)}
+              placeholder="Unesite vaš broj telefona..."
+              sx={{ mb: 2 }}
+              data-testid="input-contact-phone"
+            />
             <TextField
               fullWidth
               multiline

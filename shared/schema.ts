@@ -225,6 +225,8 @@ export const marketplaceItems = pgTable("marketplace_items", {
   description: text("description"),
   photos: text("photos").array(), // array of photo URLs (max 3)
   type: text("type").notNull(), // sell, gift
+  price: text("price"), // price in CHF (only for sale items)
+  status: text("status").notNull().default("active"), // active, completed
   userId: varchar("user_id").notNull().references(() => users.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
