@@ -1,85 +1,6 @@
 # Overview
 
-DžematApp is a web-based admin dashboard application built for managing mosque community operations. The application serves as a comprehensive management system for administrators to handle users, announcements, events, work groups, and tasks. It features a modern, responsive interface designed for desktop and tablet use, with Material-UI components providing a consistent and professional appearance.
-
-# Recent Changes
-
-## October 20, 2025
-- **Shop Currency Update**: Changed all currency displays from KM (Konvertibilna Marka) to CHF (Swiss Franc) throughout Shop module
-- **Shadcn Component Border Enhancement**: Added explicit border styling for shadcn UI components to improve visual contrast
-  - Input, Textarea, Select components now have visible borders (1px solid #e0e0e0)
-  - Hover state: Border changes to #bdbdbd
-  - Focus state: Border changes to #1976d2 with 2px width
-  - Fixes contrast issues in modals (New Message, User Profile) where form fields were hard to distinguish
-- **Imam Q&A Archive Tab**: Added archive functionality for answered questions
-  - New "Arhiva" tab for admin users shows all answered questions
-  - "Sva Pitanja" tab now correctly shows ALL questions (not just admin's own questions)
-  - "Neodgovorena" tab shows only unanswered questions
-  - Fixed bug where admin users couldn't see all questions in the system
-  - Answered questions remain visible and accessible in the archive
-- **Shop Privacy Enhancements**: Improved user privacy in marketplace listings
-  - Removed display of owner names from marketplace items (both "Prodajem" and "Poklanjam" tabs)
-  - Replaced direct contact info display with secure contact form dialog
-  - Contact button now opens "Pošalji poruku" dialog instead of showing email/phone in toast
-  - Contact messages sent anonymously through internal messaging system with subject "Poruka sa Shop-a"
-  - Button label changed from "Pošalji poruku vlasniku" to "Kontaktiraj"
-- **Sample User Data Update**: Updated demo user names to use authentic Bosnian names
-  - Marko Petrović → Mujo Mujic (username: mujo.mujic)
-  - Ana Marić → Ali Alic (username: ali.alic)
-  - Stefan Jovanović → Huse Husic (username: huse.husic)
-- **Logo Integration**: Added mosque logo to application branding
-  - Logo displayed in sidebar header next to "DžematApp" text
-  - Logo displayed on login page above "DžematApp" title
-  - Logo size: 48x48px in sidebar (h5 font), 60x60px on login page (h3 font)
-  - "DžematApp" text styled with "Aladin" Google Font for Middle Eastern aesthetic
-  - Logo features crescent moon and book design on blue background
-- **Visual Contrast Enhancement**: Implemented global visual contrast between body background and form/card elements
-  - Body background: Medium grey (#eeeeee) for clear separation
-  - All cards, dialogs, forms: Pure white (#ffffff)
-  - Input fields: White background with light grey border (1px solid #e0e0e0)
-  - Border hover state: Darker grey (#bdbdbd)
-  - Border focus state: Blue with 2px width (#1976d2)
-  - Applied to: Card, Paper, Dialog, TextField, InputBase, Drawer, AppBar, Menu, Popover, Select
-  - Ensures consistent visual separation across all pages including user profile, messages, forms
-- **Access Request Auto-Membership**: Fixed bug where approving access request didn't automatically add user to work group
-  - Backend now calls `addMemberToWorkGroup` when request status is set to 'approved'
-  - User is automatically added as 'member' role upon approval
-- **TaskManagerPage Bug Fix**: Fixed MenuItem import error preventing application from loading work group details
-- **Terminology Finalization**: Completed comprehensive replacement of all remaining "Radna grupa/grupa" instances with "Sekcija" throughout the entire application
-  - Updated user interface labels in: TasksDashboard, MemberManagementDialog, AddMemberModal, WorkGroupModal, TaskManagerPage
-  - Affected components: Task overview headings, member management dialogs, success/error messages, form labels, and dropdown options
-  - All user-facing text now consistently uses "Sekcija" terminology
-
-## October 19, 2025
-- **Login Authentication Update**: Changed login from email to username-based authentication. Login field now displays "Korisničko ime" instead of "E-mail" and is no longer required. Backend updated to use `getUserByUsername` method.
-- **Guest Access Implementation**: Added guest access option on login page allowing non-members to view announcements, events, and membership application form without authentication. New route: `/guest` (publicly accessible).
-- **Layout Improvements**: Fixed sidebar spacing issues - removed double margin when sidebar expands/collapses by eliminating manual margin-left on content area.
-- **Livestream Settings Separation**: Created dedicated LivestreamSettingsPage for admin-only access with detailed instructions. Removed livestream configuration from OrganizationSettingsPage. New route: `/livestream-settings` (admin-only).
-- **Superadmin Management**: Added ability for superadmins to grant admin privileges to other users. New "Superadmin pristup" toggle in UserModal allows current admins to set `isAdmin` flag on other user accounts, enabling them to manage all users and system settings.
-- **Date Format Updates**: 
-  - Changed all date formats from "DD. MM. YYYY." to "DD.MM.YYYY." (removed spaces between elements)
-  - Event datetime display format: "DD.MM.YYYY. u HH:MM" (e.g., "19.10.2025. u 12:30")
-  - Date of birth format: "DD.MM.YYYY." (e.g., "19.10.1999.")
-  - Fixed Safari compatibility issues with datetime-local input by adding default value and step="60" attribute
-- **Shop Photo Display Fix**: Fixed bug where shop photos were not displaying after upload - added Express static middleware to serve `/uploads` directory in development mode.
-- **Shop Features Enhancement**: 
-  - Photo upload support (10 photos for admin products, 3 for member marketplace items)
-  - Fullscreen image viewer for all shop photos
-  - Edit functionality for marketplace item owners
-  - Enhanced purchase modal with size/quantity/color selection and total price calculation
-  - **Duplicate/Copy functionality**: Admin can now duplicate shop products with a single click using the copy icon button
-  - Admin shop tab renamed from "Prodajem" to "DžematShop"
-- **Global Terminology Update**: Renamed "Radna grupa" to "Sekcija" throughout the application.
-- **Event RSVP Implementation**: Full event registration functionality allowing users to RSVP for events
-  - Backend: POST/PUT/DELETE routes at `/api/events/:eventId/rsvp` for creating, updating, and deleting RSVPs
-  - Backend: GET route at `/api/events/:eventId/user-rsvp` to fetch current user's RSVP
-  - Frontend: EventRSVPModal component for user registration with adult and children counts
-  - Integration: "Prijavi se" menu option on events with rsvpEnabled flag
-  - Permission control: Menu shows admin options (edit, view RSVPs, delete) only to admins
-- **API Request Bug Fix**: Fixed critical bug where `apiRequest` was called with incorrect parameter order
-  - Correct signature: `apiRequest(method, url, data)` 
-  - Fixed in: AskImamPage (send question, reply, mark as read), MessagesPage (delete), NewMessageModal (create), MessageViewModal (mark as read), EventRSVPModal (create/update/delete)
-  - This fix resolves errors when sending messages and Imam Q&A questions
+DžematApp is a web-based admin dashboard application designed to manage mosque community operations. It provides a comprehensive system for administrators to handle users, announcements, events, work groups ("Sekcije"), and tasks. The application aims to streamline administrative tasks, improve communication within the community, and offer a modern, responsive user experience. It supports desktop and tablet usage with a consistent Material-UI and shadcn/ui design.
 
 # User Preferences
 
@@ -89,115 +10,66 @@ Preferred communication style: Simple, everyday language.
 
 ## Frontend Architecture
 
-The frontend is built using React with TypeScript, utilizing a modern component-based architecture:
-
-- **Framework**: React 18+ with TypeScript for type safety
-- **Build Tool**: Vite for fast development and optimized production builds
-- **UI Library**: Dual approach using both Material-UI (MUI) and shadcn/ui components
-- **Styling**: Tailwind CSS with custom CSS variables for theming
-- **Routing**: Wouter for lightweight client-side routing
-- **State Management**: React Query (@tanstack/react-query) for server state management
-- **Authentication**: Context-based authentication system with localStorage persistence
+The frontend is built using React with TypeScript, leveraging a component-based architecture. It uses Vite for development, Material-UI (MUI) and shadcn/ui for UI components, and Tailwind CSS for styling. Wouter handles client-side routing, and React Query manages server state. Authentication is context-based with localStorage persistence.
 
 ## Backend Architecture
 
-The backend follows a simple REST API pattern:
-
-- **Framework**: Express.js with TypeScript
-- **Database Layer**: Drizzle ORM for type-safe database operations
-- **Storage**: In-memory storage implementation for prototype phase
-- **API Design**: RESTful endpoints following standard conventions
-- **Error Handling**: Centralized error handling middleware
+The backend is an Express.js application built with TypeScript, following a REST API pattern. It uses Drizzle ORM for type-safe database operations and includes centralized error handling. The current prototype uses in-memory storage, with PostgreSQL configured for future integration.
 
 ## Data Storage Solutions
 
-The application uses a PostgreSQL database with Drizzle ORM:
-
-- **Database**: PostgreSQL (configured but not yet implemented in storage layer)
-- **ORM**: Drizzle with type-safe schema definitions
-- **Schema**: Comprehensive relational schema covering users, announcements, events, work groups, tasks, and access requests
-- **Current Implementation**: In-memory storage for rapid prototyping
+The application is designed to use a PostgreSQL database with Drizzle ORM for type-safe schema definitions. The schema covers users, announcements, events, work groups, tasks, and access requests. Currently, an in-memory storage implementation is used for rapid prototyping.
 
 ## Authentication and Authorization
 
-Simple session-based authentication system:
-
-- **Strategy**: Username/password authentication (changed from email-based)
-- **Session Management**: Server-side sessions with Express session middleware
-- **Guest Access**: Public access to announcements, events, and membership application form
-- **Authorization**: Role-based access control with four user roles:
-  - **Admin**: Full system control and permissions management
-  - **Član IO** (Executive Board Member): Can view work group activities (read-only access)
-  - **Član** (Member): Basic member access - **default role for new users**
-    - Can edit their own: Photo, Address, Postal Code, City, Occupation, Password, Phone, Email
-    - Can view but not edit: Membership Date, Status
-    - Cannot view: Categories
-    - Can view their own roles
-    - Can add family members (requires admin approval)
-  - **Član porodice** (Family Member): Family member access
-- **Work Group Moderators**: Admins can assign moderators directly within work groups (future user-facing app feature)
-- **Security**: Basic password validation (prototype level)
+The system employs a simple session-based authentication using username/password. It supports guest access for public content (announcements, events, membership application). Role-based access control is implemented with four roles: Admin, Član IO (Executive Board Member), Član (Member - default for new users), and Član porodice (Family Member). Admins can also assign work group moderators.
 
 ## Key Features and Modules
 
-1. **User Management**: Complete CRUD operations for user accounts with profile management
-2. **Announcements**: Content management system for community announcements (publicly viewable by guests)
-3. **Events**: Event creation and management with RSVP functionality (publicly viewable by guests)
-4. **Task Manager**: Work group management and task assignment system
-5. **Dashboard Analytics**: Statistical overview with activity tracking
-6. **Guest Access**: Public-facing interface for viewing announcements, events, and submitting membership applications
-
-## Demo Credentials
-
-For testing purposes, the following demo accounts are available:
-
-- **Admin**: username: `admin`, password: `admin123`
-- **Član (Member)**: username: `marko.petrovic`, password: `password123`
-- **Član IO (Board Member)**: username: `ana.maric`, password: `password123`
-- **Guest Access**: Click "Gost" button on login page (no credentials required)
-
-## Development Tools and Workflow
-
-- **Development Server**: Vite with hot module replacement
-- **Database Migrations**: Drizzle Kit for schema management
-- **Code Quality**: TypeScript strict mode for compile-time error checking
-- **Path Aliases**: Configured for clean import statements (@/, @shared/, @assets/)
+- **User Management**: CRUD operations for user accounts and profile management.
+- **Announcements**: Content management for community announcements, viewable by guests.
+- **Events**: Event creation, management, and RSVP functionality, viewable by guests.
+- **Task Manager**: Management of work groups ("Sekcije") and task assignments.
+- **Dashboard Analytics**: Overview and activity tracking.
+- **Guest Access**: Public interface for viewing announcements, events, and submitting membership applications.
+- **Notification System**: Displays unread content counts for various modules.
+- **Section Visibility**: Public/private settings for work groups with access control.
+- **Access Request System**: Users can request membership to private sections, with admin approval.
+- **Imam Q&A**: System for submitting and archiving questions for the Imam.
+- **Shop Module**: Marketplace for items with photo uploads, image viewer, edit functionality, and contact form.
+- **Visual Contrast Enhancement**: Consistent visual separation between background and form/card elements.
 
 # External Dependencies
 
 ## Core Framework Dependencies
 
-- **@vitejs/plugin-react**: React plugin for Vite build system
-- **@tanstack/react-query**: Server state management and caching
-- **wouter**: Lightweight routing library for React applications
+- **@vitejs/plugin-react**: React plugin for Vite.
+- **@tanstack/react-query**: Server state management.
+- **wouter**: Lightweight routing library.
 
 ## UI and Styling Libraries
 
-- **@mui/material**: Material Design component library
-- **@mui/x-data-grid**: Advanced data grid components
-- **@mui/x-date-pickers**: Date and time picker components
-- **@radix-ui**: Primitive UI components for shadcn/ui
-- **tailwindcss**: Utility-first CSS framework
-- **class-variance-authority**: Component variant styling utility
+- **@mui/material**: Material Design components.
+- **@mui/x-data-grid**: Advanced data grid.
+- **@mui/x-date-pickers**: Date and time pickers.
+- **@radix-ui**: Primitive UI components for shadcn/ui.
+- **tailwindcss**: Utility-first CSS framework.
+- **class-variance-authority**: Component variant styling.
 
 ## Database and Backend
 
-- **@neondatabase/serverless**: PostgreSQL database driver for serverless environments
-- **drizzle-orm**: Type-safe ORM for database operations
-- **drizzle-kit**: Database migration and introspection tools
-- **express**: Web application framework for Node.js
+- **@neondatabase/serverless**: PostgreSQL driver.
+- **drizzle-orm**: Type-safe ORM.
+- **drizzle-kit**: Database migration tools.
+- **express**: Node.js web framework.
 
 ## Development and Build Tools
 
-- **typescript**: Static type checking
-- **@replit/vite-plugin-runtime-error-modal**: Development error overlay
-- **@replit/vite-plugin-cartographer**: Development tooling for Replit environment
-- **esbuild**: Fast JavaScript bundler for server-side code
+- **typescript**: Static type checking.
+- **esbuild**: JavaScript bundler.
 
 ## Validation and Forms
 
-- **zod**: Schema validation library
-- **@hookform/resolvers**: Form validation resolvers
-- **react-hook-form**: Form state management (inferred from resolvers)
-
-Note: The application currently uses mock data and in-memory storage for rapid prototyping. The PostgreSQL database connection is configured but the storage layer will need to be updated to use the actual database instead of the current in-memory implementation.
+- **zod**: Schema validation.
+- **@hookform/resolvers**: Form validation resolvers.
+- **react-hook-form**: Form state management.
