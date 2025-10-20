@@ -38,7 +38,7 @@ import {
 import { SiFacebook, SiInstagram, SiYoutube, SiX } from 'react-icons/si';
 import { useAuth } from '@/contexts/AuthContext';
 import type { OrganizationSettings } from '@shared/schema';
-import mosqueLogoPath from '@assets/mosque-logo.png';
+import mosqueLogoPath from '@assets/ChatGPT Image 20. okt 2025. u 22_58_31_1760993927064.png';
 
 interface SidebarProps {
   open: boolean;

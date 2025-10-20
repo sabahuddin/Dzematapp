@@ -11,7 +11,7 @@ import {
   Container
 } from '@mui/material';
 import { useAuth } from '../hooks/useAuth';
-import mosqueLogoPath from '@assets/mosque-logo.png';
+import mosqueLogoPath from '@assets/ChatGPT Image 20. okt 2025. u 22_58_31_1760993927064.png';
 
 export default function LoginPage() {
   const [, setLocation] = useLocation();
