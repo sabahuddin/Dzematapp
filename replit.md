@@ -5,10 +5,16 @@ DžematApp is a web-based admin dashboard application built for managing mosque 
 # Recent Changes
 
 ## October 20, 2025
+- **Logo Integration**: Added mosque logo to application branding
+  - Logo displayed in sidebar header next to "DžematApp" text
+  - Logo displayed on login page above "DžematApp" title
+  - Logo size: 32x32px in sidebar, 40x40px on login page
 - **Visual Contrast Enhancement**: Implemented global visual contrast between body background and form/card elements
-  - Body background: Light grey (#fafafa)
-  - All cards, dialogs, forms, inputs: Pure white (#ffffff)
-  - Border: 0 throughout the entire application
+  - Body background: Medium grey (#eeeeee) for clear separation
+  - All cards, dialogs, forms: Pure white (#ffffff)
+  - Input fields: White background with light grey border (1px solid #e0e0e0)
+  - Border hover state: Darker grey (#bdbdbd)
+  - Border focus state: Blue with 2px width (#1976d2)
   - Applied to: Card, Paper, Dialog, TextField, InputBase, Drawer, AppBar, Menu, Popover, Select
   - Ensures consistent visual separation across all pages including user profile, messages, forms
 - **Access Request Auto-Membership**: Fixed bug where approving access request didn't automatically add user to work group

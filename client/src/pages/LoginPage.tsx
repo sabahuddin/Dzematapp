@@ -10,8 +10,8 @@ import {
   Alert,
   Container
 } from '@mui/material';
-import { Hub } from '@mui/icons-material';
 import { useAuth } from '../hooks/useAuth';
+import mosqueLogoPath from '@assets/mosque-logo.png';
 
 export default function LoginPage() {
   const [, setLocation] = useLocation();
@@ -70,7 +70,11 @@ export default function LoginPage() {
           <CardContent sx={{ p: 4 }}>
             <Box sx={{ textAlign: 'center', mb: 4 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, mb: 1 }}>
-                <Hub sx={{ color: '#1976d2', fontSize: 32 }} />
+                <img 
+                  src={mosqueLogoPath} 
+                  alt="Mosque Logo" 
+                  style={{ width: 40, height: 40, objectFit: 'contain' }}
+                />
                 <Typography variant="h4" sx={{ fontWeight: 600, color: '#1976d2' }}>
                   DžematApp
                 </Typography>
