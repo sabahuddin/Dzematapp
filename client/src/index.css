@@ -152,13 +152,9 @@
     border: 0 !important;
   }
   
-  .MuiPaper-root {
+  .MuiPaper-root:not([role="presentation"]):not(.MuiPopover-paper):not(.MuiMenu-paper) {
     background-color: #ffffff !important;
     border: 0 !important;
-  }
-  
-  .MuiCard-root > .MuiBox-root {
-    background-color: #ffffff !important;
   }
 
   .MuiButton-contained {
