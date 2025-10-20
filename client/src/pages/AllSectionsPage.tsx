@@ -35,6 +35,7 @@ export default function AllSectionsPage() {
         description: "Zahtjev za pristup je poslan",
       });
       queryClient.invalidateQueries({ queryKey: ['/api/access-requests'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/access-requests/my'] });
     },
     onError: () => {
       toast({
