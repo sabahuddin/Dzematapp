@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { Link } from 'wouter';
 import {
   Box,
   Grid,
@@ -17,7 +18,8 @@ import {
   CircularProgress,
   Alert,
   Divider,
-  Button
+  Button,
+  Badge
 } from '@mui/material';
 import {
   People,
@@ -25,8 +27,13 @@ import {
   Event,
   TaskAlt,
   CalendarMonth,
-  Mail
+  Mail,
+  Workspaces,
+  Archive,
+  ChevronRight
 } from '@mui/icons-material';
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay';
 import { 
   mockStatistics, 
   mockRecentActivities, 
@@ -35,8 +42,8 @@ import {
 } from '../data/mockData';
 import TasksDashboard from '../components/TasksDashboard';
 import { useAuth } from '../hooks/useAuth';
-import type { Announcement, Event as EventType } from '@shared/schema';
-import { format } from 'date-fns';
+import type { Announcement, Event as EventType, WorkGroup } from '@shared/schema';
+import { format, isSameDay } from 'date-fns';
 
 const StatCard = ({ icon, title, value, color }: {
   icon: React.ReactNode;
@@ -72,8 +79,48 @@ const StatCard = ({ icon, title, value, color }: {
   </Card>
 );
 
+// Custom Day component for highlighting event days
+function EventDay(props: PickersDayProps & { eventDates?: Date[] }) {
+  const { eventDates = [], day, outsideCurrentMonth, ...other } = props;
+
+  const hasEvent = eventDates.some((eventDate: Date) => isSameDay(eventDate, day));
+
+  return (
+    <Badge
+      key={day.toString()}
+      overlap="circular"
+      badgeContent={hasEvent ? '•' : undefined}
+      sx={{
+        '& .MuiBadge-badge': {
+          backgroundColor: '#ed6c02',
+          color: '#ed6c02',
+          minWidth: 6,
+          height: 6,
+          borderRadius: '50%',
+          padding: 0,
+          top: 4,
+          right: 4,
+        }
+      }}
+    >
+      <PickersDay 
+        {...other} 
+        outsideCurrentMonth={outsideCurrentMonth} 
+        day={day}
+        sx={{
+          ...(hasEvent && {
+            fontWeight: 600,
+            color: '#ed6c02',
+          })
+        }}
+      />
+    </Badge>
+  );
+}
+
 export default function DashboardHome() {
   const { user } = useAuth();
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   
   // In a real app, these would be actual API calls
   const statisticsQuery = useQuery({
@@ -126,6 +173,12 @@ export default function DashboardHome() {
     enabled: !user?.isAdmin,
   });
 
+  // Fetch user's work groups
+  const workGroupsQuery = useQuery<WorkGroup[]>({
+    queryKey: ['/api/work-groups'],
+    enabled: !user?.isAdmin,
+  });
+
   if (user?.isAdmin) {
     if (statisticsQuery.isLoading || activitiesQuery.isLoading) {
       return (
@@ -143,7 +196,7 @@ export default function DashboardHome() {
       );
     }
   } else {
-    if (announcementsQuery.isLoading || eventsQuery.isLoading || messagesQuery.isLoading) {
+    if (announcementsQuery.isLoading || eventsQuery.isLoading || messagesQuery.isLoading || workGroupsQuery.isLoading) {
       return (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
           <CircularProgress />
@@ -151,7 +204,7 @@ export default function DashboardHome() {
       );
     }
 
-    if (announcementsQuery.error || eventsQuery.error || messagesQuery.error) {
+    if (announcementsQuery.error || eventsQuery.error || messagesQuery.error || workGroupsQuery.error) {
       return (
         <Alert severity="error">
           Greška pri učitavanju podataka. Molimo pokušajte ponovo.
@@ -165,11 +218,18 @@ export default function DashboardHome() {
 
   // For members: get latest announcement, upcoming events, and unread messages
   const latestAnnouncement = announcementsQuery.data?.[0];
-  const upcomingEvents = eventsQuery.data
-    ?.filter(event => new Date(event.dateTime) >= new Date())
-    .sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime())
-    .slice(0, 5);
+  const allEvents = eventsQuery.data || [];
+  const upcomingEvent = allEvents
+    .filter(event => new Date(event.dateTime) >= new Date())
+    .sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime())[0];
+  
+  // Get event dates for calendar highlighting
+  const eventDates = allEvents
+    .filter(event => new Date(event.dateTime) >= new Date())
+    .map(event => new Date(event.dateTime));
+
   const unreadMessages = messagesQuery.data?.filter(msg => !msg.isRead && msg.recipientId === user?.id) || [];
+  const userWorkGroups = workGroupsQuery.data || [];
 
   // Member Dashboard
   if (!user?.isAdmin) {
@@ -181,24 +241,46 @@ export default function DashboardHome() {
 
         <Grid container spacing={3}>
           {/* Latest Announcement */}
-          <Grid size={{ xs: 12 }}>
-            <Card>
-              <Box sx={{ p: 3, borderBottom: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Campaign sx={{ color: '#2e7d32' }} />
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                  Najnovija Obavijest
-                </Typography>
+          <Grid size={{ xs: 12, lg: 8 }}>
+            <Card sx={{ height: '100%' }}>
+              <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Campaign sx={{ color: '#2e7d32' }} />
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    Zadnja Obavijest
+                  </Typography>
+                </Box>
+                <Link href="/announcements">
+                  <Button 
+                    size="small" 
+                    endIcon={<Archive />}
+                    sx={{ textTransform: 'none' }}
+                    data-testid="link-archive-announcements"
+                  >
+                    Arhiva obavijesti
+                  </Button>
+                </Link>
               </Box>
               <CardContent>
                 {latestAnnouncement ? (
                   <Box>
-                    <Typography variant="h6" sx={{ mb: 1 }}>
+                    <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
                       {latestAnnouncement.title}
                     </Typography>
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                      {latestAnnouncement.publishDate && format(new Date(latestAnnouncement.publishDate), 'dd.MM.yyyy HH:mm')}
+                      {latestAnnouncement.publishDate && format(new Date(latestAnnouncement.publishDate), 'dd.MM.yyyy. u HH:mm')}
                     </Typography>
-                    <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
+                    <Typography 
+                      variant="body1" 
+                      sx={{ 
+                        whiteSpace: 'pre-wrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        display: '-webkit-box',
+                        WebkitLineClamp: 5,
+                        WebkitBoxOrient: 'vertical'
+                      }}
+                    >
                       {latestAnnouncement.content}
                     </Typography>
                   </Box>
@@ -211,41 +293,44 @@ export default function DashboardHome() {
             </Card>
           </Grid>
 
-          {/* Upcoming Events */}
-          <Grid size={{ xs: 12, md: 6 }}>
+          {/* Next Event */}
+          <Grid size={{ xs: 12, lg: 4 }}>
             <Card sx={{ height: '100%' }}>
-              <Box sx={{ p: 3, borderBottom: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', gap: 2 }}>
-                <CalendarMonth sx={{ color: '#ed6c02' }} />
+              <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Event sx={{ color: '#ed6c02' }} />
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                  Nadolazeći Događaji
+                  Sljedeći Događaj
                 </Typography>
               </Box>
               <CardContent>
-                {upcomingEvents && upcomingEvents.length > 0 ? (
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    {upcomingEvents.map((event) => (
-                      <Box 
-                        key={event.id}
+                {upcomingEvent ? (
+                  <Box>
+                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+                      {upcomingEvent.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                      📅 {format(new Date(upcomingEvent.dateTime), 'dd.MM.yyyy. u HH:mm')}
+                    </Typography>
+                    {upcomingEvent.location && (
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                        📍 {upcomingEvent.location}
+                      </Typography>
+                    )}
+                    {upcomingEvent.description && (
+                      <Typography 
+                        variant="body2" 
                         sx={{ 
-                          p: 2, 
-                          borderRadius: 1, 
-                          bgcolor: '#f8f9fa',
-                          borderLeft: '4px solid #ed6c02'
+                          mt: 2,
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          display: '-webkit-box',
+                          WebkitLineClamp: 3,
+                          WebkitBoxOrient: 'vertical'
                         }}
                       >
-                        <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                          {event.name}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {format(new Date(event.dateTime), 'dd.MM.yyyy HH:mm')}
-                        </Typography>
-                        {event.location && (
-                          <Typography variant="body2" color="text.secondary">
-                            📍 {event.location}
-                          </Typography>
-                        )}
-                      </Box>
-                    ))}
+                        {upcomingEvent.description}
+                      </Typography>
+                    )}
                   </Box>
                 ) : (
                   <Typography color="text.secondary">
@@ -256,43 +341,171 @@ export default function DashboardHome() {
             </Card>
           </Grid>
 
-          {/* Unread Messages */}
-          <Grid size={{ xs: 12, md: 6 }}>
+          {/* Calendar with Event Markers */}
+          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
             <Card sx={{ height: '100%' }}>
-              <Box sx={{ p: 3, borderBottom: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Mail sx={{ color: '#1976d2' }} />
+              <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', gap: 2 }}>
+                <CalendarMonth sx={{ color: '#1976d2' }} />
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                  Nepročitane Poruke
+                  Kalendar Događaja
                 </Typography>
+              </Box>
+              <CardContent sx={{ p: 0 }}>
+                <DateCalendar
+                  value={selectedDate}
+                  onChange={(newDate) => setSelectedDate(newDate)}
+                  slots={{
+                    day: EventDay,
+                  }}
+                  slotProps={{
+                    day: {
+                      eventDates,
+                    } as any,
+                  }}
+                  sx={{
+                    width: '100%',
+                    '& .MuiPickersCalendarHeader-root': {
+                      paddingLeft: 2,
+                      paddingRight: 2,
+                    },
+                    '& .MuiDayCalendar-weekContainer': {
+                      justifyContent: 'space-around',
+                    }
+                  }}
+                />
+              </CardContent>
+            </Card>
+          </Grid>
+
+          {/* My Messages */}
+          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+            <Card sx={{ height: '100%' }}>
+              <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Mail sx={{ color: '#1976d2' }} />
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    Moje Poruke
+                  </Typography>
+                  {unreadMessages.length > 0 && (
+                    <Badge badgeContent={unreadMessages.length} color="error" data-testid="badge-unread-messages" />
+                  )}
+                </Box>
+                <Link href="/messages">
+                  <Button 
+                    size="small" 
+                    endIcon={<ChevronRight />}
+                    sx={{ textTransform: 'none' }}
+                    data-testid="link-all-messages"
+                  >
+                    Sve
+                  </Button>
+                </Link>
               </Box>
               <CardContent>
                 {unreadMessages.length > 0 ? (
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    {unreadMessages.slice(0, 5).map((message) => (
-                      <Box 
-                        key={message.id}
-                        sx={{ 
-                          p: 2, 
-                          borderRadius: 1, 
-                          bgcolor: '#f8f9fa',
-                          borderLeft: '4px solid #1976d2'
-                        }}
-                      >
-                        <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                          {message.subject}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          Od: {message.sender?.firstName} {message.sender?.lastName}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {format(new Date(message.createdAt), 'dd.MM.yyyy HH:mm')}
-                        </Typography>
-                      </Box>
+                    {unreadMessages.slice(0, 3).map((message) => (
+                      <Link key={message.id} href="/messages">
+                        <Box 
+                          sx={{ 
+                            p: 2, 
+                            borderRadius: 1, 
+                            bgcolor: '#e3f2fd',
+                            borderLeft: '4px solid #1976d2',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                            '&:hover': {
+                              bgcolor: '#bbdefb',
+                              transform: 'translateX(4px)'
+                            }
+                          }}
+                          data-testid={`message-preview-${message.id}`}
+                        >
+                          <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                            {message.subject}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            Od: {message.sender?.firstName} {message.sender?.lastName}
+                          </Typography>
+                        </Box>
+                      </Link>
                     ))}
                   </Box>
                 ) : (
                   <Typography color="text.secondary">
                     Nema novih poruka
+                  </Typography>
+                )}
+              </CardContent>
+            </Card>
+          </Grid>
+
+          {/* My Sections */}
+          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+            <Card sx={{ height: '100%' }}>
+              <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Workspaces sx={{ color: '#9c27b0' }} />
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    Moje Sekcije
+                  </Typography>
+                </Box>
+                <Link href="/tasks">
+                  <Button 
+                    size="small" 
+                    endIcon={<ChevronRight />}
+                    sx={{ textTransform: 'none' }}
+                    data-testid="link-all-sections"
+                  >
+                    Sve
+                  </Button>
+                </Link>
+              </Box>
+              <CardContent>
+                {userWorkGroups.length > 0 ? (
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    {userWorkGroups.slice(0, 4).map((workGroup) => (
+                      <Link key={workGroup.id} href="/tasks">
+                        <Box 
+                          sx={{ 
+                            p: 2, 
+                            borderRadius: 1, 
+                            bgcolor: '#f3e5f5',
+                            borderLeft: '4px solid #9c27b0',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                            '&:hover': {
+                              bgcolor: '#e1bee7',
+                              transform: 'translateX(4px)'
+                            }
+                          }}
+                          data-testid={`section-preview-${workGroup.id}`}
+                        >
+                          <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                            {workGroup.name}
+                          </Typography>
+                          {workGroup.description && (
+                            <Typography 
+                              variant="caption" 
+                              color="text.secondary"
+                              sx={{
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                display: '-webkit-box',
+                                WebkitLineClamp: 1,
+                                WebkitBoxOrient: 'vertical'
+                              }}
+                            >
+                              {workGroup.description}
+                            </Typography>
+                          )}
+                        </Box>
+                      </Link>
+                    ))}
+                  </Box>
+                ) : (
+                  <Typography color="text.secondary">
+                    Niste član nijedne sekcije
                   </Typography>
                 )}
               </CardContent>
