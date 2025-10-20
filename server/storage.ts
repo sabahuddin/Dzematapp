@@ -273,9 +273,9 @@ export class MemStorage implements IStorage {
   private createSampleData() {
     // Sample users
     const sampleUsers = [
-      { firstName: "Marko", lastName: "Petrović", username: "marko.petrovic", email: "marko@example.com", roles: ["clan"] },
-      { firstName: "Ana", lastName: "Marić", username: "ana.maric", email: "ana@example.com", roles: ["clan_io"] },
-      { firstName: "Stefan", lastName: "Jovanović", username: "stefan.jovanovic", email: "stefan@example.com", roles: ["clan"] }
+      { firstName: "Mujo", lastName: "Mujic", username: "mujo.mujic", email: "mujo@example.com", roles: ["clan"] },
+      { firstName: "Ali", lastName: "Alic", username: "ali.alic", email: "ali@example.com", roles: ["clan_io"] },
+      { firstName: "Huse", lastName: "Husic", username: "huse.husic", email: "huse@example.com", roles: ["clan"] }
     ];
 
     sampleUsers.forEach(userData => {
@@ -294,9 +294,9 @@ export class MemStorage implements IStorage {
         dateOfBirth: null,
         occupation: null,
         membershipDate: new Date(),
-        status: userData.username === "stefan.jovanovic" ? "pasivan" : "aktivan",
-        inactiveReason: userData.username === "stefan.jovanovic" ? "Drugi džemat" : null,
-        categories: userData.username === "marko.petrovic" ? ["Muškarci"] : userData.username === "ana.maric" ? ["Žene", "Roditelji"] : [],
+        status: userData.username === "huse.husic" ? "pasivan" : "aktivan",
+        inactiveReason: userData.username === "huse.husic" ? "Drugi džemat" : null,
+        categories: userData.username === "mujo.mujic" ? ["Muškarci"] : userData.username === "ali.alic" ? ["Žene", "Roditelji"] : [],
         roles: userData.roles,
         isAdmin: false
       };
