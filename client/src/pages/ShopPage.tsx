@@ -32,6 +32,9 @@ export default function ShopPage() {
     quantity: 1,
     color: ""
   });
+  const [contactDialogOpen, setContactDialogOpen] = useState(false);
+  const [contactUserId, setContactUserId] = useState<string | null>(null);
+  const [contactMessage, setContactMessage] = useState("");
   
   const [productForm, setProductForm] = useState({
     name: "",
@@ -343,15 +346,45 @@ export default function ShopPage() {
 
   const handleContactUser = (itemUser: User | undefined) => {
     if (itemUser) {
-      const contactInfo = [];
-      if (itemUser.phone) contactInfo.push(`Tel: ${itemUser.phone}`);
-      if (itemUser.email) contactInfo.push(`Email: ${itemUser.email}`);
-      
+      setContactUserId(itemUser.id);
+      setContactMessage("");
+      setContactDialogOpen(true);
+    }
+  };
+
+  const sendContactMessageMutation = useMutation({
+    mutationFn: async (data: { recipientId: string; message: string }) => {
+      return apiRequest("POST", "/api/messages", {
+        recipientId: data.recipientId,
+        subject: "Poruka sa Shop-a",
+        content: data.message
+      });
+    },
+    onSuccess: () => {
+      toast({ title: "Poruka uspješno poslana" });
+      setContactDialogOpen(false);
+      setContactMessage("");
+      setContactUserId(null);
+    },
+    onError: () => {
       toast({ 
-        title: `Kontakt: ${itemUser.firstName} ${itemUser.lastName}`, 
-        description: contactInfo.length > 0 ? contactInfo.join(' | ') : "Nema dostupnih kontakt podataka"
+        title: "Greška", 
+        description: "Greška pri slanju poruke", 
+        variant: "destructive" 
       });
     }
+  });
+
+  const handleSendContactMessage = () => {
+    if (!contactUserId || !contactMessage.trim()) {
+      toast({ 
+        title: "Greška", 
+        description: "Molimo unesite poruku", 
+        variant: "destructive" 
+      });
+      return;
+    }
+    sendContactMessageMutation.mutate({ recipientId: contactUserId, message: contactMessage });
   };
 
   const getUserById = (userId: string) => {
@@ -541,9 +574,6 @@ export default function ShopPage() {
                           </Typography>
                         )}
                         <Chip label="Na prodaju" color="primary" size="small" sx={{ mb: 1 }} />
-                        <Typography variant="body2" color="text.secondary">
-                          Prodavač: {itemUser ? `${itemUser.firstName} ${itemUser.lastName}` : "Nepoznato"}
-                        </Typography>
                         <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                           <Button
                             variant="contained"
@@ -551,7 +581,7 @@ export default function ShopPage() {
                             onClick={() => handleContactUser(itemUser)}
                             data-testid={`button-contact-${item.id}`}
                           >
-                            Pošalji poruku vlasniku
+                            Kontaktiraj
                           </Button>
                           {canEdit && (
                             <>
@@ -639,9 +669,6 @@ export default function ShopPage() {
                           </Typography>
                         )}
                         <Chip label="Poklon" color="success" size="small" sx={{ mb: 1 }} />
-                        <Typography variant="body2" color="text.secondary">
-                          Poklanja: {itemUser ? `${itemUser.firstName} ${itemUser.lastName}` : "Nepoznato"}
-                        </Typography>
                         <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                           <Button
                             variant="contained"
@@ -649,7 +676,7 @@ export default function ShopPage() {
                             onClick={() => handleContactUser(itemUser)}
                             data-testid={`button-contact-gift-${item.id}`}
                           >
-                            Pošalji poruku vlasniku
+                            Kontaktiraj
                           </Button>
                           {canEdit && (
                             <>
@@ -951,6 +978,41 @@ export default function ShopPage() {
             objectFit: 'contain' 
           }} 
         />
+      </Dialog>
+
+      {/* Contact Owner Dialog */}
+      <Dialog open={contactDialogOpen} onClose={() => setContactDialogOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Pošalji poruku</DialogTitle>
+        <DialogContent>
+          <Box sx={{ pt: 2 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              Unesite vašu poruku za vlasnika oglasa. Vaša poruka će biti poslana anonimno.
+            </Typography>
+            <TextField
+              fullWidth
+              multiline
+              rows={6}
+              label="Poruka"
+              value={contactMessage}
+              onChange={(e) => setContactMessage(e.target.value)}
+              placeholder="Unesite vašu poruku..."
+              data-testid="input-contact-message"
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setContactDialogOpen(false)} data-testid="button-cancel-contact">
+            Odustani
+          </Button>
+          <Button 
+            onClick={handleSendContactMessage} 
+            variant="contained"
+            disabled={sendContactMessageMutation.isPending}
+            data-testid="button-send-contact"
+          >
+            {sendContactMessageMutation.isPending ? "Slanje..." : "Pošalji"}
+          </Button>
+        </DialogActions>
       </Dialog>
     </Box>
   );
