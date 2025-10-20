@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import {
   Dialog,
   DialogTitle,
@@ -60,6 +61,12 @@ export default function EventModal({
     'Halka',
     'Socijalno'
   ];
+
+  // Fetch previous event locations
+  const locationsQuery = useQuery<string[]>({
+    queryKey: ['/api/events/locations'],
+    enabled: open,
+  });
 
   useEffect(() => {
     if (event) {
@@ -196,14 +203,28 @@ export default function EventModal({
             
             <Grid container spacing={2}>
               <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  label="Lokacija"
+                <Autocomplete
+                  freeSolo
+                  options={locationsQuery.data || []}
                   value={formData.location}
-                  onChange={handleChange('location')}
-                  required
-                  data-testid="input-location"
+                  onChange={(event, newValue) => {
+                    setFormData(prev => ({ ...prev, location: newValue || '' }));
+                  }}
+                  onInputChange={(event, newInputValue) => {
+                    setFormData(prev => ({ ...prev, location: newInputValue }));
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      fullWidth
+                      variant="outlined"
+                      label="Lokacija"
+                      placeholder="Unesite ili odaberite lokaciju"
+                      required
+                      data-testid="input-location"
+                    />
+                  )}
+                  data-testid="autocomplete-location"
                 />
               </Grid>
               

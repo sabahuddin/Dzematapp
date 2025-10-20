@@ -63,6 +63,7 @@ export interface IStorage {
   updateEvent(id: string, event: Partial<InsertEvent>): Promise<Event | undefined>;
   deleteEvent(id: string): Promise<boolean>;
   getAllEvents(): Promise<Event[]>;
+  getEventLocations(): Promise<string[]>;
   
   // Event RSVPs
   createEventRsvp(rsvp: InsertEventRsvp): Promise<EventRsvp>;
@@ -550,6 +551,14 @@ export class MemStorage implements IStorage {
 
   async getAllEvents(): Promise<Event[]> {
     return Array.from(this.events.values());
+  }
+
+  async getEventLocations(): Promise<string[]> {
+    const events = Array.from(this.events.values());
+    const locations = events
+      .map(event => event.location)
+      .filter((location, index, self) => location && self.indexOf(location) === index);
+    return locations.sort();
   }
 
   // Event RSVPs

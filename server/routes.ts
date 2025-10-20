@@ -488,6 +488,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/events/locations", async (req, res) => {
+    try {
+      const locations = await storage.getEventLocations();
+      res.json(locations);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch event locations" });
+    }
+  });
+
   app.post("/api/events", requireAuth, async (req, res) => {
     try {
       const eventData = insertEventSchema.parse(req.body);
