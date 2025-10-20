@@ -1370,6 +1370,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/access-requests/my", requireAuth, async (req, res) => {
+    try {
+      const requests = await storage.getUserAccessRequests(req.user!.id);
+      res.json(requests);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch user access requests" });
+    }
+  });
+
   app.post("/api/access-requests", requireAuth, async (req, res) => {
     try {
       const requestData = insertAccessRequestSchema.parse(req.body);

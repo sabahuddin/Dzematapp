@@ -1,22 +1,64 @@
-import { Box, Typography, Card, CardContent, Button } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
+import { Box, Typography, Card, CardContent, Button, Chip } from "@mui/material";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { useAuth } from "@/contexts/AuthContext";
 import { useMarkAsViewed } from "@/hooks/useMarkAsViewed";
-import type { WorkGroup, WorkGroupMember } from "@shared/schema";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import type { WorkGroup, WorkGroupMember, AccessRequest } from "@shared/schema";
 
 export default function AllSectionsPage() {
   const [, setLocation] = useLocation();
   const { user } = useAuth();
+  const { toast } = useToast();
   useMarkAsViewed('tasks');
 
   const { data: workGroups, isLoading } = useQuery<(WorkGroup & { members: WorkGroupMember[] })[]>({
     queryKey: ['/api/work-groups'],
   });
 
+  const { data: accessRequests } = useQuery<AccessRequest[]>({
+    queryKey: user?.isAdmin ? ['/api/access-requests'] : ['/api/access-requests/my'],
+    enabled: !!user,
+  });
+
+  const requestAccessMutation = useMutation({
+    mutationFn: async (workGroupId: string) => {
+      return await apiRequest('POST', '/api/access-requests', {
+        userId: user?.id,
+        workGroupId
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Uspjeh",
+        description: "Zahtjev za pristup je poslan",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/access-requests'] });
+    },
+    onError: () => {
+      toast({
+        title: "Greška",
+        description: "Nije moguće poslati zahtjev",
+        variant: "destructive",
+      });
+    },
+  });
+
   const getUserMembership = (workGroupId: string) => {
     const workGroup = workGroups?.find(wg => wg.id === workGroupId);
     return workGroup?.members?.find(m => m.userId === user?.id);
+  };
+
+  const getPendingRequest = (workGroupId: string) => {
+    if (!user || !accessRequests) return null;
+    return accessRequests.find(
+      req => req.workGroupId === workGroupId && req.userId === user.id && req.status === 'pending'
+    );
+  };
+
+  const handleRequestAccess = (workGroupId: string) => {
+    requestAccessMutation.mutate(workGroupId);
   };
 
   if (isLoading) {
@@ -61,9 +103,26 @@ export default function AllSectionsPage() {
                     Pogledaj zadatke
                   </Button>
                 ) : (
-                  <Typography variant="caption" color="text.secondary">
-                    Niste član ove sekcije
-                  </Typography>
+                  <>
+                    {getPendingRequest(workGroup.id) ? (
+                      <Chip 
+                        label="Zahtjev na čekanju" 
+                        color="warning" 
+                        size="small"
+                        data-testid={`chip-pending-${workGroup.id}`}
+                      />
+                    ) : (
+                      <Button
+                        variant="outlined"
+                        fullWidth
+                        onClick={() => handleRequestAccess(workGroup.id)}
+                        disabled={requestAccessMutation.isPending}
+                        data-testid={`button-request-access-${workGroup.id}`}
+                      >
+                        Zatraži pristup
+                      </Button>
+                    )}
+                  </>
                 )}
               </CardContent>
             </Card>

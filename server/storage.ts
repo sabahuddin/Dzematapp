@@ -104,6 +104,7 @@ export interface IStorage {
   createAccessRequest(request: InsertAccessRequest): Promise<AccessRequest>;
   updateAccessRequest(id: string, status: string): Promise<AccessRequest | undefined>;
   getAllAccessRequests(): Promise<AccessRequest[]>;
+  getUserAccessRequests(userId: string): Promise<AccessRequest[]>;
   
   // Task Comments
   createTaskComment(comment: InsertTaskComment): Promise<TaskComment>;
@@ -867,6 +868,11 @@ export class MemStorage implements IStorage {
 
   async getAllAccessRequests(): Promise<AccessRequest[]> {
     return Array.from(this.accessRequests.values());
+  }
+
+  async getUserAccessRequests(userId: string): Promise<AccessRequest[]> {
+    return Array.from(this.accessRequests.values())
+      .filter(req => req.userId === userId);
   }
 
   // Activities
