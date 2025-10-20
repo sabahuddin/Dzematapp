@@ -130,7 +130,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
           style={{ width: 32, height: 32, objectFit: 'contain' }}
         />
         {!collapsed && (
-          <Typography variant="h6" sx={{ fontWeight: 600, color: '#1976d2' }}>
+          <Typography variant="h6" sx={{ fontWeight: 600, color: '#1976d2', fontFamily: 'Aladin, cursive' }}>
             DžematApp
           </Typography>
         )}

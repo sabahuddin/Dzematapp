@@ -75,7 +75,7 @@ export default function LoginPage() {
                   alt="Mosque Logo" 
                   style={{ width: 40, height: 40, objectFit: 'contain' }}
                 />
-                <Typography variant="h4" sx={{ fontWeight: 600, color: '#1976d2' }}>
+                <Typography variant="h4" sx={{ fontWeight: 600, color: '#1976d2', fontFamily: 'Aladin, cursive' }}>
                   DžematApp
                 </Typography>
               </Box>
