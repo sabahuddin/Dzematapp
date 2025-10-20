@@ -77,6 +77,7 @@ export const workGroups = pgTable("work_groups", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
   description: text("description"),
+  visibility: text("visibility").notNull().default("javna"), // javna, privatna
   createdAt: timestamp("created_at").defaultNow(),
 });
 

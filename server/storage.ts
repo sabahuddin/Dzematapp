@@ -79,7 +79,7 @@ export interface IStorage {
   createWorkGroup(workGroup: InsertWorkGroup): Promise<WorkGroup>;
   updateWorkGroup(id: string, workGroup: Partial<InsertWorkGroup>): Promise<WorkGroup | undefined>;
   deleteWorkGroup(id: string): Promise<boolean>;
-  getAllWorkGroups(): Promise<WorkGroup[]>;
+  getAllWorkGroups(userId?: string, isAdmin?: boolean): Promise<WorkGroup[]>;
   
   // Work Group Members
   addMemberToWorkGroup(workGroupId: string, userId: string): Promise<WorkGroupMember>;
@@ -320,16 +320,18 @@ export class MemStorage implements IStorage {
 
     // Sample work groups
     const workGroupsData = [
-      { name: "Organizacija događaja", description: "Grupa odgovorna za organizaciju i koordinaciju svih događaja u džamiji." },
-      { name: "Održavanje objekta", description: "Tim zadužen za održavanje i poboljšanje infrastrukture džamije." },
-      { name: "Edukacija i program", description: "Grupa koja se bavi edukacijskim aktivnostima i programima za djecu i odrasle." }
+      { name: "Organizacija događaja", description: "Grupa odgovorna za organizaciju i koordinaciju svih događaja u džamiji.", visibility: "javna" },
+      { name: "Održavanje objekta", description: "Tim zadužen za održavanje i poboljšanje infrastrukture džamije.", visibility: "privatna" },
+      { name: "Edukacija i program", description: "Grupa koja se bavi edukacijskim aktivnostima i programima za djecu i odrasle.", visibility: "javna" }
     ];
 
     const workGroupIds: string[] = [];
     workGroupsData.forEach(groupData => {
       const workGroup: WorkGroup = {
         id: randomUUID(),
-        ...groupData,
+        name: groupData.name,
+        description: groupData.description,
+        visibility: groupData.visibility,
         createdAt: new Date()
       };
       this.workGroups.set(workGroup.id, workGroup);
@@ -643,6 +645,7 @@ export class MemStorage implements IStorage {
       id,
       name: insertWorkGroup.name,
       description: insertWorkGroup.description || null,
+      visibility: insertWorkGroup.visibility || "javna",
       createdAt: new Date()
     };
     this.workGroups.set(id, workGroup);
@@ -662,8 +665,24 @@ export class MemStorage implements IStorage {
     return this.workGroups.delete(id);
   }
 
-  async getAllWorkGroups(): Promise<WorkGroup[]> {
-    return Array.from(this.workGroups.values());
+  async getAllWorkGroups(userId?: string, isAdmin?: boolean): Promise<WorkGroup[]> {
+    const allWorkGroups = Array.from(this.workGroups.values());
+    
+    // Ako nema userId ili je admin, vrati sve sekcije
+    if (!userId || isAdmin) {
+      return allWorkGroups;
+    }
+    
+    // Za obične korisnike, filtriraj:
+    // - Javne sekcije (vidljive svima)
+    // - Privatne sekcije gdje je korisnik član
+    const userMemberships = Array.from(this.workGroupMembers.values())
+      .filter(m => m.userId === userId)
+      .map(m => m.workGroupId);
+    
+    return allWorkGroups.filter(wg => 
+      wg.visibility === "javna" || userMemberships.includes(wg.id)
+    );
   }
 
   // Work Group Members

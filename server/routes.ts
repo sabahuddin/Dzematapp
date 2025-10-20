@@ -611,7 +611,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Work Groups routes
   app.get("/api/work-groups", async (req, res) => {
     try {
-      const workGroups = await storage.getAllWorkGroups();
+      // Proslijedi userId i isAdmin za filtriranje po vidljivosti
+      const userId = req.user?.id;
+      const isAdmin = req.user?.isAdmin || false;
+      
+      const workGroups = await storage.getAllWorkGroups(userId, isAdmin);
       
       // Add members to each work group
       const workGroupsWithMembers = await Promise.all(
