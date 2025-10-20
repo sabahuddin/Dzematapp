@@ -127,10 +127,10 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
         <img 
           src={mosqueLogoPath} 
           alt="Mosque Logo" 
-          style={{ width: 32, height: 32, objectFit: 'contain' }}
+          style={{ width: 48, height: 48, objectFit: 'contain' }}
         />
         {!collapsed && (
-          <Typography variant="h6" sx={{ fontWeight: 600, color: '#1976d2', fontFamily: 'Aladin, cursive' }}>
+          <Typography variant="h5" sx={{ fontWeight: 600, color: '#1976d2', fontFamily: 'Aladin, cursive' }}>
             DžematApp
           </Typography>
         )}

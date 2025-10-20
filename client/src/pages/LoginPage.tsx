@@ -69,13 +69,13 @@ export default function LoginPage() {
         >
           <CardContent sx={{ p: 4 }}>
             <Box sx={{ textAlign: 'center', mb: 4 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, mb: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1.5, mb: 1 }}>
                 <img 
                   src={mosqueLogoPath} 
                   alt="Mosque Logo" 
-                  style={{ width: 40, height: 40, objectFit: 'contain' }}
+                  style={{ width: 60, height: 60, objectFit: 'contain' }}
                 />
-                <Typography variant="h4" sx={{ fontWeight: 600, color: '#1976d2', fontFamily: 'Aladin, cursive' }}>
+                <Typography variant="h3" sx={{ fontWeight: 600, color: '#1976d2', fontFamily: 'Aladin, cursive' }}>
                   DžematApp
                 </Typography>
               </Box>
