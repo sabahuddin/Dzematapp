@@ -5,6 +5,7 @@ import { Add, Delete, ShoppingCart, Store, CardGiftcard, CloudUpload, Edit, Clos
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { useMarkAsViewed } from "@/hooks/useMarkAsViewed";
 import type { ShopProduct, MarketplaceItem, User } from "@shared/schema";
 
 interface ShopProductWithUser extends ShopProduct {
@@ -18,6 +19,7 @@ interface MarketplaceItemWithUser extends MarketplaceItem {
 export default function ShopPage() {
   const { user } = useAuth();
   const { toast } = useToast();
+  useMarkAsViewed('shop');
   const [activeTab, setActiveTab] = useState(0);
   const [productModalOpen, setProductModalOpen] = useState(false);
   const [marketplaceModalOpen, setMarketplaceModalOpen] = useState(false);

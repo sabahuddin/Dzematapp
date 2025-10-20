@@ -42,12 +42,14 @@ import { Announcement, AnnouncementFileWithUser } from '@shared/schema';
 import AnnouncementModal from '../components/modals/AnnouncementModal';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/use-toast';
+import { useMarkAsViewed } from '../hooks/useMarkAsViewed';
 import { apiRequest } from '../lib/queryClient';
 
 export default function AnnouncementsPage() {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  useMarkAsViewed('announcements');
   
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedAnnouncement, setSelectedAnnouncement] = useState<Announcement | null>(null);

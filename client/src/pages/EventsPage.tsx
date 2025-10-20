@@ -44,6 +44,7 @@ import EventModal from '../components/modals/EventModal';
 import EventRSVPModal from '../components/modals/EventRSVPModal';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/use-toast';
+import { useMarkAsViewed } from '../hooks/useMarkAsViewed';
 import { apiRequest } from '../lib/queryClient';
 
 type ViewMode = 'list' | 'week' | 'month';
@@ -296,6 +297,7 @@ export default function EventsPage() {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  useMarkAsViewed('events');
   
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [modalOpen, setModalOpen] = useState(false);

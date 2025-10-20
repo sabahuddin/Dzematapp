@@ -2,11 +2,13 @@ import { Box, Typography, Card, CardContent, Button } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { useAuth } from "@/contexts/AuthContext";
+import { useMarkAsViewed } from "@/hooks/useMarkAsViewed";
 import type { WorkGroup, WorkGroupMember } from "@shared/schema";
 
 export default function AllSectionsPage() {
   const [, setLocation] = useLocation();
   const { user } = useAuth();
+  useMarkAsViewed('tasks');
 
   const { data: workGroups, isLoading } = useQuery<(WorkGroup & { members: WorkGroupMember[] })[]>({
     queryKey: ['/api/work-groups'],
