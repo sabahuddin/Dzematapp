@@ -53,10 +53,18 @@ export default function AskImamPage() {
     queryKey: ["/api/imam-questions"],
   });
 
-  const myQuestions = questions.filter(q => q.userId === user?.id);
+  const myQuestions = user?.isAdmin ? questions : questions.filter(q => q.userId === user?.id);
   const unansweredQuestions = user?.isAdmin ? questions.filter(q => !q.isAnswered) : [];
+  const answeredQuestions = user?.isAdmin ? questions.filter(q => q.isAnswered) : [];
 
-  const filteredQuestions = (selectedTab === "my-questions" ? myQuestions : unansweredQuestions).filter(
+  const getQuestionsForTab = () => {
+    if (selectedTab === "my-questions") return myQuestions;
+    if (selectedTab === "unanswered") return unansweredQuestions;
+    if (selectedTab === "answered") return answeredQuestions;
+    return myQuestions;
+  };
+
+  const filteredQuestions = getQuestionsForTab().filter(
     (q) =>
       q.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
       q.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -179,14 +187,24 @@ export default function AskImamPage() {
             {user?.isAdmin ? "Sva Pitanja" : "Moja Pitanja"}
           </TabsTrigger>
           {user?.isAdmin && (
-            <TabsTrigger value="unanswered" data-testid="tab-unanswered">
-              Neodgovorena
-              {unansweredQuestions.length > 0 && (
-                <Badge variant="destructive" className="ml-2">
-                  {unansweredQuestions.length}
-                </Badge>
-              )}
-            </TabsTrigger>
+            <>
+              <TabsTrigger value="unanswered" data-testid="tab-unanswered">
+                Neodgovorena
+                {unansweredQuestions.length > 0 && (
+                  <Badge variant="destructive" className="ml-2">
+                    {unansweredQuestions.length}
+                  </Badge>
+                )}
+              </TabsTrigger>
+              <TabsTrigger value="answered" data-testid="tab-answered">
+                Arhiva
+                {answeredQuestions.length > 0 && (
+                  <Badge variant="secondary" className="ml-2">
+                    {answeredQuestions.length}
+                  </Badge>
+                )}
+              </TabsTrigger>
+            </>
           )}
         </TabsList>
 
@@ -297,6 +315,60 @@ export default function AskImamPage() {
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-muted-foreground line-clamp-2">{question.question}</p>
+                  </CardContent>
+                </Card>
+              ))
+            )}
+          </TabsContent>
+        )}
+
+        {user?.isAdmin && (
+          <TabsContent value="answered" className="space-y-4">
+            {answeredQuestions.length === 0 ? (
+              <Card>
+                <CardContent className="py-8 text-center">
+                  <MailOpen className="h-12 w-12 mx-auto text-muted-foreground" />
+                  <p className="mt-2 text-muted-foreground">Nema odgovorenih pitanja</p>
+                </CardContent>
+              </Card>
+            ) : (
+              filteredQuestions.map((question) => (
+                <Card
+                  key={question.id}
+                  className="cursor-pointer transition-all hover:shadow-md border-l-4 border-l-green-500"
+                  onClick={() => handleQuestionClick(question)}
+                  data-testid={`question-card-${question.id}`}
+                >
+                  <CardHeader>
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start space-x-3 flex-1">
+                        <MailOpen className="h-5 w-5 text-green-600 mt-0.5" />
+                        <div className="flex-1">
+                          <CardTitle className="text-lg">{question.subject}</CardTitle>
+                          {question.user && (
+                            <CardDescription className="flex items-center gap-1 mt-1">
+                              <User className="h-3 w-3" />
+                              {question.user.firstName} {question.user.lastName}
+                            </CardDescription>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex flex-col items-end gap-2">
+                        <Badge variant="default">Odgovoreno</Badge>
+                        <span className="text-xs text-muted-foreground">
+                          {format(new Date(question.createdAt), "dd.MM.yyyy.")}
+                        </span>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground line-clamp-2">{question.question}</p>
+                    {question.answer && (
+                      <div className="mt-3 p-3 bg-green-50 rounded-md border border-green-200">
+                        <p className="text-sm font-medium text-green-900">Odgovor:</p>
+                        <p className="text-sm text-green-800 mt-1 line-clamp-2">{question.answer}</p>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               ))
