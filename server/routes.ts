@@ -1384,6 +1384,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!request) {
         return res.status(404).json({ message: "Request not found" });
       }
+      
+      // If approved, add the user as a member to the work group
+      if (status === 'approved') {
+        await storage.addMemberToWorkGroup({
+          userId: request.userId,
+          workGroupId: request.workGroupId,
+          role: 'member',
+          joinedAt: new Date()
+        });
+      }
+      
       res.json(request);
     } catch (error) {
       res.status(400).json({ message: "Invalid request status" });
