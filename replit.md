@@ -9,6 +9,7 @@ DžematApp is a web-based admin dashboard application built for managing mosque 
   - Logo displayed in sidebar header next to "DžematApp" text
   - Logo displayed on login page above "DžematApp" title
   - Logo size: 32x32px in sidebar, 40x40px on login page
+  - "DžematApp" text styled with "Aladin" Google Font for Middle Eastern aesthetic
 - **Visual Contrast Enhancement**: Implemented global visual contrast between body background and form/card elements
   - Body background: Medium grey (#eeeeee) for clear separation
   - All cards, dialogs, forms: Pure white (#ffffff)
