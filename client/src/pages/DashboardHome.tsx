@@ -134,10 +134,6 @@ function EventDay(props: PickersDayProps & { eventDates?: Date[] }) {
 export default function DashboardHome() {
   const { user } = useAuth();
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
-  const [selectedAnnouncement, setSelectedAnnouncement] = useState<Announcement | null>(null);
-  const [selectedEvent, setSelectedEvent] = useState<EventType | null>(null);
-  const [announcementModalOpen, setAnnouncementModalOpen] = useState(false);
-  const [eventModalOpen, setEventModalOpen] = useState(false);
   const [dateEventsModalOpen, setDateEventsModalOpen] = useState(false);
   
   // In a real app, these would be actual API calls
@@ -279,40 +275,35 @@ export default function DashboardHome() {
                   </Button>
                 </Link>
               </Box>
-              <CardContent 
-                sx={{ 
-                  cursor: latestAnnouncement ? 'pointer' : 'default',
-                  '&:hover': latestAnnouncement ? { bgcolor: '#f5f5f5' } : {}
-                }}
-                onClick={() => {
-                  if (latestAnnouncement) {
-                    setSelectedAnnouncement(latestAnnouncement);
-                    setAnnouncementModalOpen(true);
-                  }
-                }}
-                data-testid="card-latest-announcement"
-              >
+              <CardContent data-testid="card-latest-announcement">
                 {latestAnnouncement ? (
-                  <Box>
-                    <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
-                      {latestAnnouncement.title}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                      {latestAnnouncement.publishDate && format(new Date(latestAnnouncement.publishDate), 'dd.MM.yyyy. u HH:mm')}
-                    </Typography>
-                    <Box 
-                      sx={{ 
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        display: '-webkit-box',
-                        WebkitLineClamp: 5,
-                        WebkitBoxOrient: 'vertical',
-                        '& p': { margin: 0 },
-                        '& img': { maxWidth: '100%', height: 'auto' }
+                  <Link href="/announcements">
+                    <Box
+                      sx={{
+                        cursor: 'pointer',
+                        '&:hover': { opacity: 0.8 }
                       }}
-                      dangerouslySetInnerHTML={{ __html: latestAnnouncement.content }}
-                    />
-                  </Box>
+                    >
+                      <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
+                        {latestAnnouncement.title}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        {latestAnnouncement.publishDate && format(new Date(latestAnnouncement.publishDate), 'dd.MM.yyyy. u HH:mm')}
+                      </Typography>
+                      <Box 
+                        sx={{ 
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          display: '-webkit-box',
+                          WebkitLineClamp: 5,
+                          WebkitBoxOrient: 'vertical',
+                          '& p': { margin: 0 },
+                          '& img': { maxWidth: '100%', height: 'auto' }
+                        }}
+                        dangerouslySetInnerHTML={{ __html: latestAnnouncement.content }}
+                      />
+                    </Box>
+                  </Link>
                 ) : (
                   <Typography color="text.secondary">
                     Nema novih obavijesti
@@ -331,48 +322,43 @@ export default function DashboardHome() {
                   Sljedeći Događaj
                 </Typography>
               </Box>
-              <CardContent
-                sx={{ 
-                  cursor: upcomingEvent ? 'pointer' : 'default',
-                  '&:hover': upcomingEvent ? { bgcolor: '#f5f5f5' } : {}
-                }}
-                onClick={() => {
-                  if (upcomingEvent) {
-                    setSelectedEvent(upcomingEvent);
-                    setEventModalOpen(true);
-                  }
-                }}
-                data-testid="card-upcoming-event"
-              >
+              <CardContent data-testid="card-upcoming-event">
                 {upcomingEvent ? (
-                  <Box>
-                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-                      {upcomingEvent.name}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                      📅 {format(new Date(upcomingEvent.dateTime), 'dd.MM.yyyy. u HH:mm')}
-                    </Typography>
-                    {upcomingEvent.location && (
-                      <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                        📍 {upcomingEvent.location}
+                  <Link href="/events">
+                    <Box
+                      sx={{
+                        cursor: 'pointer',
+                        '&:hover': { opacity: 0.8 }
+                      }}
+                    >
+                      <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+                        {upcomingEvent.name}
                       </Typography>
-                    )}
-                    {upcomingEvent.description && (
-                      <Box 
-                        sx={{ 
-                          mt: 2,
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          display: '-webkit-box',
-                          WebkitLineClamp: 3,
-                          WebkitBoxOrient: 'vertical',
-                          '& p': { margin: 0 },
-                          '& img': { maxWidth: '100%', height: 'auto' }
-                        }}
-                        dangerouslySetInnerHTML={{ __html: upcomingEvent.description || '' }}
-                      />
-                    )}
-                  </Box>
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                        📅 {format(new Date(upcomingEvent.dateTime), 'dd.MM.yyyy. u HH:mm')}
+                      </Typography>
+                      {upcomingEvent.location && (
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                          📍 {upcomingEvent.location}
+                        </Typography>
+                      )}
+                      {upcomingEvent.description && (
+                        <Box 
+                          sx={{ 
+                            mt: 2,
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            display: '-webkit-box',
+                            WebkitLineClamp: 3,
+                            WebkitBoxOrient: 'vertical',
+                            '& p': { margin: 0 },
+                            '& img': { maxWidth: '100%', height: 'auto' }
+                          }}
+                          dangerouslySetInnerHTML={{ __html: upcomingEvent.description || '' }}
+                        />
+                      )}
+                    </Box>
+                  </Link>
                 ) : (
                   <Typography color="text.secondary">
                     Nema nadolazećih događaja
@@ -559,89 +545,6 @@ export default function DashboardHome() {
           </Grid>
         </Grid>
 
-        {/* Announcement Details Modal */}
-        <Dialog
-          open={announcementModalOpen}
-          onClose={() => setAnnouncementModalOpen(false)}
-          maxWidth="md"
-          fullWidth
-        >
-          <DialogTitle>
-            {selectedAnnouncement?.title}
-            <IconButton
-              onClick={() => setAnnouncementModalOpen(false)}
-              sx={{ position: 'absolute', right: 8, top: 8 }}
-              data-testid="button-close-announcement-modal"
-            >
-              <Close />
-            </IconButton>
-          </DialogTitle>
-          <DialogContent dividers>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              {selectedAnnouncement?.publishDate && format(new Date(selectedAnnouncement.publishDate), 'dd.MM.yyyy. u HH:mm')}
-            </Typography>
-            {selectedAnnouncement?.categories && selectedAnnouncement.categories.length > 0 && (
-              <Box sx={{ mb: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                {selectedAnnouncement.categories.map((category, index) => (
-                  <Chip key={index} label={category} size="small" />
-                ))}
-              </Box>
-            )}
-            <Box 
-              sx={{ 
-                '& p': { marginBottom: 1 },
-                '& img': { maxWidth: '100%', height: 'auto' }
-              }}
-              dangerouslySetInnerHTML={{ __html: selectedAnnouncement?.content || '' }}
-            />
-          </DialogContent>
-        </Dialog>
-
-        {/* Event Details Modal */}
-        <Dialog
-          open={eventModalOpen}
-          onClose={() => setEventModalOpen(false)}
-          maxWidth="md"
-          fullWidth
-        >
-          <DialogTitle>
-            {selectedEvent?.name}
-            <IconButton
-              onClick={() => setEventModalOpen(false)}
-              sx={{ position: 'absolute', right: 8, top: 8 }}
-              data-testid="button-close-event-modal"
-            >
-              <Close />
-            </IconButton>
-          </DialogTitle>
-          <DialogContent dividers>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-              <Schedule />
-              <Typography variant="body1">
-                {selectedEvent?.dateTime && format(new Date(selectedEvent.dateTime), 'dd.MM.yyyy. u HH:mm')}
-              </Typography>
-            </Box>
-            {selectedEvent?.location && (
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                <LocationOn />
-                <Typography variant="body1">
-                  {selectedEvent.location}
-                </Typography>
-              </Box>
-            )}
-            {selectedEvent?.description && (
-              <Box 
-                sx={{ 
-                  mt: 2,
-                  '& p': { marginBottom: 1 },
-                  '& img': { maxWidth: '100%', height: 'auto' }
-                }}
-                dangerouslySetInnerHTML={{ __html: selectedEvent.description }}
-              />
-            )}
-          </DialogContent>
-        </Dialog>
-
         {/* Date Events Modal */}
         <Dialog
           open={dateEventsModalOpen}
@@ -667,38 +570,34 @@ export default function DashboardHome() {
                 {allEvents
                   .filter(event => selectedDate && isSameDay(new Date(event.dateTime), selectedDate))
                   .map(event => (
-                    <Card 
-                      key={event.id}
-                      sx={{ 
-                        cursor: 'pointer',
-                        '&:hover': { bgcolor: '#f5f5f5' }
-                      }}
-                      onClick={() => {
-                        setSelectedEvent(event);
-                        setDateEventsModalOpen(false);
-                        setEventModalOpen(true);
-                      }}
-                    >
-                      <CardContent>
-                        <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-                          {event.name}
-                        </Typography>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                          <Schedule sx={{ fontSize: 18, color: 'text.secondary' }} />
-                          <Typography variant="body2" color="text.secondary">
-                            {format(new Date(event.dateTime), 'HH:mm')}
+                    <Link key={event.id} href="/events">
+                      <Card 
+                        sx={{ 
+                          cursor: 'pointer',
+                          '&:hover': { bgcolor: '#f5f5f5' }
+                        }}
+                      >
+                        <CardContent>
+                          <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+                            {event.name}
                           </Typography>
-                        </Box>
-                        {event.location && (
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <LocationOn sx={{ fontSize: 18, color: 'text.secondary' }} />
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                            <Schedule sx={{ fontSize: 18, color: 'text.secondary' }} />
                             <Typography variant="body2" color="text.secondary">
-                              {event.location}
+                              {format(new Date(event.dateTime), 'HH:mm')}
                             </Typography>
                           </Box>
-                        )}
-                      </CardContent>
-                    </Card>
+                          {event.location && (
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                              <LocationOn sx={{ fontSize: 18, color: 'text.secondary' }} />
+                              <Typography variant="body2" color="text.secondary">
+                                {event.location}
+                              </Typography>
+                            </Box>
+                          )}
+                        </CardContent>
+                      </Card>
+                    </Link>
                   ))}
               </Box>
             ) : (
@@ -827,40 +726,15 @@ export default function DashboardHome() {
                             p: 0.5
                           }}
                         >
-                          <IconButton
-                            size="small"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setSelectedEvent(event);
-                              setEventModalOpen(true);
-                            }}
-                            sx={{ color: '#1976d2' }}
-                            data-testid={`button-view-event-${event.id}`}
-                          >
-                            <Visibility fontSize="small" />
-                          </IconButton>
-                          <IconButton
-                            size="small"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              // TODO: Add edit functionality
-                            }}
-                            sx={{ color: '#ed6c02' }}
-                            data-testid={`button-edit-event-${event.id}`}
-                          >
-                            <Edit fontSize="small" />
-                          </IconButton>
-                          <IconButton
-                            size="small"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              // TODO: Add delete functionality
-                            }}
-                            sx={{ color: '#d32f2f' }}
-                            data-testid={`button-delete-event-${event.id}`}
-                          >
-                            <Delete fontSize="small" />
-                          </IconButton>
+                          <Link href="/events">
+                            <IconButton
+                              size="small"
+                              sx={{ color: '#1976d2' }}
+                              data-testid={`button-view-event-${event.id}`}
+                            >
+                              <Visibility fontSize="small" />
+                            </IconButton>
+                          </Link>
                         </Box>
                       </Box>
                       <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
