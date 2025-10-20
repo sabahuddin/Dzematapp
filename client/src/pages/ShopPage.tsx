@@ -382,6 +382,7 @@ export default function ShopPage() {
     mutationFn: async (data: { recipientId: string; message: string; phone: string; name: string }) => {
       const messageContent = `Ime i prezime: ${data.name}\nBroj telefona: ${data.phone}\n\nPoruka:\n${data.message}`;
       return apiRequest("POST", "/api/messages", {
+        senderId: user!.id,
         recipientId: data.recipientId,
         subject: "Poruka sa Shop-a",
         content: messageContent
