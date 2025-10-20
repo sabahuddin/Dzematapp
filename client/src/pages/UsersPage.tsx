@@ -24,13 +24,13 @@ import {
 } from '@mui/material';
 import {
   PersonAdd,
-  MoreVert,
   Edit,
   Block,
   CheckCircle,
   Person,
   Groups,
-  Upload
+  Upload,
+  Visibility
 } from '@mui/icons-material';
 import { User } from '@shared/schema';
 import UserModal from '../components/modals/UserModal';
@@ -584,12 +584,26 @@ export default function UsersPage() {
                     </IconButton>
                   </TableCell>
                   <TableCell>
-                    <IconButton
-                      onClick={(e) => handleMenuOpen(e, user)}
-                      data-testid={`menu-user-${user.id}`}
-                    >
-                      <MoreVert />
-                    </IconButton>
+                    <Box sx={{ display: 'flex', gap: 0.5 }}>
+                      <IconButton
+                        size="small"
+                        onClick={() => handleEditUser(user)}
+                        sx={{ color: '#1976d2' }}
+                        data-testid={`button-view-user-${user.id}`}
+                        title="Pregledaj"
+                      >
+                        <Visibility fontSize="small" />
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        onClick={() => handleEditUser(user)}
+                        sx={{ color: '#ed6c02' }}
+                        data-testid={`button-edit-user-${user.id}`}
+                        title="Uredi"
+                      >
+                        <Edit fontSize="small" />
+                      </IconButton>
+                    </Box>
                   </TableCell>
                 </TableRow>
               ))}
@@ -607,33 +621,6 @@ export default function UsersPage() {
         </TableContainer>
       </Card>
 
-      {/* User Actions Menu */}
-      <Menu
-        anchorEl={menuAnchor}
-        open={Boolean(menuAnchor)}
-        onClose={handleMenuClose}
-      >
-        <MenuItem onClick={() => menuUser && handleEditUser(menuUser)} data-testid="menu-edit">
-          <Edit sx={{ mr: 1 }} />
-          Uredi
-        </MenuItem>
-        <MenuItem 
-          onClick={() => menuUser && handleToggleUserStatus(menuUser)}
-          data-testid="menu-toggle-status"
-        >
-          {menuUser?.status === 'aktivan' ? (
-            <>
-              <Block sx={{ mr: 1 }} />
-              Postavi kao pasivan
-            </>
-          ) : (
-            <>
-              <CheckCircle sx={{ mr: 1 }} />
-              Postavi kao aktivan
-            </>
-          )}
-        </MenuItem>
-      </Menu>
 
       {/* User Modal */}
       <UserModal

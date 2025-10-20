@@ -32,13 +32,13 @@ import {
 } from '@mui/material';
 import {
   Add,
-  MoreVert,
   Edit,
   Delete,
   AttachFile,
   Image,
   PictureAsPdf,
-  Close
+  Close,
+  Visibility
 } from '@mui/icons-material';
 import { Announcement, AnnouncementFileWithUser } from '@shared/schema';
 import AnnouncementModal from '../components/modals/AnnouncementModal';
@@ -116,16 +116,19 @@ export default function AnnouncementsPage() {
     setModalOpen(true);
   };
 
+  const handleViewAnnouncement = (announcement: Announcement) => {
+    setSelectedAnnouncement(announcement);
+    setModalOpen(true);
+  };
+
   const handleEditAnnouncement = (announcement: Announcement) => {
     setSelectedAnnouncement(announcement);
     setModalOpen(true);
-    handleMenuClose();
   };
 
   const handleDeleteClick = (announcement: Announcement) => {
     setAnnouncementToDelete(announcement);
     setDeleteDialogOpen(true);
-    handleMenuClose();
   };
 
   const handleDeleteConfirm = () => {
@@ -589,12 +592,35 @@ export default function AnnouncementsPage() {
                     <AnnouncementAttachments announcementId={announcement.id} />
                   </TableCell>
                   <TableCell>
-                    <IconButton
-                      onClick={(e) => handleMenuOpen(e, announcement)}
-                      data-testid={`menu-announcement-${announcement.id}`}
-                    >
-                      <MoreVert />
-                    </IconButton>
+                    <Box sx={{ display: 'flex', gap: 0.5 }}>
+                      <IconButton
+                        size="small"
+                        onClick={() => handleViewAnnouncement(announcement)}
+                        sx={{ color: '#1976d2' }}
+                        data-testid={`button-view-announcement-${announcement.id}`}
+                        title="Pregledaj"
+                      >
+                        <Visibility fontSize="small" />
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        onClick={() => handleEditAnnouncement(announcement)}
+                        sx={{ color: '#ed6c02' }}
+                        data-testid={`button-edit-announcement-${announcement.id}`}
+                        title="Uredi"
+                      >
+                        <Edit fontSize="small" />
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        onClick={() => handleDeleteClick(announcement)}
+                        sx={{ color: '#d32f2f' }}
+                        data-testid={`button-delete-announcement-${announcement.id}`}
+                        title="Obriši"
+                      >
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </Box>
                   </TableCell>
                 </TableRow>
               ))}
@@ -612,21 +638,6 @@ export default function AnnouncementsPage() {
         </TableContainer>
       </Card>
 
-      {/* Announcement Actions Menu */}
-      <Menu
-        anchorEl={menuAnchor}
-        open={Boolean(menuAnchor)}
-        onClose={handleMenuClose}
-      >
-        <MenuItem onClick={() => menuAnnouncement && handleEditAnnouncement(menuAnnouncement)} data-testid="menu-edit">
-          <Edit sx={{ mr: 1 }} />
-          Uredi
-        </MenuItem>
-        <MenuItem onClick={() => menuAnnouncement && handleDeleteClick(menuAnnouncement)} data-testid="menu-delete">
-          <Delete sx={{ mr: 1 }} />
-          Obriši
-        </MenuItem>
-      </Menu>
 
       {/* Delete Confirmation Dialog */}
       <Dialog
