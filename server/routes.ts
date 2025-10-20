@@ -1473,6 +1473,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Messages routes
+  app.get("/api/messages/conversations", requireAuth, async (req, res) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const conversations = await storage.getConversations(req.user.id);
+      res.json(conversations);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch conversations" });
+    }
+  });
+
   app.get("/api/messages", requireAuth, async (req, res) => {
     try {
       if (!req.user) {
@@ -1607,6 +1620,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(message);
     } catch (error) {
       res.status(500).json({ message: "Failed to mark message as read" });
+    }
+  });
+
+  app.put("/api/messages/thread/:threadId/read", requireAuth, async (req, res) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const { threadId } = req.params;
+      await storage.markThreadAsRead(threadId, req.user.id);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to mark thread as read" });
     }
   });
 

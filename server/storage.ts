@@ -134,8 +134,10 @@ export interface IStorage {
 
   // Messages
   getMessages(userId: string): Promise<Message[]>;
+  getConversations(userId: string): Promise<Array<{ threadId: string; lastMessage: Message; unreadCount: number; otherUser: User | null }>>;
   createMessage(messageData: InsertMessage): Promise<Message>;
   markAsRead(messageId: string, userId: string): Promise<Message | undefined>;
+  markThreadAsRead(threadId: string, userId: string): Promise<void>;
   deleteMessage(messageId: string): Promise<boolean>;
   getUnreadCount(userId: string): Promise<number>;
   getMessageThread(threadId: string, userId: string): Promise<Message[]>;
@@ -1128,6 +1130,69 @@ export class MemStorage implements IStorage {
         (msg.senderId === userId || msg.recipientId === userId)
       )
       .sort((a, b) => new Date(a.createdAt!).getTime() - new Date(b.createdAt!).getTime());
+  }
+
+  async getConversations(userId: string): Promise<Array<{ threadId: string; lastMessage: Message; unreadCount: number; otherUser: User | null }>> {
+    const userMessages = await this.getMessages(userId);
+    
+    // Group messages by threadId
+    const threadMap = new Map<string, Message[]>();
+    userMessages.forEach(msg => {
+      const thread = msg.threadId || msg.id;
+      if (!threadMap.has(thread)) {
+        threadMap.set(thread, []);
+      }
+      threadMap.get(thread)!.push(msg);
+    });
+
+    // Create conversation list
+    const conversations = await Promise.all(
+      Array.from(threadMap.entries()).map(async ([threadId, messages]) => {
+        // Sort messages by date
+        const sortedMessages = messages.sort((a, b) => 
+          new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime()
+        );
+        
+        const lastMessage = sortedMessages[0];
+        
+        // Count unread messages in this thread
+        const unreadCount = messages.filter(msg => 
+          !msg.isRead && msg.recipientId === userId
+        ).length;
+
+        // Determine the other user in the conversation
+        const otherUserId = lastMessage.senderId === userId 
+          ? lastMessage.recipientId 
+          : lastMessage.senderId;
+        
+        const otherUser = otherUserId ? await this.getUser(otherUserId) : null;
+
+        return {
+          threadId,
+          lastMessage,
+          unreadCount,
+          otherUser
+        };
+      })
+    );
+
+    // Sort conversations by last message date
+    return conversations.sort((a, b) => 
+      new Date(b.lastMessage.createdAt!).getTime() - new Date(a.lastMessage.createdAt!).getTime()
+    );
+  }
+
+  async markThreadAsRead(threadId: string, userId: string): Promise<void> {
+    const messages = Array.from(this.messages.values())
+      .filter(msg => 
+        msg.threadId === threadId && 
+        msg.recipientId === userId &&
+        !msg.isRead
+      );
+    
+    messages.forEach(msg => {
+      this.messages.set(msg.id, { ...msg, isRead: true });
+    });
   }
 
   // Organization Settings
