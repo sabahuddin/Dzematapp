@@ -5,6 +5,28 @@ DžematApp is a web-based admin dashboard application built for managing mosque 
 # Recent Changes
 
 ## October 20, 2025
+- **Shop Currency Update**: Changed all currency displays from KM (Konvertibilna Marka) to CHF (Swiss Franc) throughout Shop module
+- **Shadcn Component Border Enhancement**: Added explicit border styling for shadcn UI components to improve visual contrast
+  - Input, Textarea, Select components now have visible borders (1px solid #e0e0e0)
+  - Hover state: Border changes to #bdbdbd
+  - Focus state: Border changes to #1976d2 with 2px width
+  - Fixes contrast issues in modals (New Message, User Profile) where form fields were hard to distinguish
+- **Imam Q&A Archive Tab**: Added archive functionality for answered questions
+  - New "Arhiva" tab for admin users shows all answered questions
+  - "Sva Pitanja" tab now correctly shows ALL questions (not just admin's own questions)
+  - "Neodgovorena" tab shows only unanswered questions
+  - Fixed bug where admin users couldn't see all questions in the system
+  - Answered questions remain visible and accessible in the archive
+- **Shop Privacy Enhancements**: Improved user privacy in marketplace listings
+  - Removed display of owner names from marketplace items (both "Prodajem" and "Poklanjam" tabs)
+  - Replaced direct contact info display with secure contact form dialog
+  - Contact button now opens "Pošalji poruku" dialog instead of showing email/phone in toast
+  - Contact messages sent anonymously through internal messaging system with subject "Poruka sa Shop-a"
+  - Button label changed from "Pošalji poruku vlasniku" to "Kontaktiraj"
+- **Sample User Data Update**: Updated demo user names to use authentic Bosnian names
+  - Marko Petrović → Mujo Mujic (username: mujo.mujic)
+  - Ana Marić → Ali Alic (username: ali.alic)
+  - Stefan Jovanović → Huse Husic (username: huse.husic)
 - **Logo Integration**: Added mosque logo to application branding
   - Logo displayed in sidebar header next to "DžematApp" text
   - Logo displayed on login page above "DžematApp" title
