@@ -1271,7 +1271,7 @@ function MoveTaskModal({ open, onClose, task, currentWorkGroup, onMoveSuccess }:
       queryClient.invalidateQueries({ queryKey: ['/api/tasks'] });
       toast({ 
         title: 'Uspjeh', 
-        description: `Zadatak uspješno premješten u ${newWorkGroup?.name || 'novu grupu'}` 
+        description: `Zadatak uspješno premješten u ${newWorkGroup?.name || 'novu sekciju'}` 
       });
       onMoveSuccess();
       onClose();
@@ -1289,7 +1289,7 @@ function MoveTaskModal({ open, onClose, task, currentWorkGroup, onMoveSuccess }:
     if (!selectedWorkGroupId) {
       toast({ 
         title: 'Greška', 
-        description: 'Molimo odaberite radnu grupu', 
+        description: 'Molimo odaberite sekciju', 
         variant: 'destructive' 
       });
       return;
@@ -1312,12 +1312,12 @@ function MoveTaskModal({ open, onClose, task, currentWorkGroup, onMoveSuccess }:
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 2 }}>
           <Typography variant="body2" color="text.secondary">
-            Premjesti zadatak "{task?.title}" u drugu radnu grupu
+            Premjesti zadatak "{task?.title}" u drugu sekciju
           </Typography>
           <TextField
             variant="outlined"
             select
-            label="Odaberite radnu grupu"
+            label="Odaberite sekciju"
             value={selectedWorkGroupId}
             onChange={(e) => setSelectedWorkGroupId(e.target.value)}
             fullWidth
@@ -1327,7 +1327,7 @@ function MoveTaskModal({ open, onClose, task, currentWorkGroup, onMoveSuccess }:
             {workGroupsQuery.isLoading ? (
               <MenuItem value="" disabled>Učitavanje...</MenuItem>
             ) : availableWorkGroups.length === 0 ? (
-              <MenuItem value="" disabled>Nema dostupnih grupa</MenuItem>
+              <MenuItem value="" disabled>Nema dostupnih sekcija</MenuItem>
             ) : (
               availableWorkGroups.map((workGroup) => (
                 <MenuItem key={workGroup.id} value={workGroup.id}>

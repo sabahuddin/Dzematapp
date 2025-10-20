@@ -67,7 +67,7 @@ export default function MemberManagementDialog({
       queryClient.invalidateQueries({ queryKey: ['/api/work-groups'] });
       toast({ 
         title: 'Uspjeh', 
-        description: 'Član je uspješno uklonjen iz radne grupe' 
+        description: 'Član je uspješno uklonjen iz sekcije' 
       });
     },
     onError: () => {
@@ -106,7 +106,7 @@ export default function MemberManagementDialog({
   });
 
   const handleRemoveMember = (userId: string, userName: string) => {
-    if (confirm(`Jeste li sigurni da želite ukloniti ${userName} iz grupe?`)) {
+    if (confirm(`Jeste li sigurni da želite ukloniti ${userName} iz sekcije?`)) {
       removeMemberMutation.mutate(userId);
     }
   };
@@ -176,7 +176,7 @@ export default function MemberManagementDialog({
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <People sx={{ fontSize: 20 }} />
-                Članovi Grupe
+                Članovi Sekcije
                 {membersQuery.data && (
                   <Chip 
                     label={membersQuery.data.length} 
@@ -207,7 +207,7 @@ export default function MemberManagementDialog({
               <Box sx={{ textAlign: 'center', py: 4 }}>
                 <People sx={{ fontSize: 48, color: 'text.disabled', mb: 2 }} />
                 <Typography color="text.secondary" variant="h6">
-                  Nema članova u grupi
+                  Nema članova u sekciji
                 </Typography>
                 <Typography color="text.secondary" variant="body2" sx={{ mb: 3 }}>
                   Dodajte prvog člana klikom na dugme "Dodaj Člana"

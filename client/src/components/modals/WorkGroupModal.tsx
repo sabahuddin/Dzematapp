@@ -68,7 +68,7 @@ export default function WorkGroupModal({
       }}
     >
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        {workGroup ? 'Uredi Radnu Grupu' : 'Kreiraj Novu Radnu Grupu'}
+        {workGroup ? 'Uredi Sekciju' : 'Kreiraj Novu Sekciju'}
         <IconButton onClick={onClose} data-testid="close-workgroup-modal">
           <Close />
         </IconButton>

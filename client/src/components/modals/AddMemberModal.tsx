@@ -65,7 +65,7 @@ export default function AddMemberModal({ open, onClose, workGroup }: AddMemberMo
     onError: (error: any) => {
       let errorMessage = 'Greška pri dodavanju člana';
       if (error.message?.includes('already a member')) {
-        errorMessage = 'Korisnik je već član ove grupe';
+        errorMessage = 'Korisnik je već član ove sekcije';
       }
       toast({ 
         title: 'Greška', 
@@ -151,7 +151,7 @@ export default function AddMemberModal({ open, onClose, workGroup }: AddMemberMo
             ) : (
               <>
                 <Typography variant="body2" color="text.secondary">
-                  Odaberite korisnika kojeg želite dodati u radnu grupu
+                  Odaberite korisnika kojeg želite dodati u sekciju
                 </Typography>
                 
                 <FormControl fullWidth required>
@@ -180,7 +180,7 @@ export default function AddMemberModal({ open, onClose, workGroup }: AddMemberMo
 
                 {availableUsers.length === 0 && (
                   <Alert severity="info">
-                    Svi korisnici su već članovi ove radne grupe ili nema registriranih korisnika.
+                    Svi korisnici su već članovi ove sekcije ili nema registriranih korisnika.
                   </Alert>
                 )}
               </>

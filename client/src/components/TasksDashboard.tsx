@@ -235,7 +235,7 @@ export default function TasksDashboard() {
           Pregled Zadataka
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {user?.isAdmin ? 'Admin pogled - Svi zadaci' : 'Moderator pogled - Vaše grupe'}
+          {user?.isAdmin ? 'Admin pogled - Svi zadaci' : 'Moderator pogled - Vaše sekcije'}
         </Typography>
       </Box>
 
