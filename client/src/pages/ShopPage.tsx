@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Box, Tabs, Tab, Typography, Card, CardContent, CardMedia, Button, Chip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField, MenuItem, ImageList, ImageListItem, Select, FormControl, InputLabel } from "@mui/material";
-import { Add, Delete, ShoppingCart, Store, CardGiftcard, CloudUpload, Edit, Close, ContentCopy } from "@mui/icons-material";
+import { Add, Delete, ShoppingCart, Store, CardGiftcard, CloudUpload, Edit, Close, ContentCopy, Archive } from "@mui/icons-material";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -418,6 +418,7 @@ export default function ShopPage() {
 
   const saleItems = marketplaceItems?.filter(item => item.type === "sale" && item.status === "active") || [];
   const giftItems = marketplaceItems?.filter(item => item.type === "gift" && item.status === "active") || [];
+  const archivedItems = marketplaceItems?.filter(item => item.status === "completed") || [];
 
   return (
     <Box sx={{ p: 3 }}>
@@ -429,6 +430,7 @@ export default function ShopPage() {
         <Tab label={isAdmin ? "DžematShop" : "Kupujem"} icon={<Store />} iconPosition="start" data-testid="tab-buy" />
         <Tab label="Prodajem" icon={<ShoppingCart />} iconPosition="start" data-testid="tab-sell" />
         <Tab label="Poklanjam" icon={<CardGiftcard />} iconPosition="start" data-testid="tab-gift" />
+        {isAdmin && <Tab label="Arhiva" icon={<Archive />} iconPosition="start" data-testid="tab-archive" />}
       </Tabs>
 
       {/* Admin DžematShop Tab / Member Kupujem Tab */}
@@ -748,6 +750,86 @@ export default function ShopPage() {
                               </Button>
                             </>
                           )}
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  </Box>
+                );
+              })}
+            </Box>
+          )}
+        </Box>
+      )}
+
+      {/* Arhiva Tab (Admin only) */}
+      {activeTab === 3 && isAdmin && (
+        <Box>
+          {loadingMarketplace ? (
+            <Typography>Učitavanje...</Typography>
+          ) : archivedItems.length === 0 ? (
+            <Typography variant="body1" color="text.secondary">
+              Nema arhiviranih artikala
+            </Typography>
+          ) : (
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 3 }}>
+              {archivedItems.map((item) => {
+                const itemUser = getUserById(item.userId);
+                return (
+                  <Box key={item.id}>
+                    <Card data-testid={`card-archived-${item.id}`}>
+                      {item.photos && item.photos.length > 0 && (
+                        item.photos.length === 1 ? (
+                          <CardMedia
+                            component="img"
+                            height="200"
+                            image={item.photos[0]}
+                            alt={item.name}
+                            sx={{ cursor: 'pointer' }}
+                            onClick={() => openFullscreenImage(item.photos![0])}
+                          />
+                        ) : (
+                          <ImageList sx={{ height: 200 }} cols={2} rowHeight={100}>
+                            {item.photos.slice(0, 4).map((photo, idx) => (
+                              <ImageListItem key={idx} sx={{ cursor: 'pointer' }} onClick={() => openFullscreenImage(photo)}>
+                                <img src={photo} alt={`${item.name} ${idx + 1}`} />
+                              </ImageListItem>
+                            ))}
+                          </ImageList>
+                        )
+                      )}
+                      <CardContent>
+                        <Typography variant="h6" gutterBottom data-testid={`text-archived-name-${item.id}`}>
+                          {item.name}
+                        </Typography>
+                        {item.description && (
+                          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                            {item.description}
+                          </Typography>
+                        )}
+                        {item.price && (
+                          <Typography variant="h6" color="primary" sx={{ mb: 1 }} data-testid={`text-archived-price-${item.id}`}>
+                            {item.price} CHF
+                          </Typography>
+                        )}
+                        <Chip 
+                          label={item.type === "sale" ? "Prodato" : "Pokloneno"} 
+                          color="default" 
+                          size="small" 
+                          sx={{ mb: 1 }} 
+                        />
+                        {itemUser && (
+                          <Typography variant="caption" display="block" color="text.secondary" sx={{ mt: 1 }}>
+                            Vlasnik: {itemUser.firstName} {itemUser.lastName}
+                          </Typography>
+                        )}
+                        <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                          <IconButton
+                            color="error"
+                            onClick={() => deleteMarketplaceItemMutation.mutate(item.id)}
+                            data-testid={`button-delete-archived-${item.id}`}
+                          >
+                            <Delete />
+                          </IconButton>
                         </Box>
                       </CardContent>
                     </Card>
