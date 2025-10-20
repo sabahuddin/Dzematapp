@@ -4,6 +4,12 @@ DžematApp is a web-based admin dashboard application built for managing mosque 
 
 # Recent Changes
 
+## October 20, 2025
+- **Terminology Finalization**: Completed comprehensive replacement of all remaining "Radna grupa/grupa" instances with "Sekcija" throughout the entire application
+  - Updated user interface labels in: TasksDashboard, MemberManagementDialog, AddMemberModal, WorkGroupModal, TaskManagerPage
+  - Affected components: Task overview headings, member management dialogs, success/error messages, form labels, and dropdown options
+  - All user-facing text now consistently uses "Sekcija" terminology
+
 ## October 19, 2025
 - **Login Authentication Update**: Changed login from email to username-based authentication. Login field now displays "Korisničko ime" instead of "E-mail" and is no longer required. Backend updated to use `getUserByUsername` method.
 - **Guest Access Implementation**: Added guest access option on login page allowing non-members to view announcements, events, and membership application form without authentication. New route: `/guest` (publicly accessible).
