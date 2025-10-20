@@ -69,18 +69,19 @@ function TabPanel(props: TabPanelProps) {
 }
 
 interface WorkGroupCardProps {
-  workGroup: WorkGroup;
+  workGroup: WorkGroup & { members?: WorkGroupMember[] };
   onManageMembers: (workGroup: WorkGroup) => void;
   onManageTasks: (workGroup: WorkGroup) => void;
+  onJoinRequest: (workGroup: WorkGroup) => void;
+  currentUser: any;
 }
 
-function WorkGroupCard({ workGroup, onManageMembers, onManageTasks }: WorkGroupCardProps) {
-  // Hook to get member count for this work group  
-  const memberCountQuery = useQuery({
-    queryKey: ['/api/work-groups', workGroup.id, 'members'],
-    select: (data: Array<WorkGroupMember & { user: User }>) => data?.length || 0,
-    retry: 1,
-  });
+function WorkGroupCard({ workGroup, onManageMembers, onManageTasks, onJoinRequest, currentUser }: WorkGroupCardProps) {
+  const { toast } = useToast();
+  
+  // Check if current user is a member of this work group
+  const isMember = workGroup.members?.some((m: WorkGroupMember) => m.userId === currentUser?.id) || false;
+  const isAdmin = currentUser?.isAdmin || false;
 
   return (
     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -110,30 +111,46 @@ function WorkGroupCard({ workGroup, onManageMembers, onManageTasks }: WorkGroupC
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
             <People sx={{ fontSize: 16, mr: 0.5, color: 'text.secondary' }} />
             <Typography variant="body2" color="text.secondary">
-              {memberCountQuery.isLoading ? (
-                <CircularProgress size={12} sx={{ mr: 0.5 }} />
-              ) : (
-                `${memberCountQuery.data || 0} članova`
-              )}
+              {`${workGroup.members?.length || 0} članova`}
             </Typography>
           </Box>
           
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Button
-              variant="contained"
-              startIcon={<ManageAccounts />}
-              onClick={() => onManageMembers(workGroup)}
-              data-testid={`button-manage-members-${workGroup.id}`}
-            >
-              Upravljaj Članovima
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => onManageTasks(workGroup)}
-              data-testid={`button-manage-tasks-${workGroup.id}`}
-            >
-              Upravljaj Zadacima
-            </Button>
+            {isAdmin ? (
+              <>
+                <Button
+                  variant="contained"
+                  startIcon={<ManageAccounts />}
+                  onClick={() => onManageMembers(workGroup)}
+                  data-testid={`button-manage-members-${workGroup.id}`}
+                >
+                  Upravljaj Članovima
+                </Button>
+                <Button
+                  variant="outlined"
+                  onClick={() => onManageTasks(workGroup)}
+                  data-testid={`button-manage-tasks-${workGroup.id}`}
+                >
+                  Upravljaj Zadacima
+                </Button>
+              </>
+            ) : isMember ? (
+              <Button
+                variant="contained"
+                onClick={() => onManageTasks(workGroup)}
+                data-testid={`button-view-tasks-${workGroup.id}`}
+              >
+                Pogledaj Zadatke
+              </Button>
+            ) : (
+              <Button
+                variant="outlined"
+                onClick={() => onJoinRequest(workGroup)}
+                data-testid={`button-join-${workGroup.id}`}
+              >
+                Pridruži se
+              </Button>
+            )}
           </Box>
         </CardContent>
       </Card>
@@ -174,16 +191,11 @@ export default function TaskManagerPage() {
     enabled: !!user?.isAdmin,
   });
 
-  // Filter work groups to show only those where user is a member (for non-admins)
+  // All work groups are shown to all users
   const userWorkGroups = React.useMemo(() => {
     if (!workGroupsQuery.data) return [];
-    if (user?.isAdmin) return workGroupsQuery.data;
-    
-    // For non-admin users, show only work groups they are members of
-    return workGroupsQuery.data.filter((wg: any) => {
-      return wg.members?.some((m: any) => m.userId === user?.id);
-    });
-  }, [workGroupsQuery.data, user]);
+    return workGroupsQuery.data;
+  }, [workGroupsQuery.data]);
 
   // Create work group mutation
   const createWorkGroupMutation = useMutation({
@@ -197,6 +209,21 @@ export default function TaskManagerPage() {
     },
     onError: () => {
       toast({ title: 'Greška', description: 'Greška pri kreiranju sekcije', variant: 'destructive' });
+    }
+  });
+
+  // Create access request mutation
+  const createAccessRequestMutation = useMutation({
+    mutationFn: async (requestData: any) => {
+      const response = await apiRequest('POST', '/api/access-requests', requestData);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/access-requests'] });
+      toast({ title: 'Uspjeh', description: 'Zahtjev za pristup je poslat' });
+    },
+    onError: () => {
+      toast({ title: 'Greška', description: 'Greška pri slanju zahtjeva', variant: 'destructive' });
     }
   });
 
@@ -237,6 +264,16 @@ export default function TaskManagerPage() {
   const handleManageGroupTasks = (workGroup: WorkGroup) => {
     setSelectedWorkGroup(workGroup);
     setTaskManagementDialogOpen(true);
+  };
+
+  const handleJoinRequest = (workGroup: WorkGroup) => {
+    if (!user?.id) return;
+    
+    createAccessRequestMutation.mutate({
+      userId: user.id,
+      workGroupId: workGroup.id,
+      status: 'pending'
+    });
   };
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, request: AccessRequest) => {
@@ -331,6 +368,8 @@ export default function TaskManagerPage() {
               workGroup={workGroup}
               onManageMembers={handleManageMembers}
               onManageTasks={handleManageGroupTasks}
+              onJoinRequest={handleJoinRequest}
+              currentUser={user}
             />
           ))}
           
@@ -339,7 +378,7 @@ export default function TaskManagerPage() {
               <Card>
                 <CardContent sx={{ textAlign: 'center', py: 6 }}>
                   <Typography color="text.secondary">
-                    {user?.isAdmin ? 'Nema radnih grupa' : 'Niste član nijedne sekcije'}
+                    Nema dostupnih sekcija
                   </Typography>
                 </CardContent>
               </Card>
