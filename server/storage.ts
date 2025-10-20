@@ -26,6 +26,8 @@ import {
   type InsertFamilyRelationship,
   type Message,
   type InsertMessage,
+  type ImamQuestion,
+  type InsertImamQuestion,
   type OrganizationSettings,
   type InsertOrganizationSettings,
   type Document,
@@ -142,6 +144,14 @@ export interface IStorage {
   getUnreadCount(userId: string): Promise<number>;
   getMessageThread(threadId: string, userId: string): Promise<Message[]>;
 
+  // Imam Questions
+  getImamQuestions(userId?: string): Promise<ImamQuestion[]>;
+  createImamQuestion(questionData: InsertImamQuestion): Promise<ImamQuestion>;
+  answerImamQuestion(questionId: string, answer: string): Promise<ImamQuestion | undefined>;
+  markQuestionAsRead(questionId: string): Promise<ImamQuestion | undefined>;
+  deleteImamQuestion(questionId: string): Promise<boolean>;
+  getUnansweredQuestionsCount(): Promise<number>;
+
   // Organization Settings
   getOrganizationSettings(): Promise<OrganizationSettings | undefined>;
   updateOrganizationSettings(settings: Partial<InsertOrganizationSettings>): Promise<OrganizationSettings>;
@@ -202,6 +212,7 @@ export class MemStorage implements IStorage {
   private activities: Map<string, Activity> = new Map();
   private familyRelationships: Map<string, FamilyRelationship> = new Map();
   private messages: Map<string, Message> = new Map();
+  private imamQuestions: Map<string, ImamQuestion> = new Map();
   private organizationSettings: OrganizationSettings | null = null;
   private documents: Map<string, Document> = new Map();
   private requests: Map<string, Request> = new Map();
@@ -1193,6 +1204,66 @@ export class MemStorage implements IStorage {
     messages.forEach(msg => {
       this.messages.set(msg.id, { ...msg, isRead: true });
     });
+  }
+
+  // Imam Questions
+  async getImamQuestions(userId?: string): Promise<ImamQuestion[]> {
+    const questions = Array.from(this.imamQuestions.values());
+    if (userId) {
+      return questions.filter(q => q.userId === userId);
+    }
+    return questions.sort((a, b) => 
+      new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime()
+    );
+  }
+
+  async createImamQuestion(questionData: InsertImamQuestion): Promise<ImamQuestion> {
+    const question: ImamQuestion = {
+      id: randomUUID(),
+      ...questionData,
+      answer: null,
+      isAnswered: false,
+      isRead: false,
+      createdAt: new Date().toISOString(),
+      answeredAt: null,
+    };
+    this.imamQuestions.set(question.id, question);
+    return question;
+  }
+
+  async answerImamQuestion(questionId: string, answer: string): Promise<ImamQuestion | undefined> {
+    const question = this.imamQuestions.get(questionId);
+    if (!question) return undefined;
+
+    const updatedQuestion: ImamQuestion = {
+      ...question,
+      answer,
+      isAnswered: true,
+      answeredAt: new Date().toISOString(),
+    };
+    this.imamQuestions.set(questionId, updatedQuestion);
+    return updatedQuestion;
+  }
+
+  async markQuestionAsRead(questionId: string): Promise<ImamQuestion | undefined> {
+    const question = this.imamQuestions.get(questionId);
+    if (!question) return undefined;
+
+    const updatedQuestion: ImamQuestion = {
+      ...question,
+      isRead: true,
+    };
+    this.imamQuestions.set(questionId, updatedQuestion);
+    return updatedQuestion;
+  }
+
+  async deleteImamQuestion(questionId: string): Promise<boolean> {
+    return this.imamQuestions.delete(questionId);
+  }
+
+  async getUnansweredQuestionsCount(): Promise<number> {
+    return Array.from(this.imamQuestions.values())
+      .filter(q => !q.isAnswered).length;
   }
 
   // Organization Settings

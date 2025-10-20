@@ -1656,6 +1656,117 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Imam Questions routes
+  app.get("/api/imam-questions", requireAuth, async (req, res) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const userId = req.user.isAdmin ? undefined : req.user.id;
+      const questions = await storage.getImamQuestions(userId);
+      
+      const questionsWithUserInfo = await Promise.all(
+        questions.map(async (q) => {
+          const user = await storage.getUser(q.userId);
+          return {
+            ...q,
+            user: user ? {
+              id: user.id,
+              firstName: user.firstName,
+              lastName: user.lastName
+            } : null
+          };
+        })
+      );
+      
+      res.json(questionsWithUserInfo);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch imam questions" });
+    }
+  });
+
+  app.post("/api/imam-questions", requireAuth, async (req, res) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const questionData = {
+        userId: req.user.id,
+        subject: req.body.subject,
+        question: req.body.question,
+      };
+
+      const question = await storage.createImamQuestion(questionData);
+      res.status(201).json(question);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to create imam question" });
+    }
+  });
+
+  app.put("/api/imam-questions/:id/answer", requireAuth, async (req, res) => {
+    try {
+      if (!req.user?.isAdmin) {
+        return res.status(403).json({ message: "Only admins can answer questions" });
+      }
+
+      const { id } = req.params;
+      const { answer } = req.body;
+
+      if (!answer) {
+        return res.status(400).json({ message: "Answer is required" });
+      }
+
+      const question = await storage.answerImamQuestion(id, answer);
+      if (!question) {
+        return res.status(404).json({ message: "Question not found" });
+      }
+
+      res.json(question);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to answer question" });
+    }
+  });
+
+  app.put("/api/imam-questions/:id/read", requireAuth, async (req, res) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const { id } = req.params;
+      const question = await storage.markQuestionAsRead(id);
+      
+      if (!question) {
+        return res.status(404).json({ message: "Question not found" });
+      }
+
+      res.json(question);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to mark question as read" });
+    }
+  });
+
+  app.delete("/api/imam-questions/:id", requireAuth, async (req, res) => {
+    try {
+      if (!req.user?.isAdmin) {
+        return res.status(403).json({ message: "Only admins can delete questions" });
+      }
+
+      const { id } = req.params;
+      const deleted = await storage.deleteImamQuestion(id);
+
+      if (!deleted) {
+        return res.status(404).json({ message: "Question not found" });
+      }
+
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete question" });
+    }
+  });
+
   // Organization Settings routes
   app.get("/api/organization-settings", async (req, res) => {
     try {

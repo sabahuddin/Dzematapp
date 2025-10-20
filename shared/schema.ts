@@ -155,6 +155,18 @@ export const messages = pgTable("messages", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const imamQuestions = pgTable("imam_questions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  subject: text("subject").notNull(),
+  question: text("question").notNull(),
+  answer: text("answer"),
+  isAnswered: boolean("is_answered").default(false).notNull(),
+  isRead: boolean("is_read").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  answeredAt: timestamp("answered_at"),
+});
+
 export const organizationSettings = pgTable("organization_settings", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull().default("Islamska Zajednica"),
@@ -304,6 +316,15 @@ export const insertMessageSchema = createInsertSchema(messages).omit({
   isRead: true,
 });
 
+export const insertImamQuestionSchema = createInsertSchema(imamQuestions).omit({
+  id: true,
+  createdAt: true,
+  isRead: true,
+  isAnswered: true,
+  answeredAt: true,
+  answer: true,
+});
+
 export const insertOrganizationSettingsSchema = createInsertSchema(organizationSettings).omit({
   id: true,
   updatedAt: true,
@@ -362,6 +383,8 @@ export type FamilyRelationship = typeof familyRelationships.$inferSelect;
 export type InsertFamilyRelationship = z.infer<typeof insertFamilyRelationshipSchema>;
 export type Message = typeof messages.$inferSelect;
 export type InsertMessage = z.infer<typeof insertMessageSchema>;
+export type ImamQuestion = typeof imamQuestions.$inferSelect;
+export type InsertImamQuestion = z.infer<typeof insertImamQuestionSchema>;
 export type OrganizationSettings = typeof organizationSettings.$inferSelect;
 export type InsertOrganizationSettings = z.infer<typeof insertOrganizationSettingsSchema>;
 export type Document = typeof documents.$inferSelect;
