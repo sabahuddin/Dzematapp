@@ -614,7 +614,7 @@ export default function ShopPage() {
                               onClick={() => handleContactUser(itemUser)}
                               data-testid={`button-contact-${item.id}`}
                             >
-                              Pošalji poruku
+                              Pošalji poruku vlasniku
                             </Button>
                           )}
                           {canEdit && (
@@ -720,7 +720,7 @@ export default function ShopPage() {
                               onClick={() => handleContactUser(itemUser)}
                               data-testid={`button-contact-gift-${item.id}`}
                             >
-                              Pošalji poruku
+                              Pošalji poruku vlasniku
                             </Button>
                           )}
                           {canEdit && (
