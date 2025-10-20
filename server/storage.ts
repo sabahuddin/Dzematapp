@@ -1442,6 +1442,8 @@ export class MemStorage implements IStorage {
       description: item.description || null,
       photos: item.photos || null,
       type: item.type,
+      price: item.price || null,
+      status: item.status || "active",
       userId: item.userId,
       createdAt: new Date()
     };
