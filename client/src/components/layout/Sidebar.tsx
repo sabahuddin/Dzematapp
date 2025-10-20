@@ -54,7 +54,6 @@ const menuItems = [
   { path: '/announcements', label: 'Obavijesti', icon: Campaign, showBadge: true },
   { path: '/events', label: 'Događaji', icon: Event, showBadge: true },
   { path: '/sections', label: 'Sekcije', icon: Task, showBadge: true },
-  { path: '/tasks', label: 'Moje sekcije', icon: Task, requiresWorkGroup: true },
   { path: '/messages', label: 'Poruke', icon: Mail, showBadge: true },
   { path: '/ask-imam', label: 'Pitaj imama', icon: QuestionAnswer, showBadge: true },
   { path: '/documents', label: 'Dokumenti', icon: Description },
@@ -86,22 +85,6 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     queryKey: ['/api/organization-settings'],
   });
 
-  // Check if user is member of any work group
-  const { data: allWorkGroups } = useQuery({
-    queryKey: ['/api/work-groups'],
-    enabled: !!user && !user.isAdmin,
-  });
-
-  const userWorkGroupIds = React.useMemo(() => {
-    if (!allWorkGroups || !Array.isArray(allWorkGroups) || !user) return new Set<string>();
-    return new Set(
-      allWorkGroups
-        .filter((wg: any) => wg.members?.some((m: any) => m.userId === user.id))
-        .map((wg: any) => wg.id)
-    );
-  }, [allWorkGroups, user]);
-
-  const isMemberOfAnyWorkGroup = userWorkGroupIds.size > 0;
 
   const handleNavigation = (path: string) => {
     setLocation(path);
@@ -176,11 +159,6 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
         {menuItems.map((item) => {
           // Hide admin-only items from non-admin users
           if (item.adminOnly && !user?.isAdmin) {
-            return null;
-          }
-
-          // Hide work group section if user is not member of any work group
-          if (item.requiresWorkGroup && !user?.isAdmin && !isMemberOfAnyWorkGroup) {
             return null;
           }
 
