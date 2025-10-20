@@ -149,6 +149,12 @@
     background-color: var(--mui-background-paper) !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
     border-radius: 8px !important;
+    border: 0 !important;
+  }
+  
+  .MuiPaper-root {
+    background-color: var(--mui-background-paper) !important;
+    border: 0 !important;
   }
 
   .MuiButton-contained {
@@ -212,17 +218,34 @@
   }
 
   .MuiTableCell-root {
+    border: 0 !important;
     border-bottom: 1px solid #e0e0e0 !important;
   }
 
   .MuiDrawer-paper {
     background-color: var(--mui-background-paper) !important;
+    border: 0 !important;
   }
 
   .MuiAppBar-root {
     background-color: var(--mui-background-paper) !important;
     color: var(--mui-text-primary) !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+    border: 0 !important;
+  }
+  
+  .MuiMenu-paper {
+    background-color: var(--mui-background-paper) !important;
+    border: 0 !important;
+  }
+  
+  .MuiPopover-paper {
+    background-color: var(--mui-background-paper) !important;
+    border: 0 !important;
+  }
+  
+  .MuiSelect-select {
+    background-color: var(--mui-background-paper) !important;
   }
 
   /* Login page specific styles */
@@ -266,6 +289,8 @@
   /* Modal and dialog customizations */
   .MuiDialog-paper {
     border-radius: 8px !important;
+    background-color: var(--mui-background-paper) !important;
+    border: 0 !important;
   }
 
   /* Prevent horizontal overflow on mobile */
@@ -305,15 +330,19 @@
 
   .MuiInputBase-root {
     border-radius: 6px !important;
+    background-color: var(--mui-background-paper) !important;
+  }
+  
+  .MuiOutlinedInput-notchedOutline {
+    border: 0 !important;
   }
 
   .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-    border-color: var(--mui-primary) !important;
+    border: 0 !important;
   }
 
   .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: var(--mui-primary) !important;
-    border-width: 2px !important;
+    border: 0 !important;
   }
 
   /* GLOBAL FIX: Force ALL labels to stay ABOVE the field (like shadcn forms) */
