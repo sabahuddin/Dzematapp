@@ -30,7 +30,12 @@ import {
   Mail,
   Workspaces,
   Archive,
-  ChevronRight
+  ChevronRight,
+  LocationOn,
+  Schedule,
+  PersonAdd,
+  NotificationsActive,
+  ArrowForward
 } from '@mui/icons-material';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay';
@@ -141,14 +146,14 @@ export default function DashboardHome() {
     }
   });
 
-  // For members, fetch latest announcement and upcoming events
-  const announcementsQuery = useQuery<Announcement[]>({
-    queryKey: ['/api/announcements'],
-    enabled: !user?.isAdmin,
-  });
-
+  // Fetch events for all users
   const eventsQuery = useQuery<EventType[]>({
     queryKey: ['/api/events'],
+  });
+
+  // For members, fetch latest announcement
+  const announcementsQuery = useQuery<Announcement[]>({
+    queryKey: ['/api/announcements'],
     enabled: !user?.isAdmin,
   });
 
@@ -180,7 +185,7 @@ export default function DashboardHome() {
   });
 
   if (user?.isAdmin) {
-    if (statisticsQuery.isLoading || activitiesQuery.isLoading) {
+    if (statisticsQuery.isLoading || activitiesQuery.isLoading || eventsQuery.isLoading) {
       return (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
           <CircularProgress />
@@ -188,7 +193,7 @@ export default function DashboardHome() {
       );
     }
 
-    if (statisticsQuery.error || activitiesQuery.error) {
+    if (statisticsQuery.error || activitiesQuery.error || eventsQuery.error) {
       return (
         <Alert severity="error">
           Greška pri učitavanju podataka. Molimo pokušajte ponovo.
@@ -554,6 +559,134 @@ export default function DashboardHome() {
           />
         </Grid>
       </Grid>
+
+      {/* Upcoming Events Section */}
+      <Card sx={{ mb: 3 }}>
+        <Box sx={{ p: 3, borderBottom: '1px solid #e0e0e0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography variant="h6" sx={{ fontWeight: 600 }}>
+            Nadolazeći Događaji
+          </Typography>
+          <Button
+            component={Link}
+            href="/events"
+            endIcon={<ArrowForward />}
+            sx={{ textTransform: 'none' }}
+            data-testid="link-all-events"
+          >
+            Svi Događaji
+          </Button>
+        </Box>
+        <Box sx={{ p: 3 }}>
+          {eventsQuery.data && eventsQuery.data.length > 0 ? (
+            <Grid container spacing={2}>
+              {eventsQuery.data
+                .filter(event => new Date(event.dateTime) >= new Date())
+                .sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime())
+                .slice(0, 6)
+                .map(event => (
+                  <Grid size={{ xs: 12, sm: 6, md: 4 }} key={event.id}>
+                    <Card 
+                      sx={{ 
+                        height: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        transition: 'transform 0.2s, box-shadow 0.2s',
+                        '&:hover': {
+                          transform: 'translateY(-4px)',
+                          boxShadow: 3
+                        }
+                      }}
+                      data-testid={`event-card-${event.id}`}
+                    >
+                      <Box
+                        sx={{
+                          height: 180,
+                          bgcolor: '#1976d2',
+                          backgroundImage: 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          position: 'relative'
+                        }}
+                      >
+                        <CalendarMonth sx={{ fontSize: 64, color: 'white', opacity: 0.3 }} />
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            position: 'absolute',
+                            color: 'white',
+                            fontWeight: 600,
+                            textAlign: 'center',
+                            px: 2
+                          }}
+                        >
+                          {format(new Date(event.dateTime), 'dd.MM.yyyy.')}
+                        </Typography>
+                      </Box>
+                      <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                        <Typography 
+                          variant="h6" 
+                          sx={{ 
+                            fontWeight: 600, 
+                            mb: 1,
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical'
+                          }}
+                        >
+                          {event.name}
+                        </Typography>
+                        
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                          <LocationOn sx={{ fontSize: 18, color: 'text.secondary' }} />
+                          <Typography variant="body2" color="text.secondary">
+                            {event.location}
+                          </Typography>
+                        </Box>
+                        
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                          <Schedule sx={{ fontSize: 18, color: 'text.secondary' }} />
+                          <Typography variant="body2" color="text.secondary">
+                            {format(new Date(event.dateTime), 'dd.MM.yyyy. u HH:mm')}
+                          </Typography>
+                        </Box>
+
+                        <Box sx={{ mt: 'auto', display: 'flex', gap: 1 }}>
+                          {event.rsvpEnabled && (
+                            <Button
+                              size="small"
+                              variant="contained"
+                              startIcon={<PersonAdd />}
+                              fullWidth
+                              data-testid={`button-rsvp-${event.id}`}
+                            >
+                              Prijavi se
+                            </Button>
+                          )}
+                          <Button
+                            size="small"
+                            variant="outlined"
+                            startIcon={<NotificationsActive />}
+                            fullWidth
+                            data-testid={`button-remind-${event.id}`}
+                          >
+                            Podsjeti me
+                          </Button>
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))}
+            </Grid>
+          ) : (
+            <Typography color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
+              Nema nadolazećih događaja
+            </Typography>
+          )}
+        </Box>
+      </Card>
 
       {/* Tasks Dashboard for Admins and Moderators */}
       <Box sx={{ mb: 3 }}>
