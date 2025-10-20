@@ -138,6 +138,7 @@ export interface IStorage {
   markAsRead(messageId: string, userId: string): Promise<Message | undefined>;
   deleteMessage(messageId: string): Promise<boolean>;
   getUnreadCount(userId: string): Promise<number>;
+  getMessageThread(threadId: string, userId: string): Promise<Message[]>;
 
   // Organization Settings
   getOrganizationSettings(): Promise<OrganizationSettings | undefined>;
@@ -1062,6 +1063,10 @@ export class MemStorage implements IStorage {
 
   async createMessage(insertMessage: InsertMessage): Promise<Message> {
     const id = randomUUID();
+    
+    // If no threadId provided, this is a new conversation
+    const threadId = insertMessage.threadId || id;
+    
     const message: Message = {
       id,
       senderId: insertMessage.senderId,
@@ -1070,6 +1075,8 @@ export class MemStorage implements IStorage {
       subject: insertMessage.subject,
       content: insertMessage.content,
       isRead: false,
+      threadId,
+      parentMessageId: insertMessage.parentMessageId || null,
       createdAt: new Date()
     };
     this.messages.set(id, message);
@@ -1112,6 +1119,15 @@ export class MemStorage implements IStorage {
       !msg.isRead && 
       (msg.recipientId === userId || msg.category)
     ).length;
+  }
+
+  async getMessageThread(threadId: string, userId: string): Promise<Message[]> {
+    return Array.from(this.messages.values())
+      .filter(msg => 
+        msg.threadId === threadId &&
+        (msg.senderId === userId || msg.recipientId === userId)
+      )
+      .sort((a, b) => new Date(a.createdAt!).getTime() - new Date(b.createdAt!).getTime());
   }
 
   // Organization Settings

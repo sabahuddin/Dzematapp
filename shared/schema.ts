@@ -150,6 +150,8 @@ export const messages = pgTable("messages", {
   subject: text("subject").notNull(),
   content: text("content").notNull(),
   isRead: boolean("is_read").default(false).notNull(),
+  threadId: varchar("thread_id"),
+  parentMessageId: varchar("parent_message_id").references((): any => messages.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

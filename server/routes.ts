@@ -1521,6 +1521,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/messages/thread/:threadId", requireAuth, async (req, res) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const { threadId } = req.params;
+      const thread = await storage.getMessageThread(threadId, req.user.id);
+      
+      const threadWithUserInfo = await Promise.all(
+        thread.map(async (msg) => {
+          const sender = await storage.getUser(msg.senderId);
+          const recipient = msg.recipientId ? await storage.getUser(msg.recipientId) : null;
+          
+          return {
+            ...msg,
+            sender: sender ? {
+              id: sender.id,
+              firstName: sender.firstName,
+              lastName: sender.lastName
+            } : null,
+            recipient: recipient ? {
+              id: recipient.id,
+              firstName: recipient.firstName,
+              lastName: recipient.lastName
+            } : null
+          };
+        })
+      );
+      
+      res.json(threadWithUserInfo);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch message thread" });
+    }
+  });
+
   app.post("/api/messages", requireAuth, async (req, res) => {
     try {
       if (!req.user) {
