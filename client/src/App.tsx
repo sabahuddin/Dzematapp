@@ -69,14 +69,15 @@ const theme = createTheme({
           '& .MuiOutlinedInput-root': {
             borderRadius: 8,
             '& fieldset': {
-              borderColor: '#1976d2',
-              borderWidth: '2px',
+              borderColor: '#e0e0e0',
+              borderWidth: '1px',
             },
             '&:hover fieldset': {
-              borderColor: '#1565c0',
+              borderColor: '#bdbdbd',
             },
             '&.Mui-focused fieldset': {
               borderColor: '#1976d2',
+              borderWidth: '2px',
             },
           },
         },
@@ -98,14 +99,15 @@ const theme = createTheme({
           '& .MuiOutlinedInput-root': {
             borderRadius: 8,
             '& fieldset': {
-              borderColor: '#1976d2',
-              borderWidth: '2px',
+              borderColor: '#e0e0e0',
+              borderWidth: '1px',
             },
             '&:hover fieldset': {
-              borderColor: '#1565c0',
+              borderColor: '#bdbdbd',
             },
             '&.Mui-focused fieldset': {
               borderColor: '#1976d2',
+              borderWidth: '2px',
             },
           },
         },
