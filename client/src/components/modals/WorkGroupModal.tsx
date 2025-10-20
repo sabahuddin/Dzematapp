@@ -7,7 +7,12 @@ import {
   TextField,
   Button,
   IconButton,
-  Box
+  Box,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio
 } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { WorkGroup } from '@shared/schema';
@@ -27,19 +32,22 @@ export default function WorkGroupModal({
 }: WorkGroupModalProps) {
   const [formData, setFormData] = useState({
     name: '',
-    description: ''
+    description: '',
+    visibility: 'javna'
   });
 
   useEffect(() => {
     if (workGroup) {
       setFormData({
         name: workGroup.name || '',
-        description: workGroup.description || ''
+        description: workGroup.description || '',
+        visibility: workGroup.visibility || 'javna'
       });
     } else {
       setFormData({
         name: '',
-        description: ''
+        description: '',
+        visibility: 'javna'
       });
     }
   }, [workGroup, open]);
@@ -97,6 +105,28 @@ export default function WorkGroupModal({
               rows={4}
               data-testid="input-description"
             />
+            
+            <FormControl component="fieldset">
+              <FormLabel component="legend">Vidljivost</FormLabel>
+              <RadioGroup
+                value={formData.visibility}
+                onChange={handleChange('visibility')}
+                data-testid="radio-visibility"
+              >
+                <FormControlLabel 
+                  value="javna" 
+                  control={<Radio />} 
+                  label="Javna - vidljiva svim korisnicima" 
+                  data-testid="radio-javna"
+                />
+                <FormControlLabel 
+                  value="privatna" 
+                  control={<Radio />} 
+                  label="Privatna - vidljiva samo adminima i dodijeljenim članovima" 
+                  data-testid="radio-privatna"
+                />
+              </RadioGroup>
+            </FormControl>
           </Box>
         </DialogContent>
         
