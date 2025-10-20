@@ -39,7 +39,11 @@ import {
   Schedule,
   PersonAdd,
   NotificationsActive,
-  ArrowForward
+  ArrowForward,
+  Visibility,
+  Edit,
+  Delete,
+  Close
 } from '@mui/icons-material';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay';
@@ -809,6 +813,55 @@ export default function DashboardHome() {
                         >
                           {format(new Date(event.dateTime), 'dd.MM.yyyy.')}
                         </Typography>
+                        
+                        {/* Action Icons */}
+                        <Box
+                          sx={{
+                            position: 'absolute',
+                            top: 8,
+                            right: 8,
+                            display: 'flex',
+                            gap: 0.5,
+                            bgcolor: 'rgba(255, 255, 255, 0.9)',
+                            borderRadius: 1,
+                            p: 0.5
+                          }}
+                        >
+                          <IconButton
+                            size="small"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedEvent(event);
+                              setEventModalOpen(true);
+                            }}
+                            sx={{ color: '#1976d2' }}
+                            data-testid={`button-view-event-${event.id}`}
+                          >
+                            <Visibility fontSize="small" />
+                          </IconButton>
+                          <IconButton
+                            size="small"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              // TODO: Add edit functionality
+                            }}
+                            sx={{ color: '#ed6c02' }}
+                            data-testid={`button-edit-event-${event.id}`}
+                          >
+                            <Edit fontSize="small" />
+                          </IconButton>
+                          <IconButton
+                            size="small"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              // TODO: Add delete functionality
+                            }}
+                            sx={{ color: '#d32f2f' }}
+                            data-testid={`button-delete-event-${event.id}`}
+                          >
+                            <Delete fontSize="small" />
+                          </IconButton>
+                        </Box>
                       </Box>
                       <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                         <Typography 

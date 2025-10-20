@@ -600,12 +600,36 @@ export default function EventsPage() {
                         {event.rsvpEnabled ? `${rsvpCount}/${maxAttendees}` : 'Onemogućeno'}
                       </TableCell>
                       <TableCell>
-                        <IconButton
-                          onClick={(e) => handleMenuOpen(e, event)}
-                          data-testid={`menu-event-${event.id}`}
-                        >
-                          <MoreVert />
-                        </IconButton>
+                        <Box sx={{ display: 'flex', gap: 0.5 }}>
+                          <IconButton
+                            size="small"
+                            onClick={() => handleEventClick(event)}
+                            sx={{ color: '#1976d2' }}
+                            data-testid={`button-view-event-${event.id}`}
+                          >
+                            <Visibility fontSize="small" />
+                          </IconButton>
+                          {user?.isAdmin && (
+                            <>
+                              <IconButton
+                                size="small"
+                                onClick={() => handleEditEvent(event)}
+                                sx={{ color: '#ed6c02' }}
+                                data-testid={`button-edit-event-${event.id}`}
+                              >
+                                <Edit fontSize="small" />
+                              </IconButton>
+                              <IconButton
+                                size="small"
+                                onClick={() => handleDeleteClick(event)}
+                                sx={{ color: '#d32f2f' }}
+                                data-testid={`button-delete-event-${event.id}`}
+                              >
+                                <Delete fontSize="small" />
+                              </IconButton>
+                            </>
+                          )}
+                        </Box>
                       </TableCell>
                     </TableRow>
                   );
