@@ -158,9 +158,14 @@ export default function GuestPage() {
                         <Typography variant="body2" color="text.secondary" gutterBottom>
                           {announcement.publishDate && format(new Date(announcement.publishDate), 'dd.MM.yyyy')}
                         </Typography>
-                        <Typography variant="body1">
-                          {announcement.content}
-                        </Typography>
+                        <Box 
+                          sx={{ 
+                            '& p': { margin: '8px 0' },
+                            '& img': { maxWidth: '100%', height: 'auto' },
+                            '& br': { lineHeight: '1.5' }
+                          }}
+                          dangerouslySetInnerHTML={{ __html: announcement.content }}
+                        />
                       </CardContent>
                     </Card>
                   ))}
@@ -191,9 +196,15 @@ export default function GuestPage() {
                           📍 {event.location}
                         </Typography>
                         {event.description && (
-                          <Typography variant="body2" sx={{ mt: 1 }}>
-                            {event.description}
-                          </Typography>
+                          <Box 
+                            sx={{ 
+                              mt: 1,
+                              '& p': { margin: '8px 0' },
+                              '& img': { maxWidth: '100%', height: 'auto' },
+                              '& br': { lineHeight: '1.5' }
+                            }}
+                            dangerouslySetInnerHTML={{ __html: event.description }}
+                          />
                         )}
                       </CardContent>
                     </Card>
