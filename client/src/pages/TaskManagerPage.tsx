@@ -1187,7 +1187,29 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
               </Box>
 
               {/* Comments List */}
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, maxHeight: 300, overflowY: 'auto' }}>
+              <Box sx={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                gap: 1, 
+                maxHeight: 400, 
+                overflowY: 'auto',
+                overflowX: 'hidden',
+                pr: 1,
+                '&::-webkit-scrollbar': {
+                  width: '8px',
+                },
+                '&::-webkit-scrollbar-track': {
+                  background: '#f1f1f1',
+                  borderRadius: '4px',
+                },
+                '&::-webkit-scrollbar-thumb': {
+                  background: '#888',
+                  borderRadius: '4px',
+                },
+                '&::-webkit-scrollbar-thumb:hover': {
+                  background: '#555',
+                },
+              }}>
                 {commentsQuery.data && Array.isArray(commentsQuery.data) && commentsQuery.data.length > 0 ? (
                   commentsQuery.data.map((comment: any) => (
                     <Card key={comment.id} variant="outlined">
