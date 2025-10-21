@@ -1273,20 +1273,20 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                         py: 1,
                         px: 2
                       }}>
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                           <Typography variant="caption" color="text.secondary">
                             {comment.user ? `${comment.user.firstName} ${comment.user.lastName}` : 'Nepoznat korisnik'} • {new Date(comment.createdAt).toLocaleDateString('hr-HR')}
                           </Typography>
                           {comment.content && (
-                            <Box sx={{ 
+                            <div style={{ 
                               fontSize: '0.875rem',
-                              lineHeight: 1.5,
+                              lineHeight: '1.5',
                               whiteSpace: 'pre-wrap',
                               wordBreak: 'break-word',
-                              color: 'text.primary'
+                              color: '#333'
                             }}>
                               {comment.content}
-                            </Box>
+                            </div>
                           )}
                           {comment.commentImage && (
                             <Box sx={{ mt: 1, display: 'flex', justifyContent: 'flex-start' }}>
@@ -1306,7 +1306,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                               />
                             </Box>
                           )}
-                        </Box>
+                        </div>
                       </CardContent>
                     </Card>
                   ))
