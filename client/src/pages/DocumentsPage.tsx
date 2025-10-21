@@ -112,14 +112,54 @@ export default function DocumentsPage() {
   };
 
   const handleViewPdf = (doc: Document) => {
-    window.open(doc.filePath, "_blank");
+    // Convert base64 to blob and open in new tab
+    try {
+      const byteCharacters = atob(doc.filePath.split(',')[1]);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+      
+      // Clean up the URL after a short delay
+      setTimeout(() => URL.revokeObjectURL(url), 100);
+    } catch (error) {
+      toast({
+        title: "Greška",
+        description: "Nije moguće otvoriti PDF",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleDownload = (doc: Document) => {
-    const link = document.createElement("a");
-    link.href = doc.filePath;
-    link.download = doc.fileName;
-    link.click();
+    try {
+      const byteCharacters = atob(doc.filePath.split(',')[1]);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = doc.fileName;
+      link.click();
+      
+      // Clean up the URL after a short delay
+      setTimeout(() => URL.revokeObjectURL(url), 100);
+    } catch (error) {
+      toast({
+        title: "Greška",
+        description: "Nije moguće preuzeti PDF",
+        variant: "destructive"
+      });
+    }
   };
 
   const formatFileSize = (bytes: number) => {
