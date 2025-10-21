@@ -26,6 +26,7 @@ import RequestsPage from "@/pages/RequestsPage";
 import LivestreamPage from "@/pages/LivestreamPage";
 import LivestreamSettingsPage from "@/pages/LivestreamSettingsPage";
 import OrganizationSettingsPage from "@/pages/OrganizationSettingsPage";
+import VaktijaPage from "@/pages/VaktijaPage";
 import NotFound from "@/pages/not-found";
 
 // Layout
@@ -172,6 +173,12 @@ function Router() {
       <Route path="/dashboard">
         <ProtectedRoute>
           <DashboardHome />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path="/vaktija">
+        <ProtectedRoute>
+          <VaktijaPage />
         </ProtectedRoute>
       </Route>
       
