@@ -34,7 +34,8 @@ import {
   Description,
   Assignment,
   Store,
-  Schedule
+  Schedule,
+  Info
 } from '@mui/icons-material';
 import { SiFacebook, SiInstagram, SiYoutube, SiX } from 'react-icons/si';
 import { useAuth } from '@/contexts/AuthContext';
@@ -52,6 +53,7 @@ interface SidebarProps {
 const menuItems = [
   { path: '/dashboard', label: 'Dashboard', icon: Dashboard },
   { path: '/vaktija', label: 'Vaktija', icon: Schedule },
+  { path: '/vodic', label: 'Vodič', icon: Info },
   { path: '/users', label: 'Korisnici', labelForMember: 'Profil', icon: People },
   { path: '/announcements', label: 'Obavijesti', icon: Campaign, showBadge: true },
   { path: '/events', label: 'Događaji', icon: Event, showBadge: true },
