@@ -393,7 +393,6 @@ export default function EventsPage() {
                     <TableCell sx={{ fontWeight: 600 }}>Naziv Događaja</TableCell>
                     <TableCell sx={{ fontWeight: 600 }}>Datum i Vrijeme</TableCell>
                     <TableCell sx={{ fontWeight: 600 }}>Lokacija</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>Kategorije</TableCell>
                     <TableCell sx={{ fontWeight: 600 }}>RSVP</TableCell>
                     <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
                   </TableRow>
@@ -422,24 +421,6 @@ export default function EventsPage() {
                         </TableCell>
                         <TableCell>{formatDateTime(event.dateTime.toString())}</TableCell>
                         <TableCell>{event.location}</TableCell>
-                        <TableCell>
-                          {event.categories && event.categories.length > 0 ? (
-                            <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-                              {event.categories.map((cat, idx) => (
-                                <Chip 
-                                  key={idx} 
-                                  label={cat} 
-                                  size="small" 
-                                  color="primary"
-                                  variant="outlined"
-                                  data-testid={`chip-event-category-${idx}`}
-                                />
-                              ))}
-                            </Box>
-                          ) : (
-                            <Typography variant="body2" color="text.secondary">-</Typography>
-                          )}
-                        </TableCell>
                         <TableCell>
                           {event.rsvpEnabled ? `${rsvpCount}/${maxAttendees}` : 'Onemogućeno'}
                         </TableCell>
@@ -480,7 +461,7 @@ export default function EventsPage() {
                   })}
                   {allEvents.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={6} sx={{ textAlign: 'center', py: 4 }}>
+                      <TableCell colSpan={5} sx={{ textAlign: 'center', py: 4 }}>
                         <Typography color="text.secondary">
                           Nema događaja
                         </Typography>
