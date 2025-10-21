@@ -199,7 +199,11 @@ export default function TaskManagerPage() {
     const other: (WorkGroup & { members?: WorkGroupMember[] })[] = [];
     
     workGroupsQuery.data.forEach((workGroup: WorkGroup & { members?: WorkGroupMember[] }) => {
-      const isMember = workGroup.members?.some((m: WorkGroupMember) => m.userId === user.id) || false;
+      // Check if user is a member of THIS specific work group
+      const isMember = workGroup.members?.some((m: WorkGroupMember) => 
+        m.userId === user.id && m.workGroupId === workGroup.id
+      ) || false;
+      
       if (isMember || user.isAdmin) {
         member.push(workGroup);
       } else {
