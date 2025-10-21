@@ -204,13 +204,19 @@ export default function TaskManagerPage() {
         m.userId === user.id && m.workGroupId === workGroup.id
       ) || false;
       
-      if (isMember || user.isAdmin) {
+      console.log('WorkGroup:', workGroup.name, 'isMember:', isMember, 'isAdmin:', user.isAdmin, 'members:', workGroup.members);
+      
+      // For non-admin users, only put member groups in the main list
+      if (user.isAdmin) {
+        member.push(workGroup);
+      } else if (isMember) {
         member.push(workGroup);
       } else {
         other.push(workGroup);
       }
     });
     
+    console.log('Final split - Member:', member.length, 'Other:', other.length);
     return { memberWorkGroups: member, otherWorkGroups: other };
   }, [workGroupsQuery.data, user]);
 
