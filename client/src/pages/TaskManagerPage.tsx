@@ -1250,7 +1250,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
               <Box sx={{ 
                 display: 'flex', 
                 flexDirection: 'column', 
-                gap: 1, 
+                gap: 2, 
                 maxHeight: 400, 
                 overflowY: 'auto',
                 overflowX: 'hidden',
@@ -1272,10 +1272,11 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
               }}>
                 {commentsQuery.data && Array.isArray(commentsQuery.data) && commentsQuery.data.length > 0 ? (
                   commentsQuery.data.map((comment: any) => (
-                    <Card key={comment.id} variant="outlined">
+                    <Card key={comment.id} variant="outlined" sx={{ flexShrink: 0 }}>
                       <CardContent sx={{ 
-                        py: 1,
-                        px: 2
+                        py: 2,
+                        px: 2,
+                        '&:last-child': { pb: 2 }
                       }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                           <Typography variant="caption" color="text.secondary">
