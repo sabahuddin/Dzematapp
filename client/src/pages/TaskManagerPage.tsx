@@ -1213,11 +1213,20 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                 {commentsQuery.data && Array.isArray(commentsQuery.data) && commentsQuery.data.length > 0 ? (
                   commentsQuery.data.map((comment: any) => (
                     <Card key={comment.id} variant="outlined">
-                      <CardContent sx={{ py: 1 }}>
+                      <CardContent sx={{ 
+                        py: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'stretch'
+                      }}>
                         <Typography variant="caption" color="text.secondary">
                           {comment.user ? `${comment.user.firstName} ${comment.user.lastName}` : 'Nepoznat korisnik'} • {new Date(comment.createdAt).toLocaleDateString('hr-HR')}
                         </Typography>
-                        <Typography variant="body2" sx={{ mt: 0.5 }}>
+                        <Typography variant="body2" sx={{ 
+                          mt: 0.5,
+                          whiteSpace: 'pre-wrap',
+                          wordBreak: 'break-word'
+                        }}>
                           {comment.content}
                         </Typography>
                         {comment.commentImage && (
