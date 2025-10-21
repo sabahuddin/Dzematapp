@@ -54,7 +54,7 @@ const menuItems = [
   { path: '/announcements', label: 'Obavijesti', icon: Campaign, showBadge: true },
   { path: '/events', label: 'Događaji', icon: Event, showBadge: true },
   { path: '/tasks', label: 'Sekcije', icon: Task, showBadge: true },
-  { path: '/sections', label: 'Sve sekcije', icon: Assignment },
+  { path: '/sections', label: 'Sve sekcije', icon: Assignment, hideForAdmin: true },
   { path: '/messages', label: 'Poruke', icon: Mail, showBadge: true },
   { path: '/ask-imam', label: 'Pitaj imama', icon: QuestionAnswer, showBadge: true },
   { path: '/documents', label: 'Dokumenti', icon: Description },
@@ -160,6 +160,11 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
         {menuItems.map((item) => {
           // Hide admin-only items from non-admin users
           if (item.adminOnly && !user?.isAdmin) {
+            return null;
+          }
+
+          // Hide items marked as hideForAdmin from admin users
+          if (item.hideForAdmin && user?.isAdmin) {
             return null;
           }
 
