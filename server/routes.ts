@@ -1089,8 +1089,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { taskId } = req.params;
       const { content, commentImage } = req.body;
 
-      if (!content) {
-        return res.status(400).json({ message: "Content is required" });
+      if (!content && !commentImage) {
+        return res.status(400).json({ message: "Content or image is required" });
       }
 
       // Use authenticated user's ID - prevents identity spoofing

@@ -1222,13 +1222,15 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                         <Typography variant="caption" color="text.secondary">
                           {comment.user ? `${comment.user.firstName} ${comment.user.lastName}` : 'Nepoznat korisnik'} • {new Date(comment.createdAt).toLocaleDateString('hr-HR')}
                         </Typography>
-                        <Typography variant="body2" sx={{ 
-                          mt: 0.5,
-                          whiteSpace: 'pre-wrap',
-                          wordBreak: 'break-word'
-                        }}>
-                          {comment.content}
-                        </Typography>
+                        {comment.content && (
+                          <Typography variant="body2" sx={{ 
+                            mt: 0.5,
+                            whiteSpace: 'pre-wrap',
+                            wordBreak: 'break-word'
+                          }}>
+                            {comment.content}
+                          </Typography>
+                        )}
                         {comment.commentImage && (
                           <Box sx={{ mt: 1 }}>
                             <Box
