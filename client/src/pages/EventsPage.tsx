@@ -1,9 +1,10 @@
-import React, { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Box,
   Button,
   Card,
+  CardContent,
   Table,
   TableBody,
   TableCell,
@@ -11,8 +12,6 @@ import {
   TableHead,
   TableRow,
   IconButton,
-  Menu,
-  MenuItem,
   Typography,
   Alert,
   CircularProgress,
@@ -20,26 +19,25 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  ToggleButton,
-  ToggleButtonGroup,
   Paper,
   Chip,
-  FormControl,
-  InputLabel,
-  Select,
-  SelectChangeEvent
+  Tabs,
+  Tab,
+  TextField,
+  Badge
 } from '@mui/material';
 import {
   Add,
-  MoreVert,
   Edit,
   Delete,
   Visibility,
-  ViewList,
-  ViewWeek,
-  CalendarMonth
+  CalendarMonth,
+  EventNote
 } from '@mui/icons-material';
-import { Event, EventRsvp } from '@shared/schema';
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay';
+import { isSameDay, format } from 'date-fns';
+import { Event, ImportantDate } from '@shared/schema';
 import EventModal from '../components/modals/EventModal';
 import EventViewModal from '../components/modals/EventViewModal';
 import EventRSVPModal from '../components/modals/EventRSVPModal';
@@ -48,265 +46,34 @@ import { useToast } from '../hooks/use-toast';
 import { useMarkAsViewed } from '../hooks/useMarkAsViewed';
 import { apiRequest } from '../lib/queryClient';
 
-type ViewMode = 'list' | 'week' | 'month' | 'importantDates';
+function EventDay(props: PickersDayProps & { eventDates?: Date[] }) {
+  const { eventDates = [], day, outsideCurrentMonth, ...other } = props;
+  const hasEvent = eventDates.some((eventDate: Date) => isSameDay(eventDate, day));
 
-function WeekView({ 
-  events, 
-  onEventClick 
-}: { 
-  events: Event[]; 
-  onEventClick: (event: Event) => void 
-}) {
-  const today = new Date();
-  const startOfWeek = new Date(today);
-  startOfWeek.setDate(today.getDate() - today.getDay());
-  
-  const weekDays = Array.from({ length: 7 }, (_, i) => {
-    const date = new Date(startOfWeek);
-    date.setDate(startOfWeek.getDate() + i);
-    return date;
-  });
-  
-  const getEventsForDay = (date: Date) => {
-    return events.filter(event => {
-      const eventDate = new Date(event.dateTime);
-      return eventDate.toDateString() === date.toDateString();
-    });
-  };
-  
-  const daysWithEvents = weekDays.filter(day => getEventsForDay(day).length > 0);
-  
   return (
-    <Box sx={{ 
-      display: 'grid', 
-      gridTemplateColumns: { 
-        xs: 'repeat(1, 1fr)',
-        sm: 'repeat(2, 1fr)',
-        md: 'repeat(3, 1fr)',
-        lg: `repeat(${Math.min(daysWithEvents.length, 4)}, 1fr)`
-      }, 
-      gap: 1 
-    }}>
-      {daysWithEvents.map((day, index) => {
-        const dayEvents = getEventsForDay(day);
-        const isToday = day.toDateString() === today.toDateString();
-        
-        return (
-          <Paper 
-            key={index} 
-            sx={{ 
-              p: 2, 
-              minHeight: 200,
-              bgcolor: isToday ? '#f0f7ff' : '#fff',
-              border: isToday ? '2px solid #1976d2' : '1px solid #e0e0e0'
-            }}
-            data-testid={`week-day-${index}`}
-          >
-            <Typography 
-              variant="subtitle2" 
-              sx={{ 
-                fontWeight: 600, 
-                mb: 1,
-                color: isToday ? '#1976d2' : 'text.primary'
-              }}
-            >
-              {day.toLocaleDateString('hr-HR', { weekday: 'short' })}
-            </Typography>
-            <Typography variant="caption" sx={{ display: 'block', mb: 2 }}>
-              {day.toLocaleDateString('hr-HR', { day: 'numeric', month: 'short' })}
-            </Typography>
-            
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              {dayEvents.map(event => (
-                <Card
-                  key={event.id}
-                  sx={{ 
-                    p: 1, 
-                    cursor: 'pointer',
-                    bgcolor: '#1976d2',
-                    color: 'white',
-                    '&:hover': { opacity: 0.9 }
-                  }}
-                  onClick={() => onEventClick(event)}
-                  data-testid={`week-event-${event.id}`}
-                >
-                  <Typography variant="caption" sx={{ fontWeight: 600, display: 'block' }}>
-                    {new Date(event.dateTime).toLocaleTimeString('hr-HR', { 
-                      hour: '2-digit', 
-                      minute: '2-digit' 
-                    })}
-                  </Typography>
-                  <Typography variant="caption" sx={{ fontSize: '0.7rem' }}>
-                    {event.name}
-                  </Typography>
-                </Card>
-              ))}
-            </Box>
-          </Paper>
-        );
-      })}
-      {daysWithEvents.length === 0 && (
-        <Box sx={{ p: 4, textAlign: 'center', gridColumn: '1 / -1' }}>
-          <Typography color="text.secondary">
-            Nema događaja ove sedmice
-          </Typography>
-        </Box>
-      )}
-    </Box>
-  );
-}
-
-function MonthView({ 
-  events, 
-  onEventClick 
-}: { 
-  events: Event[]; 
-  onEventClick: (event: Event) => void 
-}) {
-  const today = new Date();
-  const [currentMonth, setCurrentMonth] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
-  
-  const getDaysInMonth = () => {
-    const year = currentMonth.getFullYear();
-    const month = currentMonth.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const startDate = new Date(firstDay);
-    startDate.setDate(firstDay.getDate() - firstDay.getDay());
-    
-    const days = [];
-    const currentDate = new Date(startDate);
-    
-    for (let i = 0; i < 42; i++) {
-      days.push(new Date(currentDate));
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-    
-    return days;
-  };
-  
-  const getEventsForDay = (date: Date) => {
-    return events.filter(event => {
-      const eventDate = new Date(event.dateTime);
-      return eventDate.toDateString() === date.toDateString();
-    });
-  };
-  
-  const handlePrevMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
-  };
-  
-  const handleNextMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
-  };
-  
-  const days = getDaysInMonth();
-  const daysWithEvents = days.filter(day => {
-    const isCurrentMonth = day.getMonth() === currentMonth.getMonth();
-    const hasEvents = getEventsForDay(day).length > 0;
-    return isCurrentMonth && hasEvents;
-  });
-  
-  const weekDays = ['Ned', 'Pon', 'Uto', 'Sri', 'Čet', 'Pet', 'Sub'];
-  
-  return (
-    <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Button onClick={handlePrevMonth} data-testid="button-prev-month">
-          Prethodni
-        </Button>
-        <Typography variant="h6">
-          {currentMonth.toLocaleDateString('hr-HR', { month: 'long', year: 'numeric' })}
-        </Typography>
-        <Button onClick={handleNextMonth} data-testid="button-next-month">
-          Sljedeći
-        </Button>
-      </Box>
-      
-      {daysWithEvents.length > 0 ? (
-        <Box sx={{ 
-          display: 'grid', 
-          gridTemplateColumns: { 
-            xs: 'repeat(1, 1fr)',
-            sm: 'repeat(2, 1fr)',
-            md: 'repeat(3, 1fr)',
-            lg: 'repeat(4, 1fr)'
-          }, 
-          gap: 1 
-        }}>
-          {daysWithEvents.map((day, index) => {
-            const dayEvents = getEventsForDay(day);
-            const isToday = day.toDateString() === today.toDateString();
-            
-            return (
-              <Paper
-                key={index}
-                sx={{
-                  p: 2,
-                  minHeight: { xs: 80, md: 100 },
-                  bgcolor: isToday ? '#f0f7ff' : '#fff',
-                  border: isToday ? '2px solid #1976d2' : '1px solid #e0e0e0'
-                }}
-                data-testid={`month-day-${index}`}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 1 }}>
-                  <Typography 
-                    variant="subtitle2" 
-                    sx={{ 
-                      fontWeight: 600,
-                      color: isToday ? '#1976d2' : 'text.primary'
-                    }}
-                  >
-                    {day.toLocaleDateString('hr-HR', { weekday: 'short' })}
-                  </Typography>
-                  <Typography 
-                    variant="caption" 
-                    sx={{ 
-                      color: 'text.secondary'
-                    }}
-                  >
-                    {day.toLocaleDateString('hr-HR', { day: 'numeric', month: 'short' })}
-                  </Typography>
-                </Box>
-                
-                <Box sx={{ mt: 0.5, display: 'flex', flexDirection: 'column', gap: 1 }}>
-                  {dayEvents.map(event => (
-                    <Card
-                      key={event.id}
-                      sx={{ 
-                        p: 1, 
-                        cursor: 'pointer',
-                        bgcolor: '#1976d2',
-                        color: 'white',
-                        '&:hover': { opacity: 0.9 }
-                      }}
-                      onClick={() => onEventClick(event)}
-                      data-testid={`month-event-${event.id}`}
-                    >
-                      <Typography variant="caption" sx={{ fontWeight: 600, display: 'block' }}>
-                        {new Date(event.dateTime).toLocaleTimeString('hr-HR', { 
-                          hour: '2-digit', 
-                          minute: '2-digit' 
-                        })}
-                      </Typography>
-                      <Typography variant="caption" sx={{ fontSize: '0.7rem' }}>
-                        {event.name}
-                      </Typography>
-                    </Card>
-                  ))}
-                </Box>
-              </Paper>
-            );
-          })}
-        </Box>
-      ) : (
-        <Box sx={{ p: 4, textAlign: 'center' }}>
-          <Typography color="text.secondary">
-            Nema događaja ovog mjeseca
-          </Typography>
-        </Box>
-      )}
-    </Box>
+    <Badge
+      key={day.toString()}
+      overlap="circular"
+      badgeContent={hasEvent ? '•' : undefined}
+      sx={{
+        '& .MuiBadge-badge': {
+          backgroundColor: '#ed6c02',
+          color: '#ed6c02',
+          minWidth: 6,
+          height: 6,
+          borderRadius: '50%',
+          padding: 0,
+          top: 4,
+          right: 4,
+        }
+      }}
+    >
+      <PickersDay 
+        {...other} 
+        day={day} 
+        outsideCurrentMonth={outsideCurrentMonth}
+      />
+    </Badge>
   );
 }
 
@@ -316,22 +83,30 @@ export default function EventsPage() {
   const queryClient = useQueryClient();
   useMarkAsViewed('events');
   
-  const [viewMode, setViewMode] = useState<ViewMode>('list');
+  const [activeTab, setActiveTab] = useState(0);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [modalOpen, setModalOpen] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-  const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-  const [menuEvent, setMenuEvent] = useState<Event | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [eventToDelete, setEventToDelete] = useState<Event | null>(null);
-  const [rsvpDialogOpen, setRsvpDialogOpen] = useState(false);
-  const [selectedEventRsvps, setSelectedEventRsvps] = useState<EventRsvp[]>([]);
-  const [categoryFilter, setCategoryFilter] = useState<string>('');
   const [rsvpModalOpen, setRsvpModalOpen] = useState(false);
   const [rsvpEvent, setRsvpEvent] = useState<Event | null>(null);
+  
+  const [importantDateForm, setImportantDateForm] = useState({
+    name: '',
+    date: '',
+    description: ''
+  });
+  const [editingImportantDate, setEditingImportantDate] = useState<ImportantDate | null>(null);
 
   const eventsQuery = useQuery<Event[]>({
     queryKey: ['/api/events'],
+    retry: 1,
+  });
+
+  const importantDatesQuery = useQuery<ImportantDate[]>({
+    queryKey: ['/api/important-dates'],
     retry: 1,
   });
 
@@ -376,11 +151,49 @@ export default function EventsPage() {
     }
   });
 
-  const fetchEventRsvps = async (eventId: string) => {
-    const response = await fetch(`/api/events/${eventId}/rsvps`);
-    if (!response.ok) throw new Error('Failed to fetch RSVPs');
-    return response.json();
-  };
+  const createImportantDateMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await apiRequest('POST', '/api/important-dates', data);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/important-dates'] });
+      toast({ title: 'Uspjeh', description: 'Važan datum je uspješno dodan' });
+      setImportantDateForm({ name: '', date: '', description: '' });
+    },
+    onError: () => {
+      toast({ title: 'Greška', description: 'Greška pri dodavanju važnog datuma', variant: 'destructive' });
+    }
+  });
+
+  const updateImportantDateMutation = useMutation({
+    mutationFn: async ({ id, ...data }: any) => {
+      const response = await apiRequest('PUT', `/api/important-dates/${id}`, data);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/important-dates'] });
+      toast({ title: 'Uspjeh', description: 'Važan datum je uspješno ažuriran' });
+      setEditingImportantDate(null);
+      setImportantDateForm({ name: '', date: '', description: '' });
+    },
+    onError: () => {
+      toast({ title: 'Greška', description: 'Greška pri ažuriranju važnog datuma', variant: 'destructive' });
+    }
+  });
+
+  const deleteImportantDateMutation = useMutation({
+    mutationFn: async (id: string) => {
+      await apiRequest('DELETE', `/api/important-dates/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/important-dates'] });
+      toast({ title: 'Uspjeh', description: 'Važan datum je uspješno obrisan' });
+    },
+    onError: () => {
+      toast({ title: 'Greška', description: 'Greška pri brisanju važnog datuma', variant: 'destructive' });
+    }
+  });
 
   const handleCreateEvent = () => {
     setSelectedEvent(null);
@@ -390,105 +203,87 @@ export default function EventsPage() {
   const handleEditEvent = (event: Event) => {
     setSelectedEvent(event);
     setModalOpen(true);
-    handleMenuClose();
+  };
+
+  const handleEventClick = (event: Event) => {
+    setSelectedEvent(event);
+    setViewModalOpen(true);
+  };
+
+  const handleSaveEvent = async (eventData: any) => {
+    if (selectedEvent) {
+      await updateEventMutation.mutateAsync({ id: selectedEvent.id, ...eventData });
+    } else {
+      await createEventMutation.mutateAsync(eventData);
+    }
+    setModalOpen(false);
+    setSelectedEvent(null);
   };
 
   const handleDeleteClick = (event: Event) => {
     setEventToDelete(event);
     setDeleteDialogOpen(true);
-    handleMenuClose();
   };
 
-  const handleViewRsvps = async (event: Event) => {
-    try {
-      const rsvps = await fetchEventRsvps(event.id);
-      setSelectedEventRsvps(rsvps);
-      setRsvpDialogOpen(true);
-    } catch (error) {
-      toast({ title: 'Greška', description: 'Greška pri učitavanju prijava', variant: 'destructive' });
-    }
-    handleMenuClose();
-  };
-
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (eventToDelete) {
-      deleteEventMutation.mutate(eventToDelete.id);
+      await deleteEventMutation.mutateAsync(eventToDelete.id);
       setDeleteDialogOpen(false);
       setEventToDelete(null);
-    }
-  };
-
-  const handleSaveEvent = (eventData: any) => {
-    if (selectedEvent) {
-      updateEventMutation.mutate({ id: selectedEvent.id, ...eventData });
-    } else {
-      createEventMutation.mutate(eventData);
-    }
-  };
-
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, eventItem: Event) => {
-    setMenuAnchor(event.currentTarget);
-    setMenuEvent(eventItem);
-  };
-
-  const handleMenuClose = () => {
-    setMenuAnchor(null);
-    setMenuEvent(null);
-  };
-
-  const handleEventClick = (event: Event) => {
-    setSelectedEvent(event);
-    if (user?.isAdmin) {
-      setModalOpen(true);
-    } else {
-      setViewModalOpen(true);
     }
   };
 
   const handleRsvpClick = (event: Event) => {
     setRsvpEvent(event);
     setRsvpModalOpen(true);
-    handleMenuClose();
+  };
+
+  const handleImportantDateSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!importantDateForm.name || !importantDateForm.date) {
+      toast({ title: 'Greška', description: 'Molimo popunite naziv i datum', variant: 'destructive' });
+      return;
+    }
+
+    if (editingImportantDate) {
+      await updateImportantDateMutation.mutateAsync({
+        id: editingImportantDate.id,
+        ...importantDateForm,
+        isRecurring: true
+      });
+    } else {
+      await createImportantDateMutation.mutateAsync({
+        ...importantDateForm,
+        isRecurring: true
+      });
+    }
+  };
+
+  const handleEditImportantDate = (date: ImportantDate) => {
+    setEditingImportantDate(date);
+    setImportantDateForm({
+      name: date.name,
+      date: date.date,
+      description: date.description || ''
+    });
+  };
+
+  const handleCancelEditImportantDate = () => {
+    setEditingImportantDate(null);
+    setImportantDateForm({ name: '', date: '', description: '' });
   };
 
   const formatDateTime = (dateTime: string) => {
     const date = new Date(dateTime);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    return `${day}.${month}.${year}. u ${hours}:${minutes}`;
+    return format(date, 'dd.MM.yyyy. u HH:mm');
   };
 
-  const getRsvpCount = (event: any) => {
-    return event.rsvpCount || 0;
+  const getRsvpCount = (event: Event) => {
+    if (!event.rsvpEnabled || !event.rsvpStats) return 0;
+    return event.rsvpStats.totalAdults + event.rsvpStats.totalChildren;
   };
 
-  // Get all unique categories from events
-  const allCategories = useMemo(() => {
-    const categories = new Set<string>();
-    (eventsQuery.data || []).forEach(event => {
-      if (event.categories) {
-        event.categories.forEach(cat => categories.add(cat));
-      }
-    });
-    return Array.from(categories).sort();
-  }, [eventsQuery.data]);
-
-  // Filter events by category
-  const filteredEvents = useMemo(() => {
-    if (!categoryFilter) return eventsQuery.data || [];
-    return (eventsQuery.data || []).filter(event => 
-      event.categories && event.categories.includes(categoryFilter)
-    );
-  }, [eventsQuery.data, categoryFilter]);
-
-  const handleCategoryChange = (event: SelectChangeEvent<string>) => {
-    setCategoryFilter(event.target.value);
-  };
-
-  if (eventsQuery.isLoading) {
+  if (eventsQuery.isLoading || importantDatesQuery.isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
         <CircularProgress />
@@ -496,233 +291,340 @@ export default function EventsPage() {
     );
   }
 
-  if (eventsQuery.error) {
+  if (eventsQuery.error || importantDatesQuery.error) {
     return (
       <Alert severity="error">
-        Greška pri učitavanju događaja. Molimo pokušajte ponovo.
+        Greška pri učitavanju podataka. Molimo pokušajte ponovo.
       </Alert>
     );
   }
+
+  const allEvents = eventsQuery.data || [];
+  const importantDates = importantDatesQuery.data || [];
+  
+  const eventDates = allEvents.map(event => new Date(event.dateTime));
 
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h5" sx={{ fontWeight: 600 }}>
-          Događaji
+          Događaji i Važni Datumi
         </Typography>
-        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-          <ToggleButtonGroup
-            value={viewMode}
-            exclusive
-            onChange={(_, newMode) => newMode && setViewMode(newMode)}
-            size="small"
+        {user?.isAdmin && activeTab === 0 && (
+          <Button
+            variant="contained"
+            startIcon={<Add />}
+            onClick={handleCreateEvent}
+            data-testid="button-add-event"
           >
-            <ToggleButton value="list" data-testid="view-toggle-list">
-              <ViewList sx={{ mr: 0.5 }} /> Lista
-            </ToggleButton>
-            <ToggleButton value="week" data-testid="view-toggle-week">
-              <ViewWeek sx={{ mr: 0.5 }} /> Sedmica
-            </ToggleButton>
-            <ToggleButton value="month" data-testid="view-toggle-month">
-              <CalendarMonth sx={{ mr: 0.5 }} /> Mjesec
-            </ToggleButton>
-            <ToggleButton value="importantDates" data-testid="view-toggle-importantDates">
-              <CalendarMonth sx={{ mr: 0.5 }} /> Važni datumi
-            </ToggleButton>
-          </ToggleButtonGroup>
-          
-          {user?.isAdmin && (
-            <Button
-              variant="contained"
-              startIcon={<Add />}
-              onClick={handleCreateEvent}
-              data-testid="button-add-event"
-            >
-              Kreiraj Događaj
-            </Button>
-          )}
-        </Box>
+            Kreiraj Događaj
+          </Button>
+        )}
       </Box>
 
-      {/* Category Filter */}
-      {allCategories.length > 0 && (
-        <Box sx={{ mb: 3 }}>
-          <FormControl sx={{ minWidth: 250 }}>
-            <InputLabel>Filtriraj po kategoriji</InputLabel>
-            <Select
-              value={categoryFilter}
-              onChange={handleCategoryChange}
-              label="Filtriraj po kategoriji"
-              data-testid="select-category-filter"
-            >
-              <MenuItem value="">
-                <em>Sve kategorije</em>
-              </MenuItem>
-              {allCategories.map(category => (
-                <MenuItem key={category} value={category}>
-                  {category}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          {categoryFilter && (
-            <Chip
-              label={`Filter: ${categoryFilter}`}
-              onDelete={() => setCategoryFilter('')}
-              sx={{ ml: 2 }}
-              color="primary"
-              data-testid="chip-active-filter"
-            />
-          )}
+      <Paper sx={{ mb: 3 }}>
+        <Tabs 
+          value={activeTab} 
+          onChange={(_, newValue) => setActiveTab(newValue)}
+          sx={{ borderBottom: 1, borderColor: 'divider' }}
+        >
+          <Tab 
+            icon={<CalendarMonth />} 
+            iconPosition="start" 
+            label="Događaji" 
+            data-testid="tab-events"
+          />
+          <Tab 
+            icon={<EventNote />} 
+            iconPosition="start" 
+            label="Važni datumi" 
+            data-testid="tab-important-dates"
+          />
+        </Tabs>
+      </Paper>
+
+      {/* Tab Događaji */}
+      {activeTab === 0 && (
+        <Box>
+          {/* Calendar */}
+          <Card sx={{ mb: 3 }}>
+            <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                Kalendar Događaja
+              </Typography>
+            </Box>
+            <CardContent sx={{ p: 0 }}>
+              <DateCalendar
+                value={selectedDate}
+                onChange={(newDate) => setSelectedDate(newDate)}
+                slots={{
+                  day: EventDay,
+                }}
+                slotProps={{
+                  day: {
+                    eventDates,
+                  } as any,
+                }}
+                sx={{
+                  width: '100%',
+                  '& .MuiPickersCalendarHeader-root': {
+                    paddingLeft: 2,
+                    paddingRight: 2,
+                  },
+                  '& .MuiDayCalendar-weekContainer': {
+                    justifyContent: 'space-around',
+                  }
+                }}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Events List */}
+          <Card>
+            <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                Svi Događaji
+              </Typography>
+            </Box>
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow sx={{ bgcolor: '#f8f9fa' }}>
+                    <TableCell sx={{ fontWeight: 600 }}>Naziv Događaja</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>Datum i Vrijeme</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>Lokacija</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>Kategorije</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>RSVP</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {allEvents.map((event: Event) => {
+                    const rsvpCount = getRsvpCount(event);
+                    const maxAttendees = event.maxAttendees || '∞';
+                    return (
+                      <TableRow key={event.id}>
+                        <TableCell>
+                          <Typography
+                            onClick={() => handleEventClick(event)}
+                            sx={{
+                              cursor: 'pointer',
+                              color: 'primary.main',
+                              fontWeight: 500,
+                              '&:hover': {
+                                textDecoration: 'underline'
+                              }
+                            }}
+                            data-testid={`link-event-${event.id}`}
+                          >
+                            {event.name}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>{formatDateTime(event.dateTime.toString())}</TableCell>
+                        <TableCell>{event.location}</TableCell>
+                        <TableCell>
+                          {event.categories && event.categories.length > 0 ? (
+                            <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+                              {event.categories.map((cat, idx) => (
+                                <Chip 
+                                  key={idx} 
+                                  label={cat} 
+                                  size="small" 
+                                  color="primary"
+                                  variant="outlined"
+                                  data-testid={`chip-event-category-${idx}`}
+                                />
+                              ))}
+                            </Box>
+                          ) : (
+                            <Typography variant="body2" color="text.secondary">-</Typography>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {event.rsvpEnabled ? `${rsvpCount}/${maxAttendees}` : 'Onemogućeno'}
+                        </TableCell>
+                        <TableCell>
+                          <Box sx={{ display: 'flex', gap: 0.5 }}>
+                            <IconButton
+                              size="small"
+                              onClick={() => handleEventClick(event)}
+                              sx={{ color: '#1976d2' }}
+                              data-testid={`button-view-event-${event.id}`}
+                            >
+                              <Visibility fontSize="small" />
+                            </IconButton>
+                            {user?.isAdmin && (
+                              <>
+                                <IconButton
+                                  size="small"
+                                  onClick={() => handleEditEvent(event)}
+                                  sx={{ color: '#ed6c02' }}
+                                  data-testid={`button-edit-event-${event.id}`}
+                                >
+                                  <Edit fontSize="small" />
+                                </IconButton>
+                                <IconButton
+                                  size="small"
+                                  onClick={() => handleDeleteClick(event)}
+                                  sx={{ color: '#d32f2f' }}
+                                  data-testid={`button-delete-event-${event.id}`}
+                                >
+                                  <Delete fontSize="small" />
+                                </IconButton>
+                              </>
+                            )}
+                          </Box>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                  {allEvents.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={6} sx={{ textAlign: 'center', py: 4 }}>
+                        <Typography color="text.secondary">
+                          Nema događaja
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Card>
         </Box>
       )}
 
-      {viewMode === 'list' && (
-        <Card>
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow sx={{ bgcolor: '#f8f9fa' }}>
-                  <TableCell sx={{ fontWeight: 600 }}>Naziv Događaja</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Datum i Vrijeme</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Lokacija</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Kategorije</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>RSVP</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {filteredEvents.map((event: Event) => {
-                  const rsvpCount = getRsvpCount(event);
-                  const maxAttendees = event.maxAttendees || '∞';
-                  return (
-                    <TableRow key={event.id}>
+      {/* Tab Važni datumi */}
+      {activeTab === 1 && (
+        <Box>
+          {user?.isAdmin && (
+            <Card sx={{ mb: 3 }}>
+              <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                  {editingImportantDate ? 'Uredi Važan Datum' : 'Dodaj Važan Datum'}
+                </Typography>
+              </Box>
+              <CardContent>
+                <Box component="form" onSubmit={handleImportantDateSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <TextField
+                    label="Naziv"
+                    value={importantDateForm.name}
+                    onChange={(e) => setImportantDateForm({ ...importantDateForm, name: e.target.value })}
+                    required
+                    fullWidth
+                    data-testid="input-important-date-name"
+                  />
+                  <TextField
+                    label="Datum (dd.mm)"
+                    value={importantDateForm.date}
+                    onChange={(e) => setImportantDateForm({ ...importantDateForm, date: e.target.value })}
+                    placeholder="npr. 15.03"
+                    required
+                    fullWidth
+                    data-testid="input-important-date-date"
+                    helperText="Format: dd.mm (npr. 15.03 za 15. mart)"
+                  />
+                  <TextField
+                    label="Opis (opciono)"
+                    value={importantDateForm.description}
+                    onChange={(e) => setImportantDateForm({ ...importantDateForm, description: e.target.value })}
+                    multiline
+                    rows={3}
+                    fullWidth
+                    data-testid="input-important-date-description"
+                  />
+                  <Box sx={{ display: 'flex', gap: 2 }}>
+                    <Button 
+                      type="submit" 
+                      variant="contained"
+                      data-testid="button-submit-important-date"
+                    >
+                      {editingImportantDate ? 'Ažuriraj' : 'Dodaj'}
+                    </Button>
+                    {editingImportantDate && (
+                      <Button 
+                        onClick={handleCancelEditImportantDate}
+                        variant="outlined"
+                        data-testid="button-cancel-edit-important-date"
+                      >
+                        Odustani
+                      </Button>
+                    )}
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
+          )}
+
+          <Card>
+            <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                Spisak Važnih Datuma
+              </Typography>
+            </Box>
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow sx={{ bgcolor: '#f8f9fa' }}>
+                    <TableCell sx={{ fontWeight: 600 }}>Datum</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>Naziv</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>Opis</TableCell>
+                    {user?.isAdmin && (
+                      <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
+                    )}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {importantDates.map((date: ImportantDate) => (
+                    <TableRow key={date.id}>
+                      <TableCell sx={{ fontWeight: 500 }}>{date.date}</TableCell>
+                      <TableCell>{date.name}</TableCell>
                       <TableCell>
-                        <Typography
-                          onClick={() => handleEventClick(event)}
-                          sx={{
-                            cursor: 'pointer',
-                            color: 'primary.main',
-                            fontWeight: 500,
-                            '&:hover': {
-                              textDecoration: 'underline'
-                            }
-                          }}
-                          data-testid={`link-event-${event.id}`}
-                        >
-                          {event.name}
+                        <Typography variant="body2" color="text.secondary">
+                          {date.description || '-'}
                         </Typography>
                       </TableCell>
-                      <TableCell>{formatDateTime(event.dateTime.toString())}</TableCell>
-                      <TableCell>{event.location}</TableCell>
-                      <TableCell>
-                        {event.categories && event.categories.length > 0 ? (
-                          <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-                            {event.categories.map((cat, idx) => (
-                              <Chip 
-                                key={idx} 
-                                label={cat} 
-                                size="small" 
-                                color="primary"
-                                variant="outlined"
-                                data-testid={`chip-event-category-${idx}`}
-                              />
-                            ))}
+                      {user?.isAdmin && (
+                        <TableCell>
+                          <Box sx={{ display: 'flex', gap: 0.5 }}>
+                            <IconButton
+                              size="small"
+                              onClick={() => handleEditImportantDate(date)}
+                              sx={{ color: '#ed6c02' }}
+                              data-testid={`button-edit-important-date-${date.id}`}
+                            >
+                              <Edit fontSize="small" />
+                            </IconButton>
+                            <IconButton
+                              size="small"
+                              onClick={() => deleteImportantDateMutation.mutate(date.id)}
+                              sx={{ color: '#d32f2f' }}
+                              data-testid={`button-delete-important-date-${date.id}`}
+                            >
+                              <Delete fontSize="small" />
+                            </IconButton>
                           </Box>
-                        ) : (
-                          <Typography variant="body2" color="text.secondary">-</Typography>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {event.rsvpEnabled ? `${rsvpCount}/${maxAttendees}` : 'Onemogućeno'}
-                      </TableCell>
-                      <TableCell>
-                        <Box sx={{ display: 'flex', gap: 0.5 }}>
-                          <IconButton
-                            size="small"
-                            onClick={() => handleEventClick(event)}
-                            sx={{ color: '#1976d2' }}
-                            data-testid={`button-view-event-${event.id}`}
-                          >
-                            <Visibility fontSize="small" />
-                          </IconButton>
-                          {user?.isAdmin && (
-                            <>
-                              <IconButton
-                                size="small"
-                                onClick={() => handleEditEvent(event)}
-                                sx={{ color: '#ed6c02' }}
-                                data-testid={`button-edit-event-${event.id}`}
-                              >
-                                <Edit fontSize="small" />
-                              </IconButton>
-                              <IconButton
-                                size="small"
-                                onClick={() => handleDeleteClick(event)}
-                                sx={{ color: '#d32f2f' }}
-                                data-testid={`button-delete-event-${event.id}`}
-                              >
-                                <Delete fontSize="small" />
-                              </IconButton>
-                            </>
-                          )}
-                        </Box>
+                        </TableCell>
+                      )}
+                    </TableRow>
+                  ))}
+                  {importantDates.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={user?.isAdmin ? 4 : 3} sx={{ textAlign: 'center', py: 4 }}>
+                        <Typography color="text.secondary">
+                          Nema važnih datuma
+                        </Typography>
                       </TableCell>
                     </TableRow>
-                  );
-                })}
-                {filteredEvents.length === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={6} sx={{ textAlign: 'center', py: 4 }}>
-                      <Typography color="text.secondary">
-                        {categoryFilter ? 'Nema događaja za odabranu kategoriju' : 'Nema događaja'}
-                      </Typography>
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Card>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Card>
+        </Box>
       )}
 
-      {viewMode === 'week' && (
-        <WeekView events={filteredEvents} onEventClick={handleEventClick} />
-      )}
-
-      {viewMode === 'month' && (
-        <MonthView events={filteredEvents} onEventClick={handleEventClick} />
-      )}
-
-      <Menu
-        anchorEl={menuAnchor}
-        open={Boolean(menuAnchor)}
-        onClose={handleMenuClose}
-      >
-        {menuEvent?.rsvpEnabled && (
-          <MenuItem onClick={() => menuEvent && handleRsvpClick(menuEvent)} data-testid="menu-rsvp">
-            <Add sx={{ mr: 1 }} />
-            Prijavi se
-          </MenuItem>
-        )}
-        {user?.isAdmin && (
-          <>
-            <MenuItem onClick={() => menuEvent && handleEditEvent(menuEvent)} data-testid="menu-edit">
-              <Edit sx={{ mr: 1 }} />
-              Uredi
-            </MenuItem>
-            <MenuItem onClick={() => menuEvent && handleViewRsvps(menuEvent)} data-testid="menu-view-rsvps">
-              <Visibility sx={{ mr: 1 }} />
-              Vidi Prijave
-            </MenuItem>
-            <MenuItem onClick={() => menuEvent && handleDeleteClick(menuEvent)} data-testid="menu-delete">
-              <Delete sx={{ mr: 1 }} />
-              Obriši
-            </MenuItem>
-          </>
-        )}
-      </Menu>
-
+      {/* Dialogs */}
       <Dialog
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
@@ -744,50 +646,6 @@ export default function EventsPage() {
             data-testid="button-confirm-delete"
           >
             Obriši
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog
-        open={rsvpDialogOpen}
-        onClose={() => setRsvpDialogOpen(false)}
-        maxWidth="md"
-        fullWidth
-      >
-        <DialogTitle>Prijave za Događaj</DialogTitle>
-        <DialogContent>
-          {selectedEventRsvps.length > 0 ? (
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Korisnik</TableCell>
-                  <TableCell>Odrasli</TableCell>
-                  <TableCell>Djeca</TableCell>
-                  <TableCell>Datum Prijave</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {selectedEventRsvps.map((rsvp) => (
-                  <TableRow key={rsvp.id}>
-                    <TableCell>Korisnik {rsvp.userId}</TableCell>
-                    <TableCell>{rsvp.adultsCount}</TableCell>
-                    <TableCell>{rsvp.childrenCount}</TableCell>
-                    <TableCell>
-                      {rsvp.rsvpDate ? new Date(rsvp.rsvpDate).toLocaleDateString('hr-HR') : '-'}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          ) : (
-            <Typography color="text.secondary" sx={{ py: 4, textAlign: 'center' }}>
-              Nema prijava za ovaj događaj
-            </Typography>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setRsvpDialogOpen(false)} data-testid="button-close-rsvps">
-            Zatvori
           </Button>
         </DialogActions>
       </Dialog>
