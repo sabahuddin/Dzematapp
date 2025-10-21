@@ -39,7 +39,9 @@ import {
   type MarketplaceItem,
   type InsertMarketplaceItem,
   type ProductPurchaseRequest,
-  type InsertProductPurchaseRequest
+  type InsertProductPurchaseRequest,
+  type PrayerTime,
+  type InsertPrayerTime
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -201,6 +203,14 @@ export interface IStorage {
   updateLastViewed(userId: string, type: 'shop' | 'events' | 'announcements' | 'imamQuestions' | 'tasks'): Promise<User | undefined>;
   getNewItemsCount(userId: string, type: 'shop' | 'events' | 'announcements' | 'imamQuestions' | 'tasks'): Promise<number>;
   getAllNewItemsCounts(userId: string): Promise<{ shop: number; events: number; announcements: number; imamQuestions: number; tasks: number }>;
+
+  // Prayer Times
+  createPrayerTime(prayerTime: InsertPrayerTime): Promise<PrayerTime>;
+  getPrayerTimeByDate(date: string): Promise<PrayerTime | undefined>;
+  getAllPrayerTimes(): Promise<PrayerTime[]>;
+  bulkCreatePrayerTimes(prayerTimes: InsertPrayerTime[]): Promise<PrayerTime[]>;
+  deletePrayerTime(id: string): Promise<boolean>;
+  deleteAllPrayerTimes(): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -225,6 +235,7 @@ export class MemStorage implements IStorage {
   private shopProducts: Map<string, ShopProduct> = new Map();
   private marketplaceItems: Map<string, MarketplaceItem> = new Map();
   private productPurchaseRequests: Map<string, ProductPurchaseRequest> = new Map();
+  private prayerTimes: Map<string, PrayerTime> = new Map();
 
   constructor() {
     this.initializeData();
@@ -1648,6 +1659,53 @@ export class MemStorage implements IStorage {
     ]);
 
     return { shop, events, announcements, imamQuestions, tasks };
+  }
+
+  // Prayer Times
+  async createPrayerTime(prayerTime: InsertPrayerTime): Promise<PrayerTime> {
+    const newPrayerTime: PrayerTime = {
+      id: randomUUID(),
+      ...prayerTime,
+    };
+    this.prayerTimes.set(newPrayerTime.id, newPrayerTime);
+    return newPrayerTime;
+  }
+
+  async getPrayerTimeByDate(date: string): Promise<PrayerTime | undefined> {
+    return Array.from(this.prayerTimes.values()).find(pt => pt.date === date);
+  }
+
+  async getAllPrayerTimes(): Promise<PrayerTime[]> {
+    return Array.from(this.prayerTimes.values()).sort((a, b) => {
+      // Sort by date (dd.mm.yyyy format)
+      const [dayA, monthA, yearA] = a.date.split('.').map(Number);
+      const [dayB, monthB, yearB] = b.date.split('.').map(Number);
+      const dateA = new Date(yearA, monthA - 1, dayA);
+      const dateB = new Date(yearB, monthB - 1, dayB);
+      return dateA.getTime() - dateB.getTime();
+    });
+  }
+
+  async bulkCreatePrayerTimes(prayerTimes: InsertPrayerTime[]): Promise<PrayerTime[]> {
+    const created: PrayerTime[] = [];
+    for (const pt of prayerTimes) {
+      // Check if already exists
+      const existing = await this.getPrayerTimeByDate(pt.date);
+      if (!existing) {
+        const newPt = await this.createPrayerTime(pt);
+        created.push(newPt);
+      }
+    }
+    return created;
+  }
+
+  async deletePrayerTime(id: string): Promise<boolean> {
+    return this.prayerTimes.delete(id);
+  }
+
+  async deleteAllPrayerTimes(): Promise<boolean> {
+    this.prayerTimes.clear();
+    return true;
   }
 }
 
