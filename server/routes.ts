@@ -1087,7 +1087,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/tasks/:taskId/comments", requireAuth, async (req, res) => {
     try {
       const { taskId } = req.params;
-      const { content } = req.body;
+      const { content, commentImage } = req.body;
 
       if (!content) {
         return res.status(400).json({ message: "Content is required" });
@@ -1111,7 +1111,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
-      const commentData = insertTaskCommentSchema.parse({ taskId, userId, content });
+      const commentData = insertTaskCommentSchema.parse({ 
+        taskId, 
+        userId, 
+        content,
+        commentImage: commentImage || null 
+      });
       const comment = await storage.createTaskComment(commentData);
       
       // Get user details for the response
