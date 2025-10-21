@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Box, Tabs, Tab, Typography, Card, CardContent, CardMedia, Button, Chip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField, MenuItem, ImageList, ImageListItem, Select, FormControl, InputLabel } from "@mui/material";
-import { Add, Delete, ShoppingCart, Store, CardGiftcard, CloudUpload, Edit, Close, ContentCopy, Archive } from "@mui/icons-material";
+import { Add, Delete, ShoppingCart, Store, CardGiftcard, CloudUpload, Edit, Close, ContentCopy, Archive, Check } from "@mui/icons-material";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -28,6 +28,7 @@ export default function ShopPage() {
   const [fullscreenImage, setFullscreenImage] = useState("");
   const [uploadingPhotos, setUploadingPhotos] = useState(false);
   const [editingMarketplaceItem, setEditingMarketplaceItem] = useState<MarketplaceItemWithUser | null>(null);
+  const [editingProduct, setEditingProduct] = useState<ShopProductWithUser | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<ShopProductWithUser | null>(null);
   const [purchaseDetails, setPurchaseDetails] = useState({
     size: "",
@@ -181,6 +182,45 @@ export default function ShopPage() {
     }
   });
 
+  // Update product mutation
+  const updateProductMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: typeof productForm }) => {
+      return await apiRequest('PUT', `/api/shop/products/${id}`, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/shop/products'] });
+      toast({ title: "Artikal uspješno ažuriran" });
+      setProductModalOpen(false);
+      setEditingProduct(null);
+      setProductForm({
+        name: "",
+        photos: [],
+        size: "",
+        quantity: 0,
+        color: "",
+        notes: "",
+        price: ""
+      });
+    },
+    onError: () => {
+      toast({ title: "Greška pri ažuriranju artikla", variant: "destructive" });
+    }
+  });
+
+  // Complete product mutation (mark as finished)
+  const completeProductMutation = useMutation({
+    mutationFn: async (productId: string) => {
+      return await apiRequest('PUT', `/api/shop/products/${productId}`, { status: 'completed' });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/shop/products'] });
+      toast({ title: "Artikal označen kao završen" });
+    },
+    onError: () => {
+      toast({ title: "Greška", variant: "destructive" });
+    }
+  });
+
   // Duplicate product mutation
   const duplicateProductMutation = useMutation({
     mutationFn: async (product: ShopProductWithUser) => {
@@ -292,11 +332,27 @@ export default function ShopPage() {
         userId: user!.id
       });
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       toast({ 
         title: "Narudžba poslana", 
         description: "Uskoro ćete biti kontaktirani oko pojedinosti."
       });
+      
+      // Send message to admin about the purchase request
+      const adminUser = users?.find(u => u.isAdmin);
+      if (adminUser && selectedProduct) {
+        try {
+          await apiRequest('POST', '/api/messages', {
+            senderId: user!.id,
+            recipientId: adminUser.id,
+            subject: "Nova narudžba iz DžematShop",
+            content: `${user!.firstName} ${user!.lastName} želi kupiti: ${selectedProduct.name}${purchaseDetails.quantity > 1 ? ` (Količina: ${purchaseDetails.quantity})` : ''}`
+          });
+        } catch (error) {
+          console.error("Failed to send notification to admin", error);
+        }
+      }
+      
       setPurchaseModalOpen(false);
       setPurchaseDetails({ size: "", quantity: 1, color: "" });
       setSelectedProduct(null);
@@ -311,7 +367,26 @@ export default function ShopPage() {
       toast({ title: "Naziv je obavezan", variant: "destructive" });
       return;
     }
-    createProductMutation.mutate(productForm);
+    
+    if (editingProduct) {
+      updateProductMutation.mutate({ id: editingProduct.id, data: productForm });
+    } else {
+      createProductMutation.mutate(productForm);
+    }
+  };
+
+  const handleEditProduct = (product: ShopProductWithUser) => {
+    setEditingProduct(product);
+    setProductForm({
+      name: product.name,
+      photos: product.photos || [],
+      size: product.size || "",
+      quantity: product.quantity || 0,
+      color: product.color || "",
+      notes: product.notes || "",
+      price: product.price || ""
+    });
+    setProductModalOpen(true);
   };
 
   const handleCreateOrUpdateMarketplaceItem = () => {
@@ -442,7 +517,19 @@ export default function ShopPage() {
             <Button
               variant="contained"
               startIcon={<Add />}
-              onClick={() => setProductModalOpen(true)}
+              onClick={() => {
+                setEditingProduct(null);
+                setProductForm({
+                  name: "",
+                  photos: [],
+                  size: "",
+                  quantity: 0,
+                  color: "",
+                  notes: "",
+                  price: ""
+                });
+                setProductModalOpen(true);
+              }}
               sx={{ mb: 3 }}
               data-testid="button-add-product"
             >
@@ -506,7 +593,7 @@ export default function ShopPage() {
                           {product.notes}
                         </Typography>
                       )}
-                      <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
+                      <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                         {!isAdmin && (
                           <Button
                             variant="contained"
@@ -521,16 +608,25 @@ export default function ShopPage() {
                           <>
                             <IconButton
                               color="primary"
-                              onClick={() => duplicateProductMutation.mutate(product)}
-                              data-testid={`button-duplicate-product-${product.id}`}
-                              title="Kopiraj artikal"
+                              onClick={() => handleEditProduct(product)}
+                              data-testid={`button-edit-product-${product.id}`}
+                              title="Uredi artikal"
                             >
-                              <ContentCopy />
+                              <Edit />
+                            </IconButton>
+                            <IconButton
+                              color="success"
+                              onClick={() => completeProductMutation.mutate(product.id)}
+                              data-testid={`button-complete-product-${product.id}`}
+                              title="Završeno"
+                            >
+                              <Check />
                             </IconButton>
                             <IconButton
                               color="error"
                               onClick={() => deleteProductMutation.mutate(product.id)}
                               data-testid={`button-delete-product-${product.id}`}
+                              title="Obriši artikal"
                             >
                               <Delete />
                             </IconButton>
@@ -843,9 +939,9 @@ export default function ShopPage() {
         </Box>
       )}
 
-      {/* Add Product Dialog (Admin only) */}
-      <Dialog open={productModalOpen} onClose={() => setProductModalOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Dodaj Artikal</DialogTitle>
+      {/* Add/Edit Product Dialog (Admin only) */}
+      <Dialog open={productModalOpen} onClose={() => { setProductModalOpen(false); setEditingProduct(null); }} maxWidth="sm" fullWidth>
+        <DialogTitle>{editingProduct ? "Uredi Artikal" : "Dodaj Artikal"}</DialogTitle>
         <DialogContent>
           <TextField
             fullWidth
