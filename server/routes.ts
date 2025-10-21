@@ -2296,6 +2296,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Important Dates Routes
+  app.get("/api/important-dates", async (req, res) => {
+    try {
+      const dates = await storage.getAllImportantDates();
+      res.json(dates);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get important dates" });
+    }
+  });
+
+  app.post("/api/important-dates", requireAdmin, async (req, res) => {
+    try {
+      const date = await storage.createImportantDate(req.body);
+      res.status(201).json(date);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to create important date" });
+    }
+  });
+
+  app.put("/api/important-dates/:id", requireAdmin, async (req, res) => {
+    try {
+      const date = await storage.updateImportantDate(req.params.id, req.body);
+      if (!date) {
+        return res.status(404).json({ message: "Important date not found" });
+      }
+      res.json(date);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update important date" });
+    }
+  });
+
+  app.delete("/api/important-dates/:id", requireAdmin, async (req, res) => {
+    try {
+      const success = await storage.deleteImportantDate(req.params.id);
+      if (!success) {
+        return res.status(404).json({ message: "Important date not found" });
+      }
+      res.json({ message: "Important date deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete important date" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
