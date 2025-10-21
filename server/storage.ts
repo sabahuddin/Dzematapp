@@ -41,9 +41,32 @@ import {
   type ProductPurchaseRequest,
   type InsertProductPurchaseRequest,
   type PrayerTime,
-  type InsertPrayerTime
+  type InsertPrayerTime,
+  users,
+  announcements,
+  events,
+  eventRsvps,
+  workGroups,
+  workGroupMembers,
+  tasks,
+  accessRequests,
+  taskComments,
+  groupFiles,
+  announcementFiles,
+  activities,
+  familyRelationships,
+  messages,
+  imamQuestions,
+  organizationSettings,
+  documents,
+  requests,
+  shopProducts,
+  marketplaceItems,
+  productPurchaseRequests,
+  prayerTimes
 } from "@shared/schema";
-import { randomUUID } from "crypto";
+import { db } from './db';
+import { eq, and, or, desc, asc, gt, sql } from 'drizzle-orm';
 
 export interface IStorage {
   // Users
@@ -213,318 +236,51 @@ export interface IStorage {
   deleteAllPrayerTimes(): Promise<boolean>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<string, User> = new Map();
-  private announcements: Map<string, Announcement> = new Map();
-  private events: Map<string, Event> = new Map();
-  private eventRsvps: Map<string, EventRsvp> = new Map();
-  private workGroups: Map<string, WorkGroup> = new Map();
-  private workGroupMembers: Map<string, WorkGroupMember> = new Map();
-  private tasks: Map<string, Task> = new Map();
-  private accessRequests: Map<string, AccessRequest> = new Map();
-  private taskComments: Map<string, TaskComment> = new Map();
-  private groupFiles: Map<string, GroupFile> = new Map();
-  private announcementFiles: Map<string, AnnouncementFile> = new Map();
-  private activities: Map<string, Activity> = new Map();
-  private familyRelationships: Map<string, FamilyRelationship> = new Map();
-  private messages: Map<string, Message> = new Map();
-  private imamQuestions: Map<string, ImamQuestion> = new Map();
-  private organizationSettings: OrganizationSettings | null = null;
-  private documents: Map<string, Document> = new Map();
-  private requests: Map<string, Request> = new Map();
-  private shopProducts: Map<string, ShopProduct> = new Map();
-  private marketplaceItems: Map<string, MarketplaceItem> = new Map();
-  private productPurchaseRequests: Map<string, ProductPurchaseRequest> = new Map();
-  private prayerTimes: Map<string, PrayerTime> = new Map();
-
-  constructor() {
-    this.initializeData();
-  }
-
-  private initializeData() {
-    // Create admin user
-    const adminUser: User = {
-      id: randomUUID(),
-      firstName: "Admin",
-      lastName: "User",
-      username: "admin",
-      email: "admin@jamathub.com",
-      password: "admin123", // In real app, this would be hashed
-      phone: null,
-      photo: null,
-      address: null,
-      city: null,
-      postalCode: null,
-      dateOfBirth: null,
-      occupation: null,
-      membershipDate: new Date(),
-      status: "aktivan",
-      inactiveReason: null,
-      categories: [],
-      roles: ["admin"],
-      isAdmin: true,
-      lastViewedShop: null,
-      lastViewedEvents: null,
-      lastViewedAnnouncements: null,
-      lastViewedImamQuestions: null,
-      lastViewedTasks: null
-    };
-    this.users.set(adminUser.id, adminUser);
-
-    // Initialize organization settings
-    this.organizationSettings = {
-      id: randomUUID(),
-      name: "Islamska Zajednica",
-      address: "Ulica Džemata 123",
-      phone: "+387 33 123 456",
-      email: "info@dzemat.ba",
-      facebookUrl: null,
-      instagramUrl: null,
-      youtubeUrl: null,
-      twitterUrl: null,
-      livestreamUrl: null,
-      livestreamEnabled: false,
-      livestreamTitle: null,
-      updatedAt: new Date()
-    };
-
-    // Create sample data
-    this.createSampleData();
-  }
-
-  private createSampleData() {
-    // Sample users
-    const sampleUsers = [
-      { firstName: "Mujo", lastName: "Mujic", username: "mujo.mujic", email: "mujo@example.com", roles: ["clan"] },
-      { firstName: "Ali", lastName: "Alic", username: "ali.alic", email: "ali@example.com", roles: ["clan_io"] },
-      { firstName: "Huse", lastName: "Husic", username: "huse.husic", email: "huse@example.com", roles: ["clan"] }
-    ];
-
-    sampleUsers.forEach(userData => {
-      const user: User = {
-        id: randomUUID(),
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        username: userData.username,
-        email: userData.email,
-        password: "password123",
-        phone: null,
-        photo: null,
-        address: null,
-        city: null,
-        postalCode: null,
-        dateOfBirth: null,
-        occupation: null,
-        membershipDate: new Date(),
-        status: userData.username === "huse.husic" ? "pasivan" : "aktivan",
-        inactiveReason: userData.username === "huse.husic" ? "Drugi džemat" : null,
-        categories: userData.username === "mujo.mujic" ? ["Muškarci"] : userData.username === "ali.alic" ? ["Žene", "Roditelji"] : [],
-        roles: userData.roles,
-        isAdmin: false,
-        lastViewedShop: null,
-        lastViewedEvents: null,
-        lastViewedAnnouncements: null,
-        lastViewedImamQuestions: null,
-        lastViewedTasks: null
-      };
-      this.users.set(user.id, user);
-    });
-
-    // Sample work groups
-    const workGroupsData = [
-      { name: "Organizacija događaja", description: "Grupa odgovorna za organizaciju i koordinaciju svih događaja u džamiji.", visibility: "javna" },
-      { name: "Održavanje objekta", description: "Tim zadužen za održavanje i poboljšanje infrastrukture džamije.", visibility: "privatna" },
-      { name: "Edukacija i program", description: "Grupa koja se bavi edukacijskim aktivnostima i programima za djecu i odrasle.", visibility: "javna" }
-    ];
-
-    const workGroupIds: string[] = [];
-    workGroupsData.forEach(groupData => {
-      const workGroup: WorkGroup = {
-        id: randomUUID(),
-        name: groupData.name,
-        description: groupData.description,
-        visibility: groupData.visibility,
-        createdAt: new Date()
-      };
-      this.workGroups.set(workGroup.id, workGroup);
-      workGroupIds.push(workGroup.id);
-    });
-
-    // Add sample members and moderators
-    const usersList = Array.from(this.users.values()).filter(u => !u.isAdmin);
-    if (usersList.length > 0 && workGroupIds.length > 0) {
-      // Make first user moderator of first group
-      const member1: WorkGroupMember = {
-        id: randomUUID(),
-        workGroupId: workGroupIds[0],
-        userId: usersList[0].id,
-        isModerator: true,
-        joinedAt: new Date()
-      };
-      this.workGroupMembers.set(member1.id, member1);
-
-      // Make second user regular member of first group
-      if (usersList.length > 1) {
-        const member2: WorkGroupMember = {
-          id: randomUUID(),
-          workGroupId: workGroupIds[0],
-          userId: usersList[1].id,
-          isModerator: false,
-          joinedAt: new Date()
-        };
-        this.workGroupMembers.set(member2.id, member2);
-      }
-
-      // Make second user moderator of second group
-      if (usersList.length > 1 && workGroupIds.length > 1) {
-        const member3: WorkGroupMember = {
-          id: randomUUID(),
-          workGroupId: workGroupIds[1],
-          userId: usersList[1].id,
-          isModerator: true,
-          joinedAt: new Date()
-        };
-        this.workGroupMembers.set(member3.id, member3);
-      }
-    }
-
-    // Add sample tasks
-    if (workGroupIds.length > 0 && usersList.length > 0) {
-      const sampleTasks = [
-        { 
-          title: "Organizacija iftar programa", 
-          description: "Potrebno je organizirati iftar program za 100 ljudi",
-          workGroupId: workGroupIds[0],
-          assignedToId: usersList[0]?.id,
-          status: "u_toku",
-          dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days from now
-        },
-        { 
-          title: "Popravka toaleta", 
-          description: "Popraviti oštećene toalete u prizemlju",
-          workGroupId: workGroupIds[1] || workGroupIds[0],
-          assignedToId: usersList[1]?.id,
-          status: "na_cekanju",
-          dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000) // 3 days from now
-        },
-        { 
-          title: "Priprema obrazovnog materijala", 
-          description: "Kreirati materijale za obrazovne aktivnosti",
-          workGroupId: workGroupIds[2] || workGroupIds[0],
-          assignedToId: usersList[0]?.id,
-          status: "završeno",
-          dueDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) // 2 days ago
-        },
-        { 
-          title: "Čišćenje prostora nakon događaja", 
-          description: "Očistiti prostor nakon završenog događaja",
-          workGroupId: workGroupIds[0],
-          assignedToId: usersList[1]?.id,
-          status: "završeno",
-          dueDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000) // 5 days ago
-        },
-        { 
-          title: "Nabavka nove opreme", 
-          description: "Nabaviti novu opremu za održavanje",
-          workGroupId: workGroupIds[1] || workGroupIds[0],
-          assignedToId: null,
-          status: "arhiva",
-          dueDate: null
-        }
-      ];
-
-      sampleTasks.forEach(taskData => {
-        const task: Task = {
-          id: randomUUID(),
-          ...taskData,
-          descriptionImage: null,
-          createdAt: new Date()
-        };
-        this.tasks.set(task.id, task);
-      });
-    }
-  }
-
-  // Users
+export class DatabaseStorage implements IStorage {
   async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+    const result = await db.select().from(users).where(eq(users.id, id)).limit(1);
+    return result[0];
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(user => user.username === username);
+    const result = await db.select().from(users).where(eq(users.username, username)).limit(1);
+    return result[0];
   }
 
   async getUserByEmail(email: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(user => user.email === email);
+    if (!email) return undefined;
+    const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
+    return result[0];
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = {
-      ...insertUser,
-      id,
-      membershipDate: new Date(),
-      status: insertUser.status || "aktivan",
-      isAdmin: false,
-      email: insertUser.email ?? null,
-      phone: insertUser.phone ?? null,
-      photo: insertUser.photo ?? null,
-      address: insertUser.address ?? null,
-      city: insertUser.city ?? null,
-      postalCode: insertUser.postalCode ?? null,
-      dateOfBirth: insertUser.dateOfBirth ?? null,
-      occupation: insertUser.occupation ?? null,
-      inactiveReason: insertUser.inactiveReason ?? null,
-      categories: insertUser.categories ?? [],
-      roles: insertUser.roles ?? [],
-      lastViewedShop: null,
-      lastViewedEvents: null,
-      lastViewedAnnouncements: null,
-      lastViewedImamQuestions: null,
-      lastViewedTasks: null
-    };
-    this.users.set(id, user);
+    const [user] = await db.insert(users).values(insertUser).returning();
     
     await this.createActivity({
       type: "registration",
       description: `Novi korisnik registrovan: ${user.firstName} ${user.lastName}`,
-      userId: id
+      userId: user.id
     });
     
     return user;
   }
 
   async updateUser(id: string, updateData: Partial<InsertUser>): Promise<User | undefined> {
-    const user = this.users.get(id);
-    if (!user) return undefined;
-
-    const updatedUser = { ...user, ...updateData };
-    this.users.set(id, updatedUser);
-    return updatedUser;
+    const [user] = await db.update(users).set(updateData).where(eq(users.id, id)).returning();
+    return user;
   }
 
   async getAllUsers(): Promise<User[]> {
-    return Array.from(this.users.values());
+    return await db.select().from(users);
   }
 
-  // Announcements
   async getAnnouncement(id: string): Promise<Announcement | undefined> {
-    return this.announcements.get(id);
+    const result = await db.select().from(announcements).where(eq(announcements.id, id)).limit(1);
+    return result[0];
   }
 
   async createAnnouncement(insertAnnouncement: InsertAnnouncement): Promise<Announcement> {
-    const id = randomUUID();
-    const announcement: Announcement = {
-      id,
-      title: insertAnnouncement.title,
-      content: insertAnnouncement.content,
-      authorId: insertAnnouncement.authorId,
-      publishDate: new Date(),
-      status: insertAnnouncement.status || "published",
-      isFeatured: insertAnnouncement.isFeatured || false,
-      categories: insertAnnouncement.categories || []
-    };
-    this.announcements.set(id, announcement);
+    const [announcement] = await db.insert(announcements).values(insertAnnouncement).returning();
     
     await this.createActivity({
       type: "announcement",
@@ -536,44 +292,26 @@ export class MemStorage implements IStorage {
   }
 
   async updateAnnouncement(id: string, updateData: Partial<InsertAnnouncement>): Promise<Announcement | undefined> {
-    const announcement = this.announcements.get(id);
-    if (!announcement) return undefined;
-
-    const updatedAnnouncement = { ...announcement, ...updateData };
-    this.announcements.set(id, updatedAnnouncement);
-    return updatedAnnouncement;
+    const [announcement] = await db.update(announcements).set(updateData).where(eq(announcements.id, id)).returning();
+    return announcement;
   }
 
   async deleteAnnouncement(id: string): Promise<boolean> {
-    return this.announcements.delete(id);
+    const result = await db.delete(announcements).where(eq(announcements.id, id)).returning();
+    return result.length > 0;
   }
 
   async getAllAnnouncements(): Promise<Announcement[]> {
-    return Array.from(this.announcements.values());
+    return await db.select().from(announcements);
   }
 
-  // Events
   async getEvent(id: string): Promise<Event | undefined> {
-    return this.events.get(id);
+    const result = await db.select().from(events).where(eq(events.id, id)).limit(1);
+    return result[0];
   }
 
   async createEvent(insertEvent: InsertEvent): Promise<Event> {
-    const id = randomUUID();
-    const event: Event = {
-      id,
-      name: insertEvent.name,
-      description: insertEvent.description || null,
-      location: insertEvent.location,
-      dateTime: insertEvent.dateTime,
-      rsvpEnabled: insertEvent.rsvpEnabled !== undefined ? insertEvent.rsvpEnabled : true,
-      requireAdultsChildren: insertEvent.requireAdultsChildren !== undefined ? insertEvent.requireAdultsChildren : false,
-      maxAttendees: insertEvent.maxAttendees || null,
-      reminderTime: insertEvent.reminderTime || null,
-      categories: insertEvent.categories || null,
-      createdById: insertEvent.createdById,
-      createdAt: new Date()
-    };
-    this.events.set(id, event);
+    const [event] = await db.insert(events).values(insertEvent).returning();
     
     await this.createActivity({
       type: "event",
@@ -585,137 +323,103 @@ export class MemStorage implements IStorage {
   }
 
   async updateEvent(id: string, updateData: Partial<InsertEvent>): Promise<Event | undefined> {
-    const event = this.events.get(id);
-    if (!event) return undefined;
-
-    const updatedEvent = { ...event, ...updateData };
-    this.events.set(id, updatedEvent);
-    return updatedEvent;
+    const [event] = await db.update(events).set(updateData).where(eq(events.id, id)).returning();
+    return event;
   }
 
   async deleteEvent(id: string): Promise<boolean> {
-    return this.events.delete(id);
+    const result = await db.delete(events).where(eq(events.id, id)).returning();
+    return result.length > 0;
   }
 
   async getAllEvents(): Promise<Event[]> {
-    return Array.from(this.events.values());
+    return await db.select().from(events);
   }
 
   async getEventLocations(): Promise<string[]> {
-    const events = Array.from(this.events.values());
-    const locations = events
+    const allEvents = await db.select().from(events);
+    const locations = allEvents
       .map(event => event.location)
       .filter((location, index, self) => location && self.indexOf(location) === index);
     return locations.sort();
   }
 
-  // Event RSVPs
   async createEventRsvp(insertRsvp: InsertEventRsvp): Promise<EventRsvp> {
-    const id = randomUUID();
-    const rsvp: EventRsvp = {
-      id,
-      eventId: insertRsvp.eventId,
-      userId: insertRsvp.userId,
-      adultsCount: insertRsvp.adultsCount !== undefined ? insertRsvp.adultsCount : 1,
-      childrenCount: insertRsvp.childrenCount !== undefined ? insertRsvp.childrenCount : 0,
-      rsvpDate: new Date()
-    };
-    this.eventRsvps.set(id, rsvp);
+    const [rsvp] = await db.insert(eventRsvps).values(insertRsvp).returning();
     return rsvp;
   }
 
   async getEventRsvps(eventId: string): Promise<EventRsvp[]> {
-    return Array.from(this.eventRsvps.values()).filter(rsvp => rsvp.eventId === eventId);
+    return await db.select().from(eventRsvps).where(eq(eventRsvps.eventId, eventId));
   }
 
   async getUserEventRsvp(eventId: string, userId: string): Promise<EventRsvp | null> {
-    const rsvp = Array.from(this.eventRsvps.values()).find(r => r.eventId === eventId && r.userId === userId);
-    return rsvp || null;
+    const result = await db.select().from(eventRsvps)
+      .where(and(eq(eventRsvps.eventId, eventId), eq(eventRsvps.userId, userId)))
+      .limit(1);
+    return result[0] ?? null;
   }
 
   async updateEventRsvp(id: string, updates: { adultsCount?: number; childrenCount?: number }): Promise<EventRsvp | undefined> {
-    const rsvp = this.eventRsvps.get(id);
-    if (!rsvp) return undefined;
-
-    const updatedRsvp = { ...rsvp, ...updates };
-    this.eventRsvps.set(id, updatedRsvp);
-    return updatedRsvp;
+    const [rsvp] = await db.update(eventRsvps).set(updates).where(eq(eventRsvps.id, id)).returning();
+    return rsvp;
   }
 
   async deleteEventRsvp(id: string): Promise<boolean> {
-    return this.eventRsvps.delete(id);
+    const result = await db.delete(eventRsvps).where(eq(eventRsvps.id, id)).returning();
+    return result.length > 0;
   }
 
-  // Work Groups
   async getWorkGroup(id: string): Promise<WorkGroup | undefined> {
-    return this.workGroups.get(id);
+    const result = await db.select().from(workGroups).where(eq(workGroups.id, id)).limit(1);
+    return result[0];
   }
 
   async createWorkGroup(insertWorkGroup: InsertWorkGroup): Promise<WorkGroup> {
-    const id = randomUUID();
-    const workGroup: WorkGroup = {
-      id,
-      name: insertWorkGroup.name,
-      description: insertWorkGroup.description || null,
-      visibility: insertWorkGroup.visibility || "javna",
-      createdAt: new Date()
-    };
-    this.workGroups.set(id, workGroup);
+    const [workGroup] = await db.insert(workGroups).values(insertWorkGroup).returning();
     return workGroup;
   }
 
   async updateWorkGroup(id: string, updateData: Partial<InsertWorkGroup>): Promise<WorkGroup | undefined> {
-    const workGroup = this.workGroups.get(id);
-    if (!workGroup) return undefined;
-
-    const updatedWorkGroup = { ...workGroup, ...updateData };
-    this.workGroups.set(id, updatedWorkGroup);
-    return updatedWorkGroup;
+    const [workGroup] = await db.update(workGroups).set(updateData).where(eq(workGroups.id, id)).returning();
+    return workGroup;
   }
 
   async deleteWorkGroup(id: string): Promise<boolean> {
-    return this.workGroups.delete(id);
+    const result = await db.delete(workGroups).where(eq(workGroups.id, id)).returning();
+    return result.length > 0;
   }
 
   async getAllWorkGroups(userId?: string, isAdmin?: boolean): Promise<WorkGroup[]> {
-    const allWorkGroups = Array.from(this.workGroups.values());
+    const allWorkGroups = await db.select().from(workGroups);
     
-    // Ako nema userId ili je admin, vrati sve sekcije
     if (!userId || isAdmin) {
       return allWorkGroups;
     }
     
-    // Za obične korisnike, filtriraj:
-    // - Javne sekcije (vidljive svima)
-    // - Privatne sekcije gdje je korisnik član
-    const userMemberships = Array.from(this.workGroupMembers.values())
-      .filter(m => m.userId === userId)
-      .map(m => m.workGroupId);
+    const userMemberships = await db.select().from(workGroupMembers)
+      .where(eq(workGroupMembers.userId, userId));
+    const userGroupIds = userMemberships.map(m => m.workGroupId);
     
     return allWorkGroups.filter(wg => 
-      wg.visibility === "javna" || userMemberships.includes(wg.id)
+      wg.visibility === "javna" || userGroupIds.includes(wg.id)
     );
   }
 
-  // Work Group Members
   async addMemberToWorkGroup(workGroupId: string, userId: string): Promise<WorkGroupMember> {
-    // Check if user is already a member
-    const existingMembership = Array.from(this.workGroupMembers.values())
-      .find(member => member.workGroupId === workGroupId && member.userId === userId);
+    const existing = await db.select().from(workGroupMembers)
+      .where(and(eq(workGroupMembers.workGroupId, workGroupId), eq(workGroupMembers.userId, userId)))
+      .limit(1);
     
-    if (existingMembership) {
-      return existingMembership;
+    if (existing.length > 0) {
+      return existing[0];
     }
 
-    const id = randomUUID();
-    const workGroupMember: WorkGroupMember = {
-      id,
+    const [member] = await db.insert(workGroupMembers).values({
       workGroupId,
       userId,
-      isModerator: false,
-      joinedAt: new Date()
-    };
-    this.workGroupMembers.set(id, workGroupMember);
+      isModerator: false
+    }).returning();
     
     await this.createActivity({
       type: "workgroup",
@@ -723,63 +427,80 @@ export class MemStorage implements IStorage {
       userId
     });
     
-    return workGroupMember;
+    return member;
   }
 
   async removeMemberFromWorkGroup(workGroupId: string, userId: string): Promise<boolean> {
-    const member = Array.from(this.workGroupMembers.values())
-      .find(m => m.workGroupId === workGroupId && m.userId === userId);
+    const result = await db.delete(workGroupMembers)
+      .where(and(eq(workGroupMembers.workGroupId, workGroupId), eq(workGroupMembers.userId, userId)))
+      .returning();
     
-    if (member) {
-      const deleted = this.workGroupMembers.delete(member.id);
-      
-      if (deleted) {
-        await this.createActivity({
-          type: "workgroup",
-          description: `Korisnik uklonjen iz radne grupe`,
-          userId
-        });
-      }
-      
-      return deleted;
+    if (result.length > 0) {
+      await this.createActivity({
+        type: "workgroup",
+        description: `Korisnik uklonjen iz radne grupe`,
+        userId
+      });
     }
-    return false;
+    
+    return result.length > 0;
   }
 
   async getWorkGroupMembers(workGroupId: string): Promise<WorkGroupMember[]> {
-    return Array.from(this.workGroupMembers.values())
-      .filter(member => member.workGroupId === workGroupId);
+    return await db.select().from(workGroupMembers).where(eq(workGroupMembers.workGroupId, workGroupId));
   }
 
   async getUserWorkGroups(userId: string): Promise<WorkGroupMember[]> {
-    return Array.from(this.workGroupMembers.values())
-      .filter(member => member.userId === userId);
+    return await db.select().from(workGroupMembers).where(eq(workGroupMembers.userId, userId));
   }
 
   async isUserMemberOfWorkGroup(workGroupId: string, userId: string): Promise<boolean> {
-    return Array.from(this.workGroupMembers.values())
-      .some(member => member.workGroupId === workGroupId && member.userId === userId);
+    const result = await db.select().from(workGroupMembers)
+      .where(and(eq(workGroupMembers.workGroupId, workGroupId), eq(workGroupMembers.userId, userId)))
+      .limit(1);
+    return result.length > 0;
   }
 
-  // Tasks
+  async setModerator(workGroupId: string, userId: string, isModerator: boolean): Promise<WorkGroupMember | undefined> {
+    const [member] = await db.update(workGroupMembers)
+      .set({ isModerator })
+      .where(and(eq(workGroupMembers.workGroupId, workGroupId), eq(workGroupMembers.userId, userId)))
+      .returning();
+    
+    if (member) {
+      await this.createActivity({
+        type: "workgroup",
+        description: `Korisnik ${isModerator ? 'označen kao moderator' : 'uklonjen kao moderator'}`,
+        userId
+      });
+    }
+    
+    return member;
+  }
+
+  async getWorkGroupModerators(workGroupId: string): Promise<WorkGroupMember[]> {
+    return await db.select().from(workGroupMembers)
+      .where(and(eq(workGroupMembers.workGroupId, workGroupId), eq(workGroupMembers.isModerator, true)));
+  }
+
+  async isUserModeratorOfWorkGroup(workGroupId: string, userId: string): Promise<boolean> {
+    const result = await db.select().from(workGroupMembers)
+      .where(and(
+        eq(workGroupMembers.workGroupId, workGroupId),
+        eq(workGroupMembers.userId, userId),
+        eq(workGroupMembers.isModerator, true)
+      ))
+      .limit(1);
+    return result.length > 0;
+  }
+
   async getTask(id: string): Promise<Task | undefined> {
-    return this.tasks.get(id);
+    const result = await db.select().from(tasks).where(eq(tasks.id, id)).limit(1);
+    return result[0];
   }
 
   async createTask(insertTask: InsertTask): Promise<Task> {
-    const id = randomUUID();
-    const task: Task = {
-      id,
-      title: insertTask.title,
-      description: insertTask.description || null,
-      descriptionImage: insertTask.descriptionImage || null,
-      workGroupId: insertTask.workGroupId,
-      assignedToId: insertTask.assignedToId || null,
-      status: insertTask.status || "todo",
-      dueDate: insertTask.dueDate || null,
-      createdAt: new Date()
-    };
-    this.tasks.set(id, task);
+    const [task] = await db.insert(tasks).values(insertTask).returning();
     
     if (task.assignedToId) {
       await this.createActivity({
@@ -793,185 +514,119 @@ export class MemStorage implements IStorage {
   }
 
   async updateTask(id: string, updateData: Partial<InsertTask>): Promise<Task | undefined> {
-    const task = this.tasks.get(id);
-    if (!task) return undefined;
-
-    const updatedTask = { ...task, ...updateData };
-    this.tasks.set(id, updatedTask);
+    const [task] = await db.update(tasks).set(updateData).where(eq(tasks.id, id)).returning();
     
-    if (updateData.status === "completed") {
+    if (task && updateData.status === "completed") {
       await this.createActivity({
         type: "task",
-        description: `Zadatak završen: ${updatedTask.title}`,
-        userId: updatedTask.assignedToId || undefined
+        description: `Zadatak završen: ${task.title}`,
+        userId: task.assignedToId ?? undefined
       });
     }
     
-    return updatedTask;
+    return task;
   }
 
   async deleteTask(id: string): Promise<boolean> {
-    return this.tasks.delete(id);
+    const result = await db.delete(tasks).where(eq(tasks.id, id)).returning();
+    return result.length > 0;
   }
 
   async getTasksByWorkGroup(workGroupId: string): Promise<Task[]> {
-    return Array.from(this.tasks.values()).filter(task => task.workGroupId === workGroupId);
+    return await db.select().from(tasks).where(eq(tasks.workGroupId, workGroupId));
   }
 
   async getAllTasksWithWorkGroup(userId: string, isAdmin: boolean): Promise<Array<Task & { workGroup: WorkGroup }>> {
-    const allTasks = Array.from(this.tasks.values());
+    const allTasks = await db.select().from(tasks);
+    const allWorkGroups = await db.select().from(workGroups);
+    const workGroupMap = new Map(allWorkGroups.map(wg => [wg.id, wg]));
     
     if (isAdmin) {
-      return allTasks.map(task => {
-        const workGroup = this.workGroups.get(task.workGroupId);
-        return { ...task, workGroup: workGroup! };
-      }).filter(task => task.workGroup);
+      return allTasks
+        .map(task => ({ ...task, workGroup: workGroupMap.get(task.workGroupId)! }))
+        .filter(task => task.workGroup);
     } else {
-      const userModeratedGroups = Array.from(this.workGroupMembers.values())
-        .filter(member => member.userId === userId && member.isModerator)
-        .map(member => member.workGroupId);
+      const userModeratedGroups = await db.select().from(workGroupMembers)
+        .where(and(eq(workGroupMembers.userId, userId), eq(workGroupMembers.isModerator, true)));
+      const moderatedGroupIds = userModeratedGroups.map(m => m.workGroupId);
       
       return allTasks
-        .filter(task => userModeratedGroups.includes(task.workGroupId))
-        .map(task => {
-          const workGroup = this.workGroups.get(task.workGroupId);
-          return { ...task, workGroup: workGroup! };
-        })
+        .filter(task => moderatedGroupIds.includes(task.workGroupId))
+        .map(task => ({ ...task, workGroup: workGroupMap.get(task.workGroupId)! }))
         .filter(task => task.workGroup);
     }
   }
 
   async moveTaskToWorkGroup(taskId: string, newWorkGroupId: string): Promise<Task | undefined> {
-    const task = this.tasks.get(taskId);
-    if (!task) return undefined;
-
-    const newWorkGroup = this.workGroups.get(newWorkGroupId);
-    if (!newWorkGroup) return undefined;
-
-    const updatedTask = { ...task, workGroupId: newWorkGroupId };
-    this.tasks.set(taskId, updatedTask);
-    
-    return updatedTask;
+    const [task] = await db.update(tasks)
+      .set({ workGroupId: newWorkGroupId })
+      .where(eq(tasks.id, taskId))
+      .returning();
+    return task;
   }
 
-  // Access Requests
   async createAccessRequest(insertRequest: InsertAccessRequest): Promise<AccessRequest> {
-    const id = randomUUID();
-    const request: AccessRequest = {
-      id,
-      userId: insertRequest.userId,
-      workGroupId: insertRequest.workGroupId,
-      status: insertRequest.status || "pending",
-      requestDate: new Date()
-    };
-    this.accessRequests.set(id, request);
+    const [request] = await db.insert(accessRequests).values(insertRequest).returning();
     return request;
   }
 
   async updateAccessRequest(id: string, status: string): Promise<AccessRequest | undefined> {
-    const request = this.accessRequests.get(id);
-    if (!request) return undefined;
-
-    const updatedRequest = { ...request, status };
-    this.accessRequests.set(id, updatedRequest);
-    return updatedRequest;
+    const [request] = await db.update(accessRequests).set({ status }).where(eq(accessRequests.id, id)).returning();
+    return request;
   }
 
   async getAllAccessRequests(): Promise<AccessRequest[]> {
-    return Array.from(this.accessRequests.values());
+    return await db.select().from(accessRequests);
   }
 
   async getUserAccessRequests(userId: string): Promise<AccessRequest[]> {
-    return Array.from(this.accessRequests.values())
-      .filter(req => req.userId === userId);
+    return await db.select().from(accessRequests).where(eq(accessRequests.userId, userId));
   }
 
-  // Activities
   async createActivity(activityData: { type: string; description: string; userId?: string }): Promise<Activity> {
-    const id = randomUUID();
-    const activity: Activity = {
-      id,
+    const [activity] = await db.insert(activities).values({
       type: activityData.type,
       description: activityData.description,
-      userId: activityData.userId || null,
-      createdAt: new Date()
-    };
-    this.activities.set(id, activity);
+      userId: activityData.userId ?? null
+    }).returning();
     return activity;
   }
 
   async getRecentActivities(limit = 10): Promise<Activity[]> {
-    return Array.from(this.activities.values())
-      .sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime())
-      .slice(0, limit);
+    return await db.select().from(activities).orderBy(desc(activities.createdAt)).limit(limit);
   }
 
-  // Statistics
   async getUserCount(): Promise<number> {
-    return this.users.size;
+    const result = await db.select({ count: sql<number>`count(*)` }).from(users);
+    return Number(result[0]?.count ?? 0);
   }
 
   async getNewAnnouncementsCount(days: number): Promise<number> {
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - days);
-    return Array.from(this.announcements.values())
-      .filter(announcement => new Date(announcement.publishDate!) >= cutoffDate).length;
+    const result = await db.select({ count: sql<number>`count(*)` })
+      .from(announcements)
+      .where(gt(announcements.publishDate, cutoffDate));
+    return Number(result[0]?.count ?? 0);
   }
 
   async getUpcomingEventsCount(): Promise<number> {
     const now = new Date();
-    return Array.from(this.events.values())
-      .filter(event => new Date(event.dateTime) > now).length;
+    const result = await db.select({ count: sql<number>`count(*)` })
+      .from(events)
+      .where(gt(events.dateTime, now));
+    return Number(result[0]?.count ?? 0);
   }
 
   async getActiveTasksCount(): Promise<number> {
-    return Array.from(this.tasks.values())
-      .filter(task => task.status !== "completed").length;
+    const result = await db.select({ count: sql<number>`count(*)` })
+      .from(tasks)
+      .where(sql`${tasks.status} != 'completed'`);
+    return Number(result[0]?.count ?? 0);
   }
 
-  // Moderator management methods
-  async setModerator(workGroupId: string, userId: string, isModerator: boolean): Promise<WorkGroupMember | undefined> {
-    const member = Array.from(this.workGroupMembers.values())
-      .find(m => m.workGroupId === workGroupId && m.userId === userId);
-    
-    if (member) {
-      const updatedMember = { ...member, isModerator };
-      this.workGroupMembers.set(member.id, updatedMember);
-      
-      await this.createActivity({
-        type: "workgroup",
-        description: `Korisnik ${isModerator ? 'označen kao moderator' : 'uklonjen kao moderator'}`,
-        userId
-      });
-      
-      return updatedMember;
-    }
-    return undefined;
-  }
-
-  async getWorkGroupModerators(workGroupId: string): Promise<WorkGroupMember[]> {
-    return Array.from(this.workGroupMembers.values())
-      .filter(member => member.workGroupId === workGroupId && member.isModerator);
-  }
-
-  async isUserModeratorOfWorkGroup(workGroupId: string, userId: string): Promise<boolean> {
-    const member = Array.from(this.workGroupMembers.values())
-      .find(m => m.workGroupId === workGroupId && m.userId === userId);
-    return member ? !!member.isModerator : false;
-  }
-
-  // Task comment methods
   async createTaskComment(insertComment: InsertTaskComment): Promise<TaskComment> {
-    const id = randomUUID();
-    const comment: TaskComment = {
-      id,
-      taskId: insertComment.taskId,
-      userId: insertComment.userId,
-      content: insertComment.content,
-      commentImage: insertComment.commentImage || null,
-      createdAt: new Date()
-    };
-    this.taskComments.set(id, comment);
+    const [comment] = await db.insert(taskComments).values(insertComment).returning();
     
     await this.createActivity({
       type: "task",
@@ -983,33 +638,23 @@ export class MemStorage implements IStorage {
   }
 
   async getTaskComment(id: string): Promise<TaskComment | undefined> {
-    return this.taskComments.get(id);
+    const result = await db.select().from(taskComments).where(eq(taskComments.id, id)).limit(1);
+    return result[0];
   }
 
   async getTaskComments(taskId: string): Promise<TaskComment[]> {
-    return Array.from(this.taskComments.values())
-      .filter(comment => comment.taskId === taskId)
-      .sort((a, b) => new Date(a.createdAt!).getTime() - new Date(b.createdAt!).getTime());
+    return await db.select().from(taskComments)
+      .where(eq(taskComments.taskId, taskId))
+      .orderBy(asc(taskComments.createdAt));
   }
 
   async deleteTaskComment(id: string): Promise<boolean> {
-    return this.taskComments.delete(id);
+    const result = await db.delete(taskComments).where(eq(taskComments.id, id)).returning();
+    return result.length > 0;
   }
 
-  // Group file methods
   async createGroupFile(insertFile: InsertGroupFile): Promise<GroupFile> {
-    const id = randomUUID();
-    const file: GroupFile = {
-      id,
-      workGroupId: insertFile.workGroupId,
-      uploadedById: insertFile.uploadedById,
-      fileName: insertFile.fileName,
-      fileType: insertFile.fileType,
-      fileSize: insertFile.fileSize,
-      filePath: insertFile.filePath,
-      uploadedAt: new Date()
-    };
-    this.groupFiles.set(id, file);
+    const [file] = await db.insert(groupFiles).values(insertFile).returning();
     
     await this.createActivity({
       type: "workgroup",
@@ -1021,33 +666,23 @@ export class MemStorage implements IStorage {
   }
 
   async getGroupFile(id: string): Promise<GroupFile | undefined> {
-    return this.groupFiles.get(id);
+    const result = await db.select().from(groupFiles).where(eq(groupFiles.id, id)).limit(1);
+    return result[0];
   }
 
   async getGroupFiles(workGroupId: string): Promise<GroupFile[]> {
-    return Array.from(this.groupFiles.values())
-      .filter(file => file.workGroupId === workGroupId)
-      .sort((a, b) => new Date(b.uploadedAt!).getTime() - new Date(a.uploadedAt!).getTime());
+    return await db.select().from(groupFiles)
+      .where(eq(groupFiles.workGroupId, workGroupId))
+      .orderBy(desc(groupFiles.uploadedAt));
   }
 
   async deleteGroupFile(id: string): Promise<boolean> {
-    return this.groupFiles.delete(id);
+    const result = await db.delete(groupFiles).where(eq(groupFiles.id, id)).returning();
+    return result.length > 0;
   }
 
-  // Announcement Files
   async createAnnouncementFile(insertFile: InsertAnnouncementFile): Promise<AnnouncementFile> {
-    const id = randomUUID();
-    const file: AnnouncementFile = {
-      id,
-      announcementId: insertFile.announcementId,
-      uploadedById: insertFile.uploadedById,
-      fileName: insertFile.fileName,
-      fileType: insertFile.fileType,
-      fileSize: insertFile.fileSize,
-      filePath: insertFile.filePath,
-      uploadedAt: new Date()
-    };
-    this.announcementFiles.set(id, file);
+    const [file] = await db.insert(announcementFiles).values(insertFile).returning();
     
     await this.createActivity({
       type: "announcement",
@@ -1059,30 +694,23 @@ export class MemStorage implements IStorage {
   }
 
   async getAnnouncementFile(id: string): Promise<AnnouncementFile | undefined> {
-    return this.announcementFiles.get(id);
+    const result = await db.select().from(announcementFiles).where(eq(announcementFiles.id, id)).limit(1);
+    return result[0];
   }
 
   async getAnnouncementFiles(announcementId: string): Promise<AnnouncementFile[]> {
-    return Array.from(this.announcementFiles.values())
-      .filter(file => file.announcementId === announcementId)
-      .sort((a, b) => new Date(b.uploadedAt!).getTime() - new Date(a.uploadedAt!).getTime());
+    return await db.select().from(announcementFiles)
+      .where(eq(announcementFiles.announcementId, announcementId))
+      .orderBy(desc(announcementFiles.uploadedAt));
   }
 
   async deleteAnnouncementFile(id: string): Promise<boolean> {
-    return this.announcementFiles.delete(id);
+    const result = await db.delete(announcementFiles).where(eq(announcementFiles.id, id)).returning();
+    return result.length > 0;
   }
 
-  // Family Relationships
   async createFamilyRelationship(insertRelationship: InsertFamilyRelationship): Promise<FamilyRelationship> {
-    const id = randomUUID();
-    const relationship: FamilyRelationship = {
-      id,
-      userId: insertRelationship.userId,
-      relatedUserId: insertRelationship.relatedUserId,
-      relationship: insertRelationship.relationship,
-      createdAt: new Date()
-    };
-    this.familyRelationships.set(id, relationship);
+    const [relationship] = await db.insert(familyRelationships).values(insertRelationship).returning();
     
     await this.createActivity({
       type: "registration",
@@ -1094,61 +722,52 @@ export class MemStorage implements IStorage {
   }
 
   async getFamilyRelationship(id: string): Promise<FamilyRelationship | undefined> {
-    return this.familyRelationships.get(id);
+    const result = await db.select().from(familyRelationships).where(eq(familyRelationships.id, id)).limit(1);
+    return result[0];
   }
 
   async getUserFamilyRelationships(userId: string): Promise<FamilyRelationship[]> {
-    return Array.from(this.familyRelationships.values())
-      .filter(rel => rel.userId === userId || rel.relatedUserId === userId)
-      .sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
+    return await db.select().from(familyRelationships)
+      .where(or(eq(familyRelationships.userId, userId), eq(familyRelationships.relatedUserId, userId)))
+      .orderBy(desc(familyRelationships.createdAt));
   }
 
   async deleteFamilyRelationship(id: string): Promise<boolean> {
-    return this.familyRelationships.delete(id);
+    const result = await db.delete(familyRelationships).where(eq(familyRelationships.id, id)).returning();
+    return result.length > 0;
   }
 
   async getFamilyMembersByRelationship(userId: string, relationship: string): Promise<FamilyRelationship[]> {
-    return Array.from(this.familyRelationships.values())
-      .filter(rel => 
-        (rel.userId === userId || rel.relatedUserId === userId) && 
-        rel.relationship === relationship
-      )
-      .sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
+    return await db.select().from(familyRelationships)
+      .where(and(
+        or(eq(familyRelationships.userId, userId), eq(familyRelationships.relatedUserId, userId)),
+        eq(familyRelationships.relationship, relationship)
+      ))
+      .orderBy(desc(familyRelationships.createdAt));
   }
 
-  // Message methods
   async getMessages(userId: string): Promise<Message[]> {
     const user = await this.getUser(userId);
-    const userCategories = user?.categories || [];
+    const userCategories = user?.categories ?? [];
     
-    return Array.from(this.messages.values())
+    const allMessages = await db.select().from(messages);
+    
+    return allMessages
       .filter(msg => 
         msg.senderId === userId || 
         msg.recipientId === userId || 
         (msg.category && userCategories.includes(msg.category))
       )
-      .sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }
 
   async createMessage(insertMessage: InsertMessage): Promise<Message> {
-    const id = randomUUID();
+    const threadId = insertMessage.threadId ?? undefined;
     
-    // If no threadId provided, this is a new conversation
-    const threadId = insertMessage.threadId || id;
-    
-    const message: Message = {
-      id,
-      senderId: insertMessage.senderId,
-      recipientId: insertMessage.recipientId || null,
-      category: insertMessage.category || null,
-      subject: insertMessage.subject,
-      content: insertMessage.content,
-      isRead: false,
-      threadId,
-      parentMessageId: insertMessage.parentMessageId || null,
-      createdAt: new Date()
-    };
-    this.messages.set(id, message);
+    const [message] = await db.insert(messages).values({
+      ...insertMessage,
+      threadId: threadId ?? sql`gen_random_uuid()`
+    }).returning();
     
     await this.createActivity({
       type: "message",
@@ -1160,79 +779,74 @@ export class MemStorage implements IStorage {
   }
 
   async markAsRead(messageId: string, userId: string): Promise<Message | undefined> {
-    const message = this.messages.get(messageId);
-    if (!message) return undefined;
+    const message = await db.select().from(messages).where(eq(messages.id, messageId)).limit(1);
+    if (!message[0]) return undefined;
     
     const user = await this.getUser(userId);
-    const userCategories = user?.categories || [];
+    const userCategories = user?.categories ?? [];
     
-    if (message.recipientId === userId || (message.category && userCategories.includes(message.category))) {
-      const updatedMessage: Message = {
-        ...message,
-        isRead: true
-      };
-      this.messages.set(messageId, updatedMessage);
-      return updatedMessage;
+    if (message[0].recipientId === userId || (message[0].category && userCategories.includes(message[0].category))) {
+      const [updated] = await db.update(messages)
+        .set({ isRead: true })
+        .where(eq(messages.id, messageId))
+        .returning();
+      return updated;
     }
     
     return undefined;
   }
 
   async deleteMessage(messageId: string): Promise<boolean> {
-    return this.messages.delete(messageId);
+    const result = await db.delete(messages).where(eq(messages.id, messageId)).returning();
+    return result.length > 0;
   }
 
   async getUnreadCount(userId: string): Promise<number> {
-    const messages = await this.getMessages(userId);
-    return messages.filter(msg => 
+    const allMessages = await this.getMessages(userId);
+    return allMessages.filter(msg => 
       !msg.isRead && 
       (msg.recipientId === userId || msg.category)
     ).length;
   }
 
   async getMessageThread(threadId: string, userId: string): Promise<Message[]> {
-    return Array.from(this.messages.values())
-      .filter(msg => 
-        msg.threadId === threadId &&
-        (msg.senderId === userId || msg.recipientId === userId)
-      )
-      .sort((a, b) => new Date(a.createdAt!).getTime() - new Date(b.createdAt!).getTime());
+    const allMessages = await db.select().from(messages)
+      .where(eq(messages.threadId, threadId))
+      .orderBy(asc(messages.createdAt));
+    
+    return allMessages.filter(msg => 
+      msg.senderId === userId || msg.recipientId === userId
+    );
   }
 
   async getConversations(userId: string): Promise<Array<{ threadId: string; lastMessage: Message; unreadCount: number; otherUser: User | null }>> {
     const userMessages = await this.getMessages(userId);
     
-    // Group messages by threadId
     const threadMap = new Map<string, Message[]>();
     userMessages.forEach(msg => {
-      const thread = msg.threadId || msg.id;
+      const thread = msg.threadId ?? msg.id;
       if (!threadMap.has(thread)) {
         threadMap.set(thread, []);
       }
       threadMap.get(thread)!.push(msg);
     });
 
-    // Create conversation list
     const conversations = await Promise.all(
-      Array.from(threadMap.entries()).map(async ([threadId, messages]) => {
-        // Sort messages by date
-        const sortedMessages = messages.sort((a, b) => 
-          new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime()
+      Array.from(threadMap.entries()).map(async ([threadId, msgs]) => {
+        const sortedMessages = msgs.sort((a, b) => 
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
         
         const lastMessage = sortedMessages[0];
-        
-        // Count unread messages in this thread
-        const unreadCount = messages.filter(msg => 
+        const unreadCount = msgs.filter(msg => 
           !msg.isRead && msg.recipientId === userId
         ).length;
 
-        // Determine the other user in the conversation
         const otherUserId = lastMessage.senderId === userId 
           ? lastMessage.recipientId 
           : lastMessage.senderId;
         
-        const otherUser = otherUserId ? (await this.getUser(otherUserId)) || null : null;
+        const otherUser = otherUserId ? (await this.getUser(otherUserId)) ?? null : null;
 
         return {
           threadId,
@@ -1243,410 +857,314 @@ export class MemStorage implements IStorage {
       })
     );
 
-    // Sort conversations by last message date
     return conversations.sort((a, b) => 
-      new Date(b.lastMessage.createdAt!).getTime() - new Date(a.lastMessage.createdAt!).getTime()
+      new Date(b.lastMessage.createdAt).getTime() - new Date(a.lastMessage.createdAt).getTime()
     );
   }
 
   async markThreadAsRead(threadId: string, userId: string): Promise<void> {
-    const messages = Array.from(this.messages.values())
-      .filter(msg => 
-        msg.threadId === threadId && 
-        msg.recipientId === userId &&
-        !msg.isRead
-      );
-    
-    messages.forEach(msg => {
-      this.messages.set(msg.id, { ...msg, isRead: true });
-    });
+    await db.update(messages)
+      .set({ isRead: true })
+      .where(and(
+        eq(messages.threadId, threadId),
+        eq(messages.recipientId, userId),
+        eq(messages.isRead, false)
+      ));
   }
 
-  // Imam Questions
   async getImamQuestions(userId?: string): Promise<ImamQuestion[]> {
-    const questions = Array.from(this.imamQuestions.values());
     if (userId) {
-      return questions.filter(q => q.userId === userId);
+      return await db.select().from(imamQuestions).where(eq(imamQuestions.userId, userId));
     }
-    return questions.sort((a, b) => 
-      new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime()
-    );
+    return await db.select().from(imamQuestions).orderBy(desc(imamQuestions.createdAt));
   }
 
   async createImamQuestion(questionData: InsertImamQuestion): Promise<ImamQuestion> {
-    const question: ImamQuestion = {
-      id: randomUUID(),
-      ...questionData,
-      answer: null,
-      isAnswered: false,
-      isRead: false,
-      createdAt: new Date(),
-      answeredAt: null,
-    };
-    this.imamQuestions.set(question.id, question);
+    const [question] = await db.insert(imamQuestions).values(questionData).returning();
     return question;
   }
 
   async answerImamQuestion(questionId: string, answer: string): Promise<ImamQuestion | undefined> {
-    const question = this.imamQuestions.get(questionId);
-    if (!question) return undefined;
-
-    const updatedQuestion: ImamQuestion = {
-      ...question,
-      answer,
-      isAnswered: true,
-      answeredAt: new Date(),
-    };
-    this.imamQuestions.set(questionId, updatedQuestion);
-    return updatedQuestion;
+    const [question] = await db.update(imamQuestions)
+      .set({ answer, isAnswered: true, answeredAt: new Date() })
+      .where(eq(imamQuestions.id, questionId))
+      .returning();
+    return question;
   }
 
   async markQuestionAsRead(questionId: string): Promise<ImamQuestion | undefined> {
-    const question = this.imamQuestions.get(questionId);
-    if (!question) return undefined;
-
-    const updatedQuestion: ImamQuestion = {
-      ...question,
-      isRead: true,
-    };
-    this.imamQuestions.set(questionId, updatedQuestion);
-    return updatedQuestion;
+    const [question] = await db.update(imamQuestions)
+      .set({ isRead: true })
+      .where(eq(imamQuestions.id, questionId))
+      .returning();
+    return question;
   }
 
   async deleteImamQuestion(questionId: string): Promise<boolean> {
-    return this.imamQuestions.delete(questionId);
+    const result = await db.delete(imamQuestions).where(eq(imamQuestions.id, questionId)).returning();
+    return result.length > 0;
   }
 
   async getUnansweredQuestionsCount(): Promise<number> {
-    return Array.from(this.imamQuestions.values())
-      .filter(q => !q.isAnswered).length;
+    const result = await db.select({ count: sql<number>`count(*)` })
+      .from(imamQuestions)
+      .where(eq(imamQuestions.isAnswered, false));
+    return Number(result[0]?.count ?? 0);
   }
 
-  // Organization Settings
   async getOrganizationSettings(): Promise<OrganizationSettings | undefined> {
-    return this.organizationSettings || undefined;
+    const result = await db.select().from(organizationSettings).limit(1);
+    return result[0];
   }
 
   async updateOrganizationSettings(settings: Partial<InsertOrganizationSettings>): Promise<OrganizationSettings> {
-    if (!this.organizationSettings) {
-      // Create new settings if none exist
-      this.organizationSettings = {
-        id: randomUUID(),
-        name: settings.name || "Islamska Zajednica",
-        address: settings.address || "Ulica Džemata 123",
-        phone: settings.phone || "+387 33 123 456",
-        email: settings.email || "info@dzemat.ba",
-        facebookUrl: settings.facebookUrl || null,
-        instagramUrl: settings.instagramUrl || null,
-        youtubeUrl: settings.youtubeUrl || null,
-        twitterUrl: settings.twitterUrl || null,
-        livestreamUrl: settings.livestreamUrl || null,
-        livestreamEnabled: settings.livestreamEnabled || false,
-        livestreamTitle: settings.livestreamTitle || null,
-        updatedAt: new Date()
-      };
-    } else {
-      // Update existing settings
-      this.organizationSettings = {
-        ...this.organizationSettings,
-        ...settings,
-        updatedAt: new Date()
-      };
+    const existing = await this.getOrganizationSettings();
+    
+    if (!existing) {
+      const [newSettings] = await db.insert(organizationSettings).values(settings as InsertOrganizationSettings).returning();
+      return newSettings;
     }
-    return this.organizationSettings;
+    
+    const [updated] = await db.update(organizationSettings)
+      .set({ ...settings, updatedAt: new Date() })
+      .where(eq(organizationSettings.id, existing.id))
+      .returning();
+    return updated;
   }
 
-  // Documents
   async createDocument(document: InsertDocument): Promise<Document> {
-    const newDocument: Document = {
-      id: randomUUID(),
-      title: document.title,
-      description: document.description || null,
-      fileName: document.fileName,
-      filePath: document.filePath,
-      fileSize: document.fileSize,
-      uploadedById: document.uploadedById,
-      uploadedAt: new Date()
-    };
-    this.documents.set(newDocument.id, newDocument);
-    return newDocument;
+    const [doc] = await db.insert(documents).values(document).returning();
+    return doc;
   }
 
   async getDocument(id: string): Promise<Document | undefined> {
-    return this.documents.get(id);
+    const result = await db.select().from(documents).where(eq(documents.id, id)).limit(1);
+    return result[0];
   }
 
   async getAllDocuments(): Promise<Document[]> {
-    return Array.from(this.documents.values()).sort((a, b) => 
-      b.uploadedAt.getTime() - a.uploadedAt.getTime()
-    );
+    return await db.select().from(documents).orderBy(desc(documents.uploadedAt));
   }
 
   async deleteDocument(id: string): Promise<boolean> {
-    return this.documents.delete(id);
+    const result = await db.delete(documents).where(eq(documents.id, id)).returning();
+    return result.length > 0;
   }
 
-  // Requests
   async createRequest(request: InsertRequest): Promise<Request> {
-    const newRequest: Request = {
-      id: randomUUID(),
-      userId: request.userId,
-      requestType: request.requestType,
-      status: request.status || "pending",
-      formData: request.formData,
-      createdAt: new Date(),
-      reviewedAt: null,
-      reviewedById: request.reviewedById || null,
-      adminNotes: request.adminNotes || null
-    };
-    this.requests.set(newRequest.id, newRequest);
-    return newRequest;
+    const [req] = await db.insert(requests).values(request).returning();
+    return req;
   }
 
   async getRequest(id: string): Promise<Request | undefined> {
-    return this.requests.get(id);
+    const result = await db.select().from(requests).where(eq(requests.id, id)).limit(1);
+    return result[0];
   }
 
   async getAllRequests(): Promise<Request[]> {
-    return Array.from(this.requests.values()).sort((a, b) => 
-      b.createdAt.getTime() - a.createdAt.getTime()
-    );
+    return await db.select().from(requests).orderBy(desc(requests.createdAt));
   }
 
   async getUserRequests(userId: string): Promise<Request[]> {
-    return Array.from(this.requests.values())
-      .filter(request => request.userId === userId)
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    return await db.select().from(requests)
+      .where(eq(requests.userId, userId))
+      .orderBy(desc(requests.createdAt));
   }
 
   async updateRequest(id: string, updates: Partial<InsertRequest>): Promise<Request | undefined> {
-    const request = this.requests.get(id);
-    if (!request) return undefined;
-
-    const updatedRequest: Request = {
-      ...request,
-      ...updates
-    };
-    this.requests.set(id, updatedRequest);
-    return updatedRequest;
+    const [request] = await db.update(requests).set(updates).where(eq(requests.id, id)).returning();
+    return request;
   }
 
   async updateRequestStatus(id: string, status: string, reviewedById?: string, adminNotes?: string): Promise<Request | undefined> {
-    const request = this.requests.get(id);
-    if (!request) return undefined;
-
-    const updatedRequest: Request = {
-      ...request,
-      status,
-      reviewedAt: new Date(),
-      reviewedById: reviewedById || null,
-      adminNotes: adminNotes || null
-    };
-    this.requests.set(id, updatedRequest);
-    return updatedRequest;
+    const [request] = await db.update(requests)
+      .set({
+        status,
+        reviewedAt: new Date(),
+        reviewedById: reviewedById ?? null,
+        adminNotes: adminNotes ?? null
+      })
+      .where(eq(requests.id, id))
+      .returning();
+    return request;
   }
 
-  // Shop Products
   async createShopProduct(product: InsertShopProduct): Promise<ShopProduct> {
-    const newProduct: ShopProduct = {
-      id: randomUUID(),
-      name: product.name,
-      photos: product.photos || null,
-      size: product.size || null,
-      quantity: product.quantity || 0,
-      color: product.color || null,
-      notes: product.notes || null,
-      price: product.price || null,
-      createdById: product.createdById,
-      createdAt: new Date()
-    };
-    this.shopProducts.set(newProduct.id, newProduct);
-    return newProduct;
+    const [prod] = await db.insert(shopProducts).values(product).returning();
+    return prod;
   }
 
   async getShopProduct(id: string): Promise<ShopProduct | undefined> {
-    return this.shopProducts.get(id);
+    const result = await db.select().from(shopProducts).where(eq(shopProducts.id, id)).limit(1);
+    return result[0];
   }
 
   async getAllShopProducts(): Promise<ShopProduct[]> {
-    return Array.from(this.shopProducts.values()).sort((a, b) => 
-      b.createdAt.getTime() - a.createdAt.getTime()
-    );
+    return await db.select().from(shopProducts).orderBy(desc(shopProducts.createdAt));
   }
 
   async updateShopProduct(id: string, updates: Partial<InsertShopProduct>): Promise<ShopProduct | undefined> {
-    const product = this.shopProducts.get(id);
-    if (!product) return undefined;
-
-    const updatedProduct: ShopProduct = {
-      ...product,
-      ...updates
-    };
-    this.shopProducts.set(id, updatedProduct);
-    return updatedProduct;
+    const [product] = await db.update(shopProducts).set(updates).where(eq(shopProducts.id, id)).returning();
+    return product;
   }
 
   async deleteShopProduct(id: string): Promise<boolean> {
-    return this.shopProducts.delete(id);
+    const result = await db.delete(shopProducts).where(eq(shopProducts.id, id)).returning();
+    return result.length > 0;
   }
 
-  // Marketplace Items
   async createMarketplaceItem(item: InsertMarketplaceItem): Promise<MarketplaceItem> {
-    const newItem: MarketplaceItem = {
-      id: randomUUID(),
-      name: item.name,
-      description: item.description || null,
-      photos: item.photos || null,
-      type: item.type,
-      price: item.price || null,
-      status: item.status || "active",
-      userId: item.userId,
-      createdAt: new Date()
-    };
-    this.marketplaceItems.set(newItem.id, newItem);
-    return newItem;
+    const [marketItem] = await db.insert(marketplaceItems).values(item).returning();
+    return marketItem;
   }
 
   async getMarketplaceItem(id: string): Promise<MarketplaceItem | undefined> {
-    return this.marketplaceItems.get(id);
+    const result = await db.select().from(marketplaceItems).where(eq(marketplaceItems.id, id)).limit(1);
+    return result[0];
   }
 
   async getAllMarketplaceItems(): Promise<MarketplaceItem[]> {
-    return Array.from(this.marketplaceItems.values()).sort((a, b) => 
-      b.createdAt.getTime() - a.createdAt.getTime()
-    );
+    return await db.select().from(marketplaceItems).orderBy(desc(marketplaceItems.createdAt));
   }
 
   async getUserMarketplaceItems(userId: string): Promise<MarketplaceItem[]> {
-    return Array.from(this.marketplaceItems.values())
-      .filter(item => item.userId === userId)
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    return await db.select().from(marketplaceItems)
+      .where(eq(marketplaceItems.userId, userId))
+      .orderBy(desc(marketplaceItems.createdAt));
   }
 
   async updateMarketplaceItem(id: string, updates: Partial<InsertMarketplaceItem>): Promise<MarketplaceItem | undefined> {
-    const item = this.marketplaceItems.get(id);
-    if (!item) return undefined;
-
-    const updatedItem: MarketplaceItem = {
-      ...item,
-      ...updates
-    };
-    this.marketplaceItems.set(id, updatedItem);
-    return updatedItem;
+    const [item] = await db.update(marketplaceItems).set(updates).where(eq(marketplaceItems.id, id)).returning();
+    return item;
   }
 
   async deleteMarketplaceItem(id: string): Promise<boolean> {
-    return this.marketplaceItems.delete(id);
+    const result = await db.delete(marketplaceItems).where(eq(marketplaceItems.id, id)).returning();
+    return result.length > 0;
   }
 
-  // Product Purchase Requests
   async createProductPurchaseRequest(request: InsertProductPurchaseRequest): Promise<ProductPurchaseRequest> {
-    const newRequest: ProductPurchaseRequest = {
-      id: randomUUID(),
-      productId: request.productId,
-      userId: request.userId,
-      quantity: request.quantity || 1,
-      status: request.status || "pending",
-      createdAt: new Date()
-    };
-    this.productPurchaseRequests.set(newRequest.id, newRequest);
-    return newRequest;
+    const [req] = await db.insert(productPurchaseRequests).values(request).returning();
+    return req;
   }
 
   async getAllProductPurchaseRequests(): Promise<ProductPurchaseRequest[]> {
-    return Array.from(this.productPurchaseRequests.values()).sort((a, b) => 
-      b.createdAt.getTime() - a.createdAt.getTime()
-    );
+    return await db.select().from(productPurchaseRequests).orderBy(desc(productPurchaseRequests.createdAt));
   }
 
   async updateProductPurchaseRequest(id: string, status: string): Promise<ProductPurchaseRequest | undefined> {
-    const request = this.productPurchaseRequests.get(id);
-    if (!request) return undefined;
-
-    const updatedRequest: ProductPurchaseRequest = {
-      ...request,
-      status
-    };
-    this.productPurchaseRequests.set(id, updatedRequest);
-    return updatedRequest;
+    const [request] = await db.update(productPurchaseRequests)
+      .set({ status })
+      .where(eq(productPurchaseRequests.id, id))
+      .returning();
+    return request;
   }
 
-  // Notifications
   async updateLastViewed(userId: string, type: 'shop' | 'events' | 'announcements' | 'imamQuestions' | 'tasks'): Promise<User | undefined> {
-    const user = this.users.get(userId);
-    if (!user) return undefined;
-
     const now = new Date();
-    const updatedUser: User = { ...user };
+    const updates: Partial<InsertUser> = {};
 
     switch (type) {
       case 'shop':
-        updatedUser.lastViewedShop = now;
+        updates.lastViewedShop = now;
         break;
       case 'events':
-        updatedUser.lastViewedEvents = now;
+        updates.lastViewedEvents = now;
         break;
       case 'announcements':
-        updatedUser.lastViewedAnnouncements = now;
+        updates.lastViewedAnnouncements = now;
         break;
       case 'imamQuestions':
-        updatedUser.lastViewedImamQuestions = now;
+        updates.lastViewedImamQuestions = now;
         break;
       case 'tasks':
-        updatedUser.lastViewedTasks = now;
+        updates.lastViewedTasks = now;
         break;
     }
 
-    this.users.set(userId, updatedUser);
-    return updatedUser;
+    const [user] = await db.update(users).set(updates).where(eq(users.id, userId)).returning();
+    return user;
   }
 
   async getNewItemsCount(userId: string, type: 'shop' | 'events' | 'announcements' | 'imamQuestions' | 'tasks'): Promise<number> {
-    const user = this.users.get(userId);
+    const user = await this.getUser(userId);
     if (!user) return 0;
 
     let lastViewed: Date | null = null;
-    let items: any[] = [];
+    let count = 0;
 
     switch (type) {
       case 'shop':
         lastViewed = user.lastViewedShop;
-        items = Array.from(this.marketplaceItems.values()).filter(item => item.status === 'active');
+        if (!lastViewed) {
+          const items = await db.select().from(marketplaceItems).where(eq(marketplaceItems.status, 'active'));
+          count = items.length;
+        } else {
+          const result = await db.select({ count: sql<number>`count(*)` })
+            .from(marketplaceItems)
+            .where(and(eq(marketplaceItems.status, 'active'), gt(marketplaceItems.createdAt, lastViewed)));
+          count = Number(result[0]?.count ?? 0);
+        }
         break;
       case 'events':
         lastViewed = user.lastViewedEvents;
-        items = Array.from(this.events.values());
+        if (!lastViewed) {
+          const items = await db.select().from(events);
+          count = items.length;
+        } else {
+          const result = await db.select({ count: sql<number>`count(*)` })
+            .from(events)
+            .where(gt(events.createdAt, lastViewed));
+          count = Number(result[0]?.count ?? 0);
+        }
         break;
       case 'announcements':
         lastViewed = user.lastViewedAnnouncements;
-        items = Array.from(this.announcements.values());
+        if (!lastViewed) {
+          const items = await db.select().from(announcements);
+          count = items.length;
+        } else {
+          const result = await db.select({ count: sql<number>`count(*)` })
+            .from(announcements)
+            .where(gt(announcements.publishDate, lastViewed));
+          count = Number(result[0]?.count ?? 0);
+        }
         break;
       case 'imamQuestions':
         lastViewed = user.lastViewedImamQuestions;
-        items = Array.from(this.imamQuestions.values()).filter(q => !q.isRead);
+        if (!lastViewed) {
+          const items = await db.select().from(imamQuestions).where(eq(imamQuestions.isRead, false));
+          count = items.length;
+        } else {
+          const result = await db.select({ count: sql<number>`count(*)` })
+            .from(imamQuestions)
+            .where(and(eq(imamQuestions.isRead, false), gt(imamQuestions.createdAt, lastViewed)));
+          count = Number(result[0]?.count ?? 0);
+        }
         break;
       case 'tasks':
         lastViewed = user.lastViewedTasks;
-        // Get tasks from user's work groups
-        const userWorkGroups = Array.from(this.workGroupMembers.values())
-          .filter(m => m.userId === userId)
-          .map(m => m.workGroupId);
-        items = Array.from(this.tasks.values()).filter(t => userWorkGroups.includes(t.workGroupId));
+        const userWorkGroups = await db.select().from(workGroupMembers).where(eq(workGroupMembers.userId, userId));
+        const groupIds = userWorkGroups.map(m => m.workGroupId);
+        
+        if (groupIds.length === 0) {
+          count = 0;
+        } else if (!lastViewed) {
+          const items = await db.select().from(tasks).where(sql`${tasks.workGroupId} = ANY(${groupIds})`);
+          count = items.length;
+        } else {
+          const result = await db.select({ count: sql<number>`count(*)` })
+            .from(tasks)
+            .where(and(
+              sql`${tasks.workGroupId} = ANY(${groupIds})`,
+              gt(tasks.createdAt, lastViewed)
+            ));
+          count = Number(result[0]?.count ?? 0);
+        }
         break;
     }
 
-    if (!lastViewed) {
-      // If never viewed, all items are new
-      return items.length;
-    }
-
-    // Count items created after last viewed time
-    const newItems = items.filter(item => {
-      const itemDate = item.createdAt || item.publishDate;
-      return itemDate && itemDate.getTime() > lastViewed!.getTime();
-    });
-
-    return newItems.length;
+    return count;
   }
 
   async getAllNewItemsCounts(userId: string): Promise<{ shop: number; events: number; announcements: number; imamQuestions: number; tasks: number }> {
@@ -1661,26 +1179,19 @@ export class MemStorage implements IStorage {
     return { shop, events, announcements, imamQuestions, tasks };
   }
 
-  // Prayer Times
   async createPrayerTime(prayerTime: InsertPrayerTime): Promise<PrayerTime> {
-    const newPrayerTime: PrayerTime = {
-      id: randomUUID(),
-      ...prayerTime,
-      hijriDate: prayerTime.hijriDate ?? null,
-      sunrise: prayerTime.sunrise ?? null,
-      events: prayerTime.events ?? null,
-    };
-    this.prayerTimes.set(newPrayerTime.id, newPrayerTime);
-    return newPrayerTime;
+    const [pt] = await db.insert(prayerTimes).values(prayerTime).returning();
+    return pt;
   }
 
   async getPrayerTimeByDate(date: string): Promise<PrayerTime | undefined> {
-    return Array.from(this.prayerTimes.values()).find(pt => pt.date === date);
+    const result = await db.select().from(prayerTimes).where(eq(prayerTimes.date, date)).limit(1);
+    return result[0];
   }
 
   async getAllPrayerTimes(): Promise<PrayerTime[]> {
-    return Array.from(this.prayerTimes.values()).sort((a, b) => {
-      // Sort by date (dd.mm.yyyy format)
+    const allPrayerTimes = await db.select().from(prayerTimes);
+    return allPrayerTimes.sort((a, b) => {
       const [dayA, monthA, yearA] = a.date.split('.').map(Number);
       const [dayB, monthB, yearB] = b.date.split('.').map(Number);
       const dateA = new Date(yearA, monthA - 1, dayA);
@@ -1689,10 +1200,9 @@ export class MemStorage implements IStorage {
     });
   }
 
-  async bulkCreatePrayerTimes(prayerTimes: InsertPrayerTime[]): Promise<PrayerTime[]> {
+  async bulkCreatePrayerTimes(prayerTimesData: InsertPrayerTime[]): Promise<PrayerTime[]> {
     const created: PrayerTime[] = [];
-    for (const pt of prayerTimes) {
-      // Check if already exists
+    for (const pt of prayerTimesData) {
       const existing = await this.getPrayerTimeByDate(pt.date);
       if (!existing) {
         const newPt = await this.createPrayerTime(pt);
@@ -1703,13 +1213,14 @@ export class MemStorage implements IStorage {
   }
 
   async deletePrayerTime(id: string): Promise<boolean> {
-    return this.prayerTimes.delete(id);
+    const result = await db.delete(prayerTimes).where(eq(prayerTimes.id, id)).returning();
+    return result.length > 0;
   }
 
   async deleteAllPrayerTimes(): Promise<boolean> {
-    this.prayerTimes.clear();
+    await db.delete(prayerTimes);
     return true;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
