@@ -510,6 +510,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         events.map(async (event) => {
           if (event.rsvpEnabled) {
             const rsvpStats = await storage.getEventRsvps(event.id);
+            console.log(`Event ${event.name}: rsvpCount = ${rsvpStats.totalAttendees}`);
             return {
               ...event,
               rsvpCount: rsvpStats.totalAttendees
@@ -521,6 +522,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           };
         })
       );
+      
+      // Disable caching for this endpoint
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
       
       res.json(eventsWithRsvpCount);
     } catch (error) {
