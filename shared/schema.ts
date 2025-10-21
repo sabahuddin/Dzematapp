@@ -442,6 +442,21 @@ export type ProductPurchaseRequestWithDetails = ProductPurchaseRequest & {
   } | null;
 };
 
+export type EventRsvpWithUser = EventRsvp & {
+  user: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  } | null;
+};
+
+export type EventRsvpStats = {
+  rsvps: EventRsvpWithUser[];
+  totalAdults: number;
+  totalChildren: number;
+  totalAttendees: number;
+};
+
 export const prayerTimes = pgTable("prayer_times", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   date: text("date").notNull().unique(), // dd.mm.yyyy
