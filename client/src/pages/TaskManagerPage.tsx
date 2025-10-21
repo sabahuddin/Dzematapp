@@ -24,14 +24,18 @@ import {
   DialogContent,
   DialogActions,
   TextField,
-  MenuItem
+  MenuItem,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails
 } from '@mui/material';
 import {
   GroupAdd,
   ManageAccounts,
   People,
   Check,
-  Close
+  Close,
+  ExpandMore
 } from '@mui/icons-material';
 import { WorkGroup, AccessRequest, Task, WorkGroupMember, User } from '@shared/schema';
 import WorkGroupModal from '../components/modals/WorkGroupModal';
@@ -187,11 +191,24 @@ export default function TaskManagerPage() {
     enabled: !!user?.isAdmin,
   });
 
-  // All work groups are shown to all users
-  const userWorkGroups = React.useMemo(() => {
-    if (!workGroupsQuery.data) return [];
-    return workGroupsQuery.data;
-  }, [workGroupsQuery.data]);
+  // Split work groups into member groups and other groups
+  const { memberWorkGroups, otherWorkGroups } = React.useMemo(() => {
+    if (!workGroupsQuery.data || !user) return { memberWorkGroups: [], otherWorkGroups: [] };
+    
+    const member: (WorkGroup & { members?: WorkGroupMember[] })[] = [];
+    const other: (WorkGroup & { members?: WorkGroupMember[] })[] = [];
+    
+    workGroupsQuery.data.forEach((workGroup: WorkGroup & { members?: WorkGroupMember[] }) => {
+      const isMember = workGroup.members?.some((m: WorkGroupMember) => m.userId === user.id) || false;
+      if (isMember || user.isAdmin) {
+        member.push(workGroup);
+      } else {
+        other.push(workGroup);
+      }
+    });
+    
+    return { memberWorkGroups: member, otherWorkGroups: other };
+  }, [workGroupsQuery.data, user]);
 
   // Create work group mutation
   const createWorkGroupMutation = useMutation({
@@ -341,30 +358,69 @@ export default function TaskManagerPage() {
           </Box>
         )}
 
-        <Grid container spacing={3}>
-          {userWorkGroups.map((workGroup: WorkGroup) => (
-            <WorkGroupCard 
-              key={workGroup.id}
-              workGroup={workGroup}
-              onManageMembers={handleManageMembers}
-              onManageTasks={handleManageGroupTasks}
-              onJoinRequest={handleJoinRequest}
-              currentUser={user}
-            />
-          ))}
-          
-          {(!userWorkGroups || userWorkGroups.length === 0) && (
-            <Grid size={{ xs: 12 }}>
-              <Card>
-                <CardContent sx={{ textAlign: 'center', py: 6 }}>
-                  <Typography color="text.secondary">
-                    Nema dostupnih sekcija
-                  </Typography>
-                </CardContent>
-              </Card>
+        {/* Member Work Groups */}
+        {memberWorkGroups.length > 0 && (
+          <Box sx={{ mb: 4 }}>
+            {!user?.isAdmin && (
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+                Moje sekcije
+              </Typography>
+            )}
+            <Grid container spacing={3}>
+              {memberWorkGroups.map((workGroup: WorkGroup) => (
+                <WorkGroupCard 
+                  key={workGroup.id}
+                  workGroup={workGroup}
+                  onManageMembers={handleManageMembers}
+                  onManageTasks={handleManageGroupTasks}
+                  onJoinRequest={handleJoinRequest}
+                  currentUser={user}
+                />
+              ))}
             </Grid>
-          )}
-        </Grid>
+          </Box>
+        )}
+
+        {/* Other Work Groups in Accordion */}
+        {otherWorkGroups.length > 0 && (
+          <Accordion defaultExpanded={false}>
+            <AccordionSummary 
+              expandIcon={<ExpandMore />}
+              sx={{ 
+                bgcolor: '#f8f9fa',
+                '&:hover': { bgcolor: '#e9ecef' }
+              }}
+            >
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                Ostale sekcije ({otherWorkGroups.length})
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails sx={{ pt: 3 }}>
+              <Grid container spacing={3}>
+                {otherWorkGroups.map((workGroup: WorkGroup) => (
+                  <WorkGroupCard 
+                    key={workGroup.id}
+                    workGroup={workGroup}
+                    onManageMembers={handleManageMembers}
+                    onManageTasks={handleManageGroupTasks}
+                    onJoinRequest={handleJoinRequest}
+                    currentUser={user}
+                  />
+                ))}
+              </Grid>
+            </AccordionDetails>
+          </Accordion>
+        )}
+        
+        {memberWorkGroups.length === 0 && otherWorkGroups.length === 0 && (
+          <Card>
+            <CardContent sx={{ textAlign: 'center', py: 6 }}>
+              <Typography color="text.secondary">
+                Nema dostupnih sekcija
+              </Typography>
+            </CardContent>
+          </Card>
+        )}
       </TabPanel>
 
       {/* Access Requests Tab */}
@@ -1215,47 +1271,42 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                     <Card key={comment.id} variant="outlined">
                       <CardContent sx={{ 
                         py: 1,
-                        px: 2,
-                        display: 'flex !important',
-                        flexDirection: 'column !important',
-                        alignItems: 'stretch !important',
-                        gap: 1
+                        px: 2
                       }}>
-                        <Typography variant="caption" color="text.secondary" sx={{
-                          display: 'block !important',
-                          width: '100% !important'
-                        }}>
-                          {comment.user ? `${comment.user.firstName} ${comment.user.lastName}` : 'Nepoznat korisnik'} • {new Date(comment.createdAt).toLocaleDateString('hr-HR')}
-                        </Typography>
-                        {comment.content && (
-                          <Typography variant="body2" sx={{ 
-                            display: 'block !important',
-                            width: '100% !important',
-                            whiteSpace: 'pre-wrap !important',
-                            wordBreak: 'break-word !important',
-                            minHeight: '20px !important'
-                          }}>
-                            {comment.content}
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                          <Typography variant="caption" color="text.secondary">
+                            {comment.user ? `${comment.user.firstName} ${comment.user.lastName}` : 'Nepoznat korisnik'} • {new Date(comment.createdAt).toLocaleDateString('hr-HR')}
                           </Typography>
-                        )}
-                        {comment.commentImage && (
-                          <Box sx={{ mt: 1, display: 'flex', justifyContent: 'flex-start' }}>
-                            <Box
-                              component="img"
-                              src={comment.commentImage}
-                              alt="Comment image"
-                              sx={{
-                                maxWidth: 200,
-                                maxHeight: 200,
-                                objectFit: 'contain',
-                                borderRadius: 1,
-                                border: '2px solid #1976d2',
-                                cursor: 'pointer'
-                              }}
-                              onClick={() => openFullscreenImage(comment.commentImage)}
-                            />
-                          </Box>
-                        )}
+                          {comment.content && (
+                            <Box sx={{ 
+                              fontSize: '0.875rem',
+                              lineHeight: 1.5,
+                              whiteSpace: 'pre-wrap',
+                              wordBreak: 'break-word',
+                              color: 'text.primary'
+                            }}>
+                              {comment.content}
+                            </Box>
+                          )}
+                          {comment.commentImage && (
+                            <Box sx={{ mt: 1, display: 'flex', justifyContent: 'flex-start' }}>
+                              <Box
+                                component="img"
+                                src={comment.commentImage}
+                                alt="Comment image"
+                                sx={{
+                                  maxWidth: 200,
+                                  maxHeight: 200,
+                                  objectFit: 'contain',
+                                  borderRadius: 1,
+                                  border: '2px solid #1976d2',
+                                  cursor: 'pointer'
+                                }}
+                                onClick={() => openFullscreenImage(comment.commentImage)}
+                              />
+                            </Box>
+                          )}
+                        </Box>
                       </CardContent>
                     </Card>
                   ))
