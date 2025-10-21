@@ -2160,14 +2160,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Parse CSV file (SwissMosque format with semicolon delimiter)
-      const csvData = req.file.buffer.toString('utf-8');
+      let csvData = req.file.buffer.toString('utf-8');
+      
+      // Remove BOM if present
+      if (csvData.charCodeAt(0) === 0xFEFF) {
+        csvData = csvData.slice(1);
+      }
+      
       const lines = csvData.split('\n').filter(line => line.trim());
       
       if (lines.length < 2) {
         return res.status(400).json({ message: "CSV file is empty or invalid" });
       }
 
-      // Skip header line and BOM if present
+      console.log(`Processing ${lines.length} lines from CSV`);
+      
+      // Skip header line
       const dataLines = lines.slice(1);
       const prayerTimes = [];
 
@@ -2179,7 +2187,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (parts.length >= 9) {
           const [date, hijri, day, fajr, sunrise, dhuhr, asr, maghrib, isha, events] = parts;
           
-          if (date && fajr && dhuhr && asr && maghrib && isha) {
+          // Validate that we have at least the required fields (date and prayer times)
+          // Date should be in format dd.mm.yyyy
+          if (date && date.match(/\d{2}\.\d{2}\.\d{4}/) && fajr && dhuhr && asr && maghrib && isha) {
             prayerTimes.push({
               date,
               fajr,
@@ -2194,6 +2204,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
       }
+
+      console.log(`Parsed ${prayerTimes.length} valid prayer time entries`);
 
       if (prayerTimes.length === 0) {
         return res.status(400).json({ message: "No valid prayer times found in CSV" });
