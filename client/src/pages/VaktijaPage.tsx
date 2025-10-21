@@ -46,7 +46,19 @@ export default function VaktijaPage() {
     mutationFn: async (file: File) => {
       const formData = new FormData();
       formData.append('csv', file);
-      return apiRequest('POST', '/api/prayer-times/upload', formData);
+      
+      const res = await fetch('/api/prayer-times/upload', {
+        method: 'POST',
+        body: formData,
+        credentials: 'include',
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || 'Failed to upload CSV');
+      }
+
+      return res.json();
     },
     onSuccess: (data: any) => {
       queryClient.invalidateQueries({ queryKey: ['/api/prayer-times'] });

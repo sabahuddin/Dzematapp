@@ -2159,7 +2159,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "No CSV file uploaded" });
       }
 
-      // Parse CSV file
+      // Parse CSV file (SwissMosque format with semicolon delimiter)
       const csvData = req.file.buffer.toString('utf-8');
       const lines = csvData.split('\n').filter(line => line.trim());
       
@@ -2167,16 +2167,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "CSV file is empty or invalid" });
       }
 
-      // Skip header line
+      // Skip header line and BOM if present
       const dataLines = lines.slice(1);
       const prayerTimes = [];
 
       for (const line of dataLines) {
-        const parts = line.split(',').map(p => p.trim());
+        // Use semicolon as delimiter for SwissMosque CSV format
+        const parts = line.split(';').map(p => p.trim());
         
-        // Expected format: Date,Day,Fajr,Sunrise,Dhuhr,Asr,Maghrib,Isha
-        if (parts.length >= 8) {
-          const [date, day, fajr, sunrise, dhuhr, asr, maghrib, isha] = parts;
+        // Expected format: Datum;Hijri;Tag;Fajr-Beginn;Sonnenaufgang;Dhuhr;Asr;Maghrib;Isha;Wichtige Ereignisse
+        if (parts.length >= 9) {
+          const [date, hijri, day, fajr, sunrise, dhuhr, asr, maghrib, isha, events] = parts;
           
           if (date && fajr && dhuhr && asr && maghrib && isha) {
             prayerTimes.push({
@@ -2187,8 +2188,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
               asr,
               maghrib,
               isha,
-              hijriDate: null,
-              events: null
+              hijriDate: hijri || null,
+              events: events || null
             });
           }
         }
