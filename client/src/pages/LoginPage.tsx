@@ -141,11 +141,14 @@ export default function LoginPage() {
             </form>
 
             <Box sx={{ mt: 3, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
                 Demo podaci:
               </Typography>
-              <Typography variant="caption" color="text.secondary">
+              <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
                 Korisničko ime: admin | Šifra: admin123
+              </Typography>
+              <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                Korisničko ime: ali.alic | Šifra: password123
               </Typography>
             </Box>
           </CardContent>
