@@ -201,10 +201,8 @@ export default function TaskManagerPage() {
     workGroupsQuery.data.forEach((workGroup: WorkGroup & { members?: WorkGroupMember[] }) => {
       // Check if user is a member of THIS specific work group
       const isMember = workGroup.members?.some((m: WorkGroupMember) => 
-        m.userId === user.id && m.workGroupId === workGroup.id
+        m.userId === user.id
       ) || false;
-      
-      console.log('WorkGroup:', workGroup.name, 'isMember:', isMember, 'isAdmin:', user.isAdmin, 'members:', workGroup.members);
       
       // For non-admin users, only put member groups in the main list
       if (user.isAdmin) {
@@ -216,7 +214,6 @@ export default function TaskManagerPage() {
       }
     });
     
-    console.log('Final split - Member:', member.length, 'Other:', other.length);
     return { memberWorkGroups: member, otherWorkGroups: other };
   }, [workGroupsQuery.data, user]);
 
