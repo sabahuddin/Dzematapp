@@ -571,6 +571,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { id } = req.params;
       const { adultsCount, childrenCount } = req.body;
       
+      // Get event to check max attendees
+      const event = await storage.getEvent(id);
+      if (!event) {
+        return res.status(404).json({ message: "Event not found" });
+      }
+      
+      // If max attendees is set, check capacity
+      if (event.maxAttendees) {
+        const rsvpStats = await storage.getEventRsvps(id);
+        const requestedCount = (adultsCount || 1) + (childrenCount || 0);
+        const newTotal = rsvpStats.totalAttendees + requestedCount;
+        
+        if (newTotal > event.maxAttendees) {
+          return res.status(409).json({ 
+            message: "Event capacity reached",
+            currentTotal: rsvpStats.totalAttendees,
+            maxAttendees: event.maxAttendees,
+            requested: requestedCount
+          });
+        }
+      }
+      
       const rsvpData = {
         eventId: id,
         userId: req.user!.id,
