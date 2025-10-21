@@ -583,7 +583,22 @@ export default function EventsPage() {
                   const maxAttendees = event.maxAttendees || '∞';
                   return (
                     <TableRow key={event.id}>
-                      <TableCell>{event.name}</TableCell>
+                      <TableCell>
+                        <Typography
+                          onClick={() => handleEventClick(event)}
+                          sx={{
+                            cursor: 'pointer',
+                            color: 'primary.main',
+                            fontWeight: 500,
+                            '&:hover': {
+                              textDecoration: 'underline'
+                            }
+                          }}
+                          data-testid={`link-event-${event.id}`}
+                        >
+                          {event.name}
+                        </Typography>
+                      </TableCell>
                       <TableCell>{formatDateTime(event.dateTime.toString())}</TableCell>
                       <TableCell>{event.location}</TableCell>
                       <TableCell>
