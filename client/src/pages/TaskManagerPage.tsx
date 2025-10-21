@@ -1226,7 +1226,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
           {/* Files Section */}
           {!isEditing && (
             <Box>
-              <Typography variant="h6" sx={{ mb: 2 }}>Fajlovi grupe</Typography>
+              <Typography variant="h6" sx={{ mb: 2 }}>Fajlovi sekcije</Typography>
               {filesQuery.data && Array.isArray(filesQuery.data) && filesQuery.data.length > 0 ? (
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                   {filesQuery.data.map((file: any) => (
@@ -1569,7 +1569,7 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
           <Card>
             <CardContent sx={{ textAlign: 'center', py: 6 }}>
               <Typography color="text.secondary">
-                Nema zadataka za ovu grupu
+                Nema zadataka za ovu sekciju
               </Typography>
               {isModeratorOrAdmin() && (
                 <Button

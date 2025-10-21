@@ -65,7 +65,7 @@ export default function GuidePage() {
     },
     {
       icon: <Workspaces sx={{ color: '#0097a7' }} />,
-      title: 'Sekcije (Radne grupe)',
+      title: 'Sekcije',
       admin: 'Kreiranje i upravljanje sekcijama (npr. Halal hrana, Iftar, Čišćenje). Postavljanje vidljivosti (Javno/Privatno). Dodjela moderatora. Kreiranje zadataka sa prioritetom i rokom. Dodjela zadataka korisnicima.',
       moderator: 'Moderatori sekcije mogu kreirati i upravljati zadacima unutar svoje sekcije.',
       member: 'Pregled sekcija u kojima ste član. Prikaz dodijeljenih zadataka. Mogućnost zahtjeva za pristup privatnim sekcijama.',
