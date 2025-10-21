@@ -10,6 +10,7 @@ interface RichTextEditorProps {
   placeholder?: string;
   minHeight?: string;
   required?: boolean;
+  readOnly?: boolean;
   'data-testid'?: string;
 }
 
@@ -20,6 +21,7 @@ export default function RichTextEditor({
   placeholder = 'Unesite tekst...',
   minHeight = '200px',
   required = false,
+  readOnly = false,
   'data-testid': dataTestId,
 }: RichTextEditorProps) {
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -187,9 +189,10 @@ export default function RichTextEditor({
           theme="snow"
           value={value}
           onChange={onChange}
-          modules={modules}
+          modules={readOnly ? { toolbar: false } : modules}
           formats={formats}
           placeholder={placeholder}
+          readOnly={readOnly}
         />
       </Box>
 

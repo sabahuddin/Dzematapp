@@ -30,6 +30,7 @@ interface EventModalProps {
   onSave: (eventData: any) => void;
   event?: Event | null;
   createdById: string;
+  isAdmin?: boolean;
 }
 
 export default function EventModal({ 
@@ -37,7 +38,8 @@ export default function EventModal({
   onClose, 
   onSave, 
   event, 
-  createdById 
+  createdById,
+  isAdmin = false
 }: EventModalProps) {
   const [formData, setFormData] = useState({
     name: '',
@@ -108,8 +110,16 @@ export default function EventModal({
     }));
   };
 
+  const isReadOnly = !!(event && !isAdmin);
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+    
+    if (isReadOnly) {
+      onClose();
+      return;
+    }
+    
     onSave({
       ...formData,
       createdById,
@@ -144,7 +154,7 @@ export default function EventModal({
       }}
     >
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        {event ? 'Uredi Događaj' : 'Kreiraj Događaj'}
+        {event && !isAdmin ? 'Pregled Događaja' : (event ? 'Uredi Događaj' : 'Kreiraj Događaj')}
         <IconButton onClick={onClose} data-testid="close-event-modal">
           <Close />
         </IconButton>
@@ -160,6 +170,7 @@ export default function EventModal({
               value={formData.name}
               onChange={handleChange('name')}
               required
+              disabled={isReadOnly}
               data-testid="input-name"
             />
             
@@ -168,6 +179,7 @@ export default function EventModal({
               onChange={(value) => setFormData(prev => ({ ...prev, description: value }))}
               label="Detaljan Opis"
               placeholder="Unesite detaljan opis događaja..."
+              readOnly={isReadOnly}
               data-testid="input-description"
             />
 
@@ -179,6 +191,7 @@ export default function EventModal({
               onChange={(event, newValue) => {
                 setFormData(prev => ({ ...prev, categories: newValue }));
               }}
+              disabled={isReadOnly}
               renderTags={(value, getTagProps) =>
                 value.map((option, index) => (
                   <Chip
@@ -213,6 +226,7 @@ export default function EventModal({
                   onInputChange={(event, newInputValue) => {
                     setFormData(prev => ({ ...prev, location: newInputValue }));
                   }}
+                  disabled={isReadOnly}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -239,6 +253,7 @@ export default function EventModal({
                   InputLabelProps={{ shrink: true }}
                   inputProps={{ step: 60 }}
                   required
+                  disabled={isReadOnly}
                   data-testid="input-dateTime"
                 />
               </Grid>
@@ -254,6 +269,7 @@ export default function EventModal({
                   value={formData.maxAttendees}
                   onChange={handleChange('maxAttendees')}
                   helperText="Ostavite prazno za neograničeno"
+                  disabled={isReadOnly}
                   data-testid="input-maxAttendees"
                 />
               </Grid>
@@ -265,6 +281,7 @@ export default function EventModal({
                     value={formData.reminderTime}
                     onChange={(e) => setFormData(prev => ({ ...prev, reminderTime: e.target.value }))}
                     label="Podsjetnik"
+                    disabled={isReadOnly}
                     data-testid="select-reminderTime"
                   >
                     <MenuItem value="">
@@ -284,6 +301,7 @@ export default function EventModal({
                   <Switch
                     checked={formData.rsvpEnabled}
                     onChange={handleChange('rsvpEnabled')}
+                    disabled={isReadOnly}
                     data-testid="switch-rsvpEnabled"
                   />
                 }
@@ -295,6 +313,7 @@ export default function EventModal({
                   <Switch
                     checked={formData.requireAdultsChildren}
                     onChange={handleChange('requireAdultsChildren')}
+                    disabled={isReadOnly}
                     data-testid="switch-requireAdultsChildren"
                   />
                 }
@@ -304,31 +323,35 @@ export default function EventModal({
           </Box>
         </DialogContent>
         
-        <DialogActions sx={{ p: 3, justifyContent: 'space-between' }}>
-          <Button 
-            onClick={handleAddToCalendar}
-            variant="outlined"
-            startIcon={<CalendarMonth />}
-            disabled={!formData.name || !formData.location || !formData.dateTime}
-            data-testid="button-add-to-calendar"
-          >
-            Dodaj u Kalendar
-          </Button>
+        <DialogActions sx={{ p: 3, justifyContent: isReadOnly ? 'center' : 'space-between' }}>
+          {!isReadOnly && (
+            <Button 
+              onClick={handleAddToCalendar}
+              variant="outlined"
+              startIcon={<CalendarMonth />}
+              disabled={!formData.name || !formData.location || !formData.dateTime}
+              data-testid="button-add-to-calendar"
+            >
+              Dodaj u Kalendar
+            </Button>
+          )}
           <Box sx={{ display: 'flex', gap: 1 }}>
             <Button 
               onClick={onClose} 
               variant="outlined"
               data-testid="button-cancel"
             >
-              Odustani
+              {isReadOnly ? 'Zatvori' : 'Odustani'}
             </Button>
-            <Button 
-              type="submit" 
-              variant="contained"
-              data-testid="button-save"
-            >
-              Spremi
-            </Button>
+            {!isReadOnly && (
+              <Button 
+                type="submit" 
+                variant="contained"
+                data-testid="button-save"
+              >
+                Spremi
+              </Button>
+            )}
           </Box>
         </DialogActions>
       </form>

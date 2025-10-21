@@ -763,6 +763,7 @@ export default function EventsPage() {
         onSave={handleSaveEvent}
         event={selectedEvent}
         createdById={user?.id || ''}
+        isAdmin={user?.isAdmin || false}
       />
 
       {rsvpEvent && (
