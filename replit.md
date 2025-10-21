@@ -18,7 +18,7 @@ The backend is an Express.js application built with TypeScript, following a REST
 
 ## Data Storage Solutions
 
-The application uses a PostgreSQL database (Neon serverless) with Drizzle ORM for type-safe schema definitions. The DatabaseStorage class provides persistent storage for all entities including users, announcements, events, work groups, tasks, access requests, messages, documents, shop items, and prayer times. All data is stored permanently in the database and persists across application restarts.
+The application uses a PostgreSQL database (Neon serverless) with Drizzle ORM for type-safe schema definitions. The DatabaseStorage class provides persistent storage for all entities including users, announcements, events, work groups, tasks, access requests, messages, documents, shop items, prayer times, and important dates. All data is stored permanently in the database and persists across application restarts.
 
 ## Authentication and Authorization
 
@@ -28,7 +28,7 @@ The system employs a simple session-based authentication using username/password
 
 - **User Management**: CRUD operations for user accounts and profile management.
 - **Announcements**: Content management for community announcements, viewable by guests.
-- **Events**: Event creation, management, and RSVP functionality, viewable by guests.
+- **Events & Important Dates**: Tab-based interface with event calendar (monthly view with date markers), event list, RSVP functionality, and important dates management (recurring yearly dates in dd.mm format). Events viewable by guests.
 - **Task Manager**: Management of work groups ("Sekcije") and task assignments.
 - **Dashboard Analytics**: Overview and activity tracking.
 - **Guest Access**: Public interface for viewing announcements, events, prayer times (Vaktija), and submitting membership applications. Features new mosque logo in header.
@@ -37,7 +37,8 @@ The system employs a simple session-based authentication using username/password
 - **Access Request System**: Users can request membership to private sections, with admin approval.
 - **Imam Q&A**: System for submitting and archiving questions for the Imam.
 - **Shop Module**: Marketplace for items with photo uploads, image viewer, edit functionality, and contact form.
-- **Prayer Times (Vaktija)**: Full prayer times calendar with CSV upload capability for admins, displaying today's prayer times on dashboard for all users.
+- **Prayer Times (Vaktija)**: Full prayer times calendar with CSV upload capability for admins. Dashboard displays "Današnja vaktija" (today's prayer times) for all users. Monthly view renamed to "Mjesečne vaktije".
+- **Important Dates**: Admin-managed recurring yearly dates (Bajram, Ramadan, etc.) with dd.mm format, name, and optional description. Accessible via separate tab on Events page.
 - **Visual Contrast Enhancement**: Consistent visual separation between background and form/card elements.
 
 # External Dependencies
