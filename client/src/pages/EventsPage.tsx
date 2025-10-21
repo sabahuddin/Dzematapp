@@ -278,7 +278,7 @@ export default function EventsPage() {
     return format(date, 'dd.MM.yyyy. u HH:mm');
   };
 
-  const getRsvpCount = (event: Event) => {
+  const getRsvpCount = (event: any) => {
     if (!event.rsvpEnabled || !event.rsvpStats) return 0;
     return event.rsvpStats.totalAdults + event.rsvpStats.totalChildren;
   };
