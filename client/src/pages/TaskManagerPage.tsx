@@ -1215,18 +1215,25 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                     <Card key={comment.id} variant="outlined">
                       <CardContent sx={{ 
                         py: 1,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'stretch'
+                        px: 2,
+                        display: 'flex !important',
+                        flexDirection: 'column !important',
+                        alignItems: 'stretch !important',
+                        gap: 1
                       }}>
-                        <Typography variant="caption" color="text.secondary">
+                        <Typography variant="caption" color="text.secondary" sx={{
+                          display: 'block !important',
+                          width: '100% !important'
+                        }}>
                           {comment.user ? `${comment.user.firstName} ${comment.user.lastName}` : 'Nepoznat korisnik'} • {new Date(comment.createdAt).toLocaleDateString('hr-HR')}
                         </Typography>
                         {comment.content && (
                           <Typography variant="body2" sx={{ 
-                            mt: 0.5,
-                            whiteSpace: 'pre-wrap',
-                            wordBreak: 'break-word'
+                            display: 'block !important',
+                            width: '100% !important',
+                            whiteSpace: 'pre-wrap !important',
+                            wordBreak: 'break-word !important',
+                            minHeight: '20px !important'
                           }}>
                             {comment.content}
                           </Typography>
