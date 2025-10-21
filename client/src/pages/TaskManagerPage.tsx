@@ -703,6 +703,8 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
   const [editedStatus, setEditedStatus] = useState('');
   const [editedAssignedToId, setEditedAssignedToId] = useState('');
   const [editedDueDate, setEditedDueDate] = useState('');
+  const [fullscreenImageOpen, setFullscreenImageOpen] = useState(false);
+  const [fullscreenImage, setFullscreenImage] = useState('');
   const queryClient = useQueryClient();
 
   // Initialize edit form when task changes
@@ -737,6 +739,11 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const openFullscreenImage = (imageUrl: string) => {
+    setFullscreenImage(imageUrl);
+    setFullscreenImageOpen(true);
   };
 
   // Fetch task comments
@@ -1051,8 +1058,10 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                       maxHeight: 300,
                       objectFit: 'cover',
                       borderRadius: 1,
-                      border: '2px solid #1976d2'
+                      border: '2px solid #1976d2',
+                      cursor: 'pointer'
                     }}
+                    onClick={() => openFullscreenImage(task.descriptionImage)}
                   />
                 </Box>
               )}
@@ -1200,8 +1209,10 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                                 maxHeight: 200,
                                 objectFit: 'cover',
                                 borderRadius: 1,
-                                border: '2px solid #1976d2'
+                                border: '2px solid #1976d2',
+                                cursor: 'pointer'
                               }}
+                              onClick={() => openFullscreenImage(comment.commentImage)}
                             />
                           </Box>
                         )}
@@ -1226,6 +1237,45 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
         currentWorkGroup={workGroup}
         onMoveSuccess={onTaskUpdated}
       />
+      
+      {/* Fullscreen Image Dialog */}
+      <Dialog 
+        open={fullscreenImageOpen} 
+        onClose={() => setFullscreenImageOpen(false)} 
+        maxWidth="lg"
+        fullWidth
+        PaperProps={{
+          sx: {
+            bgcolor: 'rgba(0,0,0,0.9)',
+            boxShadow: 'none'
+          }
+        }}
+      >
+        <IconButton
+          onClick={() => setFullscreenImageOpen(false)}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: 'white',
+            bgcolor: 'rgba(0,0,0,0.5)',
+            '&:hover': { bgcolor: 'rgba(0,0,0,0.7)' }
+          }}
+          data-testid="button-close-fullscreen-image"
+        >
+          <Close />
+        </IconButton>
+        <img 
+          src={fullscreenImage} 
+          alt="Fullscreen" 
+          style={{ 
+            width: '100%', 
+            height: 'auto', 
+            maxHeight: '90vh', 
+            objectFit: 'contain' 
+          }} 
+        />
+      </Dialog>
     </Dialog>
   );
 }
