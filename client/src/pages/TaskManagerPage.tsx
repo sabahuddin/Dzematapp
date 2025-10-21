@@ -1169,15 +1169,15 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                 </Box>
                 
                 {commentImage && (
-                  <Box sx={{ mt: 1 }}>
+                  <Box sx={{ mt: 1, display: 'flex', justifyContent: 'center' }}>
                     <Box
                       component="img"
                       src={commentImage}
                       alt="Comment preview"
                       sx={{
-                        width: '100%',
+                        maxWidth: 200,
                         maxHeight: 150,
-                        objectFit: 'cover',
+                        objectFit: 'contain',
                         borderRadius: 1,
                         border: '2px solid #1976d2'
                       }}
@@ -1239,15 +1239,15 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                           </Typography>
                         )}
                         {comment.commentImage && (
-                          <Box sx={{ mt: 1 }}>
+                          <Box sx={{ mt: 1, display: 'flex', justifyContent: 'flex-start' }}>
                             <Box
                               component="img"
                               src={comment.commentImage}
                               alt="Comment image"
                               sx={{
-                                width: '100%',
+                                maxWidth: 200,
                                 maxHeight: 200,
-                                objectFit: 'cover',
+                                objectFit: 'contain',
                                 borderRadius: 1,
                                 border: '2px solid #1976d2',
                                 cursor: 'pointer'
