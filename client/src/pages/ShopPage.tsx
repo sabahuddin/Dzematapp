@@ -429,13 +429,13 @@ export default function ShopPage() {
       </Typography>
 
       <Tabs value={activeTab} onChange={(_, newValue) => setActiveTab(newValue)} sx={{ mb: 3, borderBottom: 1, borderColor: 'divider' }}>
-        <Tab label={isAdmin ? "DžematShop" : "Kupujem"} icon={<Store />} iconPosition="start" data-testid="tab-buy" />
+        <Tab label="DžematShop" icon={<Store />} iconPosition="start" data-testid="tab-buy" />
         <Tab label="Prodajem" icon={<ShoppingCart />} iconPosition="start" data-testid="tab-sell" />
         <Tab label="Poklanjam" icon={<CardGiftcard />} iconPosition="start" data-testid="tab-gift" />
         {isAdmin && <Tab label="Arhiva" icon={<Archive />} iconPosition="start" data-testid="tab-archive" />}
       </Tabs>
 
-      {/* Admin DžematShop Tab / Member Kupujem Tab */}
+      {/* DžematShop Tab */}
       {activeTab === 0 && (
         <Box>
           {isAdmin && (
