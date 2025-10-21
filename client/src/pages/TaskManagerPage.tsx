@@ -320,7 +320,7 @@ export default function TaskManagerPage() {
       {user?.isAdmin && (
         <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
           <Tabs value={tabValue} onChange={handleTabChange} aria-label="task manager tabs">
-            <Tab label="Radne Grupe" data-testid="tab-work-groups" />
+            <Tab label="Sekcije" data-testid="tab-work-groups" />
             <Tab label="Zahtjevi za Pristup" data-testid="tab-access-requests" />
           </Tabs>
         </Box>
@@ -336,7 +336,7 @@ export default function TaskManagerPage() {
               onClick={handleCreateWorkGroup}
               data-testid="button-create-work-group"
             >
-              Kreiraj Novu Grupu
+              Kreiraj sekciju
             </Button>
           </Box>
         )}
@@ -375,7 +375,7 @@ export default function TaskManagerPage() {
               <TableHead>
                 <TableRow sx={{ bgcolor: '#f8f9fa' }}>
                   <TableCell sx={{ fontWeight: 600 }}>Ime Korisnika</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Naziv Grupe</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Naziv Sekcije</TableCell>
                   <TableCell sx={{ fontWeight: 600 }}>Datum Zahtjeva</TableCell>
                   <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
                   <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
