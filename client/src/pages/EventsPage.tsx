@@ -41,6 +41,7 @@ import {
 } from '@mui/icons-material';
 import { Event, EventRsvp } from '@shared/schema';
 import EventModal from '../components/modals/EventModal';
+import EventViewModal from '../components/modals/EventViewModal';
 import EventRSVPModal from '../components/modals/EventRSVPModal';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/use-toast';
@@ -301,6 +302,7 @@ export default function EventsPage() {
   
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [modalOpen, setModalOpen] = useState(false);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [menuEvent, setMenuEvent] = useState<Event | null>(null);
@@ -420,7 +422,11 @@ export default function EventsPage() {
 
   const handleEventClick = (event: Event) => {
     setSelectedEvent(event);
-    setModalOpen(true);
+    if (user?.isAdmin) {
+      setModalOpen(true);
+    } else {
+      setViewModalOpen(true);
+    }
   };
 
   const handleRsvpClick = (event: Event) => {
@@ -491,7 +497,7 @@ export default function EventsPage() {
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h5" sx={{ fontWeight: 600 }}>
-          Upravljanje Događajima
+          Događaji
         </Typography>
         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
           <ToggleButtonGroup
@@ -764,6 +770,12 @@ export default function EventsPage() {
         event={selectedEvent}
         createdById={user?.id || ''}
         isAdmin={user?.isAdmin || false}
+      />
+
+      <EventViewModal
+        open={viewModalOpen}
+        onClose={() => setViewModalOpen(false)}
+        event={selectedEvent}
       />
 
       {rsvpEvent && (
