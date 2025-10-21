@@ -17,10 +17,19 @@ import {
   FormControl,
   InputLabel,
   Autocomplete,
-  Chip
+  Chip,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Divider
 } from '@mui/material';
-import { Close, CalendarMonth } from '@mui/icons-material';
-import { Event } from '@shared/schema';
+import { Close, CalendarMonth, People } from '@mui/icons-material';
+import { Event, EventRsvpStats } from '@shared/schema';
 import RichTextEditor from '../ui/rich-text-editor';
 import { downloadICS } from '@/lib/icsGenerator';
 
@@ -68,6 +77,12 @@ export default function EventModal({
   const locationsQuery = useQuery<string[]>({
     queryKey: ['/api/events/locations'],
     enabled: open,
+  });
+
+  // Fetch RSVP data for existing events (admin only)
+  const rsvpQuery = useQuery<EventRsvpStats>({
+    queryKey: ['/api/events', event?.id, 'rsvps'],
+    enabled: open && !!event && isAdmin,
   });
 
   useEffect(() => {
@@ -320,6 +335,70 @@ export default function EventModal({
                 label="Zahtijevaj Broj Odraslih/Djece"
               />
             </Box>
+
+            {/* RSVP List (Admin Only) */}
+            {event && isAdmin && formData.rsvpEnabled && (
+              <>
+                <Divider sx={{ mt: 2 }} />
+                <Box sx={{ mt: 3 }}>
+                  <Typography variant="h6" sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <People />
+                    Prijavljeni učesnici
+                  </Typography>
+                  
+                  {rsvpQuery.isLoading ? (
+                    <Typography>Učitavanje...</Typography>
+                  ) : rsvpQuery.data && rsvpQuery.data.rsvps.length > 0 ? (
+                    <>
+                      <TableContainer component={Paper} variant="outlined">
+                        <Table size="small">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell><strong>Ime i prezime</strong></TableCell>
+                              <TableCell align="center"><strong>Broj odraslih</strong></TableCell>
+                              <TableCell align="center"><strong>Broj djece</strong></TableCell>
+                              <TableCell align="center"><strong>Ukupno</strong></TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {rsvpQuery.data.rsvps.map((rsvp) => (
+                              <TableRow key={rsvp.id} data-testid={`rsvp-row-${rsvp.id}`}>
+                                <TableCell>
+                                  {rsvp.user ? `${rsvp.user.firstName} ${rsvp.user.lastName}` : 'Nepoznato'}
+                                </TableCell>
+                                <TableCell align="center">{rsvp.adultsCount ?? 1}</TableCell>
+                                <TableCell align="center">{rsvp.childrenCount ?? 0}</TableCell>
+                                <TableCell align="center">
+                                  {(rsvp.adultsCount ?? 1) + (rsvp.childrenCount ?? 0)}
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                            <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
+                              <TableCell><strong>UKUPNO:</strong></TableCell>
+                              <TableCell align="center"><strong>{rsvpQuery.data.totalAdults}</strong></TableCell>
+                              <TableCell align="center"><strong>{rsvpQuery.data.totalChildren}</strong></TableCell>
+                              <TableCell align="center"><strong>{rsvpQuery.data.totalAttendees}</strong></TableCell>
+                            </TableRow>
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                      
+                      {formData.maxAttendees && (
+                        <Typography variant="body2" color={
+                          rsvpQuery.data.totalAttendees >= parseInt(formData.maxAttendees) ? 'error' : 'text.secondary'
+                        } sx={{ mt: 1 }}>
+                          Maksimalan broj učesnika: {formData.maxAttendees}
+                          {rsvpQuery.data.totalAttendees >= parseInt(formData.maxAttendees) && 
+                            ' - KAPACITET DOSTIGNUT'}
+                        </Typography>
+                      )}
+                    </>
+                  ) : (
+                    <Typography color="text.secondary">Nema prijavljenih učesnika.</Typography>
+                  )}
+                </Box>
+              </>
+            )}
           </Box>
         </DialogContent>
         
