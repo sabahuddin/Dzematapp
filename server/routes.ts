@@ -1480,7 +1480,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
               id: relatedUser.id,
               firstName: relatedUser.firstName,
               lastName: relatedUser.lastName,
-              photo: relatedUser.photo
+              photo: relatedUser.photo,
+              email: relatedUser.email,
+              phone: relatedUser.phone
             } : null
           };
         })

@@ -33,6 +33,7 @@ import {
 import { User } from '@shared/schema';
 import UserModal from '../components/modals/UserModal';
 import BulkUploadModal from '../components/modals/BulkUploadModal';
+import FamilyMembersDialog from '../components/modals/FamilyMembersDialog';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/use-toast';
 import { apiRequest } from '../lib/queryClient';
@@ -47,6 +48,8 @@ export default function UsersPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [bulkUploadModalOpen, setBulkUploadModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [familyMembersDialogOpen, setFamilyMembersDialogOpen] = useState(false);
+  const [selectedUserForFamily, setSelectedUserForFamily] = useState<User | null>(null);
 
   const predefinedCategories = ['Svi', 'Muškarci', 'Žene', 'Roditelji', 'Omladina'];
 
@@ -547,7 +550,8 @@ export default function UsersPage() {
                     <IconButton 
                       size="small"
                       onClick={() => {
-                        // Navigate to family relationships (placeholder for now)
+                        setSelectedUserForFamily(user);
+                        setFamilyMembersDialogOpen(true);
                       }}
                       data-testid={`family-${user.id}`}
                       title="Vidi članove porodice"
@@ -607,6 +611,16 @@ export default function UsersPage() {
         open={bulkUploadModalOpen}
         onClose={() => setBulkUploadModalOpen(false)}
       />
+
+      {/* Family Members Dialog */}
+      {selectedUserForFamily && (
+        <FamilyMembersDialog
+          open={familyMembersDialogOpen}
+          onClose={() => setFamilyMembersDialogOpen(false)}
+          userId={selectedUserForFamily.id}
+          userName={`${selectedUserForFamily.firstName} ${selectedUserForFamily.lastName}`}
+        />
+      )}
     </Box>
   );
 }
