@@ -7,6 +7,8 @@ import {
   type InsertEvent,
   type EventRsvp,
   type InsertEventRsvp,
+  type EventRsvpWithUser,
+  type EventRsvpStats,
   type WorkGroup,
   type InsertWorkGroup,
   type WorkGroupMember,
@@ -94,7 +96,7 @@ export interface IStorage {
   
   // Event RSVPs
   createEventRsvp(rsvp: InsertEventRsvp): Promise<EventRsvp>;
-  getEventRsvps(eventId: string): Promise<EventRsvp[]>;
+  getEventRsvps(eventId: string): Promise<EventRsvpStats>;
   getUserEventRsvp(eventId: string, userId: string): Promise<EventRsvp | null>;
   updateEventRsvp(id: string, updates: { adultsCount?: number; childrenCount?: number }): Promise<EventRsvp | undefined>;
   deleteEventRsvp(id: string): Promise<boolean>;
@@ -350,8 +352,45 @@ export class DatabaseStorage implements IStorage {
     return rsvp;
   }
 
-  async getEventRsvps(eventId: string): Promise<EventRsvp[]> {
-    return await db.select().from(eventRsvps).where(eq(eventRsvps.eventId, eventId));
+  async getEventRsvps(eventId: string): Promise<EventRsvpStats> {
+    const rsvpResults = await db
+      .select({
+        id: eventRsvps.id,
+        eventId: eventRsvps.eventId,
+        userId: eventRsvps.userId,
+        adultsCount: eventRsvps.adultsCount,
+        childrenCount: eventRsvps.childrenCount,
+        rsvpDate: eventRsvps.rsvpDate,
+        user: {
+          id: users.id,
+          firstName: users.firstName,
+          lastName: users.lastName,
+        },
+      })
+      .from(eventRsvps)
+      .leftJoin(users, eq(eventRsvps.userId, users.id))
+      .where(eq(eventRsvps.eventId, eventId));
+
+    const rsvps: EventRsvpWithUser[] = rsvpResults.map(result => ({
+      id: result.id,
+      eventId: result.eventId,
+      userId: result.userId,
+      adultsCount: result.adultsCount ?? 1,
+      childrenCount: result.childrenCount ?? 0,
+      rsvpDate: result.rsvpDate,
+      user: result.user,
+    }));
+
+    const totalAdults = rsvps.reduce((sum, rsvp) => sum + (rsvp.adultsCount ?? 1), 0);
+    const totalChildren = rsvps.reduce((sum, rsvp) => sum + (rsvp.childrenCount ?? 0), 0);
+    const totalAttendees = totalAdults + totalChildren;
+
+    return {
+      rsvps,
+      totalAdults,
+      totalChildren,
+      totalAttendees,
+    };
   }
 
   async getUserEventRsvp(eventId: string, userId: string): Promise<EventRsvp | null> {
