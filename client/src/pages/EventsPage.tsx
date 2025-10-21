@@ -245,6 +245,17 @@ export default function EventsPage() {
       return;
     }
 
+    // Validate date format (dd.mm)
+    const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])$/;
+    if (!dateRegex.test(importantDateForm.date)) {
+      toast({ 
+        title: 'Greška', 
+        description: 'Datum mora biti u formatu dd.mm (npr. 15.03)', 
+        variant: 'destructive' 
+      });
+      return;
+    }
+
     if (editingImportantDate) {
       await updateImportantDateMutation.mutateAsync({
         id: editingImportantDate.id,
