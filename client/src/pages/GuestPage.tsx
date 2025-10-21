@@ -25,7 +25,7 @@ import { useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import type { Announcement as AnnouncementType, Event as EventType, PrayerTime } from '@shared/schema';
 import { format } from 'date-fns';
-import mosqueLogoPath from '@assets/mosque-logo.png';
+import mosqueLogoPath from '@assets/ChatGPT Image 21. okt 2025. u 12_21_13_1761042105694.png';
 
 interface TabPanelProps {
   children?: React.ReactNode;
