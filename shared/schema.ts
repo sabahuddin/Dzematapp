@@ -474,7 +474,6 @@ export const importantDates = pgTable("important_dates", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull(), // e.g. "Ramazanski Bajram", "Nova godina"
   date: text("date").notNull(), // dd.mm format (without year, since it repeats)
-  description: text("description"),
   isRecurring: boolean("is_recurring").default(true).notNull(), // true if repeats yearly
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

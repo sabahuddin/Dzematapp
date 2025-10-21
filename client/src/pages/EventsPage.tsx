@@ -516,15 +516,6 @@ export default function EventsPage() {
                     data-testid="input-important-date-date"
                     helperText="Format: dd.mm (npr. 15.03 za 15. mart)"
                   />
-                  <TextField
-                    label="Opis (opciono)"
-                    value={importantDateForm.description}
-                    onChange={(e) => setImportantDateForm({ ...importantDateForm, description: e.target.value })}
-                    multiline
-                    rows={3}
-                    fullWidth
-                    data-testid="input-important-date-description"
-                  />
                   <Box sx={{ display: 'flex', gap: 2 }}>
                     <Button 
                       type="submit" 
@@ -560,7 +551,6 @@ export default function EventsPage() {
                   <TableRow sx={{ bgcolor: '#f8f9fa' }}>
                     <TableCell sx={{ fontWeight: 600 }}>Datum</TableCell>
                     <TableCell sx={{ fontWeight: 600 }}>Naziv</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>Opis</TableCell>
                     {user?.isAdmin && (
                       <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
                     )}
@@ -571,11 +561,6 @@ export default function EventsPage() {
                     <TableRow key={date.id}>
                       <TableCell sx={{ fontWeight: 500 }}>{date.date}</TableCell>
                       <TableCell>{date.name}</TableCell>
-                      <TableCell>
-                        <Typography variant="body2" color="text.secondary">
-                          {date.description || '-'}
-                        </Typography>
-                      </TableCell>
                       {user?.isAdmin && (
                         <TableCell>
                           <Box sx={{ display: 'flex', gap: 0.5 }}>
@@ -602,7 +587,7 @@ export default function EventsPage() {
                   ))}
                   {importantDates.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={user?.isAdmin ? 4 : 3} sx={{ textAlign: 'center', py: 4 }}>
+                      <TableCell colSpan={user?.isAdmin ? 3 : 2} sx={{ textAlign: 'center', py: 4 }}>
                         <Typography color="text.secondary">
                           Nema važnih datuma
                         </Typography>
