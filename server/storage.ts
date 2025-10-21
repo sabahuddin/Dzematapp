@@ -1666,6 +1666,9 @@ export class MemStorage implements IStorage {
     const newPrayerTime: PrayerTime = {
       id: randomUUID(),
       ...prayerTime,
+      hijriDate: prayerTime.hijriDate ?? null,
+      sunrise: prayerTime.sunrise ?? null,
+      events: prayerTime.events ?? null,
     };
     this.prayerTimes.set(newPrayerTime.id, newPrayerTime);
     return newPrayerTime;

@@ -6,7 +6,7 @@ import { promises as fs } from "fs";
 import * as XLSX from "xlsx";
 import { storage } from "./storage";
 import { requireAuth, requireAdmin } from "./index";
-import { insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertGroupFileSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema } from "@shared/schema";
+import { insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertGroupFileSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema } from "@shared/schema";
 
 // Configure multer for photo uploads
 const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'photos');
@@ -70,6 +70,26 @@ const shopUpload = multer({
       cb(null, true);
     } else {
       cb(new Error('Only image files (JPEG, PNG, GIF, WebP) are allowed'));
+    }
+  }
+});
+
+// Configure multer for CSV uploads
+const csvUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 1 * 1024 * 1024, // 1MB limit for CSV
+    files: 1
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedMimes = ['text/csv', 'application/vnd.ms-excel', 'text/plain'];
+    const allowedExtensions = ['.csv'];
+    const extension = path.extname(file.originalname).toLowerCase();
+    
+    if (allowedMimes.includes(file.mimetype) || allowedExtensions.includes(extension)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only CSV files are allowed'));
     }
   }
 });
@@ -2090,6 +2110,113 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ success: true });
     } catch (error) {
       res.status(500).json({ message: "Failed to update last viewed timestamp" });
+    }
+  });
+
+  // Prayer Times routes
+  app.get("/api/prayer-times", async (req, res) => {
+    try {
+      const prayerTimes = await storage.getAllPrayerTimes();
+      res.json(prayerTimes);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get prayer times" });
+    }
+  });
+
+  app.get("/api/prayer-times/today", async (req, res) => {
+    try {
+      const now = new Date();
+      const day = String(now.getDate()).padStart(2, '0');
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const year = now.getFullYear();
+      const todayDate = `${day}.${month}.${year}`;
+      
+      const prayerTime = await storage.getPrayerTimeByDate(todayDate);
+      if (!prayerTime) {
+        return res.status(404).json({ message: "Prayer times not found for today" });
+      }
+      res.json(prayerTime);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get today's prayer times" });
+    }
+  });
+
+  app.get("/api/prayer-times/:date", async (req, res) => {
+    try {
+      const prayerTime = await storage.getPrayerTimeByDate(req.params.date);
+      if (!prayerTime) {
+        return res.status(404).json({ message: "Prayer times not found for this date" });
+      }
+      res.json(prayerTime);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get prayer times" });
+    }
+  });
+
+  app.post("/api/prayer-times/upload", requireAdmin, csvUpload.single('csv'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No CSV file uploaded" });
+      }
+
+      // Parse CSV file
+      const csvData = req.file.buffer.toString('utf-8');
+      const lines = csvData.split('\n').filter(line => line.trim());
+      
+      if (lines.length < 2) {
+        return res.status(400).json({ message: "CSV file is empty or invalid" });
+      }
+
+      // Skip header line
+      const dataLines = lines.slice(1);
+      const prayerTimes = [];
+
+      for (const line of dataLines) {
+        const parts = line.split(',').map(p => p.trim());
+        
+        // Expected format: Date,Day,Fajr,Sunrise,Dhuhr,Asr,Maghrib,Isha
+        if (parts.length >= 8) {
+          const [date, day, fajr, sunrise, dhuhr, asr, maghrib, isha] = parts;
+          
+          if (date && fajr && dhuhr && asr && maghrib && isha) {
+            prayerTimes.push({
+              date,
+              fajr,
+              sunrise: sunrise || null,
+              dhuhr,
+              asr,
+              maghrib,
+              isha,
+              hijriDate: null,
+              events: null
+            });
+          }
+        }
+      }
+
+      if (prayerTimes.length === 0) {
+        return res.status(400).json({ message: "No valid prayer times found in CSV" });
+      }
+
+      // Bulk create prayer times
+      const created = await storage.bulkCreatePrayerTimes(prayerTimes);
+      
+      res.json({ 
+        message: `Successfully imported ${created.length} prayer times`,
+        count: created.length 
+      });
+    } catch (error) {
+      console.error('CSV upload error:', error);
+      res.status(500).json({ message: "Failed to upload and parse CSV" });
+    }
+  });
+
+  app.delete("/api/prayer-times", requireAdmin, async (req, res) => {
+    try {
+      await storage.deleteAllPrayerTimes();
+      res.json({ message: "All prayer times deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete prayer times" });
     }
   });
 
