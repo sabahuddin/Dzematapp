@@ -31,13 +31,13 @@ export default function EventViewModal({
 }: EventViewModalProps) {
   const [rsvpModalOpen, setRsvpModalOpen] = useState(false);
 
-  if (!event) return null;
-
-  // Fetch RSVP stats to check capacity
+  // Fetch RSVP stats to check capacity (must be before any conditional returns)
   const rsvpQuery = useQuery<EventRsvpStats>({
-    queryKey: ['/api/events', event.id, 'rsvps'],
-    enabled: open && !!event.rsvpEnabled,
+    queryKey: ['/api/events', event?.id, 'rsvps'],
+    enabled: open && !!event && !!event.rsvpEnabled,
   });
+
+  if (!event) return null;
 
   const isCapacityReached = event.maxAttendees && rsvpQuery.data 
     ? rsvpQuery.data.totalAttendees >= event.maxAttendees 
