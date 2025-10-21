@@ -55,7 +55,7 @@ import {
 } from '../data/mockData';
 import TasksDashboard from '../components/TasksDashboard';
 import { useAuth } from '../hooks/useAuth';
-import type { Announcement, Event as EventType, WorkGroup } from '@shared/schema';
+import type { Announcement, Event as EventType, WorkGroup, PrayerTime } from '@shared/schema';
 import { format, isSameDay } from 'date-fns';
 
 const StatCard = ({ icon, title, value, color }: {
@@ -193,6 +193,12 @@ export default function DashboardHome() {
     enabled: !user?.isAdmin,
   });
 
+  // Fetch today's prayer times for all users
+  const todayPrayerTimeQuery = useQuery<PrayerTime>({
+    queryKey: ['/api/prayer-times/today'],
+    retry: false,
+  });
+
   if (user?.isAdmin) {
     if (statisticsQuery.isLoading || activitiesQuery.isLoading || eventsQuery.isLoading) {
       return (
@@ -247,11 +253,67 @@ export default function DashboardHome() {
 
   // Member Dashboard
   if (!user?.isAdmin) {
+    const todayPrayerTime = todayPrayerTimeQuery.data;
+
     return (
       <Box>
         <Typography variant="h5" sx={{ fontWeight: 600, mb: 3 }}>
           Dobrodošli, {user?.firstName}!
         </Typography>
+
+        {/* Today's Prayer Times */}
+        {todayPrayerTime && (
+          <Card sx={{ mb: 3, bgcolor: '#e3f2fd' }}>
+            <Box sx={{ p: 2, borderBottom: '1px solid #90caf9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Schedule sx={{ color: '#1976d2' }} />
+                <Typography variant="h6" sx={{ fontWeight: 600, color: '#1976d2' }}>
+                  Današnje vaktije - {todayPrayerTime.date}
+                </Typography>
+              </Box>
+              <Link href="/vaktija">
+                <Button 
+                  size="small" 
+                  endIcon={<ArrowForward />}
+                  sx={{ textTransform: 'none' }}
+                  data-testid="link-full-vaktija"
+                >
+                  Kalendar vaktija
+                </Button>
+              </Link>
+            </Box>
+            <CardContent>
+              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'space-around' }}>
+                <Box sx={{ textAlign: 'center', minWidth: 80 }}>
+                  <Typography variant="caption" color="text.secondary">Zora</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.fajr}</Typography>
+                </Box>
+                {todayPrayerTime.sunrise && (
+                  <Box sx={{ textAlign: 'center', minWidth: 80 }}>
+                    <Typography variant="caption" color="text.secondary">Izlazak</Typography>
+                    <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.sunrise}</Typography>
+                  </Box>
+                )}
+                <Box sx={{ textAlign: 'center', minWidth: 80 }}>
+                  <Typography variant="caption" color="text.secondary">Podne</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.dhuhr}</Typography>
+                </Box>
+                <Box sx={{ textAlign: 'center', minWidth: 80 }}>
+                  <Typography variant="caption" color="text.secondary">Ikindija</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.asr}</Typography>
+                </Box>
+                <Box sx={{ textAlign: 'center', minWidth: 80 }}>
+                  <Typography variant="caption" color="text.secondary">Akšam</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.maghrib}</Typography>
+                </Box>
+                <Box sx={{ textAlign: 'center', minWidth: 80 }}>
+                  <Typography variant="caption" color="text.secondary">Jacija</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.isha}</Typography>
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
+        )}
 
         <Grid container spacing={3}>
           {/* Latest Announcement */}
@@ -612,8 +674,64 @@ export default function DashboardHome() {
   }
 
   // Admin Dashboard
+  const todayPrayerTime = todayPrayerTimeQuery.data;
+
   return (
     <Box>
+      {/* Today's Prayer Times */}
+      {todayPrayerTime && (
+        <Card sx={{ mb: 3, bgcolor: '#e3f2fd' }}>
+          <Box sx={{ p: 2, borderBottom: '1px solid #90caf9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Schedule sx={{ color: '#1976d2' }} />
+              <Typography variant="h6" sx={{ fontWeight: 600, color: '#1976d2' }}>
+                Današnje vaktije - {todayPrayerTime.date}
+              </Typography>
+            </Box>
+            <Link href="/vaktija">
+              <Button 
+                size="small" 
+                endIcon={<ArrowForward />}
+                sx={{ textTransform: 'none' }}
+                data-testid="link-full-vaktija"
+              >
+                Kalendar vaktija
+              </Button>
+            </Link>
+          </Box>
+          <CardContent>
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'space-around' }}>
+              <Box sx={{ textAlign: 'center', minWidth: 80 }}>
+                <Typography variant="caption" color="text.secondary">Zora</Typography>
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.fajr}</Typography>
+              </Box>
+              {todayPrayerTime.sunrise && (
+                <Box sx={{ textAlign: 'center', minWidth: 80 }}>
+                  <Typography variant="caption" color="text.secondary">Izlazak</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.sunrise}</Typography>
+                </Box>
+              )}
+              <Box sx={{ textAlign: 'center', minWidth: 80 }}>
+                <Typography variant="caption" color="text.secondary">Podne</Typography>
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.dhuhr}</Typography>
+              </Box>
+              <Box sx={{ textAlign: 'center', minWidth: 80 }}>
+                <Typography variant="caption" color="text.secondary">Ikindija</Typography>
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.asr}</Typography>
+              </Box>
+              <Box sx={{ textAlign: 'center', minWidth: 80 }}>
+                <Typography variant="caption" color="text.secondary">Akšam</Typography>
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.maghrib}</Typography>
+              </Box>
+              <Box sx={{ textAlign: 'center', minWidth: 80 }}>
+                <Typography variant="caption" color="text.secondary">Jacija</Typography>
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.isha}</Typography>
+              </Box>
+            </Box>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Statistics Cards */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
