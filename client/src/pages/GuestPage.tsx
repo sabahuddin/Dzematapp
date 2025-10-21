@@ -10,13 +10,22 @@ import {
   Button,
   Card,
   CardContent,
-  Stack
+  Stack,
+  Paper,
+  CircularProgress,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
 } from '@mui/material';
-import { Hub, Announcement, Event, Assignment } from '@mui/icons-material';
+import { Announcement, Event, Assignment, Schedule } from '@mui/icons-material';
 import { useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
-import type { Announcement as AnnouncementType, Event as EventType } from '@shared/schema';
+import type { Announcement as AnnouncementType, Event as EventType, PrayerTime } from '@shared/schema';
 import { format } from 'date-fns';
+import mosqueLogoPath from '@assets/mosque-logo.png';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -56,6 +65,15 @@ export default function GuestPage() {
     queryKey: ['/api/events'],
   });
 
+  const { data: todayPrayerTime, isLoading: todayPrayerLoading } = useQuery<PrayerTime>({
+    queryKey: ['/api/prayer-times/today'],
+    retry: false,
+  });
+
+  const { data: allPrayerTimes = [], isLoading: allPrayerLoading } = useQuery<PrayerTime[]>({
+    queryKey: ['/api/prayer-times'],
+  });
+
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
@@ -68,7 +86,11 @@ export default function GuestPage() {
     <Box sx={{ minHeight: '100vh', bgcolor: '#f5f5f5' }}>
       <AppBar position="static" sx={{ bgcolor: '#1976d2' }}>
         <Toolbar>
-          <Hub sx={{ mr: 2 }} />
+          <img 
+            src={mosqueLogoPath} 
+            alt="Mosque Logo" 
+            style={{ width: 40, height: 40, objectFit: 'contain', marginRight: 16 }}
+          />
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             DžematApp - Gost pristup
           </Typography>
@@ -98,6 +120,12 @@ export default function GuestPage() {
                 label="Događaji" 
                 iconPosition="start"
                 data-testid="tab-events"
+              />
+              <Tab 
+                icon={<Schedule />} 
+                label="Vaktija" 
+                iconPosition="start"
+                data-testid="tab-vaktija"
               />
               <Tab 
                 icon={<Assignment />} 
@@ -171,6 +199,108 @@ export default function GuestPage() {
             </TabPanel>
 
             <TabPanel value={tabValue} index={2}>
+              <Typography variant="h5" gutterBottom>
+                Vaktija
+              </Typography>
+              
+              {/* Today's Prayer Times */}
+              {todayPrayerLoading ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
+                  <CircularProgress />
+                </Box>
+              ) : todayPrayerTime ? (
+                <Paper sx={{ p: 3, mb: 4, bgcolor: '#e3f2fd' }}>
+                  <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: '#1976d2' }}>
+                    Današnje vaktije - {todayPrayerTime.date}
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                    <Box sx={{ flex: '1 1 150px' }}>
+                      <Card>
+                        <CardContent sx={{ textAlign: 'center' }}>
+                          <Typography variant="caption" color="text.secondary">Zora</Typography>
+                          <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.fajr}</Typography>
+                        </CardContent>
+                      </Card>
+                    </Box>
+                    <Box sx={{ flex: '1 1 150px' }}>
+                      <Card>
+                        <CardContent sx={{ textAlign: 'center' }}>
+                          <Typography variant="caption" color="text.secondary">Podne</Typography>
+                          <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.dhuhr}</Typography>
+                        </CardContent>
+                      </Card>
+                    </Box>
+                    <Box sx={{ flex: '1 1 150px' }}>
+                      <Card>
+                        <CardContent sx={{ textAlign: 'center' }}>
+                          <Typography variant="caption" color="text.secondary">Ikindija</Typography>
+                          <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.asr}</Typography>
+                        </CardContent>
+                      </Card>
+                    </Box>
+                    <Box sx={{ flex: '1 1 150px' }}>
+                      <Card>
+                        <CardContent sx={{ textAlign: 'center' }}>
+                          <Typography variant="caption" color="text.secondary">Akšam</Typography>
+                          <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.maghrib}</Typography>
+                        </CardContent>
+                      </Card>
+                    </Box>
+                    <Box sx={{ flex: '1 1 150px' }}>
+                      <Card>
+                        <CardContent sx={{ textAlign: 'center' }}>
+                          <Typography variant="caption" color="text.secondary">Jacija</Typography>
+                          <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.isha}</Typography>
+                        </CardContent>
+                      </Card>
+                    </Box>
+                  </Box>
+                </Paper>
+              ) : (
+                <Typography color="text.secondary" sx={{ mb: 4 }}>Nema podataka o današnjim vaktijama.</Typography>
+              )}
+
+              {/* All Prayer Times Table */}
+              <Typography variant="h6" gutterBottom sx={{ mt: 3, mb: 2 }}>
+                Sve vaktije
+              </Typography>
+              {allPrayerLoading ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
+                  <CircularProgress />
+                </Box>
+              ) : allPrayerTimes.length === 0 ? (
+                <Typography color="text.secondary">Nema učitanih vaktija.</Typography>
+              ) : (
+                <TableContainer component={Paper} variant="outlined">
+                  <Table size="small">
+                    <TableHead>
+                      <TableRow sx={{ bgcolor: '#f5f5f5' }}>
+                        <TableCell sx={{ fontWeight: 600 }}>Datum</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>Zora</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>Podne</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>Ikindija</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>Akšam</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>Jacija</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {allPrayerTimes.map((pt) => (
+                        <TableRow key={pt.id} hover data-testid={`prayer-time-${pt.id}`}>
+                          <TableCell>{pt.date}</TableCell>
+                          <TableCell>{pt.fajr}</TableCell>
+                          <TableCell>{pt.dhuhr}</TableCell>
+                          <TableCell>{pt.asr}</TableCell>
+                          <TableCell>{pt.maghrib}</TableCell>
+                          <TableCell>{pt.isha}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              )}
+            </TabPanel>
+
+            <TabPanel value={tabValue} index={3}>
               <Typography variant="h5" gutterBottom>
                 Zahtjev za članstvo
               </Typography>
