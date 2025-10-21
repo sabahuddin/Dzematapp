@@ -79,7 +79,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     refetchInterval: 30000,
   });
 
-  const { data: notificationCounts } = useQuery<{ shop: number; events: number; announcements: number; imamQuestions: number; tasks: number }>({
+  const { data: notificationCounts } = useQuery<{ shop: number; events: number; announcements: number; imamQuestions: number; tasks: number; accessRequests: number }>({
     queryKey: ['/api/notifications/unread'],
     refetchInterval: 30000,
     enabled: !!user,
@@ -183,7 +183,8 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
                 badgeCount = notificationCounts.events;
                 break;
               case '/tasks':
-                badgeCount = notificationCounts.tasks;
+                // For admin, show pending access requests count; for members, show tasks count
+                badgeCount = user?.isAdmin ? notificationCounts.accessRequests : notificationCounts.tasks;
                 break;
               case '/messages':
                 badgeCount = unreadCount?.count || 0;
