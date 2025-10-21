@@ -6,7 +6,7 @@ import { promises as fs } from "fs";
 import * as XLSX from "xlsx";
 import { storage } from "./storage";
 import { requireAuth, requireAdmin } from "./index";
-import { insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertGroupFileSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema } from "@shared/schema";
+import { insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema } from "@shared/schema";
 
 // Configure multer for photo uploads
 const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'photos');
@@ -1165,139 +1165,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Group Files routes
-  app.get("/api/work-groups/:workGroupId/files", async (req, res) => {
-    try {
-      const { workGroupId } = req.params;
-      
-      // Check if work group exists
-      const workGroup = await storage.getWorkGroup(workGroupId);
-      if (!workGroup) {
-        return res.status(404).json({ message: "Work group not found" });
-      }
-
-      const files = await storage.getGroupFiles(workGroupId);
-      
-      // Get user details for each file
-      const filesWithUserDetails = await Promise.all(
-        files.map(async (file) => {
-          const user = await storage.getUser(file.uploadedById);
-          return {
-            ...file,
-            uploadedBy: user ? { 
-              id: user.id, 
-              firstName: user.firstName, 
-              lastName: user.lastName 
-            } : null
-          };
-        })
-      );
-      
-      res.json(filesWithUserDetails);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch group files" });
-    }
-  });
-
-  app.post("/api/work-groups/:workGroupId/files", requireAuth, async (req, res) => {
-    try {
-      const { workGroupId } = req.params;
-      const { fileName, fileType, fileSize } = req.body;
-
-      if (!fileName || !fileType || !fileSize) {
-        return res.status(400).json({ message: "fileName, fileType, and fileSize are required" });
-      }
-
-      // Use authenticated user's ID - prevents identity spoofing
-      const uploadedById = req.user!.id;
-      const user = req.user!;
-
-      // Validate file type for security
-      const allowedFileTypes = ['image', 'pdf', 'document'];
-      if (!allowedFileTypes.includes(fileType)) {
-        return res.status(400).json({ message: "Invalid file type. Allowed types: image, pdf, document" });
-      }
-
-      // Validate file size (10MB limit)
-      if (fileSize > 10 * 1024 * 1024) {
-        return res.status(400).json({ message: "File size too large. Maximum 10MB allowed" });
-      }
-
-      // Check if work group exists
-      const workGroup = await storage.getWorkGroup(workGroupId);
-      if (!workGroup) {
-        return res.status(404).json({ message: "Work group not found" });
-      }
-
-      // Check if user is a member of the work group (admins can upload to any group)
-      if (!user.isAdmin) {
-        const isMember = await storage.isUserMemberOfWorkGroup(workGroupId, uploadedById);
-        if (!isMember) {
-          return res.status(403).json({ message: "Forbidden: Only work group members can upload files" });
-        }
-      }
-
-      // Generate secure file path server-side
-      const fileExtension = fileName.split('.').pop() || '';
-      const sanitizedFileName = fileName.replace(/[^a-zA-Z0-9._-]/g, '_');
-      const timestamp = Date.now();
-      const secureFilePath = `/uploads/work-groups/${workGroupId}/${timestamp}_${sanitizedFileName}`;
-
-      const fileData = insertGroupFileSchema.parse({
-        workGroupId,
-        uploadedById,
-        fileName: sanitizedFileName,
-        fileType,
-        fileSize,
-        filePath: secureFilePath
-      });
-      
-      const file = await storage.createGroupFile(fileData);
-      
-      // Get user details for the response
-      const fileWithUser = {
-        ...file,
-        uploadedBy: { 
-          id: user.id, 
-          firstName: user.firstName, 
-          lastName: user.lastName 
-        }
-      };
-      
-      res.json(fileWithUser);
-    } catch (error) {
-      res.status(400).json({ message: "Invalid file data" });
-    }
-  });
-
-  app.delete("/api/files/:id", requireAuth, async (req, res) => {
-    try {
-      const { id } = req.params;
-
-      // Get the file to check ownership and work group
-      const file = await storage.getGroupFile(id);
-      if (!file) {
-        return res.status(404).json({ message: "File not found" });
-      }
-
-      // Check authorization: admin, work group moderator, or file uploader
-      const isAdmin = req.user!.isAdmin;
-      const isModerator = await storage.isUserModeratorOfWorkGroup(file.workGroupId, req.user!.id);
-      const isUploader = file.uploadedById === req.user!.id;
-
-      if (!isAdmin && !isModerator && !isUploader) {
-        return res.status(403).json({ message: "Forbidden: Only admins, moderators, or file uploaders can delete files" });
-      }
-
-      const deleted = await storage.deleteGroupFile(id);
-      if (!deleted) {
-        return res.status(404).json({ message: "File not found" });
-      }
-      res.json({ message: "File deleted successfully" });
-    } catch (error) {
-      res.status(500).json({ message: "Failed to delete file" });
-    }
-  });
 
   // Announcement Files
   app.get("/api/announcements/:announcementId/files", async (req, res) => {

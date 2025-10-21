@@ -458,7 +458,7 @@ export default function TaskManagerPage() {
       <MemberManagementDialog
         open={memberManagementDialogOpen && selectedWorkGroup !== null}
         onClose={() => setMemberManagementDialogOpen(false)}
-        workGroup={selectedWorkGroup || { id: '', name: '', description: '', createdAt: new Date() }}
+        workGroup={selectedWorkGroup || { id: '', name: '', description: '', createdAt: new Date(), visibility: 'public' }}
       />
       
       {/* Task Management Dialog */}
@@ -746,12 +746,6 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
     retry: 1,
   });
 
-  // Fetch group files
-  const filesQuery = useQuery({
-    queryKey: ['/api/work-groups', workGroup?.id, 'files'],
-    enabled: !!workGroup?.id && open,
-    retry: 1,
-  });
 
   // Add comment mutation
   const addCommentMutation = useMutation({
@@ -1223,30 +1217,6 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
             </Box>
           )}
 
-          {/* Files Section */}
-          {!isEditing && (
-            <Box>
-              <Typography variant="h6" sx={{ mb: 2 }}>Fajlovi sekcije</Typography>
-              {filesQuery.data && Array.isArray(filesQuery.data) && filesQuery.data.length > 0 ? (
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                  {filesQuery.data.map((file: any) => (
-                    <Card key={file.id} variant="outlined">
-                      <CardContent sx={{ py: 1 }}>
-                        <Typography variant="body2">{file.fileName}</Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {file.uploadedBy ? `${file.uploadedBy.firstName} ${file.uploadedBy.lastName}` : 'Nepoznat korisnik'} • {new Date(file.uploadedAt).toLocaleDateString('hr-HR')}
-                        </Typography>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </Box>
-              ) : (
-                <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
-                  Nema fajlova
-                </Typography>
-              )}
-            </Box>
-          )}
         </Box>
       </DialogContent>
       <MoveTaskModal

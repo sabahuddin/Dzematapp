@@ -19,8 +19,6 @@ import {
   type InsertAccessRequest,
   type TaskComment,
   type InsertTaskComment,
-  type GroupFile,
-  type InsertGroupFile,
   type AnnouncementFile,
   type InsertAnnouncementFile,
   type Activity,
@@ -55,7 +53,6 @@ import {
   tasks,
   accessRequests,
   taskComments,
-  groupFiles,
   announcementFiles,
   activities,
   familyRelationships,
@@ -141,12 +138,6 @@ export interface IStorage {
   getTaskComment(id: string): Promise<TaskComment | undefined>;
   getTaskComments(taskId: string): Promise<TaskComment[]>;
   deleteTaskComment(id: string): Promise<boolean>;
-  
-  // Group Files
-  createGroupFile(file: InsertGroupFile): Promise<GroupFile>;
-  getGroupFile(id: string): Promise<GroupFile | undefined>;
-  getGroupFiles(workGroupId: string): Promise<GroupFile[]>;
-  deleteGroupFile(id: string): Promise<boolean>;
   
   // Announcement Files
   createAnnouncementFile(file: InsertAnnouncementFile): Promise<AnnouncementFile>;
@@ -703,33 +694,6 @@ export class DatabaseStorage implements IStorage {
     return result.length > 0;
   }
 
-  async createGroupFile(insertFile: InsertGroupFile): Promise<GroupFile> {
-    const [file] = await db.insert(groupFiles).values(insertFile).returning();
-    
-    await this.createActivity({
-      type: "workgroup",
-      description: `Fajl učitao: ${file.fileName}`,
-      userId: file.uploadedById
-    });
-    
-    return file;
-  }
-
-  async getGroupFile(id: string): Promise<GroupFile | undefined> {
-    const result = await db.select().from(groupFiles).where(eq(groupFiles.id, id)).limit(1);
-    return result[0];
-  }
-
-  async getGroupFiles(workGroupId: string): Promise<GroupFile[]> {
-    return await db.select().from(groupFiles)
-      .where(eq(groupFiles.workGroupId, workGroupId))
-      .orderBy(desc(groupFiles.uploadedAt));
-  }
-
-  async deleteGroupFile(id: string): Promise<boolean> {
-    const result = await db.delete(groupFiles).where(eq(groupFiles.id, id)).returning();
-    return result.length > 0;
-  }
 
   async createAnnouncementFile(insertFile: InsertAnnouncementFile): Promise<AnnouncementFile> {
     const [file] = await db.insert(announcementFiles).values(insertFile).returning();

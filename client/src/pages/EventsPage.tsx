@@ -95,8 +95,7 @@ export default function EventsPage() {
   
   const [importantDateForm, setImportantDateForm] = useState({
     name: '',
-    date: '',
-    description: ''
+    date: ''
   });
   const [editingImportantDate, setEditingImportantDate] = useState<ImportantDate | null>(null);
 
@@ -159,7 +158,7 @@ export default function EventsPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/important-dates'] });
       toast({ title: 'Uspjeh', description: 'Važan datum je uspješno dodan' });
-      setImportantDateForm({ name: '', date: '', description: '' });
+      setImportantDateForm({ name: '', date: '' });
     },
     onError: () => {
       toast({ title: 'Greška', description: 'Greška pri dodavanju važnog datuma', variant: 'destructive' });
@@ -175,7 +174,7 @@ export default function EventsPage() {
       queryClient.invalidateQueries({ queryKey: ['/api/important-dates'] });
       toast({ title: 'Uspjeh', description: 'Važan datum je uspješno ažuriran' });
       setEditingImportantDate(null);
-      setImportantDateForm({ name: '', date: '', description: '' });
+      setImportantDateForm({ name: '', date: '' });
     },
     onError: () => {
       toast({ title: 'Greška', description: 'Greška pri ažuriranju važnog datuma', variant: 'destructive' });
@@ -274,14 +273,13 @@ export default function EventsPage() {
     setEditingImportantDate(date);
     setImportantDateForm({
       name: date.name,
-      date: date.date,
-      description: date.description || ''
+      date: date.date
     });
   };
 
   const handleCancelEditImportantDate = () => {
     setEditingImportantDate(null);
-    setImportantDateForm({ name: '', date: '', description: '' });
+    setImportantDateForm({ name: '', date: '' });
   };
 
   const formatDateTime = (dateTime: string) => {

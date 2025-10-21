@@ -118,16 +118,6 @@ export const taskComments = pgTable("task_comments", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const groupFiles = pgTable("group_files", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  workGroupId: varchar("work_group_id").notNull().references(() => workGroups.id),
-  uploadedById: varchar("uploaded_by_id").notNull().references(() => users.id),
-  fileName: text("file_name").notNull(),
-  fileType: text("file_type").notNull(), // image, pdf, document
-  fileSize: integer("file_size").notNull(),
-  filePath: text("file_path").notNull(),
-  uploadedAt: timestamp("uploaded_at").defaultNow(),
-});
 
 export const announcementFiles = pgTable("announcement_files", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -303,10 +293,6 @@ export const insertTaskCommentSchema = createInsertSchema(taskComments).omit({
   createdAt: true,
 });
 
-export const insertGroupFileSchema = createInsertSchema(groupFiles).omit({
-  id: true,
-  uploadedAt: true,
-});
 
 export const insertAnnouncementFileSchema = createInsertSchema(announcementFiles).omit({
   id: true,
@@ -383,8 +369,6 @@ export type AccessRequest = typeof accessRequests.$inferSelect;
 export type InsertAccessRequest = z.infer<typeof insertAccessRequestSchema>;
 export type TaskComment = typeof taskComments.$inferSelect;
 export type InsertTaskComment = z.infer<typeof insertTaskCommentSchema>;
-export type GroupFile = typeof groupFiles.$inferSelect;
-export type InsertGroupFile = z.infer<typeof insertGroupFileSchema>;
 export type AnnouncementFile = typeof announcementFiles.$inferSelect;
 export type InsertAnnouncementFile = z.infer<typeof insertAnnouncementFileSchema>;
 export type FamilyRelationship = typeof familyRelationships.$inferSelect;
