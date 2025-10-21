@@ -98,9 +98,9 @@ export default function GuidePage() {
     {
       icon: <Schedule sx={{ color: '#1976d2' }} />,
       title: 'Vaktija (Prayer Times)',
-      admin: 'Učitavanje CSV fajla sa vaktijama (format SwissMosque.ch). Brisanje svih vaktija. Pregled punog kalendara.',
-      member: 'Pregled punog kalendara vaktija. Današnje vaktije prikazane na vrhu Dashboard-a.',
-      all: 'Svi korisnici mogu vidjeti današnje vaktije na Dashboard-u i pristupiti punom kalendaru.',
+      admin: 'Učitavanje CSV fajla sa vaktijama (format SwissMosque.ch). Brisanje svih vaktija. Pregled mjesečnih vaktija.',
+      member: 'Pregled mjesečnih vaktija. Današnja vaktija prikazana na vrhu Dashboard-a.',
+      all: 'Svi korisnici mogu vidjeti današnju vaktiju na Dashboard-u i pristupiti mjesečnim vaktijama.',
     },
     {
       icon: <Settings sx={{ color: '#616161' }} />,

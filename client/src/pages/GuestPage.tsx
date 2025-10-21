@@ -226,7 +226,7 @@ export default function GuestPage() {
               ) : todayPrayerTime ? (
                 <Paper sx={{ p: 3, mb: 4, bgcolor: '#e3f2fd' }}>
                   <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: '#1976d2' }}>
-                    Današnje vaktije - {todayPrayerTime.date}
+                    Današnja vaktija - {todayPrayerTime.date}
                   </Typography>
                   <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
                     <Box sx={{ flex: '1 1 150px' }}>

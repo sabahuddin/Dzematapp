@@ -268,7 +268,7 @@ export default function DashboardHome() {
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 <Schedule sx={{ color: '#1976d2' }} />
                 <Typography variant="h6" sx={{ fontWeight: 600, color: '#1976d2' }}>
-                  Današnje vaktije - {todayPrayerTime.date}
+                  Današnja vaktija - {todayPrayerTime.date}
                 </Typography>
               </Box>
               <Link href="/vaktija">
@@ -278,7 +278,7 @@ export default function DashboardHome() {
                   sx={{ textTransform: 'none' }}
                   data-testid="link-full-vaktija"
                 >
-                  Kalendar vaktija
+                  Mjesečne vaktije
                 </Button>
               </Link>
             </Box>

@@ -163,7 +163,7 @@ export default function VaktijaPage() {
       ) : todayPrayerTime ? (
         <Paper sx={{ p: 3, mb: 4, bgcolor: '#e3f2fd' }}>
           <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: '#1976d2' }}>
-            Današnje vaktije - {todayPrayerTime.date}
+            Današnja vaktija - {todayPrayerTime.date}
           </Typography>
           <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
             <Box sx={{ flex: '1 1 150px' }}>
@@ -248,44 +248,87 @@ export default function VaktijaPage() {
         </Alert>
       )}
 
-      {/* All Prayer Times Table */}
+      {/* Monthly Prayer Times Table */}
       <Paper sx={{ p: 3 }}>
         <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-          Kalendar vaktija
+          Mjesečne vaktije
         </Typography>
         {allLoading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
             <CircularProgress />
           </Box>
         ) : allPrayerTimes && allPrayerTimes.length > 0 ? (
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell sx={{ fontWeight: 600 }}>Datum</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Zora</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Izlazak</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Podne</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Ikindija</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Akšam</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Jacija</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {allPrayerTimes.map((pt) => (
-                  <TableRow key={pt.id} data-testid={`row-prayer-time-${pt.date}`}>
-                    <TableCell>{pt.date}</TableCell>
-                    <TableCell>{pt.fajr}</TableCell>
-                    <TableCell>{pt.sunrise || '-'}</TableCell>
-                    <TableCell>{pt.dhuhr}</TableCell>
-                    <TableCell>{pt.asr}</TableCell>
-                    <TableCell>{pt.maghrib}</TableCell>
-                    <TableCell>{pt.isha}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          (() => {
+            // Group prayer times by month
+            const monthGroups: { [key: string]: PrayerTime[] } = {};
+            allPrayerTimes.forEach((pt) => {
+              // Parse date (format dd.mm.yyyy)
+              const parts = pt.date.split('.');
+              if (parts.length === 3) {
+                const monthYear = `${parts[1]}.${parts[2]}`; // mm.yyyy
+                if (!monthGroups[monthYear]) {
+                  monthGroups[monthYear] = [];
+                }
+                monthGroups[monthYear].push(pt);
+              }
+            });
+
+            // Sort month groups by date
+            const sortedMonthKeys = Object.keys(monthGroups).sort((a, b) => {
+              const [monthA, yearA] = a.split('.');
+              const [monthB, yearB] = b.split('.');
+              const dateA = new Date(parseInt(yearA), parseInt(monthA) - 1);
+              const dateB = new Date(parseInt(yearB), parseInt(monthB) - 1);
+              return dateA.getTime() - dateB.getTime();
+            });
+
+            const monthNames = [
+              'Januar', 'Februar', 'Mart', 'April', 'Maj', 'Juni',
+              'Juli', 'August', 'Septembar', 'Oktobar', 'Novembar', 'Decembar'
+            ];
+
+            return sortedMonthKeys.map((monthYear) => {
+              const [month, year] = monthYear.split('.');
+              const monthName = monthNames[parseInt(month) - 1];
+              const prayerTimes = monthGroups[monthYear];
+
+              return (
+                <Box key={monthYear} sx={{ mb: 4 }}>
+                  <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: '#1976d2' }}>
+                    {monthName} {year}
+                  </Typography>
+                  <TableContainer>
+                    <Table size="small">
+                      <TableHead>
+                        <TableRow sx={{ bgcolor: '#f5f5f5' }}>
+                          <TableCell sx={{ fontWeight: 600 }}>Datum</TableCell>
+                          <TableCell sx={{ fontWeight: 600 }}>Zora</TableCell>
+                          <TableCell sx={{ fontWeight: 600 }}>Izlazak</TableCell>
+                          <TableCell sx={{ fontWeight: 600 }}>Podne</TableCell>
+                          <TableCell sx={{ fontWeight: 600 }}>Ikindija</TableCell>
+                          <TableCell sx={{ fontWeight: 600 }}>Akšam</TableCell>
+                          <TableCell sx={{ fontWeight: 600 }}>Jacija</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {prayerTimes.map((pt) => (
+                          <TableRow key={pt.id} data-testid={`row-prayer-time-${pt.date}`}>
+                            <TableCell>{pt.date}</TableCell>
+                            <TableCell>{pt.fajr}</TableCell>
+                            <TableCell>{pt.sunrise || '-'}</TableCell>
+                            <TableCell>{pt.dhuhr}</TableCell>
+                            <TableCell>{pt.asr}</TableCell>
+                            <TableCell>{pt.maghrib}</TableCell>
+                            <TableCell>{pt.isha}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Box>
+              );
+            });
+          })()
         ) : (
           <Alert severity="info">
             Nema učitanih vaktija. {user?.isAdmin && 'Učitajte CSV fajl sa vaktijama.'}
