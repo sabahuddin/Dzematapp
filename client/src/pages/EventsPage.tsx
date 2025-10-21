@@ -445,13 +445,8 @@ export default function EventsPage() {
     return `${day}.${month}.${year}. u ${hours}:${minutes}`;
   };
 
-  const getRsvpCount = (event: Event) => {
-    const mockCounts: { [key: string]: number } = {
-      'Skupština džamije': 45,
-      'Iftar program': 120,
-      'Edukacijska radionica': 12
-    };
-    return mockCounts[event.name] || 0;
+  const getRsvpCount = (event: any) => {
+    return event.rsvpCount || 0;
   };
 
   // Get all unique categories from events

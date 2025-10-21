@@ -58,6 +58,7 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/events', event.id, 'user-rsvp'] });
       queryClient.invalidateQueries({ queryKey: ['/api/events', event.id, 'rsvps'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
       toast({
         title: 'Uspjeh',
         description: 'Uspješno ste se prijavili za događaj'
@@ -80,6 +81,7 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/events', event.id, 'user-rsvp'] });
       queryClient.invalidateQueries({ queryKey: ['/api/events', event.id, 'rsvps'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
       toast({
         title: 'Uspjeh',
         description: 'Uspješno ste ažurirali prijavu'
@@ -102,6 +104,7 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/events', event.id, 'user-rsvp'] });
       queryClient.invalidateQueries({ queryKey: ['/api/events', event.id, 'rsvps'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
       toast({
         title: 'Uspjeh',
         description: 'Uspješno ste otkazali prijavu'

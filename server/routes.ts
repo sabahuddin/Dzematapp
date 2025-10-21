@@ -504,7 +504,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/events", async (req, res) => {
     try {
       const events = await storage.getAllEvents();
-      res.json(events);
+      
+      // Add RSVP count to each event
+      const eventsWithRsvpCount = await Promise.all(
+        events.map(async (event) => {
+          if (event.rsvpEnabled) {
+            const rsvpStats = await storage.getEventRsvps(event.id);
+            return {
+              ...event,
+              rsvpCount: rsvpStats.totalAttendees
+            };
+          }
+          return {
+            ...event,
+            rsvpCount: 0
+          };
+        })
+      );
+      
+      res.json(eventsWithRsvpCount);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch events" });
     }
