@@ -74,3 +74,24 @@ The system employs a simple session-based authentication using username/password
 - **zod**: Schema validation.
 - **@hookform/resolvers**: Form validation resolvers.
 - **react-hook-form**: Form state management.
+
+# Test Data Examples
+
+User has created sample data that should be preserved for testing purposes:
+
+## Demo Users
+- **Admin**: username `admin`, password `admin123`
+- **Član IO**: username `ali.alic`, password `password123`
+
+## Sample Announcements
+1. **DžematShop** - Obavještenje o korištenju DžematShop usluga putem aplikacije (kategorija: Džemat)
+
+## Sample Events
+1. **BILJANI, KUĆE S POGLEDOM NA GENOCID** - Projekcija dokumentarnog filma Avde Huseinovića (datum: 14.11.2025, 19:00, kategorija: GAM)
+
+## Sample Shop Items
+1. **Voda "OAZA"** - 6x1,5l pakovanje, cijena: 10 CHF
+2. **Majica** - Dostupne veličine: S, L, XL; boje: plava, crvena, bijela; materijal: Pamuk 100%; cijena: 15 CHF
+
+## Sample Work Group
+- **Administracija** - Upravljanje džematom i administrativni poslovi (privatna vidljivost)
