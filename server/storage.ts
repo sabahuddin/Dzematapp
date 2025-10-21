@@ -44,6 +44,8 @@ import {
   type InsertProductPurchaseRequest,
   type PrayerTime,
   type InsertPrayerTime,
+  type ImportantDate,
+  type InsertImportantDate,
   users,
   announcements,
   events,
@@ -65,7 +67,8 @@ import {
   shopProducts,
   marketplaceItems,
   productPurchaseRequests,
-  prayerTimes
+  prayerTimes,
+  importantDates
 } from "@shared/schema";
 import { db } from './db';
 import { eq, and, or, desc, asc, gt, sql } from 'drizzle-orm';
@@ -237,6 +240,13 @@ export interface IStorage {
   bulkCreatePrayerTimes(prayerTimes: InsertPrayerTime[]): Promise<PrayerTime[]>;
   deletePrayerTime(id: string): Promise<boolean>;
   deleteAllPrayerTimes(): Promise<boolean>;
+
+  // Important Dates
+  createImportantDate(importantDate: InsertImportantDate): Promise<ImportantDate>;
+  getImportantDate(id: string): Promise<ImportantDate | undefined>;
+  getAllImportantDates(): Promise<ImportantDate[]>;
+  updateImportantDate(id: string, updates: Partial<InsertImportantDate>): Promise<ImportantDate | undefined>;
+  deleteImportantDate(id: string): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1268,6 +1278,31 @@ export class DatabaseStorage implements IStorage {
   async deleteAllPrayerTimes(): Promise<boolean> {
     await db.delete(prayerTimes);
     return true;
+  }
+
+  async createImportantDate(importantDate: InsertImportantDate): Promise<ImportantDate> {
+    const [date] = await db.insert(importantDates).values(importantDate).returning();
+    return date;
+  }
+
+  async getImportantDate(id: string): Promise<ImportantDate | undefined> {
+    const result = await db.select().from(importantDates).where(eq(importantDates.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getAllImportantDates(): Promise<ImportantDate[]> {
+    const dates = await db.select().from(importantDates).orderBy(asc(importantDates.date));
+    return dates;
+  }
+
+  async updateImportantDate(id: string, updates: Partial<InsertImportantDate>): Promise<ImportantDate | undefined> {
+    const [date] = await db.update(importantDates).set(updates).where(eq(importantDates.id, id)).returning();
+    return date;
+  }
+
+  async deleteImportantDate(id: string): Promise<boolean> {
+    const result = await db.delete(importantDates).where(eq(importantDates.id, id)).returning();
+    return result.length > 0;
   }
 }
 

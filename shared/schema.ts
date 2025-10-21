@@ -470,9 +470,27 @@ export const prayerTimes = pgTable("prayer_times", {
   events: text("events"),
 });
 
+export const importantDates = pgTable("important_dates", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(), // e.g. "Ramazanski Bajram", "Nova godina"
+  date: text("date").notNull(), // dd.mm format (without year, since it repeats)
+  year: integer("year"), // optional - if specific to certain year
+  type: text("type").notNull(), // islamic, secular, custom
+  description: text("description"),
+  isRecurring: boolean("is_recurring").default(true).notNull(), // true if repeats yearly
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const insertPrayerTimeSchema = createInsertSchema(prayerTimes).omit({
   id: true,
 });
 
+export const insertImportantDateSchema = createInsertSchema(importantDates).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type PrayerTime = typeof prayerTimes.$inferSelect;
 export type InsertPrayerTime = z.infer<typeof insertPrayerTimeSchema>;
+export type ImportantDate = typeof importantDates.$inferSelect;
+export type InsertImportantDate = z.infer<typeof insertImportantDateSchema>;
