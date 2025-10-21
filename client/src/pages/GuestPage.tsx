@@ -25,7 +25,7 @@ import { useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import type { Announcement as AnnouncementType, Event as EventType, PrayerTime } from '@shared/schema';
 import { format } from 'date-fns';
-import mosqueLogoPath from '@assets/ChatGPT Image 21. okt 2025. u 12_37_01_1761043044206.png';
+import mosqueLogoPath from '@assets/ChatGPT Image 20. okt 2025. u 22_58_31_1761044165883.png';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -84,17 +84,21 @@ export default function GuestPage() {
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#f5f5f5' }}>
-      <AppBar position="static" sx={{ bgcolor: '#1976d2' }}>
+      <AppBar position="static" sx={{ bgcolor: 'white', boxShadow: 1 }}>
         <Toolbar>
           <img 
             src={mosqueLogoPath} 
             alt="Mosque Logo" 
             style={{ width: 40, height: 40, objectFit: 'contain', marginRight: 16 }}
           />
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: '#1976d2' }}>
             DžematApp - Gost pristup
           </Typography>
-          <Button color="inherit" onClick={handleBackToLogin} data-testid="button-back-to-login">
+          <Button 
+            onClick={handleBackToLogin} 
+            data-testid="button-back-to-login"
+            sx={{ color: '#1976d2' }}
+          >
             Nazad na prijavu
           </Button>
         </Toolbar>
