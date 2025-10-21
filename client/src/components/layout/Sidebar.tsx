@@ -53,8 +53,7 @@ const menuItems = [
   { path: '/users', label: 'Korisnici', labelForMember: 'Profil', icon: People },
   { path: '/announcements', label: 'Obavijesti', icon: Campaign, showBadge: true },
   { path: '/events', label: 'Događaji', icon: Event, showBadge: true },
-  { path: '/tasks', label: 'Sekcije', icon: Task, showBadge: true },
-  { path: '/sections', label: 'Sve sekcije', icon: Assignment, hideForAdmin: true },
+  { path: '/tasks', label: 'Sekcije', labelForMember: 'Sekcije', pathForMember: '/sections', icon: Task, showBadge: true },
   { path: '/messages', label: 'Poruke', icon: Mail, showBadge: true },
   { path: '/ask-imam', label: 'Pitaj imama', icon: QuestionAnswer, showBadge: true },
   { path: '/documents', label: 'Dokumenti', icon: Description },
@@ -163,13 +162,11 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
             return null;
           }
 
-          // Hide items marked as hideForAdmin from admin users
-          if (item.hideForAdmin && user?.isAdmin) {
-            return null;
-          }
-
           const Icon = item.icon;
-          const isActive = location === item.path;
+          
+          // Use different path for non-admin users if pathForMember is defined
+          const itemPath = (!user?.isAdmin && item.pathForMember) ? item.pathForMember : item.path;
+          const isActive = location === itemPath;
           
           // Determine badge count based on item path
           let badgeCount = 0;
@@ -203,7 +200,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
           
           const buttonContent = (
             <ListItemButton
-              onClick={() => handleNavigation(item.path)}
+              onClick={() => handleNavigation(itemPath)}
               sx={{
                 mx: 1,
                 borderRadius: 1,
