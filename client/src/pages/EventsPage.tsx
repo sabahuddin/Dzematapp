@@ -48,7 +48,7 @@ import { useToast } from '../hooks/use-toast';
 import { useMarkAsViewed } from '../hooks/useMarkAsViewed';
 import { apiRequest } from '../lib/queryClient';
 
-type ViewMode = 'today' | 'thisWeek' | 'thisMonth' | 'importantDates';
+type ViewMode = 'list' | 'week' | 'month' | 'importantDates';
 
 function WeekView({ 
   events, 
@@ -316,7 +316,7 @@ export default function EventsPage() {
   const queryClient = useQueryClient();
   useMarkAsViewed('events');
   
-  const [viewMode, setViewMode] = useState<ViewMode>('today');
+  const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [modalOpen, setModalOpen] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
@@ -517,14 +517,14 @@ export default function EventsPage() {
             onChange={(_, newMode) => newMode && setViewMode(newMode)}
             size="small"
           >
-            <ToggleButton value="today" data-testid="view-toggle-today">
-              <ViewList sx={{ mr: 0.5 }} /> Danas
+            <ToggleButton value="list" data-testid="view-toggle-list">
+              <ViewList sx={{ mr: 0.5 }} /> Lista
             </ToggleButton>
-            <ToggleButton value="thisWeek" data-testid="view-toggle-thisWeek">
-              <ViewWeek sx={{ mr: 0.5 }} /> Ove sedmice
+            <ToggleButton value="week" data-testid="view-toggle-week">
+              <ViewWeek sx={{ mr: 0.5 }} /> Sedmica
             </ToggleButton>
-            <ToggleButton value="thisMonth" data-testid="view-toggle-thisMonth">
-              <CalendarMonth sx={{ mr: 0.5 }} /> Ovog mjeseca
+            <ToggleButton value="month" data-testid="view-toggle-month">
+              <CalendarMonth sx={{ mr: 0.5 }} /> Mjesec
             </ToggleButton>
             <ToggleButton value="importantDates" data-testid="view-toggle-importantDates">
               <CalendarMonth sx={{ mr: 0.5 }} /> Važni datumi
