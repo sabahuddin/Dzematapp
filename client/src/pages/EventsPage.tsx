@@ -433,7 +433,7 @@ export default function EventsPage() {
                         <TableCell>{formatDateTime(event.dateTime.toString())}</TableCell>
                         <TableCell>{event.location}</TableCell>
                         <TableCell>
-                          {event.rsvpEnabled ? `${rsvpCount}/${maxAttendees}` : 'Onemogućeno'}
+                          {event.rsvpEnabled ? `${rsvpCount}/${maxAttendees}` : 'Ne'}
                         </TableCell>
                         <TableCell>
                           <Box sx={{ display: 'flex', gap: 0.5 }}>
