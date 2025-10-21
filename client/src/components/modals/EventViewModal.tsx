@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import {
   Dialog,
   DialogTitle,
@@ -13,7 +14,7 @@ import {
   Alert
 } from '@mui/material';
 import { Close, CalendarMonth, LocationOn, People, Schedule } from '@mui/icons-material';
-import { Event } from '@shared/schema';
+import { Event, EventRsvpStats } from '@shared/schema';
 import { downloadICS } from '@/lib/icsGenerator';
 import EventRSVPModal from './EventRSVPModal';
 
@@ -31,6 +32,16 @@ export default function EventViewModal({
   const [rsvpModalOpen, setRsvpModalOpen] = useState(false);
 
   if (!event) return null;
+
+  // Fetch RSVP stats to check capacity
+  const rsvpQuery = useQuery<EventRsvpStats>({
+    queryKey: ['/api/events', event.id, 'rsvps'],
+    enabled: open && !!event.rsvpEnabled,
+  });
+
+  const isCapacityReached = event.maxAttendees && rsvpQuery.data 
+    ? rsvpQuery.data.totalAttendees >= event.maxAttendees 
+    : false;
 
   const formatDateTime = (dateTime: string | Date) => {
     const date = new Date(dateTime);
@@ -194,12 +205,25 @@ export default function EventViewModal({
 
             {/* RSVP Info */}
             {event.rsvpEnabled && (
-              <Alert severity="info" icon={<People />}>
-                <Typography variant="body2">
-                  Prijava dolaska je omogućena za ovaj događaj.
-                  {event.requireAdultsChildren && ' Potrebno je navesti broj odraslih i djece.'}
-                </Typography>
-              </Alert>
+              <>
+                {isCapacityReached ? (
+                  <Alert severity="error" icon={<People />}>
+                    <Typography variant="body2">
+                      Maksimalan broj učesnika je dostignut ({event.maxAttendees}). Prijava dolaska više nije moguća.
+                    </Typography>
+                  </Alert>
+                ) : (
+                  <Alert severity="info" icon={<People />}>
+                    <Typography variant="body2">
+                      Prijava dolaska je omogućena za ovaj događaj.
+                      {event.requireAdultsChildren && ' Potrebno je navesti broj odraslih i djece.'}
+                      {event.maxAttendees && rsvpQuery.data && (
+                        <> Trenutno prijavljeno: {rsvpQuery.data.totalAttendees} / {event.maxAttendees}</>
+                      )}
+                    </Typography>
+                  </Alert>
+                )}
+              </>
             )}
           </Box>
         </DialogContent>
@@ -214,7 +238,7 @@ export default function EventViewModal({
             Dodaj u kalendar
           </Button>
           
-          {event.rsvpEnabled && (
+          {event.rsvpEnabled && !isCapacityReached && (
             <Button 
               onClick={handleRSVP}
               variant="contained"
