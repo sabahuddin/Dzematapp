@@ -209,9 +209,9 @@ export default function EventViewModal({
             onClick={handleRemindMe}
             variant="outlined"
             startIcon={<CalendarMonth />}
-            data-testid="button-remind-me"
+            data-testid="button-add-to-calendar"
           >
-            Podsjeti me
+            Dodaj u kalendar
           </Button>
           
           {event.rsvpEnabled && (
