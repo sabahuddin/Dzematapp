@@ -509,4 +509,45 @@ select:focus {
   .no-print {
     display: none !important;
   }
+  
+  /* Guide page print styles */
+  body {
+    background: white !important;
+  }
+  
+  /* Expand all accordions for print */
+  .MuiAccordion-root {
+    box-shadow: none !important;
+    page-break-inside: avoid;
+  }
+  
+  .MuiAccordionSummary-root {
+    min-height: auto !important;
+  }
+  
+  .MuiAccordionDetails-root {
+    display: block !important;
+  }
+  
+  /* Hide expand icons in print */
+  .MuiAccordionSummary-expandIconWrapper {
+    display: none !important;
+  }
+  
+  /* Better page breaks */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+  
+  .MuiCard-root {
+    page-break-inside: avoid;
+    box-shadow: none !important;
+    border: 1px solid #e0e0e0 !important;
+  }
+  
+  /* Ensure background colors print */
+  .MuiChip-root {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 }

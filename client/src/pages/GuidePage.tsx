@@ -8,6 +8,7 @@ import {
   AccordionSummary,
   AccordionDetails,
   Chip,
+  Button,
 } from '@mui/material';
 import {
   ExpandMore,
@@ -23,8 +24,13 @@ import {
   Schedule,
   Settings,
   Info,
+  PictureAsPdf,
 } from '@mui/icons-material';
 import { useAuth } from '@/contexts/AuthContext';
+
+const handlePrintPDF = () => {
+  window.print();
+};
 
 export default function GuidePage() {
   const { user } = useAuth();
@@ -130,11 +136,25 @@ export default function GuidePage() {
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Box sx={{ mb: 4 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-          <Info sx={{ fontSize: 40, color: '#1976d2' }} />
-          <Typography variant="h4" sx={{ fontWeight: 600 }}>
-            Vodič kroz DžematApp
-          </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Info sx={{ fontSize: 40, color: '#1976d2' }} />
+            <Typography variant="h4" sx={{ fontWeight: 600 }}>
+              Vodič kroz DžematApp
+            </Typography>
+          </Box>
+          <Button
+            variant="contained"
+            startIcon={<PictureAsPdf />}
+            onClick={handlePrintPDF}
+            sx={{ 
+              '@media print': { display: 'none' },
+              textTransform: 'none'
+            }}
+            data-testid="button-download-pdf"
+          >
+            Preuzmi PDF
+          </Button>
         </Box>
         <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
           DžematApp je sveobuhvatna web aplikacija za upravljanje džematom. Omogućava administratorima 
@@ -178,6 +198,7 @@ export default function GuidePage() {
       {sections.map((section, index) => (
         <Accordion
           key={index}
+          defaultExpanded
           sx={{
             mb: 2,
             '&:before': { display: 'none' },
