@@ -18,7 +18,7 @@ The backend is an Express.js application built with TypeScript, following a REST
 
 ## Data Storage Solutions
 
-The application is designed to use a PostgreSQL database with Drizzle ORM for type-safe schema definitions. The schema covers users, announcements, events, work groups, tasks, and access requests. Currently, an in-memory storage implementation is used for rapid prototyping.
+The application is designed to use a PostgreSQL database with Drizzle ORM for type-safe schema definitions. The schema covers users, announcements, events, work groups, tasks, access requests, and prayer times. Currently, an in-memory storage implementation is used for rapid prototyping.
 
 ## Authentication and Authorization
 
@@ -37,6 +37,7 @@ The system employs a simple session-based authentication using username/password
 - **Access Request System**: Users can request membership to private sections, with admin approval.
 - **Imam Q&A**: System for submitting and archiving questions for the Imam.
 - **Shop Module**: Marketplace for items with photo uploads, image viewer, edit functionality, and contact form.
+- **Prayer Times (Vaktija)**: Full prayer times calendar with CSV upload capability for admins, displaying today's prayer times on dashboard for all users.
 - **Visual Contrast Enhancement**: Consistent visual separation between background and form/card elements.
 
 # External Dependencies
