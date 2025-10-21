@@ -52,8 +52,6 @@ interface SidebarProps {
 
 const menuItems = [
   { path: '/dashboard', label: 'Dashboard', icon: Dashboard },
-  { path: '/vaktija', label: 'Vaktija', icon: Schedule },
-  { path: '/vodic', label: 'Vodič', icon: Info },
   { path: '/users', label: 'Korisnici', labelForMember: 'Profil', icon: People },
   { path: '/announcements', label: 'Obavijesti', icon: Campaign, showBadge: true },
   { path: '/events', label: 'Događaji', icon: Event, showBadge: true },
@@ -64,6 +62,8 @@ const menuItems = [
   { path: '/shop', label: 'Shop', icon: Store, showBadge: true },
   { path: '/requests', label: 'Zahtjevi i prijave', icon: Assignment },
   { path: '/livestream', label: 'Livestream', icon: Radio },
+  { path: '/vaktija', label: 'Vaktija', icon: Schedule },
+  { path: '/vodic', label: 'Vodič', icon: Info },
   { path: '/livestream-settings', label: 'Livestream uprav.', icon: Radio, adminOnly: true },
   { path: '/organization-settings', label: 'Org. podaci', icon: Settings, adminOnly: true },
 ];
