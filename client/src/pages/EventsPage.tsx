@@ -48,7 +48,7 @@ import { useToast } from '../hooks/use-toast';
 import { useMarkAsViewed } from '../hooks/useMarkAsViewed';
 import { apiRequest } from '../lib/queryClient';
 
-type ViewMode = 'list' | 'week' | 'month';
+type ViewMode = 'today' | 'thisWeek' | 'thisMonth' | 'importantDates';
 
 function WeekView({ 
   events, 
@@ -74,18 +74,20 @@ function WeekView({
     });
   };
   
+  const daysWithEvents = weekDays.filter(day => getEventsForDay(day).length > 0);
+  
   return (
     <Box sx={{ 
       display: 'grid', 
       gridTemplateColumns: { 
         xs: 'repeat(1, 1fr)',
         sm: 'repeat(2, 1fr)',
-        md: 'repeat(4, 1fr)',
-        lg: 'repeat(7, 1fr)'
+        md: 'repeat(3, 1fr)',
+        lg: `repeat(${Math.min(daysWithEvents.length, 4)}, 1fr)`
       }, 
       gap: 1 
     }}>
-      {weekDays.map((day, index) => {
+      {daysWithEvents.map((day, index) => {
         const dayEvents = getEventsForDay(day);
         const isToday = day.toDateString() === today.toDateString();
         
@@ -143,6 +145,13 @@ function WeekView({
           </Paper>
         );
       })}
+      {daysWithEvents.length === 0 && (
+        <Box sx={{ p: 4, textAlign: 'center', gridColumn: '1 / -1' }}>
+          <Typography color="text.secondary">
+            Nema događaja ove sedmice
+          </Typography>
+        </Box>
+      )}
     </Box>
   );
 }
@@ -192,6 +201,12 @@ function MonthView({
   };
   
   const days = getDaysInMonth();
+  const daysWithEvents = days.filter(day => {
+    const isCurrentMonth = day.getMonth() === currentMonth.getMonth();
+    const hasEvents = getEventsForDay(day).length > 0;
+    return isCurrentMonth && hasEvents;
+  });
+  
   const weekDays = ['Ned', 'Pon', 'Uto', 'Sri', 'Čet', 'Pet', 'Sub'];
   
   return (
@@ -208,88 +223,89 @@ function MonthView({
         </Button>
       </Box>
       
-      <Box sx={{ 
-        display: 'grid', 
-        gridTemplateColumns: { 
-          xs: 'repeat(1, 1fr)',
-          sm: 'repeat(2, 1fr)',
-          md: 'repeat(4, 1fr)',
-          lg: 'repeat(7, 1fr)'
-        }, 
-        gap: 1 
-      }}>
-        {weekDays.map(day => (
-          <Box key={day} sx={{ 
-            p: 1, 
-            textAlign: 'center', 
-            fontWeight: 600,
-            display: { xs: 'none', lg: 'block' }
-          }}>
-            {day}
-          </Box>
-        ))}
-        
-        {days.map((day, index) => {
-          const dayEvents = getEventsForDay(day);
-          const isToday = day.toDateString() === today.toDateString();
-          const isCurrentMonth = day.getMonth() === currentMonth.getMonth();
-          
-          return (
-            <Paper
-              key={index}
-              sx={{
-                p: 1,
-                minHeight: { xs: 80, md: 100 },
-                bgcolor: isToday ? '#f0f7ff' : '#fff',
-                border: isToday ? '2px solid #1976d2' : '1px solid #e0e0e0',
-                opacity: isCurrentMonth ? 1 : 0.5
-              }}
-              data-testid={`month-day-${index}`}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
-                <Typography 
-                  variant="caption" 
-                  sx={{ 
-                    fontWeight: isToday ? 600 : 400,
-                    color: isToday ? '#1976d2' : 'text.secondary'
-                  }}
-                >
-                  {day.getDate()}
-                </Typography>
-                <Typography 
-                  variant="caption" 
-                  sx={{ 
-                    display: { xs: 'inline', lg: 'none' },
-                    fontSize: '0.7rem',
-                    color: 'text.secondary'
-                  }}
-                >
-                  {day.toLocaleDateString('hr-HR', { weekday: 'short' })}
-                </Typography>
-              </Box>
-              
-              <Box sx={{ mt: 0.5 }}>
-                {dayEvents.map(event => (
-                  <Chip
-                    key={event.id}
-                    label={event.name}
-                    size="small"
+      {daysWithEvents.length > 0 ? (
+        <Box sx={{ 
+          display: 'grid', 
+          gridTemplateColumns: { 
+            xs: 'repeat(1, 1fr)',
+            sm: 'repeat(2, 1fr)',
+            md: 'repeat(3, 1fr)',
+            lg: 'repeat(4, 1fr)'
+          }, 
+          gap: 1 
+        }}>
+          {daysWithEvents.map((day, index) => {
+            const dayEvents = getEventsForDay(day);
+            const isToday = day.toDateString() === today.toDateString();
+            
+            return (
+              <Paper
+                key={index}
+                sx={{
+                  p: 2,
+                  minHeight: { xs: 80, md: 100 },
+                  bgcolor: isToday ? '#f0f7ff' : '#fff',
+                  border: isToday ? '2px solid #1976d2' : '1px solid #e0e0e0'
+                }}
+                data-testid={`month-day-${index}`}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 1 }}>
+                  <Typography 
+                    variant="subtitle2" 
                     sx={{ 
-                      fontSize: '0.65rem',
-                      height: 20,
-                      mb: 0.5,
-                      width: '100%',
-                      cursor: 'pointer'
+                      fontWeight: 600,
+                      color: isToday ? '#1976d2' : 'text.primary'
                     }}
-                    onClick={() => onEventClick(event)}
-                    data-testid={`month-event-${event.id}`}
-                  />
-                ))}
-              </Box>
-            </Paper>
-          );
-        })}
-      </Box>
+                  >
+                    {day.toLocaleDateString('hr-HR', { weekday: 'short' })}
+                  </Typography>
+                  <Typography 
+                    variant="caption" 
+                    sx={{ 
+                      color: 'text.secondary'
+                    }}
+                  >
+                    {day.toLocaleDateString('hr-HR', { day: 'numeric', month: 'short' })}
+                  </Typography>
+                </Box>
+                
+                <Box sx={{ mt: 0.5, display: 'flex', flexDirection: 'column', gap: 1 }}>
+                  {dayEvents.map(event => (
+                    <Card
+                      key={event.id}
+                      sx={{ 
+                        p: 1, 
+                        cursor: 'pointer',
+                        bgcolor: '#1976d2',
+                        color: 'white',
+                        '&:hover': { opacity: 0.9 }
+                      }}
+                      onClick={() => onEventClick(event)}
+                      data-testid={`month-event-${event.id}`}
+                    >
+                      <Typography variant="caption" sx={{ fontWeight: 600, display: 'block' }}>
+                        {new Date(event.dateTime).toLocaleTimeString('hr-HR', { 
+                          hour: '2-digit', 
+                          minute: '2-digit' 
+                        })}
+                      </Typography>
+                      <Typography variant="caption" sx={{ fontSize: '0.7rem' }}>
+                        {event.name}
+                      </Typography>
+                    </Card>
+                  ))}
+                </Box>
+              </Paper>
+            );
+          })}
+        </Box>
+      ) : (
+        <Box sx={{ p: 4, textAlign: 'center' }}>
+          <Typography color="text.secondary">
+            Nema događaja ovog mjeseca
+          </Typography>
+        </Box>
+      )}
     </Box>
   );
 }
@@ -300,7 +316,7 @@ export default function EventsPage() {
   const queryClient = useQueryClient();
   useMarkAsViewed('events');
   
-  const [viewMode, setViewMode] = useState<ViewMode>('list');
+  const [viewMode, setViewMode] = useState<ViewMode>('today');
   const [modalOpen, setModalOpen] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
@@ -501,14 +517,17 @@ export default function EventsPage() {
             onChange={(_, newMode) => newMode && setViewMode(newMode)}
             size="small"
           >
-            <ToggleButton value="list" data-testid="view-toggle-list">
-              <ViewList sx={{ mr: 0.5 }} /> Lista
+            <ToggleButton value="today" data-testid="view-toggle-today">
+              <ViewList sx={{ mr: 0.5 }} /> Danas
             </ToggleButton>
-            <ToggleButton value="week" data-testid="view-toggle-week">
-              <ViewWeek sx={{ mr: 0.5 }} /> Sedmica
+            <ToggleButton value="thisWeek" data-testid="view-toggle-thisWeek">
+              <ViewWeek sx={{ mr: 0.5 }} /> Ove sedmice
             </ToggleButton>
-            <ToggleButton value="month" data-testid="view-toggle-month">
-              <CalendarMonth sx={{ mr: 0.5 }} /> Mjesec
+            <ToggleButton value="thisMonth" data-testid="view-toggle-thisMonth">
+              <CalendarMonth sx={{ mr: 0.5 }} /> Ovog mjeseca
+            </ToggleButton>
+            <ToggleButton value="importantDates" data-testid="view-toggle-importantDates">
+              <CalendarMonth sx={{ mr: 0.5 }} /> Važni datumi
             </ToggleButton>
           </ToggleButtonGroup>
           
