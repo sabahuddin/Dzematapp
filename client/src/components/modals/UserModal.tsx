@@ -261,8 +261,14 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
     }
     
     // Clean up empty strings to null for optional fields
+    if (!finalFormData.username || finalFormData.username === '') {
+      finalFormData.username = null;
+    }
     if (!finalFormData.email || finalFormData.email === '') {
       finalFormData.email = null;
+    }
+    if (!finalFormData.password || finalFormData.password === '') {
+      finalFormData.password = null;
     }
     if (!finalFormData.phone || finalFormData.phone === '') {
       finalFormData.phone = null;
@@ -428,7 +434,8 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                 label="Korisničko ime"
                 value={formData.username}
                 onChange={handleChange('username')}
-                required
+                required={!formData.roles.includes('clan_porodice')}
+                helperText={formData.roles.includes('clan_porodice') ? "Opciono za člana porodice" : ""}
                 data-testid="input-username"
               />
             </Grid>
@@ -441,8 +448,8 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                 type="password"
                 value={formData.password}
                 onChange={handleChange('password')}
-                required={!user}
-                helperText={user ? "Ostavite prazno da zadržite postojeću šifru" : ""}
+                required={!user && !formData.roles.includes('clan_porodice')}
+                helperText={user ? "Ostavite prazno da zadržite postojeću šifru" : formData.roles.includes('clan_porodice') ? "Opciono za člana porodice" : ""}
                 data-testid="input-password"
               />
             </Grid>
@@ -469,6 +476,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                 type="email"
                 value={formData.email}
                 onChange={handleChange('email')}
+                helperText={formData.roles.includes('clan_porodice') ? "Opciono za člana porodice" : ""}
                 data-testid="input-email"
               />
             </Grid>

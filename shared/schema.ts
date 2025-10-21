@@ -7,9 +7,9 @@ export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   firstName: text("first_name").notNull(),
   lastName: text("last_name").notNull(),
-  username: text("username").notNull().unique(),
+  username: text("username").unique(),
   email: text("email").unique(),
-  password: text("password").notNull(),
+  password: text("password"),
   phone: text("phone"),
   photo: text("photo"), // URL/path to profile photo
   address: text("address"),
