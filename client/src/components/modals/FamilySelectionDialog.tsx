@@ -384,7 +384,6 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
             disabled={
               !newUserData.firstName || 
               !newUserData.lastName || 
-              !newUserData.email || 
               !newUserData.relationship ||
               createUserMutation.isPending
             }
