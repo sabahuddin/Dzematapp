@@ -115,7 +115,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
     // Filter by search term
     const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
     const email = user.email?.toLowerCase() || '';
-    const username = user.username.toLowerCase();
+    const username = user.username?.toLowerCase() || '';
     const search = searchTerm.toLowerCase();
     
     return fullName.includes(search) || email.includes(search) || username.includes(search);
@@ -149,11 +149,17 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
 
   const handleAddNewUser = () => {
     const { relationship: rel, ...userData } = newUserData;
-    if (userData.firstName && userData.lastName && userData.email && rel) {
-      createUserMutation.mutate({
+    if (userData.firstName && userData.lastName && rel) {
+      // Clean up empty strings to null
+      const cleanedUserData = {
         ...userData,
-        status: 'član porodice'
-      });
+        username: userData.username || null,
+        email: userData.email || null,
+        password: userData.password || null,
+        status: 'član porodice',
+        roles: ['clan_porodice']
+      };
+      createUserMutation.mutate(cleanedUserData);
     }
   };
 
@@ -223,7 +229,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
                         </ListItemAvatar>
                         <ListItemText
                           primary={`${user.firstName} ${user.lastName}`}
-                          secondary={`${user.email} • ${user.username}`}
+                          secondary={[user.email, user.username].filter(Boolean).join(' • ') || 'Član porodice'}
                         />
                       </ListItemButton>
                     </ListItem>
@@ -300,7 +306,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
                   label="Korisničko ime"
                   value={newUserData.username}
                   onChange={handleNewUserChange('username')}
-                  required
+                  helperText="Opciono za člana porodice"
                   data-testid="input-new-username"
                 />
               </Grid>
@@ -313,7 +319,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
                   type="email"
                   value={newUserData.email}
                   onChange={handleNewUserChange('email')}
-                  required
+                  helperText="Opciono za člana porodice"
                   data-testid="input-new-email"
                 />
               </Grid>
@@ -326,7 +332,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
                   type="password"
                   value={newUserData.password}
                   onChange={handleNewUserChange('password')}
-                  required
+                  helperText="Opciono za člana porodice"
                   data-testid="input-new-password"
                 />
               </Grid>
