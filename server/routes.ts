@@ -2179,9 +2179,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const dataLines = lines.slice(1);
       const prayerTimes = [];
 
-      for (const line of dataLines) {
+      for (let i = 0; i < dataLines.length; i++) {
+        const line = dataLines[i];
         // Use semicolon as delimiter for SwissMosque CSV format
         const parts = line.split(';').map(p => p.trim());
+        
+        // Log first line for debugging
+        if (i === 0) {
+          console.log(`First data line has ${parts.length} parts:`, parts);
+        }
         
         // Expected format: Datum;Hijri;Tag;Fajr-Beginn;Sonnenaufgang;Dhuhr;Asr;Maghrib;Isha;Wichtige Ereignisse
         if (parts.length >= 9) {
@@ -2201,14 +2207,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
               hijriDate: hijri || null,
               events: events || null
             });
+          } else if (i === 0) {
+            console.log('First line validation failed:', { date, fajr, dhuhr, asr, maghrib, isha });
           }
+        } else if (i === 0) {
+          console.log(`First line has only ${parts.length} parts, expected at least 9`);
         }
       }
 
       console.log(`Parsed ${prayerTimes.length} valid prayer time entries`);
 
       if (prayerTimes.length === 0) {
-        return res.status(400).json({ message: "No valid prayer times found in CSV" });
+        return res.status(400).json({ 
+          message: "No valid prayer times found in CSV", 
+          details: `Processed ${lines.length} total lines, ${dataLines.length} data lines` 
+        });
       }
 
       // Bulk create prayer times
