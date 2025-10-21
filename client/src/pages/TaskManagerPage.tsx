@@ -806,9 +806,9 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
   });
 
   const handleAddComment = () => {
-    if (!newComment.trim()) return;
+    if (!newComment.trim() && !commentImage) return;
     addCommentMutation.mutate({ 
-      content: newComment.trim(),
+      content: newComment.trim() || '',
       commentImage: commentImage || null
     });
   };
@@ -1134,7 +1134,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                   <Button 
                     onClick={handleAddComment} 
                     variant="contained" 
-                    disabled={!newComment.trim()}
+                    disabled={!newComment.trim() && !commentImage}
                     data-testid="button-add-comment"
                   >
                     Dodaj
