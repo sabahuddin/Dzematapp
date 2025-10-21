@@ -14,11 +14,11 @@ The frontend is built using React with TypeScript, leveraging a component-based 
 
 ## Backend Architecture
 
-The backend is an Express.js application built with TypeScript, following a REST API pattern. It uses Drizzle ORM for type-safe database operations and includes centralized error handling. The current prototype uses in-memory storage, with PostgreSQL configured for future integration.
+The backend is an Express.js application built with TypeScript, following a REST API pattern. It uses Drizzle ORM for type-safe database operations with a PostgreSQL database backend. The application includes centralized error handling and persistent data storage.
 
 ## Data Storage Solutions
 
-The application is designed to use a PostgreSQL database with Drizzle ORM for type-safe schema definitions. The schema covers users, announcements, events, work groups, tasks, access requests, and prayer times. Currently, an in-memory storage implementation is used for rapid prototyping.
+The application uses a PostgreSQL database (Neon serverless) with Drizzle ORM for type-safe schema definitions. The DatabaseStorage class provides persistent storage for all entities including users, announcements, events, work groups, tasks, access requests, messages, documents, shop items, and prayer times. All data is stored permanently in the database and persists across application restarts.
 
 ## Authentication and Authorization
 
@@ -31,7 +31,7 @@ The system employs a simple session-based authentication using username/password
 - **Events**: Event creation, management, and RSVP functionality, viewable by guests.
 - **Task Manager**: Management of work groups ("Sekcije") and task assignments.
 - **Dashboard Analytics**: Overview and activity tracking.
-- **Guest Access**: Public interface for viewing announcements, events, and submitting membership applications.
+- **Guest Access**: Public interface for viewing announcements, events, prayer times (Vaktija), and submitting membership applications. Features new mosque logo in header.
 - **Notification System**: Displays unread content counts for various modules.
 - **Section Visibility**: Public/private settings for work groups with access control.
 - **Access Request System**: Users can request membership to private sections, with admin approval.
