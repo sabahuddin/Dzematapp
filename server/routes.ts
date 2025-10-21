@@ -2308,9 +2308,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/important-dates", requireAdmin, async (req, res) => {
     try {
+      console.log('Creating important date with data:', req.body);
       const date = await storage.createImportantDate(req.body);
       res.status(201).json(date);
     } catch (error) {
+      console.error('Error creating important date:', error);
       res.status(500).json({ message: "Failed to create important date" });
     }
   });

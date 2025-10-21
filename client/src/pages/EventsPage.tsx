@@ -290,8 +290,8 @@ export default function EventsPage() {
   };
 
   const getRsvpCount = (event: any) => {
-    if (!event.rsvpEnabled || !event.rsvpStats) return 0;
-    return event.rsvpStats.totalAdults + event.rsvpStats.totalChildren;
+    if (!event.rsvpEnabled) return 0;
+    return event.rsvpCount || 0;
   };
 
   if (eventsQuery.isLoading || importantDatesQuery.isLoading) {
