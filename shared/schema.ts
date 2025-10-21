@@ -441,3 +441,23 @@ export type ProductPurchaseRequestWithDetails = ProductPurchaseRequest & {
     lastName: string;
   } | null;
 };
+
+export const prayerTimes = pgTable("prayer_times", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  date: text("date").notNull().unique(), // dd.mm.yyyy
+  hijriDate: text("hijri_date"),
+  fajr: text("fajr").notNull(),
+  sunrise: text("sunrise"),
+  dhuhr: text("dhuhr").notNull(),
+  asr: text("asr").notNull(),
+  maghrib: text("maghrib").notNull(),
+  isha: text("isha").notNull(),
+  events: text("events"),
+});
+
+export const insertPrayerTimeSchema = createInsertSchema(prayerTimes).omit({
+  id: true,
+});
+
+export type PrayerTime = typeof prayerTimes.$inferSelect;
+export type InsertPrayerTime = z.infer<typeof insertPrayerTimeSchema>;
