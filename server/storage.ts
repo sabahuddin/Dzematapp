@@ -225,7 +225,8 @@ export interface IStorage {
   // Notifications
   updateLastViewed(userId: string, type: 'shop' | 'events' | 'announcements' | 'imamQuestions' | 'tasks'): Promise<User | undefined>;
   getNewItemsCount(userId: string, type: 'shop' | 'events' | 'announcements' | 'imamQuestions' | 'tasks'): Promise<number>;
-  getAllNewItemsCounts(userId: string): Promise<{ shop: number; events: number; announcements: number; imamQuestions: number; tasks: number }>;
+  getPendingAccessRequestsCount(): Promise<number>;
+  getAllNewItemsCounts(userId: string): Promise<{ shop: number; events: number; announcements: number; imamQuestions: number; tasks: number; accessRequests: number }>;
 
   // Prayer Times
   createPrayerTime(prayerTime: InsertPrayerTime): Promise<PrayerTime>;
@@ -1167,16 +1168,24 @@ export class DatabaseStorage implements IStorage {
     return count;
   }
 
-  async getAllNewItemsCounts(userId: string): Promise<{ shop: number; events: number; announcements: number; imamQuestions: number; tasks: number }> {
-    const [shop, events, announcements, imamQuestions, tasks] = await Promise.all([
+  async getPendingAccessRequestsCount(): Promise<number> {
+    const result = await db.select({ count: sql<number>`count(*)` })
+      .from(accessRequests)
+      .where(eq(accessRequests.status, 'pending'));
+    return Number(result[0]?.count ?? 0);
+  }
+
+  async getAllNewItemsCounts(userId: string): Promise<{ shop: number; events: number; announcements: number; imamQuestions: number; tasks: number; accessRequests: number }> {
+    const [shop, events, announcements, imamQuestions, tasks, accessRequests] = await Promise.all([
       this.getNewItemsCount(userId, 'shop'),
       this.getNewItemsCount(userId, 'events'),
       this.getNewItemsCount(userId, 'announcements'),
       this.getNewItemsCount(userId, 'imamQuestions'),
-      this.getNewItemsCount(userId, 'tasks')
+      this.getNewItemsCount(userId, 'tasks'),
+      this.getPendingAccessRequestsCount()
     ]);
 
-    return { shop, events, announcements, imamQuestions, tasks };
+    return { shop, events, announcements, imamQuestions, tasks, accessRequests };
   }
 
   async createPrayerTime(prayerTime: InsertPrayerTime): Promise<PrayerTime> {
