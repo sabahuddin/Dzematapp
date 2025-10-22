@@ -20,6 +20,7 @@ import projectsBS from './locales/bs/projects.json';
 import badgesBS from './locales/bs/badges.json';
 import documentsBS from './locales/bs/documents.json';
 import activityBS from './locales/bs/activity.json';
+import quickTipsBS from './locales/bs/quickTips.json';
 
 // Import all DE translations
 import commonDE from './locales/de/common.json';
@@ -39,6 +40,7 @@ import projectsDE from './locales/de/projects.json';
 import badgesDE from './locales/de/badges.json';
 import documentsDE from './locales/de/documents.json';
 import activityDE from './locales/de/activity.json';
+import quickTipsDE from './locales/de/quickTips.json';
 
 const resources = {
   bs: {
@@ -59,6 +61,7 @@ const resources = {
     badges: badgesBS,
     documents: documentsBS,
     activity: activityBS,
+    quickTips: quickTipsBS,
   },
   de: {
     common: commonDE,
@@ -78,6 +81,7 @@ const resources = {
     badges: badgesDE,
     documents: documentsDE,
     activity: activityDE,
+    quickTips: quickTipsDE,
   },
 };
 

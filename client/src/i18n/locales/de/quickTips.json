@@ -1,0 +1,40 @@
+{
+  "title": "Schnelltipps",
+  "tips": [
+    {
+      "title": "Passen Sie Ihr Dashboard an",
+      "description": "Klicken Sie auf die Schaltfläche 'Anpassen' neben dem Schnellzugriff, um bis zu 8 der am häufigsten verwendeten Funktionen auszuwählen."
+    },
+    {
+      "title": "Fügen Sie Veranstaltungen zum Kalender hinzu",
+      "description": "Drücken Sie die Schaltfläche 'Zum Kalender hinzufügen' auf der Veranstaltungsseite, um eine Veranstaltung direkt zu Ihrem persönlichen Kalender hinzuzufügen."
+    },
+    {
+      "title": "Verfolgen Sie Ihre Punkte",
+      "description": "Überprüfen Sie die Seite 'Aktivitätsprotokoll', um zu sehen, wie Sie durch Zahlungen, Aufgaben und Veranstaltungen Punkte verdienen."
+    },
+    {
+      "title": "Verdienen Sie Abzeichen",
+      "description": "Sammeln Sie Punkte für Gemeinde-Aktivitäten und schalten Sie besondere Abzeichen frei. Besuchen Sie die Abzeichen-Seite für alle verfügbaren Abzeichen."
+    },
+    {
+      "title": "Spenden Sie für Projekte",
+      "description": "Unterstützen Sie Gemeinde-Projekte über die Projekt-Seite. Ihre Zahlungen werden automatisch zum Zielbetrag gezählt."
+    },
+    {
+      "title": "Überprüfen Sie Gebetszeiten",
+      "description": "Die heutigen Gebetszeiten werden auf dem Dashboard angezeigt. Für die monatliche Übersicht klicken Sie auf 'Gebetszeitenkalender'."
+    },
+    {
+      "title": "Kontaktieren Sie Verkäufer",
+      "description": "Im Shop klicken Sie auf einen Artikel und verwenden Sie die Schaltfläche 'Verkäufer kontaktieren', um eine direkte Nachricht zu senden."
+    },
+    {
+      "title": "Fragen Sie den Imam",
+      "description": "Stellen Sie dem Imam anonym oder öffentlich Fragen über die Seite 'Frage den Imam'. Antworten können zur späteren Referenz archiviert werden."
+    }
+  ],
+  "previous": "Zurück",
+  "next": "Weiter",
+  "tipNumber": "Tipp {{current}} von {{total}}"
+}
