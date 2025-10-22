@@ -68,7 +68,7 @@ import {
   importantDates
 } from "@shared/schema";
 import { db } from './db';
-import { eq, and, or, desc, asc, gt, sql } from 'drizzle-orm';
+import { eq, and, or, desc, asc, gt, sql, inArray } from 'drizzle-orm';
 
 export interface IStorage {
   // Users
@@ -1164,13 +1164,13 @@ export class DatabaseStorage implements IStorage {
         if (groupIds.length === 0) {
           count = 0;
         } else if (!lastViewed) {
-          const items = await db.select().from(tasks).where(sql`${tasks.workGroupId} = ANY(${groupIds})`);
+          const items = await db.select().from(tasks).where(inArray(tasks.workGroupId, groupIds));
           count = items.length;
         } else {
           const result = await db.select({ count: sql<number>`count(*)` })
             .from(tasks)
             .where(and(
-              sql`${tasks.workGroupId} = ANY(${groupIds})`,
+              inArray(tasks.workGroupId, groupIds),
               gt(tasks.createdAt, lastViewed)
             ));
           count = Number(result[0]?.count ?? 0);
