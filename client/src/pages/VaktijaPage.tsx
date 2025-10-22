@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type SyntheticEvent } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import {
   Container,
@@ -20,8 +20,11 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from '@mui/material';
-import { Upload, Schedule } from '@mui/icons-material';
+import { Upload, Schedule, ExpandMore } from '@mui/icons-material';
 import { useAuth } from '@/contexts/AuthContext';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
@@ -32,6 +35,7 @@ export default function VaktijaPage() {
   const { toast } = useToast();
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [expandedMonth, setExpandedMonth] = useState<string | false>(false);
 
   const { data: todayPrayerTime, isLoading: todayLoading } = useQuery<PrayerTime>({
     queryKey: ['/api/prayer-times/today'],
@@ -124,6 +128,10 @@ export default function VaktijaPage() {
     asr: 'Ikindija',
     maghrib: 'Akšam',
     isha: 'Jacija',
+  };
+
+  const handleAccordionChange = (panel: string) => (event: SyntheticEvent, isExpanded: boolean) => {
+    setExpandedMonth(isExpanded ? panel : false);
   };
 
   return (
@@ -293,39 +301,52 @@ export default function VaktijaPage() {
               const prayerTimes = monthGroups[monthYear];
 
               return (
-                <Box key={monthYear} sx={{ mb: 4 }}>
-                  <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: '#1976d2' }}>
-                    {monthName} {year}
-                  </Typography>
-                  <TableContainer>
-                    <Table size="small">
-                      <TableHead>
-                        <TableRow sx={{ bgcolor: '#f5f5f5' }}>
-                          <TableCell sx={{ fontWeight: 600 }}>Datum</TableCell>
-                          <TableCell sx={{ fontWeight: 600 }}>Zora</TableCell>
-                          <TableCell sx={{ fontWeight: 600 }}>Izlazak</TableCell>
-                          <TableCell sx={{ fontWeight: 600 }}>Podne</TableCell>
-                          <TableCell sx={{ fontWeight: 600 }}>Ikindija</TableCell>
-                          <TableCell sx={{ fontWeight: 600 }}>Akšam</TableCell>
-                          <TableCell sx={{ fontWeight: 600 }}>Jacija</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {prayerTimes.map((pt) => (
-                          <TableRow key={pt.id} data-testid={`row-prayer-time-${pt.date}`}>
-                            <TableCell>{pt.date}</TableCell>
-                            <TableCell>{pt.fajr}</TableCell>
-                            <TableCell>{pt.sunrise || '-'}</TableCell>
-                            <TableCell>{pt.dhuhr}</TableCell>
-                            <TableCell>{pt.asr}</TableCell>
-                            <TableCell>{pt.maghrib}</TableCell>
-                            <TableCell>{pt.isha}</TableCell>
+                <Accordion
+                  key={monthYear}
+                  expanded={expandedMonth === monthYear}
+                  onChange={handleAccordionChange(monthYear)}
+                  sx={{ mb: 1 }}
+                  data-testid={`accordion-month-${monthYear}`}
+                >
+                  <AccordionSummary 
+                    expandIcon={<ExpandMore />}
+                    sx={{ bgcolor: '#f5f5f5' }}
+                  >
+                    <Typography variant="h6" sx={{ fontWeight: 600, color: '#1976d2' }}>
+                      {monthName} {year}
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails sx={{ p: 0 }}>
+                    <TableContainer>
+                      <Table size="small">
+                        <TableHead>
+                          <TableRow sx={{ bgcolor: '#fafafa' }}>
+                            <TableCell sx={{ fontWeight: 600 }}>Datum</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>Zora</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>Izlazak</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>Podne</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>Ikindija</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>Akšam</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>Jacija</TableCell>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </Box>
+                        </TableHead>
+                        <TableBody>
+                          {prayerTimes.map((pt) => (
+                            <TableRow key={pt.id} data-testid={`row-prayer-time-${pt.date}`}>
+                              <TableCell>{pt.date}</TableCell>
+                              <TableCell>{pt.fajr}</TableCell>
+                              <TableCell>{pt.sunrise || '-'}</TableCell>
+                              <TableCell>{pt.dhuhr}</TableCell>
+                              <TableCell>{pt.asr}</TableCell>
+                              <TableCell>{pt.maghrib}</TableCell>
+                              <TableCell>{pt.isha}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </AccordionDetails>
+                </Accordion>
               );
             });
           })()
