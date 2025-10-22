@@ -239,6 +239,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const isOwnProfile = currentUser.id === id;
       const isAdmin = currentUser.isAdmin || false;
       
+      console.log('PUT /api/users/:id - currentUser.id:', currentUser.id);
+      console.log('PUT /api/users/:id - target id:', id);
+      console.log('PUT /api/users/:id - isOwnProfile:', isOwnProfile);
+      console.log('PUT /api/users/:id - isAdmin:', isAdmin);
+      
       if (!isOwnProfile && !isAdmin) {
         return res.status(403).json({ message: "Admin privileges required" });
       }
