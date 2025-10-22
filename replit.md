@@ -13,9 +13,6 @@ Preferred communication style: Simple, everyday language.
 - **Language Selector**: Added language toggle on LoginPage with localStorage persistence. Users can switch between Bosnian and German languages throughout the application.
 - **Translation Coverage**: Converted LoginPage to use i18n hooks; all other pages will be progressively migrated to use translation keys.
 
-## Features
-- **Quick Tips Carousel**: Added an auto-rotating carousel on both Admin and Member dashboards highlighting new and underutilized features (8 tips total). Includes auto-play with pause-on-hover, manual navigation, progress indicator, gradient styling, and full i18n support.
-
 ## Bugfixes
 - **Financial Contributions**: Members can now only view their contributions (no create/edit/delete). Added PATCH endpoint for admin compatibility. Fixed frontend to hide "Dodaj Uplatu" button for non-admins.
 - **apiRequest Signature - COMPREHENSIVE FIX**: Fixed critical bug across entire codebase (~47 instances in 17 files) where apiRequest calls used old signature (method, url, data) instead of correct signature (url, method, data). This was causing "Method is not a valid HTTP token" errors on all POST/PATCH/DELETE operations throughout the application. Fixed files include: EventRSVPModal.tsx, UsersPage.tsx, AnnouncementsPage.tsx, MessagesPage.tsx, AskImamPage.tsx, ShopPage.tsx, BadgesPage.tsx, VaktijaPage.tsx, AllSectionsPage.tsx, EventsPage.tsx, MemberManagementDialog.tsx, AddMemberModal.tsx, MessageViewModal.tsx, NewMessageModal.tsx, FamilySelectionDialog.tsx, AnnouncementModal.tsx, UserModal.tsx, and useMarkAsViewed.ts hook. All CRUD operations now work correctly: user management, announcements, messages, events/RSVPs, shop/marketplace, badges, vaktija, imam questions, work groups, family relationships, and file uploads.
