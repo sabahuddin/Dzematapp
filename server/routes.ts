@@ -962,7 +962,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // OR assigned users can update status to na_cekanju
       const isAdmin = req.user!.isAdmin;
       const isModerator = await storage.isUserModeratorOfWorkGroup(existingTask.workGroupId, req.user!.id);
-      const isAssignedUser = existingTask.assignedToId === req.user!.id;
+      const isAssignedUser = existingTask.assignedUserIds?.includes(req.user!.id) || false;
       
       // If not admin or moderator, only allow assigned user to change status to na_cekanju
       if (!isAdmin && !isModerator) {
