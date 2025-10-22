@@ -77,6 +77,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
     inactiveReason: null as string | null,
     categories: [] as string[],
     roles: [] as string[],
+    skills: [] as string[],
     isAdmin: false
   });
   const [photoFile, setPhotoFile] = useState<File | null>(null);
@@ -143,6 +144,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
         inactiveReason: user.inactiveReason || null,
         categories: user.categories || [],
         roles: user.roles || [],
+        skills: user.skills || [],
         isAdmin: user.isAdmin || false
       });
       setPhotoPreview(user.photo || '');
@@ -166,6 +168,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
         inactiveReason: null,
         categories: [],
         roles: ['clan'],
+        skills: [],
         isAdmin: false
       });
       setPhotoPreview('');
@@ -572,7 +575,43 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
               </Grid>
             )}
             
-            {/* Row 7: Kategorije (50%) - Hide for members editing themselves */}
+            {/* Row 7a: Skills (Full width or 50%) */}
+            <Grid size={{ xs: 12, sm: isMemberEditingSelf ? 12 : 6 }}>
+              <Autocomplete
+                multiple
+                freeSolo
+                options={[]}
+                value={formData.skills}
+                onChange={(event, newValue) => {
+                  setFormData(prev => ({ ...prev, skills: newValue }));
+                }}
+                renderTags={(value, getTagProps) =>
+                  value.map((option, index) => (
+                    <Chip
+                      label={option}
+                      color="primary"
+                      variant="outlined"
+                      {...getTagProps({ index })}
+                      data-testid={`chip-skill-${index}`}
+                    />
+                  ))
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    label="Vještine"
+                    placeholder="Unesite vještine (npr. Programiranje, Dizajn...)"
+                    helperText="Unesite vještine i pritisnite Enter"
+                    InputLabelProps={{ shrink: true }}
+                    data-testid="input-skills"
+                  />
+                )}
+                data-testid="autocomplete-skills"
+              />
+            </Grid>
+
+            {/* Row 7b: Kategorije (50%) - Hide for members editing themselves */}
             {!isMemberEditingSelf && (
               <Grid size={{ xs: 12, sm: 6 }}>
                 <Autocomplete

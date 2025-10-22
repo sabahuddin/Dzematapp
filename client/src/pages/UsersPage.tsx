@@ -45,6 +45,7 @@ export default function UsersPage() {
   
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [bulkUploadModalOpen, setBulkUploadModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -151,6 +152,14 @@ export default function UsersPage() {
     }
   };
 
+  // Collect all unique skills from all users for filter options
+  const allSkills = Array.from(
+    new Set(
+      ((usersQuery.data as User[]) || [])
+        .flatMap(user => user.skills || [])
+    )
+  ).sort();
+
   const filteredUsers = ((usersQuery.data as User[]) || []).filter((user: User) => {
     // For non-admin users, show only their own profile
     if (!currentUser?.isAdmin) {
@@ -161,16 +170,20 @@ export default function UsersPage() {
     const matchesSearch = 
       user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (user.email && user.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (user.phone && user.phone.toLowerCase().includes(searchTerm.toLowerCase()));
+      (user.email ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (user.username ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (user.phone ?? '').toLowerCase().includes(searchTerm.toLowerCase());
     
     // Category filter (admin only)
     const matchesCategory = selectedCategories.length === 0 || 
       selectedCategories.includes('Svi') ||
       (user.categories && selectedCategories.some(cat => user.categories?.includes(cat)));
     
-    return matchesSearch && matchesCategory;
+    // Skills filter (admin only)
+    const matchesSkills = selectedSkills.length === 0 ||
+      (user.skills && selectedSkills.every(skill => user.skills?.includes(skill)));
+    
+    return matchesSearch && matchesCategory && matchesSkills;
   });
 
   if (usersQuery.isLoading) {
@@ -322,6 +335,28 @@ export default function UsersPage() {
                 </Typography>
               </Grid>
 
+              <Grid size={{ xs: 12 }}>
+                <Typography variant="caption" color="text.secondary">
+                  Vještine
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mt: 0.5 }}>
+                  {myProfile.skills && myProfile.skills.length > 0 ? (
+                    myProfile.skills.map((skill, index) => (
+                      <Chip
+                        key={index}
+                        label={skill}
+                        size="small"
+                        color="primary"
+                        variant="outlined"
+                        data-testid={`profile-skill-${index}`}
+                      />
+                    ))
+                  ) : (
+                    <Typography variant="body1" sx={{ fontWeight: 500 }}>-</Typography>
+                  )}
+                </Box>
+              </Grid>
+
               {/* Membership Information */}
               <Grid size={{ xs: 12 }}>
                 <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, mt: 2 }}>
@@ -441,6 +476,22 @@ export default function UsersPage() {
             sx={{ minWidth: 250, flex: 1, maxWidth: 400 }}
             data-testid="autocomplete-category-filter"
           />
+          <Autocomplete
+            multiple
+            options={allSkills}
+            value={selectedSkills}
+            onChange={(event, newValue) => setSelectedSkills(newValue)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="outlined"
+                placeholder="Filtriraj po vještinama"
+                data-testid="input-skills-filter"
+              />
+            )}
+            sx={{ minWidth: 250, flex: 1, maxWidth: 400 }}
+            data-testid="autocomplete-skills-filter"
+          />
         </Box>
 
         <TableContainer sx={{ overflowX: 'auto' }}>
@@ -454,6 +505,7 @@ export default function UsersPage() {
                 <TableCell sx={{ fontWeight: 600 }}>Član od</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Status članstva</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Kategorije</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Vještine</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Uloge</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Porodica</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
@@ -522,6 +574,24 @@ export default function UsersPage() {
                             size="small"
                             variant="outlined"
                             data-testid={`category-${user.id}-${index}`}
+                          />
+                        ))
+                      ) : (
+                        <Typography variant="body2" color="text.secondary">-</Typography>
+                      )}
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+                      {user.skills && user.skills.length > 0 ? (
+                        user.skills.map((skill, index) => (
+                          <Chip
+                            key={index}
+                            label={skill}
+                            size="small"
+                            color="primary"
+                            variant="outlined"
+                            data-testid={`skill-${user.id}-${index}`}
                           />
                         ))
                       ) : (
