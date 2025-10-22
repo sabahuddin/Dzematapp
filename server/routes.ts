@@ -6,7 +6,7 @@ import { promises as fs } from "fs";
 import * as XLSX from "xlsx";
 import { storage } from "./storage";
 import { requireAuth, requireAdmin } from "./index";
-import { insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema } from "@shared/schema";
+import { insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema, insertFinancialContributionSchema, insertActivityLogSchema, insertEventAttendanceSchema, insertPointsSettingsSchema, insertBadgeSchema, insertUserBadgeSchema, insertProjectSchema } from "@shared/schema";
 
 // Configure multer for photo uploads
 const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'photos');
@@ -975,6 +975,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!task) {
         return res.status(404).json({ message: "Task not found" });
       }
+
+      // Feature 1.2: Automatic activity logging when task is marked as completed
+      // Only log if status actually transitioned from incomplete to complete state
+      const statusChanged = taskData.status && existingTask.status !== taskData.status;
+      const isCompletionTransition = statusChanged && 
+        (existingTask.status === 'u_toku' || existingTask.status === 'otkazano') &&
+        (taskData.status === 'na_cekanju' || taskData.status === 'završeno');
+
+      if (isCompletionTransition) {
+        const workGroup = await storage.getWorkGroup(task.workGroupId);
+        const settings = await storage.getPointsSettings();
+        const points = settings?.pointsPerTask || 50;
+
+        // If assigned user marked as na_cekanju, log for that user
+        if (taskData.status === 'na_cekanju' && isAssignedUser && !isAdmin && !isModerator) {
+          await storage.createActivityLog({
+            userId: req.user!.id,
+            activityType: 'task_completed',
+            description: `Završen zadatak: ${task.title} u sekciji ${workGroup?.name || 'Nepoznata'}`,
+            points,
+            relatedEntityId: task.id,
+          });
+        }
+        
+        // If admin/moderator marks as završeno, log for all assigned users
+        if (taskData.status === 'završeno' && task.assignedUserIds && task.assignedUserIds.length > 0) {
+          for (const userId of task.assignedUserIds) {
+            await storage.createActivityLog({
+              userId,
+              activityType: 'task_completed',
+              description: `Završen zadatak: ${task.title} u sekciji ${workGroup?.name || 'Nepoznata'}`,
+              points,
+              relatedEntityId: task.id,
+            });
+          }
+        }
+      }
+
       res.json(task);
     } catch (error) {
       res.status(400).json({ message: "Invalid task data" });
@@ -2211,6 +2249,321 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ message: "Important date deleted successfully" });
     } catch (error) {
       res.status(500).json({ message: "Failed to delete important date" });
+    }
+  });
+
+  // Financial Contributions Routes (Feature 1)
+  app.get("/api/financial-contributions", requireAdmin, async (req, res) => {
+    try {
+      const contributions = await storage.getAllFinancialContributions();
+      res.json(contributions);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get financial contributions" });
+    }
+  });
+
+  app.get("/api/financial-contributions/user/:userId", requireAuth, async (req, res) => {
+    try {
+      // Only admins or the user themselves can view contributions
+      if (req.user?.id !== req.params.userId && !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      const contributions = await storage.getUserFinancialContributions(req.params.userId);
+      res.json(contributions);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get user contributions" });
+    }
+  });
+
+  app.post("/api/financial-contributions", requireAdmin, async (req, res) => {
+    try {
+      const validated = insertFinancialContributionSchema.parse(req.body);
+      const contribution = await storage.createFinancialContribution({
+        ...validated,
+        createdById: req.user!.id
+      });
+      res.status(201).json(contribution);
+    } catch (error) {
+      console.error('Error creating financial contribution:', error);
+      res.status(500).json({ message: "Failed to create financial contribution" });
+    }
+  });
+
+  app.put("/api/financial-contributions/:id", requireAdmin, async (req, res) => {
+    try {
+      const validated = insertFinancialContributionSchema.partial().parse(req.body);
+      const contribution = await storage.updateFinancialContribution(req.params.id, validated);
+      if (!contribution) {
+        return res.status(404).json({ message: "Contribution not found" });
+      }
+      res.json(contribution);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update contribution" });
+    }
+  });
+
+  app.delete("/api/financial-contributions/:id", requireAdmin, async (req, res) => {
+    try {
+      const success = await storage.deleteFinancialContribution(req.params.id);
+      if (!success) {
+        return res.status(404).json({ message: "Contribution not found" });
+      }
+      res.json({ message: "Contribution deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete contribution" });
+    }
+  });
+
+  // Activity Log Routes (Feature 1)
+  app.get("/api/activity-log/user/:userId", requireAuth, async (req, res) => {
+    try {
+      // Only admins or the user themselves can view activity log
+      if (req.user?.id !== req.params.userId && !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      const logs = await storage.getUserActivityLog(req.params.userId);
+      res.json(logs);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get activity log" });
+    }
+  });
+
+  app.get("/api/activity-log", requireAdmin, async (req, res) => {
+    try {
+      const logs = await storage.getAllActivityLogs();
+      res.json(logs);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get activity logs" });
+    }
+  });
+
+  // Event Attendance Routes (Feature 1)
+  app.post("/api/event-attendance", requireAdmin, async (req, res) => {
+    try {
+      const attendances = req.body.attendances; // Array of user IDs who attended
+      const eventId = req.body.eventId;
+      
+      if (!attendances || !Array.isArray(attendances)) {
+        return res.status(400).json({ message: "Attendances array required" });
+      }
+
+      const created = await storage.bulkCreateEventAttendance(
+        attendances.map(userId => ({
+          eventId,
+          userId,
+          attended: true,
+          recordedById: req.user!.id
+        }))
+      );
+      
+      res.status(201).json(created);
+    } catch (error) {
+      console.error('Error creating event attendance:', error);
+      res.status(500).json({ message: "Failed to record event attendance" });
+    }
+  });
+
+  app.get("/api/event-attendance/:eventId", requireAuth, async (req, res) => {
+    try {
+      const attendance = await storage.getEventAttendance(req.params.eventId);
+      res.json(attendance);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get event attendance" });
+    }
+  });
+
+  app.get("/api/event-attendance/user/:userId", requireAuth, async (req, res) => {
+    try {
+      // Only admins or the user themselves can view attendance
+      if (req.user?.id !== req.params.userId && !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      const attendance = await storage.getUserEventAttendance(req.params.userId);
+      res.json(attendance);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get user attendance" });
+    }
+  });
+
+  // Points Settings Routes (Feature 2)
+  app.get("/api/points-settings", requireAuth, async (req, res) => {
+    try {
+      const settings = await storage.getPointsSettings();
+      res.json(settings);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get points settings" });
+    }
+  });
+
+  app.put("/api/points-settings", requireAdmin, async (req, res) => {
+    try {
+      const validated = insertPointsSettingsSchema.partial().parse(req.body);
+      const settings = await storage.updatePointsSettings(validated);
+      res.json(settings);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update points settings" });
+    }
+  });
+
+  // Badges Routes (Feature 2)
+  app.get("/api/badges", requireAuth, async (req, res) => {
+    try {
+      const badges = await storage.getAllBadges();
+      res.json(badges);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get badges" });
+    }
+  });
+
+  app.post("/api/badges", requireAdmin, async (req, res) => {
+    try {
+      const validated = insertBadgeSchema.parse(req.body);
+      const badge = await storage.createBadge(validated);
+      res.status(201).json(badge);
+    } catch (error) {
+      console.error('Error creating badge:', error);
+      res.status(500).json({ message: "Failed to create badge" });
+    }
+  });
+
+  app.put("/api/badges/:id", requireAdmin, async (req, res) => {
+    try {
+      const validated = insertBadgeSchema.partial().parse(req.body);
+      const badge = await storage.updateBadge(req.params.id, validated);
+      if (!badge) {
+        return res.status(404).json({ message: "Badge not found" });
+      }
+      res.json(badge);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update badge" });
+    }
+  });
+
+  app.delete("/api/badges/:id", requireAdmin, async (req, res) => {
+    try {
+      const success = await storage.deleteBadge(req.params.id);
+      if (!success) {
+        return res.status(404).json({ message: "Badge not found" });
+      }
+      res.json({ message: "Badge deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete badge" });
+    }
+  });
+
+  // User Badges Routes (Feature 2)
+  app.get("/api/user-badges/:userId", requireAuth, async (req, res) => {
+    try {
+      const badges = await storage.getUserBadges(req.params.userId);
+      res.json(badges);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get user badges" });
+    }
+  });
+
+  app.post("/api/user-badges/check/:userId", requireAdmin, async (req, res) => {
+    try {
+      const awarded = await storage.checkAndAwardBadges(req.params.userId);
+      res.json(awarded);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to check and award badges" });
+    }
+  });
+
+  // Projects Routes (Feature 4)
+  app.get("/api/projects", requireAuth, async (req, res) => {
+    try {
+      const projects = await storage.getAllProjects();
+      res.json(projects);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get projects" });
+    }
+  });
+
+  app.get("/api/projects/active", async (req, res) => {
+    try {
+      const projects = await storage.getActiveProjects();
+      res.json(projects);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get active projects" });
+    }
+  });
+
+  app.get("/api/projects/:id", requireAuth, async (req, res) => {
+    try {
+      const project = await storage.getProject(req.params.id);
+      if (!project) {
+        return res.status(404).json({ message: "Project not found" });
+      }
+      res.json(project);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get project" });
+    }
+  });
+
+  app.post("/api/projects", requireAdmin, async (req, res) => {
+    try {
+      const validated = insertProjectSchema.parse(req.body);
+      const project = await storage.createProject({
+        ...validated,
+        createdById: req.user!.id
+      });
+      res.status(201).json(project);
+    } catch (error) {
+      console.error('Error creating project:', error);
+      res.status(500).json({ message: "Failed to create project" });
+    }
+  });
+
+  app.put("/api/projects/:id", requireAdmin, async (req, res) => {
+    try {
+      const validated = insertProjectSchema.partial().parse(req.body);
+      const project = await storage.updateProject(req.params.id, validated);
+      if (!project) {
+        return res.status(404).json({ message: "Project not found" });
+      }
+      res.json(project);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update project" });
+    }
+  });
+
+  app.delete("/api/projects/:id", requireAdmin, async (req, res) => {
+    try {
+      const success = await storage.deleteProject(req.params.id);
+      if (!success) {
+        return res.status(404).json({ message: "Project not found" });
+      }
+      res.json({ message: "Project deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete project" });
+    }
+  });
+
+  // User Statistics Routes (Feature 2)
+  app.get("/api/user-stats/:userId", requireAuth, async (req, res) => {
+    try {
+      // Only admins or the user themselves can view stats
+      if (req.user?.id !== req.params.userId && !req.user?.isAdmin) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      const userId = req.params.userId;
+      const [tasksCompleted, eventsAttended, totalDonations, totalPoints] = await Promise.all([
+        storage.getUserTasksCompleted(userId),
+        storage.getUserEventsAttended(userId),
+        storage.getUserTotalDonations(userId),
+        storage.recalculateUserPoints(userId)
+      ]);
+
+      res.json({
+        tasksCompleted,
+        eventsAttended,
+        totalDonations,
+        totalPoints
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get user statistics" });
     }
   });
 

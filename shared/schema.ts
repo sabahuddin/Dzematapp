@@ -28,6 +28,8 @@ export const users = pgTable("users", {
   lastViewedAnnouncements: timestamp("last_viewed_announcements"),
   lastViewedImamQuestions: timestamp("last_viewed_imam_questions"),
   lastViewedTasks: timestamp("last_viewed_tasks"),
+  skills: text("skills").array(), // Member skills/talents (Feature 3)
+  totalPoints: integer("total_points").default(0), // Gamification points (Feature 2)
 });
 
 export const familyRelationships = pgTable("family_relationships", {
@@ -462,6 +464,78 @@ export const importantDates = pgTable("important_dates", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// Feature 1: Contribution Tracking System
+export const financialContributions = pgTable("financial_contributions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  amount: text("amount").notNull(), // decimal as text, in CHF
+  paymentDate: timestamp("payment_date").notNull(),
+  purpose: text("purpose").notNull(), // Članarina, Donacija, Vakuf, Sergija, Ostalo
+  paymentMethod: text("payment_method").notNull(), // Gotovina, Banka
+  notes: text("notes"),
+  projectId: varchar("project_id").references((): any => projects.id), // Optional link to project (Feature 4)
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdById: varchar("created_by_id").notNull().references(() => users.id), // Admin who logged it
+});
+
+export const activityLog = pgTable("activity_log", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  activityType: text("activity_type").notNull(), // task_completed, event_attendance
+  description: text("description").notNull(),
+  points: integer("points").default(0), // Points earned for this activity
+  relatedEntityId: varchar("related_entity_id"), // taskId or eventId
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const eventAttendance = pgTable("event_attendance", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  eventId: varchar("event_id").notNull().references(() => events.id),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  attended: boolean("attended").default(true).notNull(),
+  recordedById: varchar("recorded_by_id").notNull().references(() => users.id), // Admin who confirmed
+  recordedAt: timestamp("recorded_at").defaultNow().notNull(),
+});
+
+// Feature 2: Gamification System
+export const pointsSettings = pgTable("points_settings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  pointsPerChf: integer("points_per_chf").default(1).notNull(), // Points per CHF donated
+  pointsPerTask: integer("points_per_task").default(50).notNull(), // Points per completed task
+  pointsPerEvent: integer("points_per_event").default(20).notNull(), // Points per event attendance
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const badges = pgTable("badges", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  description: text("description").notNull(),
+  icon: text("icon"), // Icon name or URL
+  criteriaType: text("criteria_type").notNull(), // donation_total, tasks_completed, events_attended, points_total
+  criteriaValue: integer("criteria_value").notNull(), // Threshold value
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const userBadges = pgTable("user_badges", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  badgeId: varchar("badge_id").notNull().references(() => badges.id),
+  earnedAt: timestamp("earned_at").defaultNow().notNull(),
+});
+
+// Feature 4: Projects Module
+export const projects = pgTable("projects", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  description: text("description").notNull(),
+  goalAmount: text("goal_amount").notNull(), // decimal as text, in CHF
+  currentAmount: text("current_amount").default("0").notNull(), // decimal as text, in CHF
+  status: text("status").notNull().default("active"), // active, completed
+  createdById: varchar("created_by_id").notNull().references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  completedAt: timestamp("completed_at"),
+});
+
 export const insertPrayerTimeSchema = createInsertSchema(prayerTimes).omit({
   id: true,
 });
@@ -475,3 +549,96 @@ export type PrayerTime = typeof prayerTimes.$inferSelect;
 export type InsertPrayerTime = z.infer<typeof insertPrayerTimeSchema>;
 export type ImportantDate = typeof importantDates.$inferSelect;
 export type InsertImportantDate = z.infer<typeof insertImportantDateSchema>;
+
+// Feature 1: Contribution Tracking System
+export const insertFinancialContributionSchema = createInsertSchema(financialContributions).omit({
+  id: true,
+  createdAt: true,
+}).extend({
+  paymentDate: z.union([
+    z.date(),
+    z.string().transform((str) => new Date(str))
+  ])
+});
+
+export const insertActivityLogSchema = createInsertSchema(activityLog).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertEventAttendanceSchema = createInsertSchema(eventAttendance).omit({
+  id: true,
+  recordedAt: true,
+});
+
+// Feature 2: Gamification System
+export const insertPointsSettingsSchema = createInsertSchema(pointsSettings).omit({
+  id: true,
+  updatedAt: true,
+});
+
+export const insertBadgeSchema = createInsertSchema(badges).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertUserBadgeSchema = createInsertSchema(userBadges).omit({
+  id: true,
+  earnedAt: true,
+});
+
+// Feature 4: Projects Module
+export const insertProjectSchema = createInsertSchema(projects).omit({
+  id: true,
+  createdAt: true,
+  completedAt: true,
+});
+
+// Types
+export type FinancialContribution = typeof financialContributions.$inferSelect;
+export type InsertFinancialContribution = z.infer<typeof insertFinancialContributionSchema>;
+export type ActivityLog = typeof activityLog.$inferSelect;
+export type InsertActivityLog = z.infer<typeof insertActivityLogSchema>;
+export type EventAttendance = typeof eventAttendance.$inferSelect;
+export type InsertEventAttendance = z.infer<typeof insertEventAttendanceSchema>;
+export type PointsSettings = typeof pointsSettings.$inferSelect;
+export type InsertPointsSettings = z.infer<typeof insertPointsSettingsSchema>;
+export type Badge = typeof badges.$inferSelect;
+export type InsertBadge = z.infer<typeof insertBadgeSchema>;
+export type UserBadge = typeof userBadges.$inferSelect;
+export type InsertUserBadge = z.infer<typeof insertUserBadgeSchema>;
+export type Project = typeof projects.$inferSelect;
+export type InsertProject = z.infer<typeof insertProjectSchema>;
+
+// API response types
+export type FinancialContributionWithUser = FinancialContribution & {
+  user: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  } | null;
+  project: {
+    id: string;
+    name: string;
+  } | null;
+};
+
+export type ActivityLogWithUser = ActivityLog & {
+  user: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  } | null;
+};
+
+export type UserBadgeWithBadge = UserBadge & {
+  badge: Badge | null;
+};
+
+export type ProjectWithCreator = Project & {
+  creator: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  } | null;
+};

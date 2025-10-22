@@ -44,6 +44,20 @@ import {
   type InsertPrayerTime,
   type ImportantDate,
   type InsertImportantDate,
+  type FinancialContribution,
+  type InsertFinancialContribution,
+  type ActivityLog,
+  type InsertActivityLog,
+  type EventAttendance,
+  type InsertEventAttendance,
+  type PointsSettings,
+  type InsertPointsSettings,
+  type Badge,
+  type InsertBadge,
+  type UserBadge,
+  type InsertUserBadge,
+  type Project,
+  type InsertProject,
   users,
   announcements,
   events,
@@ -65,7 +79,14 @@ import {
   marketplaceItems,
   productPurchaseRequests,
   prayerTimes,
-  importantDates
+  importantDates,
+  financialContributions,
+  activityLog,
+  eventAttendance,
+  pointsSettings,
+  badges,
+  userBadges,
+  projects
 } from "@shared/schema";
 import { db } from './db';
 import { eq, and, or, desc, asc, gt, sql, inArray } from 'drizzle-orm';
@@ -238,6 +259,56 @@ export interface IStorage {
   getAllImportantDates(): Promise<ImportantDate[]>;
   updateImportantDate(id: string, updates: Partial<InsertImportantDate>): Promise<ImportantDate | undefined>;
   deleteImportantDate(id: string): Promise<boolean>;
+
+  // Financial Contributions (Feature 1)
+  createFinancialContribution(contribution: InsertFinancialContribution): Promise<FinancialContribution>;
+  getFinancialContribution(id: string): Promise<FinancialContribution | undefined>;
+  getUserFinancialContributions(userId: string): Promise<FinancialContribution[]>;
+  getAllFinancialContributions(): Promise<FinancialContribution[]>;
+  updateFinancialContribution(id: string, updates: Partial<InsertFinancialContribution>): Promise<FinancialContribution | undefined>;
+  deleteFinancialContribution(id: string): Promise<boolean>;
+  getUserTotalDonations(userId: string): Promise<number>;
+
+  // Activity Log (Feature 1)
+  createActivityLog(log: InsertActivityLog): Promise<ActivityLog>;
+  getUserActivityLog(userId: string): Promise<ActivityLog[]>;
+  getAllActivityLogs(): Promise<ActivityLog[]>;
+
+  // Event Attendance (Feature 1)
+  createEventAttendance(attendance: InsertEventAttendance): Promise<EventAttendance>;
+  bulkCreateEventAttendance(attendances: InsertEventAttendance[]): Promise<EventAttendance[]>;
+  getEventAttendance(eventId: string): Promise<EventAttendance[]>;
+  getUserEventAttendance(userId: string): Promise<EventAttendance[]>;
+
+  // Points Settings (Feature 2)
+  getPointsSettings(): Promise<PointsSettings | undefined>;
+  updatePointsSettings(settings: Partial<InsertPointsSettings>): Promise<PointsSettings>;
+
+  // Badges (Feature 2)
+  createBadge(badge: InsertBadge): Promise<Badge>;
+  getBadge(id: string): Promise<Badge | undefined>;
+  getAllBadges(): Promise<Badge[]>;
+  updateBadge(id: string, updates: Partial<InsertBadge>): Promise<Badge | undefined>;
+  deleteBadge(id: string): Promise<boolean>;
+
+  // User Badges (Feature 2)
+  awardBadgeToUser(userId: string, badgeId: string): Promise<UserBadge>;
+  getUserBadges(userId: string): Promise<UserBadge[]>;
+  checkAndAwardBadges(userId: string): Promise<UserBadge[]>;
+
+  // Projects (Feature 4)
+  createProject(project: InsertProject): Promise<Project>;
+  getProject(id: string): Promise<Project | undefined>;
+  getAllProjects(): Promise<Project[]>;
+  getActiveProjects(): Promise<Project[]>;
+  updateProject(id: string, updates: Partial<InsertProject>): Promise<Project | undefined>;
+  deleteProject(id: string): Promise<boolean>;
+  updateProjectAmount(projectId: string, amount: number): Promise<Project | undefined>;
+
+  // User Statistics (Feature 2)
+  getUserTasksCompleted(userId: string): Promise<number>;
+  getUserEventsAttended(userId: string): Promise<number>;
+  recalculateUserPoints(userId: string): Promise<number>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1276,6 +1347,301 @@ export class DatabaseStorage implements IStorage {
   async deleteImportantDate(id: string): Promise<boolean> {
     const result = await db.delete(importantDates).where(eq(importantDates.id, id)).returning();
     return result.length > 0;
+  }
+
+  // Financial Contributions (Feature 1)
+  async createFinancialContribution(contribution: InsertFinancialContribution): Promise<FinancialContribution> {
+    const [contrib] = await db.insert(financialContributions).values(contribution).returning();
+    
+    // Update project amount if linked
+    if (contrib.projectId && contrib.amount) {
+      await this.updateProjectAmount(contrib.projectId, parseFloat(contrib.amount));
+    }
+
+    // Recalculate user points
+    await this.recalculateUserPoints(contrib.userId);
+    await this.checkAndAwardBadges(contrib.userId);
+    
+    return contrib;
+  }
+
+  async getFinancialContribution(id: string): Promise<FinancialContribution | undefined> {
+    const result = await db.select().from(financialContributions).where(eq(financialContributions.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getUserFinancialContributions(userId: string): Promise<FinancialContribution[]> {
+    return await db.select().from(financialContributions)
+      .where(eq(financialContributions.userId, userId))
+      .orderBy(desc(financialContributions.paymentDate));
+  }
+
+  async getAllFinancialContributions(): Promise<FinancialContribution[]> {
+    return await db.select().from(financialContributions).orderBy(desc(financialContributions.paymentDate));
+  }
+
+  async updateFinancialContribution(id: string, updates: Partial<InsertFinancialContribution>): Promise<FinancialContribution | undefined> {
+    const [contrib] = await db.update(financialContributions).set(updates).where(eq(financialContributions.id, id)).returning();
+    return contrib;
+  }
+
+  async deleteFinancialContribution(id: string): Promise<boolean> {
+    const result = await db.delete(financialContributions).where(eq(financialContributions.id, id)).returning();
+    return result.length > 0;
+  }
+
+  async getUserTotalDonations(userId: string): Promise<number> {
+    const contributions = await this.getUserFinancialContributions(userId);
+    return contributions.reduce((sum, c) => sum + parseFloat(c.amount || '0'), 0);
+  }
+
+  // Activity Log (Feature 1)
+  async createActivityLog(log: InsertActivityLog): Promise<ActivityLog> {
+    const [activity] = await db.insert(activityLog).values(log).returning();
+    
+    // Recalculate user points and check for badges
+    await this.recalculateUserPoints(activity.userId);
+    await this.checkAndAwardBadges(activity.userId);
+    
+    return activity;
+  }
+
+  async getUserActivityLog(userId: string): Promise<ActivityLog[]> {
+    return await db.select().from(activityLog)
+      .where(eq(activityLog.userId, userId))
+      .orderBy(desc(activityLog.createdAt));
+  }
+
+  async getAllActivityLogs(): Promise<ActivityLog[]> {
+    return await db.select().from(activityLog).orderBy(desc(activityLog.createdAt));
+  }
+
+  // Event Attendance (Feature 1)
+  async createEventAttendance(attendance: InsertEventAttendance): Promise<EventAttendance> {
+    const [attend] = await db.insert(eventAttendance).values(attendance).returning();
+    
+    // Get points settings
+    const settings = await this.getPointsSettings();
+    const points = settings?.pointsPerEvent || 20;
+    
+    // Log activity
+    const event = await this.getEvent(attend.eventId);
+    await this.createActivityLog({
+      userId: attend.userId,
+      activityType: 'event_attendance',
+      description: `Prisustvo na događaju: ${event?.name || 'Nepoznat događaj'}`,
+      points,
+      relatedEntityId: attend.eventId,
+    });
+    
+    return attend;
+  }
+
+  async bulkCreateEventAttendance(attendances: InsertEventAttendance[]): Promise<EventAttendance[]> {
+    const created: EventAttendance[] = [];
+    for (const att of attendances) {
+      const result = await this.createEventAttendance(att);
+      created.push(result);
+    }
+    return created;
+  }
+
+  async getEventAttendance(eventId: string): Promise<EventAttendance[]> {
+    return await db.select().from(eventAttendance).where(eq(eventAttendance.eventId, eventId));
+  }
+
+  async getUserEventAttendance(userId: string): Promise<EventAttendance[]> {
+    return await db.select().from(eventAttendance).where(eq(eventAttendance.userId, userId));
+  }
+
+  // Points Settings (Feature 2)
+  async getPointsSettings(): Promise<PointsSettings | undefined> {
+    const result = await db.select().from(pointsSettings).limit(1);
+    if (result.length === 0) {
+      // Create default settings
+      const [settings] = await db.insert(pointsSettings).values({
+        pointsPerChf: 1,
+        pointsPerTask: 50,
+        pointsPerEvent: 20,
+      }).returning();
+      return settings;
+    }
+    return result[0];
+  }
+
+  async updatePointsSettings(settings: Partial<InsertPointsSettings>): Promise<PointsSettings> {
+    const existing = await this.getPointsSettings();
+    if (!existing) {
+      const [newSettings] = await db.insert(pointsSettings).values(settings as InsertPointsSettings).returning();
+      return newSettings;
+    }
+    const [updated] = await db.update(pointsSettings).set(settings).where(eq(pointsSettings.id, existing.id)).returning();
+    return updated;
+  }
+
+  // Badges (Feature 2)
+  async createBadge(badge: InsertBadge): Promise<Badge> {
+    const [b] = await db.insert(badges).values(badge).returning();
+    return b;
+  }
+
+  async getBadge(id: string): Promise<Badge | undefined> {
+    const result = await db.select().from(badges).where(eq(badges.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getAllBadges(): Promise<Badge[]> {
+    return await db.select().from(badges);
+  }
+
+  async updateBadge(id: string, updates: Partial<InsertBadge>): Promise<Badge | undefined> {
+    const [badge] = await db.update(badges).set(updates).where(eq(badges.id, id)).returning();
+    return badge;
+  }
+
+  async deleteBadge(id: string): Promise<boolean> {
+    const result = await db.delete(badges).where(eq(badges.id, id)).returning();
+    return result.length > 0;
+  }
+
+  // User Badges (Feature 2)
+  async awardBadgeToUser(userId: string, badgeId: string): Promise<UserBadge> {
+    // Check if already awarded
+    const existing = await db.select().from(userBadges)
+      .where(and(eq(userBadges.userId, userId), eq(userBadges.badgeId, badgeId)))
+      .limit(1);
+    
+    if (existing.length > 0) {
+      return existing[0];
+    }
+    
+    const [ub] = await db.insert(userBadges).values({ userId, badgeId }).returning();
+    return ub;
+  }
+
+  async getUserBadges(userId: string): Promise<UserBadge[]> {
+    return await db.select().from(userBadges).where(eq(userBadges.userId, userId));
+  }
+
+  async checkAndAwardBadges(userId: string): Promise<UserBadge[]> {
+    const allBadges = await this.getAllBadges();
+    const awarded: UserBadge[] = [];
+    
+    for (const badge of allBadges) {
+      let qualifies = false;
+      
+      switch (badge.criteriaType) {
+        case 'donation_total': {
+          const total = await this.getUserTotalDonations(userId);
+          qualifies = total >= badge.criteriaValue;
+          break;
+        }
+        case 'tasks_completed': {
+          const count = await this.getUserTasksCompleted(userId);
+          qualifies = count >= badge.criteriaValue;
+          break;
+        }
+        case 'events_attended': {
+          const count = await this.getUserEventsAttended(userId);
+          qualifies = count >= badge.criteriaValue;
+          break;
+        }
+        case 'points_total': {
+          const user = await this.getUser(userId);
+          qualifies = (user?.totalPoints || 0) >= badge.criteriaValue;
+          break;
+        }
+      }
+      
+      if (qualifies) {
+        const ub = await this.awardBadgeToUser(userId, badge.id);
+        awarded.push(ub);
+      }
+    }
+    
+    return awarded;
+  }
+
+  // Projects (Feature 4)
+  async createProject(project: InsertProject): Promise<Project> {
+    const [p] = await db.insert(projects).values(project).returning();
+    return p;
+  }
+
+  async getProject(id: string): Promise<Project | undefined> {
+    const result = await db.select().from(projects).where(eq(projects.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getAllProjects(): Promise<Project[]> {
+    return await db.select().from(projects).orderBy(desc(projects.createdAt));
+  }
+
+  async getActiveProjects(): Promise<Project[]> {
+    return await db.select().from(projects).where(eq(projects.status, 'active')).orderBy(desc(projects.createdAt));
+  }
+
+  async updateProject(id: string, updates: Partial<InsertProject>): Promise<Project | undefined> {
+    const [project] = await db.update(projects).set(updates).where(eq(projects.id, id)).returning();
+    return project;
+  }
+
+  async deleteProject(id: string): Promise<boolean> {
+    const result = await db.delete(projects).where(eq(projects.id, id)).returning();
+    return result.length > 0;
+  }
+
+  async updateProjectAmount(projectId: string, amount: number): Promise<Project | undefined> {
+    const project = await this.getProject(projectId);
+    if (!project) return undefined;
+    
+    const currentAmount = parseFloat(project.currentAmount || '0');
+    const newAmount = currentAmount + amount;
+    
+    return await this.updateProject(projectId, { 
+      currentAmount: newAmount.toString() 
+    });
+  }
+
+  // User Statistics (Feature 2)
+  async getUserTasksCompleted(userId: string): Promise<number> {
+    const logs = await db.select({ count: sql<number>`count(*)` })
+      .from(activityLog)
+      .where(and(
+        eq(activityLog.userId, userId),
+        eq(activityLog.activityType, 'task_completed')
+      ));
+    return Number(logs[0]?.count ?? 0);
+  }
+
+  async getUserEventsAttended(userId: string): Promise<number> {
+    const result = await db.select({ count: sql<number>`count(*)` })
+      .from(eventAttendance)
+      .where(eq(eventAttendance.userId, userId));
+    return Number(result[0]?.count ?? 0);
+  }
+
+  async recalculateUserPoints(userId: string): Promise<number> {
+    const settings = await this.getPointsSettings();
+    if (!settings) return 0;
+    
+    // Points from donations
+    const totalDonations = await this.getUserTotalDonations(userId);
+    const donationPoints = Math.floor(totalDonations * settings.pointsPerChf);
+    
+    // Points from tasks
+    const tasksCompleted = await this.getUserTasksCompleted(userId);
+    const taskPoints = tasksCompleted * settings.pointsPerTask;
+    
+    // Points from events
+    const eventsAttended = await this.getUserEventsAttended(userId);
+    const eventPoints = eventsAttended * settings.pointsPerEvent;
+    
+    const totalPoints = donationPoints + taskPoints + eventPoints;
+    
+    await this.updateUser(userId, { totalPoints });
+    
+    return totalPoints;
   }
 }
 
