@@ -237,7 +237,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Check if user is editing their own profile or if they're an admin
       const isOwnProfile = currentUser.id === id;
-      const isAdmin = currentUser.role === 'Admin';
+      const isAdmin = currentUser.isAdmin || false;
       
       if (!isOwnProfile && !isAdmin) {
         return res.status(403).json({ message: "Admin privileges required" });
@@ -257,11 +257,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
         Object.assign(userData, filteredData);
         // Remove fields that users shouldn't be able to change
-        delete (userData as any).role;
-        delete (userData as any).points;
-        delete (userData as any).membershipStatus;
+        delete (userData as any).roles;
+        delete (userData as any).isAdmin;
+        delete (userData as any).totalPoints;
+        delete (userData as any).status;
         delete (userData as any).inactiveReason;
-        delete (userData as any).memberSince;
+        delete (userData as any).membershipDate;
         delete (userData as any).categories;
       }
       
