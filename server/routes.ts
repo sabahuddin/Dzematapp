@@ -2275,9 +2275,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/financial-contributions", requireAdmin, async (req, res) => {
+  app.post("/api/financial-contributions", requireAuth, async (req, res) => {
     try {
       const validated = insertFinancialContributionSchema.parse(req.body);
+      
+      // Non-admins can only create contributions for themselves
+      if (!req.user?.isAdmin && validated.userId !== req.user?.id) {
+        return res.status(403).json({ message: "You can only create contributions for yourself" });
+      }
+      
       const contribution = await storage.createFinancialContribution({
         ...validated,
         createdById: req.user!.id
@@ -2290,6 +2296,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.put("/api/financial-contributions/:id", requireAdmin, async (req, res) => {
+    try {
+      const validated = insertFinancialContributionSchema.partial().parse(req.body);
+      const contribution = await storage.updateFinancialContribution(req.params.id, validated);
+      if (!contribution) {
+        return res.status(404).json({ message: "Contribution not found" });
+      }
+      res.json(contribution);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update contribution" });
+    }
+  });
+
+  app.patch("/api/financial-contributions/:id", requireAdmin, async (req, res) => {
     try {
       const validated = insertFinancialContributionSchema.partial().parse(req.body);
       const contribution = await storage.updateFinancialContribution(req.params.id, validated);

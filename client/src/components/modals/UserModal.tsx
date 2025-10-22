@@ -466,7 +466,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                 type="tel"
                 value={formData.phone}
                 onChange={handleChange('phone')}
-                placeholder="+381 60 123 4567"
+                placeholder="+41 7x xxx xx xx"
                 data-testid="input-phone"
               />
             </Grid>

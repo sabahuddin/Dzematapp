@@ -77,8 +77,7 @@ export default function PointSettingsPage() {
       if (!settings || !settings.id) {
         throw new Error('Postavke bodova nisu učitane');
       }
-      const response = await apiRequest('PUT', `/api/point-settings/${settings.id}`, data);
-      return response.json();
+      return await apiRequest(`/api/point-settings/${settings.id}`, 'PUT', data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/point-settings'] });

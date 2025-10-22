@@ -42,6 +42,7 @@ export default function FinancesPage() {
   const { toast } = useToast();
   
   const [searchTerm, setSearchTerm] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState<string>('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedContribution, setSelectedContribution] = useState<FinancialContribution | null>(null);
 
@@ -87,11 +88,9 @@ export default function FinancesPage() {
       const payload = currentUser?.isAdmin ? data : { ...data, userId: currentUser?.id || '' };
       
       if (selectedContribution) {
-        const response = await apiRequest('PUT', `/api/financial-contributions/${selectedContribution.id}`, payload);
-        return response.json();
+        return await apiRequest(`/api/financial-contributions/${selectedContribution.id}`, 'PATCH', payload);
       } else {
-        const response = await apiRequest('POST', '/api/financial-contributions', payload);
-        return response.json();
+        return await apiRequest('/api/financial-contributions', 'POST', payload);
       }
     },
     onSuccess: () => {
@@ -111,7 +110,7 @@ export default function FinancesPage() {
   // Delete contribution mutation
   const deleteContributionMutation = useMutation({
     mutationFn: async (id: string) => {
-      await apiRequest('DELETE', `/api/financial-contributions/${id}`);
+      return await apiRequest(`/api/financial-contributions/${id}`, 'DELETE');
     },
     onSuccess: () => {
       // Invalidate both query keys
@@ -170,6 +169,12 @@ export default function FinancesPage() {
   };
 
   const filteredContributions = ((contributionsQuery.data as FinancialContribution[]) || []).filter((contribution: FinancialContribution) => {
+    // Category filter
+    if (categoryFilter && contribution.purpose !== categoryFilter) {
+      return false;
+    }
+    
+    // Search filter
     if (!searchTerm) return true;
     
     const user = (usersQuery.data as User[] || []).find(u => u.id === contribution.userId);
@@ -222,14 +227,32 @@ export default function FinancesPage() {
       <Card>
         {currentUser?.isAdmin && (
           <Box sx={{ p: 3, borderBottom: '1px solid #e0e0e0' }}>
-            <TextField
-              variant="outlined"
-              placeholder="Pretraži po korisniku, opisu ili tipu..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              fullWidth
-              data-testid="input-search"
-            />
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <TextField
+                variant="outlined"
+                placeholder="Pretraži po korisniku, opisu ili tipu..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                fullWidth
+                data-testid="input-search"
+              />
+              <TextField
+                select
+                variant="outlined"
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value)}
+                sx={{ minWidth: 200 }}
+                SelectProps={{ native: true }}
+                data-testid="select-category-filter"
+              >
+                <option value="">Sve kategorije</option>
+                <option value="Članarina">Članarina</option>
+                <option value="Donacija">Donacija</option>
+                <option value="Vakuf">Vakuf</option>
+                <option value="Sergija">Sergija</option>
+                <option value="Ostalo">Ostalo</option>
+              </TextField>
+            </Box>
           </Box>
         )}
 
