@@ -2452,7 +2452,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Activity Log Routes (Feature 1)
-  app.get("/api/activity-log/user/:userId", requireAuth, async (req, res) => {
+  app.get("/api/activity-logs/user/:userId", requireAuth, async (req, res) => {
     try {
       // Only admins or the user themselves can view activity log
       if (req.user?.id !== req.params.userId && !req.user?.isAdmin) {
@@ -2465,7 +2465,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/activity-log", requireAdmin, async (req, res) => {
+  app.get("/api/activity-logs", requireAdmin, async (req, res) => {
     try {
       const logs = await storage.getAllActivityLogs();
       res.json(logs);
