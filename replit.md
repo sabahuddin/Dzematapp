@@ -10,9 +10,10 @@ Preferred communication style: Simple, everyday language.
 
 ## Bugfixes
 - **Financial Contributions**: Members can now only view their contributions (no create/edit/delete). Added PATCH endpoint for admin compatibility. Fixed frontend to hide "Dodaj Uplatu" button for non-admins.
-- **apiRequest Signature**: Corrected argument order in FinancesPage and PointSettingsPage to use (url, method, data) instead of (method, url, data).
+- **apiRequest Signature**: Fixed critical bug in queryClient.ts where apiRequest function signature was (method, url, data) but all callers used (url, method, data). Changed signature to match usage pattern, fixing 401 errors on all POST/PATCH/DELETE operations.
 - **Phone Placeholder**: Updated to Swiss format (+41 7x xxx xx xx) in user profile modal.
 - **QuickAccessSettingsModal State Sync**: Fixed critical bug where modal didn't reflect saved shortcuts. Added useEffect to sync selectedShortcuts with currentShortcuts when modal opens or preferences change.
+- **Project Creation**: Fixed insertProjectSchema to omit createdById field (auto-populated by backend). Updated storage interface type signatures. Added proper form validation for project fields.
 
 ## Features
 - **Category Filter**: Added dropdown filter in Finances page for filtering contributions by purpose (Članarina, Donacija, Vakuf, Sergija, Ostalo).
