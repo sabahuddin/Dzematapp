@@ -536,6 +536,13 @@ export const projects = pgTable("projects", {
   completedAt: timestamp("completed_at"),
 });
 
+export const userPreferences = pgTable("user_preferences", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().unique().references(() => users.id),
+  quickAccessShortcuts: text("quick_access_shortcuts").array().default(sql`ARRAY[]::text[]`), // Array of route paths like ['/announcements', '/events', '/tasks']
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 export const insertPrayerTimeSchema = createInsertSchema(prayerTimes).omit({
   id: true,
 });
@@ -594,6 +601,11 @@ export const insertProjectSchema = createInsertSchema(projects).omit({
   completedAt: true,
 });
 
+export const insertUserPreferencesSchema = createInsertSchema(userPreferences).omit({
+  id: true,
+  updatedAt: true,
+});
+
 // Types
 export type FinancialContribution = typeof financialContributions.$inferSelect;
 export type InsertFinancialContribution = z.infer<typeof insertFinancialContributionSchema>;
@@ -609,6 +621,8 @@ export type UserBadge = typeof userBadges.$inferSelect;
 export type InsertUserBadge = z.infer<typeof insertUserBadgeSchema>;
 export type Project = typeof projects.$inferSelect;
 export type InsertProject = z.infer<typeof insertProjectSchema>;
+export type UserPreferences = typeof userPreferences.$inferSelect;
+export type InsertUserPreferences = z.infer<typeof insertUserPreferencesSchema>;
 
 // API response types
 export type FinancialContributionWithUser = FinancialContribution & {
