@@ -635,6 +635,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
       
       const rsvp = await storage.createEventRsvp(rsvpData);
+
+      // Log activity
+      const pointsSettings = await storage.getPointsSettings();
+      const points = pointsSettings?.pointsPerEvent || 20;
+      
+      await storage.createActivityLog({
+        userId: req.user!.id,
+        activityType: 'event_rsvp',
+        description: `RSVP na događaj: ${event.name}`,
+        points,
+        relatedEntityId: id,
+      });
+
       res.json(rsvp);
     } catch (error) {
       res.status(400).json({ message: "Failed to create RSVP" });
