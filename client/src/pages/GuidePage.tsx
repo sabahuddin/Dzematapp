@@ -4,15 +4,11 @@ import {
   Box,
   Card,
   CardContent,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Chip,
   Button,
   Divider,
+  Grid,
 } from '@mui/material';
 import {
-  ExpandMore,
   Dashboard,
   People,
   Campaign,
@@ -43,7 +39,7 @@ export default function GuidePage() {
 
   const sections = [
     {
-      icon: <Dashboard sx={{ fontSize: 32 }} />,
+      icon: <Dashboard sx={{ fontSize: 28 }} />,
       title: 'Dashboard (Kontrolna ploča)',
       color: '#1976d2',
       description: 'Dashboard je centralno mjesto aplikacije gdje svaki korisnik dobiva personalizovani pregled najvažnijih informacija. Ovo je prva stranica koju vidite nakon prijavljivanja i služi kao brzi pregled svih aktivnosti u džematu.',
@@ -58,7 +54,7 @@ export default function GuidePage() {
       member: 'Članovi vide personalizovani dashboard sa svojim sekcijama, dodijeljenim zadacima, nepročitanim porukama, nadolazećim događajima i najnovijim obavijestima. Svaki član može prilagoditi svoj Quick Access widget sa najčešće korištenim funkcijama.',
     },
     {
-      icon: <People sx={{ fontSize: 32 }} />,
+      icon: <People sx={{ fontSize: 28 }} />,
       title: 'Korisnici',
       color: '#2e7d32',
       description: 'Modul za upravljanje svim članovima džemata i njihovim porodičnim vezama. Ovdje se čuvaju detaljni profili članova sa kontakt informacijama, kategorijama pripadnosti i historijom aktivnosti. Sistem podržava kreiranje porodičnih veza između članova.',
@@ -71,10 +67,10 @@ export default function GuidePage() {
         'Praćenje datuma učlanjenja i razloga neaktivnosti',
       ],
       admin: 'Admin ima punu kontrolu nad korisnicima: može kreirati nove naloge, uređivati sve podatke (ime, prezime, email, telefon, adresu, zanimanje), dodjeljivati uloge i kategorije, postavljati status aktivnosti, kreirati porodične veze između članova. Admin vidi sve članove i može ih filtrirati po različitim kriterijima. Sistem također podržava bulk upload korisnika putem Excel fajla.',
-      member: 'Svaki član može pregledati i urediti svoj profil - promijeniti svoje osnovne podatke kao što su ime, prezime, email, telefon, zanimanje i adresu. Članovi mogu vidjeti profile drugih članova (zavisno od postavki privatnosti) ali ne mogu mijenjati tuđe podatke niti dodjeljivati uloge.',
+      member: 'Svaki član može pregledati i urediti svoj profil - promijeniti svoje osnovne podatke kao što su ime, prezime, email, telefon, zanimanje i adresa. Članovi mogu vidjeti profile drugih članova (zavisno od postavki privatnosti) ali ne mogu mijenjati tuđe podatke niti dodjeljivati uloge.',
     },
     {
-      icon: <Campaign sx={{ fontSize: 32 }} />,
+      icon: <Campaign sx={{ fontSize: 28 }} />,
       title: 'Obavijesti',
       color: '#ed6c02',
       description: 'Sistem za objavljivanje važnih informacija i komunikaciju sa članovima džemata. Obavijesti mogu biti opće ili kategorizovane, sa mogućnošću formatiranja teksta, dodavanja slika i planiranja objavljivanja.',
@@ -91,7 +87,7 @@ export default function GuidePage() {
       all: 'Gosti (neprijavljeni korisnici) mogu vidjeti sve objavljene obavijesti što omogućava informisanje šire zajednice bez potrebe za prijavljivanjem u sistem.',
     },
     {
-      icon: <Event sx={{ fontSize: 32 }} />,
+      icon: <Event sx={{ fontSize: 28 }} />,
       title: 'Događaji',
       color: '#9c27b0',
       description: 'Kompletni sistem za upravljanje događajima u džematu sa kalendarom, RSVP funkcionalnostima i važnim datumima. Omogućava organizaciju iftara, mevluda, edukativnih programa, sportskih aktivnosti i drugih društvenih događaja.',
@@ -109,7 +105,7 @@ export default function GuidePage() {
       all: 'Gosti mogu vidjeti sve objavljene događaje što omogućava uključivanje šire zajednice. Gosti mogu potvrditi dolazak na javne događaje bez prijavljivanja.',
     },
     {
-      icon: <Workspaces sx={{ fontSize: 32 }} />,
+      icon: <Workspaces sx={{ fontSize: 28 }} />,
       title: 'Sekcije (Radne grupe)',
       color: '#0097a7',
       description: 'Sistem za organizaciju članova u radne grupe prema aktivnostima i područjima rada. Svaka sekcija može imati svoje zadatke, moderatore i članove. Sekcije mogu biti javne (vidljive svima) ili privatne (pristup samo odobrenim članovima).',
@@ -128,7 +124,7 @@ export default function GuidePage() {
       member: 'Članovi vide sve sekcije u kojima su članovi, mogu pregledati zadatke dodijeljene njima, označiti zadatke kao završene (nakon čega čekaju admin/moderator odobrenje) i zaraditi bodove. Članovi mogu zatražiti pristup privatnim sekcijama, a admin/moderator odobrava zahtjeve.',
     },
     {
-      icon: <Mail sx={{ fontSize: 32 }} />,
+      icon: <Mail sx={{ fontSize: 28 }} />,
       title: 'Poruke',
       color: '#c2185b',
       description: 'Interni messaging sistem koji omogućava administraciji da šalje poruke članovima. Poruke mogu biti poslane svim članovima odjednom ili targetirane prema specifičnim kategorijama (Muškarci, Žene, Roditelji, Djeca).',
@@ -144,7 +140,7 @@ export default function GuidePage() {
       member: 'Članovi primaju poruke od administracije u svom inbox-u. Sistem automatski notificira članove o novim porukama pokazujući crveni bedž sa brojem nepročitanih. Članovi mogu čitati, arhivirati i pretraživati svoje poruke. Ne mogu slati poruke drugim članovima - ovo je jednosmjerni komunikacijski kanal od administracije ka članovima.',
     },
     {
-      icon: <QuestionAnswer sx={{ fontSize: 32 }} />,
+      icon: <QuestionAnswer sx={{ fontSize: 28 }} />,
       title: 'Pitanja za Imama',
       color: '#f57c00',
       description: 'Privatni sistem koji omogućava članovima da postavljaju islamska pitanja imamu džemata. Svaki član može postaviti pitanje, pratiti njegov status i dobiti odgovor. Pitanja su privatna - svaki član vidi samo svoja pitanja.',
@@ -160,7 +156,7 @@ export default function GuidePage() {
       member: 'Članovi mogu postaviti novo pitanje sa detaljnim opisom. Primaju notifikaciju kada admin arhivira njihovo pitanje što označava da je odgovor dat. Svaki član vidi samo svoja pitanja - ne može vidjeti šta drugi članovi pitaju. Ovo osigurava privatnost pri postavljanju ličnih ili osjetljivih islamskih pitanja.',
     },
     {
-      icon: <Assignment sx={{ fontSize: 32 }} />,
+      icon: <Assignment sx={{ fontSize: 28 }} />,
       title: 'Zahtjevi i Prijave',
       color: '#5e35b1',
       description: 'Centralni sistem za podnošenje i obradu različitih vrsta zahtjeva članova prema džematu. Uključuje zahtjeve za materijalnu pomoć, organizaciju vjenčanja, rođenja, smrti, kao i prijave za novo članstvo.',
@@ -177,7 +173,7 @@ export default function GuidePage() {
       all: 'Gosti (neprijavljeni korisnici) mogu podnijeti prijavu za članstvo u džematu bez potrebe za postojećim nalogom. Unose svoje osnovne podatke (ime, prezime, email, telefon) i razlog prijave. Admin onda procesira prijavu i kreira korisnički nalog ako je prijava odobrena.',
     },
     {
-      icon: <ShoppingBag sx={{ fontSize: 32 }} />,
+      icon: <ShoppingBag sx={{ fontSize: 28 }} />,
       title: 'DžematShop (Prodavnica)',
       color: '#c62828',
       description: 'Interni marketplace gdje članovi mogu kupovati i prodavati artikle unutar džemata. Admin objavljuje artikle u ime članova, a zainteresovani kupci kontaktiraju prodavca direktno. Sve cijene su u CHF (švicarski franak).',
@@ -194,7 +190,7 @@ export default function GuidePage() {
       member: 'Članovi pregledaju sve aktivne proizvode, mogu filtrirati po kategorijama i vidjeti detaljne opise sa slikama. Kada pronađu artikal koji ih zanima, klikaju na "Kupi" što otvara kontakt informacije prodavca. Član onda kontaktira prodavca direktno (telefonom, emailom ili uživo) da dogovore detalje kupovine. Sistem notificira članove o novim proizvodima.',
     },
     {
-      icon: <Schedule sx={{ fontSize: 32 }} />,
+      icon: <Schedule sx={{ fontSize: 28 }} />,
       title: 'Vaktija (Prayer Times)',
       color: '#00796b',
       description: 'Prikaz islamskih vremena klanjanja (namaza) za svaki dan. Vaktije se mogu učitati automatski iz CSV fajla sa SwissMosque.ch web stranice i prikazuju se organizovano po mjesecima.',
@@ -211,7 +207,7 @@ export default function GuidePage() {
       all: 'Svi korisnici (uključujući goste) imaju pristup vaktijama. To znači da i ljudi koji nisu članovi džemata mogu provjeriti vremena klanjanja, što čini informaciju javno dostupnom široj zajednici.',
     },
     {
-      icon: <AccountBalance sx={{ fontSize: 32 }} />,
+      icon: <AccountBalance sx={{ fontSize: 28 }} />,
       title: 'Finansije',
       color: '#558b2f',
       description: 'Evidencija svih finansijskih priloga članova džemata. Sistem omogućava praćenje uplata, kategorizaciju po svrsi i povezivanje sa projektima. Sve transakcije se evidentiraju i čuvaju u bazi podataka.',
@@ -228,7 +224,7 @@ export default function GuidePage() {
       member: 'Članovi mogu pregledati samo svoje uplate i njihovu historiju. Vide koliko su ukupno uplatili, po kojim kategorijama i koji projekti su podržani njihovim uplatama. Ne mogu dodavati, mijenjati ili brisati uplate - to može samo admin. Članovi vide bodove koje su zaradili kroz svoje finansijske priloge.',
     },
     {
-      icon: <FolderOpen sx={{ fontSize: 32 }} />,
+      icon: <FolderOpen sx={{ fontSize: 28 }} />,
       title: 'Projekti',
       color: '#6a1b9a',
       description: 'Upravljanje većim projektima džemata koji zahtijevaju sakupljanje sredstava. Svaki projekat ima ciljani iznos, trenutni napredak i mogućnost povezivanja finansijskih priloga direktno sa projektom.',
@@ -245,7 +241,7 @@ export default function GuidePage() {
       member: 'Članovi pregledaju sve projekte džemata, vide napredak sakupljanja sredstava i mogu se informisati o svrsi projekta. Kada član uplati novac i admin ga poveže sa projektom, to se evidentira kao doprinos projektu i član dobija posebnu aktivnost u Activity Log-u. Članovi vide transparentan prikaz kako se njihovi prilozi koriste.',
     },
     {
-      icon: <Timeline sx={{ fontSize: 32 }} />,
+      icon: <Timeline sx={{ fontSize: 28 }} />,
       title: 'Aktivnosti (Activity Log)',
       color: '#455a64',
       description: 'Kompletna evidencija svih aktivnosti članova u aplikaciji. Sistem automatski prati ko je šta uradio, kada i koliko bodova je zaradio. Ovo omogućava transparentnost i gamifikaciju kroz sistem nagrada.',
@@ -262,7 +258,7 @@ export default function GuidePage() {
       member: 'Članovi vide svoju ličnu historiju aktivnosti - šta su sve radili u aplikaciji i koliko bodova su zaradili za svaku aktivnost. Ovo uključuje završene zadatke, prisustva na događajima, finansijske priloge i doprinose projektima. Članovi mogu pratiti svoj napredak i vidjeti koliko su aktivni u džematu.',
     },
     {
-      icon: <WorkspacePremium sx={{ fontSize: 32 }} />,
+      icon: <WorkspacePremium sx={{ fontSize: 28 }} />,
       title: 'Značke (Badges)',
       color: '#f9a825',
       description: 'Sistem nagrada i priznanja za aktivne članove džemata. Značke se dodjeljuju automatski (na osnovu postignuća) ili ručno (od strane admina) za poseban doprinos zajednici.',
@@ -279,7 +275,7 @@ export default function GuidePage() {
       member: 'Članovi automatski dobijaju značke kada ispune postavljene uslove. Primaju notifikaciju kada osvoje novu značku i mogu vidjeti sve svoje značke na profilu. Značke služe kao motivacija za aktivno učešće u životu džemata i vidljivo su priznanje za njihov doprinos zajednici.',
     },
     {
-      icon: <EmojiEvents sx={{ fontSize: 32 }} />,
+      icon: <EmojiEvents sx={{ fontSize: 28 }} />,
       title: 'Sistem Bodova',
       color: '#d84315',
       description: 'Gamifikacijski sistem koji nagrađuje aktivnost članova kroz dodjeljivanje bodova. Bodovi se dodjeljuju automatski za različite aktivnosti i mogu se koristiti za rangiranje članova ili dodjelu posebnih privilegija.',
@@ -296,7 +292,7 @@ export default function GuidePage() {
       member: 'Članovi automatski sakupljaju bodove kroz svoje aktivnosti. Svaki put kada prisustvuju događaju, završe zadatak ili daju finansijski prilog, dobijaju određen broj bodova. Vide svoj ukupan broj bodova na profilu i poziciju na leaderboard-u. Bodovi služe kao motivacija za aktivnije učešće i daju vidljivost doprinosu svakog člana.',
     },
     {
-      icon: <Settings sx={{ fontSize: 32 }} />,
+      icon: <Settings sx={{ fontSize: 28 }} />,
       title: 'Postavke',
       color: '#616161',
       description: 'Konfiguracija osnovnih informacija o džematu, postavki aplikacije i ličnih podataka korisnika. Ovdje se nalaze sve administrativne postavke koje kontrolišu kako aplikacija funkcioniše.',
@@ -360,323 +356,303 @@ export default function GuidePage() {
             .page-break {
               page-break-before: always;
             }
-            .MuiAccordion-root {
-              box-shadow: none !important;
-              border: 1px solid #e0e0e0 !important;
+            .section-block {
               page-break-inside: avoid;
-            }
-            .MuiAccordionSummary-root {
-              background-color: #f5f5f5 !important;
-            }
-            .MuiAccordionDetails-root {
-              padding: 20px !important;
             }
           }
         `}
       </style>
 
       {/* Header */}
+      <Box sx={{ mb: 4, textAlign: 'center' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, mb: 2 }}>
+          <Info sx={{ fontSize: 48, color: '#1976d2' }} />
+          <Typography variant="h3" sx={{ fontWeight: 700, color: '#1a237e' }}>
+            Vodič kroz DžematApp
+          </Typography>
+        </Box>
+        <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 3 }}>
+          Kompletno uputstvo za korištenje aplikacije
+        </Typography>
+        <Button
+          variant="contained"
+          startIcon={<PictureAsPdf />}
+          onClick={handlePrintPDF}
+          className="no-print"
+          sx={{ 
+            textTransform: 'none',
+            bgcolor: '#1976d2',
+            '&:hover': { bgcolor: '#1565c0' }
+          }}
+          data-testid="button-download-pdf"
+        >
+          Preuzmi PDF
+        </Button>
+      </Box>
+
+      {/* Introduction */}
       <Box sx={{ mb: 5 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Typography variant="h5" sx={{ fontWeight: 700, mb: 2, color: '#1a237e' }}>
+          O aplikaciji
+        </Typography>
+        <Typography variant="body1" sx={{ lineHeight: 1.8, mb: 2 }}>
+          DžematApp je sveobuhvatna web aplikacija razvijena za modernu administraciju džemata. 
+          Aplikacija omogućava efikasno upravljanje svim aspektima džemata na jednom mjestu - od 
+          evidencije članova i finansija, preko organizacije događaja i sekcija, do komunikacije 
+          sa članovima i praćenja njihove aktivnosti.
+        </Typography>
+        <Typography variant="body1" sx={{ lineHeight: 1.8 }}>
+          Sistem koristi moderan dizajn, intuitivan interfejs i podržava notifikacije u realnom 
+          vremenu. Aplikacija je dostupna sa bilo kojeg uređaja preko web pretraživača, a podaci 
+          se sigurno čuvaju u bazi podataka sa automatskim backup-om.
+        </Typography>
+      </Box>
+
+      {/* Roles */}
+      <Box sx={{ mb: 5 }}>
+        <Typography variant="h5" sx={{ fontWeight: 700, mb: 2, color: '#1a237e' }}>
+          Uloge korisnika
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+          Aplikacija podržava četiri različite uloge sa različitim nivoima pristupa
+        </Typography>
+        {roles.map((role, index) => (
+          <Box key={role.name} sx={{ mb: 3 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
+              <Box
+                sx={{
+                  bgcolor: role.color,
+                  color: 'white',
+                  px: 2,
+                  py: 0.5,
+                  borderRadius: 1,
+                  fontWeight: 600,
+                  minWidth: 180,
+                }}
+              >
+                {role.name}
+              </Box>
+            </Box>
+            <Typography variant="body1" sx={{ lineHeight: 1.8, mb: 0.5 }}>
+              {role.description}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+              <strong>Pristup:</strong> {role.permissions}
+            </Typography>
+            {index < roles.length - 1 && <Divider sx={{ mt: 2 }} />}
+          </Box>
+        ))}
+      </Box>
+
+      {/* Table of Contents */}
+      <Box sx={{ mb: 5 }} className="page-break">
+        <Typography variant="h5" sx={{ fontWeight: 700, mb: 3, color: '#1a237e' }}>
+          Sadržaj - Moduli aplikacije
+        </Typography>
+        <Grid container spacing={2}>
+          {sections.map((section, index) => (
+            <Grid item xs={12} sm={6} key={index}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                <Box
+                  sx={{
+                    bgcolor: section.color,
+                    borderRadius: 1.5,
+                    p: 1,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    minWidth: 40,
+                    minHeight: 40,
+                  }}
+                >
+                  {section.icon}
+                </Box>
+                <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                  {section.title}
+                </Typography>
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+
+      {/* Sections - Full Width */}
+      <Typography variant="h5" sx={{ fontWeight: 700, mb: 4, color: '#1a237e' }} className="page-break">
+        Detaljno objašnjenje modula
+      </Typography>
+
+      {sections.map((section, index) => (
+        <Box key={index} className="section-block" sx={{ mb: 5 }}>
+          {/* Section Header */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
             <Box
               sx={{
-                bgcolor: '#1976d2',
+                bgcolor: section.color,
                 borderRadius: 2,
                 p: 1.5,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                color: 'white',
               }}
             >
-              <Info sx={{ fontSize: 40, color: 'white' }} />
+              {section.icon}
             </Box>
-            <Box>
-              <Typography variant="h4" sx={{ fontWeight: 700, color: '#1a237e' }}>
-                Vodič kroz DžematApp
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                Kompletno uputstvo za korištenje aplikacije
-              </Typography>
-            </Box>
+            <Typography variant="h5" sx={{ fontWeight: 700, color: '#1a237e' }}>
+              {section.title}
+            </Typography>
           </Box>
-          <Button
-            variant="contained"
-            startIcon={<PictureAsPdf />}
-            onClick={handlePrintPDF}
-            className="no-print"
-            sx={{ 
-              textTransform: 'none',
-              bgcolor: '#1976d2',
-              '&:hover': { bgcolor: '#1565c0' }
-            }}
-            data-testid="button-download-pdf"
-          >
-            Preuzmi PDF
-          </Button>
-        </Box>
-        <Card 
-          sx={{ 
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            color: 'white',
-            borderRadius: 3
-          }}
-        >
-          <CardContent sx={{ p: 3 }}>
-            <Typography variant="h6" sx={{ fontWeight: 600, mb: 1.5 }}>
-              O aplikaciji
-            </Typography>
-            <Typography variant="body1" sx={{ lineHeight: 1.8, opacity: 0.95, mb: 2 }}>
-              DžematApp je sveobuhvatna web aplikacija razvijena za modernu administraciju džemata. 
-              Aplikacija omogućava efikasno upravljanje svim aspektima džemata na jednom mjestu - od 
-              evidencije članova i finansija, preko organizacije događaja i sekcija, do komunikacije 
-              sa članovima i praćenja njihove aktivnosti.
-            </Typography>
-            <Typography variant="body1" sx={{ lineHeight: 1.8, opacity: 0.95 }}>
-              Sistem koristi moderan dizajn, intuitivan interfejs i podržava notifikacije u realnom 
-              vremenu. Aplikacija je dostupna sa bilo kojeg uređaja preko web pretraživača, a podaci 
-              se sigurno čuvaju u bazi podataka sa automatskim backup-om.
-            </Typography>
-          </CardContent>
-        </Card>
-      </Box>
 
-      {/* Roles Section */}
-      <Card sx={{ mb: 5, borderRadius: 3, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
-        <CardContent sx={{ p: 3 }}>
-          <Typography variant="h5" sx={{ fontWeight: 700, mb: 1.5, color: '#1a237e' }}>
-            Uloge korisnika
+          {/* Description */}
+          <Typography variant="body1" sx={{ lineHeight: 1.8, mb: 2 }}>
+            {section.description}
           </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-            Aplikacija podržava četiri različite uloge sa različitim nivoima pristupa
-          </Typography>
-          <Box sx={{ display: 'grid', gap: 3 }}>
-            {roles.map((role, index) => (
-              <Box key={role.name}>
-                <Box sx={{ display: 'flex', alignItems: 'start', gap: 2, mb: 1.5 }}>
-                  <Chip
-                    label={role.name}
-                    sx={{
-                      bgcolor: role.color,
-                      color: 'white',
-                      fontWeight: 600,
-                      minWidth: 180,
-                      height: 32,
-                      fontSize: '0.875rem',
-                    }}
-                  />
-                  <Box sx={{ flex: 1 }}>
-                    <Typography variant="body1" sx={{ lineHeight: 1.7, mb: 1 }}>
-                      {role.description}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
-                      <strong>Pristup:</strong> {role.permissions}
-                    </Typography>
-                  </Box>
-                </Box>
-                {index < roles.length - 1 && <Divider sx={{ mt: 2 }} />}
-              </Box>
-            ))}
-          </Box>
-        </CardContent>
-      </Card>
 
-      {/* Modules Section */}
-      <Box sx={{ mb: 3 }} className="page-break">
-        <Typography variant="h5" sx={{ fontWeight: 700, mb: 1, color: '#1a237e' }}>
-          Moduli aplikacije
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-          Detaljno objašnjenje svih funkcionalnosti i mogućnosti aplikacije
-        </Typography>
-      </Box>
-
-      {sections.map((section, index) => (
-        <Accordion
-          key={index}
-          defaultExpanded
-          sx={{
-            mb: 3,
-            '&:before': { display: 'none' },
-            borderRadius: '12px !important',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-            overflow: 'hidden',
-          }}
-        >
-          <AccordionSummary
-            expandIcon={<ExpandMore className="no-print" />}
-            sx={{
-              minHeight: 72,
-              bgcolor: '#f8f9fa',
-              '& .MuiAccordionSummary-content': {
-                my: 2,
-              }
-            }}
-          >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, width: '100%' }}>
-              <Box
-                sx={{
-                  bgcolor: section.color,
-                  borderRadius: 2,
-                  p: 1.5,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'white',
-                }}
-              >
-                {section.icon}
-              </Box>
-              <Typography variant="h6" sx={{ fontWeight: 600, color: '#1a237e' }}>
-                {section.title}
+          {/* Features */}
+          {section.features && (
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1.5 }}>
+                Ključne funkcionalnosti:
               </Typography>
-            </Box>
-          </AccordionSummary>
-          <AccordionDetails sx={{ bgcolor: 'white', pt: 3, pb: 3 }}>
-            <Typography variant="body1" sx={{ lineHeight: 1.8, mb: 3, color: '#424242' }}>
-              {section.description}
-            </Typography>
-
-            {section.features && (
-              <Box sx={{ mb: 3, pl: 2 }}>
-                <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1.5, color: '#1a237e' }}>
-                  Ključne funkcionalnosti:
+              {section.features.map((feature, idx) => (
+                <Typography key={idx} variant="body2" sx={{ mb: 0.8, lineHeight: 1.7, pl: 2 }}>
+                  • {feature}
                 </Typography>
-                {section.features.map((feature, idx) => (
-                  <Typography key={idx} variant="body2" sx={{ mb: 1, lineHeight: 1.7 }}>
-                    • {feature}
-                  </Typography>
-                ))}
+              ))}
+            </Box>
+          )}
+
+          <Divider sx={{ my: 2.5 }} />
+
+          {/* Roles */}
+          <Box sx={{ display: 'grid', gap: 2.5 }}>
+            {section.admin && (
+              <Box>
+                <Box
+                  sx={{
+                    bgcolor: '#d32f2f',
+                    color: 'white',
+                    px: 1.5,
+                    py: 0.5,
+                    borderRadius: 1,
+                    fontWeight: 600,
+                    display: 'inline-block',
+                    mb: 1,
+                  }}
+                >
+                  Administratori
+                </Box>
+                <Typography variant="body1" sx={{ lineHeight: 1.8 }}>
+                  {section.admin}
+                </Typography>
               </Box>
             )}
+            {section.moderator && (
+              <Box>
+                <Box
+                  sx={{
+                    bgcolor: '#f57c00',
+                    color: 'white',
+                    px: 1.5,
+                    py: 0.5,
+                    borderRadius: 1,
+                    fontWeight: 600,
+                    display: 'inline-block',
+                    mb: 1,
+                  }}
+                >
+                  Moderatori
+                </Box>
+                <Typography variant="body1" sx={{ lineHeight: 1.8 }}>
+                  {section.moderator}
+                </Typography>
+              </Box>
+            )}
+            {section.member && (
+              <Box>
+                <Box
+                  sx={{
+                    bgcolor: '#388e3c',
+                    color: 'white',
+                    px: 1.5,
+                    py: 0.5,
+                    borderRadius: 1,
+                    fontWeight: 600,
+                    display: 'inline-block',
+                    mb: 1,
+                  }}
+                >
+                  Članovi
+                </Box>
+                <Typography variant="body1" sx={{ lineHeight: 1.8 }}>
+                  {section.member}
+                </Typography>
+              </Box>
+            )}
+            {section.all && (
+              <Box>
+                <Box
+                  sx={{
+                    bgcolor: '#1976d2',
+                    color: 'white',
+                    px: 1.5,
+                    py: 0.5,
+                    borderRadius: 1,
+                    fontWeight: 600,
+                    display: 'inline-block',
+                    mb: 1,
+                  }}
+                >
+                  Svi korisnici (uključujući goste)
+                </Box>
+                <Typography variant="body1" sx={{ lineHeight: 1.8 }}>
+                  {section.all}
+                </Typography>
+              </Box>
+            )}
+          </Box>
 
-            <Divider sx={{ my: 3 }} />
-
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-              {section.admin && (
-                <Box>
-                  <Chip
-                    label="Administratori"
-                    size="small"
-                    sx={{ 
-                      bgcolor: '#d32f2f', 
-                      color: 'white', 
-                      mb: 1.5,
-                      fontWeight: 600,
-                      height: 28
-                    }}
-                  />
-                  <Typography variant="body1" sx={{ lineHeight: 1.8, color: '#424242' }}>
-                    {section.admin}
-                  </Typography>
-                </Box>
-              )}
-              {section.moderator && (
-                <Box>
-                  <Chip
-                    label="Moderatori"
-                    size="small"
-                    sx={{ 
-                      bgcolor: '#f57c00', 
-                      color: 'white', 
-                      mb: 1.5,
-                      fontWeight: 600,
-                      height: 28
-                    }}
-                  />
-                  <Typography variant="body1" sx={{ lineHeight: 1.8, color: '#424242' }}>
-                    {section.moderator}
-                  </Typography>
-                </Box>
-              )}
-              {section.member && (
-                <Box>
-                  <Chip
-                    label="Članovi"
-                    size="small"
-                    sx={{ 
-                      bgcolor: '#388e3c', 
-                      color: 'white', 
-                      mb: 1.5,
-                      fontWeight: 600,
-                      height: 28
-                    }}
-                  />
-                  <Typography variant="body1" sx={{ lineHeight: 1.8, color: '#424242' }}>
-                    {section.member}
-                  </Typography>
-                </Box>
-              )}
-              {section.all && (
-                <Box>
-                  <Chip
-                    label="Svi korisnici (uključujući goste)"
-                    size="small"
-                    sx={{ 
-                      bgcolor: '#1976d2', 
-                      color: 'white', 
-                      mb: 1.5,
-                      fontWeight: 600,
-                      height: 28
-                    }}
-                  />
-                  <Typography variant="body1" sx={{ lineHeight: 1.8, color: '#424242' }}>
-                    {section.all}
-                  </Typography>
-                </Box>
-              )}
-            </Box>
-          </AccordionDetails>
-        </Accordion>
+          {index < sections.length - 1 && <Divider sx={{ mt: 4 }} />}
+        </Box>
       ))}
 
-      {/* Additional Info */}
-      <Card 
-        sx={{ 
-          mt: 5, 
-          borderRadius: 3,
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          color: 'white',
-          pageBreakBefore: 'avoid'
-        }}
-      >
-        <CardContent sx={{ p: 3 }}>
-          <Typography variant="h6" sx={{ fontWeight: 700, mb: 2.5 }}>
-            Dodatne informacije i savjeti
+      {/* Footer Info */}
+      <Box sx={{ mt: 6, p: 3, bgcolor: '#f5f5f5', borderRadius: 2 }} className="page-break">
+        <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
+          Dodatne informacije i savjeti
+        </Typography>
+        <Box sx={{ display: 'grid', gap: 1.5 }}>
+          <Typography variant="body1" sx={{ lineHeight: 1.8 }}>
+            <strong>• Notifikacije:</strong> Aplikacija prikazuje crvene bedž indikatore za novi 
+            sadržaj u različitim modulima. Broj u bedžu pokazuje koliko novih stavki postoji.
           </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Typography variant="body1" sx={{ lineHeight: 1.8, opacity: 0.95 }}>
-              <strong>• Notifikacije:</strong> Aplikacija prikazuje crvene bedž indikatore za novi 
-              sadržaj u različitim modulima. Broj u bedžu pokazuje koliko novih stavki postoji 
-              (poruka, obavijesti, događaja, itd.).
-            </Typography>
-            <Typography variant="body1" sx={{ lineHeight: 1.8, opacity: 0.95 }}>
-              <strong>• Automatsko osvježavanje:</strong> Notifikacije i brojači se automatski 
-              osvježavaju svakih 30 sekundi bez potrebe za ručnim osvježavanjem stranice.
-            </Typography>
-            <Typography variant="body1" sx={{ lineHeight: 1.8, opacity: 0.95 }}>
-              <strong>• Format datuma:</strong> Svi datumi u aplikaciji prikazuju se u evropskom 
-              formatu dd.mm.yyyy (dan.mjesec.godina), što je standard u Evropi i BiH.
-            </Typography>
-            <Typography variant="body1" sx={{ lineHeight: 1.8, opacity: 0.95 }}>
-              <strong>• Valuta:</strong> Sve cijene u DžematShop i Finansije modulima izražene su 
-              u CHF (švicarski franak) što je službena valuta Švicarske.
-            </Typography>
-            <Typography variant="body1" sx={{ lineHeight: 1.8, opacity: 0.95 }}>
-              <strong>• Gost pristup:</strong> Određeni sadržaji (obavijesti, događaji, vaktije) 
-              dostupni su i gostima bez prijavljivanja, što omogućava informisanje šire zajednice.
-            </Typography>
-            <Typography variant="body1" sx={{ lineHeight: 1.8, opacity: 0.95 }}>
-              <strong>• Sigurnost:</strong> Aplikacija koristi enkripciju podataka, sigurne lozinke 
-              i redovne backup-e. Svaki korisnik vidi samo podatke za koje ima dozvolu.
-            </Typography>
-            <Typography variant="body1" sx={{ lineHeight: 1.8, opacity: 0.95 }}>
-              <strong>• Podrška:</strong> Za tehničku pomoć ili pitanja o korištenju aplikacije, 
-              kontaktirajte administratora džemata.
-            </Typography>
-          </Box>
-        </CardContent>
-      </Card>
+          <Typography variant="body1" sx={{ lineHeight: 1.8 }}>
+            <strong>• Automatsko osvježavanje:</strong> Notifikacije i brojači se automatski 
+            osvježavaju svakih 30 sekundi bez potrebe za ručnim osvježavanjem stranice.
+          </Typography>
+          <Typography variant="body1" sx={{ lineHeight: 1.8 }}>
+            <strong>• Format datuma:</strong> Svi datumi u aplikaciji prikazuju se u evropskom 
+            formatu dd.mm.yyyy (dan.mjesec.godina).
+          </Typography>
+          <Typography variant="body1" sx={{ lineHeight: 1.8 }}>
+            <strong>• Valuta:</strong> Sve cijene u DžematShop i Finansije modulima izražene su 
+            u CHF (švicarski franak).
+          </Typography>
+          <Typography variant="body1" sx={{ lineHeight: 1.8 }}>
+            <strong>• Gost pristup:</strong> Određeni sadržaji (obavijesti, događaji, vaktije) 
+            dostupni su i gostima bez prijavljivanja.
+          </Typography>
+          <Typography variant="body1" sx={{ lineHeight: 1.8 }}>
+            <strong>• Sigurnost:</strong> Aplikacija koristi enkripciju podataka, sigurne lozinke 
+            i redovne backup-e.
+          </Typography>
+          <Typography variant="body1" sx={{ lineHeight: 1.8 }}>
+            <strong>• Podrška:</strong> Za tehničku pomoć ili pitanja o korištenju aplikacije, 
+            kontaktirajte administratora džemata.
+          </Typography>
+        </Box>
+      </Box>
     </Container>
   );
 }
