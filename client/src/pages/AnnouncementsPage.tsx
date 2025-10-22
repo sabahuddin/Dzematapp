@@ -68,7 +68,7 @@ export default function AnnouncementsPage() {
   // Create announcement mutation
   const createAnnouncementMutation = useMutation({
     mutationFn: async (announcementData: any) => {
-      const response = await apiRequest('POST', '/api/announcements', announcementData);
+      const response = await apiRequest('/api/announcements', 'POST', announcementData);
       return response.json();
     },
     onSuccess: () => {
@@ -83,7 +83,7 @@ export default function AnnouncementsPage() {
   // Update announcement mutation
   const updateAnnouncementMutation = useMutation({
     mutationFn: async ({ id, ...announcementData }: any) => {
-      const response = await apiRequest('PUT', `/api/announcements/${id}`, announcementData);
+      const response = await apiRequest(`/api/announcements/${id}`, 'PUT', announcementData);
       return response.json();
     },
     onSuccess: () => {
@@ -98,7 +98,7 @@ export default function AnnouncementsPage() {
   // Delete announcement mutation
   const deleteAnnouncementMutation = useMutation({
     mutationFn: async (id: string) => {
-      await apiRequest('DELETE', `/api/announcements/${id}`);
+      await apiRequest(`/api/announcements/${id}`, 'DELETE');
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/announcements'] });
@@ -142,7 +142,7 @@ export default function AnnouncementsPage() {
     mutationFn: async ({ announcementId, files }: { announcementId: string; files: File[] }) => {
       const uploadPromises = files.map(async (file) => {
         const fileType = getFileType(file.name);
-        const response = await apiRequest('POST', `/api/announcements/${announcementId}/files`, {
+        const response = await apiRequest(`/api/announcements/${announcementId}/files`, 'POST', {
           fileName: file.name,
           fileType,
           fileSize: file.size,
