@@ -2297,6 +2297,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
+      // Log activity
+      const pointsSettings = await storage.getPointsSettings();
+      const pointsPerChf = pointsSettings?.pointsPerChf || 1;
+      const points = Math.floor(parseFloat(validated.amount) * pointsPerChf);
+      
+      await storage.createActivityLog({
+        userId: validated.userId,
+        activityType: 'contribution_made',
+        description: `Uplata: ${validated.amount} CHF (${validated.purpose})`,
+        points,
+        relatedEntityId: contribution.id,
+      });
+
       res.status(201).json(contribution);
     } catch (error) {
       console.error('Error creating financial contribution:', error);
