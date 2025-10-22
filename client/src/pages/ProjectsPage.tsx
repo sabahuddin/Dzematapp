@@ -105,9 +105,15 @@ export default function ProjectsPage() {
     }
   });
 
-  const handleSubmit = form.handleSubmit((data) => {
-    saveProjectMutation.mutate(data);
-  });
+  const handleSubmit = form.handleSubmit(
+    (data) => {
+      console.log('Form submitted successfully with data:', data);
+      saveProjectMutation.mutate(data);
+    },
+    (errors) => {
+      console.error('Form validation errors:', errors);
+    }
+  );
 
   const handleOpenDialog = (project?: Project) => {
     if (project) {
