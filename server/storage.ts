@@ -543,12 +543,14 @@ export class DatabaseStorage implements IStorage {
   async createTask(insertTask: InsertTask): Promise<Task> {
     const [task] = await db.insert(tasks).values(insertTask).returning();
     
-    if (task.assignedToId) {
-      await this.createActivity({
-        type: "task",
-        description: `Zadatak kreiran: ${task.title}`,
-        userId: task.assignedToId
-      });
+    if (task.assignedUserIds && task.assignedUserIds.length > 0) {
+      for (const userId of task.assignedUserIds) {
+        await this.createActivity({
+          type: "task",
+          description: `Zadatak kreiran: ${task.title}`,
+          userId: userId
+        });
+      }
     }
     
     return task;
@@ -557,12 +559,14 @@ export class DatabaseStorage implements IStorage {
   async updateTask(id: string, updateData: Partial<InsertTask>): Promise<Task | undefined> {
     const [task] = await db.update(tasks).set(updateData).where(eq(tasks.id, id)).returning();
     
-    if (task && updateData.status === "completed") {
-      await this.createActivity({
-        type: "task",
-        description: `Zadatak završen: ${task.title}`,
-        userId: task.assignedToId ?? undefined
-      });
+    if (task && updateData.status === "završeno" && task.assignedUserIds && task.assignedUserIds.length > 0) {
+      for (const userId of task.assignedUserIds) {
+        await this.createActivity({
+          type: "task",
+          description: `Zadatak završen: ${task.title}`,
+          userId: userId
+        });
+      }
     }
     
     return task;
