@@ -32,7 +32,7 @@ import {
   Delete,
   AttachMoney
 } from '@mui/icons-material';
-import { FinancialContribution, User, insertFinancialContributionSchema } from '@shared/schema';
+import { FinancialContribution, User, Project, insertFinancialContributionSchema } from '@shared/schema';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/use-toast';
 import { apiRequest, queryClient } from '../lib/queryClient';
@@ -57,6 +57,12 @@ export default function FinancesPage() {
   // Fetch users (for admin)
   const usersQuery = useQuery({
     queryKey: ['/api/users'],
+    enabled: currentUser?.isAdmin || false,
+  });
+
+  // Fetch projects (for admin)
+  const projectsQuery = useQuery({
+    queryKey: ['/api/projects'],
     enabled: currentUser?.isAdmin || false,
   });
 
@@ -192,6 +198,12 @@ export default function FinancesPage() {
     return user ? `${user.firstName} ${user.lastName}` : 'Nepoznato';
   };
 
+  const getProjectName = (projectId: string | null) => {
+    if (!projectId || !projectsQuery.data) return null;
+    const project = (projectsQuery.data as Project[]).find(p => p.id === projectId);
+    return project?.name || null;
+  };
+
   if (contributionsQuery.isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
@@ -265,6 +277,7 @@ export default function FinancesPage() {
                 {currentUser?.isAdmin && <TableCell sx={{ fontWeight: 600 }}>Korisnik</TableCell>}
                 <TableCell sx={{ fontWeight: 600 }}>Iznos</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Svrha</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Projekat</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Datum</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Napomena</TableCell>
                 {currentUser?.isAdmin && <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>}
@@ -298,6 +311,17 @@ export default function FinancesPage() {
                     />
                   </TableCell>
                   <TableCell>
+                    {getProjectName(contribution.projectId) ? (
+                      <Chip
+                        label={getProjectName(contribution.projectId)}
+                        size="small"
+                        color="primary"
+                        variant="outlined"
+                        data-testid={`project-${contribution.id}`}
+                      />
+                    ) : '-'}
+                  </TableCell>
+                  <TableCell>
                     {contribution.paymentDate ? new Date(contribution.paymentDate).toLocaleDateString('hr-HR') : '-'}
                   </TableCell>
                   <TableCell>{contribution.notes || '-'}</TableCell>
@@ -327,7 +351,7 @@ export default function FinancesPage() {
               ))}
               {filteredContributions.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={currentUser?.isAdmin ? 6 : 5} sx={{ textAlign: 'center', py: 4 }}>
+                  <TableCell colSpan={currentUser?.isAdmin ? 7 : 6} sx={{ textAlign: 'center', py: 4 }}>
                     <Typography color="text.secondary">
                       Nema finansijskih uplate
                     </Typography>
@@ -426,6 +450,25 @@ export default function FinancesPage() {
                 >
                   <option value="Gotovina">Gotovina</option>
                   <option value="Banka">Banka</option>
+                </TextField>
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <TextField
+                  select
+                  fullWidth
+                  label="Za projekat (opcionalno)"
+                  {...form.register('projectId')}
+                  SelectProps={{ native: true }}
+                  data-testid="select-project"
+                >
+                  <option value="">Nije za projekat</option>
+                  {(projectsQuery.data as Project[] || [])
+                    .filter(p => p.status === 'active')
+                    .map(project => (
+                      <option key={project.id} value={project.id}>
+                        {project.name}
+                      </option>
+                    ))}
                 </TextField>
               </Grid>
               <Grid size={{ xs: 12 }}>

@@ -2282,6 +2282,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ...validated,
         createdById: req.user!.id
       });
+
+      // If contribution is for a project, update project's currentAmount
+      if (validated.projectId) {
+        const project = await storage.getProject(validated.projectId);
+        if (project) {
+          const currentAmount = parseFloat(project.currentAmount || '0');
+          const contributionAmount = parseFloat(validated.amount);
+          const newAmount = (currentAmount + contributionAmount).toFixed(2);
+          
+          await storage.updateProject(validated.projectId, {
+            currentAmount: newAmount
+          });
+        }
+      }
+
       res.status(201).json(contribution);
     } catch (error) {
       console.error('Error creating financial contribution:', error);
