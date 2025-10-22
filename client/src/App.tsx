@@ -31,6 +31,7 @@ import GuidePage from "@/pages/GuidePage";
 import FinancesPage from "@/pages/FinancesPage";
 import ActivityLogPage from "@/pages/ActivityLogPage";
 import PointSettingsPage from "@/pages/PointSettingsPage";
+import BadgesPage from "@/pages/BadgesPage";
 import NotFound from "@/pages/not-found";
 
 // Layout
@@ -213,6 +214,12 @@ function Router() {
       <Route path="/point-settings">
         <ProtectedRoute>
           <PointSettingsPage />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path="/badges">
+        <ProtectedRoute>
+          <BadgesPage />
         </ProtectedRoute>
       </Route>
       

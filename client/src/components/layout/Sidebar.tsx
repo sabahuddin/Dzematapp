@@ -70,6 +70,7 @@ const menuItems = [
   { path: '/vaktija', label: 'Vaktija', icon: Schedule },
   { path: '/vodic', label: 'Vodič', icon: Info },
   { path: '/point-settings', label: 'Postavke bodova', icon: EmojiEvents, adminOnly: true },
+  { path: '/badges', label: 'Značke', icon: EmojiEvents, adminOnly: true },
   { path: '/livestream-settings', label: 'Livestream uprav.', icon: Radio, adminOnly: true },
   { path: '/organization-settings', label: 'Org. podaci', icon: Settings, adminOnly: true },
 ];
