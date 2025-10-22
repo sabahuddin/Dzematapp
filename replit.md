@@ -6,6 +6,20 @@ DžematApp is a web-based admin dashboard application designed to manage mosque 
 
 Preferred communication style: Simple, everyday language.
 
+# Recent Updates (October 22, 2025)
+
+## Bugfixes
+- **Financial Contributions**: Fixed member contribution creation - changed POST endpoint from requireAdmin to requireAuth with server-side guard preventing members from creating contributions for other users. Added PATCH endpoint for frontend compatibility.
+- **apiRequest Signature**: Corrected argument order in FinancesPage and PointSettingsPage to use (url, method, data) instead of (method, url, data).
+- **Phone Placeholder**: Updated to Swiss format (+41 7x xxx xx xx) in user profile modal.
+
+## Features
+- **Category Filter**: Added dropdown filter in Finances page for filtering contributions by purpose (Članarina, Donacija, Vakuf, Sergija, Ostalo).
+
+## Known Issues
+- **Activity Log**: Backend does not persist activity entries - requires adding storage.createActivityLog calls in relevant backend flows (contributions, events, tasks, etc.).
+- **Bulk CSV Upload**: Not yet implemented for financial contributions.
+
 # System Architecture
 
 ## Frontend Architecture
