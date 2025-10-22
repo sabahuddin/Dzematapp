@@ -999,20 +999,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Task not found" });
       }
 
-      // Feature 1.2: Automatic activity logging when task is marked as completed
-      // Only log if status actually transitioned from incomplete to complete state
+      // Activity logging when task status changes
       const statusChanged = taskData.status && existingTask.status !== taskData.status;
-      const isCompletionTransition = statusChanged && 
-        (existingTask.status === 'u_toku' || existingTask.status === 'otkazano') &&
-        (taskData.status === 'na_cekanju' || taskData.status === 'završeno');
 
-      if (isCompletionTransition) {
+      if (statusChanged) {
         const workGroup = await storage.getWorkGroup(task.workGroupId);
         const settings = await storage.getPointsSettings();
         const points = settings?.pointsPerTask || 50;
 
-        // If assigned user marked as na_cekanju, log for that user
-        if (taskData.status === 'na_cekanju' && isAssignedUser && !isAdmin && !isModerator) {
+        // If assigned user marked as na_cekanju (pending approval), log for that user
+        if (taskData.status === 'na_cekanju' && isAssignedUser && !isAdmin && !isModerator && existingTask.status !== 'na_cekanju') {
           await storage.createActivityLog({
             userId: req.user!.id,
             activityType: 'task_completed',
@@ -1022,8 +1018,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
         }
         
-        // If admin/moderator marks as završeno, log for all assigned users
-        if (taskData.status === 'završeno' && task.assignedUserIds && task.assignedUserIds.length > 0) {
+        // If admin/moderator marks as završeno (approved), log for all assigned users
+        // This happens when admin approves the task or directly marks it as finished
+        if (taskData.status === 'završeno' && existingTask.status !== 'završeno' && task.assignedUserIds && task.assignedUserIds.length > 0) {
           for (const userId of task.assignedUserIds) {
             await storage.createActivityLog({
               userId,
