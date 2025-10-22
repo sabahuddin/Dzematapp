@@ -30,6 +30,7 @@ import VaktijaPage from "@/pages/VaktijaPage";
 import GuidePage from "@/pages/GuidePage";
 import FinancesPage from "@/pages/FinancesPage";
 import ActivityLogPage from "@/pages/ActivityLogPage";
+import PointSettingsPage from "@/pages/PointSettingsPage";
 import NotFound from "@/pages/not-found";
 
 // Layout
@@ -206,6 +207,12 @@ function Router() {
       <Route path="/activity-log">
         <ProtectedRoute>
           <ActivityLogPage />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path="/point-settings">
+        <ProtectedRoute>
+          <PointSettingsPage />
         </ProtectedRoute>
       </Route>
       

@@ -37,7 +37,8 @@ import {
   Schedule,
   Info,
   AttachMoney,
-  Timeline
+  Timeline,
+  EmojiEvents
 } from '@mui/icons-material';
 import { SiFacebook, SiInstagram, SiYoutube, SiX } from 'react-icons/si';
 import { useAuth } from '@/contexts/AuthContext';
@@ -68,6 +69,7 @@ const menuItems = [
   { path: '/livestream', label: 'Livestream', icon: Radio },
   { path: '/vaktija', label: 'Vaktija', icon: Schedule },
   { path: '/vodic', label: 'Vodič', icon: Info },
+  { path: '/point-settings', label: 'Postavke bodova', icon: EmojiEvents, adminOnly: true },
   { path: '/livestream-settings', label: 'Livestream uprav.', icon: Radio, adminOnly: true },
   { path: '/organization-settings', label: 'Org. podaci', icon: Settings, adminOnly: true },
 ];
