@@ -73,7 +73,7 @@ export default function MessagesPage() {
 
   const markThreadAsReadMutation = useMutation({
     mutationFn: (threadId: string) => 
-      apiRequest("PUT", `/api/messages/thread/${threadId}/read`, {}),
+      apiRequest(`/api/messages/thread/${threadId}/read`, "PUT", {}),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/messages/conversations"] });
       queryClient.invalidateQueries({ queryKey: ["/api/messages/unread-count"] });
@@ -81,7 +81,7 @@ export default function MessagesPage() {
   });
 
   const sendMessageMutation = useMutation({
-    mutationFn: (data: any) => apiRequest("POST", "/api/messages", data),
+    mutationFn: (data: any) => apiRequest("/api/messages", "POST", data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/messages/conversations"] });
       queryClient.invalidateQueries({ queryKey: ["/api/messages/thread", selectedConversation?.threadId] });

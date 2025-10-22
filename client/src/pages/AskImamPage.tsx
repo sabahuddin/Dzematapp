@@ -77,7 +77,7 @@ export default function AskImamPage() {
 
   const sendQuestionMutation = useMutation({
     mutationFn: (data: { subject: string; question: string }) => {
-      return apiRequest("POST", "/api/imam-questions", data);
+      return apiRequest("/api/imam-questions", "POST", data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/imam-questions"] });
@@ -97,7 +97,7 @@ export default function AskImamPage() {
 
   const answerQuestionMutation = useMutation({
     mutationFn: (data: { questionId: string; answer: string }) => {
-      return apiRequest("PUT", `/api/imam-questions/${data.questionId}/answer`, { answer: data.answer });
+      return apiRequest(`/api/imam-questions/${data.questionId}/answer`, "PUT", { answer: data.answer });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/imam-questions"] });
@@ -116,7 +116,7 @@ export default function AskImamPage() {
 
   const markAsReadMutation = useMutation({
     mutationFn: (questionId: string) =>
-      apiRequest("PUT", `/api/imam-questions/${questionId}/read`, {}),
+      apiRequest(`/api/imam-questions/${questionId}/read`, "PUT", {}),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/imam-questions"] });
     },
