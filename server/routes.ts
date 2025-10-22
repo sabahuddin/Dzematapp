@@ -2307,10 +2307,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put("/api/financial-contributions/:id", requireAdmin, async (req, res) => {
     try {
       const validated = insertFinancialContributionSchema.partial().parse(req.body);
+      
+      // Get existing contribution to handle project updates
+      const existingContribution = await storage.getFinancialContribution(req.params.id);
+      if (!existingContribution) {
+        return res.status(404).json({ message: "Contribution not found" });
+      }
+
       const contribution = await storage.updateFinancialContribution(req.params.id, validated);
       if (!contribution) {
         return res.status(404).json({ message: "Contribution not found" });
       }
+
+      // Handle project currentAmount updates
+      const oldProjectId = existingContribution.projectId;
+      const newProjectId = validated.projectId !== undefined ? validated.projectId : oldProjectId;
+      const oldAmount = parseFloat(existingContribution.amount);
+      const newAmount = validated.amount ? parseFloat(validated.amount) : oldAmount;
+
+      // If project changed or amount changed, update project(s)
+      if (oldProjectId !== newProjectId) {
+        // Remove from old project
+        if (oldProjectId) {
+          const oldProject = await storage.getProject(oldProjectId);
+          if (oldProject) {
+            const currentAmount = parseFloat(oldProject.currentAmount || '0');
+            const updatedAmount = Math.max(0, currentAmount - oldAmount).toFixed(2);
+            await storage.updateProject(oldProjectId, { currentAmount: updatedAmount });
+          }
+        }
+        // Add to new project
+        if (newProjectId) {
+          const newProject = await storage.getProject(newProjectId);
+          if (newProject) {
+            const currentAmount = parseFloat(newProject.currentAmount || '0');
+            const updatedAmount = (currentAmount + newAmount).toFixed(2);
+            await storage.updateProject(newProjectId, { currentAmount: updatedAmount });
+          }
+        }
+      } else if (newProjectId && oldAmount !== newAmount) {
+        // Same project, different amount
+        const project = await storage.getProject(newProjectId);
+        if (project) {
+          const currentAmount = parseFloat(project.currentAmount || '0');
+          const updatedAmount = (currentAmount - oldAmount + newAmount).toFixed(2);
+          await storage.updateProject(newProjectId, { currentAmount: updatedAmount });
+        }
+      }
+
       res.json(contribution);
     } catch (error) {
       res.status(500).json({ message: "Failed to update contribution" });
@@ -2320,10 +2364,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/financial-contributions/:id", requireAdmin, async (req, res) => {
     try {
       const validated = insertFinancialContributionSchema.partial().parse(req.body);
+      
+      // Get existing contribution to handle project updates
+      const existingContribution = await storage.getFinancialContribution(req.params.id);
+      if (!existingContribution) {
+        return res.status(404).json({ message: "Contribution not found" });
+      }
+
       const contribution = await storage.updateFinancialContribution(req.params.id, validated);
       if (!contribution) {
         return res.status(404).json({ message: "Contribution not found" });
       }
+
+      // Handle project currentAmount updates
+      const oldProjectId = existingContribution.projectId;
+      const newProjectId = validated.projectId !== undefined ? validated.projectId : oldProjectId;
+      const oldAmount = parseFloat(existingContribution.amount);
+      const newAmount = validated.amount ? parseFloat(validated.amount) : oldAmount;
+
+      // If project changed or amount changed, update project(s)
+      if (oldProjectId !== newProjectId) {
+        // Remove from old project
+        if (oldProjectId) {
+          const oldProject = await storage.getProject(oldProjectId);
+          if (oldProject) {
+            const currentAmount = parseFloat(oldProject.currentAmount || '0');
+            const updatedAmount = Math.max(0, currentAmount - oldAmount).toFixed(2);
+            await storage.updateProject(oldProjectId, { currentAmount: updatedAmount });
+          }
+        }
+        // Add to new project
+        if (newProjectId) {
+          const newProject = await storage.getProject(newProjectId);
+          if (newProject) {
+            const currentAmount = parseFloat(newProject.currentAmount || '0');
+            const updatedAmount = (currentAmount + newAmount).toFixed(2);
+            await storage.updateProject(newProjectId, { currentAmount: updatedAmount });
+          }
+        }
+      } else if (newProjectId && oldAmount !== newAmount) {
+        // Same project, different amount
+        const project = await storage.getProject(newProjectId);
+        if (project) {
+          const currentAmount = parseFloat(project.currentAmount || '0');
+          const updatedAmount = (currentAmount - oldAmount + newAmount).toFixed(2);
+          await storage.updateProject(newProjectId, { currentAmount: updatedAmount });
+        }
+      }
+
       res.json(contribution);
     } catch (error) {
       res.status(500).json({ message: "Failed to update contribution" });
@@ -2332,10 +2420,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/financial-contributions/:id", requireAdmin, async (req, res) => {
     try {
+      // Get existing contribution to handle project updates
+      const existingContribution = await storage.getFinancialContribution(req.params.id);
+      if (!existingContribution) {
+        return res.status(404).json({ message: "Contribution not found" });
+      }
+
       const success = await storage.deleteFinancialContribution(req.params.id);
       if (!success) {
         return res.status(404).json({ message: "Contribution not found" });
       }
+
+      // If contribution was for a project, decrease project's currentAmount
+      if (existingContribution.projectId) {
+        const project = await storage.getProject(existingContribution.projectId);
+        if (project) {
+          const currentAmount = parseFloat(project.currentAmount || '0');
+          const contributionAmount = parseFloat(existingContribution.amount);
+          const newAmount = Math.max(0, currentAmount - contributionAmount).toFixed(2);
+          
+          await storage.updateProject(existingContribution.projectId, {
+            currentAmount: newAmount
+          });
+        }
+      }
+
       res.json({ message: "Contribution deleted successfully" });
     } catch (error) {
       res.status(500).json({ message: "Failed to delete contribution" });

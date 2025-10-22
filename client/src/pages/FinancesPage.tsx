@@ -72,6 +72,7 @@ export default function FinancesPage() {
       ? z.string().min(1, 'Korisnik je obavezan')
       : z.string().optional(),
     paymentDate: z.string().min(1, 'Datum je obavezan'),
+    projectId: z.string().transform(val => val || null).nullable().optional(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -105,6 +106,8 @@ export default function FinancesPage() {
       if (currentUser?.id) {
         queryClient.invalidateQueries({ queryKey: ['/api/financial-contributions/user', currentUser.id] });
       }
+      // Invalidate projects query as currentAmount may have changed
+      queryClient.invalidateQueries({ queryKey: ['/api/projects'] });
       toast({ title: 'Uspjeh', description: selectedContribution ? 'Uplata je ažurirana' : 'Uplata je kreirana' });
       handleCloseDialog();
     },
@@ -124,6 +127,8 @@ export default function FinancesPage() {
       if (currentUser?.id) {
         queryClient.invalidateQueries({ queryKey: ['/api/financial-contributions/user', currentUser.id] });
       }
+      // Invalidate projects query as currentAmount may have changed
+      queryClient.invalidateQueries({ queryKey: ['/api/projects'] });
       toast({ title: 'Uspjeh', description: 'Uplata je obrisana' });
     },
     onError: () => {
@@ -141,6 +146,7 @@ export default function FinancesPage() {
         purpose: contribution.purpose,
         paymentMethod: contribution.paymentMethod,
         notes: contribution.notes || '',
+        projectId: contribution.projectId || undefined,
         createdById: contribution.createdById
       });
     } else {
@@ -152,6 +158,7 @@ export default function FinancesPage() {
         purpose: 'Članarina',
         paymentMethod: 'Gotovina',
         notes: '',
+        projectId: undefined,
         createdById: currentUser?.id || ''
       });
     }
