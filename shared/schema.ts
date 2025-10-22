@@ -599,6 +599,7 @@ export const insertProjectSchema = createInsertSchema(projects).omit({
   id: true,
   createdAt: true,
   completedAt: true,
+  createdById: true,
 });
 
 export const insertUserPreferencesSchema = createInsertSchema(userPreferences).omit({
