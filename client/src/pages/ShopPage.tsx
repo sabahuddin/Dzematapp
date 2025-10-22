@@ -144,7 +144,7 @@ export default function ShopPage() {
   // Create product mutation
   const createProductMutation = useMutation({
     mutationFn: async (productData: typeof productForm) => {
-      return await apiRequest('POST', '/api/shop/products', {
+      return await apiRequest('/api/shop/products', 'POST', {
         ...productData,
         createdById: user!.id
       });
@@ -171,7 +171,7 @@ export default function ShopPage() {
   // Delete product mutation
   const deleteProductMutation = useMutation({
     mutationFn: async (productId: string) => {
-      return await apiRequest('DELETE', `/api/shop/products/${productId}`);
+      return await apiRequest(`/api/shop/products/${productId}`, 'DELETE');
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/shop/products'] });
@@ -185,7 +185,7 @@ export default function ShopPage() {
   // Update product mutation
   const updateProductMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string; data: typeof productForm }) => {
-      return await apiRequest('PUT', `/api/shop/products/${id}`, data);
+      return await apiRequest(`/api/shop/products/${id}`, 'PUT', data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/shop/products'] });
@@ -210,7 +210,7 @@ export default function ShopPage() {
   // Complete product mutation (mark as finished)
   const completeProductMutation = useMutation({
     mutationFn: async (productId: string) => {
-      return await apiRequest('PUT', `/api/shop/products/${productId}`, { status: 'completed' });
+      return await apiRequest(`/api/shop/products/${productId}`, 'PUT', { status: 'completed' });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/shop/products'] });
@@ -224,7 +224,7 @@ export default function ShopPage() {
   // Duplicate product mutation
   const duplicateProductMutation = useMutation({
     mutationFn: async (product: ShopProductWithUser) => {
-      return await apiRequest('POST', '/api/shop/products', {
+      return await apiRequest('/api/shop/products', 'POST', {
         name: product.name,
         photos: product.photos || [],
         size: product.size,
@@ -247,7 +247,7 @@ export default function ShopPage() {
   // Create marketplace item mutation
   const createMarketplaceItemMutation = useMutation({
     mutationFn: async (itemData: typeof marketplaceForm) => {
-      return await apiRequest('POST', '/api/marketplace/items', {
+      return await apiRequest('/api/marketplace/items', 'POST', {
         ...itemData,
         userId: user!.id
       });
@@ -274,7 +274,7 @@ export default function ShopPage() {
   // Update marketplace item mutation
   const updateMarketplaceItemMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string; data: typeof marketplaceForm }) => {
-      return await apiRequest('PUT', `/api/marketplace/items/${id}`, data);
+      return await apiRequest(`/api/marketplace/items/${id}`, 'PUT', data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/marketplace/items'] });
@@ -298,7 +298,7 @@ export default function ShopPage() {
   // Delete marketplace item mutation
   const deleteMarketplaceItemMutation = useMutation({
     mutationFn: async (itemId: string) => {
-      return await apiRequest('DELETE', `/api/marketplace/items/${itemId}`);
+      return await apiRequest(`/api/marketplace/items/${itemId}`, 'DELETE');
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/marketplace/items'] });
@@ -312,7 +312,7 @@ export default function ShopPage() {
   // Mark marketplace item as completed mutation
   const completeMarketplaceItemMutation = useMutation({
     mutationFn: async (itemId: string) => {
-      return await apiRequest('PUT', `/api/marketplace/items/${itemId}`, { status: "completed" });
+      return await apiRequest(`/api/marketplace/items/${itemId}`, 'PUT', { status: "completed" });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/marketplace/items'] });
@@ -326,7 +326,7 @@ export default function ShopPage() {
   // Create purchase request mutation
   const createPurchaseRequestMutation = useMutation({
     mutationFn: async ({ productId, quantity, size, color }: { productId: string; quantity: number; size?: string; color?: string }) => {
-      return await apiRequest('POST', '/api/shop/purchase-requests', { 
+      return await apiRequest('/api/shop/purchase-requests', 'POST', { 
         productId, 
         quantity,
         userId: user!.id
@@ -342,7 +342,7 @@ export default function ShopPage() {
       const adminUser = users?.find(u => u.isAdmin);
       if (adminUser && selectedProduct) {
         try {
-          await apiRequest('POST', '/api/messages', {
+          await apiRequest('/api/messages', 'POST', {
             senderId: user!.id,
             recipientId: adminUser.id,
             subject: "Nova narudžba iz DžematShop",
