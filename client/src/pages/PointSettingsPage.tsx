@@ -132,6 +132,47 @@ export default function PointSettingsPage() {
 
           <Divider sx={{ mb: 3 }} />
 
+          {/* Points Explanation Section */}
+          <Box sx={{ mb: 4, p: 2, bgcolor: 'background.default', borderRadius: 1 }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 2 }}>
+              📋 Kako funkcionira sistem bodova?
+            </Typography>
+            <Stack spacing={1.5}>
+              <Box>
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  💰 Finansijske Uplate (CHF)
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Svaki uplačeni CHF donosi bodove. Bodovi se dodjeljuju odmah nakon unošenja uplate (Članarina, Donacija, Vakuf, Sergija, Ostalo).
+                </Typography>
+              </Box>
+              <Box>
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  ✅ Završeni Zadaci
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Kada član označi zadatak kao završen, čeka se odobrenje admina (0 bodova). Tek kada admin odobri zadatak, svi dodijeljeni članovi dobijaju pun broj bodova.
+                </Typography>
+              </Box>
+              <Box>
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  🎉 RSVP na Događaj
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Kada član potvrdi prisustvo na događaju (RSVP), odmah dobija bodove. Bodovi se ne oduzimaju ako član kasnije otkaže prisustvo.
+                </Typography>
+              </Box>
+              <Box>
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  🏗️ Doprinosi Projektima
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Uplate vezane za projekte se evidentiraju dva puta: jednom kao "Uplata" (sa bodovima) i jednom kao "Doprinos projektu" (0 bodova, samo za evidenciju).
+                </Typography>
+              </Box>
+            </Stack>
+          </Box>
+
           <form onSubmit={handleSubmit}>
             <Stack spacing={3}>
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>

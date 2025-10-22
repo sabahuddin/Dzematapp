@@ -2571,7 +2571,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Points Settings Routes (Feature 2)
-  app.get("/api/points-settings", requireAuth, async (req, res) => {
+  app.get("/api/point-settings", requireAuth, async (req, res) => {
     try {
       const settings = await storage.getPointsSettings();
       res.json(settings);
@@ -2580,7 +2580,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/points-settings", requireAdmin, async (req, res) => {
+  app.put("/api/point-settings/:id", requireAdmin, async (req, res) => {
     try {
       const validated = insertPointsSettingsSchema.partial().parse(req.body);
       const settings = await storage.updatePointsSettings(validated);
