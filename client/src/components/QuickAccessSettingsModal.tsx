@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -31,6 +31,13 @@ export default function QuickAccessSettingsModal({
 }: QuickAccessSettingsModalProps) {
   const [selectedShortcuts, setSelectedShortcuts] = useState<string[]>(currentShortcuts);
 
+  // Sync selectedShortcuts with currentShortcuts when modal opens or currentShortcuts changes
+  useEffect(() => {
+    if (open) {
+      setSelectedShortcuts(currentShortcuts);
+    }
+  }, [open, currentShortcuts]);
+
   const handleToggle = (path: string) => {
     setSelectedShortcuts((prev) => {
       if (prev.includes(path)) {
@@ -49,16 +56,10 @@ export default function QuickAccessSettingsModal({
     onSave(selectedShortcuts);
   };
 
-  const handleClose = () => {
-    // Reset to current shortcuts when closing without saving
-    setSelectedShortcuts(currentShortcuts);
-    onClose();
-  };
-
   return (
     <Dialog 
       open={open} 
-      onClose={handleClose} 
+      onClose={onClose} 
       maxWidth="sm" 
       fullWidth
       data-testid="dialog-quickaccess-settings"
@@ -107,7 +108,7 @@ export default function QuickAccessSettingsModal({
       </DialogContent>
       <DialogActions>
         <Button 
-          onClick={handleClose} 
+          onClick={onClose} 
           disabled={isSaving}
           data-testid="button-cancel"
         >

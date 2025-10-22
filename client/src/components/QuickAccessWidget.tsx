@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography, Grid, IconButton, Box, Tooltip } from '@mui/material';
+import { Card, CardContent, Typography, IconButton, Box, Tooltip } from '@mui/material';
 import {
   Campaign,
   Event,
@@ -91,11 +91,11 @@ export default function QuickAccessWidget({ shortcuts, onSettingsClick }: QuickA
           </Tooltip>
         </Box>
 
-        <Grid container spacing={2}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
           {userShortcuts.map((shortcut) => {
             const IconComponent = shortcut.icon;
             return (
-              <Grid key={shortcut.path} xs={6} sm={4} md={3}>
+              <Box key={shortcut.path} sx={{ width: { xs: 'calc(50% - 8px)', sm: 'calc(33.33% - 11px)', md: 'calc(25% - 12px)' } }}>
                 <Link href={shortcut.path}>
                   <Box
                     data-testid={shortcut.testId}
@@ -129,10 +129,10 @@ export default function QuickAccessWidget({ shortcuts, onSettingsClick }: QuickA
                     </Typography>
                   </Box>
                 </Link>
-              </Grid>
+              </Box>
             );
           })}
-        </Grid>
+        </Box>
       </CardContent>
     </Card>
   );
