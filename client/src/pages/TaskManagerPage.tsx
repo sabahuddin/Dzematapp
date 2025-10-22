@@ -616,6 +616,7 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 2 }}>
           <TextField
+            id="task-title"
             variant="outlined"
             label="Naziv zadatka"
             value={title}
@@ -625,6 +626,7 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
             data-testid="input-task-title"
           />
           <TextField
+            id="task-description"
             variant="outlined"
             label="Opis zadatka"
             value={description}
@@ -687,6 +689,7 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
           </Box>
           
           <TextField
+            id="task-status"
             variant="outlined"
             select
             label="Status"
@@ -712,6 +715,7 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
             renderInput={(params) => (
               <TextField
                 {...params}
+                id="task-assignees"
                 variant="outlined"
                 label="Dodijeli članovima"
                 placeholder="Odaberi članove..."
@@ -730,6 +734,7 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
             fullWidth
           />
           <TextField
+            id="task-due-date"
             variant="outlined"
             label="Rok izvršavanja"
             type="date"
