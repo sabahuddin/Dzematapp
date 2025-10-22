@@ -28,6 +28,7 @@ import LivestreamSettingsPage from "@/pages/LivestreamSettingsPage";
 import OrganizationSettingsPage from "@/pages/OrganizationSettingsPage";
 import VaktijaPage from "@/pages/VaktijaPage";
 import GuidePage from "@/pages/GuidePage";
+import FinancesPage from "@/pages/FinancesPage";
 import NotFound from "@/pages/not-found";
 
 // Layout
@@ -192,6 +193,12 @@ function Router() {
       <Route path="/users">
         <ProtectedRoute>
           <UsersPage />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path="/finances">
+        <ProtectedRoute>
+          <FinancesPage />
         </ProtectedRoute>
       </Route>
       
