@@ -56,6 +56,7 @@ import {
 import TasksDashboard from '../components/TasksDashboard';
 import QuickAccessWidget from '../components/QuickAccessWidget';
 import QuickAccessSettingsModal from '../components/QuickAccessSettingsModal';
+import QuickTipsCarousel from '../components/QuickTipsCarousel';
 import { useAuth } from '../hooks/useAuth';
 import type { Announcement, Event as EventType, WorkGroup, PrayerTime, UserPreferences } from '@shared/schema';
 import { format, isSameDay } from 'date-fns';
@@ -345,6 +346,11 @@ export default function DashboardHome() {
             />
           </Box>
         )}
+
+        {/* Quick Tips Carousel */}
+        <Box sx={{ mb: 3 }}>
+          <QuickTipsCarousel />
+        </Box>
 
         <Grid container spacing={3}>
           {/* Latest Announcement */}
@@ -772,6 +778,11 @@ export default function DashboardHome() {
           />
         </Box>
       )}
+
+      {/* Quick Tips Carousel */}
+      <Box sx={{ mb: 3 }}>
+        <QuickTipsCarousel />
+      </Box>
 
       {/* Statistics Cards */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
