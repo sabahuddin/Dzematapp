@@ -2640,7 +2640,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/projects", requireAdmin, async (req, res) => {
     try {
+      console.log('Creating project with body:', req.body);
       const validated = insertProjectSchema.parse(req.body);
+      console.log('Validated project data:', validated);
       const project = await storage.createProject({
         ...validated,
         createdById: req.user!.id
@@ -2648,11 +2650,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(project);
     } catch (error) {
       console.error('Error creating project:', error);
+      if (error instanceof Error) {
+        console.error('Error details:', error.message);
+      }
       res.status(500).json({ message: "Failed to create project" });
     }
   });
 
-  app.put("/api/projects/:id", requireAdmin, async (req, res) => {
+  app.patch("/api/projects/:id", requireAdmin, async (req, res) => {
     try {
       const validated = insertProjectSchema.partial().parse(req.body);
       const project = await storage.updateProject(req.params.id, validated);
@@ -2661,6 +2666,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       res.json(project);
     } catch (error) {
+      console.error('Error updating project:', error);
       res.status(500).json({ message: "Failed to update project" });
     }
   });

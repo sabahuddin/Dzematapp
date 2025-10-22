@@ -300,7 +300,7 @@ export interface IStorage {
   checkAndAwardBadges(userId: string): Promise<UserBadge[]>;
 
   // Projects (Feature 4)
-  createProject(project: InsertProject): Promise<Project>;
+  createProject(project: InsertProject & { createdById: string }): Promise<Project>;
   getProject(id: string): Promise<Project | undefined>;
   getAllProjects(): Promise<Project[]>;
   getActiveProjects(): Promise<Project[]>;
@@ -1571,7 +1571,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Projects (Feature 4)
-  async createProject(project: InsertProject): Promise<Project> {
+  async createProject(project: InsertProject & { createdById: string }): Promise<Project> {
     const [p] = await db.insert(projects).values(project).returning();
     return p;
   }
