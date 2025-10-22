@@ -1,0 +1,25 @@
+{
+  "title": "Projekte",
+  "addProject": "Projekt hinzufügen",
+  "editProject": "Projekt bearbeiten",
+  "deleteProject": "Projekt löschen",
+  "projectName": "Projektname",
+  "description": "Beschreibung",
+  "goalAmount": "Zielbetrag",
+  "currentAmount": "Aktueller Betrag",
+  "startDate": "Startdatum",
+  "endDate": "Enddatum",
+  "status": {
+    "label": "Status",
+    "active": "Aktiv",
+    "completed": "Abgeschlossen",
+    "cancelled": "Abgebrochen"
+  },
+  "progress": "Fortschritt",
+  "contributors": "Spender",
+  "noProjects": "Keine Projekte",
+  "viewDetails": "Projektdetails",
+  "contribute": "Spenden",
+  "amountRaised": "Gesammelt: {{current}} von {{goal}} CHF",
+  "percentComplete": "{{percent}}% abgeschlossen"
+}

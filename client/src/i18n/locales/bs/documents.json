@@ -1,0 +1,16 @@
+{
+  "title": "Dokumenti",
+  "upload": "Učitaj Dokument",
+  "fileName": "Naziv fajla",
+  "fileType": "Tip",
+  "uploadDate": "Datum učitavanja",
+  "uploadedBy": "Učitao",
+  "download": "Preuzmi",
+  "delete": "Obriši",
+  "view": "Pregled",
+  "noDocuments": "Nema dokumenata",
+  "selectFile": "Odaberi fajl",
+  "allowedFormats": "Dozvoljeni formati: PDF, DOC, DOCX, XLS, XLSX",
+  "uploadSuccess": "Dokument uspješno učitan",
+  "uploadError": "Greška pri učitavanju dokumenta"
+}

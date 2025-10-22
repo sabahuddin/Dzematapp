@@ -1,0 +1,22 @@
+{
+  "title": "Dashboard",
+  "welcome": "Willkommen, {{name}}!",
+  "quickAccess": "Schnellzugriff",
+  "customize": "Anpassen",
+  "statistics": {
+    "totalUsers": "Gesamtanzahl Benutzer",
+    "activeMembers": "Aktive Mitglieder",
+    "upcomingEvents": "Bevorstehende Veranstaltungen",
+    "unreadMessages": "Ungelesene Nachrichten",
+    "pendingTasks": "Ausstehende Aufgaben",
+    "monthlyContributions": "Monatliche Beiträge",
+    "totalPoints": "Gesamtpunkte",
+    "recentActivity": "Letzte Aktivitäten"
+  },
+  "recentAnnouncements": "Letzte Ankündigungen",
+  "upcomingEvents": "Bevorstehende Veranstaltungen",
+  "myTasks": "Meine Aufgaben",
+  "todaysPrayerTimes": "Heutige Gebetszeiten",
+  "noData": "Keine Daten zum Anzeigen",
+  "viewAll": "Alle anzeigen"
+}

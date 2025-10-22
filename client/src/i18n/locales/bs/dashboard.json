@@ -1,0 +1,22 @@
+{
+  "title": "Dashboard",
+  "welcome": "Dobrodošli, {{name}}!",
+  "quickAccess": "Brzi pristup",
+  "customize": "Prilagodi",
+  "statistics": {
+    "totalUsers": "Ukupno korisnika",
+    "activeMembers": "Aktivni članovi",
+    "upcomingEvents": "Nadolazeći događaji",
+    "unreadMessages": "Nepročitane poruke",
+    "pendingTasks": "Zadaci na čekanju",
+    "monthlyContributions": "Mjesečne uplate",
+    "totalPoints": "Ukupno bodova",
+    "recentActivity": "Nedavne aktivnosti"
+  },
+  "recentAnnouncements": "Nedavne obavijesti",
+  "upcomingEvents": "Nadolazeći događaji",
+  "myTasks": "Moji zadaci",
+  "todaysPrayerTimes": "Današnja vaktija",
+  "noData": "Nema podataka za prikaz",
+  "viewAll": "Prikaži sve"
+}

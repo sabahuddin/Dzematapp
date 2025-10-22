@@ -1,0 +1,66 @@
+{
+  "title": "Sekcije",
+  "workGroups": "Radne Grupe",
+  "tasks": "Zadaci",
+  "addSection": "Dodaj Sekciju",
+  "editSection": "Uredi Sekciju",
+  "createSection": "Kreiraj Novu Sekciju",
+  "deleteSection": "Obriši Sekciju",
+  "sectionName": "Naziv Grupe",
+  "description": "Opis",
+  "visibility": {
+    "label": "Vidljivost",
+    "public": "Javna - vidljiva svim korisnicima",
+    "private": "Privatna - vidljiva samo adminima i dodijeljenim članovima"
+  },
+  "members": {
+    "title": "Članovi",
+    "add": "Dodaj Člana",
+    "remove": "Ukloni Člana",
+    "selectMembers": "Odaberi Članove",
+    "noMembers": "Nema članova",
+    "moderators": "Moderatori",
+    "setAsModerator": "Postavi kao moderatora",
+    "removeFromModerators": "Ukloni moderatora"
+  },
+  "task": {
+    "add": "Dodaj Zadatak",
+    "edit": "Uredi Zadatak",
+    "create": "Kreiraj Zadatak",
+    "delete": "Obriši Zadatak",
+    "title": "Naslov Zadatka",
+    "description": "Opis",
+    "assignTo": "Dodjeli zadatak",
+    "assignToOptions": {
+      "one": "Jednom članu",
+      "multiple": "Više članova ({{count}})",
+      "all": "Svim članovima"
+    },
+    "selectMembers": "Odaberi članove",
+    "deadline": "Rok",
+    "points": "Bodova",
+    "status": {
+      "label": "Status",
+      "na_cekanju": "Na čekanju",
+      "u_toku": "U toku",
+      "zavrseno": "Završeno"
+    },
+    "markAsComplete": "Označi kao završeno",
+    "markInProgress": "Označi kao u toku",
+    "approve": "Odobri",
+    "reject": "Odbij",
+    "myTasks": "Moji Zadaci",
+    "allTasks": "Svi Zadaci",
+    "noTasks": "Nema zadataka",
+    "assignedTo": "Dodijeljeno: {{members}}",
+    "completedBy": "Završio/la: {{user}}"
+  },
+  "accessRequest": {
+    "request": "Zatraži pristup",
+    "requestSent": "Zahtjev poslat",
+    "pending": "Zahtjev na čekanju",
+    "approve": "Odobri pristup",
+    "reject": "Odbij zahtjev"
+  },
+  "noSections": "Nema sekcija"
+}

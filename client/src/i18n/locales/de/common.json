@@ -1,0 +1,71 @@
+{
+  "buttons": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "add": "Hinzufügen",
+    "close": "Schließen",
+    "search": "Suchen",
+    "filter": "Filtern",
+    "upload": "Hochladen",
+    "download": "Herunterladen",
+    "send": "Senden",
+    "submit": "Absenden",
+    "confirm": "Bestätigen",
+    "view": "Ansehen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "yes": "Ja",
+    "no": "Nein",
+    "selectAll": "Alle auswählen",
+    "clearAll": "Alle löschen"
+  },
+  "status": {
+    "active": "Aktiv",
+    "inactive": "Inaktiv",
+    "pending": "Ausstehend",
+    "completed": "Abgeschlossen",
+    "inProgress": "In Bearbeitung",
+    "cancelled": "Abgebrochen",
+    "approved": "Genehmigt",
+    "rejected": "Abgelehnt"
+  },
+  "common": {
+    "loading": "Laden...",
+    "error": "Fehler",
+    "success": "Erfolgreich",
+    "warning": "Warnung",
+    "info": "Information",
+    "noData": "Keine Daten",
+    "search": "Suchen",
+    "actions": "Aktionen",
+    "date": "Datum",
+    "description": "Beschreibung",
+    "name": "Name",
+    "title": "Titel",
+    "category": "Kategorie",
+    "categories": "Kategorien",
+    "all": "Alle",
+    "none": "Keine",
+    "optional": "Optional",
+    "required": "Erforderlich"
+  },
+  "messages": {
+    "saveSuccess": "Erfolgreich gespeichert",
+    "deleteSuccess": "Erfolgreich gelöscht",
+    "updateSuccess": "Erfolgreich aktualisiert",
+    "error": "Ein Fehler ist aufgetreten",
+    "confirmDelete": "Möchten Sie wirklich löschen?",
+    "noResults": "Keine Ergebnisse",
+    "fieldRequired": "Dieses Feld ist erforderlich"
+  },
+  "time": {
+    "today": "Heute",
+    "yesterday": "Gestern",
+    "tomorrow": "Morgen",
+    "thisWeek": "Diese Woche",
+    "thisMonth": "Dieser Monat",
+    "lastMonth": "Letzter Monat"
+  }
+}

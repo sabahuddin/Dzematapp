@@ -1,0 +1,16 @@
+{
+  "title": "Dokumente",
+  "upload": "Dokument hochladen",
+  "fileName": "Dateiname",
+  "fileType": "Typ",
+  "uploadDate": "Upload-Datum",
+  "uploadedBy": "Hochgeladen von",
+  "download": "Herunterladen",
+  "delete": "Löschen",
+  "view": "Ansehen",
+  "noDocuments": "Keine Dokumente",
+  "selectFile": "Datei auswählen",
+  "allowedFormats": "Erlaubte Formate: PDF, DOC, DOCX, XLS, XLSX",
+  "uploadSuccess": "Dokument erfolgreich hochgeladen",
+  "uploadError": "Fehler beim Hochladen des Dokuments"
+}

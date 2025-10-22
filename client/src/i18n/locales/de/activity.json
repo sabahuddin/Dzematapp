@@ -1,0 +1,22 @@
+{
+  "title": "Aktivitätsprotokoll",
+  "myActivities": "Meine Aktivitäten",
+  "activityType": "Aktivitätstyp",
+  "date": "Datum",
+  "points": "Punkte",
+  "description": "Beschreibung",
+  "types": {
+    "contribution_made": "Zahlung getätigt",
+    "task_completed": "Aufgabe abgeschlossen",
+    "event_rsvp": "Veranstaltungsanmeldung",
+    "project_contribution": "Projektbeitrag",
+    "badge_earned": "Abzeichen verdient"
+  },
+  "noActivities": "Keine Aktivitäten",
+  "totalPoints": "Gesamtpunkte: {{points}}",
+  "filterByType": "Nach Typ filtern",
+  "allTypes": "Alle Typen",
+  "thisMonth": "Dieser Monat",
+  "lastMonth": "Letzter Monat",
+  "thisYear": "Dieses Jahr"
+}

@@ -1,0 +1,32 @@
+{
+  "menu": {
+    "dashboard": "Dashboard",
+    "users": "Korisnici",
+    "profile": "Profil",
+    "finances": "Finansije",
+    "myPayments": "Moje uplate",
+    "activityLog": "Log aktivnosti",
+    "myActivities": "Moje aktivnosti",
+    "announcements": "Obavijesti",
+    "events": "Događaji",
+    "tasks": "Sekcije",
+    "sections": "Sekcije",
+    "messages": "Poruke",
+    "askImam": "Pitaj imama",
+    "documents": "Dokumenti",
+    "shop": "Shop",
+    "requests": "Zahtjevi i prijave",
+    "livestream": "Livestream",
+    "vaktija": "Vaktija",
+    "guide": "Vodič",
+    "pointSettings": "Postavke bodova",
+    "badges": "Značke",
+    "projects": "Projekti",
+    "livestreamSettings": "Livestream uprav.",
+    "organizationSettings": "Org. podaci"
+  },
+  "logout": "Odjavi se",
+  "settings": "Postavke",
+  "quickAccess": "Brzi pristup",
+  "customizeQuickAccess": "Prilagodi brzi pristup"
+}

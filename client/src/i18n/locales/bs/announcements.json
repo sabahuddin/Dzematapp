@@ -1,0 +1,31 @@
+{
+  "title": "Obavijesti",
+  "addAnnouncement": "Dodaj Obavijest",
+  "editAnnouncement": "Uredi Obavijest",
+  "createAnnouncement": "Kreiraj Obavijest",
+  "deleteAnnouncement": "Obriši Obavijest",
+  "announcementTitle": "Naslov",
+  "content": "Sadržaj",
+  "contentPlaceholder": "Unesite sadržaj obavijesti...",
+  "featured": "Istaknuta Obavijest",
+  "attachments": "Prilozi",
+  "addFiles": "Dodaj Fajlove",
+  "allowedFormats": "Dozvoljeni formati: JPG, PNG, PDF (maks. {{size}}MB)",
+  "removeFile": "Ukloni fajl",
+  "viewAttachment": "Pregled priloga",
+  "noAnnouncements": "Nema obavijesti",
+  "categories": {
+    "label": "Kategorije",
+    "placeholder": "Izaberite ili unesite kategorije",
+    "predefined": {
+      "dzemat": "Džemat",
+      "events": "Događaji",
+      "education": "Edukacija",
+      "youth": "Omladina",
+      "women": "Žene",
+      "sports": "Sport",
+      "charity": "Humanitarno",
+      "general": "Opšte"
+    }
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "buttons": {
+    "save": "Spremi",
+    "cancel": "Odustani",
+    "delete": "Obriši",
+    "edit": "Uredi",
+    "add": "Dodaj",
+    "close": "Zatvori",
+    "search": "Pretraži",
+    "filter": "Filtriraj",
+    "upload": "Učitaj",
+    "download": "Preuzmi",
+    "send": "Pošalji",
+    "submit": "Pošalji",
+    "confirm": "Potvrdi",
+    "view": "Pregled",
+    "back": "Nazad",
+    "next": "Dalje",
+    "yes": "Da",
+    "no": "Ne",
+    "selectAll": "Odaberi sve",
+    "clearAll": "Obriši sve"
+  },
+  "status": {
+    "active": "Aktivan",
+    "inactive": "Neaktivan",
+    "pending": "Na čekanju",
+    "completed": "Završeno",
+    "inProgress": "U toku",
+    "cancelled": "Otkazano",
+    "approved": "Odobreno",
+    "rejected": "Odbijeno"
+  },
+  "common": {
+    "loading": "Učitavanje...",
+    "error": "Greška",
+    "success": "Uspješno",
+    "warning": "Upozorenje",
+    "info": "Informacija",
+    "noData": "Nema podataka",
+    "search": "Pretraži",
+    "actions": "Akcije",
+    "date": "Datum",
+    "description": "Opis",
+    "name": "Naziv",
+    "title": "Naslov",
+    "category": "Kategorija",
+    "categories": "Kategorije",
+    "all": "Sve",
+    "none": "Ništa",
+    "optional": "Opciono",
+    "required": "Obavezno"
+  },
+  "messages": {
+    "saveSuccess": "Uspješno sačuvano",
+    "deleteSuccess": "Uspješno obrisano",
+    "updateSuccess": "Uspješno ažurirano",
+    "error": "Došlo je do greške",
+    "confirmDelete": "Da li ste sigurni da želite obrisati?",
+    "noResults": "Nema rezultata",
+    "fieldRequired": "Ovo polje je obavezno"
+  },
+  "time": {
+    "today": "Danas",
+    "yesterday": "Jučer",
+    "tomorrow": "Sutra",
+    "thisWeek": "Ova sedmica",
+    "thisMonth": "Ovaj mjesec",
+    "lastMonth": "Prošli mjesec"
+  }
+}

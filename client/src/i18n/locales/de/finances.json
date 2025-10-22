@@ -1,0 +1,28 @@
+{
+  "title": "Finanzen",
+  "myPayments": "Meine Zahlungen",
+  "addPayment": "Zahlung hinzufügen",
+  "editPayment": "Zahlung bearbeiten",
+  "deletePayment": "Zahlung löschen",
+  "amount": "Betrag",
+  "amountInCHF": "{{amount}} CHF",
+  "purpose": "Zweck",
+  "purposes": {
+    "membership": "Mitgliedsbeitrag",
+    "donation": "Spende",
+    "waqf": "Waqf",
+    "sergija": "Sergija",
+    "other": "Sonstiges"
+  },
+  "project": "Projekt",
+  "selectProject": "Projekt auswählen",
+  "noProject": "Kein Projekt",
+  "paymentDate": "Datum",
+  "notes": "Notizen",
+  "user": "Benutzer",
+  "filterByPurpose": "Nach Zweck filtern",
+  "allPurposes": "Alle Zwecke",
+  "noPayments": "Keine Zahlungen",
+  "totalAmount": "Gesamtbetrag: {{amount}} CHF",
+  "csvUpload": "CSV hochladen"
+}

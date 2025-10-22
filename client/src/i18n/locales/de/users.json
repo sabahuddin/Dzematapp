@@ -1,0 +1,70 @@
+{
+  "title": "Benutzer",
+  "addUser": "Benutzer hinzufügen",
+  "editUser": "Benutzer bearbeiten",
+  "createUser": "Neuen Benutzer erstellen",
+  "deleteUser": "Benutzer löschen",
+  "viewUser": "Benutzer ansehen",
+  "searchUsers": "Benutzer suchen",
+  "firstName": "Vorname",
+  "lastName": "Nachname",
+  "username": "Benutzername",
+  "password": "Passwort",
+  "email": "E-Mail",
+  "phone": "Telefon",
+  "phonePlaceholder": "+41 7x xxx xx xx",
+  "address": "Adresse",
+  "city": "Stadt",
+  "postalCode": "Postleitzahl",
+  "dateOfBirth": "Geburtsdatum",
+  "occupation": "Beruf",
+  "memberSince": "Mitglied seit",
+  "membershipStatus": "Mitgliedsstatus",
+  "inactivityReason": "Grund für Inaktivität",
+  "skills": "Fähigkeiten",
+  "photo": "Foto",
+  "uploadPhoto": "Foto hochladen",
+  "removePhoto": "Foto entfernen",
+  "roles": {
+    "label": "Rollen",
+    "admin": "Administrator",
+    "clan_io": "Vorstandsmitglied",
+    "clan": "Mitglied",
+    "clan_porodice": "Familienmitglied"
+  },
+  "membershipStatuses": {
+    "aktivan": "Aktiv",
+    "pasivan": "Inaktiv"
+  },
+  "superadmin": {
+    "label": "Superadmin-Zugriff",
+    "description": "Superadmin kann alle Benutzer hinzufügen und bearbeiten"
+  },
+  "family": {
+    "title": "Familienmitglieder",
+    "addMember": "Familienmitglied hinzufügen",
+    "selectExisting": "Vorhandenen Benutzer auswählen",
+    "createNew": "Neuen Benutzer hinzufügen",
+    "relationshipType": "Beziehungstyp",
+    "relationships": {
+      "suprug": "Ehemann",
+      "supruga": "Ehefrau",
+      "sin": "Sohn",
+      "kćerka": "Tochter",
+      "otac": "Vater",
+      "majka": "Mutter",
+      "brat": "Bruder",
+      "sestra": "Schwester",
+      "ostalo": "Sonstige"
+    },
+    "noMembers": "Keine Familienmitglieder",
+    "removeMember": "Mitglied entfernen",
+    "usernameOptional": "Optional für Familienmitglied",
+    "createAndAdd": "Erstellen und hinzufügen",
+    "searchPlaceholder": "Benutzer suchen",
+    "noUsersFound": "Keine Benutzer gefunden",
+    "noAvailableUsers": "Keine verfügbaren Benutzer"
+  },
+  "noUsers": "Keine Benutzer",
+  "totalUsers": "Gesamtanzahl Benutzer: {{count}}"
+}

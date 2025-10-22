@@ -1,0 +1,22 @@
+{
+  "title": "Pitaj Imama",
+  "newQuestion": "Novo Pitanje",
+  "myQuestions": "Moja Pitanja",
+  "allQuestions": "Sva Pitanja",
+  "unanswered": "Neodgovorena",
+  "archive": "Arhiva",
+  "askQuestion": "Novo Pitanje za Imama",
+  "topic": "Tema",
+  "question": "Pitanje",
+  "questionPlaceholder": "Unesite vaše pitanje...",
+  "answer": "Odgovor",
+  "answerPlaceholder": "Unesite odgovor...",
+  "answered": "Odgovoreno",
+  "notAnswered": "Nije odgovoreno",
+  "noQuestions": "Nema pitanja",
+  "searchQuestions": "Pretraži pitanja...",
+  "readStatus": "Pročitano",
+  "unread": "Nepročitano",
+  "answerQuestion": "Odgovori na pitanje",
+  "deleteQuestion": "Obriši pitanje"
+}

@@ -1,0 +1,32 @@
+{
+  "menu": {
+    "dashboard": "Dashboard",
+    "users": "Benutzer",
+    "profile": "Profil",
+    "finances": "Finanzen",
+    "myPayments": "Meine Zahlungen",
+    "activityLog": "Aktivitätsprotokoll",
+    "myActivities": "Meine Aktivitäten",
+    "announcements": "Ankündigungen",
+    "events": "Veranstaltungen",
+    "tasks": "Sektionen",
+    "sections": "Sektionen",
+    "messages": "Nachrichten",
+    "askImam": "Frage den Imam",
+    "documents": "Dokumente",
+    "shop": "Shop",
+    "requests": "Anfragen und Anmeldungen",
+    "livestream": "Livestream",
+    "vaktija": "Gebetszeiten",
+    "guide": "Leitfaden",
+    "pointSettings": "Punkteeinstellungen",
+    "badges": "Abzeichen",
+    "projects": "Projekte",
+    "livestreamSettings": "Livestream-Verwaltung",
+    "organizationSettings": "Organisationsdaten"
+  },
+  "logout": "Abmelden",
+  "settings": "Einstellungen",
+  "quickAccess": "Schnellzugriff",
+  "customizeQuickAccess": "Schnellzugriff anpassen"
+}

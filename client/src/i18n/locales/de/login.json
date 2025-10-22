@@ -1,0 +1,12 @@
+{
+  "title": "DžematApp",
+  "subtitle": "Admin Dashboard",
+  "username": "Benutzername",
+  "password": "Passwort",
+  "loginButton": "Anmelden",
+  "loggingIn": "Anmelden...",
+  "guestButton": "Gast",
+  "demoCredentials": "Demo-Zugangsdaten:",
+  "language": "Sprache",
+  "selectLanguage": "Sprache wählen"
+}

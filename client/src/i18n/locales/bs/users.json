@@ -1,0 +1,70 @@
+{
+  "title": "Korisnici",
+  "addUser": "Dodaj Korisnika",
+  "editUser": "Uredi Korisnika",
+  "createUser": "Kreiraj Novog Korisnika",
+  "deleteUser": "Obriši Korisnika",
+  "viewUser": "Pregled Korisnika",
+  "searchUsers": "Pretražite korisnike",
+  "firstName": "Ime",
+  "lastName": "Prezime",
+  "username": "Korisničko ime",
+  "password": "Šifra",
+  "email": "Email",
+  "phone": "Telefon",
+  "phonePlaceholder": "+41 7x xxx xx xx",
+  "address": "Adresa",
+  "city": "Grad",
+  "postalCode": "Poštanski broj",
+  "dateOfBirth": "Datum rođenja",
+  "occupation": "Zanimanje",
+  "memberSince": "Član od",
+  "membershipStatus": "Status članstva",
+  "inactivityReason": "Razlog pasivnosti",
+  "skills": "Vještine",
+  "photo": "Fotografija",
+  "uploadPhoto": "Učitaj Fotografiju",
+  "removePhoto": "Ukloni Fotografiju",
+  "roles": {
+    "label": "Uloge",
+    "admin": "Admin",
+    "clan_io": "Član IO",
+    "clan": "Član",
+    "clan_porodice": "Član porodice"
+  },
+  "membershipStatuses": {
+    "aktivan": "Aktivan",
+    "pasivan": "Pasivan"
+  },
+  "superadmin": {
+    "label": "Superadmin pristup",
+    "description": "Superadmin može dodavati i uređivati sve korisnike"
+  },
+  "family": {
+    "title": "Članovi porodice",
+    "addMember": "Dodaj Člana Porodice",
+    "selectExisting": "Odaberi postojećeg korisnika",
+    "createNew": "Dodaj novog korisnika",
+    "relationshipType": "Tip odnosa",
+    "relationships": {
+      "suprug": "Suprug",
+      "supruga": "Supruga",
+      "sin": "Sin",
+      "kćerka": "Kćerka",
+      "otac": "Otac",
+      "majka": "Majka",
+      "brat": "Brat",
+      "sestra": "Sestra",
+      "ostalo": "Ostalo"
+    },
+    "noMembers": "Nema članova porodice",
+    "removeMember": "Ukloni člana",
+    "usernameOptional": "Opciono za člana porodice",
+    "createAndAdd": "Kreiraj i dodaj",
+    "searchPlaceholder": "Pretražite korisnike",
+    "noUsersFound": "Nema pronađenih korisnika",
+    "noAvailableUsers": "Nema dostupnih korisnika"
+  },
+  "noUsers": "Nema korisnika",
+  "totalUsers": "Ukupno korisnika: {{count}}"
+}

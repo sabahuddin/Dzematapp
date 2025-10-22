@@ -1,0 +1,25 @@
+{
+  "title": "Projekti",
+  "addProject": "Dodaj Projekat",
+  "editProject": "Uredi Projekat",
+  "deleteProject": "Obriši Projekat",
+  "projectName": "Naziv projekta",
+  "description": "Opis",
+  "goalAmount": "Ciljan iznos",
+  "currentAmount": "Trenutni iznos",
+  "startDate": "Datum početka",
+  "endDate": "Datum završetka",
+  "status": {
+    "label": "Status",
+    "active": "Aktivan",
+    "completed": "Završen",
+    "cancelled": "Otkazan"
+  },
+  "progress": "Napredak",
+  "contributors": "Donatori",
+  "noProjects": "Nema projekata",
+  "viewDetails": "Detalji projekta",
+  "contribute": "Doniraj",
+  "amountRaised": "Prikupljeno: {{current}} od {{goal}} CHF",
+  "percentComplete": "{{percent}}% završeno"
+}

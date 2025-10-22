@@ -1,0 +1,36 @@
+{
+  "title": "Vaktija",
+  "todaysPrayerTimes": "Današnja vaktija",
+  "monthlyPrayerTimes": "Mjesečne vaktije",
+  "uploadCSV": "Učitaj CSV",
+  "uploadPrayerTimes": "Učitaj vaktije iz CSV fajla",
+  "selectCSV": "Odaberi CSV fajl",
+  "deleteAll": "Obriši sve",
+  "upload": "Učitaj",
+  "prayerNames": {
+    "fajr": "Zora",
+    "sunrise": "Izlazak",
+    "dhuhr": "Podne",
+    "asr": "Ikindija",
+    "maghrib": "Akšam",
+    "isha": "Jacija"
+  },
+  "csvFormat": "CSV fajl mora sadržavati kolone: Datum, Dan, Zora, Izlazak sunca, Podne, Ikindija, Akšam, Jacija",
+  "noPrayerTimes": "Nema podataka o vaktu",
+  "date": "Datum",
+  "day": "Dan",
+  "monthNames": {
+    "1": "Januar",
+    "2": "Februar",
+    "3": "Mart",
+    "4": "April",
+    "5": "Maj",
+    "6": "Juni",
+    "7": "Juli",
+    "8": "August",
+    "9": "Septembar",
+    "10": "Oktobar",
+    "11": "Novembar",
+    "12": "Decembar"
+  }
+}

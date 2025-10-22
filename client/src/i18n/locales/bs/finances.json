@@ -1,0 +1,28 @@
+{
+  "title": "Finansije",
+  "myPayments": "Moje uplate",
+  "addPayment": "Dodaj Uplatu",
+  "editPayment": "Uredi Uplatu",
+  "deletePayment": "Obriši Uplatu",
+  "amount": "Iznos",
+  "amountInCHF": "{{amount}} CHF",
+  "purpose": "Svrha",
+  "purposes": {
+    "membership": "Članarina",
+    "donation": "Donacija",
+    "waqf": "Vakuf",
+    "sergija": "Sergija",
+    "other": "Ostalo"
+  },
+  "project": "Projekat",
+  "selectProject": "Odaberi projekat",
+  "noProject": "Bez projekta",
+  "paymentDate": "Datum",
+  "notes": "Napomena",
+  "user": "Korisnik",
+  "filterByPurpose": "Filtriraj po svrhi",
+  "allPurposes": "Sve svrhe",
+  "noPayments": "Nema uplata",
+  "totalAmount": "Ukupan iznos: {{amount}} CHF",
+  "csvUpload": "Učitaj CSV"
+}

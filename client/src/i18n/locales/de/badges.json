@@ -1,0 +1,19 @@
+{
+  "title": "Abzeichen",
+  "addBadge": "Abzeichen hinzufügen",
+  "editBadge": "Abzeichen bearbeiten",
+  "deleteBadge": "Abzeichen löschen",
+  "badgeName": "Abzeichenname",
+  "description": "Beschreibung",
+  "points": "Erforderliche Punkte",
+  "icon": "Symbol",
+  "color": "Farbe",
+  "noBadges": "Keine Abzeichen",
+  "earned": "Verdient",
+  "notEarned": "Nicht verdient",
+  "progress": "Fortschritt: {{current}} / {{required}} Punkte",
+  "myBadges": "Meine Abzeichen",
+  "allBadges": "Alle Abzeichen",
+  "earnedOn": "Verdient am: {{date}}",
+  "requirements": "Anforderungen"
+}

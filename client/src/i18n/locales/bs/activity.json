@@ -1,0 +1,22 @@
+{
+  "title": "Log aktivnosti",
+  "myActivities": "Moje aktivnosti",
+  "activityType": "Tip aktivnosti",
+  "date": "Datum",
+  "points": "Bodovi",
+  "description": "Opis",
+  "types": {
+    "contribution_made": "Uplata izvršena",
+    "task_completed": "Zadatak završen",
+    "event_rsvp": "Prijava na događaj",
+    "project_contribution": "Doprinos projektu",
+    "badge_earned": "Značka zaslužena"
+  },
+  "noActivities": "Nema aktivnosti",
+  "totalPoints": "Ukupno bodova: {{points}}",
+  "filterByType": "Filtriraj po tipu",
+  "allTypes": "Svi tipovi",
+  "thisMonth": "Ovaj mjesec",
+  "lastMonth": "Prošli mjesec",
+  "thisYear": "Ova godina"
+}

@@ -1,0 +1,19 @@
+{
+  "title": "Značke",
+  "addBadge": "Dodaj Značku",
+  "editBadge": "Uredi Značku",
+  "deleteBadge": "Obriši Značku",
+  "badgeName": "Naziv značke",
+  "description": "Opis",
+  "points": "Bodova potrebno",
+  "icon": "Ikona",
+  "color": "Boja",
+  "noBadges": "Nema značaka",
+  "earned": "Zasluženo",
+  "notEarned": "Nije zasluženo",
+  "progress": "Napredak: {{current}} / {{required}} bodova",
+  "myBadges": "Moje značke",
+  "allBadges": "Sve značke",
+  "earnedOn": "Zasluženo: {{date}}",
+  "requirements": "Uslovi za osvajanje"
+}

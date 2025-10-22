@@ -1,0 +1,66 @@
+{
+  "title": "Sektionen",
+  "workGroups": "Arbeitsgruppen",
+  "tasks": "Aufgaben",
+  "addSection": "Sektion hinzufügen",
+  "editSection": "Sektion bearbeiten",
+  "createSection": "Neue Sektion erstellen",
+  "deleteSection": "Sektion löschen",
+  "sectionName": "Gruppenname",
+  "description": "Beschreibung",
+  "visibility": {
+    "label": "Sichtbarkeit",
+    "public": "Öffentlich - für alle Benutzer sichtbar",
+    "private": "Privat - nur für Admins und zugewiesene Mitglieder sichtbar"
+  },
+  "members": {
+    "title": "Mitglieder",
+    "add": "Mitglied hinzufügen",
+    "remove": "Mitglied entfernen",
+    "selectMembers": "Mitglieder auswählen",
+    "noMembers": "Keine Mitglieder",
+    "moderators": "Moderatoren",
+    "setAsModerator": "Als Moderator festlegen",
+    "removeFromModerators": "Moderator entfernen"
+  },
+  "task": {
+    "add": "Aufgabe hinzufügen",
+    "edit": "Aufgabe bearbeiten",
+    "create": "Aufgabe erstellen",
+    "delete": "Aufgabe löschen",
+    "title": "Aufgabentitel",
+    "description": "Beschreibung",
+    "assignTo": "Aufgabe zuweisen",
+    "assignToOptions": {
+      "one": "Einem Mitglied",
+      "multiple": "Mehreren Mitgliedern ({{count}})",
+      "all": "Allen Mitgliedern"
+    },
+    "selectMembers": "Mitglieder auswählen",
+    "deadline": "Frist",
+    "points": "Punkte",
+    "status": {
+      "label": "Status",
+      "na_cekanju": "Ausstehend",
+      "u_toku": "In Bearbeitung",
+      "zavrseno": "Abgeschlossen"
+    },
+    "markAsComplete": "Als abgeschlossen markieren",
+    "markInProgress": "Als in Bearbeitung markieren",
+    "approve": "Genehmigen",
+    "reject": "Ablehnen",
+    "myTasks": "Meine Aufgaben",
+    "allTasks": "Alle Aufgaben",
+    "noTasks": "Keine Aufgaben",
+    "assignedTo": "Zugewiesen an: {{members}}",
+    "completedBy": "Abgeschlossen von: {{user}}"
+  },
+  "accessRequest": {
+    "request": "Zugriff anfordern",
+    "requestSent": "Anfrage gesendet",
+    "pending": "Anfrage ausstehend",
+    "approve": "Zugriff gewähren",
+    "reject": "Anfrage ablehnen"
+  },
+  "noSections": "Keine Sektionen"
+}

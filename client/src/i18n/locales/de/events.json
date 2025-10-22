@@ -1,0 +1,52 @@
+{
+  "title": "Veranstaltungen",
+  "upcomingEvents": "Bevorstehende Veranstaltungen",
+  "otherEvents": "Weitere Veranstaltungen",
+  "pastEvents": "Vergangene Veranstaltungen",
+  "importantDates": "Wichtige Termine",
+  "addEvent": "Veranstaltung hinzufügen",
+  "editEvent": "Veranstaltung bearbeiten",
+  "createEvent": "Veranstaltung erstellen",
+  "deleteEvent": "Veranstaltung löschen",
+  "viewEvent": "Veranstaltung ansehen",
+  "eventName": "Veranstaltungsname",
+  "dateTime": "Datum und Uhrzeit",
+  "location": "Ort",
+  "maxAttendees": "Maximale Teilnehmerzahl",
+  "rsvp": "RSVP",
+  "rsvpEnabled": "Anmeldung aktiviert",
+  "rsvpButton": "Anmelden",
+  "rsvpButtonLong": "Zur Veranstaltung anmelden",
+  "addToCalendar": "Zum Kalender hinzufügen",
+  "requireAdultsChildren": "Anzahl Erwachsene und Kinder angeben",
+  "adults": "Erwachsene",
+  "children": "Kinder",
+  "detailedDescription": "Detaillierte Beschreibung",
+  "reminder": "Erinnerung",
+  "reminderOptions": {
+    "7_days": "7 Tage vorher",
+    "24_hours": "24 Stunden vorher",
+    "2_hours": "2 Stunden vorher"
+  },
+  "capacityReached": "Maximale Teilnehmerzahl erreicht ({{max}}). Anmeldung nicht mehr möglich.",
+  "rsvpInfo": "Anmeldung für diese Veranstaltung ist aktiviert.",
+  "currentlyRegistered": "Aktuell angemeldet: {{current}} / {{max}}",
+  "pastEventWarning": "Diese Veranstaltung ist beendet. Nachträgliche Anmeldung nicht möglich.",
+  "noEvents": "Keine Veranstaltungen",
+  "noUpcomingEvents": "Keine bevorstehenden Veranstaltungen",
+  "calendar": {
+    "title": "Veranstaltungskalender",
+    "monthView": "Monatsansicht"
+  },
+  "importantDate": {
+    "add": "Wichtiges Datum hinzufügen",
+    "edit": "Wichtiges Datum bearbeiten",
+    "name": "Name",
+    "date": "Datum",
+    "dateFormat": "tt.mm",
+    "recurring": "Jährlich (wiederholt sich jedes Jahr)",
+    "description": "Beschreibung",
+    "noImportantDates": "Keine wichtigen Termine",
+    "dateFormatError": "Datum muss im Format tt.mm sein (z.B. 15.03)"
+  }
+}

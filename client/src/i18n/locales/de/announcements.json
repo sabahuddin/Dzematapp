@@ -1,0 +1,31 @@
+{
+  "title": "Ankündigungen",
+  "addAnnouncement": "Ankündigung hinzufügen",
+  "editAnnouncement": "Ankündigung bearbeiten",
+  "createAnnouncement": "Ankündigung erstellen",
+  "deleteAnnouncement": "Ankündigung löschen",
+  "announcementTitle": "Titel",
+  "content": "Inhalt",
+  "contentPlaceholder": "Inhalt der Ankündigung eingeben...",
+  "featured": "Hervorgehobene Ankündigung",
+  "attachments": "Anhänge",
+  "addFiles": "Dateien hinzufügen",
+  "allowedFormats": "Erlaubte Formate: JPG, PNG, PDF (max. {{size}}MB)",
+  "removeFile": "Datei entfernen",
+  "viewAttachment": "Anhang ansehen",
+  "noAnnouncements": "Keine Ankündigungen",
+  "categories": {
+    "label": "Kategorien",
+    "placeholder": "Kategorien auswählen oder eingeben",
+    "predefined": {
+      "dzemat": "Gemeinde",
+      "events": "Veranstaltungen",
+      "education": "Bildung",
+      "youth": "Jugend",
+      "women": "Frauen",
+      "sports": "Sport",
+      "charity": "Wohltätigkeit",
+      "general": "Allgemein"
+    }
+  }
+}

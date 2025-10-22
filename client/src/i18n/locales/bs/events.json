@@ -1,0 +1,52 @@
+{
+  "title": "Događaji",
+  "upcomingEvents": "Nadolazeći Događaji",
+  "otherEvents": "Ostali Događaji",
+  "pastEvents": "Završeni Događaji",
+  "importantDates": "Važni datumi",
+  "addEvent": "Dodaj Događaj",
+  "editEvent": "Uredi Događaj",
+  "createEvent": "Kreiraj Događaj",
+  "deleteEvent": "Obriši Događaj",
+  "viewEvent": "Pregled Događaja",
+  "eventName": "Naziv Događaja",
+  "dateTime": "Datum i Vrijeme",
+  "location": "Lokacija",
+  "maxAttendees": "Maksimalan broj učesnika",
+  "rsvp": "RSVP",
+  "rsvpEnabled": "Prijava dolaska omogućena",
+  "rsvpButton": "Prijavi me",
+  "rsvpButtonLong": "Prijava dolaska",
+  "addToCalendar": "Dodaj u kalendar",
+  "requireAdultsChildren": "Potrebno je navesti broj odraslih i djece",
+  "adults": "Odrasli",
+  "children": "Djeca",
+  "detailedDescription": "Detaljan opis",
+  "reminder": "Podsjetnik",
+  "reminderOptions": {
+    "7_days": "7 dana prije",
+    "24_hours": "24 sata prije",
+    "2_hours": "2 sata prije"
+  },
+  "capacityReached": "Maksimalan broj učesnika je dostignut ({{max}}). Prijava dolaska više nije moguća.",
+  "rsvpInfo": "Prijava dolaska je omogućena za ovaj događaj.",
+  "currentlyRegistered": "Trenutno prijavljeno: {{current}} / {{max}}",
+  "pastEventWarning": "Ovaj događaj je završen. Retroaktivna prijava nije moguća.",
+  "noEvents": "Nema događaja",
+  "noUpcomingEvents": "Nema nadolazećih događaja",
+  "calendar": {
+    "title": "Kalendar Događaja",
+    "monthView": "Mjesečni pregled"
+  },
+  "importantDate": {
+    "add": "Dodaj Važan Datum",
+    "edit": "Uredi Važan Datum",
+    "name": "Naziv",
+    "date": "Datum",
+    "dateFormat": "dd.mm",
+    "recurring": "Godišnji (ponavlja se svake godine)",
+    "description": "Opis",
+    "noImportantDates": "Nema važnih datuma",
+    "dateFormatError": "Datum mora biti u formatu dd.mm (npr. 15.03)"
+  }
+}

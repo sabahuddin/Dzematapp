@@ -1,0 +1,22 @@
+{
+  "title": "Frage den Imam",
+  "newQuestion": "Neue Frage",
+  "myQuestions": "Meine Fragen",
+  "allQuestions": "Alle Fragen",
+  "unanswered": "Unbeantwortet",
+  "archive": "Archiv",
+  "askQuestion": "Neue Frage an den Imam",
+  "topic": "Thema",
+  "question": "Frage",
+  "questionPlaceholder": "Geben Sie Ihre Frage ein...",
+  "answer": "Antwort",
+  "answerPlaceholder": "Geben Sie die Antwort ein...",
+  "answered": "Beantwortet",
+  "notAnswered": "Nicht beantwortet",
+  "noQuestions": "Keine Fragen",
+  "searchQuestions": "Fragen durchsuchen...",
+  "readStatus": "Gelesen",
+  "unread": "Ungelesen",
+  "answerQuestion": "Frage beantworten",
+  "deleteQuestion": "Frage löschen"
+}
