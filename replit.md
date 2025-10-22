@@ -16,11 +16,13 @@ Preferred communication style: Simple, everyday language.
 - **Project Creation**: Fixed insertProjectSchema to omit createdById field (auto-populated by backend). Updated storage interface type signatures. Added proper form validation for project fields.
 - **Activity Log - Task Completion**: Fixed logic to properly log task completions. Now logs when user marks task as "na_cekanju" (0 points, pending approval) and when admin approves as "završeno" (full points). Previously, approval transitions were not logged.
 - **Activity Log - Project Contributions**: Financial contributions linked to projects now create TWO activity logs: 'contribution_made' (with points for the amount) and 'project_contribution' (0 points, for project tracking). Previously, project contributions were not specifically logged.
+- **Points Settings Endpoint**: Fixed API endpoint mismatch - backend had /api/points-settings but frontend called /api/point-settings. Unified to /api/point-settings and added /:id parameter to PUT endpoint.
 
 ## Features
 - **Category Filter**: Added dropdown filter in Finances page for filtering contributions by purpose (Članarina, Donacija, Vakuf, Sergija, Ostalo).
 - **Projekti + Finansije Integration**: Financial contributions can now optionally link to projects. Admin can select project from dropdown when creating/editing contribution. Backend automatically updates project currentAmount on create/edit/delete operations. Form uses Zod transform to convert empty string to null for proper validation.
 - **Quick Access Dashboard**: Users can now customize their dashboard with up to 8 frequently-used shortcuts. Features include: QuickAccessWidget component with icons and hover effects, settings modal with checkbox selection (8 item limit), database persistence via userPreferences table, automatic default preferences creation, responsive grid layout (2/3/4 columns), integration on both admin and member dashboards. Available shortcuts: Obavještenja, Događaji, Korisnici, Sekcije, Zadaci, Poruke, Pitaj Imama, Dokumenti, Prodavnica, Vaktija, Finansije, Aktivnosti, Značke, Projekti.
+- **Points Settings Explanation**: Added detailed explanation section on Points Settings page showing exactly when and how points are awarded for each category (Financial contributions, Completed tasks, Event RSVP, Project contributions).
 
 ## Known Issues
 - **Bulk CSV Upload**: Not yet implemented for financial contributions.
