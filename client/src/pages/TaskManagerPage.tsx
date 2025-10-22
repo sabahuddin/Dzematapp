@@ -221,7 +221,7 @@ export default function TaskManagerPage() {
   // Create work group mutation
   const createWorkGroupMutation = useMutation({
     mutationFn: async (workGroupData: any) => {
-      const response = await apiRequest('POST', '/api/work-groups', workGroupData);
+      const response = await apiRequest('/api/work-groups', 'POST', workGroupData);
       return response.json();
     },
     onSuccess: () => {
@@ -236,7 +236,7 @@ export default function TaskManagerPage() {
   // Create access request mutation
   const createAccessRequestMutation = useMutation({
     mutationFn: async (requestData: any) => {
-      const response = await apiRequest('POST', '/api/access-requests', requestData);
+      const response = await apiRequest('/api/access-requests', 'POST', requestData);
       return response.json();
     },
     onSuccess: () => {
@@ -251,7 +251,7 @@ export default function TaskManagerPage() {
   // Update access request mutation
   const updateAccessRequestMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      const response = await apiRequest('PUT', `/api/access-requests/${id}`, { status });
+      const response = await apiRequest(`/api/access-requests/${id}`, 'PUT', { status });
       return response.json();
     },
     onSuccess: (_, variables) => {
@@ -838,7 +838,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
   // Add comment mutation
   const addCommentMutation = useMutation({
     mutationFn: async (commentData: { content: string; commentImage?: string | null }) => {
-      const response = await apiRequest('POST', `/api/tasks/${task.id}/comments`, commentData);
+      const response = await apiRequest(`/api/tasks/${task.id}/comments`, 'POST', commentData);
       return response.json();
     },
     onSuccess: () => {
@@ -855,7 +855,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
   // Update task mutation
   const updateTaskMutation = useMutation({
     mutationFn: async (taskData: any) => {
-      const response = await apiRequest('PUT', `/api/tasks/${task.id}`, taskData);
+      const response = await apiRequest(`/api/tasks/${task.id}`, 'PUT', taskData);
       return response.json();
     },
     onSuccess: () => {
@@ -872,7 +872,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
   // Delete task mutation
   const deleteTaskMutation = useMutation({
     mutationFn: async () => {
-      const response = await apiRequest('DELETE', `/api/tasks/${task.id}`, {});
+      const response = await apiRequest(`/api/tasks/${task.id}`, 'DELETE', {});
       return response.json();
     },
     onSuccess: () => {
@@ -1435,7 +1435,7 @@ function MoveTaskModal({ open, onClose, task, currentWorkGroup, onMoveSuccess }:
 
   const moveTaskMutation = useMutation({
     mutationFn: async (newWorkGroupId: string) => {
-      const response = await apiRequest('PATCH', `/api/tasks/${task.id}/move`, { newWorkGroupId });
+      const response = await apiRequest(`/api/tasks/${task.id}/move`, 'PATCH', { newWorkGroupId });
       return response.json();
     },
     onSuccess: (data) => {
@@ -1571,7 +1571,7 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
   // Create task mutation
   const createTaskMutation = useMutation({
     mutationFn: async (taskData: any) => {
-      const response = await apiRequest('POST', '/api/tasks', taskData);
+      const response = await apiRequest('/api/tasks', 'POST', taskData);
       return response.json();
     },
     onSuccess: () => {
@@ -1587,7 +1587,7 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
   // Update task status mutation
   const updateTaskMutation = useMutation({
     mutationFn: async ({ taskId, status }: { taskId: string; status: string }) => {
-      const response = await apiRequest('PUT', `/api/tasks/${taskId}`, { status });
+      const response = await apiRequest(`/api/tasks/${taskId}`, 'PUT', { status });
       return response.json();
     },
     onSuccess: () => {
