@@ -38,7 +38,8 @@ import {
   Info,
   AttachMoney,
   Timeline,
-  EmojiEvents
+  EmojiEvents,
+  Work
 } from '@mui/icons-material';
 import { SiFacebook, SiInstagram, SiYoutube, SiX } from 'react-icons/si';
 import { useAuth } from '@/contexts/AuthContext';
@@ -71,6 +72,7 @@ const menuItems = [
   { path: '/vodic', label: 'Vodič', icon: Info },
   { path: '/point-settings', label: 'Postavke bodova', icon: EmojiEvents, adminOnly: true },
   { path: '/badges', label: 'Značke', icon: EmojiEvents, adminOnly: true },
+  { path: '/projects', label: 'Projekti', icon: Work },
   { path: '/livestream-settings', label: 'Livestream uprav.', icon: Radio, adminOnly: true },
   { path: '/organization-settings', label: 'Org. podaci', icon: Settings, adminOnly: true },
 ];

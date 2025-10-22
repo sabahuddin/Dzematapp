@@ -32,6 +32,7 @@ import FinancesPage from "@/pages/FinancesPage";
 import ActivityLogPage from "@/pages/ActivityLogPage";
 import PointSettingsPage from "@/pages/PointSettingsPage";
 import BadgesPage from "@/pages/BadgesPage";
+import ProjectsPage from "@/pages/ProjectsPage";
 import NotFound from "@/pages/not-found";
 
 // Layout
@@ -220,6 +221,12 @@ function Router() {
       <Route path="/badges">
         <ProtectedRoute>
           <BadgesPage />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path="/projects">
+        <ProtectedRoute>
+          <ProjectsPage />
         </ProtectedRoute>
       </Route>
       
