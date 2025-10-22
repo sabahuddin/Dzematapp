@@ -19,6 +19,7 @@ Preferred communication style: Simple, everyday language.
 - **Points Settings Endpoint**: Fixed API endpoint mismatch - backend had /api/points-settings but frontend called /api/point-settings. Unified to /api/point-settings and added /:id parameter to PUT endpoint.
 - **Event Form - Removed Reminder Field**: Removed "Podsjetnik" (reminder time) field from event creation/editing form per user request.
 - **Event Form - Moved Calendar Button**: "Dodaj u Kalendar" button now only appears when users view existing events (not in create/edit forms), allowing users to add events to their personal calendars.
+- **Event RSVP - Past Event Protection**: Users can no longer retroactively register for past events. RSVP button is hidden and warning alert is displayed for completed events.
 
 ## Features
 - **Category Filter**: Added dropdown filter in Finances page for filtering contributions by purpose (Članarina, Donacija, Vakuf, Sergija, Ostalo).
@@ -26,6 +27,7 @@ Preferred communication style: Simple, everyday language.
 - **Quick Access Dashboard**: Users can now customize their dashboard with up to 8 frequently-used shortcuts. Features include: QuickAccessWidget component with icons and hover effects, settings modal with checkbox selection (8 item limit), database persistence via userPreferences table, automatic default preferences creation, responsive grid layout (2/3/4 columns), integration on both admin and member dashboards. Available shortcuts: Obavještenja, Događaji, Korisnici, Sekcije, Zadaci, Poruke, Pitaj Imama, Dokumenti, Prodavnica, Vaktija, Finansije, Aktivnosti, Značke, Projekti.
 - **Points Settings Explanation**: Added detailed explanation section on Points Settings page showing exactly when and how points are awarded for each category (Financial contributions, Completed tasks, Event RSVP, Project contributions).
 - **Vaktija Accordion View**: Monthly prayer times are now displayed in collapsible accordion panels for better organization and easier navigation. Each month is in its own accordion with expand/collapse functionality, allowing users to focus on specific months. Only one month can be expanded at a time for cleaner viewing.
+- **Events Page Reorganization**: Events are now organized into three categories: top 3 upcoming events in main "Nadolazeći Događaji" list (sorted from soonest to latest), remaining upcoming events in collapsible "Ostali Događaji" accordion, and past events in collapsible "Završeni Događaji" accordion (sorted from latest to oldest). This accordion-based organization matches the Vaktija page pattern for consistent user experience.
 
 ## Known Issues
 - **Bulk CSV Upload**: Not yet implemented for financial contributions.
