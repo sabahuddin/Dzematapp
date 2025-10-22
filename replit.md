@@ -17,6 +17,9 @@ Preferred communication style: Simple, everyday language.
 - **Activity Log - Task Completion**: Fixed logic to properly log task completions. Now logs when user marks task as "na_cekanju" (0 points, pending approval) and when admin approves as "završeno" (full points). Previously, approval transitions were not logged.
 - **Activity Log - Project Contributions**: Financial contributions linked to projects now create TWO activity logs: 'contribution_made' (with points for the amount) and 'project_contribution' (0 points, for project tracking). Previously, project contributions were not specifically logged.
 - **Points Settings Endpoint**: Fixed API endpoint mismatch - backend had /api/points-settings but frontend called /api/point-settings. Unified to /api/point-settings and added /:id parameter to PUT endpoint.
+- **Event Creation apiRequest**: Fixed "Method is not a valid HTTP token" error by correcting 6 apiRequest calls in EventsPage.tsx from old signature (method, url, data) to new signature (url, method, data). Includes event CRUD and important dates CRUD operations.
+- **Event Form - Removed Reminder Field**: Removed "Podsjetnik" (reminder time) field from event creation/editing form per user request.
+- **Event Form - Moved Calendar Button**: "Dodaj u Kalendar" button now only appears when users view existing events (not in create/edit forms), allowing users to add events to their personal calendars.
 
 ## Features
 - **Category Filter**: Added dropdown filter in Finances page for filtering contributions by purpose (Članarina, Donacija, Vakuf, Sergija, Ostalo).
