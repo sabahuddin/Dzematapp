@@ -27,7 +27,8 @@ import {
   MenuItem,
   Accordion,
   AccordionSummary,
-  AccordionDetails
+  AccordionDetails,
+  Autocomplete
 } from '@mui/material';
 import {
   GroupAdd,
@@ -572,7 +573,7 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [descriptionImage, setDescriptionImage] = useState<string | null>(null);
-  const [assignedToId, setAssignedToId] = useState('');
+  const [assignedUserIds, setAssignedUserIds] = useState<string[]>([]);
   const [status, setStatus] = useState('u_toku');
   const [dueDate, setDueDate] = useState('');
 
@@ -595,7 +596,7 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
       description,
       descriptionImage: descriptionImage || null,
       workGroupId: workGroup.id,
-      assignedToId: assignedToId || null,
+      assignedUserIds: assignedUserIds.length > 0 ? assignedUserIds : null,
       status,
       dueDate: dueDate ? new Date(dueDate) : null
     };
@@ -604,7 +605,7 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
     setTitle('');
     setDescription('');
     setDescriptionImage(null);
-    setAssignedToId('');
+    setAssignedUserIds([]);
     setStatus('u_toku');
     setDueDate('');
   };
@@ -700,22 +701,34 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
             <MenuItem value="otkazano">Otkazano</MenuItem>
             <MenuItem value="arhiva">Arhiva</MenuItem>
           </TextField>
-          <TextField
-            variant="outlined"
-            select
-            label="Dodijeli članu"
-            value={assignedToId}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAssignedToId(e.target.value)}
+          <Autocomplete
+            multiple
+            options={members || []}
+            getOptionLabel={(option: any) => option.user ? `${option.user.firstName} ${option.user.lastName}` : 'Nepoznat korisnik'}
+            value={members?.filter((member: any) => assignedUserIds.includes(member.userId)) || []}
+            onChange={(_, newValue) => {
+              setAssignedUserIds(newValue.map((member: any) => member.userId));
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="outlined"
+                label="Dodijeli članovima"
+                placeholder="Odaberi članove..."
+                data-testid="select-task-assignees"
+              />
+            )}
+            renderTags={(value, getTagProps) =>
+              value.map((option: any, index: number) => (
+                <Chip
+                  label={option.user ? `${option.user.firstName} ${option.user.lastName}` : 'Nepoznat'}
+                  {...getTagProps({ index })}
+                  key={option.userId}
+                />
+              ))
+            }
             fullWidth
-            data-testid="select-task-assignee"
-          >
-            <MenuItem value="">Bez dodijeljenja</MenuItem>
-            {members?.map((member: any) => (
-              <MenuItem key={member.userId} value={member.userId}>
-                {member.user ? `${member.user.firstName} ${member.user.lastName}` : 'Nepoznat korisnik'}
-              </MenuItem>
-            ))}
-          </TextField>
+          />
           <TextField
             variant="outlined"
             label="Rok izvršavanja"
@@ -764,7 +777,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
   const [editedDescription, setEditedDescription] = useState('');
   const [editedDescriptionImage, setEditedDescriptionImage] = useState<string | null>(null);
   const [editedStatus, setEditedStatus] = useState('');
-  const [editedAssignedToId, setEditedAssignedToId] = useState('');
+  const [editedAssignedUserIds, setEditedAssignedUserIds] = useState<string[]>([]);
   const [editedDueDate, setEditedDueDate] = useState('');
   const [fullscreenImageOpen, setFullscreenImageOpen] = useState(false);
   const [fullscreenImage, setFullscreenImage] = useState('');
@@ -777,7 +790,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
       setEditedDescription(task.description || '');
       setEditedDescriptionImage(task.descriptionImage || null);
       setEditedStatus(task.status || 'u_toku');
-      setEditedAssignedToId(task.assignedToId || '');
+      setEditedAssignedUserIds(task.assignedUserIds || []);
       setEditedDueDate(task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : '');
     }
   }, [task]);
@@ -884,7 +897,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
       description: editedDescription,
       descriptionImage: editedDescriptionImage || null,
       status: editedStatus,
-      assignedToId: editedAssignedToId || null,
+      assignedUserIds: editedAssignedUserIds.length > 0 ? editedAssignedUserIds : null,
       dueDate: editedDueDate ? new Date(editedDueDate) : null,
     };
     
@@ -934,7 +947,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
 
   if (!task) return null;
 
-  const isAssignedUser = currentUser?.id === task.assignedToId;
+  const isAssignedUser = task.assignedUserIds?.includes(currentUser?.id) || false;
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
@@ -1066,22 +1079,34 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                 <MenuItem value="otkazano">Otkazano</MenuItem>
                 <MenuItem value="arhiva">Arhiva</MenuItem>
               </TextField>
-              <TextField
-                variant="outlined"
-                select
-                label="Dodijeli članu"
-                value={editedAssignedToId}
-                onChange={(e) => setEditedAssignedToId(e.target.value)}
+              <Autocomplete
+                multiple
+                options={members || []}
+                getOptionLabel={(option: any) => option.user ? `${option.user.firstName} ${option.user.lastName}` : 'Nepoznat korisnik'}
+                value={members?.filter((member: any) => editedAssignedUserIds.includes(member.userId)) || []}
+                onChange={(_, newValue) => {
+                  setEditedAssignedUserIds(newValue.map((member: any) => member.userId));
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    label="Dodijeli članovima"
+                    placeholder="Odaberi članove..."
+                    data-testid="select-edit-task-assignees"
+                  />
+                )}
+                renderTags={(value, getTagProps) =>
+                  value.map((option: any, index: number) => (
+                    <Chip
+                      label={option.user ? `${option.user.firstName} ${option.user.lastName}` : 'Nepoznat'}
+                      {...getTagProps({ index })}
+                      key={option.userId}
+                    />
+                  ))
+                }
                 fullWidth
-                data-testid="select-edit-task-assignee"
-              >
-                <MenuItem value="">Bez dodijeljenja</MenuItem>
-                {members?.map((member: any) => (
-                  <MenuItem key={member.userId} value={member.userId}>
-                    {member.user ? `${member.user.firstName} ${member.user.lastName}` : 'Nepoznat korisnik'}
-                  </MenuItem>
-                ))}
-              </TextField>
+              />
               <TextField
                 variant="outlined"
                 label="Rok izvršavanja"
@@ -1135,12 +1160,17 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                   color={getStatusColor(task.status) as any}
                   data-testid="chip-task-status"
                 />
-                {task.assignedToId && (
-                  <Chip 
-                    label={`Dodijeljeno: ${getAssignedUserName(task.assignedToId)}`} 
-                    variant="outlined"
-                    data-testid="chip-task-assigned"
-                  />
+                {task.assignedUserIds && task.assignedUserIds.length > 0 && (
+                  <>
+                    {task.assignedUserIds.map((userId: string, index: number) => (
+                      <Chip 
+                        key={userId}
+                        label={`Dodijeljeno: ${getAssignedUserName(userId)}`} 
+                        variant="outlined"
+                        data-testid={`chip-task-assigned-${index}`}
+                      />
+                    ))}
+                  </>
                 )}
                 {task.dueDate && (
                   <Chip 
