@@ -10,10 +10,12 @@ Preferred communication style: Simple, everyday language.
 
 ## Bugfixes
 - **Financial Contributions**: Members can now only view their contributions (no create/edit/delete). Added PATCH endpoint for admin compatibility. Fixed frontend to hide "Dodaj Uplatu" button for non-admins.
-- **apiRequest Signature**: Fixed critical bug in queryClient.ts where apiRequest function signature was (method, url, data) but all callers used (url, method, data). Changed signature to match usage pattern, fixing 401 errors on all POST/PATCH/DELETE operations.
+- **apiRequest Signature**: Fixed critical bug in queryClient.ts where apiRequest function signature was (method, url, data) but all callers used (url, method, data). Changed signature to match usage pattern, fixing 401 errors on all POST/PATCH/DELETE operations. Updated ALL 9 apiRequest calls in TaskManagerPage.tsx to use correct parameter order.
 - **Phone Placeholder**: Updated to Swiss format (+41 7x xxx xx xx) in user profile modal.
 - **QuickAccessSettingsModal State Sync**: Fixed critical bug where modal didn't reflect saved shortcuts. Added useEffect to sync selectedShortcuts with currentShortcuts when modal opens or preferences change.
 - **Project Creation**: Fixed insertProjectSchema to omit createdById field (auto-populated by backend). Updated storage interface type signatures. Added proper form validation for project fields.
+- **Activity Log - Task Completion**: Fixed logic to properly log task completions. Now logs when user marks task as "na_cekanju" (0 points, pending approval) and when admin approves as "završeno" (full points). Previously, approval transitions were not logged.
+- **Activity Log - Project Contributions**: Financial contributions linked to projects now create TWO activity logs: 'contribution_made' (with points for the amount) and 'project_contribution' (0 points, for project tracking). Previously, project contributions were not specifically logged.
 
 ## Features
 - **Category Filter**: Added dropdown filter in Finances page for filtering contributions by purpose (Članarina, Donacija, Vakuf, Sergija, Ostalo).
