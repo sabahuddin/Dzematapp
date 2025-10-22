@@ -247,6 +247,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
+
+      // Log activity
+      await storage.createActivityLog({
+        userId: id,
+        activityType: 'profile_updated',
+        description: 'Profil ažuriran',
+        points: 0,
+        relatedEntityId: id,
+      });
+
       res.json({ ...user, password: undefined });
     } catch (error) {
       res.status(400).json({ message: "Invalid user data" });
