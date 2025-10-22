@@ -1007,18 +1007,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const settings = await storage.getPointsSettings();
         const points = settings?.pointsPerTask || 50;
 
-        // If assigned user marked as na_cekanju (pending approval), log for that user
+        // If assigned user marked as na_cekanju (pending approval), log for that user WITHOUT points
+        // Points are only awarded when admin approves (završeno status)
         if (taskData.status === 'na_cekanju' && isAssignedUser && !isAdmin && !isModerator && existingTask.status !== 'na_cekanju') {
           await storage.createActivityLog({
             userId: req.user!.id,
             activityType: 'task_completed',
-            description: `Završen zadatak: ${task.title} u sekciji ${workGroup?.name || 'Nepoznata'}`,
-            points,
+            description: `Završen zadatak: ${task.title} u sekciji ${workGroup?.name || 'Nepoznata'} (čeka odobrenje)`,
+            points: 0, // No points until admin approves
             relatedEntityId: task.id,
           });
         }
         
-        // If admin/moderator marks as završeno (approved), log for all assigned users
+        // If admin/moderator marks as završeno (approved), log for all assigned users WITH points
         // This happens when admin approves the task or directly marks it as finished
         if (taskData.status === 'završeno' && existingTask.status !== 'završeno' && task.assignedUserIds && task.assignedUserIds.length > 0) {
           for (const userId of task.assignedUserIds) {
@@ -2329,6 +2330,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         points,
         relatedEntityId: contribution.id,
       });
+
+      // If contribution is for a project, create additional activity log
+      if (validated.projectId) {
+        const project = await storage.getProject(validated.projectId);
+        if (project) {
+          await storage.createActivityLog({
+            userId: validated.userId,
+            activityType: 'project_contribution',
+            description: `Doprinos projektu: ${project.name} (${validated.amount} CHF)`,
+            points: 0, // Points already awarded in contribution_made log
+            relatedEntityId: validated.projectId,
+          });
+        }
+      }
 
       res.status(201).json(contribution);
     } catch (error) {
