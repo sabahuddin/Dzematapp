@@ -393,7 +393,9 @@ export default function EventsPage() {
   // Separate into upcoming and past events
   const now = new Date();
   const upcomingEvents = sortedEvents.filter(event => new Date(event.dateTime) >= now);
-  const pastEvents = sortedEvents.filter(event => new Date(event.dateTime) < now);
+  const pastEvents = sortedEvents
+    .filter(event => new Date(event.dateTime) < now)
+    .sort((a, b) => new Date(b.dateTime).getTime() - new Date(a.dateTime).getTime());
 
   // Top 3 upcoming events for main list
   const topUpcomingEvents = upcomingEvents.slice(0, 3);
