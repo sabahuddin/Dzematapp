@@ -1629,6 +1629,16 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
     }
   };
 
+  const getAssignedUserNames = (userIds: string[]) => {
+    if (!userIds || userIds.length === 0) return '';
+    const members = Array.isArray(membersQuery.data) ? membersQuery.data : [];
+    const names = userIds.map(userId => {
+      const member = members.find((m: any) => m.userId === userId);
+      return member?.user ? `${member.user.firstName} ${member.user.lastName}` : 'Nepoznat';
+    });
+    return names.join(', ');
+  };
+
   if (tasksQuery.isLoading || membersQuery.isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
@@ -1682,9 +1692,9 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
                         color={getStatusColor(task.status) as any}
                         size="small"
                       />
-                      {task.assignedToId && (
-                        <Typography variant="caption" color="text.secondary">
-                          Dodijeljeno: {task.assignedToId}
+                      {task.assignedUserIds && task.assignedUserIds.length > 0 && (
+                        <Typography variant="caption" color="text.secondary" data-testid={`task-assignees-${task.id}`}>
+                          Dodijeljeno: {getAssignedUserNames(task.assignedUserIds)}
                         </Typography>
                       )}
                       {task.dueDate && (
@@ -1695,7 +1705,7 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
                     </Box>
                   </Box>
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                    {task.status !== 'završeno' && task.status !== 'na_cekanju' && task.assignedToId === currentUser?.id && (
+                    {task.status !== 'završeno' && task.status !== 'na_cekanju' && task.assignedUserIds?.includes(currentUser?.id) && (
                       <Button
                         size="small"
                         variant="outlined"
