@@ -21,7 +21,6 @@ Preferred communication style: Simple, everyday language.
 - **Quick Access Dashboard**: Users can now customize their dashboard with up to 8 frequently-used shortcuts. Features include: QuickAccessWidget component with icons and hover effects, settings modal with checkbox selection (8 item limit), database persistence via userPreferences table, automatic default preferences creation, responsive grid layout (2/3/4 columns), integration on both admin and member dashboards. Available shortcuts: Obavještenja, Događaji, Korisnici, Sekcije, Zadaci, Poruke, Pitaj Imama, Dokumenti, Prodavnica, Vaktija, Finansije, Aktivnosti, Značke, Projekti.
 
 ## Known Issues
-- **Activity Log**: Backend does not persist activity entries - requires adding storage.createActivityLog calls in relevant backend flows (contributions, events, tasks, etc.).
 - **Bulk CSV Upload**: Not yet implemented for financial contributions.
 
 # System Architecture
