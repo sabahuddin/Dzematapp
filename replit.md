@@ -15,6 +15,7 @@ Preferred communication style: Simple, everyday language.
 
 ## Features
 - **Category Filter**: Added dropdown filter in Finances page for filtering contributions by purpose (Članarina, Donacija, Vakuf, Sergija, Ostalo).
+- **Projekti + Finansije Integration**: Financial contributions can now optionally link to projects. Admin can select project from dropdown when creating/editing contribution. Backend automatically updates project currentAmount on create/edit/delete operations. Form uses Zod transform to convert empty string to null for proper validation.
 
 ## Known Issues
 - **Activity Log**: Backend does not persist activity entries - requires adding storage.createActivityLog calls in relevant backend flows (contributions, events, tasks, etc.).
