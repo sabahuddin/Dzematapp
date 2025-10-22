@@ -95,7 +95,7 @@ export const tasks = pgTable("tasks", {
   description: text("description"),
   descriptionImage: text("description_image"),
   workGroupId: varchar("work_group_id").notNull().references(() => workGroups.id),
-  assignedToId: varchar("assigned_to_id").references(() => users.id),
+  assignedUserIds: text("assigned_user_ids").array(), // Multiple users can be assigned to a task
   status: text("status").notNull().default("u_toku"), // u_toku, na_cekanju, završeno, otkazano, arhiva
   dueDate: timestamp("due_date"),
   createdAt: timestamp("created_at").defaultNow(),
