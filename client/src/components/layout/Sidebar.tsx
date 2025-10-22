@@ -36,7 +36,8 @@ import {
   Store,
   Schedule,
   Info,
-  AttachMoney
+  AttachMoney,
+  Timeline
 } from '@mui/icons-material';
 import { SiFacebook, SiInstagram, SiYoutube, SiX } from 'react-icons/si';
 import { useAuth } from '@/contexts/AuthContext';
@@ -55,6 +56,7 @@ const menuItems = [
   { path: '/dashboard', label: 'Dashboard', icon: Dashboard },
   { path: '/users', label: 'Korisnici', labelForMember: 'Profil', icon: People },
   { path: '/finances', label: 'Finansije', labelForMember: 'Moje uplate', icon: AttachMoney },
+  { path: '/activity-log', label: 'Log aktivnosti', labelForMember: 'Moje aktivnosti', icon: Timeline },
   { path: '/announcements', label: 'Obavijesti', icon: Campaign, showBadge: true },
   { path: '/events', label: 'Događaji', icon: Event, showBadge: true },
   { path: '/tasks', label: 'Sekcije', labelForMember: 'Sekcije', pathForMember: '/sections', icon: Task, showBadge: true },

@@ -29,6 +29,7 @@ import OrganizationSettingsPage from "@/pages/OrganizationSettingsPage";
 import VaktijaPage from "@/pages/VaktijaPage";
 import GuidePage from "@/pages/GuidePage";
 import FinancesPage from "@/pages/FinancesPage";
+import ActivityLogPage from "@/pages/ActivityLogPage";
 import NotFound from "@/pages/not-found";
 
 // Layout
@@ -199,6 +200,12 @@ function Router() {
       <Route path="/finances">
         <ProtectedRoute>
           <FinancesPage />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path="/activity-log">
+        <ProtectedRoute>
+          <ActivityLogPage />
         </ProtectedRoute>
       </Route>
       
