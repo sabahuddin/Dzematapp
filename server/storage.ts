@@ -1189,16 +1189,21 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllNewItemsCounts(userId: string): Promise<{ shop: number; events: number; announcements: number; imamQuestions: number; tasks: number; accessRequests: number }> {
-    const [shop, events, announcements, imamQuestions, tasks, accessRequests] = await Promise.all([
-      this.getNewItemsCount(userId, 'shop'),
-      this.getNewItemsCount(userId, 'events'),
-      this.getNewItemsCount(userId, 'announcements'),
-      this.getNewItemsCount(userId, 'imamQuestions'),
-      this.getNewItemsCount(userId, 'tasks'),
-      this.getPendingAccessRequestsCount()
-    ]);
+    try {
+      const [shop, events, announcements, imamQuestions, tasks, accessRequests] = await Promise.all([
+        this.getNewItemsCount(userId, 'shop').catch(err => { console.error('Error getting shop count:', err); return 0; }),
+        this.getNewItemsCount(userId, 'events').catch(err => { console.error('Error getting events count:', err); return 0; }),
+        this.getNewItemsCount(userId, 'announcements').catch(err => { console.error('Error getting announcements count:', err); return 0; }),
+        this.getNewItemsCount(userId, 'imamQuestions').catch(err => { console.error('Error getting imamQuestions count:', err); return 0; }),
+        this.getNewItemsCount(userId, 'tasks').catch(err => { console.error('Error getting tasks count:', err); return 0; }),
+        this.getPendingAccessRequestsCount().catch(err => { console.error('Error getting accessRequests count:', err); return 0; })
+      ]);
 
-    return { shop, events, announcements, imamQuestions, tasks, accessRequests };
+      return { shop, events, announcements, imamQuestions, tasks, accessRequests };
+    } catch (error) {
+      console.error('Error in getAllNewItemsCounts:', error);
+      throw error;
+    }
   }
 
   async createPrayerTime(prayerTime: InsertPrayerTime): Promise<PrayerTime> {

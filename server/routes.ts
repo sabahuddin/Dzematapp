@@ -2012,6 +2012,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const counts = await storage.getAllNewItemsCounts(userId);
       res.json(counts);
     } catch (error) {
+      console.error("Error in /api/notifications/unread:", error);
       res.status(500).json({ message: "Failed to fetch notification counts" });
     }
   });
