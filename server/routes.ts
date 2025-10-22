@@ -230,10 +230,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/users/:id", requireAdmin, async (req, res) => {
+  app.put("/api/users/:id", requireAuth, async (req, res) => {
     try {
       const { id } = req.params;
+      const currentUser = req.user!;
+      
+      // Check if user is editing their own profile or if they're an admin
+      const isOwnProfile = currentUser.id === id;
+      const isAdmin = currentUser.role === 'Admin';
+      
+      if (!isOwnProfile && !isAdmin) {
+        return res.status(403).json({ message: "Admin privileges required" });
+      }
+      
       const userData = insertUserSchema.partial().parse(req.body);
+      
+      // Regular users can only update certain fields on their own profile
+      if (isOwnProfile && !isAdmin) {
+        // Remove sensitive fields that only admins can update
+        const allowedFields = ['firstName', 'lastName', 'email', 'phone', 'occupation', 'address', 'username', 'password'];
+        const filteredData: any = {};
+        for (const key of allowedFields) {
+          if (key in userData) {
+            filteredData[key] = userData[key as keyof typeof userData];
+          }
+        }
+        Object.assign(userData, filteredData);
+        // Remove fields that users shouldn't be able to change
+        delete (userData as any).role;
+        delete (userData as any).points;
+        delete (userData as any).membershipStatus;
+        delete (userData as any).inactiveReason;
+        delete (userData as any).memberSince;
+        delete (userData as any).categories;
+      }
       
       // Check if username is being changed and if it already exists
       if (userData.username) {
