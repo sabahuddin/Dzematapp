@@ -12,10 +12,12 @@ Preferred communication style: Simple, everyday language.
 - **Financial Contributions**: Members can now only view their contributions (no create/edit/delete). Added PATCH endpoint for admin compatibility. Fixed frontend to hide "Dodaj Uplatu" button for non-admins.
 - **apiRequest Signature**: Corrected argument order in FinancesPage and PointSettingsPage to use (url, method, data) instead of (method, url, data).
 - **Phone Placeholder**: Updated to Swiss format (+41 7x xxx xx xx) in user profile modal.
+- **QuickAccessSettingsModal State Sync**: Fixed critical bug where modal didn't reflect saved shortcuts. Added useEffect to sync selectedShortcuts with currentShortcuts when modal opens or preferences change.
 
 ## Features
 - **Category Filter**: Added dropdown filter in Finances page for filtering contributions by purpose (Članarina, Donacija, Vakuf, Sergija, Ostalo).
 - **Projekti + Finansije Integration**: Financial contributions can now optionally link to projects. Admin can select project from dropdown when creating/editing contribution. Backend automatically updates project currentAmount on create/edit/delete operations. Form uses Zod transform to convert empty string to null for proper validation.
+- **Quick Access Dashboard**: Users can now customize their dashboard with up to 8 frequently-used shortcuts. Features include: QuickAccessWidget component with icons and hover effects, settings modal with checkbox selection (8 item limit), database persistence via userPreferences table, automatic default preferences creation, responsive grid layout (2/3/4 columns), integration on both admin and member dashboards. Available shortcuts: Obavještenja, Događaji, Korisnici, Sekcije, Zadaci, Poruke, Pitaj Imama, Dokumenti, Prodavnica, Vaktija, Finansije, Aktivnosti, Značke, Projekti.
 
 ## Known Issues
 - **Activity Log**: Backend does not persist activity entries - requires adding storage.createActivityLog calls in relevant backend flows (contributions, events, tasks, etc.).
