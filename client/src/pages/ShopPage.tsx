@@ -453,7 +453,7 @@ export default function ShopPage() {
 
   const sendContactMessageMutation = useMutation({
     mutationFn: async (data: { recipientId: string; message: string }) => {
-      return apiRequest("POST", "/api/messages", {
+      return apiRequest("/api/messages", "POST", {
         senderId: user!.id,
         recipientId: data.recipientId,
         subject: "Poruka sa Shop-a",

@@ -10,7 +10,7 @@ export function useMarkAsViewed(type: ViewType) {
 
   const markViewedMutation = useMutation({
     mutationFn: async () => {
-      await apiRequest('PUT', `/api/notifications/mark-viewed/${type}`, {});
+      await apiRequest(`/api/notifications/mark-viewed/${type}`, 'PUT', {});
     },
     onSuccess: () => {
       // Invalidate notifications count to refresh badges

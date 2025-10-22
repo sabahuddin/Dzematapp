@@ -80,10 +80,10 @@ export default function BadgesPage() {
   const saveBadgeMutation = useMutation({
     mutationFn: async (data: z.infer<typeof formSchema>) => {
       if (selectedBadge) {
-        const response = await apiRequest('PUT', `/api/badges/${selectedBadge.id}`, data);
+        const response = await apiRequest(`/api/badges/${selectedBadge.id}`, 'PUT', data);
         return response.json();
       } else {
-        const response = await apiRequest('POST', '/api/badges', data);
+        const response = await apiRequest('/api/badges', 'POST', data);
         return response.json();
       }
     },
@@ -100,7 +100,7 @@ export default function BadgesPage() {
   // Delete badge mutation
   const deleteBadgeMutation = useMutation({
     mutationFn: async (id: string) => {
-      await apiRequest('DELETE', `/api/badges/${id}`);
+      await apiRequest(`/api/badges/${id}`, 'DELETE');
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/badges'] });

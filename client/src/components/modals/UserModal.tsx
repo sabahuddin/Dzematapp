@@ -750,7 +750,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                               size="small"
                               onClick={() => {
                                 // Handle delete family relationship
-                                apiRequest('DELETE', '/api/family-relationships/' + rel.id)
+                                apiRequest('/api/family-relationships/' + rel.id, 'DELETE')
                                   .then(() => {
                                     queryClient.invalidateQueries({ queryKey: ['/api/family-relationships', user.id] });
                                   });

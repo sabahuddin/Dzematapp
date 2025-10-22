@@ -59,7 +59,7 @@ export default function MemberManagementDialog({
   // Remove member mutation
   const removeMemberMutation = useMutation({
     mutationFn: async (userId: string) => {
-      const response = await apiRequest('DELETE', `/api/work-groups/${workGroup.id}/members/${userId}`);
+      const response = await apiRequest(`/api/work-groups/${workGroup.id}/members/${userId}`, 'DELETE');
       return response.json();
     },
     onSuccess: () => {
@@ -82,7 +82,7 @@ export default function MemberManagementDialog({
   // Toggle moderator mutation
   const toggleModeratorMutation = useMutation({
     mutationFn: async ({ userId, isModerator }: { userId: string; isModerator: boolean }) => {
-      const response = await apiRequest('PUT', `/api/work-groups/${workGroup.id}/members/${userId}/moderator`, {
+      const response = await apiRequest(`/api/work-groups/${workGroup.id}/members/${userId}/moderator`, 'PUT', {
         isModerator
       });
       return response.json();

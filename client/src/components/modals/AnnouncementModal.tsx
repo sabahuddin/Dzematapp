@@ -133,7 +133,7 @@ export default function AnnouncementModal({
       for (const file of selectedFiles) {
         const fileType = getFileType(file.name);
         
-        const response = await apiRequest('POST', `/api/announcements/${announcementId}/files`, {
+        const response = await apiRequest(`/api/announcements/${announcementId}/files`, 'POST', {
           fileName: file.name,
           fileType,
           fileSize: file.size,
@@ -163,7 +163,7 @@ export default function AnnouncementModal({
 
   const deleteAnnouncementFile = async (fileId: string) => {
     try {
-      const response = await apiRequest('DELETE', `/api/announcement-files/${fileId}`);
+      const response = await apiRequest(`/api/announcement-files/${fileId}`, 'DELETE');
       if (response.ok) {
         toast({
           title: 'Uspjeh',

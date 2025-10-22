@@ -47,7 +47,7 @@ export default function AddMemberModal({ open, onClose, workGroup }: AddMemberMo
   // Add member mutation
   const addMemberMutation = useMutation({
     mutationFn: async (userId: string) => {
-      const response = await apiRequest('POST', `/api/work-groups/${workGroup.id}/members`, {
+      const response = await apiRequest(`/api/work-groups/${workGroup.id}/members`, 'POST', {
         userId
       });
       return response.json();

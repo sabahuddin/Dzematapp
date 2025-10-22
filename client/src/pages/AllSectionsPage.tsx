@@ -24,7 +24,7 @@ export default function AllSectionsPage() {
 
   const requestAccessMutation = useMutation({
     mutationFn: async (workGroupId: string) => {
-      return await apiRequest('POST', '/api/access-requests', {
+      return await apiRequest('/api/access-requests', 'POST', {
         userId: user?.id,
         workGroupId
       });

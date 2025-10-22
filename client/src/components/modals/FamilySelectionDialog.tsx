@@ -71,7 +71,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
 
   const createRelationshipMutation = useMutation({
     mutationFn: async (data: { userId: string; relatedUserId: string; relationship: string }) => {
-      return apiRequest('POST', '/api/family-relationships', data);
+      return apiRequest('/api/family-relationships', 'POST', data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/family-relationships', userId] });
@@ -81,7 +81,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
 
   const createUserMutation = useMutation({
     mutationFn: async (userData: any) => {
-      const response = await apiRequest('POST', '/api/users', userData);
+      const response = await apiRequest('/api/users', 'POST', userData);
       return response.json();
     },
     onSuccess: async (newUser) => {

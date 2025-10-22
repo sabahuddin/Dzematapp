@@ -96,7 +96,7 @@ export default function NewMessageModal({ isOpen, onClose, replyTo }: NewMessage
         subject: data.subject,
         content: data.content,
       };
-      return apiRequest("POST", "/api/messages", messageData);
+      return apiRequest("/api/messages", "POST", messageData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/messages"] });

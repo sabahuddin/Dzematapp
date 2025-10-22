@@ -80,7 +80,7 @@ export default function VaktijaPage() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: () => apiRequest('DELETE', '/api/prayer-times'),
+    mutationFn: () => apiRequest('/api/prayer-times', 'DELETE'),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/prayer-times'] });
       queryClient.invalidateQueries({ queryKey: ['/api/prayer-times/today'] });
