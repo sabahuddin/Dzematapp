@@ -1,0 +1,106 @@
+Naravno. Evo prijedloga detaljnog prompta koji možete dati Replitu, developeru ili koristiti kao tehničku specifikaciju. Prompt je napisan na engleskom jeziku, jer je to standard u svijetu programiranja i alati poput Replit AI-a će ga tako najbolje razumjeti, ali sadrži bosanske nazive za elemente interfejsa kako bi se zadržala konzistentnost sa vašom postojećom aplikacijom.
+
+---
+
+### **Prompt for Replit: Feature Upgrade for "DžematApp" Community Management System**
+
+**Project Overview:**
+
+You are an expert software developer tasked with upgrading an existing web application called "DžematApp". The application is a community management portal for a religious organization (džemat). The goal is to implement a comprehensive system for tracking member contributions (both financial and activity-based) and to introduce features that increase member engagement and motivation.
+
+The application currently has the following modules: `Dashboard`, `Korisnici`, `Obavijesti`, `Događaji`, `Sekcije`, `Poruke`, `Pitaj imama`, `Zahtjevi/Prijave`, `Shop`, and `Vaktija`.
+
+Please implement the following four major features.
+
+---
+
+### **Feature 1: Contribution Tracking System (Core)**
+
+This feature extends existing modules to log financial and activity-based contributions.
+
+**1.1. Financial Contribution Tracking (in `Korisnici` Module):**
+* **Admin View:** In the admin view for a single user's profile (`Korisnici` -> Select User), add a new tab named **"Finansije"**.
+    * This tab should allow the Admin to log new financial entries.
+    * Each entry must have the following fields:
+        * `Iznos` (Amount, decimal, in CHF)
+        * `Datum uplate` (Payment Date, date picker)
+        * `Svrha` (Purpose, a dropdown/selectable list: "Članarina", "Donacija", "Vakuf", "Sergija", "Ostalo")
+        * `Način plaćanja` (Payment Method, dropdown: "Gotovina", "Banka")
+        * `Napomena` (Notes, text area, optional)
+    * The view should be a table of all financial contributions for that user, sorted by date.
+* **Member View:** In the member's own profile view, add a read-only tab named **"Moje uplate"** where they can see a list of their own recorded contributions for transparency.
+
+**1.2. Activity Contribution Tracking (Automated Logging):**
+* Create a new table in the database called `ActivityLog` linked to each user.
+* **Integration with `Sekcije` Module:**
+    * When a member marks a task (`zadatak`) assigned to them as "Završen", automatically create a new entry in their `ActivityLog`.
+    * The log entry should contain: `User ID`, `Date`, `Description` (e.g., "Završen zadatak: [Naziv Zadatka] u sekciji [Naziv Sekcije]").
+* **Integration with `Događaji` Module:**
+    * After an event's date has passed, add a new button/feature for the Admin in the event details page called **"Evidentiraj prisutne"** (Log Attendance).
+    * This interface should show a list of all users who RSVP'd "Yes". The Admin can then check/uncheck names to confirm who actually attended.
+    * For each confirmed user, automatically create a new entry in their `ActivityLog`. The description should be: "Prisustvo na događaju: [Naziv Događaja]".
+
+**1.3. Central Contribution Profile:**
+* **Admin View:** In the user profile view, create a new primary tab named **"Profil Doprinosa"** (Contribution Profile).
+    * This tab will contain two sub-views:
+        1.  A view showing the financial contributions from section 1.1.
+        2.  A view showing the activity log from section 1.2.
+    * This gives the Admin a complete overview of a member's total contributions in one place.
+
+---
+
+### **Feature 2: Gamification and Recognition System**
+
+This feature builds on top of the tracking system to motivate users.
+
+**2.1. Points System:**
+* Implement a points system where users earn points for contributions.
+* Create a settings page where the Admin can define the point values, for example:
+    * Points per CHF donated (e.g., 1 point / 1 CHF)
+    * Points per completed task (e.g., 50 points)
+    * Points per event attendance (e.g., 20 points)
+* Each user's total points should be calculated and stored.
+
+**2.2. Badges/Awards:**
+* Create a system for digital badges that are automatically awarded to users when they meet certain criteria.
+* The Admin should be able to define badges and their criteria, for example:
+    * **"Zlatni donator"**: Awarded when total donations exceed 5000 CHF.
+    * **"Vrijedne ruke"**: Awarded when a user completes 10 tasks.
+    * **"Aktivan član"**: Awarded when a user attends 5 events.
+* Awarded badges should be displayed publicly on the member's profile page.
+
+---
+
+### **Feature 3: Member Skills Registry**
+
+This feature helps the community leverage the specific talents of its members.
+
+* **In the `Korisnici` module (profile edit page):**
+    * Add a new field for members called **"Moje vještine"** (My Skills).
+    * Implement this as a tag-based input field, allowing users to add multiple skills (e.g., "Grafički dizajn", "Električar", "Kuhanje").
+* **In the main `Korisnici` list (Admin view):**
+    * Add a filter/search functionality that allows the Admin to find members by a specific skill tag.
+
+---
+
+### **Feature 4: New Module - "Projekti" (Community Goals)**
+
+This feature provides a public-facing way to track progress towards large community goals.
+
+* Create a new main module in the navigation called **"Projekti"**.
+* The Admin can create and manage projects. Each project must have:
+    * `Naziv` (Title)
+    * `Opis` (Description)
+    * `Ciljani iznos` (Goal Amount in CHF)
+    * `Trenutno prikupljeno` (Currently Raised, decimal)
+    * `Status` (Dropdown: "Aktivan", "Završen")
+* **Crucial Integration:** When an Admin logs a new financial contribution (Feature 1.1), they should have an optional dropdown to link that donation to an active project. If linked, the `Trenutno prikupljeno` amount for that project should automatically update.
+* The public page for each project should prominently display a **progress bar** showing the percentage of the goal reached.
+
+---
+**Final Instructions:**
+
+* Ensure all new features are seamlessly integrated with the existing UI/UX.
+* Prioritize a clean and intuitive interface for the Admin.
+* Ensure the database schema is updated efficiently and all relationships are correctly established.
+* All user-facing text should be in Bosnian. Backend code and comments can be in English.
