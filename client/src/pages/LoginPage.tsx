@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation } from 'wouter';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Card,
@@ -8,17 +9,28 @@ import {
   Button,
   Typography,
   Alert,
-  Container
+  Container,
+  ToggleButtonGroup,
+  ToggleButton
 } from '@mui/material';
+import { Language } from '@mui/icons-material';
 import { useAuth } from '../hooks/useAuth';
 import mosqueLogoPath from '@assets/ChatGPT Image 20. okt 2025. u 22_58_31_1760993927064.png';
 
 export default function LoginPage() {
+  const { t, i18n } = useTranslation(['login', 'common']);
   const [, setLocation] = useLocation();
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
+
+  const handleLanguageChange = (event: React.MouseEvent<HTMLElement>, newLanguage: string | null) => {
+    if (newLanguage) {
+      i18n.changeLanguage(newLanguage);
+      localStorage.setItem('language', newLanguage);
+    }
+  };
 
   const handleChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({ ...prev, [field]: event.target.value }));
@@ -35,10 +47,10 @@ export default function LoginPage() {
       if (success) {
         setLocation('/dashboard');
       } else {
-        setError('Nevažeće korisničko ime ili šifra');
+        setError(t('common:messages.error'));
       }
     } catch (err) {
-      setError('Greška pri prijavljivanju');
+      setError(t('common:messages.error'));
     } finally {
       setLoading(false);
     }
@@ -68,6 +80,31 @@ export default function LoginPage() {
           }}
         >
           <CardContent sx={{ p: 4 }}>
+            {/* Language Selector */}
+            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+              <ToggleButtonGroup
+                value={i18n.language}
+                exclusive
+                onChange={handleLanguageChange}
+                size="small"
+                sx={{ boxShadow: 1 }}
+                data-testid="language-selector"
+              >
+                <ToggleButton value="bs" data-testid="language-bs">
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    <Language fontSize="small" />
+                    <Typography variant="caption" sx={{ fontWeight: 500 }}>BS</Typography>
+                  </Box>
+                </ToggleButton>
+                <ToggleButton value="de" data-testid="language-de">
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    <Language fontSize="small" />
+                    <Typography variant="caption" sx={{ fontWeight: 500 }}>DE</Typography>
+                  </Box>
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </Box>
+
             <Box sx={{ textAlign: 'center', mb: 4 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1.5, mb: 1 }}>
                 <img 
@@ -76,11 +113,11 @@ export default function LoginPage() {
                   style={{ width: 60, height: 60, objectFit: 'contain' }}
                 />
                 <Typography variant="h3" sx={{ fontWeight: 600, color: '#1976d2', fontFamily: 'Aladin, cursive' }}>
-                  DžematApp
+                  {t('login:title')}
                 </Typography>
               </Box>
               <Typography variant="body2" color="text.secondary">
-                Admin Dashboard
+                {t('login:subtitle')}
               </Typography>
             </Box>
 
@@ -95,7 +132,7 @@ export default function LoginPage() {
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label="Korisničko ime"
+                  label={t('login:username')}
                   type="text"
                   value={formData.username}
                   onChange={handleChange('username')}
@@ -106,7 +143,7 @@ export default function LoginPage() {
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label="Šifra"
+                  label={t('login:password')}
                   type="password"
                   value={formData.password}
                   onChange={handleChange('password')}
@@ -124,7 +161,7 @@ export default function LoginPage() {
                   sx={{ py: 1.5, fontSize: '1rem' }}
                   data-testid="button-login"
                 >
-                  {loading ? 'Prijavljivanje...' : 'Prijavi se'}
+                  {loading ? t('login:loggingIn') : t('login:loginButton')}
                 </Button>
 
                 <Button
@@ -135,20 +172,20 @@ export default function LoginPage() {
                   sx={{ py: 1.5, fontSize: '1rem' }}
                   data-testid="button-guest"
                 >
-                  Gost
+                  {t('login:guestButton')}
                 </Button>
               </Box>
             </form>
 
             <Box sx={{ mt: 3, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
               <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
-                Demo podaci:
+                {t('login:demoCredentials')}
               </Typography>
               <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                Korisničko ime: admin | Šifra: admin123
+                {t('login:username')}: admin | {t('login:password')}: admin123
               </Typography>
               <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                Korisničko ime: ali.alic | Šifra: password123
+                {t('login:username')}: ali.alic | {t('login:password')}: password123
               </Typography>
             </Box>
           </CardContent>
