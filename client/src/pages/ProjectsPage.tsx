@@ -46,8 +46,8 @@ export default function ProjectsPage() {
     queryKey: ['/api/projects'],
   });
 
-  // Form schema
-  const formSchema = insertProjectSchema.extend({
+  // Form schema - custom validation for frontend
+  const formSchema = z.object({
     name: z.string().min(1, 'Naziv je obavezan'),
     description: z.string().min(1, 'Opis je obavezan'),
     goalAmount: z.string().min(1, 'Ciljani iznos je obavezan').refine(
@@ -55,10 +55,10 @@ export default function ProjectsPage() {
       'Ciljani iznos mora biti veći od 0'
     ),
     currentAmount: z.string().refine(
-      (val) => !isNaN(parseFloat(val)) && parseFloat(val) >= 0,
+      (val) => val === '' || (!isNaN(parseFloat(val)) && parseFloat(val) >= 0),
       'Trenutni iznos mora biti pozitivan broj'
-    ),
-    status: z.string().min(1, 'Status je obavezan'),
+    ).optional().default('0'),
+    status: z.enum(['active', 'closed']).default('active'),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -66,7 +66,7 @@ export default function ProjectsPage() {
     defaultValues: {
       name: '',
       description: '',
-      goalAmount: '0',
+      goalAmount: '',
       currentAmount: '0',
       status: 'active',
     }
@@ -117,14 +117,14 @@ export default function ProjectsPage() {
         description: project.description,
         goalAmount: project.goalAmount,
         currentAmount: project.currentAmount,
-        status: project.status,
+        status: project.status as 'active' | 'closed',
       });
     } else {
       setSelectedProject(null);
       form.reset({
         name: '',
         description: '',
-        goalAmount: '0',
+        goalAmount: '',
         currentAmount: '0',
         status: 'active',
       });
