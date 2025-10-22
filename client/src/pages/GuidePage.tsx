@@ -66,9 +66,9 @@ export default function GuidePage() {
     {
       icon: <Workspaces sx={{ color: '#0097a7' }} />,
       title: 'Sekcije',
-      admin: 'Kreiranje i upravljanje sekcijama (npr. Halal hrana, Iftar, Čišćenje). Postavljanje vidljivosti (Javno/Privatno). Dodjela moderatora. Kreiranje zadataka sa prioritetom i rokom. Dodjela zadataka korisnicima.',
-      moderator: 'Moderatori sekcije mogu kreirati i upravljati zadacima unutar svoje sekcije.',
-      member: 'Pregled sekcija u kojima ste član. Prikaz dodijeljenih zadataka. Mogućnost zahtjeva za pristup privatnim sekcijama.',
+      admin: 'Kreiranje i upravljanje sekcijama (npr. Halal hrana, Iftar, Čišćenje). Postavljanje vidljivosti (Javno/Privatno). Dodjela moderatora. Kreiranje zadataka sa prioritetom i rokom. Dodjela zadataka jednom ili više korisnika odjednom (multi-select).',
+      moderator: 'Moderatori sekcije mogu kreirati i upravljati zadacima unutar svoje sekcije. Mogu dodijeliti zadatak jednom članu, više članova odjednom, ili svim članovima. Svi dodijeljeni članovi vide zadatak i mogu ga označiti kao završen.',
+      member: 'Pregled sekcija u kojima ste član. Prikaz svih zadataka dodijeljenih vama. Mogućnost označavanja zadataka kao završenih. Mogućnost zahtjeva za pristup privatnim sekcijama.',
     },
     {
       icon: <Mail sx={{ color: '#9c27b0' }} />,

@@ -29,7 +29,7 @@ The system employs a simple session-based authentication using username/password
 - **User Management**: CRUD operations for user accounts and profile management.
 - **Announcements**: Content management for community announcements, viewable by guests.
 - **Events & Important Dates**: Tab-based interface with event calendar (monthly view with date markers), event list, RSVP functionality, and important dates management (recurring yearly dates in dd.mm format). Events viewable by guests.
-- **Task Manager**: Management of work groups ("Sekcije") and task assignments.
+- **Task Manager**: Management of work groups ("Sekcije") with multi-user task assignments. Moderators can assign tasks to one member, multiple specific members (2, 3, or more), or all members. All assigned users can mark tasks as complete.
 - **Dashboard Analytics**: Overview and activity tracking.
 - **Guest Access**: Public interface for viewing announcements, events, prayer times (Vaktija), and submitting membership applications. Features new mosque logo in header.
 - **Notification System**: Displays unread content counts for various modules.
