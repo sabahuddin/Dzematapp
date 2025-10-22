@@ -58,6 +58,8 @@ import {
   type InsertUserBadge,
   type Project,
   type InsertProject,
+  type UserPreferences,
+  type InsertUserPreferences,
   users,
   announcements,
   events,
@@ -86,7 +88,8 @@ import {
   pointsSettings,
   badges,
   userBadges,
-  projects
+  projects,
+  userPreferences
 } from "@shared/schema";
 import { db } from './db';
 import { eq, and, or, desc, asc, gt, sql, inArray } from 'drizzle-orm';
@@ -309,6 +312,11 @@ export interface IStorage {
   getUserTasksCompleted(userId: string): Promise<number>;
   getUserEventsAttended(userId: string): Promise<number>;
   recalculateUserPoints(userId: string): Promise<number>;
+
+  // User Preferences (Feature: Quick Access)
+  getUserPreferences(userId: string): Promise<import("@shared/schema").UserPreferences | undefined>;
+  createUserPreferences(preferences: import("@shared/schema").InsertUserPreferences): Promise<import("@shared/schema").UserPreferences>;
+  updateUserPreferences(userId: string, preferences: Partial<import("@shared/schema").InsertUserPreferences>): Promise<import("@shared/schema").UserPreferences | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1642,6 +1650,25 @@ export class DatabaseStorage implements IStorage {
     await this.updateUser(userId, { totalPoints });
     
     return totalPoints;
+  }
+
+  // User Preferences (Feature: Quick Access)
+  async getUserPreferences(userId: string): Promise<UserPreferences | undefined> {
+    const result = await db.select().from(userPreferences).where(eq(userPreferences.userId, userId)).limit(1);
+    return result[0];
+  }
+
+  async createUserPreferences(preferences: InsertUserPreferences): Promise<UserPreferences> {
+    const [prefs] = await db.insert(userPreferences).values(preferences).returning();
+    return prefs;
+  }
+
+  async updateUserPreferences(userId: string, updates: Partial<InsertUserPreferences>): Promise<UserPreferences | undefined> {
+    const [prefs] = await db.update(userPreferences)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(userPreferences.userId, userId))
+      .returning();
+    return prefs;
   }
 }
 

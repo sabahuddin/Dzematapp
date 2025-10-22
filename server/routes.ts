@@ -2704,6 +2704,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // User Preferences Routes (Feature: Quick Access)
+  app.get("/api/user-preferences", requireAuth, async (req, res) => {
+    try {
+      const userId = req.user!.id;
+      let preferences = await storage.getUserPreferences(userId);
+      
+      // If no preferences exist, create default ones
+      if (!preferences) {
+        preferences = await storage.createUserPreferences({
+          userId,
+          quickAccessShortcuts: []
+        });
+      }
+      
+      res.json(preferences);
+    } catch (error) {
+      console.error('Error getting user preferences:', error);
+      res.status(500).json({ message: "Failed to get user preferences" });
+    }
+  });
+
+  app.put("/api/user-preferences", requireAuth, async (req, res) => {
+    try {
+      const userId = req.user!.id;
+      const { quickAccessShortcuts } = req.body;
+      
+      // Validate that shortcuts is an array
+      if (!Array.isArray(quickAccessShortcuts)) {
+        return res.status(400).json({ message: "quickAccessShortcuts must be an array" });
+      }
+      
+      // Check if preferences exist
+      let preferences = await storage.getUserPreferences(userId);
+      
+      if (!preferences) {
+        // Create new preferences
+        preferences = await storage.createUserPreferences({
+          userId,
+          quickAccessShortcuts
+        });
+      } else {
+        // Update existing preferences
+        preferences = await storage.updateUserPreferences(userId, {
+          quickAccessShortcuts
+        });
+      }
+      
+      res.json(preferences);
+    } catch (error) {
+      console.error('Error updating user preferences:', error);
+      res.status(500).json({ message: "Failed to update user preferences" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
