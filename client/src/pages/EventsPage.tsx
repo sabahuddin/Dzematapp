@@ -111,7 +111,7 @@ export default function EventsPage() {
 
   const createEventMutation = useMutation({
     mutationFn: async (eventData: any) => {
-      const response = await apiRequest('POST', '/api/events', eventData);
+      const response = await apiRequest('/api/events', 'POST', eventData);
       return response.json();
     },
     onSuccess: () => {
@@ -125,7 +125,7 @@ export default function EventsPage() {
 
   const updateEventMutation = useMutation({
     mutationFn: async ({ id, ...eventData }: any) => {
-      const response = await apiRequest('PUT', `/api/events/${id}`, eventData);
+      const response = await apiRequest(`/api/events/${id}`, 'PUT', eventData);
       return response.json();
     },
     onSuccess: () => {
@@ -139,7 +139,7 @@ export default function EventsPage() {
 
   const deleteEventMutation = useMutation({
     mutationFn: async (id: string) => {
-      await apiRequest('DELETE', `/api/events/${id}`);
+      await apiRequest(`/api/events/${id}`, 'DELETE');
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/events'] });
@@ -152,7 +152,7 @@ export default function EventsPage() {
 
   const createImportantDateMutation = useMutation({
     mutationFn: async (data: any) => {
-      const response = await apiRequest('POST', '/api/important-dates', data);
+      const response = await apiRequest('/api/important-dates', 'POST', data);
       return response.json();
     },
     onSuccess: () => {
@@ -167,7 +167,7 @@ export default function EventsPage() {
 
   const updateImportantDateMutation = useMutation({
     mutationFn: async ({ id, ...data }: any) => {
-      const response = await apiRequest('PUT', `/api/important-dates/${id}`, data);
+      const response = await apiRequest(`/api/important-dates/${id}`, 'PUT', data);
       return response.json();
     },
     onSuccess: () => {
@@ -183,7 +183,7 @@ export default function EventsPage() {
 
   const deleteImportantDateMutation = useMutation({
     mutationFn: async (id: string) => {
-      await apiRequest('DELETE', `/api/important-dates/${id}`);
+      await apiRequest(`/api/important-dates/${id}`, 'DELETE');
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/important-dates'] });

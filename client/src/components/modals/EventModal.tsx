@@ -58,7 +58,6 @@ export default function EventModal({
     rsvpEnabled: true,
     requireAdultsChildren: false,
     maxAttendees: '',
-    reminderTime: '',
     categories: [] as string[]
   });
 
@@ -95,7 +94,6 @@ export default function EventModal({
         rsvpEnabled: event.rsvpEnabled ?? true,
         requireAdultsChildren: event.requireAdultsChildren ?? false,
         maxAttendees: event.maxAttendees?.toString() || '',
-        reminderTime: event.reminderTime || '',
         categories: event.categories || []
       });
     } else {
@@ -112,7 +110,6 @@ export default function EventModal({
         rsvpEnabled: true,
         requireAdultsChildren: false,
         maxAttendees: '',
-        reminderTime: '',
         categories: []
       });
     }
@@ -140,20 +137,19 @@ export default function EventModal({
       createdById,
       dateTime: new Date(formData.dateTime).toISOString(),
       maxAttendees: formData.maxAttendees ? parseInt(formData.maxAttendees, 10) : null,
-      reminderTime: formData.reminderTime || null,
       categories: formData.categories.length > 0 ? formData.categories : null
     });
     onClose();
   };
 
   const handleAddToCalendar = () => {
-    if (formData.name && formData.location && formData.dateTime) {
+    if (event && event.name && event.location && event.dateTime) {
       downloadICS({
-        name: formData.name,
-        description: formData.description,
-        location: formData.location,
-        dateTime: new Date(formData.dateTime),
-        reminderTime: formData.reminderTime || null
+        name: event.name,
+        description: event.description || '',
+        location: event.location,
+        dateTime: new Date(event.dateTime),
+        reminderTime: null
       });
     }
   };
@@ -274,41 +270,17 @@ export default function EventModal({
               </Grid>
             </Grid>
             
-            <Grid container spacing={2}>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  label="Maksimalan broj učesnika"
-                  type="number"
-                  value={formData.maxAttendees}
-                  onChange={handleChange('maxAttendees')}
-                  helperText="Ostavite prazno za neograničeno"
-                  disabled={isReadOnly}
-                  data-testid="input-maxAttendees"
-                />
-              </Grid>
-              
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <FormControl fullWidth variant="outlined">
-                  <InputLabel>Podsjetnik</InputLabel>
-                  <Select
-                    value={formData.reminderTime}
-                    onChange={(e) => setFormData(prev => ({ ...prev, reminderTime: e.target.value }))}
-                    label="Podsjetnik"
-                    disabled={isReadOnly}
-                    data-testid="select-reminderTime"
-                  >
-                    <MenuItem value="">
-                      <em>Bez podsjetnika</em>
-                    </MenuItem>
-                    <MenuItem value="7_days">7 dana prije</MenuItem>
-                    <MenuItem value="24_hours">24 sata prije</MenuItem>
-                    <MenuItem value="2_hours">2 sata prije</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-            </Grid>
+            <TextField
+              fullWidth
+              variant="outlined"
+              label="Maksimalan broj učesnika"
+              type="number"
+              value={formData.maxAttendees}
+              onChange={handleChange('maxAttendees')}
+              helperText="Ostavite prazno za neograničeno"
+              disabled={isReadOnly}
+              data-testid="input-maxAttendees"
+            />
             
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               <FormControlLabel
@@ -402,19 +374,18 @@ export default function EventModal({
           </Box>
         </DialogContent>
         
-        <DialogActions sx={{ p: 3, justifyContent: isReadOnly ? 'center' : 'space-between' }}>
-          {!isReadOnly && (
-            <Button 
-              onClick={handleAddToCalendar}
-              variant="outlined"
-              startIcon={<CalendarMonth />}
-              disabled={!formData.name || !formData.location || !formData.dateTime}
-              data-testid="button-add-to-calendar"
-            >
-              Dodaj u Kalendar
-            </Button>
-          )}
+        <DialogActions sx={{ p: 3, justifyContent: 'flex-end' }}>
           <Box sx={{ display: 'flex', gap: 1 }}>
+            {isReadOnly && event && (
+              <Button 
+                onClick={handleAddToCalendar}
+                variant="outlined"
+                startIcon={<CalendarMonth />}
+                data-testid="button-add-to-calendar"
+              >
+                Dodaj u Kalendar
+              </Button>
+            )}
             <Button 
               onClick={onClose} 
               variant="outlined"
