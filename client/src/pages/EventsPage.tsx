@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type SyntheticEvent } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Box,
@@ -24,7 +24,10 @@ import {
   Tabs,
   Tab,
   TextField,
-  Badge
+  Badge,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails
 } from '@mui/material';
 import {
   Add,
@@ -32,7 +35,8 @@ import {
   Delete,
   Visibility,
   CalendarMonth,
-  EventNote
+  EventNote,
+  ExpandMore
 } from '@mui/icons-material';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay';
@@ -92,6 +96,7 @@ export default function EventsPage() {
   const [eventToDelete, setEventToDelete] = useState<Event | null>(null);
   const [rsvpModalOpen, setRsvpModalOpen] = useState(false);
   const [rsvpEvent, setRsvpEvent] = useState<Event | null>(null);
+  const [expandedAccordion, setExpandedAccordion] = useState<string | false>(false);
   
   const [importantDateForm, setImportantDateForm] = useState({
     name: '',
@@ -292,6 +297,73 @@ export default function EventsPage() {
     return event.rsvpCount || 0;
   };
 
+  const handleAccordionChange = (panel: string) => (event: SyntheticEvent, isExpanded: boolean) => {
+    setExpandedAccordion(isExpanded ? panel : false);
+  };
+
+  const renderEventRow = (event: Event, isPastEvent: boolean = false) => {
+    const rsvpCount = getRsvpCount(event);
+    const maxAttendees = event.maxAttendees || '∞';
+    
+    return (
+      <TableRow key={event.id}>
+        <TableCell>
+          <Typography
+            onClick={() => handleEventClick(event)}
+            sx={{
+              cursor: 'pointer',
+              color: 'primary.main',
+              fontWeight: 500,
+              '&:hover': {
+                textDecoration: 'underline'
+              }
+            }}
+            data-testid={`link-event-${event.id}`}
+          >
+            {event.name}
+          </Typography>
+        </TableCell>
+        <TableCell>{formatDateTime(event.dateTime.toString())}</TableCell>
+        <TableCell>{event.location}</TableCell>
+        <TableCell>
+          {event.rsvpEnabled ? `${rsvpCount}/${maxAttendees}` : 'Ne'}
+        </TableCell>
+        <TableCell>
+          <Box sx={{ display: 'flex', gap: 0.5 }}>
+            <IconButton
+              size="small"
+              onClick={() => handleEventClick(event)}
+              sx={{ color: '#1976d2' }}
+              data-testid={`button-view-event-${event.id}`}
+            >
+              <Visibility fontSize="small" />
+            </IconButton>
+            {user?.isAdmin && (
+              <>
+                <IconButton
+                  size="small"
+                  onClick={() => handleEditEvent(event)}
+                  sx={{ color: '#ed6c02' }}
+                  data-testid={`button-edit-event-${event.id}`}
+                >
+                  <Edit fontSize="small" />
+                </IconButton>
+                <IconButton
+                  size="small"
+                  onClick={() => handleDeleteClick(event)}
+                  sx={{ color: '#d32f2f' }}
+                  data-testid={`button-delete-event-${event.id}`}
+                >
+                  <Delete fontSize="small" />
+                </IconButton>
+              </>
+            )}
+          </Box>
+        </TableCell>
+      </TableRow>
+    );
+  };
+
   if (eventsQuery.isLoading || importantDatesQuery.isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
@@ -310,6 +382,22 @@ export default function EventsPage() {
 
   const allEvents = eventsQuery.data || [];
   const importantDates = importantDatesQuery.data || [];
+  
+  // Sort events by date
+  const sortedEvents = [...allEvents].sort((a, b) => {
+    const dateA = new Date(a.dateTime).getTime();
+    const dateB = new Date(b.dateTime).getTime();
+    return dateA - dateB;
+  });
+
+  // Separate into upcoming and past events
+  const now = new Date();
+  const upcomingEvents = sortedEvents.filter(event => new Date(event.dateTime) >= now);
+  const pastEvents = sortedEvents.filter(event => new Date(event.dateTime) < now);
+
+  // Top 3 upcoming events for main list
+  const topUpcomingEvents = upcomingEvents.slice(0, 3);
+  const otherUpcomingEvents = upcomingEvents.slice(3);
   
   const eventDates = allEvents.map(event => new Date(event.dateTime));
 
@@ -388,11 +476,11 @@ export default function EventsPage() {
             </CardContent>
           </Card>
 
-          {/* Events List */}
-          <Card>
+          {/* Top 3 Upcoming Events */}
+          <Card sx={{ mb: 2 }}>
             <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                Svi Događaji
+                Nadolazeći Događaji
               </Typography>
             </Box>
             <TableContainer>
@@ -407,72 +495,12 @@ export default function EventsPage() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {allEvents.map((event: Event) => {
-                    const rsvpCount = getRsvpCount(event);
-                    const maxAttendees = event.maxAttendees || '∞';
-                    return (
-                      <TableRow key={event.id}>
-                        <TableCell>
-                          <Typography
-                            onClick={() => handleEventClick(event)}
-                            sx={{
-                              cursor: 'pointer',
-                              color: 'primary.main',
-                              fontWeight: 500,
-                              '&:hover': {
-                                textDecoration: 'underline'
-                              }
-                            }}
-                            data-testid={`link-event-${event.id}`}
-                          >
-                            {event.name}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>{formatDateTime(event.dateTime.toString())}</TableCell>
-                        <TableCell>{event.location}</TableCell>
-                        <TableCell>
-                          {event.rsvpEnabled ? `${rsvpCount}/${maxAttendees}` : 'Ne'}
-                        </TableCell>
-                        <TableCell>
-                          <Box sx={{ display: 'flex', gap: 0.5 }}>
-                            <IconButton
-                              size="small"
-                              onClick={() => handleEventClick(event)}
-                              sx={{ color: '#1976d2' }}
-                              data-testid={`button-view-event-${event.id}`}
-                            >
-                              <Visibility fontSize="small" />
-                            </IconButton>
-                            {user?.isAdmin && (
-                              <>
-                                <IconButton
-                                  size="small"
-                                  onClick={() => handleEditEvent(event)}
-                                  sx={{ color: '#ed6c02' }}
-                                  data-testid={`button-edit-event-${event.id}`}
-                                >
-                                  <Edit fontSize="small" />
-                                </IconButton>
-                                <IconButton
-                                  size="small"
-                                  onClick={() => handleDeleteClick(event)}
-                                  sx={{ color: '#d32f2f' }}
-                                  data-testid={`button-delete-event-${event.id}`}
-                                >
-                                  <Delete fontSize="small" />
-                                </IconButton>
-                              </>
-                            )}
-                          </Box>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                  {allEvents.length === 0 && (
+                  {topUpcomingEvents.map((event: Event) => renderEventRow(event, false))}
+                  {topUpcomingEvents.length === 0 && (
                     <TableRow>
                       <TableCell colSpan={5} sx={{ textAlign: 'center', py: 4 }}>
                         <Typography color="text.secondary">
-                          Nema događaja
+                          Nema nadolazećih događaja
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -481,6 +509,80 @@ export default function EventsPage() {
               </Table>
             </TableContainer>
           </Card>
+
+          {/* Other Upcoming Events Accordion */}
+          {otherUpcomingEvents.length > 0 && (
+            <Accordion
+              expanded={expandedAccordion === 'other'}
+              onChange={handleAccordionChange('other')}
+              sx={{ mb: 2 }}
+              data-testid="accordion-other-events"
+            >
+              <AccordionSummary 
+                expandIcon={<ExpandMore />}
+                sx={{ bgcolor: '#f5f5f5' }}
+              >
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                  Ostali Događaji ({otherUpcomingEvents.length})
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails sx={{ p: 0 }}>
+                <TableContainer>
+                  <Table>
+                    <TableHead>
+                      <TableRow sx={{ bgcolor: '#fafafa' }}>
+                        <TableCell sx={{ fontWeight: 600 }}>Naziv Događaja</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>Datum i Vrijeme</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>Lokacija</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>RSVP</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {otherUpcomingEvents.map((event: Event) => renderEventRow(event, false))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </AccordionDetails>
+            </Accordion>
+          )}
+
+          {/* Past Events Accordion */}
+          {pastEvents.length > 0 && (
+            <Accordion
+              expanded={expandedAccordion === 'past'}
+              onChange={handleAccordionChange('past')}
+              sx={{ mb: 2 }}
+              data-testid="accordion-past-events"
+            >
+              <AccordionSummary 
+                expandIcon={<ExpandMore />}
+                sx={{ bgcolor: '#f5f5f5' }}
+              >
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                  Završeni Događaji ({pastEvents.length})
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails sx={{ p: 0 }}>
+                <TableContainer>
+                  <Table>
+                    <TableHead>
+                      <TableRow sx={{ bgcolor: '#fafafa' }}>
+                        <TableCell sx={{ fontWeight: 600 }}>Naziv Događaja</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>Datum i Vrijeme</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>Lokacija</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>RSVP</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {pastEvents.map((event: Event) => renderEventRow(event, true))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </AccordionDetails>
+            </Accordion>
+          )}
         </Box>
       )}
 

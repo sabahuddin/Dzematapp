@@ -43,6 +43,8 @@ export default function EventViewModal({
     ? rsvpQuery.data.totalAttendees >= event.maxAttendees 
     : false;
 
+  const isPastEvent = new Date(event.dateTime) < new Date();
+
   const formatDateTime = (dateTime: string | Date) => {
     const date = new Date(dateTime);
     const day = date.getDate();
@@ -206,7 +208,13 @@ export default function EventViewModal({
             {/* RSVP Info */}
             {event.rsvpEnabled && (
               <>
-                {isCapacityReached ? (
+                {isPastEvent ? (
+                  <Alert severity="warning" icon={<People />}>
+                    <Typography variant="body2">
+                      Ovaj događaj je završen. Retroaktivna prijava nije moguća.
+                    </Typography>
+                  </Alert>
+                ) : isCapacityReached ? (
                   <Alert severity="error" icon={<People />}>
                     <Typography variant="body2">
                       Maksimalan broj učesnika je dostignut ({event.maxAttendees}). Prijava dolaska više nije moguća.
@@ -238,7 +246,7 @@ export default function EventViewModal({
             Dodaj u kalendar
           </Button>
           
-          {event.rsvpEnabled && !isCapacityReached && (
+          {event.rsvpEnabled && !isCapacityReached && !isPastEvent && (
             <Button 
               onClick={handleRSVP}
               variant="contained"
