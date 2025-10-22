@@ -9,7 +9,7 @@ Preferred communication style: Simple, everyday language.
 # Recent Updates (October 22, 2025)
 
 ## Bugfixes
-- **Financial Contributions**: Fixed member contribution creation - changed POST endpoint from requireAdmin to requireAuth with server-side guard preventing members from creating contributions for other users. Added PATCH endpoint for frontend compatibility.
+- **Financial Contributions**: Members can now only view their contributions (no create/edit/delete). Added PATCH endpoint for admin compatibility. Fixed frontend to hide "Dodaj Uplatu" button for non-admins.
 - **apiRequest Signature**: Corrected argument order in FinancesPage and PointSettingsPage to use (url, method, data) instead of (method, url, data).
 - **Phone Placeholder**: Updated to Swiss format (+41 7x xxx xx xx) in user profile modal.
 

@@ -2275,15 +2275,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/financial-contributions", requireAuth, async (req, res) => {
+  app.post("/api/financial-contributions", requireAdmin, async (req, res) => {
     try {
       const validated = insertFinancialContributionSchema.parse(req.body);
-      
-      // Non-admins can only create contributions for themselves
-      if (!req.user?.isAdmin && validated.userId !== req.user?.id) {
-        return res.status(403).json({ message: "You can only create contributions for yourself" });
-      }
-      
       const contribution = await storage.createFinancialContribution({
         ...validated,
         createdById: req.user!.id

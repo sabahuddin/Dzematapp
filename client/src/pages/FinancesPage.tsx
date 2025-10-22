@@ -214,14 +214,16 @@ export default function FinancesPage() {
         <Typography variant="h5" sx={{ fontWeight: 600 }}>
           {currentUser?.isAdmin ? 'Finansije' : 'Moje Uplate'}
         </Typography>
-        <Button
-          variant="contained"
-          startIcon={<Add />}
-          onClick={() => handleOpenDialog()}
-          data-testid="button-add-contribution"
-        >
-          Dodaj Uplatu
-        </Button>
+        {currentUser?.isAdmin && (
+          <Button
+            variant="contained"
+            startIcon={<Add />}
+            onClick={() => handleOpenDialog()}
+            data-testid="button-add-contribution"
+          >
+            Dodaj Uplatu
+          </Button>
+        )}
       </Box>
 
       <Card>
