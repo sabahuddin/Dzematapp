@@ -63,7 +63,7 @@ export default function UsersPage() {
   // Create user mutation
   const createUserMutation = useMutation({
     mutationFn: async (userData: any) => {
-      const response = await apiRequest('POST', '/api/users', userData);
+      const response = await apiRequest('/api/users', 'POST', userData);
       return response.json();
     },
     onSuccess: () => {
@@ -78,7 +78,7 @@ export default function UsersPage() {
   // Update user mutation
   const updateUserMutation = useMutation({
     mutationFn: async ({ id, ...userData }: any) => {
-      const response = await apiRequest('PUT', `/api/users/${id}`, userData);
+      const response = await apiRequest(`/api/users/${id}`, 'PUT', userData);
       return response.json();
     },
     onSuccess: () => {

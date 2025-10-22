@@ -53,7 +53,7 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
 
   const createRsvpMutation = useMutation({
     mutationFn: async (data: { adultsCount: number; childrenCount: number }) => {
-      return apiRequest('POST', `/api/events/${event.id}/rsvp`, data);
+      return apiRequest(`/api/events/${event.id}/rsvp`, 'POST', data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/events', event.id, 'user-rsvp'] });
@@ -76,7 +76,7 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
 
   const updateRsvpMutation = useMutation({
     mutationFn: async (data: { adultsCount: number; childrenCount: number }) => {
-      return apiRequest('PUT', `/api/events/${event.id}/rsvp/${userRsvp!.id}`, data);
+      return apiRequest(`/api/events/${event.id}/rsvp/${userRsvp!.id}`, 'PUT', data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/events', event.id, 'user-rsvp'] });
@@ -99,7 +99,7 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
 
   const deleteRsvpMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest('DELETE', `/api/events/${event.id}/rsvp/${userRsvp!.id}`);
+      return apiRequest(`/api/events/${event.id}/rsvp/${userRsvp!.id}`, 'DELETE');
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/events', event.id, 'user-rsvp'] });
