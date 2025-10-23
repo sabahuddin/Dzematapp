@@ -77,7 +77,7 @@ export default function AppBar({ onMenuClick }: AppBarProps) {
             {getPageTitle()}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ display: { xs: 'none', sm: 'block' } }}>
-            Dobrodošli u JamatHub Admin Panel
+            Dobrodošli u DžematApp Admin Panel
           </Typography>
         </Box>
 
