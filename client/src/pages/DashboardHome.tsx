@@ -48,8 +48,6 @@ import {
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay';
 import { 
-  mockStatistics, 
-  mockRecentActivities, 
   getActivityTypeChip, 
   formatTimeAgo 
 } from '../data/mockData';
@@ -61,6 +59,21 @@ import type { Announcement, Event as EventType, WorkGroup, PrayerTime, UserPrefe
 import { format, isSameDay } from 'date-fns';
 import { useMutation } from '@tanstack/react-query';
 import { queryClient, apiRequest } from '../lib/queryClient';
+
+interface Statistics {
+  userCount: number;
+  newAnnouncementsCount: number;
+  upcomingEventsCount: number;
+  activeTasksCount: number;
+}
+
+interface Activity {
+  id: string;
+  type: string;
+  description: string;
+  userId: string;
+  createdAt: string;
+}
 
 const StatCard = ({ icon, title, value, color }: {
   icon: React.ReactNode;
@@ -141,23 +154,14 @@ export default function DashboardHome() {
   const [dateEventsModalOpen, setDateEventsModalOpen] = useState(false);
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
   
-  // In a real app, these would be actual API calls
-  const statisticsQuery = useQuery({
+  // Fetch real statistics from API
+  const statisticsQuery = useQuery<Statistics>({
     queryKey: ['/api/statistics'],
-    queryFn: async () => {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 500));
-      return mockStatistics;
-    }
   });
 
-  const activitiesQuery = useQuery({
+  // Fetch real activities from API
+  const activitiesQuery = useQuery<Activity[]>({
     queryKey: ['/api/activities'],
-    queryFn: async () => {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 300));
-      return mockRecentActivities;
-    }
   });
 
   // Fetch events for all users
