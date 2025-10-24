@@ -28,11 +28,13 @@ import { Upload, Schedule, ExpandMore } from '@mui/icons-material';
 import { useAuth } from '@/contexts/AuthContext';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from 'react-i18next';
 import type { PrayerTime } from '@shared/schema';
 
 export default function VaktijaPage() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation(['vaktija']);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [expandedMonth, setExpandedMonth] = useState<string | false>(false);
@@ -68,16 +70,16 @@ export default function VaktijaPage() {
       queryClient.invalidateQueries({ queryKey: ['/api/prayer-times'] });
       queryClient.invalidateQueries({ queryKey: ['/api/prayer-times/today'] });
       toast({
-        title: 'Uspjeh',
-        description: data.message || 'Vaktije su uspješno učitane',
+        title: t('vaktija:messages.success'),
+        description: data.message || t('vaktija:messages.uploadSuccess'),
       });
       setUploadDialogOpen(false);
       setSelectedFile(null);
     },
     onError: (error: any) => {
       toast({
-        title: 'Greška',
-        description: error.message || 'Greška pri učitavanju CSV fajla',
+        title: t('vaktija:messages.error'),
+        description: error.message || t('vaktija:messages.uploadError'),
         variant: 'destructive',
       });
     },
@@ -89,14 +91,14 @@ export default function VaktijaPage() {
       queryClient.invalidateQueries({ queryKey: ['/api/prayer-times'] });
       queryClient.invalidateQueries({ queryKey: ['/api/prayer-times/today'] });
       toast({
-        title: 'Uspjeh',
-        description: 'Sve vaktije su obrisane',
+        title: t('vaktija:messages.success'),
+        description: t('vaktija:messages.deleteSuccess'),
       });
     },
     onError: (error: any) => {
       toast({
-        title: 'Greška',
-        description: error.message || 'Greška pri brisanju vaktija',
+        title: t('vaktija:messages.error'),
+        description: error.message || t('vaktija:messages.deleteError'),
         variant: 'destructive',
       });
     },
@@ -116,18 +118,9 @@ export default function VaktijaPage() {
   };
 
   const handleDeleteAll = () => {
-    if (window.confirm('Da li ste sigurni da želite obrisati sve vaktije?')) {
+    if (window.confirm(t('vaktija:confirmDeleteAll'))) {
       deleteMutation.mutate();
     }
-  };
-
-  const prayerTimeNames = {
-    fajr: 'Zora',
-    sunrise: 'Izlazak sunca',
-    dhuhr: 'Podne',
-    asr: 'Ikindija',
-    maghrib: 'Akšam',
-    isha: 'Jacija',
   };
 
   const handleAccordionChange = (panel: string) => (event: SyntheticEvent, isExpanded: boolean) => {
@@ -138,7 +131,7 @@ export default function VaktijaPage() {
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h4" sx={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Schedule /> Vaktija
+          <Schedule /> {t('vaktija:title')}
         </Typography>
         {user?.isAdmin && (
           <Box sx={{ display: 'flex', gap: 2 }}>
@@ -149,7 +142,7 @@ export default function VaktijaPage() {
               disabled={deleteMutation.isPending}
               data-testid="button-delete-all-prayer-times"
             >
-              Obriši sve
+              {t('vaktija:deleteAll')}
             </Button>
             <Button
               variant="contained"
@@ -157,7 +150,7 @@ export default function VaktijaPage() {
               onClick={() => setUploadDialogOpen(true)}
               data-testid="button-upload-csv"
             >
-              Učitaj CSV
+              {t('vaktija:uploadCSV')}
             </Button>
           </Box>
         )}
@@ -171,14 +164,14 @@ export default function VaktijaPage() {
       ) : todayPrayerTime ? (
         <Paper sx={{ p: 3, mb: 4, bgcolor: '#e3f2fd' }}>
           <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: '#1976d2' }}>
-            Današnja vaktija - {todayPrayerTime.date}
+            {t('vaktija:todaysPrayerTimes')} - {todayPrayerTime.date}
           </Typography>
           <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
             <Box sx={{ flex: '1 1 150px' }}>
               <Card>
                 <CardContent sx={{ textAlign: 'center' }}>
                   <Typography variant="caption" color="text.secondary">
-                    Zora
+                    {t('vaktija:prayerNames.fajr')}
                   </Typography>
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>
                     {todayPrayerTime.fajr}
@@ -191,7 +184,7 @@ export default function VaktijaPage() {
                 <Card>
                   <CardContent sx={{ textAlign: 'center' }}>
                     <Typography variant="caption" color="text.secondary">
-                      Izlazak
+                      {t('vaktija:prayerNames.sunrise')}
                     </Typography>
                     <Typography variant="h6" sx={{ fontWeight: 600 }}>
                       {todayPrayerTime.sunrise}
@@ -204,7 +197,7 @@ export default function VaktijaPage() {
               <Card>
                 <CardContent sx={{ textAlign: 'center' }}>
                   <Typography variant="caption" color="text.secondary">
-                    Podne
+                    {t('vaktija:prayerNames.dhuhr')}
                   </Typography>
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>
                     {todayPrayerTime.dhuhr}
@@ -216,7 +209,7 @@ export default function VaktijaPage() {
               <Card>
                 <CardContent sx={{ textAlign: 'center' }}>
                   <Typography variant="caption" color="text.secondary">
-                    Ikindija
+                    {t('vaktija:prayerNames.asr')}
                   </Typography>
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>
                     {todayPrayerTime.asr}
@@ -228,7 +221,7 @@ export default function VaktijaPage() {
               <Card>
                 <CardContent sx={{ textAlign: 'center' }}>
                   <Typography variant="caption" color="text.secondary">
-                    Akšam
+                    {t('vaktija:prayerNames.maghrib')}
                   </Typography>
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>
                     {todayPrayerTime.maghrib}
@@ -240,7 +233,7 @@ export default function VaktijaPage() {
               <Card>
                 <CardContent sx={{ textAlign: 'center' }}>
                   <Typography variant="caption" color="text.secondary">
-                    Jacija
+                    {t('vaktija:prayerNames.isha')}
                   </Typography>
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>
                     {todayPrayerTime.isha}
@@ -252,14 +245,14 @@ export default function VaktijaPage() {
         </Paper>
       ) : (
         <Alert severity="info" sx={{ mb: 4 }}>
-          Nema podataka o vaktijama za danas.
+          {t('vaktija:noPrayerTimesToday')}
         </Alert>
       )}
 
       {/* Monthly Prayer Times Table */}
       <Paper sx={{ p: 3 }}>
         <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-          Mjesečne vaktije
+          {t('vaktija:monthlyPrayerTimes')}
         </Typography>
         {allLoading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
@@ -290,14 +283,9 @@ export default function VaktijaPage() {
               return dateA.getTime() - dateB.getTime();
             });
 
-            const monthNames = [
-              'Januar', 'Februar', 'Mart', 'April', 'Maj', 'Juni',
-              'Juli', 'August', 'Septembar', 'Oktobar', 'Novembar', 'Decembar'
-            ];
-
             return sortedMonthKeys.map((monthYear) => {
               const [month, year] = monthYear.split('.');
-              const monthName = monthNames[parseInt(month) - 1];
+              const monthName = t(`vaktija:monthNames.${month}`);
               const prayerTimes = monthGroups[monthYear];
 
               return (
@@ -321,13 +309,13 @@ export default function VaktijaPage() {
                       <Table size="small">
                         <TableHead>
                           <TableRow sx={{ bgcolor: '#fafafa' }}>
-                            <TableCell sx={{ fontWeight: 600 }}>Datum</TableCell>
-                            <TableCell sx={{ fontWeight: 600 }}>Zora</TableCell>
-                            <TableCell sx={{ fontWeight: 600 }}>Izlazak</TableCell>
-                            <TableCell sx={{ fontWeight: 600 }}>Podne</TableCell>
-                            <TableCell sx={{ fontWeight: 600 }}>Ikindija</TableCell>
-                            <TableCell sx={{ fontWeight: 600 }}>Akšam</TableCell>
-                            <TableCell sx={{ fontWeight: 600 }}>Jacija</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>{t('vaktija:date')}</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>{t('vaktija:prayerNames.fajr')}</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>{t('vaktija:prayerNames.sunrise')}</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>{t('vaktija:prayerNames.dhuhr')}</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>{t('vaktija:prayerNames.asr')}</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>{t('vaktija:prayerNames.maghrib')}</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>{t('vaktija:prayerNames.isha')}</TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
@@ -352,21 +340,21 @@ export default function VaktijaPage() {
           })()
         ) : (
           <Alert severity="info">
-            Nema učitanih vaktija. {user?.isAdmin && 'Učitajte CSV fajl sa vaktijama.'}
+            {t('vaktija:noPrayerTimesAll')} {user?.isAdmin && t('vaktija:uploadPrompt')}
           </Alert>
         )}
       </Paper>
 
       {/* Upload Dialog */}
       <Dialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(false)}>
-        <DialogTitle>Učitaj vaktije iz CSV fajla</DialogTitle>
+        <DialogTitle>{t('vaktija:uploadPrayerTimes')}</DialogTitle>
         <DialogContent>
           <Box sx={{ my: 2 }}>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              CSV fajl mora sadržavati kolone: Datum, Dan, Zora, Izlazak sunca, Podne, Ikindija, Akšam, Jacija
+              {t('vaktija:csvFormat')}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              Format datuma: dd.mm.yyyy (npr. 21.10.2025)
+              {t('vaktija:dateFormat')}
             </Typography>
             <input
               type="file"
@@ -377,14 +365,14 @@ export default function VaktijaPage() {
             />
             {selectedFile && (
               <Typography variant="body2" sx={{ mt: 2 }}>
-                Odabrani fajl: {selectedFile.name}
+                {t('vaktija:selectedFile')} {selectedFile.name}
               </Typography>
             )}
           </Box>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setUploadDialogOpen(false)} data-testid="button-cancel-upload">
-            Otkaži
+            {t('vaktija:cancel')}
           </Button>
           <Button
             onClick={handleUpload}
@@ -392,7 +380,7 @@ export default function VaktijaPage() {
             disabled={!selectedFile || uploadMutation.isPending}
             data-testid="button-confirm-upload"
           >
-            {uploadMutation.isPending ? 'Učitavam...' : 'Učitaj'}
+            {uploadMutation.isPending ? t('vaktija:uploading') : t('vaktija:upload')}
           </Button>
         </DialogActions>
       </Dialog>

@@ -3,6 +3,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Button,
@@ -40,6 +41,7 @@ import { apiRequest, queryClient } from '../lib/queryClient';
 export default function FinancesPage() {
   const { user: currentUser } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation(['finances', 'common']);
   
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('');
@@ -69,9 +71,9 @@ export default function FinancesPage() {
   // Extended schema for client-side form
   const formSchema = insertFinancialContributionSchema.extend({
     userId: currentUser?.isAdmin 
-      ? z.string().min(1, 'Korisnik je obavezan')
+      ? z.string().min(1, t('finances:validation.userRequired'))
       : z.string().optional(),
-    paymentDate: z.string().min(1, 'Datum je obavezan'),
+    paymentDate: z.string().min(1, t('finances:validation.dateRequired')),
     projectId: z.string().transform(val => val || null).nullable().optional(),
   });
 
@@ -81,8 +83,8 @@ export default function FinancesPage() {
       userId: currentUser?.id || '',
       amount: '0',
       paymentDate: new Date().toISOString().split('T')[0],
-      purpose: 'Članarina',
-      paymentMethod: 'Gotovina',
+      purpose: t('finances:purposes.membership'),
+      paymentMethod: t('finances:paymentMethods.cash'),
       notes: '',
       createdById: currentUser?.id || ''
     }
@@ -108,11 +110,11 @@ export default function FinancesPage() {
       }
       // Invalidate projects query as currentAmount may have changed
       queryClient.invalidateQueries({ queryKey: ['/api/projects'] });
-      toast({ title: 'Uspjeh', description: selectedContribution ? 'Uplata je ažurirana' : 'Uplata je kreirana' });
+      toast({ title: t('common:common.success'), description: selectedContribution ? t('finances:messages.updated') : t('finances:messages.created') });
       handleCloseDialog();
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri spremanju uplate', variant: 'destructive' });
+      toast({ title: t('common:common.error'), description: t('finances:messages.errorSaving'), variant: 'destructive' });
     }
   });
 
@@ -129,10 +131,10 @@ export default function FinancesPage() {
       }
       // Invalidate projects query as currentAmount may have changed
       queryClient.invalidateQueries({ queryKey: ['/api/projects'] });
-      toast({ title: 'Uspjeh', description: 'Uplata je obrisana' });
+      toast({ title: t('common:common.success'), description: t('finances:messages.deleted') });
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri brisanju uplate', variant: 'destructive' });
+      toast({ title: t('common:common.error'), description: t('finances:messages.errorDeleting'), variant: 'destructive' });
     }
   });
 
@@ -155,8 +157,8 @@ export default function FinancesPage() {
         userId: currentUser?.id || '',
         amount: '0',
         paymentDate: new Date().toISOString().split('T')[0],
-        purpose: 'Članarina',
-        paymentMethod: 'Gotovina',
+        purpose: t('finances:purposes.membership'),
+        paymentMethod: t('finances:paymentMethods.cash'),
         notes: '',
         projectId: undefined,
         createdById: currentUser?.id || ''
@@ -176,7 +178,7 @@ export default function FinancesPage() {
   });
 
   const handleDelete = (id: string) => {
-    if (window.confirm('Jeste li sigurni da želite obrisati ovu uplatu?')) {
+    if (window.confirm(t('finances:messages.confirmDelete'))) {
       deleteContributionMutation.mutate(id);
     }
   };
@@ -200,9 +202,9 @@ export default function FinancesPage() {
   });
 
   const getUserName = (userId: string) => {
-    if (!usersQuery.data) return 'Nepoznato';
+    if (!usersQuery.data) return t('finances:unknown');
     const user = (usersQuery.data as User[]).find(u => u.id === userId);
-    return user ? `${user.firstName} ${user.lastName}` : 'Nepoznato';
+    return user ? `${user.firstName} ${user.lastName}` : t('finances:unknown');
   };
 
   const getProjectName = (projectId: string | null) => {
@@ -222,7 +224,7 @@ export default function FinancesPage() {
   if (contributionsQuery.error) {
     return (
       <Alert severity="error">
-        Greška pri učitavanju finansijskih uplate. Molimo pokušajte ponovo.
+        {t('finances:messages.errorLoading')}
       </Alert>
     );
   }
@@ -231,7 +233,7 @@ export default function FinancesPage() {
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h5" sx={{ fontWeight: 600 }}>
-          {currentUser?.isAdmin ? 'Finansije' : 'Moje Uplate'}
+          {currentUser?.isAdmin ? t('finances:title') : t('finances:myPayments')}
         </Typography>
         {currentUser?.isAdmin && (
           <Button
@@ -240,7 +242,7 @@ export default function FinancesPage() {
             onClick={() => handleOpenDialog()}
             data-testid="button-add-contribution"
           >
-            Dodaj Uplatu
+            {t('finances:addPayment')}
           </Button>
         )}
       </Box>
@@ -251,7 +253,7 @@ export default function FinancesPage() {
             <Box sx={{ display: 'flex', gap: 2 }}>
               <TextField
                 variant="outlined"
-                placeholder="Pretraži po korisniku, opisu ili tipu..."
+                placeholder={t('finances:searchPlaceholder')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 fullWidth
@@ -266,12 +268,12 @@ export default function FinancesPage() {
                 SelectProps={{ native: true }}
                 data-testid="select-category-filter"
               >
-                <option value="">Sve kategorije</option>
-                <option value="Članarina">Članarina</option>
-                <option value="Donacija">Donacija</option>
-                <option value="Vakuf">Vakuf</option>
-                <option value="Sergija">Sergija</option>
-                <option value="Ostalo">Ostalo</option>
+                <option value="">{t('finances:allCategories')}</option>
+                <option value={t('finances:purposes.membership')}>{t('finances:purposes.membership')}</option>
+                <option value={t('finances:purposes.donation')}>{t('finances:purposes.donation')}</option>
+                <option value={t('finances:purposes.waqf')}>{t('finances:purposes.waqf')}</option>
+                <option value={t('finances:purposes.sergija')}>{t('finances:purposes.sergija')}</option>
+                <option value={t('finances:purposes.other')}>{t('finances:purposes.other')}</option>
               </TextField>
             </Box>
           </Box>
@@ -281,13 +283,13 @@ export default function FinancesPage() {
           <Table>
             <TableHead>
               <TableRow sx={{ bgcolor: '#f8f9fa' }}>
-                {currentUser?.isAdmin && <TableCell sx={{ fontWeight: 600 }}>Korisnik</TableCell>}
-                <TableCell sx={{ fontWeight: 600 }}>Iznos</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Svrha</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Projekat</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Datum</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Napomena</TableCell>
-                {currentUser?.isAdmin && <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>}
+                {currentUser?.isAdmin && <TableCell sx={{ fontWeight: 600 }}>{t('finances:user')}</TableCell>}
+                <TableCell sx={{ fontWeight: 600 }}>{t('finances:amount')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('finances:purpose')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('finances:project')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('finances:paymentDate')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('finances:notes')}</TableCell>
+                {currentUser?.isAdmin && <TableCell sx={{ fontWeight: 600 }}>{t('common:common.actions')}</TableCell>}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -303,7 +305,7 @@ export default function FinancesPage() {
                   <TableCell>
                     <Chip
                       icon={<AttachMoney />}
-                      label={`${contribution.amount} CHF`}
+                      label={t('finances:amountInCHF', { amount: contribution.amount })}
                       color="success"
                       size="small"
                       data-testid={`amount-${contribution.id}`}
@@ -360,7 +362,7 @@ export default function FinancesPage() {
                 <TableRow>
                   <TableCell colSpan={currentUser?.isAdmin ? 7 : 6} sx={{ textAlign: 'center', py: 4 }}>
                     <Typography color="text.secondary">
-                      Nema finansijskih uplate
+                      {t('finances:noPayments')}
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -374,7 +376,7 @@ export default function FinancesPage() {
       <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
         <form onSubmit={handleSubmit}>
           <DialogTitle>
-            {selectedContribution ? 'Uredi Uplatu' : 'Dodaj Novu Uplatu'}
+            {selectedContribution ? t('finances:editPayment') : t('finances:addNewPayment')}
           </DialogTitle>
           <DialogContent>
             <Grid container spacing={2} sx={{ mt: 1 }}>
@@ -390,7 +392,7 @@ export default function FinancesPage() {
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="Korisnik"
+                        label={t('finances:user')}
                         required
                         error={!!form.formState.errors.userId}
                         helperText={form.formState.errors.userId?.message}
@@ -404,7 +406,7 @@ export default function FinancesPage() {
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
-                  label="Iznos (CHF)"
+                  label={t('finances:amountLabel')}
                   type="number"
                   {...form.register('amount')}
                   error={!!form.formState.errors.amount}
@@ -416,7 +418,7 @@ export default function FinancesPage() {
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
-                  label="Datum uplate"
+                  label={t('finances:paymentDateLabel')}
                   type="date"
                   {...form.register('paymentDate')}
                   error={!!form.formState.errors.paymentDate}
@@ -430,45 +432,45 @@ export default function FinancesPage() {
                 <TextField
                   select
                   fullWidth
-                  label="Svrha uplate"
+                  label={t('finances:purposeLabel')}
                   {...form.register('purpose')}
                   error={!!form.formState.errors.purpose}
                   helperText={form.formState.errors.purpose?.message}
                   SelectProps={{ native: true }}
                   data-testid="select-purpose"
                 >
-                  <option value="Članarina">Članarina</option>
-                  <option value="Donacija">Donacija</option>
-                  <option value="Vakuf">Vakuf</option>
-                  <option value="Sergija">Sergija</option>
-                  <option value="Ostalo">Ostalo</option>
+                  <option value={t('finances:purposes.membership')}>{t('finances:purposes.membership')}</option>
+                  <option value={t('finances:purposes.donation')}>{t('finances:purposes.donation')}</option>
+                  <option value={t('finances:purposes.waqf')}>{t('finances:purposes.waqf')}</option>
+                  <option value={t('finances:purposes.sergija')}>{t('finances:purposes.sergija')}</option>
+                  <option value={t('finances:purposes.other')}>{t('finances:purposes.other')}</option>
                 </TextField>
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   select
                   fullWidth
-                  label="Način plaćanja"
+                  label={t('finances:paymentMethod')}
                   {...form.register('paymentMethod')}
                   error={!!form.formState.errors.paymentMethod}
                   helperText={form.formState.errors.paymentMethod?.message}
                   SelectProps={{ native: true }}
                   data-testid="select-payment-method"
                 >
-                  <option value="Gotovina">Gotovina</option>
-                  <option value="Banka">Banka</option>
+                  <option value={t('finances:paymentMethods.cash')}>{t('finances:paymentMethods.cash')}</option>
+                  <option value={t('finances:paymentMethods.bank')}>{t('finances:paymentMethods.bank')}</option>
                 </TextField>
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <TextField
                   select
                   fullWidth
-                  label="Za projekat (opcionalno)"
+                  label={t('finances:projectOptional')}
                   {...form.register('projectId')}
                   SelectProps={{ native: true }}
                   data-testid="select-project"
                 >
-                  <option value="">Nije za projekat</option>
+                  <option value="">{t('finances:noProject')}</option>
                   {(projectsQuery.data as Project[] || [])
                     .filter(p => p.status === 'active')
                     .map(project => (
@@ -481,7 +483,7 @@ export default function FinancesPage() {
               <Grid size={{ xs: 12 }}>
                 <TextField
                   fullWidth
-                  label="Napomena"
+                  label={t('finances:notes')}
                   multiline
                   rows={3}
                   {...form.register('notes')}
@@ -492,7 +494,7 @@ export default function FinancesPage() {
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDialog} data-testid="button-cancel">
-              Otkaži
+              {t('common:buttons.cancel')}
             </Button>
             <Button 
               type="submit" 
@@ -500,7 +502,7 @@ export default function FinancesPage() {
               disabled={saveContributionMutation.isPending}
               data-testid="button-save"
             >
-              {saveContributionMutation.isPending ? 'Spremanje...' : 'Spremi'}
+              {saveContributionMutation.isPending ? t('finances:saving') : t('common:buttons.save')}
             </Button>
           </DialogActions>
         </form>

@@ -1,25 +1,56 @@
 {
   "title": "Projekte",
   "addProject": "Projekt hinzufügen",
+  "addNewProject": "Neues Projekt hinzufügen",
   "editProject": "Projekt bearbeiten",
   "deleteProject": "Projekt löschen",
   "projectName": "Projektname",
   "description": "Beschreibung",
-  "goalAmount": "Zielbetrag",
-  "currentAmount": "Aktueller Betrag",
+  "goalAmount": "Zielbetrag (CHF)",
+  "goalAmountHelper": "Gesamtbetrag, der gesammelt werden soll",
+  "currentAmount": "Aktuell gesammelt (CHF)",
+  "currentAmountHelper": "Bereits für dieses Projekt gesammelter Betrag",
   "startDate": "Startdatum",
   "endDate": "Enddatum",
   "status": {
     "label": "Status",
+    "helper": "Projektstatus",
     "active": "Aktiv",
+    "closed": "Geschlossen",
     "completed": "Abgeschlossen",
     "cancelled": "Abgebrochen"
   },
   "progress": "Fortschritt",
+  "collected": "Gesammelt:",
   "contributors": "Spender",
-  "noProjects": "Keine Projekte",
+  "noProjects": "Keine Projekte definiert.",
+  "noProjectsAdmin": "Fügen Sie ein neues Projekt über die Schaltfläche \"Projekt hinzufügen\" hinzu.",
   "viewDetails": "Projektdetails",
   "contribute": "Spenden",
   "amountRaised": "Gesammelt: {{current}} von {{goal}} CHF",
-  "percentComplete": "{{percent}}% abgeschlossen"
+  "percentComplete": "{{percent}}% abgeschlossen",
+  "currency": "CHF",
+  "buttons": {
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "saving": "Speichern..."
+  },
+  "validation": {
+    "nameRequired": "Name ist erforderlich",
+    "descriptionRequired": "Beschreibung ist erforderlich",
+    "goalAmountRequired": "Zielbetrag ist erforderlich",
+    "goalAmountPositive": "Zielbetrag muss größer als 0 sein",
+    "currentAmountPositive": "Aktueller Betrag muss eine positive Zahl sein"
+  },
+  "toast": {
+    "success": "Erfolg",
+    "error": "Fehler",
+    "projectCreated": "Projekt erfolgreich erstellt",
+    "projectUpdated": "Projekt erfolgreich aktualisiert",
+    "projectDeleted": "Projekt erfolgreich gelöscht",
+    "saveError": "Fehler beim Speichern des Projekts",
+    "deleteError": "Fehler beim Löschen des Projekts",
+    "loadError": "Fehler beim Laden der Projekte. Bitte versuchen Sie es erneut."
+  },
+  "confirmDelete": "Sind Sie sicher, dass Sie dieses Projekt löschen möchten?"
 }

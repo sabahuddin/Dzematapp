@@ -21,6 +21,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useMarkAsViewed } from "@/hooks/useMarkAsViewed";
+import { useTranslation } from "react-i18next";
 
 interface ImamQuestion {
   id: string;
@@ -40,6 +41,7 @@ interface ImamQuestion {
 }
 
 export default function AskImamPage() {
+  const { t } = useTranslation(['askImam', 'common']);
   const { user } = useAuth();
   const { toast } = useToast();
   useMarkAsViewed('imamQuestions');
@@ -81,15 +83,15 @@ export default function AskImamPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/imam-questions"] });
-      toast({ title: "Uspjeh", description: "Pitanje je poslano imamu" });
+      toast({ title: t('common:common.success'), description: t('askImam:questionSent') });
       setIsNewQuestionOpen(false);
       setQuestionSubject("");
       setQuestionContent("");
     },
     onError: () => {
       toast({ 
-        title: "Greška", 
-        description: "Greška pri slanju pitanja", 
+        title: t('common:common.error'), 
+        description: t('askImam:questionSentError'), 
         variant: "destructive" 
       });
     },
@@ -101,14 +103,14 @@ export default function AskImamPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/imam-questions"] });
-      toast({ title: "Uspjeh", description: "Odgovor je sačuvan" });
+      toast({ title: t('common:common.success'), description: t('askImam:answerSaved') });
       setSelectedQuestion(null);
       setAnswerContent("");
     },
     onError: () => {
       toast({ 
-        title: "Greška", 
-        description: "Greška pri slanju odgovora", 
+        title: t('common:common.error'), 
+        description: t('askImam:answerSavedError'), 
         variant: "destructive" 
       });
     },
@@ -132,8 +134,8 @@ export default function AskImamPage() {
   const handleSendQuestion = () => {
     if (!questionSubject.trim() || !questionContent.trim()) {
       toast({ 
-        title: "Greška", 
-        description: "Molimo popunite sva polja", 
+        title: t('common:common.error'), 
+        description: t('askImam:fillAllFields'), 
         variant: "destructive" 
       });
       return;
@@ -144,8 +146,8 @@ export default function AskImamPage() {
   const handleSendAnswer = () => {
     if (!answerContent.trim() || !selectedQuestion) {
       toast({ 
-        title: "Greška", 
-        description: "Molimo unesite odgovor", 
+        title: t('common:common.error'), 
+        description: t('askImam:enterAnswer'), 
         variant: "destructive" 
       });
       return;
@@ -157,15 +159,15 @@ export default function AskImamPage() {
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">Pitaj Imama</h1>
+          <h1 className="text-3xl font-bold">{t('askImam:title')}</h1>
           <p className="text-muted-foreground">
-            {user?.isAdmin ? "Odgovori na pitanja članova" : "Postavite pitanje i dobijte odgovor od imama"}
+            {user?.isAdmin ? t('askImam:descriptionAdmin') : t('askImam:descriptionUser')}
           </p>
         </div>
         {!user?.isAdmin && (
           <Button onClick={() => setIsNewQuestionOpen(true)} data-testid="button-new-question">
             <Plus className="h-4 w-4 mr-2" />
-            Novo Pitanje
+            {t('askImam:newQuestion')}
           </Button>
         )}
       </div>
@@ -174,7 +176,7 @@ export default function AskImamPage() {
       <div className="flex items-center space-x-2">
         <Search className="h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder="Pretraži pitanja..."
+          placeholder={t('askImam:searchQuestions')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="max-w-sm"
@@ -186,12 +188,12 @@ export default function AskImamPage() {
       <Tabs value={selectedTab} onValueChange={setSelectedTab}>
         <TabsList>
           <TabsTrigger value="my-questions" data-testid="tab-my-questions">
-            {user?.isAdmin ? "Sva Pitanja" : "Moja Pitanja"}
+            {user?.isAdmin ? t('askImam:allQuestions') : t('askImam:myQuestions')}
           </TabsTrigger>
           {user?.isAdmin && (
             <>
               <TabsTrigger value="unanswered" data-testid="tab-unanswered">
-                Neodgovorena
+                {t('askImam:unanswered')}
                 {unansweredQuestions.length > 0 && (
                   <Badge variant="destructive" className="ml-2">
                     {unansweredQuestions.length}
@@ -199,7 +201,7 @@ export default function AskImamPage() {
                 )}
               </TabsTrigger>
               <TabsTrigger value="answered" data-testid="tab-answered">
-                Arhiva
+                {t('askImam:archive')}
                 {answeredQuestions.length > 0 && (
                   <Badge variant="secondary" className="ml-2">
                     {answeredQuestions.length}
@@ -215,14 +217,14 @@ export default function AskImamPage() {
             <Card>
               <CardContent className="py-8 text-center">
                 <Mail className="h-12 w-12 mx-auto text-muted-foreground animate-pulse" />
-                <p className="mt-2 text-muted-foreground">Učitavanje...</p>
+                <p className="mt-2 text-muted-foreground">{t('common:common.loading')}</p>
               </CardContent>
             </Card>
           ) : filteredQuestions.length === 0 ? (
             <Card>
               <CardContent className="py-8 text-center">
                 <Mail className="h-12 w-12 mx-auto text-muted-foreground" />
-                <p className="mt-2 text-muted-foreground">Nema pitanja</p>
+                <p className="mt-2 text-muted-foreground">{t('askImam:noQuestions')}</p>
               </CardContent>
             </Card>
           ) : (
@@ -255,9 +257,9 @@ export default function AskImamPage() {
                     </div>
                     <div className="flex flex-col items-end gap-2">
                       {question.isAnswered ? (
-                        <Badge variant="default">Odgovoreno</Badge>
+                        <Badge variant="default">{t('askImam:answered')}</Badge>
                       ) : (
-                        <Badge variant="secondary">Na čekanju</Badge>
+                        <Badge variant="secondary">{t('askImam:pending')}</Badge>
                       )}
                       <span className="text-xs text-muted-foreground">
                         {format(new Date(question.createdAt), "dd.MM.yyyy.")}
@@ -269,7 +271,7 @@ export default function AskImamPage() {
                   <p className="text-sm text-muted-foreground line-clamp-2">{question.question}</p>
                   {question.isAnswered && question.answer && (
                     <div className="mt-3 p-3 bg-green-50 rounded-md border border-green-200">
-                      <p className="text-sm font-medium text-green-900">Odgovor:</p>
+                      <p className="text-sm font-medium text-green-900">{t('askImam:answerColon')}</p>
                       <p className="text-sm text-green-800 mt-1 line-clamp-2">{question.answer}</p>
                     </div>
                   )}
@@ -285,7 +287,7 @@ export default function AskImamPage() {
               <Card>
                 <CardContent className="py-8 text-center">
                   <MailOpen className="h-12 w-12 mx-auto text-muted-foreground" />
-                  <p className="mt-2 text-muted-foreground">Nema neodgovorenih pitanja</p>
+                  <p className="mt-2 text-muted-foreground">{t('askImam:noUnansweredQuestions')}</p>
                 </CardContent>
               </Card>
             ) : (
@@ -330,7 +332,7 @@ export default function AskImamPage() {
               <Card>
                 <CardContent className="py-8 text-center">
                   <MailOpen className="h-12 w-12 mx-auto text-muted-foreground" />
-                  <p className="mt-2 text-muted-foreground">Nema odgovorenih pitanja</p>
+                  <p className="mt-2 text-muted-foreground">{t('askImam:noAnsweredQuestions')}</p>
                 </CardContent>
               </Card>
             ) : (
@@ -356,7 +358,7 @@ export default function AskImamPage() {
                         </div>
                       </div>
                       <div className="flex flex-col items-end gap-2">
-                        <Badge variant="default">Odgovoreno</Badge>
+                        <Badge variant="default">{t('askImam:answered')}</Badge>
                         <span className="text-xs text-muted-foreground">
                           {format(new Date(question.createdAt), "dd.MM.yyyy.")}
                         </span>
@@ -367,7 +369,7 @@ export default function AskImamPage() {
                     <p className="text-sm text-muted-foreground line-clamp-2">{question.question}</p>
                     {question.answer && (
                       <div className="mt-3 p-3 bg-green-50 rounded-md border border-green-200">
-                        <p className="text-sm font-medium text-green-900">Odgovor:</p>
+                        <p className="text-sm font-medium text-green-900">{t('askImam:answerColon')}</p>
                         <p className="text-sm text-green-800 mt-1 line-clamp-2">{question.answer}</p>
                       </div>
                     )}
@@ -383,27 +385,27 @@ export default function AskImamPage() {
       <Dialog open={isNewQuestionOpen} onOpenChange={setIsNewQuestionOpen}>
         <DialogContent data-testid="dialog-new-question">
           <DialogHeader>
-            <DialogTitle>Novo Pitanje za Imama</DialogTitle>
+            <DialogTitle>{t('askImam:askQuestion')}</DialogTitle>
             <DialogDescription>
-              Postavite pitanje i dobićete odgovor od imama
+              {t('askImam:newQuestionDescription')}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label htmlFor="subject">Tema</Label>
+              <Label htmlFor="subject">{t('askImam:topic')}</Label>
               <Input
                 id="subject"
-                placeholder="Unesite temu pitanja..."
+                placeholder={t('askImam:topicPlaceholder')}
                 value={questionSubject}
                 onChange={(e) => setQuestionSubject(e.target.value)}
                 data-testid="input-question-subject"
               />
             </div>
             <div>
-              <Label htmlFor="question">Pitanje</Label>
+              <Label htmlFor="question">{t('askImam:question')}</Label>
               <Textarea
                 id="question"
-                placeholder="Unesite vaše pitanje..."
+                placeholder={t('askImam:questionPlaceholder')}
                 rows={6}
                 value={questionContent}
                 onChange={(e) => setQuestionContent(e.target.value)}
@@ -417,14 +419,14 @@ export default function AskImamPage() {
               onClick={() => setIsNewQuestionOpen(false)}
               data-testid="button-cancel-question"
             >
-              Otkaži
+              {t('common:buttons.cancel')}
             </Button>
             <Button
               onClick={handleSendQuestion}
               disabled={sendQuestionMutation.isPending}
               data-testid="button-send-question"
             >
-              {sendQuestionMutation.isPending ? "Slanje..." : "Pošalji"}
+              {sendQuestionMutation.isPending ? t('askImam:sending') : t('common:buttons.send')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -437,7 +439,7 @@ export default function AskImamPage() {
             <DialogTitle>{selectedQuestion?.subject}</DialogTitle>
             <DialogDescription>
               {selectedQuestion?.user && (
-                <span>Od: {selectedQuestion.user.firstName} {selectedQuestion.user.lastName}</span>
+                <span>{t('askImam:from')}: {selectedQuestion.user.firstName} {selectedQuestion.user.lastName}</span>
               )}
               {" • "}
               {selectedQuestion?.createdAt && format(new Date(selectedQuestion.createdAt), "dd.MM.yyyy. u HH:mm")}
@@ -445,7 +447,7 @@ export default function AskImamPage() {
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label>Pitanje:</Label>
+              <Label>{t('askImam:questionColon')}</Label>
               <p className="mt-2 text-sm whitespace-pre-wrap bg-muted p-4 rounded-md">
                 {selectedQuestion?.question}
               </p>
@@ -453,22 +455,22 @@ export default function AskImamPage() {
             
             {selectedQuestion?.isAnswered && selectedQuestion.answer ? (
               <div>
-                <Label>Odgovor:</Label>
+                <Label>{t('askImam:answerColon')}</Label>
                 <p className="mt-2 text-sm whitespace-pre-wrap bg-green-50 p-4 rounded-md border border-green-200">
                   {selectedQuestion.answer}
                 </p>
                 {selectedQuestion.answeredAt && (
                   <p className="text-xs text-muted-foreground mt-2">
-                    Odgovoreno: {format(new Date(selectedQuestion.answeredAt), "dd.MM.yyyy. u HH:mm")}
+                    {t('askImam:answeredOn')}: {format(new Date(selectedQuestion.answeredAt), "dd.MM.yyyy. u HH:mm")}
                   </p>
                 )}
               </div>
             ) : user?.isAdmin ? (
               <div>
-                <Label htmlFor="answer">Odgovor:</Label>
+                <Label htmlFor="answer">{t('askImam:answerColon')}</Label>
                 <Textarea
                   id="answer"
-                  placeholder="Unesite odgovor..."
+                  placeholder={t('askImam:answerPlaceholder')}
                   rows={6}
                   value={answerContent}
                   onChange={(e) => setAnswerContent(e.target.value)}
@@ -478,7 +480,7 @@ export default function AskImamPage() {
             ) : (
               <div className="p-4 bg-orange-50 rounded-md border border-orange-200">
                 <p className="text-sm text-orange-800">
-                  Vaše pitanje je primljeno. Odgovor ćete dobiti uskoro.
+                  {t('askImam:questionReceived')}
                 </p>
               </div>
             )}
@@ -490,7 +492,7 @@ export default function AskImamPage() {
                 disabled={answerQuestionMutation.isPending}
                 data-testid="button-send-answer"
               >
-                {answerQuestionMutation.isPending ? "Slanje..." : "Pošalji Odgovor"}
+                {answerQuestionMutation.isPending ? t('askImam:sending') : t('askImam:sendAnswer')}
               </Button>
             )}
           </DialogFooter>

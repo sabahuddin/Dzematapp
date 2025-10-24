@@ -3,6 +3,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Button,
@@ -39,6 +40,7 @@ import { apiRequest, queryClient } from '../lib/queryClient';
 export default function BadgesPage() {
   const { user: currentUser } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation(['badges', 'common']);
   
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null);
@@ -47,7 +49,7 @@ export default function BadgesPage() {
   if (!currentUser?.isAdmin) {
     return (
       <Alert severity="error">
-        Nemate dozvolu za pristup ovoj stranici.
+        {t('badges:accessDenied')}
       </Alert>
     );
   }
@@ -59,10 +61,10 @@ export default function BadgesPage() {
 
   // Form schema
   const formSchema = insertBadgeSchema.extend({
-    name: z.string().min(1, 'Naziv je obavezan'),
-    description: z.string().min(1, 'Opis je obavezan'),
-    criteriaType: z.string().min(1, 'Tip kriterija je obavezan'),
-    criteriaValue: z.number().min(0, 'Vrijednost mora biti pozitivna'),
+    name: z.string().min(1, t('badges:validation.nameRequired')),
+    description: z.string().min(1, t('badges:validation.descriptionRequired')),
+    criteriaType: z.string().min(1, t('badges:validation.criteriaTypeRequired')),
+    criteriaValue: z.number().min(0, t('badges:validation.criteriaValuePositive')),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -89,11 +91,18 @@ export default function BadgesPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/badges'] });
-      toast({ title: 'Uspjeh', description: selectedBadge ? 'Značka je ažurirana' : 'Značka je kreirana' });
+      toast({ 
+        title: t('common:common.success'), 
+        description: selectedBadge ? t('badges:messages.updated') : t('badges:messages.created') 
+      });
       handleCloseDialog();
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri spremanju značke', variant: 'destructive' });
+      toast({ 
+        title: t('common:common.error'), 
+        description: t('badges:messages.errorSaving'), 
+        variant: 'destructive' 
+      });
     }
   });
 
@@ -104,10 +113,17 @@ export default function BadgesPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/badges'] });
-      toast({ title: 'Uspjeh', description: 'Značka je obrisana' });
+      toast({ 
+        title: t('common:common.success'), 
+        description: t('badges:messages.deleted') 
+      });
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri brisanju značke', variant: 'destructive' });
+      toast({ 
+        title: t('common:common.error'), 
+        description: t('badges:messages.errorDeleting'), 
+        variant: 'destructive' 
+      });
     }
   });
 
@@ -145,7 +161,7 @@ export default function BadgesPage() {
   });
 
   const handleDelete = (id: string) => {
-    if (window.confirm('Jeste li sigurni da želite obrisati ovu značku?')) {
+    if (window.confirm(t('badges:messages.confirmDelete'))) {
       deleteBadgeMutation.mutate(id);
     }
   };
@@ -161,7 +177,7 @@ export default function BadgesPage() {
   if (badgesQuery.error) {
     return (
       <Alert severity="error">
-        Greška pri učitavanju znački. Molimo pokušajte ponovo.
+        {t('badges:messages.errorLoading')}
       </Alert>
     );
   }
@@ -172,7 +188,7 @@ export default function BadgesPage() {
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h5" sx={{ fontWeight: 600 }}>
-          Značke (Badges)
+          {t('badges:title')}
         </Typography>
         <Button
           variant="contained"
@@ -180,7 +196,7 @@ export default function BadgesPage() {
           onClick={() => handleOpenDialog()}
           data-testid="button-add-badge"
         >
-          Dodaj Značku
+          {t('badges:addBadge')}
         </Button>
       </Box>
 
@@ -189,11 +205,11 @@ export default function BadgesPage() {
           <Table>
             <TableHead>
               <TableRow sx={{ bgcolor: '#f8f9fa' }}>
-                <TableCell sx={{ fontWeight: 600 }}>Naziv</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Opis</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Tip kriterija</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Vrijednost</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('badges:tableHeaders.name')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('badges:tableHeaders.description')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('badges:tableHeaders.criteriaType')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('badges:tableHeaders.value')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('badges:tableHeaders.actions')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -246,7 +262,7 @@ export default function BadgesPage() {
                 <TableRow>
                   <TableCell colSpan={5} sx={{ textAlign: 'center', py: 4 }}>
                     <Typography color="text.secondary">
-                      Nema definisanih znački. Dodajte novu značku koristeći dugme "Dodaj Značku".
+                      {t('badges:emptyState')}
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -260,13 +276,13 @@ export default function BadgesPage() {
       <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
         <form onSubmit={handleSubmit}>
           <DialogTitle>
-            {selectedBadge ? 'Uredi Značku' : 'Dodaj Novu Značku'}
+            {selectedBadge ? t('badges:editBadge') : t('badges:addNewBadge')}
           </DialogTitle>
           <DialogContent>
             <Stack spacing={2} sx={{ mt: 1 }}>
               <TextField
                 fullWidth
-                label="Naziv značke"
+                label={t('badges:badgeName')}
                 {...form.register('name')}
                 error={!!form.formState.errors.name}
                 helperText={form.formState.errors.name?.message}
@@ -275,7 +291,7 @@ export default function BadgesPage() {
               />
               <TextField
                 fullWidth
-                label="Opis"
+                label={t('badges:description')}
                 multiline
                 rows={2}
                 {...form.register('description')}
@@ -287,27 +303,27 @@ export default function BadgesPage() {
               <TextField
                 select
                 fullWidth
-                label="Tip kriterija"
+                label={t('badges:criteriaType')}
                 {...form.register('criteriaType')}
                 error={!!form.formState.errors.criteriaType}
-                helperText={form.formState.errors.criteriaType?.message || 'Tip aktivnosti potreban za dobijanje značke'}
+                helperText={form.formState.errors.criteriaType?.message || t('badges:helperTexts.criteriaType')}
                 SelectProps={{ native: true }}
                 required
                 data-testid="select-criteria-type"
               >
-                <option value="">-- Odaberi tip --</option>
-                <option value="points">Ukupni bodovi</option>
-                <option value="tasks_completed">Broj izvršenih zadataka</option>
-                <option value="contributions_amount">Ukupan iznos uplate</option>
-                <option value="events_attended">Broj posjećenih događaja</option>
+                <option value="">{t('badges:selectType')}</option>
+                <option value="points">{t('badges:criteriaTypes.points')}</option>
+                <option value="tasks_completed">{t('badges:criteriaTypes.tasks_completed')}</option>
+                <option value="contributions_amount">{t('badges:criteriaTypes.contributions_amount')}</option>
+                <option value="events_attended">{t('badges:criteriaTypes.events_attended')}</option>
               </TextField>
               <TextField
                 fullWidth
-                label="Vrijednost"
+                label={t('badges:criteriaValue')}
                 type="number"
                 {...form.register('criteriaValue', { valueAsNumber: true })}
                 error={!!form.formState.errors.criteriaValue}
-                helperText={form.formState.errors.criteriaValue?.message || 'Minimalna vrijednost potrebna za dobijanje značke'}
+                helperText={form.formState.errors.criteriaValue?.message || t('badges:helperTexts.criteriaValue')}
                 required
                 data-testid="input-criteria-value"
               />
@@ -315,7 +331,7 @@ export default function BadgesPage() {
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDialog} data-testid="button-cancel">
-              Otkaži
+              {t('badges:cancel')}
             </Button>
             <Button 
               type="submit" 
@@ -323,7 +339,7 @@ export default function BadgesPage() {
               disabled={saveBadgeMutation.isPending}
               data-testid="button-save"
             >
-              {saveBadgeMutation.isPending ? 'Spremanje...' : 'Spremi'}
+              {saveBadgeMutation.isPending ? t('badges:saving') : t('badges:save')}
             </Button>
           </DialogActions>
         </form>

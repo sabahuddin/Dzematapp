@@ -6,6 +6,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useMarkAsViewed } from "@/hooks/useMarkAsViewed";
+import { useTranslation } from "react-i18next";
 import type { ShopProduct, MarketplaceItem, User } from "@shared/schema";
 
 interface ShopProductWithUser extends ShopProduct {
@@ -19,6 +20,7 @@ interface MarketplaceItemWithUser extends MarketplaceItem {
 export default function ShopPage() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation(['shop']);
   useMarkAsViewed('shop');
   const [activeTab, setActiveTab] = useState(0);
   const [productModalOpen, setProductModalOpen] = useState(false);
@@ -84,8 +86,8 @@ export default function ShopPage() {
 
     if (currentPhotos.length + files.length > maxFiles) {
       toast({ 
-        title: "Previše slika", 
-        description: `Možete dodati maksimalno ${maxFiles} slika`,
+        title: t('shop:toast.tooManyPhotos'), 
+        description: t('shop:toast.maxPhotosDescription', { max: maxFiles }),
         variant: "destructive" 
       });
       return;
@@ -118,9 +120,9 @@ export default function ShopPage() {
         setMarketplaceForm({ ...marketplaceForm, photos: newPhotos });
       }
 
-      toast({ title: "Slike uspješno dodane" });
+      toast({ title: t('shop:toast.photosAdded') });
     } catch (error) {
-      toast({ title: "Greška pri uploadovanju slika", variant: "destructive" });
+      toast({ title: t('shop:toast.photoUploadError'), variant: "destructive" });
     } finally {
       setUploadingPhotos(false);
     }
@@ -151,7 +153,7 @@ export default function ShopPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/shop/products'] });
-      toast({ title: "Artikal uspješno dodan" });
+      toast({ title: t('shop:toast.productAdded') });
       setProductModalOpen(false);
       setProductForm({
         name: "",
@@ -164,7 +166,7 @@ export default function ShopPage() {
       });
     },
     onError: () => {
-      toast({ title: "Greška pri dodavanju artikla", variant: "destructive" });
+      toast({ title: t('shop:toast.productAddError'), variant: "destructive" });
     }
   });
 
@@ -175,10 +177,10 @@ export default function ShopPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/shop/products'] });
-      toast({ title: "Artikal obrisan" });
+      toast({ title: t('shop:toast.productDeleted') });
     },
     onError: () => {
-      toast({ title: "Greška pri brisanju artikla", variant: "destructive" });
+      toast({ title: t('shop:toast.productDeleteError'), variant: "destructive" });
     }
   });
 
@@ -189,7 +191,7 @@ export default function ShopPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/shop/products'] });
-      toast({ title: "Artikal uspješno ažuriran" });
+      toast({ title: t('shop:toast.productUpdated') });
       setProductModalOpen(false);
       setEditingProduct(null);
       setProductForm({
@@ -203,7 +205,7 @@ export default function ShopPage() {
       });
     },
     onError: () => {
-      toast({ title: "Greška pri ažuriranju artikla", variant: "destructive" });
+      toast({ title: t('shop:toast.productUpdateError'), variant: "destructive" });
     }
   });
 
@@ -214,10 +216,10 @@ export default function ShopPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/shop/products'] });
-      toast({ title: "Artikal označen kao završen" });
+      toast({ title: t('shop:toast.productCompleted') });
     },
     onError: () => {
-      toast({ title: "Greška", variant: "destructive" });
+      toast({ title: t('shop:toast.error'), variant: "destructive" });
     }
   });
 
@@ -237,10 +239,10 @@ export default function ShopPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/shop/products'] });
-      toast({ title: "Artikal kopiran" });
+      toast({ title: t('shop:toast.productCopied') });
     },
     onError: () => {
-      toast({ title: "Greška pri kopiranju artikla", variant: "destructive" });
+      toast({ title: t('shop:toast.productCopyError'), variant: "destructive" });
     }
   });
 
@@ -254,7 +256,7 @@ export default function ShopPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/marketplace/items'] });
-      toast({ title: "Oglas uspješno dodan" });
+      toast({ title: t('shop:toast.listingAdded') });
       setMarketplaceModalOpen(false);
       setEditingMarketplaceItem(null);
       setMarketplaceForm({
@@ -267,7 +269,7 @@ export default function ShopPage() {
       });
     },
     onError: () => {
-      toast({ title: "Greška pri dodavanju oglasa", variant: "destructive" });
+      toast({ title: t('shop:toast.listingAddError'), variant: "destructive" });
     }
   });
 
@@ -278,7 +280,7 @@ export default function ShopPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/marketplace/items'] });
-      toast({ title: "Oglas uspješno ažuriran" });
+      toast({ title: t('shop:toast.listingUpdated') });
       setMarketplaceModalOpen(false);
       setEditingMarketplaceItem(null);
       setMarketplaceForm({
@@ -291,7 +293,7 @@ export default function ShopPage() {
       });
     },
     onError: () => {
-      toast({ title: "Greška pri ažuriranju oglasa", variant: "destructive" });
+      toast({ title: t('shop:toast.listingUpdateError'), variant: "destructive" });
     }
   });
 
@@ -302,10 +304,10 @@ export default function ShopPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/marketplace/items'] });
-      toast({ title: "Oglas obrisan" });
+      toast({ title: t('shop:toast.listingDeleted') });
     },
     onError: () => {
-      toast({ title: "Greška pri brisanju oglasa", variant: "destructive" });
+      toast({ title: t('shop:toast.listingDeleteError'), variant: "destructive" });
     }
   });
 
@@ -316,10 +318,10 @@ export default function ShopPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/marketplace/items'] });
-      toast({ title: "Oglas označen kao završen" });
+      toast({ title: t('shop:toast.listingCompleted') });
     },
     onError: () => {
-      toast({ title: "Greška pri označavanju oglasa", variant: "destructive" });
+      toast({ title: t('shop:toast.listingCompleteError'), variant: "destructive" });
     }
   });
 
@@ -334,8 +336,8 @@ export default function ShopPage() {
     },
     onSuccess: async () => {
       toast({ 
-        title: "Narudžba poslana", 
-        description: "Uskoro ćete biti kontaktirani oko pojedinosti."
+        title: t('shop:toast.orderSent'), 
+        description: t('shop:toast.orderSentDescription')
       });
       
       // Send message to admin about the purchase request
@@ -345,8 +347,12 @@ export default function ShopPage() {
           await apiRequest('/api/messages', 'POST', {
             senderId: user!.id,
             recipientId: adminUser.id,
-            subject: "Nova narudžba iz DžematShop",
-            content: `${user!.firstName} ${user!.lastName} želi kupiti: ${selectedProduct.name}${purchaseDetails.quantity > 1 ? ` (Količina: ${purchaseDetails.quantity})` : ''}`
+            subject: t('shop:messages.newOrder'),
+            content: t('shop:messages.orderContent', { 
+              user: `${user!.firstName} ${user!.lastName}`, 
+              product: selectedProduct.name,
+              quantity: purchaseDetails.quantity > 1 ? t('shop:messages.quantityLabel', { quantity: purchaseDetails.quantity }) : ''
+            })
           });
         } catch (error) {
           console.error("Failed to send notification to admin", error);
@@ -358,13 +364,13 @@ export default function ShopPage() {
       setSelectedProduct(null);
     },
     onError: () => {
-      toast({ title: "Greška pri slanju narudžbe", variant: "destructive" });
+      toast({ title: t('shop:toast.orderError'), variant: "destructive" });
     }
   });
 
   const handleCreateProduct = () => {
     if (!productForm.name) {
-      toast({ title: "Naziv je obavezan", variant: "destructive" });
+      toast({ title: t('shop:toast.nameRequired'), variant: "destructive" });
       return;
     }
     
@@ -391,7 +397,7 @@ export default function ShopPage() {
 
   const handleCreateOrUpdateMarketplaceItem = () => {
     if (!marketplaceForm.name) {
-      toast({ title: "Naziv je obavezan", variant: "destructive" });
+      toast({ title: t('shop:toast.nameRequired'), variant: "destructive" });
       return;
     }
     
@@ -456,7 +462,7 @@ export default function ShopPage() {
       return apiRequest("/api/messages", "POST", {
         senderId: user!.id,
         recipientId: data.recipientId,
-        subject: "Poruka sa Shop-a",
+        subject: t('shop:messages.shopMessage'),
         content: data.message
       });
     },
@@ -467,8 +473,8 @@ export default function ShopPage() {
     },
     onError: () => {
       toast({ 
-        title: "Greška", 
-        description: "Greška pri slanju poruke", 
+        title: t('shop:toast.error'), 
+        description: t('shop:toast.messageError'), 
         variant: "destructive" 
       });
     }
@@ -477,8 +483,8 @@ export default function ShopPage() {
   const handleSendContactMessage = () => {
     if (!contactUserId || !contactMessage.trim()) {
       toast({ 
-        title: "Greška", 
-        description: "Molimo unesite sadržaj poruke", 
+        title: t('shop:toast.error'), 
+        description: t('shop:toast.messageRequired'), 
         variant: "destructive" 
       });
       return;
@@ -500,14 +506,14 @@ export default function ShopPage() {
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom sx={{ mb: 3 }}>
-        Shop
+        {t('shop:title')}
       </Typography>
 
       <Tabs value={activeTab} onChange={(_, newValue) => setActiveTab(newValue)} sx={{ mb: 3, borderBottom: 1, borderColor: 'divider' }}>
-        <Tab label="DžematShop" icon={<Store />} iconPosition="start" data-testid="tab-buy" />
-        <Tab label="Prodajem" icon={<ShoppingCart />} iconPosition="start" data-testid="tab-sell" />
-        <Tab label="Poklanjam" icon={<CardGiftcard />} iconPosition="start" data-testid="tab-gift" />
-        {isAdmin && <Tab label="Arhiva" icon={<Archive />} iconPosition="start" data-testid="tab-archive" />}
+        <Tab label={t('shop:tabs.dzematShop')} icon={<Store />} iconPosition="start" data-testid="tab-buy" />
+        <Tab label={t('shop:tabs.sell')} icon={<ShoppingCart />} iconPosition="start" data-testid="tab-sell" />
+        <Tab label={t('shop:tabs.gift')} icon={<CardGiftcard />} iconPosition="start" data-testid="tab-gift" />
+        {isAdmin && <Tab label={t('shop:tabs.archive')} icon={<Archive />} iconPosition="start" data-testid="tab-archive" />}
       </Tabs>
 
       {/* DžematShop Tab */}
@@ -533,12 +539,12 @@ export default function ShopPage() {
               sx={{ mb: 3 }}
               data-testid="button-add-product"
             >
-              Dodaj Artikal
+              {t('shop:buttons.addProduct')}
             </Button>
           )}
 
           {loadingProducts ? (
-            <Typography>Učitavanje...</Typography>
+            <Typography>{t('shop:display.loading')}</Typography>
           ) : (
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 3 }}>
               {shopProducts?.map((product) => (
@@ -570,22 +576,22 @@ export default function ShopPage() {
                       </Typography>
                       {product.price && (
                         <Typography variant="h5" color="primary" gutterBottom>
-                          {product.price} CHF
+                          {t('shop:display.priceInCHF', { price: product.price })}
                         </Typography>
                       )}
                       {product.size && (
                         <Typography variant="body2" color="text.secondary">
-                          Veličina: {product.size}
+                          {t('shop:display.size', { size: product.size })}
                         </Typography>
                       )}
                       {product.color && (
                         <Typography variant="body2" color="text.secondary">
-                          Boja: {product.color}
+                          {t('shop:display.color', { color: product.color })}
                         </Typography>
                       )}
                       {product.quantity !== null && product.quantity !== undefined && (
                         <Typography variant="body2" color="text.secondary">
-                          Na stanju: {product.quantity}
+                          {t('shop:display.inStock', { quantity: product.quantity })}
                         </Typography>
                       )}
                       {product.notes && (
@@ -601,7 +607,7 @@ export default function ShopPage() {
                             onClick={() => handleOpenPurchaseModal(product)}
                             data-testid={`button-buy-${product.id}`}
                           >
-                            Kupi
+                            {t('shop:buttons.buy')}
                           </Button>
                         )}
                         {isAdmin && (
@@ -610,7 +616,7 @@ export default function ShopPage() {
                               color="primary"
                               onClick={() => handleEditProduct(product)}
                               data-testid={`button-edit-product-${product.id}`}
-                              title="Uredi artikal"
+                              title={t('shop:tooltips.editProduct')}
                             >
                               <Edit />
                             </IconButton>
@@ -618,7 +624,7 @@ export default function ShopPage() {
                               color="success"
                               onClick={() => completeProductMutation.mutate(product.id)}
                               data-testid={`button-complete-product-${product.id}`}
-                              title="Završeno"
+                              title={t('shop:tooltips.completeProduct')}
                             >
                               <Check />
                             </IconButton>
@@ -626,7 +632,7 @@ export default function ShopPage() {
                               color="error"
                               onClick={() => deleteProductMutation.mutate(product.id)}
                               data-testid={`button-delete-product-${product.id}`}
-                              title="Obriši artikal"
+                              title={t('shop:tooltips.deleteProduct')}
                             >
                               <Delete />
                             </IconButton>
@@ -656,11 +662,11 @@ export default function ShopPage() {
             sx={{ mb: 3 }}
             data-testid="button-add-sale-item"
           >
-            Dodaj Oglas
+            {t('shop:buttons.addListing')}
           </Button>
 
           {loadingMarketplace ? (
-            <Typography>Učitavanje...</Typography>
+            <Typography>{t('shop:display.loading')}</Typography>
           ) : (
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 3 }}>
               {saleItems.map((item) => {
@@ -700,10 +706,10 @@ export default function ShopPage() {
                         )}
                         {item.price && (
                           <Typography variant="h6" color="primary" sx={{ mb: 1 }} data-testid={`text-sale-price-${item.id}`}>
-                            {item.price} CHF
+                            {t('shop:display.priceInCHF', { price: item.price })}
                           </Typography>
                         )}
-                        <Chip label="Na prodaju" color="primary" size="small" sx={{ mb: 1 }} />
+                        <Chip label={t('shop:display.forSale')} color="primary" size="small" sx={{ mb: 1 }} />
                         <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                           {item.userId !== user?.id && (
                             <Button
@@ -712,7 +718,7 @@ export default function ShopPage() {
                               onClick={() => handleContactUser(itemUser)}
                               data-testid={`button-contact-${item.id}`}
                             >
-                              Pošalji poruku vlasniku
+                              {t('shop:buttons.contactOwner')}
                             </Button>
                           )}
                           {canEdit && (
@@ -738,7 +744,7 @@ export default function ShopPage() {
                                 onClick={() => completeMarketplaceItemMutation.mutate(item.id)}
                                 data-testid={`button-complete-sale-${item.id}`}
                               >
-                                Završeno
+                                {t('shop:buttons.complete')}
                               </Button>
                             </>
                           )}
@@ -767,11 +773,11 @@ export default function ShopPage() {
             sx={{ mb: 3 }}
             data-testid="button-add-gift-item"
           >
-            Dodaj Poklon
+            {t('shop:buttons.addGift')}
           </Button>
 
           {loadingMarketplace ? (
-            <Typography>Učitavanje...</Typography>
+            <Typography>{t('shop:display.loading')}</Typography>
           ) : (
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 3 }}>
               {giftItems.map((item) => {
@@ -809,7 +815,7 @@ export default function ShopPage() {
                             {item.description}
                           </Typography>
                         )}
-                        <Chip label="Poklon" color="success" size="small" sx={{ mb: 1 }} />
+                        <Chip label={t('shop:display.giftLabel')} color="success" size="small" sx={{ mb: 1 }} />
                         <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                           {item.userId !== user?.id && (
                             <Button
@@ -818,7 +824,7 @@ export default function ShopPage() {
                               onClick={() => handleContactUser(itemUser)}
                               data-testid={`button-contact-gift-${item.id}`}
                             >
-                              Pošalji poruku vlasniku
+                              {t('shop:buttons.contactOwner')}
                             </Button>
                           )}
                           {canEdit && (
@@ -844,7 +850,7 @@ export default function ShopPage() {
                                 onClick={() => completeMarketplaceItemMutation.mutate(item.id)}
                                 data-testid={`button-complete-gift-${item.id}`}
                               >
-                                Završeno
+                                {t('shop:buttons.complete')}
                               </Button>
                             </>
                           )}
@@ -863,10 +869,10 @@ export default function ShopPage() {
       {activeTab === 3 && isAdmin && (
         <Box>
           {loadingMarketplace ? (
-            <Typography>Učitavanje...</Typography>
+            <Typography>{t('shop:display.loading')}</Typography>
           ) : archivedItems.length === 0 ? (
             <Typography variant="body1" color="text.secondary">
-              Nema arhiviranih artikala
+              {t('shop:display.noArchivedItems')}
             </Typography>
           ) : (
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 3 }}>
@@ -906,18 +912,18 @@ export default function ShopPage() {
                         )}
                         {item.price && (
                           <Typography variant="h6" color="primary" sx={{ mb: 1 }} data-testid={`text-archived-price-${item.id}`}>
-                            {item.price} CHF
+                            {t('shop:display.priceInCHF', { price: item.price })}
                           </Typography>
                         )}
                         <Chip 
-                          label={item.type === "sale" ? "Prodato" : "Pokloneno"} 
+                          label={item.type === "sale" ? t('shop:display.sold') : t('shop:display.gifted')} 
                           color="default" 
                           size="small" 
                           sx={{ mb: 1 }} 
                         />
                         {itemUser && (
                           <Typography variant="caption" display="block" color="text.secondary" sx={{ mt: 1 }}>
-                            Vlasnik: {itemUser.firstName} {itemUser.lastName}
+                            {t('shop:display.owner', { name: `${itemUser.firstName} ${itemUser.lastName}` })}
                           </Typography>
                         )}
                         <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
@@ -941,11 +947,11 @@ export default function ShopPage() {
 
       {/* Add/Edit Product Dialog (Admin only) */}
       <Dialog open={productModalOpen} onClose={() => { setProductModalOpen(false); setEditingProduct(null); }} maxWidth="sm" fullWidth>
-        <DialogTitle>{editingProduct ? "Uredi Artikal" : "Dodaj Artikal"}</DialogTitle>
+        <DialogTitle>{editingProduct ? t('shop:dialogs.editProduct') : t('shop:dialogs.addProduct')}</DialogTitle>
         <DialogContent>
           <TextField
             fullWidth
-            label="Naziv"
+            label={t('shop:labels.name')}
             value={productForm.name}
             onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
             margin="normal"
@@ -961,7 +967,7 @@ export default function ShopPage() {
               disabled={uploadingPhotos || productForm.photos.length >= 10}
               data-testid="button-upload-product-photos"
             >
-              {uploadingPhotos ? "Uploadovanje..." : `Dodaj slike (${productForm.photos.length}/10)`}
+              {uploadingPhotos ? t('shop:buttons.uploading') : t('shop:display.addPhotos', { current: productForm.photos.length, max: 10 })}
               <input
                 type="file"
                 hidden
@@ -990,7 +996,7 @@ export default function ShopPage() {
 
           <TextField
             fullWidth
-            label="Veličina"
+            label={t('shop:labels.size')}
             value={productForm.size}
             onChange={(e) => setProductForm({ ...productForm, size: e.target.value })}
             margin="normal"
@@ -998,7 +1004,7 @@ export default function ShopPage() {
           />
           <TextField
             fullWidth
-            label="Količina"
+            label={t('shop:labels.quantity')}
             type="number"
             value={productForm.quantity}
             onChange={(e) => setProductForm({ ...productForm, quantity: parseInt(e.target.value) || 0 })}
@@ -1007,7 +1013,7 @@ export default function ShopPage() {
           />
           <TextField
             fullWidth
-            label="Boja"
+            label={t('shop:labels.color')}
             value={productForm.color}
             onChange={(e) => setProductForm({ ...productForm, color: e.target.value })}
             margin="normal"
@@ -1015,7 +1021,7 @@ export default function ShopPage() {
           />
           <TextField
             fullWidth
-            label="Cijena (CHF)"
+            label={t('shop:labels.priceWithCurrency')}
             value={productForm.price}
             onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
             margin="normal"
@@ -1023,7 +1029,7 @@ export default function ShopPage() {
           />
           <TextField
             fullWidth
-            label="Napomena"
+            label={t('shop:labels.notes')}
             value={productForm.notes}
             onChange={(e) => setProductForm({ ...productForm, notes: e.target.value })}
             margin="normal"
@@ -1033,18 +1039,18 @@ export default function ShopPage() {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setProductModalOpen(false)} data-testid="button-cancel-product">Odustani</Button>
-          <Button onClick={handleCreateProduct} variant="contained" data-testid="button-save-product">Sačuvaj</Button>
+          <Button onClick={() => setProductModalOpen(false)} data-testid="button-cancel-product">{t('shop:buttons.cancel')}</Button>
+          <Button onClick={handleCreateProduct} variant="contained" data-testid="button-save-product">{t('shop:buttons.save')}</Button>
         </DialogActions>
       </Dialog>
 
       {/* Add/Edit Marketplace Item Dialog */}
       <Dialog open={marketplaceModalOpen} onClose={() => { setMarketplaceModalOpen(false); setEditingMarketplaceItem(null); }} maxWidth="sm" fullWidth>
-        <DialogTitle>{editingMarketplaceItem ? "Uredi Oglas" : (marketplaceForm.type === "sale" ? "Dodaj Oglas za Prodaju" : "Dodaj Poklon")}</DialogTitle>
+        <DialogTitle>{editingMarketplaceItem ? t('shop:dialogs.editListing') : (marketplaceForm.type === "sale" ? t('shop:dialogs.addSaleListing') : t('shop:dialogs.addGiftListing'))}</DialogTitle>
         <DialogContent>
           <TextField
             fullWidth
-            label="Naziv"
+            label={t('shop:labels.name')}
             value={marketplaceForm.name}
             onChange={(e) => setMarketplaceForm({ ...marketplaceForm, name: e.target.value })}
             margin="normal"
@@ -1053,7 +1059,7 @@ export default function ShopPage() {
           
           <TextField
             fullWidth
-            label="Opis"
+            label={t('shop:labels.description')}
             value={marketplaceForm.description}
             onChange={(e) => setMarketplaceForm({ ...marketplaceForm, description: e.target.value })}
             margin="normal"
@@ -1065,7 +1071,7 @@ export default function ShopPage() {
           {marketplaceForm.type === "sale" && (
             <TextField
               fullWidth
-              label="Cijena (CHF)"
+              label={t('shop:labels.priceWithCurrency')}
               value={marketplaceForm.price}
               onChange={(e) => setMarketplaceForm({ ...marketplaceForm, price: e.target.value })}
               margin="normal"
@@ -1082,7 +1088,7 @@ export default function ShopPage() {
               disabled={uploadingPhotos || marketplaceForm.photos.length >= 3}
               data-testid="button-upload-marketplace-photos"
             >
-              {uploadingPhotos ? "Uploadovanje..." : `Dodaj slike (${marketplaceForm.photos.length}/3)`}
+              {uploadingPhotos ? t('shop:buttons.uploading') : t('shop:display.addPhotos', { current: marketplaceForm.photos.length, max: 3 })}
               <input
                 type="file"
                 hidden
@@ -1110,24 +1116,24 @@ export default function ShopPage() {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => { setMarketplaceModalOpen(false); setEditingMarketplaceItem(null); }} data-testid="button-cancel-marketplace">Odustani</Button>
+          <Button onClick={() => { setMarketplaceModalOpen(false); setEditingMarketplaceItem(null); }} data-testid="button-cancel-marketplace">{t('shop:buttons.cancel')}</Button>
           <Button onClick={handleCreateOrUpdateMarketplaceItem} variant="contained" data-testid="button-save-marketplace">
-            {editingMarketplaceItem ? "Ažuriraj" : "Objavi"}
+            {editingMarketplaceItem ? t('shop:buttons.update') : t('shop:buttons.publish')}
           </Button>
         </DialogActions>
       </Dialog>
 
       {/* Purchase Modal */}
       <Dialog open={purchaseModalOpen} onClose={() => setPurchaseModalOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Naruči {selectedProduct?.name}</DialogTitle>
+        <DialogTitle>{t('shop:dialogs.order', { product: selectedProduct?.name || '' })}</DialogTitle>
         <DialogContent>
           {selectedProduct && (
             <Box sx={{ pt: 2 }}>
               <FormControl fullWidth margin="normal">
-                <InputLabel>Veličina</InputLabel>
+                <InputLabel>{t('shop:labels.size')}</InputLabel>
                 <Select
                   value={purchaseDetails.size}
-                  label="Veličina"
+                  label={t('shop:labels.size')}
                   onChange={(e) => setPurchaseDetails({ ...purchaseDetails, size: e.target.value })}
                   data-testid="select-purchase-size"
                 >
@@ -1142,7 +1148,7 @@ export default function ShopPage() {
 
               <TextField
                 fullWidth
-                label="Količina"
+                label={t('shop:labels.quantity')}
                 type="number"
                 value={purchaseDetails.quantity}
                 onChange={(e) => setPurchaseDetails({ ...purchaseDetails, quantity: Math.max(1, parseInt(e.target.value) || 1) })}
@@ -1152,34 +1158,34 @@ export default function ShopPage() {
               />
 
               <FormControl fullWidth margin="normal">
-                <InputLabel>Boja</InputLabel>
+                <InputLabel>{t('shop:labels.color')}</InputLabel>
                 <Select
                   value={purchaseDetails.color}
-                  label="Boja"
+                  label={t('shop:labels.color')}
                   onChange={(e) => setPurchaseDetails({ ...purchaseDetails, color: e.target.value })}
                   data-testid="select-purchase-color"
                 >
                   {selectedProduct.color && <MenuItem value={selectedProduct.color}>{selectedProduct.color}</MenuItem>}
-                  <MenuItem value="Crna">Crna</MenuItem>
-                  <MenuItem value="Bijela">Bijela</MenuItem>
-                  <MenuItem value="Plava">Plava</MenuItem>
-                  <MenuItem value="Crvena">Crvena</MenuItem>
-                  <MenuItem value="Zelena">Zelena</MenuItem>
+                  <MenuItem value="Crna">{t('shop:colors.black')}</MenuItem>
+                  <MenuItem value="Bijela">{t('shop:colors.white')}</MenuItem>
+                  <MenuItem value="Plava">{t('shop:colors.blue')}</MenuItem>
+                  <MenuItem value="Crvena">{t('shop:colors.red')}</MenuItem>
+                  <MenuItem value="Zelena">{t('shop:colors.green')}</MenuItem>
                 </Select>
               </FormControl>
 
               <Box sx={{ mt: 3, p: 2, bgcolor: 'primary.light', borderRadius: 1 }}>
                 <Typography variant="h6" color="primary.contrastText">
-                  Ukupno: {calculateTotal()} CHF
+                  {t('shop:display.total', { total: calculateTotal() })}
                 </Typography>
               </Box>
             </Box>
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setPurchaseModalOpen(false)} data-testid="button-cancel-purchase">Odustani</Button>
+          <Button onClick={() => setPurchaseModalOpen(false)} data-testid="button-cancel-purchase">{t('shop:buttons.cancel')}</Button>
           <Button onClick={handleSubmitPurchase} variant="contained" data-testid="button-submit-purchase">
-            Pošalji narudžbu
+            {t('shop:buttons.submitOrder')}
           </Button>
         </DialogActions>
       </Dialog>
@@ -1225,24 +1231,24 @@ export default function ShopPage() {
 
       {/* Contact Owner Dialog */}
       <Dialog open={contactDialogOpen} onClose={() => setContactDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Pošalji poruku</DialogTitle>
+        <DialogTitle>{t('shop:dialogs.sendMessage')}</DialogTitle>
         <DialogContent>
           <Box sx={{ pt: 2 }}>
             <TextField
               fullWidth
               multiline
               rows={8}
-              label="Sadržaj poruke"
+              label={t('shop:labels.messageContent')}
               value={contactMessage}
               onChange={(e) => setContactMessage(e.target.value)}
-              placeholder="Unesite vašu poruku..."
+              placeholder={t('shop:placeholders.enterMessage')}
               data-testid="input-contact-message"
             />
           </Box>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setContactDialogOpen(false)} data-testid="button-cancel-contact">
-            Odustani
+            {t('shop:buttons.cancel')}
           </Button>
           <Button 
             onClick={handleSendContactMessage} 
@@ -1250,7 +1256,7 @@ export default function ShopPage() {
             disabled={sendContactMessageMutation.isPending}
             data-testid="button-send-contact"
           >
-            {sendContactMessageMutation.isPending ? "Slanje..." : "Pošalji"}
+            {sendContactMessageMutation.isPending ? t('shop:buttons.sending') : t('shop:buttons.send')}
           </Button>
         </DialogActions>
       </Dialog>

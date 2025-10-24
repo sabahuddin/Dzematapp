@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Button,
@@ -36,6 +37,7 @@ import { ActivityLog, User } from '@shared/schema';
 import { useAuth } from '../hooks/useAuth';
 
 export default function ActivityLogPage() {
+  const { t } = useTranslation(['activity']);
   const { user: currentUser } = useAuth();
   const [filterType, setFilterType] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -55,9 +57,9 @@ export default function ActivityLogPage() {
   });
 
   const getUserName = (userId: string) => {
-    if (!usersQuery.data) return 'Nepoznato';
+    if (!usersQuery.data) return t('unknown');
     const user = (usersQuery.data as User[]).find(u => u.id === userId);
-    return user ? `${user.firstName} ${user.lastName}` : 'Nepoznato';
+    return user ? `${user.firstName} ${user.lastName}` : t('unknown');
   };
 
   const getActivityIcon = (type: string) => {
@@ -103,24 +105,16 @@ export default function ActivityLogPage() {
   };
 
   const getActivityLabel = (type: string) => {
-    switch (type) {
-      case 'task_completed':
-        return 'Zadatak izvršen';
-      case 'event_rsvp':
-        return 'RSVP na događaj';
-      case 'announcement_read':
-        return 'Obavijest pročitana';
-      case 'contribution_made':
-        return 'Uplata izvršena';
-      case 'badge_earned':
-        return 'Značka osvojena';
-      case 'profile_updated':
-        return 'Profil ažuriran';
-      case 'project_contribution':
-        return 'Doprinos projektu';
-      default:
-        return type;
-    }
+    const labels: Record<string, string> = {
+      'task_completed': t('activityLabels.task_completed'),
+      'event_rsvp': t('activityLabels.event_rsvp'),
+      'announcement_read': t('activityLabels.announcement_read'),
+      'contribution_made': t('activityLabels.contribution_made'),
+      'badge_earned': t('activityLabels.badge_earned'),
+      'profile_updated': t('activityLabels.profile_updated'),
+      'project_contribution': t('activityLabels.project_contribution')
+    };
+    return labels[type] || type;
   };
 
   const filteredActivities = ((activityLogsQuery.data as ActivityLog[]) || []).filter((activity: ActivityLog) => {
@@ -148,7 +142,7 @@ export default function ActivityLogPage() {
   if (activityLogsQuery.error) {
     return (
       <Alert severity="error">
-        Greška pri učitavanju log-a aktivnosti. Molimo pokušajte ponovo.
+        {t('errorLoading')}
       </Alert>
     );
   }
@@ -157,7 +151,7 @@ export default function ActivityLogPage() {
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h5" sx={{ fontWeight: 600 }}>
-          {currentUser?.isAdmin ? 'Log aktivnosti' : 'Moje aktivnosti'}
+          {currentUser?.isAdmin ? t('title') : t('myActivities')}
         </Typography>
       </Box>
 
@@ -168,7 +162,7 @@ export default function ActivityLogPage() {
               <Grid size={{ xs: 12, md: 6 }}>
                 <TextField
                   variant="outlined"
-                  placeholder="Pretraži po korisniku ili opisu..."
+                  placeholder={t('searchPlaceholder')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   fullWidth
@@ -178,21 +172,21 @@ export default function ActivityLogPage() {
             )}
             <Grid size={{ xs: 12, md: currentUser?.isAdmin ? 6 : 12 }}>
               <FormControl fullWidth>
-                <InputLabel>Filter po tipu</InputLabel>
+                <InputLabel>{t('filterByType')}</InputLabel>
                 <Select
                   value={filterType}
-                  label="Filter po tipu"
+                  label={t('filterByType')}
                   onChange={(e) => setFilterType(e.target.value)}
                   data-testid="select-filter-type"
                 >
-                  <MenuItem value="all">Sve aktivnosti</MenuItem>
-                  <MenuItem value="task_completed">Zadaci izvršeni</MenuItem>
-                  <MenuItem value="event_rsvp">RSVP događaji</MenuItem>
-                  <MenuItem value="announcement_read">Obavijesti pročitane</MenuItem>
-                  <MenuItem value="contribution_made">Uplate izvršene</MenuItem>
-                  <MenuItem value="badge_earned">Značke osvojene</MenuItem>
-                  <MenuItem value="profile_updated">Profil ažuriran</MenuItem>
-                  <MenuItem value="project_contribution">Doprinosi projektima</MenuItem>
+                  <MenuItem value="all">{t('filterOptions.all')}</MenuItem>
+                  <MenuItem value="task_completed">{t('filterOptions.task_completed')}</MenuItem>
+                  <MenuItem value="event_rsvp">{t('filterOptions.event_rsvp')}</MenuItem>
+                  <MenuItem value="announcement_read">{t('filterOptions.announcement_read')}</MenuItem>
+                  <MenuItem value="contribution_made">{t('filterOptions.contribution_made')}</MenuItem>
+                  <MenuItem value="badge_earned">{t('filterOptions.badge_earned')}</MenuItem>
+                  <MenuItem value="profile_updated">{t('filterOptions.profile_updated')}</MenuItem>
+                  <MenuItem value="project_contribution">{t('filterOptions.project_contribution')}</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -203,11 +197,11 @@ export default function ActivityLogPage() {
           <Table>
             <TableHead>
               <TableRow sx={{ bgcolor: '#f8f9fa' }}>
-                {currentUser?.isAdmin && <TableCell sx={{ fontWeight: 600 }}>Korisnik</TableCell>}
-                <TableCell sx={{ fontWeight: 600 }}>Tip</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Opis</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Bodovi</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Datum</TableCell>
+                {currentUser?.isAdmin && <TableCell sx={{ fontWeight: 600 }}>{t('user')}</TableCell>}
+                <TableCell sx={{ fontWeight: 600 }}>{t('type')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('description')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('points')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('date')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -261,7 +255,7 @@ export default function ActivityLogPage() {
                 <TableRow>
                   <TableCell colSpan={currentUser?.isAdmin ? 5 : 4} sx={{ textAlign: 'center', py: 4 }}>
                     <Typography color="text.secondary">
-                      Nema aktivnosti
+                      {t('noActivities')}
                     </Typography>
                   </TableCell>
                 </TableRow>

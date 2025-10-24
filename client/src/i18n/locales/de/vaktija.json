@@ -10,13 +10,30 @@
   "prayerNames": {
     "fajr": "Fajr",
     "sunrise": "Sonnenaufgang",
+    "sunriseFull": "Sonnenaufgang",
     "dhuhr": "Dhuhr",
     "asr": "Asr",
     "maghrib": "Maghrib",
     "isha": "Isha"
   },
   "csvFormat": "CSV-Datei muss folgende Spalten enthalten: Datum, Tag, Fajr, Sonnenaufgang, Dhuhr, Asr, Maghrib, Isha",
+  "dateFormat": "Datumsformat: TT.MM.JJJJ (z.B. 21.10.2025)",
+  "selectedFile": "Ausgewählte Datei:",
+  "uploading": "Hochladen...",
+  "cancel": "Abbrechen",
   "noPrayerTimes": "Keine Gebetszeiten verfügbar",
+  "noPrayerTimesToday": "Keine Gebetszeiten für heute verfügbar.",
+  "noPrayerTimesAll": "Keine Gebetszeiten hochgeladen.",
+  "uploadPrompt": "Laden Sie eine CSV-Datei mit Gebetszeiten hoch.",
+  "confirmDeleteAll": "Sind Sie sicher, dass Sie alle Gebetszeiten löschen möchten?",
+  "messages": {
+    "success": "Erfolg",
+    "error": "Fehler",
+    "uploadSuccess": "Gebetszeiten erfolgreich hochgeladen",
+    "uploadError": "Fehler beim Hochladen der CSV-Datei",
+    "deleteSuccess": "Alle Gebetszeiten gelöscht",
+    "deleteError": "Fehler beim Löschen der Gebetszeiten"
+  },
   "date": "Datum",
   "day": "Tag",
   "monthNames": {

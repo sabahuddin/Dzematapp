@@ -27,12 +27,14 @@ import { Add, Edit, Delete } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useTranslation } from 'react-i18next';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { insertProjectSchema, type Project } from '@shared/schema';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 
 export default function ProjectsPage() {
+  const { t } = useTranslation(['projects']);
   const { user } = useAuth();
   const { toast } = useToast();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -48,15 +50,15 @@ export default function ProjectsPage() {
 
   // Form schema - custom validation for frontend
   const formSchema = z.object({
-    name: z.string().min(1, 'Naziv je obavezan'),
-    description: z.string().min(1, 'Opis je obavezan'),
-    goalAmount: z.string().min(1, 'Ciljani iznos je obavezan').refine(
+    name: z.string().min(1, t('validation.nameRequired')),
+    description: z.string().min(1, t('validation.descriptionRequired')),
+    goalAmount: z.string().min(1, t('validation.goalAmountRequired')).refine(
       (val) => !isNaN(parseFloat(val)) && parseFloat(val) > 0,
-      'Ciljani iznos mora biti veći od 0'
+      t('validation.goalAmountPositive')
     ),
     currentAmount: z.string().refine(
       (val) => val === '' || (!isNaN(parseFloat(val)) && parseFloat(val) >= 0),
-      'Trenutni iznos mora biti pozitivan broj'
+      t('validation.currentAmountPositive')
     ).optional().default('0'),
     status: z.enum(['active', 'closed']).default('active'),
   });
@@ -83,11 +85,11 @@ export default function ProjectsPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/projects'] });
-      toast({ title: 'Uspjeh', description: selectedProject ? 'Projekat uspješno ažuriran' : 'Projekat uspješno kreiran' });
+      toast({ title: t('toast.success'), description: selectedProject ? t('toast.projectUpdated') : t('toast.projectCreated') });
       handleCloseDialog();
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri spremanju projekta', variant: 'destructive' });
+      toast({ title: t('toast.error'), description: t('toast.saveError'), variant: 'destructive' });
     }
   });
 
@@ -98,10 +100,10 @@ export default function ProjectsPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/projects'] });
-      toast({ title: 'Uspjeh', description: 'Projekat uspješno obrisan' });
+      toast({ title: t('toast.success'), description: t('toast.projectDeleted') });
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri brisanju projekta', variant: 'destructive' });
+      toast({ title: t('toast.error'), description: t('toast.deleteError'), variant: 'destructive' });
     }
   });
 
@@ -145,7 +147,7 @@ export default function ProjectsPage() {
   };
 
   const handleDelete = (id: string) => {
-    if (confirm('Da li ste sigurni da želite obrisati ovaj projekat?')) {
+    if (confirm(t('confirmDelete'))) {
       deleteProjectMutation.mutate(id);
     }
   };
@@ -174,7 +176,7 @@ export default function ProjectsPage() {
   if (projectsQuery.error) {
     return (
       <Alert severity="error">
-        Greška pri učitavanju projekata. Molimo pokušajte ponovo.
+        {t('toast.loadError')}
       </Alert>
     );
   }
@@ -185,7 +187,7 @@ export default function ProjectsPage() {
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h5" sx={{ fontWeight: 600 }}>
-          Projekti
+          {t('title')}
         </Typography>
         {isAdmin && (
           <Button
@@ -194,7 +196,7 @@ export default function ProjectsPage() {
             onClick={() => handleOpenDialog()}
             data-testid="button-add-project"
           >
-            Dodaj Projekat
+            {t('addProject')}
           </Button>
         )}
       </Box>
@@ -202,7 +204,7 @@ export default function ProjectsPage() {
       {projects.length === 0 ? (
         <Card sx={{ p: 4, textAlign: 'center' }}>
           <Typography color="text.secondary">
-            Nema definisanih projekata. {isAdmin && 'Dodajte novi projekat koristeći dugme "Dodaj Projekat".'}
+            {t('noProjects')} {isAdmin && t('noProjectsAdmin')}
           </Typography>
         </Card>
       ) : (
@@ -225,10 +227,10 @@ export default function ProjectsPage() {
                     <Box sx={{ mb: 1 }}>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
                         <Typography variant="body2" color="text.secondary">
-                          Prikupljeno:
+                          {t('collected')}
                         </Typography>
                         <Typography variant="body2" sx={{ fontWeight: 600 }} data-testid={`text-project-progress-${project.id}`}>
-                          {parseFloat(project.currentAmount).toFixed(2)} CHF / {parseFloat(project.goalAmount).toFixed(2)} CHF ({progress.toFixed(1)}%)
+                          {parseFloat(project.currentAmount).toFixed(2)} {t('currency')} / {parseFloat(project.goalAmount).toFixed(2)} {t('currency')} ({progress.toFixed(1)}%)
                         </Typography>
                       </Box>
                       <LinearProgress 
@@ -242,9 +244,9 @@ export default function ProjectsPage() {
 
                     <Box sx={{ mt: 2 }}>
                       {project.status === 'active' ? (
-                        <Chip label="Aktivan" color="success" size="small" data-testid={`status-active-${project.id}`} />
+                        <Chip label={t('status.active')} color="success" size="small" data-testid={`status-active-${project.id}`} />
                       ) : (
-                        <Chip label="Zatvoren" color="default" size="small" data-testid={`status-inactive-${project.id}`} />
+                        <Chip label={t('status.closed')} color="default" size="small" data-testid={`status-inactive-${project.id}`} />
                       )}
                     </Box>
                   </Box>
@@ -281,13 +283,13 @@ export default function ProjectsPage() {
         <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
           <form onSubmit={handleSubmit}>
             <DialogTitle>
-              {selectedProject ? 'Uredi Projekat' : 'Dodaj Novi Projekat'}
+              {selectedProject ? t('editProject') : t('addNewProject')}
             </DialogTitle>
             <DialogContent>
               <Stack spacing={2} sx={{ mt: 1 }}>
                 <TextField
                   fullWidth
-                  label="Naziv projekta"
+                  label={t('projectName')}
                   {...form.register('name')}
                   error={!!form.formState.errors.name}
                   helperText={form.formState.errors.name?.message}
@@ -296,7 +298,7 @@ export default function ProjectsPage() {
                 />
                 <TextField
                   fullWidth
-                  label="Opis"
+                  label={t('description')}
                   multiline
                   rows={3}
                   {...form.register('description')}
@@ -307,45 +309,45 @@ export default function ProjectsPage() {
                 />
                 <TextField
                   fullWidth
-                  label="Ciljani iznos (CHF)"
+                  label={t('goalAmount')}
                   type="text"
                   inputProps={{ step: '0.01', min: 0 }}
                   {...form.register('goalAmount')}
                   error={!!form.formState.errors.goalAmount}
-                  helperText={form.formState.errors.goalAmount?.message || 'Ukupan iznos koji je potrebno prikupiti'}
+                  helperText={form.formState.errors.goalAmount?.message || t('goalAmountHelper')}
                   required
                   data-testid="input-goal-amount"
                 />
                 <TextField
                   fullWidth
-                  label="Trenutno prikupljeno (CHF)"
+                  label={t('currentAmount')}
                   type="text"
                   inputProps={{ step: '0.01', min: 0 }}
                   {...form.register('currentAmount')}
                   error={!!form.formState.errors.currentAmount}
-                  helperText={form.formState.errors.currentAmount?.message || 'Iznos već prikupljen za ovaj projekat'}
+                  helperText={form.formState.errors.currentAmount?.message || t('currentAmountHelper')}
                   required
                   data-testid="input-current-amount"
                 />
                 <TextField
                   select
                   fullWidth
-                  label="Status"
+                  label={t('status.label')}
                   {...form.register('status')}
                   error={!!form.formState.errors.status}
-                  helperText={form.formState.errors.status?.message || 'Status projekta'}
+                  helperText={form.formState.errors.status?.message || t('status.helper')}
                   SelectProps={{ native: true }}
                   required
                   data-testid="select-status"
                 >
-                  <option value="active">Aktivan</option>
-                  <option value="closed">Zatvoren</option>
+                  <option value="active">{t('status.active')}</option>
+                  <option value="closed">{t('status.closed')}</option>
                 </TextField>
               </Stack>
             </DialogContent>
             <DialogActions>
               <Button onClick={handleCloseDialog} data-testid="button-cancel">
-                Otkaži
+                {t('buttons.cancel')}
               </Button>
               <Button 
                 type="submit" 
@@ -353,7 +355,7 @@ export default function ProjectsPage() {
                 disabled={saveProjectMutation.isPending}
                 data-testid="button-save"
               >
-                {saveProjectMutation.isPending ? 'Spremanje...' : 'Spremi'}
+                {saveProjectMutation.isPending ? t('buttons.saving') : t('buttons.save')}
               </Button>
             </DialogActions>
           </form>

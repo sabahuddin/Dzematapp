@@ -2,11 +2,14 @@
   "title": "Finanzen",
   "myPayments": "Meine Zahlungen",
   "addPayment": "Zahlung hinzufügen",
+  "addNewPayment": "Neue Zahlung hinzufügen",
   "editPayment": "Zahlung bearbeiten",
   "deletePayment": "Zahlung löschen",
   "amount": "Betrag",
+  "amountLabel": "Betrag (CHF)",
   "amountInCHF": "{{amount}} CHF",
   "purpose": "Zweck",
+  "purposeLabel": "Zahlungszweck",
   "purposes": {
     "membership": "Mitgliedsbeitrag",
     "donation": "Spende",
@@ -15,14 +18,39 @@
     "other": "Sonstiges"
   },
   "project": "Projekt",
+  "projectOptional": "Für Projekt (optional)",
   "selectProject": "Projekt auswählen",
   "noProject": "Kein Projekt",
   "paymentDate": "Datum",
+  "paymentDateLabel": "Zahlungsdatum",
+  "paymentMethod": "Zahlungsmethode",
+  "paymentMethods": {
+    "cash": "Bargeld",
+    "bank": "Bank"
+  },
   "notes": "Notizen",
   "user": "Benutzer",
+  "selectUser": "Benutzer auswählen",
+  "unknown": "Unbekannt",
+  "searchPlaceholder": "Nach Benutzer, Beschreibung oder Typ suchen...",
   "filterByPurpose": "Nach Zweck filtern",
+  "allCategories": "Alle Kategorien",
   "allPurposes": "Alle Zwecke",
   "noPayments": "Keine Zahlungen",
   "totalAmount": "Gesamtbetrag: {{amount}} CHF",
-  "csvUpload": "CSV hochladen"
+  "csvUpload": "CSV hochladen",
+  "saving": "Speichern...",
+  "messages": {
+    "created": "Zahlung wurde erstellt",
+    "updated": "Zahlung wurde aktualisiert",
+    "deleted": "Zahlung wurde gelöscht",
+    "errorLoading": "Fehler beim Laden der Zahlungen. Bitte versuchen Sie es erneut.",
+    "errorSaving": "Fehler beim Speichern der Zahlung",
+    "errorDeleting": "Fehler beim Löschen der Zahlung",
+    "confirmDelete": "Möchten Sie diese Zahlung wirklich löschen?"
+  },
+  "validation": {
+    "userRequired": "Benutzer ist erforderlich",
+    "dateRequired": "Datum ist erforderlich"
+  }
 }

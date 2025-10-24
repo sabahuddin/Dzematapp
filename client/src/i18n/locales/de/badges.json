@@ -1,6 +1,7 @@
 {
   "title": "Abzeichen",
   "addBadge": "Abzeichen hinzufügen",
+  "addNewBadge": "Neues Abzeichen hinzufügen",
   "editBadge": "Abzeichen bearbeiten",
   "deleteBadge": "Abzeichen löschen",
   "badgeName": "Abzeichenname",
@@ -15,5 +16,45 @@
   "myBadges": "Meine Abzeichen",
   "allBadges": "Alle Abzeichen",
   "earnedOn": "Verdient am: {{date}}",
-  "requirements": "Anforderungen"
+  "requirements": "Anforderungen",
+  "tableHeaders": {
+    "name": "Name",
+    "description": "Beschreibung",
+    "criteriaType": "Kriterientyp",
+    "value": "Wert",
+    "actions": "Aktionen"
+  },
+  "criteriaType": "Kriterientyp",
+  "criteriaValue": "Wert",
+  "selectType": "-- Typ auswählen --",
+  "criteriaTypes": {
+    "points": "Gesamtpunkte",
+    "tasks_completed": "Anzahl abgeschlossener Aufgaben",
+    "contributions_amount": "Gesamtbeitragsbetrag",
+    "events_attended": "Anzahl besuchter Veranstaltungen"
+  },
+  "helperTexts": {
+    "criteriaType": "Art der Aktivität, die zum Verdienen des Abzeichens erforderlich ist",
+    "criteriaValue": "Mindestwert, der zum Verdienen des Abzeichens erforderlich ist"
+  },
+  "messages": {
+    "created": "Abzeichen wurde erstellt",
+    "updated": "Abzeichen wurde aktualisiert",
+    "deleted": "Abzeichen wurde gelöscht",
+    "errorSaving": "Fehler beim Speichern des Abzeichens",
+    "errorDeleting": "Fehler beim Löschen des Abzeichens",
+    "errorLoading": "Fehler beim Laden der Abzeichen. Bitte versuchen Sie es erneut.",
+    "confirmDelete": "Sind Sie sicher, dass Sie dieses Abzeichen löschen möchten?"
+  },
+  "validation": {
+    "nameRequired": "Name ist erforderlich",
+    "descriptionRequired": "Beschreibung ist erforderlich",
+    "criteriaTypeRequired": "Kriterientyp ist erforderlich",
+    "criteriaValuePositive": "Der Wert muss positiv sein"
+  },
+  "emptyState": "Keine Abzeichen definiert. Fügen Sie ein neues Abzeichen über die Schaltfläche \"Abzeichen hinzufügen\" hinzu.",
+  "accessDenied": "Sie haben keine Berechtigung, auf diese Seite zuzugreifen.",
+  "cancel": "Abbrechen",
+  "save": "Speichern",
+  "saving": "Speichern..."
 }

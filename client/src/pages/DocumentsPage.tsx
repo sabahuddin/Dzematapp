@@ -2,12 +2,14 @@ import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Container, Typography, Box, Card, CardContent, CardHeader, IconButton, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@mui/material";
 import { Download, Delete, Upload, FileText, Eye } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/contexts/AuthContext";
 import type { Document } from "@shared/schema";
 
 export default function DocumentsPage() {
+  const { t } = useTranslation(['documents']);
   const { toast } = useToast();
   const { user } = useAuth();
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
@@ -53,16 +55,16 @@ export default function DocumentsPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
       toast({
-        title: "Uspješno",
-        description: "Dokument je uspješno dodat"
+        title: t('success'),
+        description: t('documentAddedSuccess')
       });
       setUploadDialogOpen(false);
       setUploadData({ title: "", description: "", file: null });
     },
     onError: () => {
       toast({
-        title: "Greška",
-        description: "Nije moguće dodati dokument",
+        title: t('error'),
+        description: t('cannotAddDocument'),
         variant: "destructive"
       });
     }
@@ -79,8 +81,8 @@ export default function DocumentsPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
       toast({
-        title: "Uspješno",
-        description: "Dokument je obrisan"
+        title: t('success'),
+        description: t('documentDeletedSuccess')
       });
     }
   });
@@ -88,8 +90,8 @@ export default function DocumentsPage() {
   const handleUpload = () => {
     if (!uploadData.file || !uploadData.title) {
       toast({
-        title: "Greška",
-        description: "Molimo unesite naslov i odaberite PDF fajl",
+        title: t('error'),
+        description: t('enterTitleAndFile'),
         variant: "destructive"
       });
       return;
@@ -97,8 +99,8 @@ export default function DocumentsPage() {
 
     if (uploadData.file.type !== "application/pdf") {
       toast({
-        title: "Greška",
-        description: "Samo PDF fajlovi su dozvoljeni",
+        title: t('error'),
+        description: t('onlyPdfAllowed'),
         variant: "destructive"
       });
       return;
@@ -112,7 +114,6 @@ export default function DocumentsPage() {
   };
 
   const handleViewPdf = (doc: Document) => {
-    // Convert base64 to blob and open in new tab
     try {
       const byteCharacters = atob(doc.filePath.split(',')[1]);
       const byteNumbers = new Array(byteCharacters.length);
@@ -124,12 +125,11 @@ export default function DocumentsPage() {
       const url = URL.createObjectURL(blob);
       window.open(url, '_blank');
       
-      // Clean up the URL after a short delay
       setTimeout(() => URL.revokeObjectURL(url), 100);
     } catch (error) {
       toast({
-        title: "Greška",
-        description: "Nije moguće otvoriti PDF",
+        title: t('error'),
+        description: t('cannotOpenPdf'),
         variant: "destructive"
       });
     }
@@ -151,12 +151,11 @@ export default function DocumentsPage() {
       link.download = doc.fileName;
       link.click();
       
-      // Clean up the URL after a short delay
       setTimeout(() => URL.revokeObjectURL(url), 100);
     } catch (error) {
       toast({
-        title: "Greška",
-        description: "Nije moguće preuzeti PDF",
+        title: t('error'),
+        description: t('cannotDownloadPdf'),
         variant: "destructive"
       });
     }
@@ -182,7 +181,7 @@ export default function DocumentsPage() {
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
         <Typography variant="h4" component="h1">
-          Dokumenti
+          {t('title')}
         </Typography>
         {user?.isAdmin && (
           <Button
@@ -191,20 +190,20 @@ export default function DocumentsPage() {
             onClick={() => setUploadDialogOpen(true)}
             data-testid="button-add-document"
           >
-            Dodaj Dokument
+            {t('addDocument')}
           </Button>
         )}
       </Box>
 
       {isLoading ? (
-        <Typography>Učitavanje...</Typography>
+        <Typography>{t('loading')}</Typography>
       ) : documents.length === 0 ? (
         <Card>
           <CardContent>
             <Box sx={{ textAlign: "center", py: 4 }}>
               <FileText size={48} style={{ opacity: 0.3, margin: "0 auto" }} />
               <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
-                Nema dostupnih dokumenata
+                {t('noDocumentsAvailable')}
               </Typography>
             </Box>
           </CardContent>
@@ -215,13 +214,13 @@ export default function DocumentsPage() {
             <Card key={doc.id} data-testid={`card-document-${doc.id}`}>
               <CardHeader
                 title={doc.title}
-                subheader={`Dodato: ${formatDate(doc.uploadedAt)} • ${formatFileSize(doc.fileSize)}`}
+                subheader={`${t('added')} ${formatDate(doc.uploadedAt)} • ${formatFileSize(doc.fileSize)}`}
                 action={
                   <Box>
                     <IconButton
                       onClick={() => handleViewPdf(doc)}
                       data-testid={`button-view-${doc.id}`}
-                      title="Pregledaj PDF"
+                      title={t('viewPdf')}
                       color="primary"
                     >
                       <Eye />
@@ -229,7 +228,7 @@ export default function DocumentsPage() {
                     <IconButton
                       onClick={() => handleDownload(doc)}
                       data-testid={`button-download-${doc.id}`}
-                      title="Preuzmi"
+                      title={t('download')}
                     >
                       <Download />
                     </IconButton>
@@ -238,7 +237,7 @@ export default function DocumentsPage() {
                         onClick={() => deleteMutation.mutate(doc.id)}
                         color="error"
                         data-testid={`button-delete-${doc.id}`}
-                        title="Obriši"
+                        title={t('delete')}
                       >
                         <Delete />
                       </IconButton>
@@ -264,11 +263,11 @@ export default function DocumentsPage() {
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle>Dodaj Novi Dokument</DialogTitle>
+        <DialogTitle>{t('addNewDocument')}</DialogTitle>
         <DialogContent>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2 }}>
             <TextField
-              label="Naslov dokumenta"
+              label={t('documentTitle')}
               value={uploadData.title}
               onChange={(e) => setUploadData({ ...uploadData, title: e.target.value })}
               fullWidth
@@ -276,7 +275,7 @@ export default function DocumentsPage() {
               data-testid="input-document-title"
             />
             <TextField
-              label="Opis (opciono)"
+              label={t('descriptionOptional')}
               value={uploadData.description}
               onChange={(e) => setUploadData({ ...uploadData, description: e.target.value })}
               fullWidth
@@ -291,7 +290,7 @@ export default function DocumentsPage() {
                 fullWidth
                 data-testid="button-select-file"
               >
-                {uploadData.file ? uploadData.file.name : "Odaberi PDF Fajl"}
+                {uploadData.file ? uploadData.file.name : t('selectPdfFile')}
                 <input
                   type="file"
                   hidden
@@ -306,7 +305,7 @@ export default function DocumentsPage() {
               </Button>
               {uploadData.file && (
                 <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: "block" }}>
-                  Veličina: {formatFileSize(uploadData.file.size)}
+                  {t('fileSize')} {formatFileSize(uploadData.file.size)}
                 </Typography>
               )}
             </Box>
@@ -314,7 +313,7 @@ export default function DocumentsPage() {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setUploadDialogOpen(false)} data-testid="button-cancel-upload">
-            Otkaži
+            {t('cancel')}
           </Button>
           <Button
             onClick={handleUpload}
@@ -322,7 +321,7 @@ export default function DocumentsPage() {
             disabled={uploadMutation.isPending}
             data-testid="button-confirm-upload"
           >
-            {uploadMutation.isPending ? "Dodavanje..." : "Dodaj"}
+            {uploadMutation.isPending ? t('adding') : t('add')}
           </Button>
         </DialogActions>
       </Dialog>

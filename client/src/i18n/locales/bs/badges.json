@@ -1,6 +1,7 @@
 {
   "title": "Značke",
   "addBadge": "Dodaj Značku",
+  "addNewBadge": "Dodaj Novu Značku",
   "editBadge": "Uredi Značku",
   "deleteBadge": "Obriši Značku",
   "badgeName": "Naziv značke",
@@ -15,5 +16,45 @@
   "myBadges": "Moje značke",
   "allBadges": "Sve značke",
   "earnedOn": "Zasluženo: {{date}}",
-  "requirements": "Uslovi za osvajanje"
+  "requirements": "Uslovi za osvajanje",
+  "tableHeaders": {
+    "name": "Naziv",
+    "description": "Opis",
+    "criteriaType": "Tip kriterija",
+    "value": "Vrijednost",
+    "actions": "Akcije"
+  },
+  "criteriaType": "Tip kriterija",
+  "criteriaValue": "Vrijednost",
+  "selectType": "-- Odaberi tip --",
+  "criteriaTypes": {
+    "points": "Ukupni bodovi",
+    "tasks_completed": "Broj izvršenih zadataka",
+    "contributions_amount": "Ukupan iznos uplate",
+    "events_attended": "Broj posjećenih događaja"
+  },
+  "helperTexts": {
+    "criteriaType": "Tip aktivnosti potreban za dobijanje značke",
+    "criteriaValue": "Minimalna vrijednost potrebna za dobijanje značke"
+  },
+  "messages": {
+    "created": "Značka je kreirana",
+    "updated": "Značka je ažurirana",
+    "deleted": "Značka je obrisana",
+    "errorSaving": "Greška pri spremanju značke",
+    "errorDeleting": "Greška pri brisanju značke",
+    "errorLoading": "Greška pri učitavanju znački. Molimo pokušajte ponovo.",
+    "confirmDelete": "Jeste li sigurni da želite obrisati ovu značku?"
+  },
+  "validation": {
+    "nameRequired": "Naziv je obavezan",
+    "descriptionRequired": "Opis je obavezan",
+    "criteriaTypeRequired": "Tip kriterija je obavezan",
+    "criteriaValuePositive": "Vrijednost mora biti pozitivna"
+  },
+  "emptyState": "Nema definisanih znački. Dodajte novu značku koristeći dugme \"Dodaj Značku\".",
+  "accessDenied": "Nemate dozvolu za pristup ovoj stranici.",
+  "cancel": "Otkaži",
+  "save": "Spremi",
+  "saving": "Spremanje..."
 }
