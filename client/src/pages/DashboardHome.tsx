@@ -397,7 +397,17 @@ export default function DashboardHome() {
                           WebkitLineClamp: 5,
                           WebkitBoxOrient: 'vertical',
                           '& p': { margin: 0 },
-                          '& img': { maxWidth: '100%', height: 'auto' }
+                          '& img': { 
+                            maxWidth: '300px',
+                            maxHeight: '200px',
+                            width: 'auto',
+                            height: 'auto',
+                            aspectRatio: '4/3',
+                            objectFit: 'cover',
+                            borderRadius: '4px',
+                            display: 'block',
+                            margin: '8px 0'
+                          }
                         }}
                         dangerouslySetInnerHTML={{ __html: latestAnnouncement.content }}
                       />
@@ -451,7 +461,17 @@ export default function DashboardHome() {
                             WebkitLineClamp: 3,
                             WebkitBoxOrient: 'vertical',
                             '& p': { margin: 0 },
-                            '& img': { maxWidth: '100%', height: 'auto' }
+                            '& img': { 
+                              maxWidth: '200px',
+                              maxHeight: '150px',
+                              width: 'auto',
+                              height: 'auto',
+                              aspectRatio: '4/3',
+                              objectFit: 'cover',
+                              borderRadius: '4px',
+                              display: 'block',
+                              margin: '8px 0'
+                            }
                           }}
                           dangerouslySetInnerHTML={{ __html: upcomingEvent.description || '' }}
                         />

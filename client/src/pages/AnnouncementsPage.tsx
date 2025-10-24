@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -60,6 +60,8 @@ export default function AnnouncementsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [showArchive, setShowArchive] = useState(false);
+  const [imageModalOpen, setImageModalOpen] = useState(false);
+  const [selectedImageSrc, setSelectedImageSrc] = useState<string>('');
 
   // Fetch announcements
   const announcementsQuery = useQuery<Announcement[]>({
@@ -138,6 +140,23 @@ export default function AnnouncementsPage() {
       setAnnouncementToDelete(null);
     }
   };
+
+  // Add click handlers to announcement images for full-size view
+  useEffect(() => {
+    const handleImageClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'IMG' && target.closest('[data-announcement-content]')) {
+        const imgSrc = (target as HTMLImageElement).src;
+        setSelectedImageSrc(imgSrc);
+        setImageModalOpen(true);
+      }
+    };
+
+    document.addEventListener('click', handleImageClick);
+    return () => {
+      document.removeEventListener('click', handleImageClick);
+    };
+  }, []);
 
   // File upload mutation
   const uploadFilesMutation = useMutation({
@@ -393,9 +412,27 @@ export default function AnnouncementsPage() {
                 {latestAnnouncement.publishDate ? new Date(latestAnnouncement.publishDate).toLocaleDateString('hr-HR') : ''}
               </Typography>
               
-              <Typography 
-                variant="body1" 
-                sx={{ mt: 2 }}
+              <Box 
+                data-announcement-content
+                sx={{ 
+                  mt: 2,
+                  '& img': {
+                    maxWidth: '50%',
+                    maxHeight: '400px',
+                    width: 'auto',
+                    height: 'auto',
+                    aspectRatio: '4/3',
+                    objectFit: 'cover',
+                    borderRadius: '4px',
+                    display: 'block',
+                    margin: '12px 0',
+                    cursor: 'pointer',
+                    transition: 'opacity 0.2s',
+                    '&:hover': {
+                      opacity: 0.85
+                    }
+                  }
+                }}
                 dangerouslySetInnerHTML={{ __html: latestAnnouncement.content }}
               />
               
@@ -485,8 +522,26 @@ export default function AnnouncementsPage() {
                   {selectedAnnouncement.publishDate ? new Date(selectedAnnouncement.publishDate).toLocaleDateString('hr-HR') : ''}
                 </Typography>
                 
-                <Typography 
-                  variant="body1"
+                <Box 
+                  data-announcement-content
+                  sx={{
+                    '& img': {
+                      maxWidth: '50%',
+                      maxHeight: '400px',
+                      width: 'auto',
+                      height: 'auto',
+                      aspectRatio: '4/3',
+                      objectFit: 'cover',
+                      borderRadius: '4px',
+                      display: 'block',
+                      margin: '12px 0',
+                      cursor: 'pointer',
+                      transition: 'opacity 0.2s',
+                      '&:hover': {
+                        opacity: 0.85
+                      }
+                    }
+                  }}
                   dangerouslySetInnerHTML={{ __html: selectedAnnouncement.content }}
                 />
                 
@@ -669,6 +724,39 @@ export default function AnnouncementsPage() {
         announcement={selectedAnnouncement}
         authorId={user?.id || ''}
       />
+
+      {/* Image Viewer Modal */}
+      <Dialog
+        open={imageModalOpen}
+        onClose={() => setImageModalOpen(false)}
+        maxWidth="lg"
+        fullWidth
+      >
+        <DialogTitle>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Typography variant="h6">{t('common:common.image')}</Typography>
+            <IconButton onClick={() => setImageModalOpen(false)}>
+              <Close />
+            </IconButton>
+          </Box>
+        </DialogTitle>
+        <DialogContent>
+          {selectedImageSrc && (
+            <Box
+              component="img"
+              src={selectedImageSrc}
+              alt="Full size"
+              sx={{
+                width: '100%',
+                height: 'auto',
+                maxHeight: '80vh',
+                objectFit: 'contain',
+                display: 'block'
+              }}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 }
