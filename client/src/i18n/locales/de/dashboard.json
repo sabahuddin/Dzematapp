@@ -28,13 +28,22 @@
   },
   "recentAnnouncements": "Letzte Ankündigungen",
   "latestAnnouncement": "Neueste Ankündigung",
+  "nextEvent": "Nächste Veranstaltung",
   "upcomingEvents": "Bevorstehende Veranstaltungen",
   "allEvents": "Alle Veranstaltungen",
+  "all": "Alle",
   "myTasks": "Meine Aufgaben",
   "myWorkGroups": "Meine Sektionen",
+  "mySections": "Meine Sektionen",
   "myMessages": "Meine Nachrichten",
   "unreadMessages": "Ungelesene Nachrichten",
   "noUnreadMessages": "Keine ungelesenen Nachrichten",
+  "from": "Von",
+  "noSectionMembership": "Sie sind kein Mitglied einer Sektion",
+  "eventsFor": "Veranstaltungen für",
+  "noEventsForDate": "Keine Veranstaltungen für das gewählte Datum",
+  "rsvpButton": "Anmelden",
+  "remindMeButton": "Erinnere mich",
   "recentActivities": "Letzte Aktivitäten",
   "noActivities": "Keine aktuellen Aktivitäten",
   "noData": "Keine Daten zum Anzeigen",
@@ -44,5 +53,14 @@
   "error": "Fehler beim Laden der Daten. Bitte versuchen Sie es erneut.",
   "eventCalendar": "Veranstaltungskalender",
   "noEvents": "Keine bevorstehenden Veranstaltungen",
-  "noAnnouncements": "Keine neuen Ankündigungen"
+  "noAnnouncements": "Keine neuen Ankündigungen",
+  "announcementsArchive": "Ankündigungsarchiv",
+  "activityTable": {
+    "type": "Typ",
+    "description": "Beschreibung",
+    "user": "Benutzer",
+    "time": "Zeit",
+    "userLabel": "Benutzer",
+    "systemLabel": "System"
+  }
 }

@@ -45,5 +45,10 @@
   "quickAccessLimit": "Dostigli ste maksimalni broj brzih linkova (8). Uklonite neki da dodate novi.",
   "cancel": "Otkaži",
   "save": "Sačuvaj",
-  "saving": "Čuvam..."
+  "saving": "Čuvam...",
+  "toggleSidebar": "Zatvori/Otvori",
+  "fallbackOrgName": "Islamska Zajednica",
+  "fallbackAddress": "Ulica Džemata 123",
+  "fallbackPhone": "+387 33 123 456",
+  "fallbackEmail": "info@dzemat.ba"
 }

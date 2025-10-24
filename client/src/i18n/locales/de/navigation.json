@@ -45,5 +45,10 @@
   "quickAccessLimit": "Sie haben die maximale Anzahl von Schnellzugriffen (8) erreicht. Entfernen Sie einen, um einen neuen hinzuzufügen.",
   "cancel": "Abbrechen",
   "save": "Speichern",
-  "saving": "Speichern..."
+  "saving": "Speichern...",
+  "toggleSidebar": "Schließen/Öffnen",
+  "fallbackOrgName": "Islamische Gemeinde",
+  "fallbackAddress": "Gemeinde Straße 123",
+  "fallbackPhone": "+387 33 123 456",
+  "fallbackEmail": "info@dzemat.ba"
 }

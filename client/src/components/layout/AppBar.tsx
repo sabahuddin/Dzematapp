@@ -46,7 +46,7 @@ export default function AppBar({ onMenuClick }: AppBarProps) {
   const getPageTitle = () => {
     // This would be better managed through a context or state management
     // For now, we'll return a default title
-    return 'Dashboard';
+    return t('navigation:menu.dashboard');
   };
 
   return (

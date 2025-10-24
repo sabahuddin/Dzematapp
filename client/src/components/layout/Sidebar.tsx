@@ -165,7 +165,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
             <ListItemIcon sx={{ color: 'inherit', minWidth: collapsed ? 'auto' : 40, justifyContent: 'center' }}>
               <Menu />
             </ListItemIcon>
-            {!collapsed && <ListItemText primary="Zatvori/Otvori" />}
+            {!collapsed && <ListItemText primary={t('navigation:toggleSidebar')} />}
           </ListItemButton>
         </ListItem>
 
@@ -266,30 +266,30 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
           {/* Džemat Info */}
           <Box sx={{ mb: 2 }}>
             <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1, color: '#1976d2' }}>
-              Informacije
+              {t('navigation:contactInfo')}
             </Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
               <Box sx={{ display: 'flex', alignItems: 'start', gap: 1 }}>
                 <LocationOn sx={{ fontSize: 16, color: 'text.secondary', mt: 0.25 }} />
                 <Box>
                   <Typography variant="caption" sx={{ fontWeight: 600, display: 'block' }}>
-                    {orgSettings?.name || 'Islamska Zajednica'}
+                    {orgSettings?.name || t('navigation:fallbackOrgName')}
                   </Typography>
                   <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                    {orgSettings?.address || 'Ulica Džemata 123'}
+                    {orgSettings?.address || t('navigation:fallbackAddress')}
                   </Typography>
                 </Box>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Phone sx={{ fontSize: 16, color: 'text.secondary' }} />
                 <Typography variant="caption" color="text.secondary">
-                  {orgSettings?.phone || '+387 33 123 456'}
+                  {orgSettings?.phone || t('navigation:fallbackPhone')}
                 </Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Email sx={{ fontSize: 16, color: 'text.secondary' }} />
                 <Typography variant="caption" color="text.secondary">
-                  {orgSettings?.email || 'info@dzemat.ba'}
+                  {orgSettings?.email || t('navigation:fallbackEmail')}
                 </Typography>
               </Box>
             </Box>
@@ -301,7 +301,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
           {(orgSettings?.facebookUrl || orgSettings?.instagramUrl || orgSettings?.youtubeUrl || orgSettings?.twitterUrl) && (
             <Box>
               <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1, color: '#1976d2' }}>
-                Društvene mreže
+                {t('navigation:socialMedia')}
               </Typography>
               <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-start' }}>
                 {orgSettings?.facebookUrl && (

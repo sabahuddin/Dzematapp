@@ -360,7 +360,7 @@ export default function DashboardHome() {
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                   <Campaign sx={{ color: '#2e7d32' }} />
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                    Zadnja Obavijest
+                    {t('dashboard:latestAnnouncement')}
                   </Typography>
                 </Box>
                 <Link href="/announcements">
@@ -370,7 +370,7 @@ export default function DashboardHome() {
                     sx={{ textTransform: 'none' }}
                     data-testid="link-archive-announcements"
                   >
-                    Arhiva obavijesti
+                    {t('dashboard:announcementsArchive')}
                   </Button>
                 </Link>
               </Box>
@@ -418,7 +418,7 @@ export default function DashboardHome() {
               <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', gap: 2 }}>
                 <Event sx={{ color: '#ed6c02' }} />
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                  Sljedeći Događaj
+                  {t('dashboard:nextEvent')}
                 </Typography>
               </Box>
               <CardContent data-testid="card-upcoming-event">
@@ -515,7 +515,7 @@ export default function DashboardHome() {
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                   <Mail sx={{ color: '#1976d2' }} />
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                    Moje Poruke
+                    {t('dashboard:myMessages')}
                   </Typography>
                   {unreadMessages.length > 0 && (
                     <Badge badgeContent={unreadMessages.length} color="error" data-testid="badge-unread-messages" />
@@ -528,7 +528,7 @@ export default function DashboardHome() {
                     sx={{ textTransform: 'none' }}
                     data-testid="link-all-messages"
                   >
-                    Sve
+                    {t('dashboard:all')}
                   </Button>
                 </Link>
               </Box>
@@ -556,7 +556,7 @@ export default function DashboardHome() {
                             {message.subject}
                           </Typography>
                           <Typography variant="caption" color="text.secondary">
-                            Od: {message.sender?.firstName} {message.sender?.lastName}
+                            {t('dashboard:from')}: {message.sender?.firstName} {message.sender?.lastName}
                           </Typography>
                         </Box>
                       </Link>
@@ -578,7 +578,7 @@ export default function DashboardHome() {
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                   <Workspaces sx={{ color: '#9c27b0' }} />
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                    Moje Sekcije
+                    {t('dashboard:mySections')}
                   </Typography>
                 </Box>
                 <Link href="/tasks">
@@ -588,7 +588,7 @@ export default function DashboardHome() {
                     sx={{ textTransform: 'none' }}
                     data-testid="link-all-sections"
                   >
-                    Sve
+                    {t('dashboard:all')}
                   </Button>
                 </Link>
               </Box>
@@ -636,7 +636,7 @@ export default function DashboardHome() {
                   </Box>
                 ) : (
                   <Typography color="text.secondary">
-                    Niste član nijedne sekcije
+                    {t('dashboard:noSectionMembership')}
                   </Typography>
                 )}
               </CardContent>
@@ -652,7 +652,7 @@ export default function DashboardHome() {
           fullWidth
         >
           <DialogTitle>
-            Događaji za {selectedDate && format(selectedDate, 'dd.MM.yyyy.')}
+            {t('dashboard:eventsFor')} {selectedDate && format(selectedDate, 'dd.MM.yyyy.')}
             <IconButton
               onClick={() => setDateEventsModalOpen(false)}
               sx={{ position: 'absolute', right: 8, top: 8 }}
@@ -701,7 +701,7 @@ export default function DashboardHome() {
               </Box>
             ) : (
               <Typography color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
-                Nema događaja za izabrani datum
+                {t('dashboard:noEventsForDate')}
               </Typography>
             )}
           </DialogContent>
@@ -941,7 +941,7 @@ export default function DashboardHome() {
                               fullWidth
                               data-testid={`button-rsvp-${event.id}`}
                             >
-                              Prijavi se
+                              {t('dashboard:rsvpButton')}
                             </Button>
                           )}
                           <Button
@@ -951,7 +951,7 @@ export default function DashboardHome() {
                             fullWidth
                             data-testid={`button-remind-${event.id}`}
                           >
-                            Podsjeti me
+                            {t('dashboard:remindMeButton')}
                           </Button>
                         </Box>
                       </CardContent>
@@ -961,7 +961,7 @@ export default function DashboardHome() {
             </Grid>
           ) : (
             <Typography color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
-              Nema nadolazećih događaja
+              {t('dashboard:noEvents')}
             </Typography>
           )}
         </Box>
@@ -983,10 +983,10 @@ export default function DashboardHome() {
           <Table>
             <TableHead>
               <TableRow sx={{ bgcolor: '#f8f9fa' }}>
-                <TableCell sx={{ fontWeight: 600 }}>Tip</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Opis</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Korisnik</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Vrijeme</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('dashboard:activityTable.type')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('dashboard:activityTable.description')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('dashboard:activityTable.user')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('dashboard:activityTable.time')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -1008,7 +1008,7 @@ export default function DashboardHome() {
                     </TableCell>
                     <TableCell>{activity.description}</TableCell>
                     <TableCell>
-                      {activity.userId ? 'Korisnik' : 'System'}
+                      {activity.userId ? t('dashboard:activityTable.userLabel') : t('dashboard:activityTable.systemLabel')}
                     </TableCell>
                     <TableCell>
                       <Typography variant="body2" color="text.secondary">
