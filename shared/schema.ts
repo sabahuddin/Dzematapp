@@ -62,6 +62,7 @@ export const events = pgTable("events", {
   maxAttendees: integer("max_attendees"),
   reminderTime: text("reminder_time"), // null, "7_days", "24_hours", "2_hours"
   categories: text("categories").array(), // Iftar, Mevlud, Edukacija, Sport, Humanitarno, Omladina, custom
+  pointsValue: integer("points_value").default(20), // Variable points for event attendance
   createdById: varchar("created_by_id").notNull().references(() => users.id),
   createdAt: timestamp("created_at").defaultNow(),
 });
@@ -100,6 +101,8 @@ export const tasks = pgTable("tasks", {
   assignedUserIds: text("assigned_user_ids").array(), // Multiple users can be assigned to a task
   status: text("status").notNull().default("u_toku"), // u_toku, na_cekanju, završeno, otkazano, arhiva
   dueDate: timestamp("due_date"),
+  estimatedCost: text("estimated_cost"), // Estimated budget/cost in CHF
+  pointsValue: integer("points_value").default(50), // Variable points: 10, 20, 30, or custom
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -543,6 +546,42 @@ export const userPreferences = pgTable("user_preferences", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+// Moderator Proposals System
+export const proposals = pgTable("proposals", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  workGroupId: varchar("work_group_id").notNull().references(() => workGroups.id),
+  createdById: varchar("created_by_id").notNull().references(() => users.id), // Moderator
+  who: text("who").notNull(), // Who will do it
+  what: text("what").notNull(), // What will be done
+  where: text("where"), // Where it will happen
+  when: text("when"), // When it will happen
+  how: text("how"), // How it will be done
+  why: text("why").notNull(), // Why it's needed (justification)
+  budget: text("budget"), // Estimated budget in CHF
+  status: text("status").notNull().default("pending"), // pending, approved, rejected
+  reviewedById: varchar("reviewed_by_id").references(() => users.id), // IO member who reviewed
+  reviewComment: text("review_comment"), // Comment from reviewer
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  reviewedAt: timestamp("reviewed_at"),
+});
+
+// Expense Receipts System
+export const receipts = pgTable("receipts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  taskId: varchar("task_id").references(() => tasks.id), // Related task
+  proposalId: varchar("proposal_id").references(() => proposals.id), // Related proposal
+  uploadedById: varchar("uploaded_by_id").notNull().references(() => users.id), // Member who uploads
+  fileName: text("file_name").notNull(),
+  fileUrl: text("file_url").notNull(), // Path/URL to uploaded receipt image/PDF
+  amount: text("amount").notNull(), // Actual amount spent in CHF
+  description: text("description"), // Optional description
+  status: text("status").notNull().default("pending"), // pending, approved, rejected
+  reviewedById: varchar("reviewed_by_id").references(() => users.id), // Blagajnik/admin who reviews
+  reviewComment: text("review_comment"), // Comment from reviewer
+  uploadedAt: timestamp("uploaded_at").defaultNow().notNull(),
+  reviewedAt: timestamp("reviewed_at"),
+});
+
 export const insertPrayerTimeSchema = createInsertSchema(prayerTimes).omit({
   id: true,
 });
@@ -607,7 +646,25 @@ export const insertUserPreferencesSchema = createInsertSchema(userPreferences).o
   updatedAt: true,
 });
 
+// Moderator Proposals System
+export const insertProposalSchema = createInsertSchema(proposals).omit({
+  id: true,
+  createdAt: true,
+  reviewedAt: true,
+});
+
+// Expense Receipts System
+export const insertReceiptSchema = createInsertSchema(receipts).omit({
+  id: true,
+  uploadedAt: true,
+  reviewedAt: true,
+});
+
 // Types
+export type Proposal = typeof proposals.$inferSelect;
+export type InsertProposal = z.infer<typeof insertProposalSchema>;
+export type Receipt = typeof receipts.$inferSelect;
+export type InsertReceipt = z.infer<typeof insertReceiptSchema>;
 export type FinancialContribution = typeof financialContributions.$inferSelect;
 export type InsertFinancialContribution = z.infer<typeof insertFinancialContributionSchema>;
 export type ActivityLog = typeof activityLog.$inferSelect;
