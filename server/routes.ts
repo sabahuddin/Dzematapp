@@ -6,7 +6,7 @@ import { promises as fs } from "fs";
 import * as XLSX from "xlsx";
 import { storage } from "./storage";
 import { requireAuth, requireAdmin } from "./index";
-import { insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema, insertFinancialContributionSchema, insertActivityLogSchema, insertEventAttendanceSchema, insertPointsSettingsSchema, insertBadgeSchema, insertUserBadgeSchema, insertProjectSchema } from "@shared/schema";
+import { insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema, insertFinancialContributionSchema, insertActivityLogSchema, insertEventAttendanceSchema, insertPointsSettingsSchema, insertBadgeSchema, insertUserBadgeSchema, insertProjectSchema, insertProposalSchema, insertReceiptSchema } from "@shared/schema";
 
 // Configure multer for photo uploads
 const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'photos');
@@ -2840,6 +2840,250 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error updating user preferences:', error);
       res.status(500).json({ message: "Failed to update user preferences" });
+    }
+  });
+
+  // Proposals Routes (Moderator Proposals System)
+  app.get("/api/proposals", requireAuth, async (req, res) => {
+    try {
+      const user = req.user!;
+      const { status, workGroupId } = req.query;
+
+      let proposals;
+      
+      if (status) {
+        proposals = await storage.getProposalsByStatus(status as string);
+      } else if (workGroupId) {
+        proposals = await storage.getProposalsByWorkGroup(workGroupId as string);
+      } else {
+        proposals = await storage.getAllProposals();
+      }
+
+      // Filter based on user role
+      if (user.roles?.includes('Admin') || user.roles?.includes('Član IO')) {
+        // Admins and IO members can see all proposals
+        res.json(proposals);
+      } else {
+        // Regular members can only see proposals from their work groups
+        const userWorkGroups = await storage.getUserWorkGroups(user.id);
+        const userWorkGroupIds = userWorkGroups.map(wg => wg.id);
+        const filteredProposals = proposals.filter(p => userWorkGroupIds.includes(p.workGroupId));
+        res.json(filteredProposals);
+      }
+    } catch (error) {
+      console.error('Error getting proposals:', error);
+      res.status(500).json({ message: "Failed to get proposals" });
+    }
+  });
+
+  app.get("/api/proposals/:id", requireAuth, async (req, res) => {
+    try {
+      const proposal = await storage.getProposal(req.params.id);
+      if (!proposal) {
+        return res.status(404).json({ message: "Proposal not found" });
+      }
+      res.json(proposal);
+    } catch (error) {
+      console.error('Error getting proposal:', error);
+      res.status(500).json({ message: "Failed to get proposal" });
+    }
+  });
+
+  app.post("/api/proposals", requireAuth, async (req, res) => {
+    try {
+      const user = req.user!;
+      
+      // Check if user is a moderator of the work group or an admin
+      const workGroupMembers = await storage.getWorkGroupMembers(req.body.workGroupId);
+      const userMembership = workGroupMembers.find(m => m.userId === user.id);
+      const isModerator = userMembership?.isModerator;
+      const isAdmin = user.roles?.includes('Admin');
+      
+      if (!isModerator && !isAdmin) {
+        return res.status(403).json({ message: "Only moderators and admins can create proposals" });
+      }
+      
+      const validated = insertProposalSchema.parse({
+        ...req.body,
+        createdById: user.id
+      });
+      
+      const proposal = await storage.createProposal(validated);
+      res.status(201).json(proposal);
+    } catch (error) {
+      console.error('Error creating proposal:', error);
+      res.status(500).json({ message: "Failed to create proposal" });
+    }
+  });
+
+  app.patch("/api/proposals/:id", requireAuth, async (req, res) => {
+    try {
+      const user = req.user!;
+      const proposal = await storage.getProposal(req.params.id);
+      
+      if (!proposal) {
+        return res.status(404).json({ message: "Proposal not found" });
+      }
+      
+      // Only creator or admin can edit
+      if (proposal.createdById !== user.id && !user.roles?.includes('Admin')) {
+        return res.status(403).json({ message: "Not authorized to edit this proposal" });
+      }
+      
+      const validated = insertProposalSchema.partial().parse(req.body);
+      const updated = await storage.updateProposal(req.params.id, validated);
+      res.json(updated);
+    } catch (error) {
+      console.error('Error updating proposal:', error);
+      res.status(500).json({ message: "Failed to update proposal" });
+    }
+  });
+
+  app.patch("/api/proposals/:id/approve", requireAuth, async (req, res) => {
+    try {
+      const user = req.user!;
+      
+      // Only IO members and admins can approve
+      if (!user.roles?.includes('Član IO') && !user.roles?.includes('Admin')) {
+        return res.status(403).json({ message: "Only IO members and admins can approve proposals" });
+      }
+      
+      const { reviewComment } = req.body;
+      const updated = await storage.approveProposal(req.params.id, user.id, reviewComment);
+      res.json(updated);
+    } catch (error) {
+      console.error('Error approving proposal:', error);
+      res.status(500).json({ message: "Failed to approve proposal" });
+    }
+  });
+
+  app.patch("/api/proposals/:id/reject", requireAuth, async (req, res) => {
+    try {
+      const user = req.user!;
+      
+      // Only IO members and admins can reject
+      if (!user.roles?.includes('Član IO') && !user.roles?.includes('Admin')) {
+        return res.status(403).json({ message: "Only IO members and admins can reject proposals" });
+      }
+      
+      const { reviewComment } = req.body;
+      if (!reviewComment) {
+        return res.status(400).json({ message: "Review comment is required for rejection" });
+      }
+      
+      const updated = await storage.rejectProposal(req.params.id, user.id, reviewComment);
+      res.json(updated);
+    } catch (error) {
+      console.error('Error rejecting proposal:', error);
+      res.status(500).json({ message: "Failed to reject proposal" });
+    }
+  });
+
+  // Receipts Routes (Expense Receipts System)
+  app.get("/api/receipts", requireAuth, async (req, res) => {
+    try {
+      const user = req.user!;
+      const { status, taskId, proposalId } = req.query;
+
+      let receipts;
+      
+      if (status) {
+        receipts = await storage.getReceiptsByStatus(status as string);
+      } else if (taskId) {
+        receipts = await storage.getReceiptsByTask(taskId as string);
+      } else if (proposalId) {
+        receipts = await storage.getReceiptsByProposal(proposalId as string);
+      } else {
+        receipts = await storage.getAllReceipts();
+      }
+
+      // Filter based on user role - blagajnik (treasurers) and admins see all
+      if (!user.roles?.includes('Admin') && !user.roles?.includes('Blagajnik')) {
+        // Regular members only see their own receipts
+        receipts = receipts.filter(r => r.uploadedById === user.id);
+      }
+
+      res.json(receipts);
+    } catch (error) {
+      console.error('Error getting receipts:', error);
+      res.status(500).json({ message: "Failed to get receipts" });
+    }
+  });
+
+  app.get("/api/receipts/:id", requireAuth, async (req, res) => {
+    try {
+      const receipt = await storage.getReceipt(req.params.id);
+      if (!receipt) {
+        return res.status(404).json({ message: "Receipt not found" });
+      }
+      res.json(receipt);
+    } catch (error) {
+      console.error('Error getting receipt:', error);
+      res.status(500).json({ message: "Failed to get receipt" });
+    }
+  });
+
+  app.post("/api/receipts", requireAuth, upload.single('file'), async (req, res) => {
+    try {
+      const user = req.user!;
+      const file = req.file;
+      
+      if (!file) {
+        return res.status(400).json({ message: "Receipt file is required" });
+      }
+      
+      const validated = insertReceiptSchema.parse({
+        ...req.body,
+        uploadedById: user.id,
+        fileName: file.filename,
+        fileUrl: `/uploads/${file.filename}`
+      });
+      
+      const receipt = await storage.createReceipt(validated);
+      res.status(201).json(receipt);
+    } catch (error) {
+      console.error('Error uploading receipt:', error);
+      res.status(500).json({ message: "Failed to upload receipt" });
+    }
+  });
+
+  app.patch("/api/receipts/:id/approve", requireAuth, async (req, res) => {
+    try {
+      const user = req.user!;
+      
+      // Only blagajnik and admins can approve receipts
+      if (!user.roles?.includes('Blagajnik') && !user.roles?.includes('Admin')) {
+        return res.status(403).json({ message: "Only treasurers and admins can approve receipts" });
+      }
+      
+      const { reviewComment } = req.body;
+      const updated = await storage.approveReceipt(req.params.id, user.id, reviewComment);
+      res.json(updated);
+    } catch (error) {
+      console.error('Error approving receipt:', error);
+      res.status(500).json({ message: "Failed to approve receipt" });
+    }
+  });
+
+  app.patch("/api/receipts/:id/reject", requireAuth, async (req, res) => {
+    try {
+      const user = req.user!;
+      
+      // Only blagajnik and admins can reject receipts
+      if (!user.roles?.includes('Blagajnik') && !user.roles?.includes('Admin')) {
+        return res.status(403).json({ message: "Only treasurers and admins can reject receipts" });
+      }
+      
+      const { reviewComment } = req.body;
+      if (!reviewComment) {
+        return res.status(400).json({ message: "Review comment is required for rejection" });
+      }
+      
+      const updated = await storage.rejectReceipt(req.params.id, user.id, reviewComment);
+      res.json(updated);
+    } catch (error) {
+      console.error('Error rejecting receipt:', error);
+      res.status(500).json({ message: "Failed to reject receipt" });
     }
   });
 
