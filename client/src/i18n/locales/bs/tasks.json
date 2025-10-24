@@ -6,7 +6,7 @@
   "editSection": "Uredi Sekciju",
   "createSection": "Kreiraj Novu Sekciju",
   "deleteSection": "Obriši Sekciju",
-  "sectionName": "Naziv Grupe",
+  "sectionName": "Naziv Sekcije",
   "description": "Opis",
   "visibility": {
     "label": "Vidljivost",
@@ -155,6 +155,7 @@
       "na_cekanju": "Na čekanju",
       "u_toku": "U toku",
       "zavrseno": "Završeno",
+      "završeno": "Završeno",
       "otkazano": "Otkazano",
       "arhiva": "Arhiva"
     },

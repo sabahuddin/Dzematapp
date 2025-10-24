@@ -6,7 +6,7 @@
   "editSection": "Sektion bearbeiten",
   "createSection": "Neue Sektion erstellen",
   "deleteSection": "Sektion löschen",
-  "sectionName": "Gruppenname",
+  "sectionName": "Sektionsname",
   "description": "Beschreibung",
   "visibility": {
     "label": "Sichtbarkeit",
@@ -153,6 +153,7 @@
       "na_cekanju": "Ausstehend",
       "u_toku": "In Bearbeitung",
       "zavrseno": "Abgeschlossen",
+      "završeno": "Abgeschlossen",
       "otkazano": "Abgebrochen",
       "arhiva": "Archiviert"
     },
