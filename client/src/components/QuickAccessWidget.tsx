@@ -16,23 +16,24 @@ import {
   FolderSpecial,
 } from '@mui/icons-material';
 import { Link } from 'wouter';
+import { useTranslation } from 'react-i18next';
 
-// Define available shortcuts with icons and labels
-export const AVAILABLE_SHORTCUTS = [
-  { path: '/announcements', label: 'Obavještenja', icon: Campaign, color: '#1976d2', testId: 'quickaccess-announcements' },
-  { path: '/events', label: 'Događaji', icon: Event, color: '#ed6c02', testId: 'quickaccess-events' },
-  { path: '/users', label: 'Korisnici', icon: People, color: '#2e7d32', testId: 'quickaccess-users' },
-  { path: '/sections', label: 'Sekcije', icon: Workspaces, color: '#9c27b0', testId: 'quickaccess-sections' },
-  { path: '/tasks', label: 'Zadaci', icon: Workspaces, color: '#d32f2f', testId: 'quickaccess-tasks' },
-  { path: '/messages', label: 'Poruke', icon: Mail, color: '#0288d1', testId: 'quickaccess-messages' },
-  { path: '/ask-imam', label: 'Pitaj Imama', icon: School, color: '#388e3c', testId: 'quickaccess-askimam' },
-  { path: '/documents', label: 'Dokumenti', icon: Description, color: '#f57c00', testId: 'quickaccess-documents' },
-  { path: '/shop', label: 'Prodavnica', icon: ShoppingCart, color: '#c2185b', testId: 'quickaccess-shop' },
-  { path: '/vaktija', label: 'Vaktija', icon: CalendarMonth, color: '#5e35b1', testId: 'quickaccess-vaktija' },
-  { path: '/finances', label: 'Finansije', icon: AccountBalance, color: '#00796b', testId: 'quickaccess-finances' },
-  { path: '/activity-log', label: 'Aktivnosti', icon: Timeline, color: '#616161', testId: 'quickaccess-activitylog' },
-  { path: '/badges', label: 'Značke', icon: EmojiEvents, color: '#fbc02d', testId: 'quickaccess-badges' },
-  { path: '/projects', label: 'Projekti', icon: FolderSpecial, color: '#1565c0', testId: 'quickaccess-projects' },
+// Define available shortcuts with icons (labels will come from i18n)
+export const getAvailableShortcuts = (t: any) => [
+  { path: '/announcements', label: t('navigation:menu.announcements'), icon: Campaign, color: '#1976d2', testId: 'quickaccess-announcements' },
+  { path: '/events', label: t('navigation:menu.events'), icon: Event, color: '#ed6c02', testId: 'quickaccess-events' },
+  { path: '/users', label: t('navigation:menu.users'), icon: People, color: '#2e7d32', testId: 'quickaccess-users' },
+  { path: '/sections', label: t('navigation:menu.sections'), icon: Workspaces, color: '#9c27b0', testId: 'quickaccess-sections' },
+  { path: '/tasks', label: t('navigation:menu.tasks'), icon: Workspaces, color: '#d32f2f', testId: 'quickaccess-tasks' },
+  { path: '/messages', label: t('navigation:menu.messages'), icon: Mail, color: '#0288d1', testId: 'quickaccess-messages' },
+  { path: '/ask-imam', label: t('navigation:menu.askImam'), icon: School, color: '#388e3c', testId: 'quickaccess-askimam' },
+  { path: '/documents', label: t('navigation:menu.documents'), icon: Description, color: '#f57c00', testId: 'quickaccess-documents' },
+  { path: '/shop', label: t('navigation:menu.shop'), icon: ShoppingCart, color: '#c2185b', testId: 'quickaccess-shop' },
+  { path: '/vaktija', label: t('navigation:menu.vaktija'), icon: CalendarMonth, color: '#5e35b1', testId: 'quickaccess-vaktija' },
+  { path: '/finances', label: t('navigation:menu.finances'), icon: AccountBalance, color: '#00796b', testId: 'quickaccess-finances' },
+  { path: '/activity-log', label: t('navigation:menu.activityLog'), icon: Timeline, color: '#616161', testId: 'quickaccess-activitylog' },
+  { path: '/badges', label: t('navigation:menu.badges'), icon: EmojiEvents, color: '#fbc02d', testId: 'quickaccess-badges' },
+  { path: '/projects', label: t('navigation:menu.projects'), icon: FolderSpecial, color: '#1565c0', testId: 'quickaccess-projects' },
 ];
 
 interface QuickAccessWidgetProps {
@@ -41,8 +42,11 @@ interface QuickAccessWidgetProps {
 }
 
 export default function QuickAccessWidget({ shortcuts, onSettingsClick }: QuickAccessWidgetProps) {
+  const { t } = useTranslation(['navigation']);
+  
   // Filter to get only the shortcuts that are in user's preferences
-  const userShortcuts = AVAILABLE_SHORTCUTS.filter(shortcut => 
+  const availableShortcuts = getAvailableShortcuts(t);
+  const userShortcuts = availableShortcuts.filter(shortcut => 
     shortcuts.includes(shortcut.path)
   );
 
@@ -53,9 +57,9 @@ export default function QuickAccessWidget({ shortcuts, onSettingsClick }: QuickA
         <CardContent>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
             <Typography variant="h6" sx={{ fontWeight: 600 }}>
-              Brzi Pristup
+              {t('navigation:quickAccess')}
             </Typography>
-            <Tooltip title="Podesi brze linkove">
+            <Tooltip title={t('navigation:customizeQuickAccess')}>
               <IconButton 
                 size="small" 
                 onClick={onSettingsClick}
@@ -66,7 +70,7 @@ export default function QuickAccessWidget({ shortcuts, onSettingsClick }: QuickA
             </Tooltip>
           </Box>
           <Typography variant="body2" color="text.secondary" align="center" sx={{ py: 3 }}>
-            Nema podešenih brzih linkova. Kliknite na ikonu postavki da dodate.
+            {t('navigation:customizeQuickAccess')}
           </Typography>
         </CardContent>
       </Card>
@@ -78,9 +82,9 @@ export default function QuickAccessWidget({ shortcuts, onSettingsClick }: QuickA
       <CardContent>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
           <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            Brzi Pristup
+            {t('navigation:quickAccess')}
           </Typography>
-          <Tooltip title="Podesi brze linkove">
+          <Tooltip title={t('navigation:customizeQuickAccess')}>
             <IconButton 
               size="small" 
               onClick={onSettingsClick}

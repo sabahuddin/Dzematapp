@@ -18,6 +18,7 @@ import {
   Logout
 } from '@mui/icons-material';
 import { useAuth } from '../../hooks/useAuth';
+import { useTranslation } from 'react-i18next';
 
 interface AppBarProps {
   onMenuClick: () => void;
@@ -25,6 +26,7 @@ interface AppBarProps {
 
 export default function AppBar({ onMenuClick }: AppBarProps) {
   const { user, logout } = useAuth();
+  const { t } = useTranslation(['navigation', 'dashboard']);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isMobile = window.innerWidth < 900;
 
@@ -77,7 +79,7 @@ export default function AppBar({ onMenuClick }: AppBarProps) {
             {getPageTitle()}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ display: { xs: 'none', sm: 'block' } }}>
-            Dobrodošli u DžematApp Admin Panel
+            {t('navigation:appBar.welcome')}
           </Typography>
         </Box>
 
@@ -103,7 +105,7 @@ export default function AppBar({ onMenuClick }: AppBarProps) {
               {user?.firstName} {user?.lastName}
             </Typography>
             <Typography variant="caption" color="text.secondary">
-              {user?.isAdmin ? 'Administrator' : 'Korisnik'}
+              {user?.isAdmin ? t('navigation:appBar.administrator') : t('navigation:appBar.user')}
             </Typography>
           </Box>
         </Box>
@@ -124,14 +126,14 @@ export default function AppBar({ onMenuClick }: AppBarProps) {
             <ListItemIcon>
               <Person fontSize="small" />
             </ListItemIcon>
-            <ListItemText>Moj Profil</ListItemText>
+            <ListItemText>{t('navigation:appBar.myProfile')}</ListItemText>
           </MenuItem>
           
           <MenuItem onClick={handleLogout} data-testid="menu-logout">
             <ListItemIcon>
               <Logout fontSize="small" />
             </ListItemIcon>
-            <ListItemText>Odjava</ListItemText>
+            <ListItemText>{t('navigation:appBar.logout')}</ListItemText>
           </MenuItem>
         </Menu>
       </Toolbar>

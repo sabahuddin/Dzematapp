@@ -25,8 +25,25 @@
     "livestreamSettings": "Livestream-Verwaltung",
     "organizationSettings": "Organisationsdaten"
   },
-  "logout": "Abmelden",
+  "appBar": {
+    "welcome": "Willkommen im DžematApp Admin Panel",
+    "administrator": "Administrator",
+    "user": "Benutzer",
+    "myProfile": "Mein Profil",
+    "logout": "Abmelden"
+  },
+  "organizationInfo": "Über die Gemeinde",
+  "contactInfo": "Kontaktinformationen",
+  "socialMedia": "Soziale Medien",
+  "address": "Adresse",
+  "phone": "Telefon",
+  "email": "E-Mail",
   "settings": "Einstellungen",
   "quickAccess": "Schnellzugriff",
-  "customizeQuickAccess": "Schnellzugriff anpassen"
+  "customizeQuickAccess": "Schnellzugriff anpassen",
+  "quickAccessDescription": "Wählen Sie bis zu 8 am häufigsten verwendete Seiten für den Schnellzugriff vom Dashboard aus.",
+  "quickAccessLimit": "Sie haben die maximale Anzahl von Schnellzugriffen (8) erreicht. Entfernen Sie einen, um einen neuen hinzuzufügen.",
+  "cancel": "Abbrechen",
+  "save": "Speichern",
+  "saving": "Speichern..."
 }

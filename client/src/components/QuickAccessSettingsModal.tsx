@@ -12,7 +12,8 @@ import {
   Box,
   Alert,
 } from '@mui/material';
-import { AVAILABLE_SHORTCUTS } from './QuickAccessWidget';
+import { getAvailableShortcuts } from './QuickAccessWidget';
+import { useTranslation } from 'react-i18next';
 
 interface QuickAccessSettingsModalProps {
   open: boolean;
@@ -29,7 +30,9 @@ export default function QuickAccessSettingsModal({
   onSave,
   isSaving = false,
 }: QuickAccessSettingsModalProps) {
+  const { t } = useTranslation(['navigation']);
   const [selectedShortcuts, setSelectedShortcuts] = useState<string[]>(currentShortcuts);
+  const availableShortcuts = getAvailableShortcuts(t);
 
   // Sync selectedShortcuts with currentShortcuts when modal opens or currentShortcuts changes
   useEffect(() => {
@@ -65,21 +68,21 @@ export default function QuickAccessSettingsModal({
       data-testid="dialog-quickaccess-settings"
     >
       <DialogTitle>
-        Podesi Brze Linkove
+        {t('navigation:customizeQuickAccess')}
       </DialogTitle>
       <DialogContent>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          Izaberite do 8 najčešće korištenih stranica za brzi pristup sa dashboard-a.
+          {t('navigation:quickAccessDescription')}
         </Typography>
 
         {selectedShortcuts.length >= 8 && (
           <Alert severity="info" sx={{ mb: 2 }}>
-            Dostigli ste maksimalni broj brzih linkova (8). Uklonite neki da dodate novi.
+            {t('navigation:quickAccessLimit')}
           </Alert>
         )}
 
         <FormGroup>
-          {AVAILABLE_SHORTCUTS.map((shortcut) => {
+          {availableShortcuts.map((shortcut) => {
             const IconComponent = shortcut.icon;
             const isChecked = selectedShortcuts.includes(shortcut.path);
             const isDisabled = !isChecked && selectedShortcuts.length >= 8;
@@ -112,7 +115,7 @@ export default function QuickAccessSettingsModal({
           disabled={isSaving}
           data-testid="button-cancel"
         >
-          Otkaži
+          {t('navigation:cancel')}
         </Button>
         <Button
           onClick={handleSave}
@@ -120,7 +123,7 @@ export default function QuickAccessSettingsModal({
           disabled={isSaving}
           data-testid="button-save"
         >
-          {isSaving ? 'Čuvam...' : 'Sačuvaj'}
+          {isSaving ? t('navigation:saving') : t('navigation:save')}
         </Button>
       </DialogActions>
     </Dialog>

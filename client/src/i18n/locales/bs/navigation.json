@@ -23,10 +23,27 @@
     "badges": "Značke",
     "projects": "Projekti",
     "livestreamSettings": "Livestream uprav.",
-    "organizationSettings": "Podaci o džematu"
+    "organizationSettings": "Org. podaci"
   },
-  "logout": "Odjavi se",
+  "appBar": {
+    "welcome": "Dobrodošli u DžematApp Admin Panel",
+    "administrator": "Administrator",
+    "user": "Korisnik",
+    "myProfile": "Moj Profil",
+    "logout": "Odjava"
+  },
+  "organizationInfo": "O džematu",
+  "contactInfo": "Kontakt informacije",
+  "socialMedia": "Društvene mreže",
+  "address": "Adresa",
+  "phone": "Telefon",
+  "email": "Email",
   "settings": "Postavke",
   "quickAccess": "Brzi pristup",
-  "customizeQuickAccess": "Prilagodi brzi pristup"
+  "customizeQuickAccess": "Prilagodi brzi pristup",
+  "quickAccessDescription": "Izaberite do 8 najčešće korištenih stranica za brzi pristup sa dashboard-a.",
+  "quickAccessLimit": "Dostigli ste maksimalni broj brzih linkova (8). Uklonite neki da dodate novi.",
+  "cancel": "Otkaži",
+  "save": "Sačuvaj",
+  "saving": "Čuvam..."
 }

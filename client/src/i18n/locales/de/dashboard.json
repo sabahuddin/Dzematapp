@@ -1,22 +1,48 @@
 {
   "title": "Dashboard",
   "welcome": "Willkommen, {{name}}!",
+  "welcomeAdmin": "Willkommen im DžematApp Admin Panel",
   "quickAccess": "Schnellzugriff",
   "customize": "Anpassen",
   "statistics": {
     "totalUsers": "Gesamtanzahl Benutzer",
     "activeMembers": "Aktive Mitglieder",
+    "newAnnouncements": "Neue Ankündigungen (7 Tage)",
     "upcomingEvents": "Bevorstehende Veranstaltungen",
+    "activeTasks": "Aktive Aufgaben",
     "unreadMessages": "Ungelesene Nachrichten",
     "pendingTasks": "Ausstehende Aufgaben",
     "monthlyContributions": "Monatliche Beiträge",
-    "totalPoints": "Gesamtpunkte",
-    "recentActivity": "Letzte Aktivitäten"
+    "totalPoints": "Gesamtpunkte"
+  },
+  "todaysPrayerTimes": "Heutige Gebetszeiten",
+  "prayerCalendar": "Gebetskalender",
+  "monthlyPrayerTimes": "Monatliche Gebetszeiten",
+  "prayers": {
+    "fajr": "Fajr",
+    "sunrise": "Sonnenaufgang",
+    "dhuhr": "Dhuhr",
+    "asr": "Asr",
+    "maghrib": "Maghrib",
+    "isha": "Isha"
   },
   "recentAnnouncements": "Letzte Ankündigungen",
+  "latestAnnouncement": "Neueste Ankündigung",
   "upcomingEvents": "Bevorstehende Veranstaltungen",
+  "allEvents": "Alle Veranstaltungen",
   "myTasks": "Meine Aufgaben",
-  "todaysPrayerTimes": "Heutige Gebetszeiten",
+  "myWorkGroups": "Meine Sektionen",
+  "myMessages": "Meine Nachrichten",
+  "unreadMessages": "Ungelesene Nachrichten",
+  "noUnreadMessages": "Keine ungelesenen Nachrichten",
+  "recentActivities": "Letzte Aktivitäten",
+  "noActivities": "Keine aktuellen Aktivitäten",
   "noData": "Keine Daten zum Anzeigen",
-  "viewAll": "Alle anzeigen"
+  "viewAll": "Alle anzeigen",
+  "viewDetails": "Details ansehen",
+  "loading": "Laden...",
+  "error": "Fehler beim Laden der Daten. Bitte versuchen Sie es erneut.",
+  "eventCalendar": "Veranstaltungskalender",
+  "noEvents": "Keine bevorstehenden Veranstaltungen",
+  "noAnnouncements": "Keine neuen Ankündigungen"
 }

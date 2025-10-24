@@ -59,6 +59,7 @@ import type { Announcement, Event as EventType, WorkGroup, PrayerTime, UserPrefe
 import { format, isSameDay } from 'date-fns';
 import { useMutation } from '@tanstack/react-query';
 import { queryClient, apiRequest } from '../lib/queryClient';
+import { useTranslation } from 'react-i18next';
 
 interface Statistics {
   userCount: number;
@@ -150,6 +151,7 @@ function EventDay(props: PickersDayProps & { eventDates?: Date[] }) {
 
 export default function DashboardHome() {
   const { user } = useAuth();
+  const { t } = useTranslation(['dashboard', 'common', 'navigation', 'vaktija']);
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [dateEventsModalOpen, setDateEventsModalOpen] = useState(false);
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
@@ -236,7 +238,7 @@ export default function DashboardHome() {
     if (statisticsQuery.error || activitiesQuery.error || eventsQuery.error) {
       return (
         <Alert severity="error">
-          Greška pri učitavanju podataka. Molimo pokušajte ponovo.
+          {t('dashboard:error')}
         </Alert>
       );
     }
@@ -252,7 +254,7 @@ export default function DashboardHome() {
     if (announcementsQuery.error || eventsQuery.error || messagesQuery.error || workGroupsQuery.error) {
       return (
         <Alert severity="error">
-          Greška pri učitavanju podataka. Molimo pokušajte ponovo.
+          {t('dashboard:error')}
         </Alert>
       );
     }
@@ -283,7 +285,7 @@ export default function DashboardHome() {
     return (
       <Box>
         <Typography variant="h5" sx={{ fontWeight: 600, mb: 3 }}>
-          Dobrodošli, {user?.firstName}!
+          {t('dashboard:welcome', { name: user?.firstName })}
         </Typography>
 
         {/* Today's Prayer Times */}
@@ -293,7 +295,7 @@ export default function DashboardHome() {
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 <Schedule sx={{ color: '#1976d2' }} />
                 <Typography variant="h6" sx={{ fontWeight: 600, color: '#1976d2' }}>
-                  Današnja vaktija - {todayPrayerTime.date}
+                  {t('dashboard:todaysPrayerTimes')} - {todayPrayerTime.date}
                 </Typography>
               </Box>
               <Link href="/vaktija">
@@ -303,36 +305,36 @@ export default function DashboardHome() {
                   sx={{ textTransform: 'none' }}
                   data-testid="link-full-vaktija"
                 >
-                  Mjesečne vaktije
+                  {t('dashboard:monthlyPrayerTimes')}
                 </Button>
               </Link>
             </Box>
             <CardContent>
               <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'space-around' }}>
                 <Box sx={{ textAlign: 'center', minWidth: 80 }}>
-                  <Typography variant="caption" color="text.secondary">Zora</Typography>
+                  <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.fajr')}</Typography>
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.fajr}</Typography>
                 </Box>
                 {todayPrayerTime.sunrise && (
                   <Box sx={{ textAlign: 'center', minWidth: 80 }}>
-                    <Typography variant="caption" color="text.secondary">Izlazak</Typography>
+                    <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.sunrise')}</Typography>
                     <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.sunrise}</Typography>
                   </Box>
                 )}
                 <Box sx={{ textAlign: 'center', minWidth: 80 }}>
-                  <Typography variant="caption" color="text.secondary">Podne</Typography>
+                  <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.dhuhr')}</Typography>
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.dhuhr}</Typography>
                 </Box>
                 <Box sx={{ textAlign: 'center', minWidth: 80 }}>
-                  <Typography variant="caption" color="text.secondary">Ikindija</Typography>
+                  <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.asr')}</Typography>
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.asr}</Typography>
                 </Box>
                 <Box sx={{ textAlign: 'center', minWidth: 80 }}>
-                  <Typography variant="caption" color="text.secondary">Akšam</Typography>
+                  <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.maghrib')}</Typography>
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.maghrib}</Typography>
                 </Box>
                 <Box sx={{ textAlign: 'center', minWidth: 80 }}>
-                  <Typography variant="caption" color="text.secondary">Jacija</Typography>
+                  <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.isha')}</Typography>
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.isha}</Typography>
                 </Box>
               </Box>
@@ -403,7 +405,7 @@ export default function DashboardHome() {
                   </Link>
                 ) : (
                   <Typography color="text.secondary">
-                    Nema novih obavijesti
+                    {t('dashboard:noAnnouncements')}
                   </Typography>
                 )}
               </CardContent>
@@ -458,7 +460,7 @@ export default function DashboardHome() {
                   </Link>
                 ) : (
                   <Typography color="text.secondary">
-                    Nema nadolazećih događaja
+                    {t('dashboard:noEvents')}
                   </Typography>
                 )}
               </CardContent>
@@ -471,7 +473,7 @@ export default function DashboardHome() {
               <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', gap: 2 }}>
                 <CalendarMonth sx={{ color: '#1976d2' }} />
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                  Kalendar Događaja
+                  {t('dashboard:eventCalendar')}
                 </Typography>
               </Box>
               <CardContent sx={{ p: 0 }}>
@@ -562,7 +564,7 @@ export default function DashboardHome() {
                   </Box>
                 ) : (
                   <Typography color="text.secondary">
-                    Nema novih poruka
+                    {t('dashboard:noUnreadMessages')}
                   </Typography>
                 )}
               </CardContent>
@@ -720,7 +722,7 @@ export default function DashboardHome() {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Schedule sx={{ color: '#1976d2' }} />
               <Typography variant="h6" sx={{ fontWeight: 600, color: '#1976d2' }}>
-                Današnje vaktije - {todayPrayerTime.date}
+                {t('dashboard:todaysPrayerTimes')} - {todayPrayerTime.date}
               </Typography>
             </Box>
             <Link href="/vaktija">
@@ -730,36 +732,36 @@ export default function DashboardHome() {
                 sx={{ textTransform: 'none' }}
                 data-testid="link-full-vaktija"
               >
-                Kalendar vaktija
+                {t('dashboard:prayerCalendar')}
               </Button>
             </Link>
           </Box>
           <CardContent>
             <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'space-around' }}>
               <Box sx={{ textAlign: 'center', minWidth: 80 }}>
-                <Typography variant="caption" color="text.secondary">Zora</Typography>
+                <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.fajr')}</Typography>
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.fajr}</Typography>
               </Box>
               {todayPrayerTime.sunrise && (
                 <Box sx={{ textAlign: 'center', minWidth: 80 }}>
-                  <Typography variant="caption" color="text.secondary">Izlazak</Typography>
+                  <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.sunrise')}</Typography>
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.sunrise}</Typography>
                 </Box>
               )}
               <Box sx={{ textAlign: 'center', minWidth: 80 }}>
-                <Typography variant="caption" color="text.secondary">Podne</Typography>
+                <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.dhuhr')}</Typography>
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.dhuhr}</Typography>
               </Box>
               <Box sx={{ textAlign: 'center', minWidth: 80 }}>
-                <Typography variant="caption" color="text.secondary">Ikindija</Typography>
+                <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.asr')}</Typography>
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.asr}</Typography>
               </Box>
               <Box sx={{ textAlign: 'center', minWidth: 80 }}>
-                <Typography variant="caption" color="text.secondary">Akšam</Typography>
+                <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.maghrib')}</Typography>
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.maghrib}</Typography>
               </Box>
               <Box sx={{ textAlign: 'center', minWidth: 80 }}>
-                <Typography variant="caption" color="text.secondary">Jacija</Typography>
+                <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.isha')}</Typography>
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.isha}</Typography>
               </Box>
             </Box>
@@ -782,7 +784,7 @@ export default function DashboardHome() {
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             icon={<People />}
-            title="Ukupan Broj Korisnika"
+            title={t('dashboard:statistics.totalUsers')}
             value={statistics?.userCount || 0}
             color="#1976d2"
           />
@@ -790,7 +792,7 @@ export default function DashboardHome() {
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             icon={<Campaign />}
-            title="Nove Obavijesti (7 dana)"
+            title={t('dashboard:statistics.newAnnouncements')}
             value={statistics?.newAnnouncementsCount || 0}
             color="#2e7d32"
           />
@@ -798,7 +800,7 @@ export default function DashboardHome() {
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             icon={<Event />}
-            title="Nadolazeći Događaji"
+            title={t('dashboard:statistics.upcomingEvents')}
             value={statistics?.upcomingEventsCount || 0}
             color="#ed6c02"
           />
@@ -806,7 +808,7 @@ export default function DashboardHome() {
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             icon={<TaskAlt />}
-            title="Aktivni Zadaci"
+            title={t('dashboard:statistics.activeTasks')}
             value={statistics?.activeTasksCount || 0}
             color="#0097a7"
           />
@@ -817,7 +819,7 @@ export default function DashboardHome() {
       <Card sx={{ mb: 3 }}>
         <Box sx={{ p: 3, borderBottom: '1px solid #e0e0e0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            Nadolazeći Događaji
+            {t('dashboard:upcomingEvents')}
           </Typography>
           <Button
             component={Link}
@@ -826,7 +828,7 @@ export default function DashboardHome() {
             sx={{ textTransform: 'none' }}
             data-testid="link-all-events"
           >
-            Svi Događaji
+            {t('dashboard:allEvents')}
           </Button>
         </Box>
         <Box sx={{ p: 3 }}>
@@ -974,7 +976,7 @@ export default function DashboardHome() {
       <Card>
         <Box sx={{ p: 3, borderBottom: '1px solid #e0e0e0' }}>
           <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            Posljednje Aktivnosti
+            {t('dashboard:recentActivities')}
           </Typography>
         </Box>
         <TableContainer>
@@ -1020,7 +1022,7 @@ export default function DashboardHome() {
                 <TableRow>
                   <TableCell colSpan={4} sx={{ textAlign: 'center', py: 4 }}>
                     <Typography color="text.secondary">
-                      Nema nedavnih aktivnosti
+                      {t('dashboard:noActivities')}
                     </Typography>
                   </TableCell>
                 </TableRow>

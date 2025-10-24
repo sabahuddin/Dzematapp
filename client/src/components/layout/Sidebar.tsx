@@ -45,6 +45,7 @@ import { SiFacebook, SiInstagram, SiYoutube, SiX } from 'react-icons/si';
 import { useAuth } from '@/contexts/AuthContext';
 import type { OrganizationSettings } from '@shared/schema';
 import mosqueLogoPath from '@assets/ChatGPT Image 20. okt 2025. u 22_58_31_1760993927064.png';
+import { useTranslation } from 'react-i18next';
 
 interface SidebarProps {
   open: boolean;
@@ -54,34 +55,35 @@ interface SidebarProps {
   width: number;
 }
 
-const menuItems = [
-  { path: '/dashboard', label: 'Dashboard', icon: Dashboard },
-  { path: '/users', label: 'Korisnici', labelForMember: 'Profil', icon: People },
-  { path: '/finances', label: 'Finansije', labelForMember: 'Moje uplate', icon: AttachMoney },
-  { path: '/activity-log', label: 'Log aktivnosti', labelForMember: 'Moje aktivnosti', icon: Timeline },
-  { path: '/point-settings', label: 'Postavke bodova', icon: EmojiEvents, adminOnly: true },
-  { path: '/badges', label: 'Značke', icon: EmojiEvents, adminOnly: true },
-  { path: '/projects', label: 'Projekti', icon: Work },
-  { path: '/announcements', label: 'Obavijesti', icon: Campaign, showBadge: true },
-  { path: '/events', label: 'Događaji', icon: Event, showBadge: true },
-  { path: '/tasks', label: 'Sekcije', labelForMember: 'Sekcije', pathForMember: '/sections', icon: Task, showBadge: true },
-  { path: '/messages', label: 'Poruke', icon: Mail, showBadge: true },
-  { path: '/ask-imam', label: 'Pitaj imama', icon: QuestionAnswer, showBadge: true },
-  { path: '/documents', label: 'Dokumenti', icon: Description },
-  { path: '/shop', label: 'Shop', icon: Store, showBadge: true },
-  { path: '/requests', label: 'Zahtjevi i prijave', icon: Assignment },
-  { path: '/livestream', label: 'Livestream', icon: Radio },
-  { path: '/vaktija', label: 'Vaktija', icon: Schedule },
-  { path: '/vodic', label: 'Vodič', icon: Info },
-  { path: '/livestream-settings', label: 'Livestream uprav.', icon: Radio, adminOnly: true },
-  { path: '/organization-settings', label: 'Org. podaci', icon: Settings, adminOnly: true },
-];
-
 export default function Sidebar({ open, collapsed, onToggle, onClose, width }: SidebarProps) {
   const [location, setLocation] = useLocation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { user } = useAuth();
+  const { t } = useTranslation(['navigation']);
+
+  const menuItems = [
+    { path: '/dashboard', label: t('navigation:menu.dashboard'), icon: Dashboard },
+    { path: '/users', label: t('navigation:menu.users'), labelForMember: t('navigation:menu.profile'), icon: People },
+    { path: '/finances', label: t('navigation:menu.finances'), labelForMember: t('navigation:menu.myPayments'), icon: AttachMoney },
+    { path: '/activity-log', label: t('navigation:menu.activityLog'), labelForMember: t('navigation:menu.myActivities'), icon: Timeline },
+    { path: '/point-settings', label: t('navigation:menu.pointSettings'), icon: EmojiEvents, adminOnly: true },
+    { path: '/badges', label: t('navigation:menu.badges'), icon: EmojiEvents, adminOnly: true },
+    { path: '/projects', label: t('navigation:menu.projects'), icon: Work },
+    { path: '/announcements', label: t('navigation:menu.announcements'), icon: Campaign, showBadge: true },
+    { path: '/events', label: t('navigation:menu.events'), icon: Event, showBadge: true },
+    { path: '/tasks', label: t('navigation:menu.tasks'), labelForMember: t('navigation:menu.sections'), pathForMember: '/sections', icon: Task, showBadge: true },
+    { path: '/messages', label: t('navigation:menu.messages'), icon: Mail, showBadge: true },
+    { path: '/ask-imam', label: t('navigation:menu.askImam'), icon: QuestionAnswer, showBadge: true },
+    { path: '/documents', label: t('navigation:menu.documents'), icon: Description },
+    { path: '/shop', label: t('navigation:menu.shop'), icon: Store, showBadge: true },
+    { path: '/requests', label: t('navigation:menu.requests'), icon: Assignment },
+    { path: '/livestream', label: t('navigation:menu.livestream'), icon: Radio },
+    { path: '/vaktija', label: t('navigation:menu.vaktija'), icon: Schedule },
+    { path: '/vodic', label: t('navigation:menu.guide'), icon: Info },
+    { path: '/livestream-settings', label: t('navigation:menu.livestreamSettings'), icon: Radio, adminOnly: true },
+    { path: '/organization-settings', label: t('navigation:menu.organizationSettings'), icon: Settings, adminOnly: true },
+  ];
 
   const { data: unreadCount } = useQuery<{ count: number }>({
     queryKey: ['/api/messages/unread-count'],
