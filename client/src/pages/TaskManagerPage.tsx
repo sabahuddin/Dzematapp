@@ -561,6 +561,8 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
   const [assignedUserIds, setAssignedUserIds] = useState<string[]>([]);
   const [status, setStatus] = useState('u_toku');
   const [dueDate, setDueDate] = useState('');
+  const [estimatedCost, setEstimatedCost] = useState('');
+  const [pointsValue, setPointsValue] = useState('50');
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -576,15 +578,21 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
   const handleSubmit = () => {
     if (!title || !workGroup) return;
     
-    const taskData = {
+    const taskData: any = {
       title,
       description,
       descriptionImage: descriptionImage || null,
       workGroupId: workGroup.id,
       assignedUserIds: assignedUserIds.length > 0 ? assignedUserIds : null,
       status,
-      dueDate: dueDate ? new Date(dueDate) : null
+      dueDate: dueDate ? new Date(dueDate) : null,
+      pointsValue: parseInt(pointsValue) || 50
     };
+    
+    // Only include estimatedCost if it has a value
+    if (estimatedCost && estimatedCost.trim()) {
+      taskData.estimatedCost = estimatedCost;
+    }
     
     onSave(taskData);
     setTitle('');
@@ -593,6 +601,8 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
     setAssignedUserIds([]);
     setStatus('u_toku');
     setDueDate('');
+    setEstimatedCost('');
+    setPointsValue('50');
   };
 
   return (
@@ -729,6 +739,32 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
             fullWidth
             data-testid="input-task-due-date"
           />
+          <TextField
+            id="task-estimated-cost"
+            variant="outlined"
+            label="Procijenjena cijena (CHF)"
+            type="number"
+            value={estimatedCost}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEstimatedCost(e.target.value)}
+            fullWidth
+            placeholder="Opciono"
+            data-testid="input-task-estimated-cost"
+          />
+          <TextField
+            id="task-points-value"
+            variant="outlined"
+            select
+            label="Bodovna vrijednost"
+            value={pointsValue}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPointsValue(e.target.value)}
+            fullWidth
+            data-testid="select-task-points-value"
+          >
+            <MenuItem value="10">10 bodova (Laki zadatak)</MenuItem>
+            <MenuItem value="20">20 bodova (Srednji zadatak)</MenuItem>
+            <MenuItem value="30">30 bodova (Težak zadatak)</MenuItem>
+            <MenuItem value="50">50 bodova (Default)</MenuItem>
+          </TextField>
         </Box>
       </DialogContent>
       <DialogActions>
@@ -785,6 +821,8 @@ function TaskDetailDialog({
   const [editedStatus, setEditedStatus] = useState('');
   const [editedAssignedUserIds, setEditedAssignedUserIds] = useState<string[]>([]);
   const [editedDueDate, setEditedDueDate] = useState('');
+  const [editedEstimatedCost, setEditedEstimatedCost] = useState('');
+  const [editedPointsValue, setEditedPointsValue] = useState('50');
 
   React.useEffect(() => {
     if (task) {
@@ -794,6 +832,8 @@ function TaskDetailDialog({
       setEditedStatus(task.status || 'u_toku');
       setEditedAssignedUserIds(task.assignedUserIds || []);
       setEditedDueDate(task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : '');
+      setEditedEstimatedCost(task.estimatedCost || '');
+      setEditedPointsValue(task.pointsValue?.toString() || '50');
     }
   }, [task]);
 
@@ -895,14 +935,22 @@ function TaskDetailDialog({
   const handleSaveEdit = () => {
     if (!editedTitle.trim()) return;
     
-    updateTaskMutation.mutate({
+    const updates: any = {
       title: editedTitle,
       description: editedDescription,
       descriptionImage: editedDescriptionImage,
       status: editedStatus,
       assignedUserIds: editedAssignedUserIds.length > 0 ? editedAssignedUserIds : null,
-      dueDate: editedDueDate ? new Date(editedDueDate) : null
-    });
+      dueDate: editedDueDate ? new Date(editedDueDate) : null,
+      pointsValue: parseInt(editedPointsValue) || 50
+    };
+    
+    // Only include estimatedCost if it has a value
+    if (editedEstimatedCost && editedEstimatedCost.trim()) {
+      updates.estimatedCost = editedEstimatedCost;
+    }
+    
+    updateTaskMutation.mutate(updates);
   };
 
   const handleDeleteTask = () => {
@@ -1121,6 +1169,30 @@ function TaskDetailDialog({
                 fullWidth
                 data-testid="input-edit-task-due-date"
               />
+              <TextField
+                variant="outlined"
+                label="Procijenjena cijena (CHF)"
+                type="number"
+                value={editedEstimatedCost}
+                onChange={(e) => setEditedEstimatedCost(e.target.value)}
+                fullWidth
+                placeholder="Opciono"
+                data-testid="input-edit-task-estimated-cost"
+              />
+              <TextField
+                variant="outlined"
+                select
+                label="Bodovna vrijednost"
+                value={editedPointsValue}
+                onChange={(e) => setEditedPointsValue(e.target.value)}
+                fullWidth
+                data-testid="select-edit-task-points-value"
+              >
+                <MenuItem value="10">10 bodova (Laki zadatak)</MenuItem>
+                <MenuItem value="20">20 bodova (Srednji zadatak)</MenuItem>
+                <MenuItem value="30">30 bodova (Težak zadatak)</MenuItem>
+                <MenuItem value="50">50 bodova (Default)</MenuItem>
+              </TextField>
               <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
                 <Button onClick={() => setIsEditing(false)} data-testid="button-cancel-edit">
                   {t('taskDialog.cancel')}
