@@ -1,0 +1,38 @@
+{
+  "title": "Zahtjevi i Prijave",
+  "newRequest": "Novi Zahtjev",
+  "loading": "Učitavanje...",
+  "noRequests": "Nemate podnesenih zahtjeva",
+  "submitFirstRequest": "Podnesi prvi zahtjev",
+  "requestTypes": {
+    "wedding": "Prijava vjenčanja",
+    "mekteb": "Prijava djeteta u mekteb",
+    "facility": "Zahtjev za korištenje prostorija",
+    "akika": "Prijava akike"
+  },
+  "status": {
+    "pending": "Na čekanju",
+    "approved": "Odobreno",
+    "rejected": "Odbijeno"
+  },
+  "dialog": {
+    "title": "Novi Zahtjev / Prijava",
+    "selectType": "Odaberi tip zahtjeva",
+    "noteLabel": "Napomena (opciono)",
+    "formNotAvailable": "Forma za ovaj tip zahtjeva će biti dostupna uskoro. Molimo kontaktirajte administratora za više informacija.",
+    "cancel": "Otkaži",
+    "submit": "Pošalji",
+    "submitting": "Slanje..."
+  },
+  "card": {
+    "submittedLabel": "Poslato:",
+    "adminNotesLabel": "Napomena administratora:"
+  },
+  "toast": {
+    "success": "Uspješno",
+    "successDescription": "Vaš zahtjev je poslat",
+    "error": "Greška",
+    "errorDescription": "Nije moguće poslati zahtjev",
+    "selectTypeError": "Molimo odaberite tip zahtjeva"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "title": "Livestream",
+  "subtitle": "Verfolgen Sie LIVE-Ereignisse aus der Gemeinde",
+  "loading": "Laden...",
+  "live": "LIVE",
+  "noActiveStream": {
+    "title": "Derzeit kein aktiver Livestream",
+    "description": "Der Livestream wird verfügbar sein, wenn der Administrator die Übertragung aktiviert",
+    "notActive": "Livestream ist nicht aktiv",
+    "placeholder": "Hier wird die Übertragung angezeigt, wenn der Administrator den Livestream einrichtet",
+    "watchLabel": "Hier können Sie verfolgen:",
+    "items": {
+      "janaza": "Janaza-Gebet",
+      "lectures": "Predigten und Vorträge",
+      "events": "Besondere Veranstaltungen",
+      "tarawih": "Tarawih-Gebet (Ramadan)"
+    }
+  },
+  "externalLink": {
+    "available": "Livestream ist auf einer externen Plattform verfügbar",
+    "open": "Livestream öffnen"
+  },
+  "info": {
+    "title": "Über die Live-Übertragung",
+    "description": "Die Livestream-Funktionalität ermöglicht es allen Gemeindemitgliedern und Interessierten, wichtige Ereignisse direkt von jedem Gerät aus zu verfolgen.",
+    "platformsLabel": "Unterstützte Plattformen:",
+    "platforms": {
+      "youtube": "YouTube Live",
+      "facebook": "Facebook Live",
+      "twitch": "Twitch",
+      "embed": "Direkter Embed-Code",
+      "other": "Andere Streaming-Plattformen"
+    }
+  }
+}

@@ -3,9 +3,11 @@ import { Container, Box, Typography, Paper, Alert } from "@mui/material";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Radio, PlayCircle, AlertCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { OrganizationSettings } from "@shared/schema";
 
 export default function LivestreamPage() {
+  const { t } = useTranslation("livestream");
   const { data: settings, isLoading } = useQuery({
     queryKey: ["/api/organization-settings"]
   }) as { data: OrganizationSettings | undefined; isLoading: boolean };
@@ -90,7 +92,7 @@ export default function LivestreamPage() {
         <Box sx={{ textAlign: 'center' }}>
           <PlayCircle size={48} className="mx-auto mb-4 text-muted-foreground" />
           <Typography variant="body1" gutterBottom>
-            Livestream je dostupan na vanjskoj platformi
+            {t("externalLink.available")}
           </Typography>
           <a 
             href={content} 
@@ -99,7 +101,7 @@ export default function LivestreamPage() {
             className="text-primary hover:underline"
             data-testid="livestream-external-link"
           >
-            Otvori livestream
+            {t("externalLink.open")}
           </a>
         </Box>
       </Box>
@@ -109,7 +111,7 @@ export default function LivestreamPage() {
   if (isLoading) {
     return (
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <Typography>Učitavanje...</Typography>
+        <Typography>{t("loading")}</Typography>
       </Container>
     );
   }
@@ -120,11 +122,11 @@ export default function LivestreamPage() {
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
           <Radio size={32} />
           <Typography variant="h4" component="h1">
-            Livestream
+            {t("title")}
           </Typography>
         </Box>
         <Typography variant="body1" color="text.secondary">
-          Pratite LIVE dešavanja iz džemata
+          {t("subtitle")}
         </Typography>
       </Box>
 
@@ -136,7 +138,7 @@ export default function LivestreamPage() {
                 <Badge variant="destructive" className="animate-pulse">
                   <span className="flex items-center gap-1">
                     <span className="h-2 w-2 bg-white rounded-full"></span>
-                    UŽIVO
+                    {t("live")}
                   </span>
                 </Badge>
                 <Typography variant="body2" sx={{ fontWeight: 600 }}>
@@ -155,10 +157,10 @@ export default function LivestreamPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <AlertCircle className="h-5 w-5" />
-              Trenutno nema aktivnog livestream-a
+              {t("noActiveStream.title")}
             </CardTitle>
             <CardDescription>
-              Livestream će biti dostupan kada administrator aktivira prenos
+              {t("noActiveStream.description")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -174,23 +176,23 @@ export default function LivestreamPage() {
               <Box sx={{ textAlign: 'center', p: 4 }}>
                 <PlayCircle size={64} className="mx-auto mb-4 text-muted-foreground" />
                 <Typography variant="h6" gutterBottom>
-                  Livestream nije aktivan
+                  {t("noActiveStream.notActive")}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Ovdje će biti prikazan prenos kada administrator postavi livestream
+                  {t("noActiveStream.placeholder")}
                 </Typography>
               </Box>
             </Box>
             
             <Box sx={{ bgcolor: 'grey.50', p: 3, borderRadius: '8px' }}>
               <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 600 }}>
-                Ovdje možete pratiti:
+                {t("noActiveStream.watchLabel")}
               </Typography>
               <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
-                <li>Dženaza namaza</li>
-                <li>Hutbe i predavanja</li>
-                <li>Specijalne događaje</li>
-                <li>Teravija namaza (Ramazan)</li>
+                <li>{t("noActiveStream.items.janaza")}</li>
+                <li>{t("noActiveStream.items.lectures")}</li>
+                <li>{t("noActiveStream.items.events")}</li>
+                <li>{t("noActiveStream.items.tarawih")}</li>
               </ul>
             </Box>
           </CardContent>
@@ -201,23 +203,22 @@ export default function LivestreamPage() {
       <Box sx={{ mt: 3 }}>
         <Card>
           <CardHeader>
-            <CardTitle>O Live Prijenosu</CardTitle>
+            <CardTitle>{t("info.title")}</CardTitle>
           </CardHeader>
           <CardContent>
           <Typography variant="body2" color="text.secondary" paragraph>
-            Livestream funkcionalnost omogućava svim članovima džemata i zainteresovanim osobama
-            da prate važna dešavanja direktno sa bilo kojeg uređaja.
+            {t("info.description")}
           </Typography>
           <Box sx={{ bgcolor: 'grey.50', p: 3, borderRadius: '8px', mt: 2 }}>
             <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 600 }}>
-              Podržane platforme:
+              {t("info.platformsLabel")}
             </Typography>
             <ul className="space-y-1 text-sm text-muted-foreground">
-              <li>✓ YouTube Live</li>
-              <li>✓ Facebook Live</li>
-              <li>✓ Twitch</li>
-              <li>✓ Direktan embed kod</li>
-              <li>✓ Ostale streaming platforme</li>
+              <li>✓ {t("info.platforms.youtube")}</li>
+              <li>✓ {t("info.platforms.facebook")}</li>
+              <li>✓ {t("info.platforms.twitch")}</li>
+              <li>✓ {t("info.platforms.embed")}</li>
+              <li>✓ {t("info.platforms.other")}</li>
             </ul>
           </Box>
         </CardContent>

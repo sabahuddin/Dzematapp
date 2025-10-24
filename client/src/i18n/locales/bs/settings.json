@@ -1,0 +1,162 @@
+{
+  "organization": {
+    "title": "Organizacioni podaci",
+    "subtitle": "Ovi podaci će biti prikazani u podnožju aplikacije i dostupni svim korisnicima.",
+    "loading": "Učitavanje...",
+    "basicInfo": "Osnovni podaci",
+    "contactInfo": "Kontakt podaci",
+    "socialMedia": "Društvene mreže",
+    "livestream": "Livestream",
+    "fields": {
+      "name": "Naziv organizacije",
+      "namePlaceholder": "Islamska Zajednica",
+      "address": "Adresa",
+      "addressPlaceholder": "Ulica Džemata 123",
+      "phone": "Telefon",
+      "phonePlaceholder": "+41 XX XXX XX XX",
+      "email": "Email",
+      "emailPlaceholder": "info@dzemat.ch",
+      "facebookUrl": "Facebook URL",
+      "facebookPlaceholder": "https://facebook.com/vasadzemat",
+      "instagramUrl": "Instagram URL",
+      "instagramPlaceholder": "https://instagram.com/vasadzemat",
+      "youtubeUrl": "YouTube URL",
+      "youtubePlaceholder": "https://youtube.com/@vasadzemat",
+      "twitterUrl": "Twitter URL",
+      "twitterPlaceholder": "https://twitter.com/vasadzemat",
+      "livestreamUrl": "Livestream URL",
+      "livestreamUrlPlaceholder": "YouTube link ili embed kod",
+      "livestreamEnabled": "Omogući livestream",
+      "livestreamTitle": "Naslov livestream-a",
+      "livestreamTitlePlaceholder": "Džuma hutba uživo"
+    },
+    "save": "Sačuvaj izmjene",
+    "toast": {
+      "success": "Uspješno sačuvano",
+      "successDescription": "Organizacioni podaci su uspješno ažurirani.",
+      "error": "Greška",
+      "errorDescription": "Nije moguće sačuvati organizacione podatke."
+    }
+  },
+  "points": {
+    "title": "Postavke Bodova",
+    "loading": "Učitavanje...",
+    "noPermission": "Nemate dozvolu za pristup ovoj stranici.",
+    "configTitle": "Konfiguracija Sistema Bodova",
+    "configDescription": "Definirajte koliko bodova članovi zarađuju za različite aktivnosti",
+    "howItWorks": {
+      "title": "📋 Kako funkcionira sistem bodova?",
+      "payments": {
+        "title": "💰 Finansijske Uplate (CHF)",
+        "description": "Svaki uplačeni CHF donosi bodove. Bodovi se dodjeljuju odmah nakon unošenja uplate (Članarina, Donacija, Vakuf, Sergija, Ostalo)."
+      },
+      "tasks": {
+        "title": "✅ Završeni Zadaci",
+        "description": "Kada član označi zadatak kao završen, čeka se odobrenje admina (0 bodova). Tek kada admin odobri zadatak, svi dodijeljeni članovi dobijaju pun broj bodova."
+      },
+      "events": {
+        "title": "🎉 RSVP na Događaj",
+        "description": "Kada član potvrdi prisustvo na događaju (RSVP), odmah dobija bodove. Bodovi se ne oduzimaju ako član kasnije otkaže prisustvo."
+      },
+      "calculation": {
+        "title": "🔢 Primjer Obračuna",
+        "description": "Ako je postavljeno: 1 CHF = 10 bodova, 1 zadatak = 50 bodova, 1 događaj = 20 bodova, član koji plati 100 CHF dobija 1000 bodova, završi 5 zadataka dobija 250 bodova, prisustvuje 3 događaja dobija 60 bodova. Ukupno: 1310 bodova."
+      }
+    },
+    "fields": {
+      "pointsPerChf": "Bodovi po CHF",
+      "pointsPerChfHelper": "Koliko bodova član dobija za svaki uplaćeni švicarski franak",
+      "pointsPerTask": "Bodovi po zadatku",
+      "pointsPerTaskHelper": "Koliko bodova član dobija za svaki završen i odobreni zadatak",
+      "pointsPerEvent": "Bodovi po događaju",
+      "pointsPerEventHelper": "Koliko bodova član dobija za potvrdu prisustva (RSVP) na događaju"
+    },
+    "save": "Sačuvaj Postavke",
+    "toast": {
+      "success": "Uspjeh",
+      "successDescription": "Postavke bodova su ažurirane",
+      "error": "Greška",
+      "errorDescription": "Greška pri spremanju postavki",
+      "loadError": "Greška pri učitavanju postavki bodova. Molimo pokušajte ponovo."
+    }
+  },
+  "livestreamSettings": {
+    "title": "Livestream Upravljanje",
+    "subtitle": "Omogućite direktan prenos događaja, hutbi i programa uživo",
+    "loading": "Učitavanje...",
+    "whatIsLivestream": {
+      "title": "Šta je Livestream?",
+      "description1": "Livestream omogućava vašoj zajednici da prati događaje, hutbe i programe u realnom vremenu putem interneta, bez potrebe da fizički prisustvuju.",
+      "description2": "Korisnici mogu pratiti livestream direktno iz aplikacije, što omogućava pristup osobama koje su odsutne, bolesne ili udaljene."
+    },
+    "howToUse": {
+      "title": "Kako koristiti Livestream",
+      "step1": {
+        "title": "Izaberite platformu za streaming",
+        "description": "YouTube Live, Facebook Live, Twitch ili druga platforma"
+      },
+      "step2": {
+        "title": "Pokrenite stream na platformi",
+        "description": "Kreirajte livestream event i pokrenite prenos"
+      },
+      "step3": {
+        "title": "Kopirajte URL ili embed kod",
+        "description": "Kopirajte link sa YouTube/Facebook ili embed iframe kod"
+      },
+      "step4": {
+        "title": "Zalijepite u polje ispod",
+        "description": "Unesite URL ili embed kod i omogućite livestream"
+      },
+      "step5": {
+        "title": "Sačuvajte postavke",
+        "description": "Korisnici će odmah moći pratiti stream iz aplikacije"
+      }
+    },
+    "supportedFormats": {
+      "title": "Podržani formati",
+      "youtube": "YouTube URL (https://youtube.com/watch?v=...)",
+      "youtubeLive": "YouTube Live URL (https://youtube.com/live/...)",
+      "iframe": "iFrame embed kod (<iframe src=\"...\"></iframe>)",
+      "otherUrls": "Drugi URL-ovi će biti prikazani kao vanjski linkovi"
+    },
+    "examples": {
+      "title": "Primjeri embed kodova",
+      "youtube": "YouTube: https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "youtubeShort": "YouTube kratki: https://youtu.be/dQw4w9WgXcQ",
+      "iframe": "iFrame: <iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/dQw4w9WgXcQ\"></iframe>",
+      "youtubeAccordion": "YouTube Live",
+      "youtubeDescription": "Zamijenite VIDEO_ID sa ID-jem vašeg YouTube Live video zapisa",
+      "facebookAccordion": "Facebook Live",
+      "facebookDescription": "Zamijenite VIDEO_URL sa linkom do vašeg Facebook Live događaja",
+      "directAccordion": "Direktan URL",
+      "directDescription": "Možete koristiti i direktan link do video zapisa"
+    },
+    "tips": {
+      "title": "Savjeti za uspješan livestream",
+      "tip1": "• Testirajte livestream prije događaja kako biste osigurali da sve radi",
+      "tip2": "• Osigurajte stabilnu internet vezu za neometani prenos",
+      "tip3": "• Obavijestite zajednicu unaprijed o vremenu livestream događaja",
+      "tip4": "• Koristite kvalitetan mikrofon i kameru za bolji doživljaj"
+    },
+    "fields": {
+      "livestreamEnabled": "Omogući Livestream",
+      "livestreamEnabledHelper": "Kada je omogućeno, korisnici će vidjeti livestream",
+      "livestreamTitle": "Naslov Livestream-a (opciono)",
+      "livestreamTitleHelper": "Prikazuje se iznad video playera (npr. 'Džuma hutba uživo')",
+      "livestreamUrl": "Livestream URL ili Embed kod",
+      "livestreamUrlHelper": "YouTube link, Facebook link, ili iframe embed kod"
+    },
+    "preview": {
+      "title": "Pregled",
+      "enableToSee": "Omogućite livestream i unesite URL da vidite pregled",
+      "currentlyShowing": "Trenutno se prikazuje:"
+    },
+    "save": "Sačuvaj Postavke",
+    "toast": {
+      "success": "Uspješno",
+      "successDescription": "Livestream podešavanja su sačuvana",
+      "error": "Greška",
+      "errorDescription": "Nije moguće sačuvati podešavanja"
+    }
+  }
+}

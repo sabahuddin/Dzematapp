@@ -1,0 +1,307 @@
+{
+  "pageHeader": {
+    "title": "DžematApp Benutzerhandbuch",
+    "subtitle": "Vollständige Anleitung zur Verwendung der Anwendung",
+    "downloadPdf": "PDF herunterladen"
+  },
+  "introduction": {
+    "title": "Über die Anwendung",
+    "paragraph1": "DžematApp ist eine umfassende Webanwendung, die für die moderne Verwaltung von Gemeinden entwickelt wurde. Die Anwendung ermöglicht eine effiziente Verwaltung aller Aspekte der Gemeinde an einem Ort - von der Mitgliederverwaltung und Finanzen über die Organisation von Veranstaltungen und Bereichen bis hin zur Kommunikation mit Mitgliedern und der Verfolgung ihrer Aktivitäten.",
+    "paragraph2": "Das System verwendet ein modernes Design, eine intuitive Benutzeroberfläche und unterstützt Benachrichtigungen in Echtzeit. Die Anwendung ist von jedem Gerät über einen Webbrowser zugänglich, und die Daten werden sicher in einer Datenbank mit automatischem Backup gespeichert."
+  },
+  "rolesSection": {
+    "title": "Benutzerrollen",
+    "description": "Die Anwendung unterstützt vier verschiedene Rollen mit unterschiedlichen Zugriffsebenen",
+    "accessLabel": "Zugriff",
+    "roles": {
+      "admin": {
+        "name": "Admin",
+        "description": "Administratoren haben die volle Kontrolle über die Anwendung. Sie können alle Module verwalten, Inhalte erstellen und löschen, Rollen zuweisen und Systemeinstellungen ändern. Der Admin sieht alle Daten aller Mitglieder und hat Zugriff auf alle Berichte und Statistiken.",
+        "permissions": "Volle Kontrolle: Benutzer, Finanzen, Projekte, Abzeichen, Punkte, alle Module"
+      },
+      "memberIO": {
+        "name": "IO-Mitglied (Vorstandsmitglied)",
+        "description": "Vorstandsmitglieder haben eine höhere Zugriffsebene als reguläre Mitglieder. Sie können alle Gemeindemitglieder sehen und auf erweiterte Informationen zugreifen. Diese Rolle ist für Mitglieder des Gemeindevorstands bestimmt.",
+        "permissions": "Erweiterter Überblick: alle Mitglieder, alle Veranstaltungen, alle Bereiche"
+      },
+      "member": {
+        "name": "Mitglied",
+        "description": "Standard-Gemeindemitglieder haben Zugriff auf die grundlegenden Funktionen der Anwendung. Sie können Ankündigungen, Veranstaltungen, Bereiche, in denen sie Mitglied sind, ihre Aufgaben, Nachrichten und ihr eigenes Profil sehen. Dies ist die häufigste Rolle, die den meisten Mitgliedern zugewiesen wird.",
+        "permissions": "Standardzugriff: Dashboard, Ankündigungen, Veranstaltungen, eigene Bereiche, Nachrichten, Profil"
+      },
+      "familyMember": {
+        "name": "Familienmitglied",
+        "description": "Diese Rolle ist für Familienmitglieder von regulären Mitgliedern (Ehepartner, Kinder) bestimmt. Sie haben eingeschränkten Zugriff auf die Anwendung - hauptsächlich können sie Ankündigungen, Veranstaltungen und grundlegende Informationen sehen.",
+        "permissions": "Eingeschränkter Zugriff: Dashboard, Ankündigungen, Veranstaltungen"
+      }
+    }
+  },
+  "tableOfContents": {
+    "title": "Inhalt - Anwendungsmodule"
+  },
+  "detailedExplanation": "Detaillierte Modulerklärung",
+  "keyFeatures": "Hauptfunktionen:",
+  "roleLabels": {
+    "admins": "Administratoren",
+    "moderators": "Moderatoren",
+    "members": "Mitglieder",
+    "allUsers": "Alle Benutzer (einschließlich Gäste)"
+  },
+  "sections": {
+    "dashboard": {
+      "title": "Dashboard (Kontrollzentrum)",
+      "description": "Das Dashboard ist der zentrale Ort der Anwendung, an dem jeder Benutzer einen personalisierten Überblick über die wichtigsten Informationen erhält. Dies ist die erste Seite, die Sie nach der Anmeldung sehen, und dient als schneller Überblick über alle Aktivitäten in der Gemeinde.",
+      "features": [
+        "Überblick über die heutigen Gebetszeiten oben auf der Seite",
+        "Anpassbarer Schnellzugriff (Quick Access) mit bis zu 8 Lieblingsfunktionen",
+        "Anzeige der neuesten Ankündigungen mit Möglichkeit zum schnellen Lesen",
+        "Kalender der kommenden Veranstaltungen mit RSVP-Informationen",
+        "Benachrichtigungen für ungelesene Nachrichten und neue Inhalte"
+      ],
+      "admin": "Der Admin sieht erweiterte Statistiken: Gesamtzahl der Mitglieder, Anzahl der aktiven Benutzer, Statistiken zu Ankündigungen und Veranstaltungen, aktive Aufgaben in Bereichen und Aktivitätstrends. Das Dashboard ermöglicht dem Admin einen schnellen Einblick in alle Aspekte der Gemeinde an einem Ort.",
+      "member": "Mitglieder sehen ein personalisiertes Dashboard mit ihren Bereichen, zugewiesenen Aufgaben, ungelesenen Nachrichten, bevorstehenden Veranstaltungen und neuesten Ankündigungen. Jedes Mitglied kann sein Quick Access Widget mit den am häufigsten verwendeten Funktionen anpassen."
+    },
+    "users": {
+      "title": "Benutzer",
+      "description": "Modul zur Verwaltung aller Gemeindemitglieder und ihrer familiären Beziehungen. Hier werden detaillierte Mitgliederprofile mit Kontaktinformationen, Zugehörigkeitskategorien und Aktivitätshistorie gespeichert. Das System unterstützt die Erstellung von Familienbeziehungen zwischen Mitgliedern.",
+      "features": [
+        "Detaillierte Profile mit Foto, Kontaktdaten und Beruf",
+        "Rollensystem: Admin, IO-Mitglied (Vorstand), Mitglied, Familienmitglied",
+        "Mitgliederkategorien: Männer, Frauen, Eltern, Kinder",
+        "Familienbeziehungen (Ehepartner, Kind, Elternteil, Bruder, Schwester)",
+        "Mitgliedsstatus: aktiv, passiv, Familienmitglied",
+        "Verfolgung des Beitrittsdatums und der Gründe für Inaktivität"
+      ],
+      "admin": "Der Admin hat volle Kontrolle über Benutzer: kann neue Konten erstellen, alle Daten bearbeiten (Name, Nachname, E-Mail, Telefon, Adresse, Beruf), Rollen und Kategorien zuweisen, Aktivitätsstatus festlegen, Familienbeziehungen zwischen Mitgliedern erstellen. Der Admin sieht alle Mitglieder und kann sie nach verschiedenen Kriterien filtern. Das System unterstützt auch den Massenimport von Benutzern über eine Excel-Datei.",
+      "member": "Jedes Mitglied kann sein Profil anzeigen und bearbeiten - seine grundlegenden Daten wie Name, Nachname, E-Mail, Telefon, Beruf und Adresse ändern. Mitglieder können Profile anderer Mitglieder sehen (abhängig von den Datenschutzeinstellungen), können aber keine fremden Daten ändern oder Rollen zuweisen."
+    },
+    "announcements": {
+      "title": "Ankündigungen",
+      "description": "System zur Veröffentlichung wichtiger Informationen und Kommunikation mit Gemeindemitgliedern. Ankündigungen können allgemein oder kategorisiert sein, mit der Möglichkeit, Text zu formatieren, Bilder hinzuzufügen und Veröffentlichungen zu planen.",
+      "features": [
+        "Kategorisierung von Ankündigungen: Gemeinde, IZBCH (Islamische Gemeinschaft BiH Schweiz), IZ (Islamische Gemeinschaft), Sonstiges",
+        "Rich-Text-Editor für professionelle Inhaltsformatierung",
+        "Möglichkeit zur sofortigen Veröffentlichung oder Planung für ein bestimmtes Datum und eine bestimmte Uhrzeit",
+        "Ankündigungsstatus: veröffentlicht, archiviert",
+        "Automatische Benachrichtigungen für Mitglieder über neue Ankündigungen",
+        "Öffentlich zugängliche Ankündigungen - sichtbar auch für Gäste ohne Anmeldung"
+      ],
+      "admin": "Administratoren erstellen, bearbeiten und löschen Ankündigungen. Sie können den Rich-Text-Editor zur Formatierung verwenden (fett, kursiv, Listen, Überschriften), Kategorien hinzufügen, den Status festlegen und entscheiden, ob die Ankündigung sofort veröffentlicht oder für später geplant wird. Der Admin sieht Statistiken zur Anzeigehäufigkeit von Ankündigungen.",
+      "member": "Mitglieder können alle veröffentlichten Ankündigungen anzeigen, sie nach Kategorien filtern und erhalten Benachrichtigungen, wenn eine neue Ankündigung veröffentlicht wird. Das System verfolgt, welche Ankündigungen das Mitglied bereits gelesen hat, und zeigt die Anzahl neuer Ankündigungen in der Navigation an.",
+      "all": "Gäste (nicht angemeldete Benutzer) können alle veröffentlichten Ankündigungen sehen, was es ermöglicht, die breitere Gemeinschaft zu informieren, ohne dass eine Anmeldung im System erforderlich ist."
+    },
+    "events": {
+      "title": "Veranstaltungen",
+      "description": "Vollständiges System zur Verwaltung von Veranstaltungen in der Gemeinde mit Kalender, RSVP-Funktionen und wichtigen Daten. Ermöglicht die Organisation von Iftars, Mevluds, Bildungsprogrammen, Sportaktivitäten und anderen sozialen Veranstaltungen.",
+      "features": [
+        "Kalender mit monatlicher Ansicht und Markierung von Veranstaltungsdaten",
+        "RSVP-System mit Möglichkeit zur Anmeldung von Erwachsenen und Kindern",
+        "Kategorien: Iftar, Mevlud, Bildung, Sport, Wohltätig, Jugend, GAM",
+        "Wichtige Daten (Bajram, Ramadan usw.), die sich jedes Jahr wiederholen",
+        "Automatisches Senden von Erinnerungen vor Veranstaltungen",
+        "Möglichkeit, Veranstaltungen zum persönlichen Kalender hinzuzufügen",
+        "Aufzeichnung bestätigter Teilnahmen mit Personenanzahl"
+      ],
+      "admin": "Der Admin erstellt Veranstaltungen mit allen Details: Name, Beschreibung, Ort, Datum und Uhrzeit, Kategorie, maximale Teilnehmerzahl. Kann die Liste aller sehen, die ihre Teilnahme bestätigt haben (RSVP), Anzahl der Erwachsenen und Kinder. Der Admin verwaltet wichtige Daten, die das System jedes Jahr automatisch anzeigt. Kann Erinnerungen an Mitglieder vor Veranstaltungen senden.",
+      "member": "Mitglieder sehen bevorstehende und vergangene Veranstaltungen, können ihre Teilnahme (RSVP) mit Anzahl der Erwachsenen und Kinder bestätigen, erhalten Benachrichtigungen für neue Veranstaltungen und Erinnerungen. Jedes Mitglied kann eine Veranstaltung zu seinem persönlichen Kalender hinzufügen (Google Calendar, Apple Calendar usw.). Das System erlaubt keine rückwirkende Anmeldung zu vergangenen Veranstaltungen.",
+      "all": "Gäste können alle veröffentlichten Veranstaltungen sehen, was die Einbeziehung der breiteren Gemeinschaft ermöglicht. Gäste können die Teilnahme an öffentlichen Veranstaltungen ohne Anmeldung bestätigen."
+    },
+    "workgroups": {
+      "title": "Bereiche (Arbeitsgruppen)",
+      "description": "System zur Organisation von Mitgliedern in Arbeitsgruppen nach Aktivitäten und Arbeitsbereichen. Jeder Bereich kann seine eigenen Aufgaben, Moderatoren und Mitglieder haben. Bereiche können öffentlich (für alle sichtbar) oder privat (Zugriff nur für genehmigte Mitglieder) sein.",
+      "features": [
+        "Erstellung unbegrenzter Anzahl von Bereichen (z.B. Verwaltung, Halal-Lebensmittel, Iftar, Reinigung)",
+        "Öffentliche und private Bereiche mit Zugriffskontrolle",
+        "Moderatorensystem - Mitglieder mit Bereichsverwaltungsrechten",
+        "Multi-User-Aufgaben - Zuweisung von Aufgaben an mehrere Mitglieder gleichzeitig",
+        "Verfolgung des Aufgabenstatus: In Bearbeitung, Wartet auf Genehmigung, Abgeschlossen",
+        "Aufgabenprioritäten: Niedrig, Mittel, Hoch",
+        "Fristen für die Aufgabenerfüllung",
+        "Punktesystem für abgeschlossene Aufgaben"
+      ],
+      "admin": "Der Admin erstellt Bereiche, legt ihren Namen, ihre Beschreibung und ihre Sichtbarkeit (öffentlich/privat) fest. Fügt Mitglieder zu Bereichen hinzu und setzt Moderatoren ein. Der Admin kann Aufgaben mit Priorität, Frist und Beschreibung erstellen und sie einem Mitglied, mehreren Mitgliedern gleichzeitig oder allen Mitgliedern des Bereichs zuweisen. Der Admin genehmigt Aufgaben, die Mitglieder als abgeschlossen markieren.",
+      "moderator": "Bereichsmoderatoren haben die gleichen Rechte wie der Admin innerhalb ihres Bereichs. Sie können Aufgaben erstellen, sie Mitgliedern zuweisen, abgeschlossene Aufgaben genehmigen und die Mitgliedschaft im Bereich verwalten. Moderatoren können den Bereich nicht löschen, aber seine Aufgaben vollständig verwalten.",
+      "member": "Mitglieder sehen alle Bereiche, in denen sie Mitglied sind, können ihnen zugewiesene Aufgaben anzeigen, Aufgaben als abgeschlossen markieren (wonach sie auf Admin-/Moderatorgenehmigung warten) und Punkte verdienen. Mitglieder können Zugang zu privaten Bereichen beantragen, und Admin/Moderator genehmigt Anfragen."
+    },
+    "messages": {
+      "title": "Nachrichten",
+      "description": "Internes Messaging-System, das es der Verwaltung ermöglicht, Nachrichten an Mitglieder zu senden. Nachrichten können an alle Mitglieder auf einmal oder gezielt an bestimmte Kategorien (Männer, Frauen, Eltern, Kinder) gesendet werden.",
+      "features": [
+        "Senden von Nachrichten an alle Mitglieder oder bestimmte Kategorien",
+        "Rich-Text-Editor zur Formatierung von Nachrichten",
+        "Automatische Benachrichtigungen für ungelesene Nachrichten",
+        "Verfolgung des Nachrichtenstatus (gelesen/ungelesen)",
+        "Archiv aller gesendeten und empfangenen Nachrichten",
+        "Zähler für ungelesene Nachrichten in der Navigation"
+      ],
+      "admin": "Administratoren können neue Nachrichten mit dem Rich-Text-Editor erstellen. Beim Senden wählen sie die Zielgruppe: alle Mitglieder oder bestimmte Kategorien (nur Männer, nur Frauen, nur Eltern, nur Kinder). Der Admin sieht Statistiken darüber, wie viele Mitglieder die Nachricht erhalten und gelesen haben. Nachrichten werden im Archiv gespeichert und können durchsucht werden.",
+      "member": "Mitglieder erhalten Nachrichten von der Verwaltung in ihrem Posteingang. Das System benachrichtigt Mitglieder automatisch über neue Nachrichten und zeigt ein rotes Abzeichen mit der Anzahl ungelesener Nachrichten. Mitglieder können ihre Nachrichten lesen, archivieren und durchsuchen. Sie können keine Nachrichten an andere Mitglieder senden - dies ist ein einseitiger Kommunikationskanal von der Verwaltung zu den Mitgliedern."
+    },
+    "askImam": {
+      "title": "Fragen an den Imam",
+      "description": "Privates System, das es Mitgliedern ermöglicht, dem Gemeinde-Imam islamische Fragen zu stellen. Jedes Mitglied kann eine Frage stellen, ihren Status verfolgen und eine Antwort erhalten. Fragen sind privat - jedes Mitglied sieht nur seine eigenen Fragen.",
+      "features": [
+        "Privatsphäre - jedes Mitglied sieht nur seine eigenen Fragen",
+        "Fragenkategorien für eine einfachere Organisation",
+        "Fragenstatus: Aktiv oder Archiviert (beantwortet)",
+        "Benachrichtigungen, wenn die Frage archiviert (beantwortet) wurde",
+        "Historie aller gestellten Fragen",
+        "Zähler für neue Antworten in der Navigation"
+      ],
+      "admin": "Der Admin (Imam) sieht alle Fragen aller Mitglieder. Kann aktive Fragen anzeigen, sie beantworten (außerhalb der Anwendung - telefonisch, per E-Mail oder persönlich) und dann die Frage archivieren, was das Mitglied automatisch benachrichtigt, dass eine Antwort gegeben wurde. Der Admin kann Fragen nach Status und Kategorie filtern und sehen, wer jede Frage gestellt hat.",
+      "member": "Mitglieder können eine neue Frage mit detaillierter Beschreibung stellen. Sie erhalten eine Benachrichtigung, wenn der Admin ihre Frage archiviert, was bedeutet, dass eine Antwort gegeben wurde. Jedes Mitglied sieht nur seine eigenen Fragen - kann nicht sehen, was andere Mitglieder fragen. Dies gewährleistet Privatsphäre beim Stellen persönlicher oder sensibler islamischer Fragen."
+    },
+    "requests": {
+      "title": "Anfragen und Anmeldungen",
+      "description": "Zentrales System zur Einreichung und Bearbeitung verschiedener Arten von Mitgliederanfragen an die Gemeinde. Umfasst Anfragen für materielle Hilfe, Organisation von Hochzeiten, Geburten, Todesfällen sowie Anmeldungen für neue Mitgliedschaften.",
+      "features": [
+        "Anfragetypen: Materielle Hilfe, Hochzeit, Geburt, Tod, Sonstiges, Mitgliedschaft",
+        "Statusverfolgung: Ausstehend, Genehmigt, Abgelehnt",
+        "Detaillierte Anfragebeschreibungen mit zusätzlichen Informationen",
+        "Benachrichtigungen über Statusänderungen von Anfragen",
+        "Historie aller Anfragen mit Daten und Entscheidungen",
+        "Öffentliche Anmeldung für Mitgliedschaft - auch für Gäste verfügbar"
+      ],
+      "admin": "Der Admin sieht alle Anfragen aller Mitglieder, organisiert nach Typ und Status. Kann Details jeder Anfrage anzeigen, sie mit einer Notiz genehmigen oder ablehnen. Das System ermöglicht das Filtern von Anfragen nach Typ, Status und Mitglied. Der Admin erhält Benachrichtigungen für neue Anfragen und kann monatliche Anfragestatistiken einsehen.",
+      "member": "Mitglieder reichen Anfragen an die Gemeinde mit detaillierter Beschreibung ihrer Situation oder ihres Bedarfs ein. Nach der Einreichung können sie den Status ihrer Anfrage verfolgen (ausstehend, genehmigt, abgelehnt) und erhalten Benachrichtigungen, wenn der Admin den Status ändert. Mitglieder sehen die Historie aller ihrer Anfragen mit Einreichungs- und Entscheidungsdaten.",
+      "all": "Gäste (nicht angemeldete Benutzer) können eine Mitgliedschaftsanmeldung bei der Gemeinde ohne ein bestehendes Konto einreichen. Sie geben ihre grundlegenden Daten ein (Name, Nachname, E-Mail, Telefon) und den Grund für die Anmeldung. Der Admin bearbeitet dann die Anmeldung und erstellt ein Benutzerkonto, wenn die Anmeldung genehmigt wird."
+    },
+    "shop": {
+      "title": "DžematShop (Geschäft)",
+      "description": "Interner Marktplatz, auf dem Mitglieder Artikel innerhalb der Gemeinde kaufen und verkaufen können. Der Admin veröffentlicht Artikel im Namen der Mitglieder, und interessierte Käufer kontaktieren den Verkäufer direkt. Alle Preise sind in CHF (Schweizer Franken).",
+      "features": [
+        "Artikel mit Fotos, Beschreibung und Preis in CHF",
+        "Produktkategorien für einfachere Suche",
+        "Produktstatus: Aktiv oder Abgeschlossen (verkauft)",
+        "Verkäufer-Kontaktinformationen",
+        "Benachrichtigungen für neue Artikel",
+        "Bildergalerie für jedes Produkt",
+        "Filterung nach Kategorien und Status"
+      ],
+      "admin": "Der Admin fügt neue Produkte mit allen Details hinzu: Name, Preis (CHF), detaillierte Beschreibung, Fotos (kann mehrere Bilder haben) und Verkäufer-Kontaktinformationen. Kann bestehende Produkte bearbeiten, Preise ändern, neue Bilder hinzufügen. Wenn der Artikel verkauft ist, markiert der Admin ihn als \"Abgeschlossen\". Der Admin erhält Benachrichtigungen, wenn ein Mitglied auf die Schaltfläche \"Kaufen\" klickt, was Interesse anzeigt.",
+      "member": "Mitglieder durchsuchen alle aktiven Produkte, können nach Kategorien filtern und detaillierte Beschreibungen mit Bildern sehen. Wenn sie einen Artikel finden, der sie interessiert, klicken sie auf \"Kaufen\", was die Kontaktinformationen des Verkäufers öffnet. Das Mitglied kontaktiert dann den Verkäufer direkt (telefonisch, per E-Mail oder persönlich), um die Kaufdetails zu vereinbaren. Das System benachrichtigt Mitglieder über neue Produkte."
+    },
+    "vaktija": {
+      "title": "Vaktija (Gebetszeiten)",
+      "description": "Anzeige islamischer Gebetszeiten (Namaz) für jeden Tag. Vaktijas können automatisch aus einer CSV-Datei von der SwissMosque.ch-Website geladen und monatlich organisiert angezeigt werden.",
+      "features": [
+        "Automatisches Laden aus CSV-Datei (SwissMosque.ch-Format)",
+        "Monatliche Anzeige von Vaktijas im Akkordeonformat",
+        "Heutige Vaktija auf dem Dashboard hervorgehoben",
+        "Anzeige aller fünf täglichen Gebete: Zora, Sonnenaufgang, Mittag, Nachmittag, Abend, Nacht",
+        "Möglichkeit, alle Vaktijas zu löschen und neu zu laden",
+        "Verfügbarkeit für alle Benutzer, einschließlich Gäste"
+      ],
+      "admin": "Der Admin lädt Vaktijas über eine CSV-Datei hoch, die von der SwissMosque.ch-Website heruntergeladen wird. Das System analysiert die Datei automatisch und lädt alle Vaktijas für das Jahr. Der Admin kann alle bestehenden Vaktijas löschen und neue laden (z.B. zu Beginn eines neuen Jahres). Das System ist so konzipiert, dass es automatisch das Datums- und Zeitformat aus der CSV-Datei erkennt.",
+      "member": "Mitglieder sehen Vaktijas, die monatlich im Akkordeonformat organisiert sind (nur ein Monat kann gleichzeitig geöffnet sein für eine übersichtlichere Anzeige). Die heutige Vaktija wird automatisch oben auf dem Dashboard angezeigt, sobald sich der Benutzer anmeldet, was einen schnellen Zugriff auf die wichtigsten Informationen ermöglicht.",
+      "all": "Alle Benutzer (einschließlich Gäste) haben Zugriff auf Vaktijas. Dies bedeutet, dass auch Personen, die keine Gemeindemitglieder sind, Gebetszeiten überprüfen können, was die Informationen für die breitere Gemeinschaft öffentlich zugänglich macht."
+    },
+    "finances": {
+      "title": "Finanzen",
+      "description": "Aufzeichnung aller finanziellen Beiträge der Gemeindemitglieder. Das System ermöglicht die Verfolgung von Zahlungen, Kategorisierung nach Zweck und Verknüpfung mit Projekten. Alle Transaktionen werden aufgezeichnet und in der Datenbank gespeichert.",
+      "features": [
+        "Zahlungskategorien: Mitgliedsbeitrag, Spende, Wakf, Sergija, Sonstiges",
+        "Verknüpfung von Zahlungen mit Projekten",
+        "Automatische Aktualisierung des Projektbetrags beim Hinzufügen einer Zahlung",
+        "Filterung von Zahlungen nach Kategorien, Mitgliedern und Projekten",
+        "Berichte mit Summen nach Kategorien",
+        "Punktesystem - jeder CHF bringt dem Mitglied Punkte",
+        "Historie aller Transaktionen mit Daten"
+      ],
+      "admin": "Der Admin fügt Zahlungen mit allen Details hinzu: Mitglied, das eingezahlt hat, Betrag in CHF, Zweck (Kategorie), Zahlungsdatum, optionale Verknüpfung mit einem Projekt. Kann bestehende Zahlungen bearbeiten und im Fehlerfall löschen. Der Admin sieht alle Zahlungen aller Mitglieder, kann nach Kategorien filtern und Berichte erstellen. Das System weist Mitgliedern automatisch Punkte für ihre Zahlungen zu.",
+      "member": "Mitglieder können nur ihre eigenen Zahlungen und ihre Historie anzeigen. Sie sehen, wie viel sie insgesamt eingezahlt haben, nach welchen Kategorien und welche Projekte durch ihre Zahlungen unterstützt wurden. Sie können keine Zahlungen hinzufügen, ändern oder löschen - das kann nur der Admin. Mitglieder sehen Punkte, die sie durch ihre finanziellen Beiträge verdient haben."
+    },
+    "projects": {
+      "title": "Projekte",
+      "description": "Verwaltung größerer Gemeindeprojekte, die Mittelbeschaffung erfordern. Jedes Projekt hat einen Zielbetrag, aktuellen Fortschritt und die Möglichkeit, finanzielle Beiträge direkt mit dem Projekt zu verknüpfen.",
+      "features": [
+        "Erstellung von Projekten mit Zielbetrag in CHF",
+        "Automatische Verfolgung des aktuellen Betrags durch verknüpfte Zahlungen",
+        "Visuelle Fortschrittsanzeige (Fortschrittsbalken)",
+        "Projektstatus: Aktiv, Abgeschlossen, Ausgesetzt",
+        "Detaillierte Beschreibung und Zweck des Projekts",
+        "Spendenstatistiken nach Projekt",
+        "Öffentliche Sichtbarkeit von Projekten"
+      ],
+      "admin": "Der Admin erstellt neue Projekte mit Name, detaillierter Beschreibung, Zielbetrag und Status. Wenn ein Mitglied Geld einzahlt, kann der Admin diese Zahlung mit dem Projekt verknüpfen, was den aktuellen Projektbetrag automatisch aktualisiert. Der Admin kann Projekte bearbeiten, den Status ändern und eine Liste aller mit dem Projekt verknüpften Spenden sehen. Das System berechnet automatisch den Prozentsatz der Zielerreichung.",
+      "member": "Mitglieder sehen alle Gemeindeprojekte, den Fortschritt der Mittelbeschaffung und können sich über den Zweck des Projekts informieren. Wenn ein Mitglied Geld einzahlt und der Admin es mit dem Projekt verknüpft, wird dies als Beitrag zum Projekt aufgezeichnet und das Mitglied erhält eine spezielle Aktivität im Activity Log. Mitglieder sehen eine transparente Anzeige, wie ihre Beiträge verwendet werden."
+    },
+    "activity": {
+      "title": "Aktivitäten (Activity Log)",
+      "description": "Vollständige Aufzeichnung aller Mitgliederaktivitäten in der Anwendung. Das System verfolgt automatisch, wer was wann getan hat und wie viele Punkte verdient wurden. Dies ermöglicht Transparenz und Gamification durch ein Belohnungssystem.",
+      "features": [
+        "Automatische Protokollierung aller Aktivitäten",
+        "Aktivitätstypen: Abgeschlossene Aufgabe, Teilnahme an Veranstaltung, Finanzieller Beitrag, Projektbeitrag",
+        "Punktevergabe für verschiedene Aktivitäten",
+        "Filterung von Aktivitäten nach Benutzer und Typ",
+        "Anzeige von Datum und Uhrzeit jeder Aktivität",
+        "Verknüpfung von Aktivitäten mit Entitäten (Aufgabe, Veranstaltung, Projekt)",
+        "Berichte über die aktivsten Mitglieder"
+      ],
+      "admin": "Der Admin sieht die vollständige Aktivität aller Mitglieder. Kann nach Mitglied filtern, um alle Aktivitäten einer Person zu sehen, oder nach Aktivitätstyp, um z.B. alle abgeschlossenen Aufgaben zu sehen. Der Admin verwendet diese Daten für Berichte über Mitgliederengagement, Trendverfolgung und Belohnung der aktivsten Mitglieder. Kann monatliche Aktivitätsstatistiken einsehen.",
+      "member": "Mitglieder sehen ihre persönliche Aktivitätshistorie - was sie alles in der Anwendung getan haben und wie viele Punkte sie für jede Aktivität verdient haben. Dies umfasst abgeschlossene Aufgaben, Teilnahmen an Veranstaltungen, finanzielle Beiträge und Projektbeiträge. Mitglieder können ihren Fortschritt verfolgen und sehen, wie aktiv sie in der Gemeinde sind."
+    },
+    "badges": {
+      "title": "Abzeichen (Badges)",
+      "description": "Belohnungs- und Anerkennungssystem für aktive Gemeindemitglieder. Abzeichen werden automatisch (basierend auf Errungenschaften) oder manuell (durch den Admin) für besondere Beiträge zur Gemeinschaft vergeben.",
+      "features": [
+        "Erstellung von Abzeichen mit Name, Beschreibung und Kriterien",
+        "Automatische Vergabe basierend auf Bedingungen (z.B. 100 Punkte, 10 abgeschlossene Aufgaben)",
+        "Manuelle Vergabe durch den Admin für besondere Errungenschaften",
+        "Anzeige verdienter Abzeichen im Mitgliederprofil",
+        "Verschiedene Abzeichentypen: Bronze, Silber, Gold, Spezial",
+        "Öffentliche Sichtbarkeit verdienter Abzeichen",
+        "Benachrichtigungen, wenn ein Mitglied ein neues Abzeichen verdient"
+      ],
+      "admin": "Der Admin erstellt neue Abzeichen, definiert ihren Namen, ihre Beschreibung, Bedingungen für den Erwerb und den Typ. Kann automatische Kriterien festlegen (z.B. \"Verdiene 500 Punkte\" oder \"Schließe 20 Aufgaben ab\") oder Abzeichen manuell an Mitglieder für besondere Beiträge vergeben. Der Admin sieht Statistiken darüber, wer welche Abzeichen verdient hat, und kann bestehende Abzeichen bearbeiten oder löschen.",
+      "member": "Mitglieder erhalten automatisch Abzeichen, wenn sie die festgelegten Bedingungen erfüllen. Sie erhalten eine Benachrichtigung, wenn sie ein neues Abzeichen verdienen, und können alle ihre Abzeichen im Profil sehen. Abzeichen dienen als Motivation für aktive Teilnahme am Gemeindeleben und sind eine sichtbare Anerkennung für ihren Beitrag zur Gemeinschaft."
+    },
+    "points": {
+      "title": "Punktesystem",
+      "description": "Gamifikationssystem, das die Aktivität der Mitglieder durch Punktevergabe belohnt. Punkte werden automatisch für verschiedene Aktivitäten vergeben und können für das Ranking von Mitgliedern oder die Vergabe besonderer Privilegien verwendet werden.",
+      "features": [
+        "Punkte für Teilnahme an Veranstaltungen (RSVP)",
+        "Punkte für abgeschlossene Aufgaben in Bereichen",
+        "Punkte für finanzielle Beiträge (1 CHF = X Punkte)",
+        "Punkte für Projektbeiträge",
+        "Anpassbare Punktewerte für jede Aktivität",
+        "Leaderboard (Rangliste) der Mitglieder",
+        "Gesamtzahl der Punkte im Profil sichtbar"
+      ],
+      "admin": "Der Admin definiert in den Punkteeinstellungen, wie viele Punkte für jede Aktivität vergeben werden: wie viele für die Teilnahme an einer Veranstaltung, wie viele für eine abgeschlossene Aufgabe, wie viele Punkte pro CHF für finanzielle Beiträge. Der Admin kann diese Werte jederzeit ändern. Das System wendet die neuen Regeln automatisch auf zukünftige Aktivitäten an. Der Admin sieht das Leaderboard aller nach Punkten geordneten Mitglieder.",
+      "member": "Mitglieder sammeln automatisch Punkte durch ihre Aktivitäten. Jedes Mal, wenn sie an einer Veranstaltung teilnehmen, eine Aufgabe abschließen oder einen finanziellen Beitrag leisten, erhalten sie eine bestimmte Anzahl von Punkten. Sie sehen ihre Gesamtzahl der Punkte im Profil und ihre Position auf dem Leaderboard. Punkte dienen als Motivation für aktivere Teilnahme und geben Sichtbarkeit des Beitrags jedes Mitglieds."
+    },
+    "settings": {
+      "title": "Einstellungen",
+      "description": "Konfiguration grundlegender Informationen über die Gemeinde, Anwendungseinstellungen und persönlicher Benutzerdaten. Hier befinden sich alle administrativen Einstellungen, die steuern, wie die Anwendung funktioniert.",
+      "features": [
+        "Grundlegende Daten über die Gemeinde (Name, Adresse, Kontakt)",
+        "E-Mail und Telefon für Kontakt",
+        "Livestream-Einstellungen (YouTube-Link)",
+        "Konfiguration des Punktesystems",
+        "Passwortänderung",
+        "Benachrichtigungseinstellungen",
+        "Logo und visuelle Identität"
+      ],
+      "admin": "Der Admin hat Zugriff auf alle Einstellungen: kann Informationen über die Gemeinde bearbeiten (Name, Adresse, Stadt, Postleitzahl, Telefon, E-Mail), YouTube-Link für Livestream festlegen, Punktewerte für verschiedene Aktivitäten konfigurieren, Gemeinde-Logo festlegen. Der Admin kann sein Passwort ändern und die Einstellungen seines Profils bearbeiten.",
+      "member": "Mitglieder haben eingeschränkten Zugriff auf Einstellungen - können ihr Passwort ändern und grundlegende Daten ihres Profils bearbeiten (Name, Nachname, E-Mail, Telefon, Beruf, Adresse). Sie können keine Anwendungseinstellungen oder Informationen über die Gemeinde ändern."
+    }
+  },
+  "additionalInfo": {
+    "title": "Zusätzliche Informationen und Tipps",
+    "notifications": "Die Anwendung zeigt rote Badge-Indikatoren für neue Inhalte in verschiedenen Modulen an. Die Zahl im Badge zeigt an, wie viele neue Elemente vorhanden sind.",
+    "autoRefresh": "Benachrichtigungen und Zähler werden automatisch alle 30 Sekunden aktualisiert, ohne dass die Seite manuell aktualisiert werden muss.",
+    "dateFormat": "Alle Daten in der Anwendung werden im europäischen Format TT.MM.JJJJ (Tag.Monat.Jahr) angezeigt.",
+    "currency": "Alle Preise in den Modulen DžematShop und Finanzen sind in CHF (Schweizer Franken) angegeben.",
+    "guestAccess": "Bestimmte Inhalte (Ankündigungen, Veranstaltungen, Gebetszeiten) sind auch für Gäste ohne Anmeldung zugänglich.",
+    "security": "Die Anwendung verwendet Datenverschlüsselung, sichere Passwörter und regelmäßige Backups.",
+    "support": "Für technische Hilfe oder Fragen zur Verwendung der Anwendung wenden Sie sich bitte an den Gemeinde-Administrator.",
+    "notificationsLabel": "Benachrichtigungen:",
+    "autoRefreshLabel": "Automatische Aktualisierung:",
+    "dateFormatLabel": "Datumsformat:",
+    "currencyLabel": "Währung:",
+    "guestAccessLabel": "Gastzugang:",
+    "securityLabel": "Sicherheit:",
+    "supportLabel": "Support:"
+  }
+}

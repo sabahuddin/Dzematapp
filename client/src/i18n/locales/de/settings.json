@@ -1,0 +1,162 @@
+{
+  "organization": {
+    "title": "Organisationsdaten",
+    "subtitle": "Diese Daten werden in der Fußzeile der Anwendung angezeigt und sind für alle Benutzer zugänglich.",
+    "loading": "Laden...",
+    "basicInfo": "Grundlegende Informationen",
+    "contactInfo": "Kontaktdaten",
+    "socialMedia": "Soziale Medien",
+    "livestream": "Livestream",
+    "fields": {
+      "name": "Organisationsname",
+      "namePlaceholder": "Islamische Gemeinschaft",
+      "address": "Adresse",
+      "addressPlaceholder": "Gemeinde Straße 123",
+      "phone": "Telefon",
+      "phonePlaceholder": "+41 XX XXX XX XX",
+      "email": "E-Mail",
+      "emailPlaceholder": "info@gemeinde.ch",
+      "facebookUrl": "Facebook URL",
+      "facebookPlaceholder": "https://facebook.com/ihregemeinde",
+      "instagramUrl": "Instagram URL",
+      "instagramPlaceholder": "https://instagram.com/ihregemeinde",
+      "youtubeUrl": "YouTube URL",
+      "youtubePlaceholder": "https://youtube.com/@ihregemeinde",
+      "twitterUrl": "Twitter URL",
+      "twitterPlaceholder": "https://twitter.com/ihregemeinde",
+      "livestreamUrl": "Livestream URL",
+      "livestreamUrlPlaceholder": "YouTube-Link oder Embed-Code",
+      "livestreamEnabled": "Livestream aktivieren",
+      "livestreamTitle": "Livestream-Titel",
+      "livestreamTitlePlaceholder": "Freitagspredigt live"
+    },
+    "save": "Änderungen speichern",
+    "toast": {
+      "success": "Erfolgreich gespeichert",
+      "successDescription": "Die Organisationsdaten wurden erfolgreich aktualisiert.",
+      "error": "Fehler",
+      "errorDescription": "Die Organisationsdaten konnten nicht gespeichert werden."
+    }
+  },
+  "points": {
+    "title": "Punkte-Einstellungen",
+    "loading": "Laden...",
+    "noPermission": "Sie haben keine Berechtigung, auf diese Seite zuzugreifen.",
+    "configTitle": "Konfiguration des Punktesystems",
+    "configDescription": "Definieren Sie, wie viele Punkte Mitglieder für verschiedene Aktivitäten verdienen",
+    "howItWorks": {
+      "title": "📋 Wie funktioniert das Punktesystem?",
+      "payments": {
+        "title": "💰 Finanzielle Einzahlungen (CHF)",
+        "description": "Jeder eingezahlte CHF bringt Punkte. Punkte werden sofort nach Eingabe der Zahlung vergeben (Mitgliedsbeitrag, Spende, Waqf, Sergija, Sonstiges)."
+      },
+      "tasks": {
+        "title": "✅ Abgeschlossene Aufgaben",
+        "description": "Wenn ein Mitglied eine Aufgabe als abgeschlossen markiert, wartet es auf die Genehmigung des Admins (0 Punkte). Erst wenn der Admin die Aufgabe genehmigt, erhalten alle zugewiesenen Mitglieder die volle Punktzahl."
+      },
+      "events": {
+        "title": "🎉 RSVP für Veranstaltung",
+        "description": "Wenn ein Mitglied die Teilnahme an einer Veranstaltung bestätigt (RSVP), erhält es sofort Punkte. Punkte werden nicht abgezogen, wenn das Mitglied später absagt."
+      },
+      "calculation": {
+        "title": "🔢 Berechnungsbeispiel",
+        "description": "Wenn eingestellt: 1 CHF = 10 Punkte, 1 Aufgabe = 50 Punkte, 1 Veranstaltung = 20 Punkte, erhält ein Mitglied, das 100 CHF zahlt, 1000 Punkte, 5 Aufgaben abschließt, 250 Punkte, an 3 Veranstaltungen teilnimmt, 60 Punkte. Gesamt: 1310 Punkte."
+      }
+    },
+    "fields": {
+      "pointsPerChf": "Punkte pro CHF",
+      "pointsPerChfHelper": "Wie viele Punkte ein Mitglied für jeden eingezahlten Schweizer Franken erhält",
+      "pointsPerTask": "Punkte pro Aufgabe",
+      "pointsPerTaskHelper": "Wie viele Punkte ein Mitglied für jede abgeschlossene und genehmigte Aufgabe erhält",
+      "pointsPerEvent": "Punkte pro Veranstaltung",
+      "pointsPerEventHelper": "Wie viele Punkte ein Mitglied für die Bestätigung der Teilnahme (RSVP) an einer Veranstaltung erhält"
+    },
+    "save": "Einstellungen speichern",
+    "toast": {
+      "success": "Erfolg",
+      "successDescription": "Die Punkte-Einstellungen wurden aktualisiert",
+      "error": "Fehler",
+      "errorDescription": "Fehler beim Speichern der Einstellungen",
+      "loadError": "Fehler beim Laden der Punkte-Einstellungen. Bitte versuchen Sie es erneut."
+    }
+  },
+  "livestreamSettings": {
+    "title": "Livestream-Verwaltung",
+    "subtitle": "Aktivieren Sie die Direktübertragung von Veranstaltungen, Predigten und Live-Programmen",
+    "loading": "Laden...",
+    "whatIsLivestream": {
+      "title": "Was ist Livestream?",
+      "description1": "Livestream ermöglicht es Ihrer Gemeinschaft, Veranstaltungen, Predigten und Programme in Echtzeit über das Internet zu verfolgen, ohne physisch anwesend sein zu müssen.",
+      "description2": "Benutzer können den Livestream direkt aus der Anwendung verfolgen, was Personen, die abwesend, krank oder weit entfernt sind, Zugang ermöglicht."
+    },
+    "howToUse": {
+      "title": "So verwenden Sie Livestream",
+      "step1": {
+        "title": "Wählen Sie eine Streaming-Plattform",
+        "description": "YouTube Live, Facebook Live, Twitch oder eine andere Plattform"
+      },
+      "step2": {
+        "title": "Starten Sie den Stream auf der Plattform",
+        "description": "Erstellen Sie ein Livestream-Event und starten Sie die Übertragung"
+      },
+      "step3": {
+        "title": "Kopieren Sie die URL oder den Embed-Code",
+        "description": "Kopieren Sie den Link von YouTube/Facebook oder den Embed-iFrame-Code"
+      },
+      "step4": {
+        "title": "Fügen Sie ihn in das Feld unten ein",
+        "description": "Geben Sie die URL oder den Embed-Code ein und aktivieren Sie den Livestream"
+      },
+      "step5": {
+        "title": "Einstellungen speichern",
+        "description": "Benutzer können den Stream sofort aus der Anwendung verfolgen"
+      }
+    },
+    "supportedFormats": {
+      "title": "Unterstützte Formate",
+      "youtube": "YouTube URL (https://youtube.com/watch?v=...)",
+      "youtubeLive": "YouTube Live URL (https://youtube.com/live/...)",
+      "iframe": "iFrame Embed-Code (<iframe src=\"...\"></iframe>)",
+      "otherUrls": "Andere URLs werden als externe Links angezeigt"
+    },
+    "examples": {
+      "title": "Beispiele für Embed-Codes",
+      "youtube": "YouTube: https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "youtubeShort": "YouTube kurz: https://youtu.be/dQw4w9WgXcQ",
+      "iframe": "iFrame: <iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/dQw4w9WgXcQ\"></iframe>",
+      "youtubeAccordion": "YouTube Live",
+      "youtubeDescription": "Ersetzen Sie VIDEO_ID durch die ID Ihres YouTube Live-Videos",
+      "facebookAccordion": "Facebook Live",
+      "facebookDescription": "Ersetzen Sie VIDEO_URL durch den Link zu Ihrem Facebook Live-Event",
+      "directAccordion": "Direkter URL",
+      "directDescription": "Sie können auch einen direkten Link zum Video verwenden"
+    },
+    "tips": {
+      "title": "Tipps für einen erfolgreichen Livestream",
+      "tip1": "• Testen Sie den Livestream vor der Veranstaltung, um sicherzustellen, dass alles funktioniert",
+      "tip2": "• Sorgen Sie für eine stabile Internetverbindung für eine unterbrechungsfreie Übertragung",
+      "tip3": "• Informieren Sie die Gemeinde im Voraus über die Zeit des Livestream-Events",
+      "tip4": "• Verwenden Sie ein hochwertiges Mikrofon und eine Kamera für ein besseres Erlebnis"
+    },
+    "fields": {
+      "livestreamEnabled": "Livestream aktivieren",
+      "livestreamEnabledHelper": "Wenn aktiviert, sehen Benutzer den Livestream",
+      "livestreamTitle": "Livestream-Titel (optional)",
+      "livestreamTitleHelper": "Wird über dem Videoplayer angezeigt (z.B. 'Freitagspredigt live')",
+      "livestreamUrl": "Livestream URL oder Embed-Code",
+      "livestreamUrlHelper": "YouTube-Link, Facebook-Link oder iFrame-Embed-Code"
+    },
+    "preview": {
+      "title": "Vorschau",
+      "enableToSee": "Aktivieren Sie den Livestream und geben Sie eine URL ein, um die Vorschau zu sehen",
+      "currentlyShowing": "Derzeit wird angezeigt:"
+    },
+    "save": "Einstellungen speichern",
+    "toast": {
+      "success": "Erfolgreich",
+      "successDescription": "Die Livestream-Einstellungen wurden gespeichert",
+      "error": "Fehler",
+      "errorDescription": "Die Einstellungen konnten nicht gespeichert werden"
+    }
+  }
+}

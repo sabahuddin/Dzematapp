@@ -21,6 +21,7 @@ import {
   AccordionDetails
 } from "@mui/material";
 import { Radio, CheckCircle, Info, ExpandMore, Tv } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 import { insertOrganizationSettingsSchema } from "@shared/schema";
 import type { OrganizationSettings, InsertOrganizationSettings } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
@@ -38,6 +39,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 
 export default function LivestreamSettingsPage() {
+  const { t } = useTranslation("settings");
   const { toast } = useToast();
 
   const { data: settings, isLoading } = useQuery<OrganizationSettings>({
@@ -76,14 +78,14 @@ export default function LivestreamSettingsPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/organization-settings"] });
       toast({
-        title: "Uspješno",
-        description: "Livestream podešavanja su sačuvana"
+        title: t("livestreamSettings.toast.success"),
+        description: t("livestreamSettings.toast.successDescription")
       });
     },
     onError: () => {
       toast({
-        title: "Greška",
-        description: "Nije moguće sačuvati podešavanja",
+        title: t("livestreamSettings.toast.error"),
+        description: t("livestreamSettings.toast.errorDescription"),
         variant: "destructive"
       });
     }
@@ -101,7 +103,7 @@ export default function LivestreamSettingsPage() {
   if (isLoading) {
     return (
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <Typography>Učitavanje...</Typography>
+        <Typography>{t("livestreamSettings.loading")}</Typography>
       </Container>
     );
   }
@@ -111,10 +113,10 @@ export default function LivestreamSettingsPage() {
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" component="h1" sx={{ mb: 1, display: "flex", alignItems: "center", gap: 2 }}>
           <Tv sx={{ fontSize: 40, color: "#1976d2" }} />
-          Livestream Upravljanje
+          {t("livestreamSettings.title")}
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          Omogućite direktan prenos događaja, hutbi i programa uživo
+          {t("livestreamSettings.subtitle")}
         </Typography>
       </Box>
 
@@ -125,13 +127,13 @@ export default function LivestreamSettingsPage() {
             <Info sx={{ color: "#1976d2", mt: 0.5 }} />
             <Box>
               <Typography variant="h6" sx={{ mb: 1, color: "#1976d2" }}>
-                Šta je Livestream?
+                {t("livestreamSettings.whatIsLivestream.title")}
               </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                Livestream omogućava vašoj zajednici da prati događaje, hutbe i programe u realnom vremenu putem interneta, bez potrebe da fizički prisustvuju.
+                {t("livestreamSettings.whatIsLivestream.description1")}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Korisnici mogu pratiti livestream direktno iz aplikacije, što omogućava pristup osobama koje su odsutne, bolesne ili udaljene.
+                {t("livestreamSettings.whatIsLivestream.description2")}
               </Typography>
             </Box>
           </Box>
@@ -143,7 +145,7 @@ export default function LivestreamSettingsPage() {
         <CardContent>
           <Typography variant="h6" sx={{ mb: 2, display: "flex", alignItems: "center", gap: 1 }}>
             <CheckCircle sx={{ color: "#2e7d32" }} />
-            Kako koristiti Livestream
+            {t("livestreamSettings.howToUse.title")}
           </Typography>
           
           <List>
@@ -154,8 +156,8 @@ export default function LivestreamSettingsPage() {
                 </Typography>
               </ListItemIcon>
               <ListItemText
-                primary="Izaberite platformu za streaming"
-                secondary="YouTube Live, Facebook Live, Twitch ili druga platforma"
+                primary={t("livestreamSettings.howToUse.step1.title")}
+                secondary={t("livestreamSettings.howToUse.step1.description")}
               />
             </ListItem>
             
@@ -166,8 +168,8 @@ export default function LivestreamSettingsPage() {
                 </Typography>
               </ListItemIcon>
               <ListItemText
-                primary="Započnite livestream na odabranoj platformi"
-                secondary="Kreirajte događaj i dobijete embed kod ili URL"
+                primary={t("livestreamSettings.howToUse.step2.title")}
+                secondary={t("livestreamSettings.howToUse.step2.description")}
               />
             </ListItem>
             
@@ -178,8 +180,8 @@ export default function LivestreamSettingsPage() {
                 </Typography>
               </ListItemIcon>
               <ListItemText
-                primary="Kopirajte embed kod ili URL"
-                secondary="Sa platforme kopirajte iframe embed kod ili direktan link do streama"
+                primary={t("livestreamSettings.howToUse.step3.title")}
+                secondary={t("livestreamSettings.howToUse.step3.description")}
               />
             </ListItem>
             
@@ -190,8 +192,8 @@ export default function LivestreamSettingsPage() {
                 </Typography>
               </ListItemIcon>
               <ListItemText
-                primary="Unesite URL/kod u polje ispod"
-                secondary="Zalijepite embed kod ili URL u 'Livestream URL ili embed kod' polje"
+                primary={t("livestreamSettings.howToUse.step4.title")}
+                secondary={t("livestreamSettings.howToUse.step4.description")}
               />
             </ListItem>
             
@@ -202,8 +204,8 @@ export default function LivestreamSettingsPage() {
                 </Typography>
               </ListItemIcon>
               <ListItemText
-                primary="Aktivirajte livestream"
-                secondary="Uključite prekidač 'Livestream aktivan' i sačuvajte"
+                primary={t("livestreamSettings.howToUse.step5.title")}
+                secondary={t("livestreamSettings.howToUse.step5.description")}
               />
             </ListItem>
           </List>
@@ -214,47 +216,47 @@ export default function LivestreamSettingsPage() {
       <Card sx={{ mb: 3 }}>
         <CardContent>
           <Typography variant="h6" sx={{ mb: 2 }}>
-            Primjeri embed kodova
+            {t("livestreamSettings.examples.title")}
           </Typography>
           
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMore />}>
-              <Typography sx={{ fontWeight: 600 }}>YouTube Live</Typography>
+              <Typography sx={{ fontWeight: 600 }}>{t("livestreamSettings.examples.youtubeAccordion")}</Typography>
             </AccordionSummary>
             <AccordionDetails>
               <Box sx={{ bgcolor: "#f5f5f5", p: 2, borderRadius: 1, fontFamily: "monospace", fontSize: "0.875rem", overflow: "auto" }}>
                 {`<iframe width="560" height="315" src="https://www.youtube.com/embed/VIDEO_ID" frameborder="0" allowfullscreen></iframe>`}
               </Box>
               <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 1 }}>
-                Zamijenite VIDEO_ID sa ID-jem vašeg YouTube Live video zapisa
+                {t("livestreamSettings.examples.youtubeDescription")}
               </Typography>
             </AccordionDetails>
           </Accordion>
 
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMore />}>
-              <Typography sx={{ fontWeight: 600 }}>Facebook Live</Typography>
+              <Typography sx={{ fontWeight: 600 }}>{t("livestreamSettings.examples.facebookAccordion")}</Typography>
             </AccordionSummary>
             <AccordionDetails>
               <Box sx={{ bgcolor: "#f5f5f5", p: 2, borderRadius: 1, fontFamily: "monospace", fontSize: "0.875rem", overflow: "auto" }}>
                 {`<iframe src="https://www.facebook.com/plugins/video.php?href=VIDEO_URL" width="560" height="315" frameborder="0" allowfullscreen></iframe>`}
               </Box>
               <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 1 }}>
-                Zamijenite VIDEO_URL sa linkom do vašeg Facebook Live događaja
+                {t("livestreamSettings.examples.facebookDescription")}
               </Typography>
             </AccordionDetails>
           </Accordion>
 
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMore />}>
-              <Typography sx={{ fontWeight: 600 }}>Direktan URL</Typography>
+              <Typography sx={{ fontWeight: 600 }}>{t("livestreamSettings.examples.directAccordion")}</Typography>
             </AccordionSummary>
             <AccordionDetails>
               <Box sx={{ bgcolor: "#f5f5f5", p: 2, borderRadius: 1, fontFamily: "monospace", fontSize: "0.875rem", overflow: "auto" }}>
                 {`https://www.youtube.com/watch?v=VIDEO_ID`}
               </Box>
               <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 1 }}>
-                Možete koristiti i direktan link do video zapisa
+                {t("livestreamSettings.examples.directDescription")}
               </Typography>
             </AccordionDetails>
           </Accordion>
@@ -266,7 +268,7 @@ export default function LivestreamSettingsPage() {
         <CardContent>
           <Typography variant="h6" sx={{ mb: 3, display: "flex", alignItems: "center", gap: 1 }}>
             <Radio />
-            Livestream Podešavanja
+            {t("livestreamSettings.title")}
           </Typography>
 
           <Form {...form}>
@@ -286,11 +288,11 @@ export default function LivestreamSettingsPage() {
                           />
                         </FormControl>
                         <FormLabel className="!mt-0 cursor-pointer" onClick={() => field.onChange(!field.value)}>
-                          Livestream aktivan
+                          {t("livestreamSettings.fields.livestreamEnabled")}
                         </FormLabel>
                       </Box>
                       <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
-                        Kada je aktivno, korisnici će vidjeti livestream na posebnoj stranici
+                        {t("livestreamSettings.fields.livestreamEnabledHelper")}
                       </Typography>
                       <FormMessage />
                     </FormItem>
@@ -302,17 +304,17 @@ export default function LivestreamSettingsPage() {
                   name="livestreamTitle"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Naslov livestream-a (opciono)</FormLabel>
+                      <FormLabel>{t("livestreamSettings.fields.livestreamTitle")}</FormLabel>
                       <FormControl>
                         <Input 
                           {...field} 
                           value={field.value || ""}
-                          placeholder="Npr. Petak hutba uživo, Edukacioni program, Mevlud" 
+                          placeholder={t("organization.fields.livestreamTitlePlaceholder")} 
                           data-testid="input-livestream-title"
                         />
                       </FormControl>
                       <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
-                        Ovaj naslov će se prikazati korisnicima iznad livestream-a
+                        {t("livestreamSettings.fields.livestreamTitleHelper")}
                       </Typography>
                       <FormMessage />
                     </FormItem>
@@ -324,18 +326,18 @@ export default function LivestreamSettingsPage() {
                   name="livestreamUrl"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Livestream URL ili embed kod</FormLabel>
+                      <FormLabel>{t("livestreamSettings.fields.livestreamUrl")}</FormLabel>
                       <FormControl>
                         <Textarea 
                           {...field} 
                           value={field.value || ""}
-                          placeholder="Unesite YouTube/Facebook/Twitch embed kod ili URL"
+                          placeholder={t("organization.fields.livestreamUrlPlaceholder")}
                           rows={6}
                           data-testid="input-livestream-url"
                         />
                       </FormControl>
                       <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
-                        Možete unijeti YouTube/Facebook embed kod (npr. &lt;iframe src="..."&gt;) ili direktan URL
+                        {t("livestreamSettings.fields.livestreamUrlHelper")}
                       </Typography>
                       <FormMessage />
                     </FormItem>
@@ -351,7 +353,7 @@ export default function LivestreamSettingsPage() {
                     disabled={updateMutation.isPending}
                     data-testid="button-save-livestream"
                   >
-                    {updateMutation.isPending ? "Čuvanje..." : "Sačuvaj Podešavanja"}
+                    {t("livestreamSettings.save")}
                   </Button>
                 </Box>
               </Box>
@@ -362,19 +364,19 @@ export default function LivestreamSettingsPage() {
 
       {/* Tips Card */}
       <Alert severity="info" sx={{ mt: 3 }}>
-        <AlertTitle>Savjeti za uspješan livestream</AlertTitle>
+        <AlertTitle>{t("livestreamSettings.tips.title")}</AlertTitle>
         <List dense>
           <ListItem sx={{ pl: 0 }}>
-            <ListItemText primary="• Testirajte livestream prije događaja kako biste osigurali da sve radi" />
+            <ListItemText primary={t("livestreamSettings.tips.tip1")} />
           </ListItem>
           <ListItem sx={{ pl: 0 }}>
-            <ListItemText primary="• Osigurajte stabilnu internet vezu za neometani prenos" />
+            <ListItemText primary={t("livestreamSettings.tips.tip2")} />
           </ListItem>
           <ListItem sx={{ pl: 0 }}>
-            <ListItemText primary="• Obavijestite zajednicu unaprijed o vremenu livestream događaja" />
+            <ListItemText primary={t("livestreamSettings.tips.tip3")} />
           </ListItem>
           <ListItem sx={{ pl: 0 }}>
-            <ListItemText primary="• Koristite kvalitetan mikrofon i kameru za bolji doživljaj" />
+            <ListItemText primary={t("livestreamSettings.tips.tip4")} />
           </ListItem>
         </List>
       </Alert>

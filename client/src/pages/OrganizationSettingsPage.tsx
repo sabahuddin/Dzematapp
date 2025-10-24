@@ -5,6 +5,7 @@ import { Box, Container, Typography, Paper, Alert } from "@mui/material";
 import { Button } from "@/components/ui/button";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useTranslation } from "react-i18next";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import type { OrganizationSettings, InsertOrganizationSettings } from "@shared/schema";
@@ -14,6 +15,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 
 export default function OrganizationSettingsPage() {
+  const { t } = useTranslation("settings");
   const { toast } = useToast();
 
   const { data: settings, isLoading } = useQuery({
@@ -50,14 +52,14 @@ export default function OrganizationSettingsPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/organization-settings"] });
       toast({
-        title: "Uspješno sačuvano",
-        description: "Organizacioni podaci su uspješno ažurirani."
+        title: t("organization.toast.success"),
+        description: t("organization.toast.successDescription")
       });
     },
     onError: () => {
       toast({
-        title: "Greška",
-        description: "Nije moguće sačuvati organizacione podatke.",
+        title: t("organization.toast.error"),
+        description: t("organization.toast.errorDescription"),
         variant: "destructive"
       });
     }
@@ -80,7 +82,7 @@ export default function OrganizationSettingsPage() {
   if (isLoading) {
     return (
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <Typography>Učitavanje...</Typography>
+        <Typography>{t("organization.loading")}</Typography>
       </Container>
     );
   }
@@ -90,12 +92,12 @@ export default function OrganizationSettingsPage() {
       <Box sx={{ display: "flex", alignItems: "center", mb: 3, gap: 2 }}>
         <Settings size={32} />
         <Typography variant="h4" component="h1">
-          Organizacioni podaci
+          {t("organization.title")}
         </Typography>
       </Box>
 
       <Alert severity="info" sx={{ mb: 3 }}>
-        Ovi podaci će biti prikazani u podnožju aplikacije i dostupni svim korisnicima.
+        {t("organization.subtitle")}
       </Alert>
 
       <Paper sx={{ p: 3 }}>
@@ -105,7 +107,7 @@ export default function OrganizationSettingsPage() {
             <Box sx={{ mb: 3 }}>
               <Typography variant="h6" sx={{ mb: 2, display: "flex", alignItems: "center", gap: 1 }}>
                 <Building size={20} />
-                Osnovni podaci
+                {t("organization.basicInfo")}
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <FormField
@@ -113,11 +115,11 @@ export default function OrganizationSettingsPage() {
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Naziv organizacije</FormLabel>
+                      <FormLabel>{t("organization.fields.name")}</FormLabel>
                       <FormControl>
                         <Input 
                           {...field} 
-                          placeholder="Islamska Zajednica" 
+                          placeholder={t("organization.fields.namePlaceholder")} 
                           data-testid="input-org-name"
                         />
                       </FormControl>
@@ -130,11 +132,11 @@ export default function OrganizationSettingsPage() {
                   name="address"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Adresa</FormLabel>
+                      <FormLabel>{t("organization.fields.address")}</FormLabel>
                       <FormControl>
                         <Input 
                           {...field} 
-                          placeholder="Ulica Džemata 123" 
+                          placeholder={t("organization.fields.addressPlaceholder")} 
                           data-testid="input-org-address"
                         />
                       </FormControl>
@@ -149,7 +151,7 @@ export default function OrganizationSettingsPage() {
             <Box sx={{ mb: 3 }}>
               <Typography variant="h6" sx={{ mb: 2, display: "flex", alignItems: "center", gap: 1 }}>
                 <Phone size={20} />
-                Kontakt podaci
+                {t("organization.contactInfo")}
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 2 }}>
                 <Box sx={{ flex: 1 }}>
@@ -158,11 +160,11 @@ export default function OrganizationSettingsPage() {
                     name="phone"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Telefon</FormLabel>
+                        <FormLabel>{t("organization.fields.phone")}</FormLabel>
                         <FormControl>
                           <Input 
                             {...field} 
-                            placeholder="+387 33 123 456" 
+                            placeholder={t("organization.fields.phonePlaceholder")} 
                             data-testid="input-org-phone"
                           />
                         </FormControl>
@@ -177,12 +179,12 @@ export default function OrganizationSettingsPage() {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Email</FormLabel>
+                        <FormLabel>{t("organization.fields.email")}</FormLabel>
                         <FormControl>
                           <Input 
                             {...field} 
                             type="email"
-                            placeholder="info@dzemat.ba" 
+                            placeholder={t("organization.fields.emailPlaceholder")} 
                             data-testid="input-org-email"
                           />
                         </FormControl>
@@ -197,7 +199,7 @@ export default function OrganizationSettingsPage() {
             {/* Social Media */}
             <Box sx={{ mb: 3 }}>
               <Typography variant="h6" sx={{ mb: 2 }}>
-                Društvene mreže
+                {t("organization.socialMedia")}
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 2 }}>
@@ -305,7 +307,7 @@ export default function OrganizationSettingsPage() {
                 disabled={updateMutation.isPending}
                 data-testid="button-save-settings"
               >
-                {updateMutation.isPending ? "Čuvanje..." : "Sačuvaj promjene"}
+                {t("organization.save")}
               </Button>
             </Box>
           </form>

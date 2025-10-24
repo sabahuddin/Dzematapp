@@ -19,12 +19,14 @@ import {
   Save,
   EmojiEvents
 } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 import { PointsSettings, insertPointsSettingsSchema } from '@shared/schema';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/use-toast';
 import { apiRequest, queryClient } from '../lib/queryClient';
 
 export default function PointSettingsPage() {
+  const { t } = useTranslation('settings');
   const { user: currentUser } = useAuth();
   const { toast } = useToast();
 
@@ -32,7 +34,7 @@ export default function PointSettingsPage() {
   if (!currentUser?.isAdmin) {
     return (
       <Alert severity="error">
-        Nemate dozvolu za pristup ovoj stranici.
+        {t('points.noPermission')}
       </Alert>
     );
   }
@@ -44,9 +46,9 @@ export default function PointSettingsPage() {
 
   // Form schema
   const formSchema = insertPointsSettingsSchema.extend({
-    pointsPerChf: z.number().min(0, 'Bodovi moraju biti pozitivni'),
-    pointsPerTask: z.number().min(0, 'Bodovi moraju biti pozitivni'),
-    pointsPerEvent: z.number().min(0, 'Bodovi moraju biti pozitivni'),
+    pointsPerChf: z.number().min(0, t('points.toast.error')),
+    pointsPerTask: z.number().min(0, t('points.toast.error')),
+    pointsPerEvent: z.number().min(0, t('points.toast.error')),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -75,16 +77,16 @@ export default function PointSettingsPage() {
     mutationFn: async (data: z.infer<typeof formSchema>) => {
       const settings = pointSettingsQuery.data as PointsSettings | undefined;
       if (!settings || !settings.id) {
-        throw new Error('Postavke bodova nisu učitane');
+        throw new Error(t('points.toast.loadError'));
       }
       return await apiRequest(`/api/point-settings/${settings.id}`, 'PUT', data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/point-settings'] });
-      toast({ title: 'Uspjeh', description: 'Postavke bodova su ažurirane' });
+      toast({ title: t('points.toast.success'), description: t('points.toast.successDescription') });
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri spremanju postavki', variant: 'destructive' });
+      toast({ title: t('points.toast.error'), description: t('points.toast.errorDescription'), variant: 'destructive' });
     }
   });
 
@@ -103,7 +105,7 @@ export default function PointSettingsPage() {
   if (pointSettingsQuery.error) {
     return (
       <Alert severity="error">
-        Greška pri učitavanju postavki bodova. Molimo pokušajte ponovo.
+        {t('points.toast.loadError')}
       </Alert>
     );
   }
@@ -112,7 +114,7 @@ export default function PointSettingsPage() {
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h5" sx={{ fontWeight: 600 }}>
-          Postavke Bodova
+          {t('points.title')}
         </Typography>
       </Box>
 
@@ -122,10 +124,10 @@ export default function PointSettingsPage() {
             <EmojiEvents color="warning" fontSize="large" />
             <Box>
               <Typography variant="h6">
-                Konfiguracija Sistema Bodova
+                {t('points.configTitle')}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Definirajte koliko bodova članovi zarađuju za različite aktivnosti
+                {t('points.configDescription')}
               </Typography>
             </Box>
           </Box>
@@ -135,39 +137,31 @@ export default function PointSettingsPage() {
           {/* Points Explanation Section */}
           <Box sx={{ mb: 4, p: 2, bgcolor: 'background.default', borderRadius: 1 }}>
             <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 2 }}>
-              📋 Kako funkcionira sistem bodova?
+              {t('points.howItWorks.title')}
             </Typography>
             <Stack spacing={1.5}>
               <Box>
                 <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                  💰 Finansijske Uplate (CHF)
+                  {t('points.howItWorks.payments.title')}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Svaki uplačeni CHF donosi bodove. Bodovi se dodjeljuju odmah nakon unošenja uplate (Članarina, Donacija, Vakuf, Sergija, Ostalo).
+                  {t('points.howItWorks.payments.description')}
                 </Typography>
               </Box>
               <Box>
                 <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                  ✅ Završeni Zadaci
+                  {t('points.howItWorks.tasks.title')}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Kada član označi zadatak kao završen, čeka se odobrenje admina (0 bodova). Tek kada admin odobri zadatak, svi dodijeljeni članovi dobijaju pun broj bodova.
+                  {t('points.howItWorks.tasks.description')}
                 </Typography>
               </Box>
               <Box>
                 <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                  🎉 RSVP na Događaj
+                  {t('points.howItWorks.events.title')}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Kada član potvrdi prisustvo na događaju (RSVP), odmah dobija bodove. Bodovi se ne oduzimaju ako član kasnije otkaže prisustvo.
-                </Typography>
-              </Box>
-              <Box>
-                <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                  🏗️ Doprinosi Projektima
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Uplate vezane za projekte se evidentiraju dva puta: jednom kao "Uplata" (sa bodovima) i jednom kao "Doprinos projektu" (0 bodova, samo za evidenciju).
+                  {t('points.howItWorks.events.description')}
                 </Typography>
               </Box>
             </Stack>
@@ -179,11 +173,11 @@ export default function PointSettingsPage() {
                 <Box sx={{ flex: '1 1 300px' }}>
                   <TextField
                     fullWidth
-                    label="Bodovi po CHF donaciji"
+                    label={t('points.fields.pointsPerChf')}
                     type="number"
                     {...form.register('pointsPerChf', { valueAsNumber: true })}
                     error={!!form.formState.errors.pointsPerChf}
-                    helperText={form.formState.errors.pointsPerChf?.message || 'Broj bodova koji član dobija za svaki CHF doniran'}
+                    helperText={form.formState.errors.pointsPerChf?.message || t('points.fields.pointsPerChfHelper')}
                     required
                     data-testid="input-points-per-chf"
                   />
@@ -191,11 +185,11 @@ export default function PointSettingsPage() {
                 <Box sx={{ flex: '1 1 300px' }}>
                   <TextField
                     fullWidth
-                    label="Bodovi po završenom zadatku"
+                    label={t('points.fields.pointsPerTask')}
                     type="number"
                     {...form.register('pointsPerTask', { valueAsNumber: true })}
                     error={!!form.formState.errors.pointsPerTask}
-                    helperText={form.formState.errors.pointsPerTask?.message || 'Broj bodova koji član dobija za svaki završen zadatak'}
+                    helperText={form.formState.errors.pointsPerTask?.message || t('points.fields.pointsPerTaskHelper')}
                     required
                     data-testid="input-points-per-task"
                   />
@@ -203,11 +197,11 @@ export default function PointSettingsPage() {
                 <Box sx={{ flex: '1 1 300px' }}>
                   <TextField
                     fullWidth
-                    label="Bodovi po RSVP događaju"
+                    label={t('points.fields.pointsPerEvent')}
                     type="number"
                     {...form.register('pointsPerEvent', { valueAsNumber: true })}
                     error={!!form.formState.errors.pointsPerEvent}
-                    helperText={form.formState.errors.pointsPerEvent?.message || 'Broj bodova koji član dobija za svaki potvr jedinožen prisustvo na događaju'}
+                    helperText={form.formState.errors.pointsPerEvent?.message || t('points.fields.pointsPerEventHelper')}
                     required
                     data-testid="input-points-per-event"
                   />
@@ -221,7 +215,7 @@ export default function PointSettingsPage() {
                   disabled={updateSettingsMutation.isPending || pointSettingsQuery.isLoading || !pointSettingsQuery.data}
                   data-testid="button-save"
                 >
-                  {updateSettingsMutation.isPending ? 'Spremanje...' : 'Spremi Postavke'}
+                  {t('points.save')}
                 </Button>
               </Box>
             </Stack>

@@ -1,0 +1,38 @@
+{
+  "title": "Anfragen und Anmeldungen",
+  "newRequest": "Neue Anfrage",
+  "loading": "Laden...",
+  "noRequests": "Sie haben keine eingereichten Anfragen",
+  "submitFirstRequest": "Erste Anfrage einreichen",
+  "requestTypes": {
+    "wedding": "Hochzeitsanmeldung",
+    "mekteb": "Mekteb-Anmeldung für Kind",
+    "facility": "Antrag auf Nutzung der Räumlichkeiten",
+    "akika": "Akika-Anmeldung"
+  },
+  "status": {
+    "pending": "Ausstehend",
+    "approved": "Genehmigt",
+    "rejected": "Abgelehnt"
+  },
+  "dialog": {
+    "title": "Neue Anfrage / Anmeldung",
+    "selectType": "Anfrageart auswählen",
+    "noteLabel": "Notiz (optional)",
+    "formNotAvailable": "Das Formular für diese Anfrageart wird bald verfügbar sein. Bitte kontaktieren Sie den Administrator für weitere Informationen.",
+    "cancel": "Abbrechen",
+    "submit": "Senden",
+    "submitting": "Wird gesendet..."
+  },
+  "card": {
+    "submittedLabel": "Eingereicht:",
+    "adminNotesLabel": "Administrator-Notiz:"
+  },
+  "toast": {
+    "success": "Erfolgreich",
+    "successDescription": "Ihre Anfrage wurde gesendet",
+    "error": "Fehler",
+    "errorDescription": "Anfrage konnte nicht gesendet werden",
+    "selectTypeError": "Bitte wählen Sie eine Anfrageart aus"
+  }
+}

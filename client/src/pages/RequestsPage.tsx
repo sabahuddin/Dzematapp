@@ -2,24 +2,26 @@ import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Container, Typography, Box, Card, CardContent, CardHeader, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Select, MenuItem, FormControl, InputLabel, Chip } from "@mui/material";
 import { FileText, Plus } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/contexts/AuthContext";
 import type { Request } from "@shared/schema";
 
-const requestTypes = [
-  { value: "wedding", label: "Prijava vjenčanja" },
-  { value: "mekteb", label: "Prijava djeteta u mekteb" },
-  { value: "facility", label: "Zahtjev za korištenje prostorija" },
-  { value: "akika", label: "Prijava akike" }
-];
-
 export default function RequestsPage() {
+  const { t } = useTranslation("requests");
   const { toast } = useToast();
   const { user } = useAuth();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedType, setSelectedType] = useState("");
   const [formData, setFormData] = useState<Record<string, string>>({});
+
+  const requestTypes = [
+    { value: "wedding", label: t("requestTypes.wedding") },
+    { value: "mekteb", label: t("requestTypes.mekteb") },
+    { value: "facility", label: t("requestTypes.facility") },
+    { value: "akika", label: t("requestTypes.akika") }
+  ];
 
   const { data: requests = [], isLoading } = useQuery<Request[]>({
     queryKey: ["/api/requests/my"]
@@ -43,8 +45,8 @@ export default function RequestsPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/requests/my"] });
       toast({
-        title: "Uspješno",
-        description: "Vaš zahtjev je poslat"
+        title: t("toast.success"),
+        description: t("toast.successDescription")
       });
       setDialogOpen(false);
       setSelectedType("");
@@ -52,8 +54,8 @@ export default function RequestsPage() {
     },
     onError: () => {
       toast({
-        title: "Greška",
-        description: "Nije moguće poslati zahtjev",
+        title: t("toast.error"),
+        description: t("toast.errorDescription"),
         variant: "destructive"
       });
     }
@@ -73,8 +75,8 @@ export default function RequestsPage() {
   const handleSubmit = () => {
     if (!selectedType) {
       toast({
-        title: "Greška",
-        description: "Molimo odaberite tip zahtjeva",
+        title: t("toast.error"),
+        description: t("toast.selectTypeError"),
         variant: "destructive"
       });
       return;
@@ -95,11 +97,11 @@ export default function RequestsPage() {
       <Box sx={{ mt: 3, display: "flex", flexDirection: "column", gap: 2 }}>
         <Typography variant="h6">{typeLabel}</Typography>
         <Typography variant="body2" color="text.secondary">
-          Forma za ovaj tip zahtjeva će biti dostupna uskoro. Molimo kontaktirajte administratora za više informacija.
+          {t("dialog.formNotAvailable")}
         </Typography>
         
         <TextField
-          label="Napomena (opciono)"
+          label={t("dialog.noteLabel")}
           value={formData.note || ""}
           onChange={(e) => setFormData({ ...formData, note: e.target.value })}
           multiline
@@ -114,11 +116,11 @@ export default function RequestsPage() {
   const getStatusLabel = (status: string) => {
     switch (status) {
       case "pending":
-        return "Na čekanju";
+        return t("status.pending");
       case "approved":
-        return "Odobreno";
+        return t("status.approved");
       case "rejected":
-        return "Odbijeno";
+        return t("status.rejected");
       default:
         return status;
     }
@@ -155,7 +157,7 @@ export default function RequestsPage() {
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
         <Typography variant="h4" component="h1">
-          Zahtjevi i Prijave
+          {t("title")}
         </Typography>
         <Button
           variant="contained"
@@ -163,19 +165,19 @@ export default function RequestsPage() {
           onClick={handleOpenDialog}
           data-testid="button-new-request"
         >
-          Novi Zahtjev
+          {t("newRequest")}
         </Button>
       </Box>
 
       {isLoading ? (
-        <Typography>Učitavanje...</Typography>
+        <Typography>{t("loading")}</Typography>
       ) : requests.length === 0 ? (
         <Card>
           <CardContent>
             <Box sx={{ textAlign: "center", py: 4 }}>
               <FileText size={48} style={{ opacity: 0.3, margin: "0 auto" }} />
               <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
-                Nemate podnesenih zahtjeva
+                {t("noRequests")}
               </Typography>
               <Button
                 variant="outlined"
@@ -183,7 +185,7 @@ export default function RequestsPage() {
                 sx={{ mt: 2 }}
                 data-testid="button-first-request"
               >
-                Podnesi prvi zahtjev
+                {t("submitFirstRequest")}
               </Button>
             </Box>
           </CardContent>
@@ -194,7 +196,7 @@ export default function RequestsPage() {
             <Card key={request.id} data-testid={`card-request-${request.id}`}>
               <CardHeader
                 title={getTypeLabel(request.requestType)}
-                subheader={`Poslato: ${formatDate(request.createdAt)}`}
+                subheader={`${t("card.submittedLabel")} ${formatDate(request.createdAt)}`}
                 action={
                   <Chip
                     label={getStatusLabel(request.status)}
@@ -208,7 +210,7 @@ export default function RequestsPage() {
                 {request.adminNotes && (
                   <Box sx={{ mt: 2, p: 2, bgcolor: "action.hover", borderRadius: 1 }}>
                     <Typography variant="caption" color="text.secondary">
-                      Napomena administratora:
+                      {t("card.adminNotesLabel")}
                     </Typography>
                     <Typography variant="body2">
                       {request.adminNotes}
@@ -227,15 +229,15 @@ export default function RequestsPage() {
         maxWidth="md"
         fullWidth
       >
-        <DialogTitle>Novi Zahtjev / Prijava</DialogTitle>
+        <DialogTitle>{t("dialog.title")}</DialogTitle>
         <DialogContent>
           <Box sx={{ mt: 2 }}>
             <FormControl fullWidth>
-              <InputLabel>Odaberi tip zahtjeva</InputLabel>
+              <InputLabel>{t("dialog.selectType")}</InputLabel>
               <Select
                 value={selectedType}
                 onChange={(e) => handleTypeChange(e.target.value)}
-                label="Odaberi tip zahtjeva"
+                label={t("dialog.selectType")}
                 data-testid="select-request-type"
               >
                 {requestTypes.map((type) => (
@@ -251,7 +253,7 @@ export default function RequestsPage() {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDialogOpen(false)} data-testid="button-cancel-request">
-            Otkaži
+            {t("dialog.cancel")}
           </Button>
           <Button
             onClick={handleSubmit}
@@ -259,7 +261,7 @@ export default function RequestsPage() {
             disabled={!selectedType || submitMutation.isPending}
             data-testid="button-submit-request"
           >
-            {submitMutation.isPending ? "Slanje..." : "Pošalji"}
+            {submitMutation.isPending ? t("dialog.submitting") : t("dialog.submit")}
           </Button>
         </DialogActions>
       </Dialog>
