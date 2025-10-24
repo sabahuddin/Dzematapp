@@ -66,5 +66,38 @@
     "noAvailableUsers": "Nema dostupnih korisnika"
   },
   "noUsers": "Nema korisnika",
-  "totalUsers": "Ukupno korisnika: {{count}}"
+  "totalUsers": "Ukupno korisnika: {{count}}",
+  "bulkUpload": "Masovno učitavanje",
+  "search": "Pretraži korisnike...",
+  "filterByCategory": "Filtriraj po kategoriji",
+  "filterBySkills": "Filtriraj po vještinama",
+  "categories": {
+    "all": "Svi",
+    "men": "Muškarci",
+    "women": "Žene",
+    "parents": "Roditelji",
+    "youth": "Omladina"
+  },
+  "table": {
+    "points": "Bodovi",
+    "actions": "Akcije"
+  },
+  "actions": {
+    "edit": "Uredi",
+    "deactivate": "Deaktiviraj",
+    "activate": "Aktiviraj",
+    "viewFamily": "Porodica"
+  },
+  "messages": {
+    "successCreate": "Korisnik je uspješno kreiran",
+    "successUpdate": "Korisnik je uspješno ažuriran",
+    "errorCreate": "Greška pri kreiranju korisnika",
+    "errorUpdate": "Greška pri ažuriranju korisnika",
+    "loading": "Učitavam korisnike...",
+    "error": "Greška pri učitavanju korisnika"
+  },
+  "common": {
+    "success": "Uspjeh",
+    "error": "Greška"
+  }
 }

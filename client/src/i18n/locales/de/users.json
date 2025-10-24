@@ -66,5 +66,38 @@
     "noAvailableUsers": "Keine verfügbaren Benutzer"
   },
   "noUsers": "Keine Benutzer",
-  "totalUsers": "Gesamtanzahl Benutzer: {{count}}"
+  "totalUsers": "Gesamtanzahl Benutzer: {{count}}",
+  "bulkUpload": "Massenupload",
+  "search": "Benutzer suchen...",
+  "filterByCategory": "Nach Kategorie filtern",
+  "filterBySkills": "Nach Fähigkeiten filtern",
+  "categories": {
+    "all": "Alle",
+    "men": "Männer",
+    "women": "Frauen",
+    "parents": "Eltern",
+    "youth": "Jugend"
+  },
+  "table": {
+    "points": "Punkte",
+    "actions": "Aktionen"
+  },
+  "actions": {
+    "edit": "Bearbeiten",
+    "deactivate": "Deaktivieren",
+    "activate": "Aktivieren",
+    "viewFamily": "Familie"
+  },
+  "messages": {
+    "successCreate": "Benutzer wurde erfolgreich erstellt",
+    "successUpdate": "Benutzer wurde erfolgreich aktualisiert",
+    "errorCreate": "Fehler beim Erstellen des Benutzers",
+    "errorUpdate": "Fehler beim Aktualisieren des Benutzers",
+    "loading": "Lade Benutzer...",
+    "error": "Fehler beim Laden der Benutzer"
+  },
+  "common": {
+    "success": "Erfolg",
+    "error": "Fehler"
+  }
 }

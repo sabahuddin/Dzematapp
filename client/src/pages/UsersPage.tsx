@@ -37,11 +37,13 @@ import FamilyMembersDialog from '../components/modals/FamilyMembersDialog';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/use-toast';
 import { apiRequest } from '../lib/queryClient';
+import { useTranslation } from 'react-i18next';
 
 export default function UsersPage() {
   const { user: currentUser } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { t } = useTranslation(['users']);
   
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -52,7 +54,13 @@ export default function UsersPage() {
   const [familyMembersDialogOpen, setFamilyMembersDialogOpen] = useState(false);
   const [selectedUserForFamily, setSelectedUserForFamily] = useState<User | null>(null);
 
-  const predefinedCategories = ['Svi', 'Muškarci', 'Žene', 'Roditelji', 'Omladina'];
+  const predefinedCategories = [
+    t('users:categories.all'),
+    t('users:categories.men'),
+    t('users:categories.women'),
+    t('users:categories.parents'),
+    t('users:categories.youth')
+  ];
 
   // Fetch users
   const usersQuery = useQuery({
@@ -68,10 +76,10 @@ export default function UsersPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/users'] });
-      toast({ title: 'Uspjeh', description: 'Korisnik je uspješno kreiran' });
+      toast({ title: t('users:common.success'), description: t('users:messages.successCreate') });
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri kreiranju korisnika', variant: 'destructive' });
+      toast({ title: t('users:common.error'), description: t('users:messages.errorCreate'), variant: 'destructive' });
     }
   });
 
@@ -83,10 +91,10 @@ export default function UsersPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/users'] });
-      toast({ title: 'Uspjeh', description: 'Korisnik je uspješno ažuriran' });
+      toast({ title: t('users:common.success'), description: t('users:messages.successUpdate') });
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri ažuriranju korisnika', variant: 'destructive' });
+      toast({ title: t('users:common.error'), description: t('users:messages.errorUpdate'), variant: 'destructive' });
     }
   });
 
@@ -102,8 +110,8 @@ export default function UsersPage() {
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case 'aktivan': return 'Aktivan';
-      case 'pasivan': return 'Pasivan';
+      case 'aktivan': return t('users:membershipStatuses.aktivan');
+      case 'pasivan': return t('users:membershipStatuses.pasivan');
       case 'član porodice': return 'Član porodice';
       default: return status;
     }
@@ -120,11 +128,11 @@ export default function UsersPage() {
 
   const getRoleLabel = (role: string): string => {
     const roleLabels: Record<string, string> = {
-      'admin': 'Admin',
+      'admin': t('users:roles.admin'),
       'imam': 'Imam',
-      'clan_io': 'Član IO',
-      'clan': 'Član',
-      'clan_porodice': 'Član porodice',
+      'clan_io': t('users:roles.clan_io'),
+      'clan': t('users:roles.clan'),
+      'clan_porodice': t('users:roles.clan_porodice'),
       'moderator': 'Moderator',
       'clan_radne_grupe': 'Član sekcije'
     };
@@ -197,7 +205,7 @@ export default function UsersPage() {
   if (usersQuery.error) {
     return (
       <Alert severity="error">
-        Greška pri učitavanju korisnika. Molimo pokušajte ponovo.
+        {t('users:messages.error')}
       </Alert>
     );
   }
@@ -210,7 +218,7 @@ export default function UsersPage() {
       <Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
           <Typography variant="h5" sx={{ fontWeight: 600 }}>
-            Moj Profil
+            {t('users:viewUser')}
           </Typography>
         </Box>
 
@@ -230,7 +238,7 @@ export default function UsersPage() {
                   {myProfile.firstName} {myProfile.lastName}
                 </Typography>
                 <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-                  {myProfile.email || 'Email nije unesen'}
+                  {myProfile.email || t('users:email')}
                 </Typography>
                 <Button
                   variant="contained"
@@ -238,7 +246,7 @@ export default function UsersPage() {
                   onClick={() => handleEditUser(myProfile)}
                   data-testid="button-edit-profile"
                 >
-                  Uredi
+                  {t('users:actions.edit')}
                 </Button>
               </Box>
             </Box>
@@ -250,13 +258,13 @@ export default function UsersPage() {
               {/* Personal Information */}
               <Grid size={{ xs: 12 }}>
                 <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-                  Lični podaci
+                  {t('users:firstName')} {t('users:lastName')}
                 </Typography>
               </Grid>
               
               <Grid size={{ xs: 12, md: 6 }}>
                 <Typography variant="caption" color="text.secondary">
-                  Ime
+                  {t('users:firstName')}
                 </Typography>
                 <Typography variant="body1" sx={{ fontWeight: 500 }}>
                   {myProfile.firstName}
@@ -265,7 +273,7 @@ export default function UsersPage() {
 
               <Grid size={{ xs: 12, md: 6 }}>
                 <Typography variant="caption" color="text.secondary">
-                  Prezime
+                  {t('users:lastName')}
                 </Typography>
                 <Typography variant="body1" sx={{ fontWeight: 500 }}>
                   {myProfile.lastName}
@@ -274,7 +282,7 @@ export default function UsersPage() {
 
               <Grid size={{ xs: 12, md: 6 }}>
                 <Typography variant="caption" color="text.secondary">
-                  Korisničko ime
+                  {t('users:username')}
                 </Typography>
                 <Typography variant="body1" sx={{ fontWeight: 500 }}>
                   {myProfile.username}
@@ -283,7 +291,7 @@ export default function UsersPage() {
 
               <Grid size={{ xs: 12, md: 6 }}>
                 <Typography variant="caption" color="text.secondary">
-                  Email
+                  {t('users:email')}
                 </Typography>
                 <Typography variant="body1" sx={{ fontWeight: 500 }}>
                   {myProfile.email || '-'}
@@ -292,7 +300,7 @@ export default function UsersPage() {
 
               <Grid size={{ xs: 12, md: 6 }}>
                 <Typography variant="caption" color="text.secondary">
-                  Telefon
+                  {t('users:phone')}
                 </Typography>
                 <Typography variant="body1" sx={{ fontWeight: 500 }}>
                   {myProfile.phone || '-'}
@@ -301,7 +309,7 @@ export default function UsersPage() {
 
               <Grid size={{ xs: 12, md: 6 }}>
                 <Typography variant="caption" color="text.secondary">
-                  Adresa
+                  {t('users:address')}
                 </Typography>
                 <Typography variant="body1" sx={{ fontWeight: 500 }}>
                   {myProfile.address || '-'}
@@ -310,7 +318,7 @@ export default function UsersPage() {
 
               <Grid size={{ xs: 12, md: 6 }}>
                 <Typography variant="caption" color="text.secondary">
-                  Poštanski broj
+                  {t('users:postalCode')}
                 </Typography>
                 <Typography variant="body1" sx={{ fontWeight: 500 }}>
                   {myProfile.postalCode || '-'}
@@ -319,7 +327,7 @@ export default function UsersPage() {
 
               <Grid size={{ xs: 12, md: 6 }}>
                 <Typography variant="caption" color="text.secondary">
-                  Grad
+                  {t('users:city')}
                 </Typography>
                 <Typography variant="body1" sx={{ fontWeight: 500 }}>
                   {myProfile.city || '-'}
@@ -328,7 +336,7 @@ export default function UsersPage() {
 
               <Grid size={{ xs: 12, md: 6 }}>
                 <Typography variant="caption" color="text.secondary">
-                  Zanimanje
+                  {t('users:occupation')}
                 </Typography>
                 <Typography variant="body1" sx={{ fontWeight: 500 }}>
                   {myProfile.occupation || '-'}
@@ -337,7 +345,7 @@ export default function UsersPage() {
 
               <Grid size={{ xs: 12 }}>
                 <Typography variant="caption" color="text.secondary">
-                  Vještine
+                  {t('users:skills')}
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mt: 0.5 }}>
                   {myProfile.skills && myProfile.skills.length > 0 ? (
@@ -360,13 +368,13 @@ export default function UsersPage() {
               {/* Membership Information */}
               <Grid size={{ xs: 12 }}>
                 <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, mt: 2 }}>
-                  Informacije o članstvu
+                  {t('users:membershipStatus')}
                 </Typography>
               </Grid>
 
               <Grid size={{ xs: 12, md: 6 }}>
                 <Typography variant="caption" color="text.secondary">
-                  Član od
+                  {t('users:memberSince')}
                 </Typography>
                 <Typography variant="body1" sx={{ fontWeight: 500 }}>
                   {myProfile.membershipDate ? new Date(myProfile.membershipDate).toLocaleDateString('hr-HR') : '-'}
@@ -375,7 +383,7 @@ export default function UsersPage() {
 
               <Grid size={{ xs: 12, md: 6 }}>
                 <Typography variant="caption" color="text.secondary">
-                  Status članstva
+                  {t('users:membershipStatus')}
                 </Typography>
                 <Box sx={{ mt: 0.5 }}>
                   <Chip
@@ -388,7 +396,7 @@ export default function UsersPage() {
 
               <Grid size={{ xs: 12, md: 6 }}>
                 <Typography variant="caption" color="text.secondary">
-                  Uloge
+                  {t('users:roles.label')}
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mt: 0.5 }}>
                   {myProfile.roles && myProfile.roles.length > 0 ? (
@@ -428,7 +436,7 @@ export default function UsersPage() {
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h5" sx={{ fontWeight: 600 }}>
-          Upravljanje Korisnicima
+          {t('users:title')}
         </Typography>
         <Box sx={{ display: 'flex', gap: 2 }}>
           <Button
@@ -437,7 +445,7 @@ export default function UsersPage() {
             onClick={() => setBulkUploadModalOpen(true)}
             data-testid="button-bulk-upload"
           >
-            Bulk Upload
+            {t('users:bulkUpload')}
           </Button>
           <Button
             variant="contained"
@@ -445,7 +453,7 @@ export default function UsersPage() {
             onClick={handleCreateUser}
             data-testid="button-add-user"
           >
-            Dodaj Novog Korisnika
+            {t('users:addUser')}
           </Button>
         </Box>
       </Box>
@@ -454,7 +462,7 @@ export default function UsersPage() {
         <Box sx={{ p: 3, borderBottom: '1px solid #e0e0e0', display: 'flex', gap: 2, flexWrap: 'wrap' }}>
           <TextField
             variant="outlined"
-            placeholder="Pretraži po imenu, emailu ili telefonu..."
+            placeholder={t('users:search')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             sx={{ minWidth: 250, flex: 1, maxWidth: 400 }}
@@ -469,7 +477,7 @@ export default function UsersPage() {
               <TextField
                 {...params}
                 variant="outlined"
-                placeholder="Filtriraj po kategorijama"
+                placeholder={t('users:filterByCategory')}
                 data-testid="input-category-filter"
               />
             )}
@@ -485,7 +493,7 @@ export default function UsersPage() {
               <TextField
                 {...params}
                 variant="outlined"
-                placeholder="Filtriraj po vještinama"
+                placeholder={t('users:filterBySkills')}
                 data-testid="input-skills-filter"
               />
             )}
@@ -498,17 +506,17 @@ export default function UsersPage() {
           <Table>
             <TableHead>
               <TableRow sx={{ bgcolor: '#f8f9fa' }}>
-                <TableCell sx={{ fontWeight: 600 }}>Korisnik</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Korisničko ime</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Email</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Telefon</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Član od</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Status članstva</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('users:firstName')} {t('users:lastName')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('users:username')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('users:email')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('users:phone')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('users:memberSince')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('users:membershipStatus')}</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Kategorije</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Vještine</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Uloge</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Porodica</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('users:skills')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('users:roles.label')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('users:family.title')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('users:table.actions')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -528,7 +536,7 @@ export default function UsersPage() {
                           {user.firstName} {user.lastName}
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
-                          {user.isAdmin ? 'Administrator' : 'Korisnik'}
+                          {user.isAdmin ? t('users:roles.admin') : t('users:viewUser')}
                         </Typography>
                       </Box>
                     </Box>
@@ -624,7 +632,7 @@ export default function UsersPage() {
                         setFamilyMembersDialogOpen(true);
                       }}
                       data-testid={`family-${user.id}`}
-                      title="Vidi članove porodice"
+                      title={t('users:actions.viewFamily')}
                     >
                       <Groups />
                     </IconButton>
@@ -636,7 +644,7 @@ export default function UsersPage() {
                         onClick={() => handleEditUser(user)}
                         sx={{ color: '#1976d2' }}
                         data-testid={`button-view-user-${user.id}`}
-                        title="Pregledaj"
+                        title={t('users:viewUser')}
                       >
                         <Visibility fontSize="small" />
                       </IconButton>
@@ -645,7 +653,7 @@ export default function UsersPage() {
                         onClick={() => handleEditUser(user)}
                         sx={{ color: '#ed6c02' }}
                         data-testid={`button-edit-user-${user.id}`}
-                        title="Uredi"
+                        title={t('users:actions.edit')}
                       >
                         <Edit fontSize="small" />
                       </IconButton>
@@ -655,9 +663,9 @@ export default function UsersPage() {
               ))}
               {filteredUsers.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={10} sx={{ textAlign: 'center', py: 4 }}>
+                  <TableCell colSpan={11} sx={{ textAlign: 'center', py: 4 }}>
                     <Typography color="text.secondary">
-                      {searchTerm || selectedCategories.length > 0 ? 'Nema korisnika koji odgovaraju pretrazi' : 'Nema korisnika'}
+                      {searchTerm || selectedCategories.length > 0 ? t('users:searchUsers') : t('users:noUsers')}
                     </Typography>
                   </TableCell>
                 </TableRow>
