@@ -25,6 +25,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useToast } from '../../hooks/use-toast';
 import { apiRequest } from '../../lib/queryClient';
 import RichTextEditor from '../ui/rich-text-editor';
+import { useTranslation } from 'react-i18next';
 
 interface AnnouncementModalProps {
   open: boolean;
@@ -41,6 +42,7 @@ export default function AnnouncementModal({
   announcement, 
   authorId 
 }: AnnouncementModalProps) {
+  const { t } = useTranslation(['announcements', 'common']);
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     title: '',
@@ -94,8 +96,8 @@ export default function AnnouncementModal({
       const fileExtension = file.name.split('.').pop()?.toLowerCase();
       if (!['jpg', 'jpeg', 'png', 'pdf'].includes(fileExtension || '')) {
         toast({
-          title: 'Greška',
-          description: `Nepodržan tip fajla: ${file.name}. Podržani tipovi: JPG, PNG, PDF`,
+          title: t('common:common.error'),
+          description: t('announcements:modal.unsupportedFileType', { fileName: file.name }),
           variant: 'destructive',
         });
         continue;
@@ -104,8 +106,8 @@ export default function AnnouncementModal({
       // Check file size (10MB limit)
       if (file.size > 10 * 1024 * 1024) {
         toast({
-          title: 'Greška',
-          description: `Fajl ${file.name} je prevelik. Maksimalna veličina je 10MB.`,
+          title: t('common:common.error'),
+          description: t('announcements:modal.fileTooLarge', { fileName: file.name, size: 10 }),
           variant: 'destructive',
         });
         continue;
@@ -145,15 +147,15 @@ export default function AnnouncementModal({
       }
       
       toast({
-        title: 'Uspjeh',
-        description: `${selectedFiles.length} fajl(ova) je uspješno učitano`,
+        title: t('common:common.success'),
+        description: t('announcements:messages.filesUploadSuccess', { count: selectedFiles.length }),
       });
       
       setSelectedFiles([]);
     } catch (error) {
       toast({
-        title: 'Greška',
-        description: 'Greška pri učitavanju fajlova',
+        title: t('common:common.error'),
+        description: t('announcements:messages.filesUploadError'),
         variant: 'destructive',
       });
     } finally {
@@ -166,16 +168,16 @@ export default function AnnouncementModal({
       const response = await apiRequest(`/api/announcement-files/${fileId}`, 'DELETE');
       if (response.ok) {
         toast({
-          title: 'Uspjeh',
-          description: 'Fajl je uspješno obrisan',
+          title: t('common:common.success'),
+          description: t('announcements:modal.fileDeleteSuccess'),
         });
         // Refetch announcement files
         announcementFilesQuery.refetch();
       }
     } catch (error) {
       toast({
-        title: 'Greška',
-        description: 'Greška pri brisanju fajla',
+        title: t('common:common.error'),
+        description: t('announcements:modal.fileDeleteError'),
         variant: 'destructive',
       });
     }
@@ -243,7 +245,7 @@ export default function AnnouncementModal({
       }}
     >
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        {announcement ? 'Uredi Obavijest' : 'Kreiraj Obavijest'}
+        {announcement ? t('announcements:modal.editTitle') : t('announcements:modal.createTitle')}
         <IconButton onClick={onClose} data-testid="close-announcement-modal">
           <Close />
         </IconButton>
@@ -255,7 +257,7 @@ export default function AnnouncementModal({
             <TextField
               fullWidth
               variant="outlined"
-              label="Naslov"
+              label={t('announcements:announcementTitle')}
               value={formData.title}
               onChange={handleChange('title')}
               required
@@ -283,8 +285,8 @@ export default function AnnouncementModal({
                 <TextField
                   {...params}
                   variant="outlined"
-                  label="Kategorije"
-                  placeholder="Izaberite ili unesite kategorije"
+                  label={t('announcements:categories.label')}
+                  placeholder={t('announcements:categories.placeholder')}
                   InputLabelProps={{ shrink: true }}
                   data-testid="input-categories"
                 />
@@ -296,8 +298,8 @@ export default function AnnouncementModal({
             <RichTextEditor
               value={formData.content}
               onChange={(value) => setFormData(prev => ({ ...prev, content: value }))}
-              label="Sadržaj"
-              placeholder="Unesite sadržaj obavijesti..."
+              label={t('announcements:content')}
+              placeholder={t('announcements:contentPlaceholder')}
               required
               data-testid="input-content"
             />
@@ -310,13 +312,13 @@ export default function AnnouncementModal({
                   data-testid="switch-featured"
                 />
               }
-              label="Istaknuta Obavijest"
+              label={t('announcements:modal.featuredLabel')}
             />
 
             {/* File Upload Section */}
             <Box sx={{ mt: 2 }}>
               <Typography variant="h6" gutterBottom>
-                Prilozi
+                {t('announcements:attachments')}
               </Typography>
               
               {/* File Upload Input */}
@@ -337,11 +339,11 @@ export default function AnnouncementModal({
                     startIcon={<CloudUpload />}
                     data-testid="button-upload-files"
                   >
-                    Dodaj Fajlove
+                    {t('announcements:addFiles')}
                   </Button>
                 </label>
                 <Typography variant="caption" display="block" sx={{ mt: 1, color: 'text.secondary' }}>
-                  Podržani tipovi: JPG, PNG, PDF (maks. 10MB)
+                  {t('announcements:modal.supportedFormats', { size: 10 })}
                 </Typography>
               </Box>
 
@@ -349,7 +351,7 @@ export default function AnnouncementModal({
               {selectedFiles.length > 0 && (
                 <Box sx={{ mb: 2 }}>
                   <Typography variant="subtitle2" gutterBottom>
-                    Odabrani fajlovi za upload:
+                    {t('announcements:modal.selectedFiles')}
                   </Typography>
                   <List dense>
                     {selectedFiles.map((file, index) => (
@@ -384,7 +386,7 @@ export default function AnnouncementModal({
               {announcementFilesQuery.data && announcementFilesQuery.data.length > 0 && (
                 <Box sx={{ mb: 2 }}>
                   <Typography variant="subtitle2" gutterBottom>
-                    Postojeći prilozi:
+                    {t('announcements:modal.existingAttachments')}
                   </Typography>
                   <List dense>
                     {announcementFilesQuery.data.map((file) => (
@@ -396,7 +398,7 @@ export default function AnnouncementModal({
                               <span>{file.fileName}</span>
                             </Box>
                           }
-                          secondary={`${(file.fileSize / 1024 / 1024).toFixed(2)} MB - Dodao ${file.uploadedBy?.firstName} ${file.uploadedBy?.lastName}`}
+                          secondary={`${(file.fileSize / 1024 / 1024).toFixed(2)} MB - ${t('announcements:modal.uploadedBy')} ${file.uploadedBy?.firstName} ${file.uploadedBy?.lastName}`}
                         />
                         <ListItemSecondaryAction>
                           <Chip
@@ -431,7 +433,7 @@ export default function AnnouncementModal({
                     disabled={uploading}
                     data-testid="button-upload-selected-files"
                   >
-                    {uploading ? 'Učitavanje...' : `Učitaj ${selectedFiles.length} fajl(ova)`}
+                    {uploading ? t('announcements:modal.uploading') : t('announcements:modal.uploadFiles', { count: selectedFiles.length })}
                   </Button>
                 </Box>
               )}
@@ -439,7 +441,7 @@ export default function AnnouncementModal({
               {/* Info for new announcements */}
               {!announcement && selectedFiles.length > 0 && (
                 <Alert severity="info" sx={{ mb: 2 }}>
-                  Fajlovi će biti učitani nakon kreiranja obavijesti.
+                  {t('announcements:modal.filesWillUpload')}
                 </Alert>
               )}
             </Box>
@@ -452,14 +454,14 @@ export default function AnnouncementModal({
             variant="outlined"
             data-testid="button-cancel"
           >
-            Odustani
+            {t('common:buttons.cancel')}
           </Button>
           <Button 
             type="submit" 
             variant="contained"
             data-testid="button-save"
           >
-            Spremi
+            {t('announcements:modal.save')}
           </Button>
         </DialogActions>
       </form>
