@@ -23,6 +23,23 @@
     "setAsModerator": "Postavi kao moderatora",
     "removeFromModerators": "Ukloni moderatora"
   },
+  "dashboard": {
+    "title": "Pregled Zadataka",
+    "adminView": "Admin pogled - Svi zadaci",
+    "moderatorView": "Moderator pogled - Vaše sekcije",
+    "all": "Svi",
+    "inProgress": "U toku",
+    "pending": "Na čekanju",
+    "completed": "Završeno",
+    "cancelled": "Otkazano",
+    "archived": "Arhiva",
+    "noTasksWithStatus": "Nema zadataka sa statusom \"{{status}}\"",
+    "taskCount_one": "{{count}} zadatak",
+    "taskCount_few": "{{count}} zadatka",
+    "taskCount_many": "{{count}} zadataka",
+    "loadingError": "Greška pri učitavanju zadataka. Molimo pokušajte ponovo.",
+    "deadlineLabel": "Rok:"
+  },
   "task": {
     "add": "Dodaj Zadatak",
     "edit": "Uredi Zadatak",
@@ -43,7 +60,9 @@
       "label": "Status",
       "na_cekanju": "Na čekanju",
       "u_toku": "U toku",
-      "zavrseno": "Završeno"
+      "zavrseno": "Završeno",
+      "otkazano": "Otkazano",
+      "arhiva": "Arhiva"
     },
     "markAsComplete": "Označi kao završeno",
     "markInProgress": "Označi kao u toku",

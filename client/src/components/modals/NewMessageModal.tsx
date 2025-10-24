@@ -3,6 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useTranslation } from "react-i18next";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -52,6 +53,7 @@ interface NewMessageModalProps {
 export default function NewMessageModal({ isOpen, onClose, replyTo }: NewMessageModalProps) {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation(['messages', 'common']);
 
   const { data: users = [] } = useQuery<User[]>({
     queryKey: ["/api/users"],
@@ -102,16 +104,16 @@ export default function NewMessageModal({ isOpen, onClose, replyTo }: NewMessage
       queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
       queryClient.invalidateQueries({ queryKey: ["/api/messages/unread-count"] });
       toast({
-        title: "Uspjeh",
-        description: "Poruka je uspješno poslana",
+        title: t('common:common.success'),
+        description: t('common:common.messageSent'),
       });
       form.reset();
       onClose();
     },
     onError: (error: any) => {
       toast({
-        title: "Greška",
-        description: error.message || "Nije moguće poslati poruku",
+        title: t('common:common.error'),
+        description: error.message || t('common:common.messageSendError'),
         variant: "destructive",
       });
     },
@@ -130,7 +132,7 @@ export default function NewMessageModal({ isOpen, onClose, replyTo }: NewMessage
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="max-w-2xl" data-testid="modal-new-message">
         <DialogHeader>
-          <DialogTitle>Nova poruka</DialogTitle>
+          <DialogTitle>{t('messages:newMessage')}</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
@@ -141,7 +143,7 @@ export default function NewMessageModal({ isOpen, onClose, replyTo }: NewMessage
                 name="messageType"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tip poruke</FormLabel>
+                    <FormLabel>{t('common:common.messageType')}</FormLabel>
                     <Select
                       value={field.value}
                       onValueChange={field.onChange}
@@ -149,12 +151,12 @@ export default function NewMessageModal({ isOpen, onClose, replyTo }: NewMessage
                     >
                       <FormControl>
                         <SelectTrigger data-testid="select-message-type">
-                          <SelectValue placeholder="Izaberite tip poruke" />
+                          <SelectValue placeholder={t('common:common.selectMessageType')} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="private">Privatna</SelectItem>
-                        <SelectItem value="category">Kategorijska</SelectItem>
+                        <SelectItem value="private">{t('common:common.private')}</SelectItem>
+                        <SelectItem value="category">{t('common:common.category')}</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -169,7 +171,7 @@ export default function NewMessageModal({ isOpen, onClose, replyTo }: NewMessage
                 name="recipientId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Primalac</FormLabel>
+                    <FormLabel>{t('messages:to')}</FormLabel>
                     <Select
                       value={field.value}
                       onValueChange={field.onChange}
@@ -177,7 +179,7 @@ export default function NewMessageModal({ isOpen, onClose, replyTo }: NewMessage
                     >
                       <FormControl>
                         <SelectTrigger data-testid="select-recipient">
-                          <SelectValue placeholder="Izaberite primaoca" />
+                          <SelectValue placeholder={t('messages:selectRecipient')} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -212,11 +214,11 @@ export default function NewMessageModal({ isOpen, onClose, replyTo }: NewMessage
                 name="category"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Kategorija</FormLabel>
+                    <FormLabel>{t('common:common.category')}</FormLabel>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl>
                         <SelectTrigger data-testid="select-category">
-                          <SelectValue placeholder="Izaberite kategoriju" />
+                          <SelectValue placeholder={t('common:common.selectCategory')} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -238,11 +240,11 @@ export default function NewMessageModal({ isOpen, onClose, replyTo }: NewMessage
               name="subject"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Naslov</FormLabel>
+                  <FormLabel>{t('messages:subject')}</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="Unesite naslov poruke"
+                      placeholder={t('common:common.enterSubject')}
                       data-testid="input-subject"
                     />
                   </FormControl>
@@ -256,11 +258,11 @@ export default function NewMessageModal({ isOpen, onClose, replyTo }: NewMessage
               name="content"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Sadržaj</FormLabel>
+                  <FormLabel>{t('messages:message')}</FormLabel>
                   <FormControl>
                     <Textarea
                       {...field}
-                      placeholder="Unesite sadržaj poruke"
+                      placeholder={t('messages:messagePlaceholder')}
                       rows={8}
                       data-testid="textarea-content"
                     />
@@ -277,14 +279,14 @@ export default function NewMessageModal({ isOpen, onClose, replyTo }: NewMessage
                 onClick={handleClose}
                 data-testid="button-cancel"
               >
-                Otkaži
+                {t('common:common.cancel')}
               </Button>
               <Button
                 type="submit"
                 disabled={createMessageMutation.isPending}
                 data-testid="button-send"
               >
-                {createMessageMutation.isPending ? "Slanje..." : "Pošalji"}
+                {createMessageMutation.isPending ? t('common:common.sending') : t('messages:send')}
               </Button>
             </div>
           </form>

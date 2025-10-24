@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Dialog,
   DialogTitle,
@@ -30,6 +31,7 @@ export default function WorkGroupModal({
   onSave, 
   workGroup 
 }: WorkGroupModalProps) {
+  const { t } = useTranslation(['tasks', 'common']);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -76,7 +78,7 @@ export default function WorkGroupModal({
       }}
     >
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        {workGroup ? 'Uredi Sekciju' : 'Kreiraj Novu Sekciju'}
+        {workGroup ? t('tasks:editSection') : t('tasks:createSection')}
         <IconButton onClick={onClose} data-testid="close-workgroup-modal">
           <Close />
         </IconButton>
@@ -88,7 +90,7 @@ export default function WorkGroupModal({
             <TextField
               fullWidth
               variant="outlined"
-              label="Naziv Grupe"
+              label={t('tasks:sectionName')}
               value={formData.name}
               onChange={handleChange('name')}
               required
@@ -98,7 +100,7 @@ export default function WorkGroupModal({
             <TextField
               fullWidth
               variant="outlined"
-              label="Opis"
+              label={t('tasks:description')}
               value={formData.description}
               onChange={handleChange('description')}
               multiline
@@ -107,7 +109,7 @@ export default function WorkGroupModal({
             />
             
             <FormControl component="fieldset">
-              <FormLabel component="legend">Vidljivost</FormLabel>
+              <FormLabel component="legend">{t('tasks:visibility.label')}</FormLabel>
               <RadioGroup
                 value={formData.visibility}
                 onChange={handleChange('visibility')}
@@ -116,13 +118,13 @@ export default function WorkGroupModal({
                 <FormControlLabel 
                   value="javna" 
                   control={<Radio />} 
-                  label="Javna - vidljiva svim korisnicima" 
+                  label={t('tasks:visibility.public')}
                   data-testid="radio-javna"
                 />
                 <FormControlLabel 
                   value="privatna" 
                   control={<Radio />} 
-                  label="Privatna - vidljiva samo adminima i dodijeljenim članovima" 
+                  label={t('tasks:visibility.private')}
                   data-testid="radio-privatna"
                 />
               </RadioGroup>
@@ -136,14 +138,14 @@ export default function WorkGroupModal({
             variant="outlined"
             data-testid="button-cancel"
           >
-            Odustani
+            {t('common:common.cancel')}
           </Button>
           <Button 
             type="submit" 
             variant="contained"
             data-testid="button-save"
           >
-            Spremi
+            {t('common:common.save')}
           </Button>
         </DialogActions>
       </form>

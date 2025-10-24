@@ -36,6 +36,23 @@
     "archived": "Arhivirana",
     "draft": "Nacrt"
   },
+  "modal": {
+    "createTitle": "Kreiraj Obavijest",
+    "editTitle": "Uredi Obavijest",
+    "selectedFiles": "Odabrani fajlovi za upload:",
+    "existingAttachments": "Postojeći prilozi:",
+    "uploadedBy": "Dodao",
+    "uploading": "Učitavanje...",
+    "uploadFiles": "Učitaj {{count}} fajl(ova)",
+    "filesWillUpload": "Fajlovi će biti učitani nakon kreiranja obavijesti.",
+    "supportedFormats": "Podržani tipovi: JPG, PNG, PDF (maks. {{size}}MB)",
+    "unsupportedFileType": "Nepodržan tip fajla: {{fileName}}. Podržani tipovi: JPG, PNG, PDF",
+    "fileTooLarge": "Fajl {{fileName}} je prevelik. Maksimalna veličina je {{size}}MB.",
+    "fileDeleteSuccess": "Fajl je uspješno obrisan",
+    "fileDeleteError": "Greška pri brisanju fajla",
+    "featuredLabel": "Istaknuta Obavijest",
+    "save": "Spremi"
+  },
   "messages": {
     "createSuccess": "Obavijest je uspješno kreirana",
     "createError": "Greška pri kreiranju obavijesti",

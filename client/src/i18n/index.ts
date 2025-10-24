@@ -21,6 +21,10 @@ import badgesBS from './locales/bs/badges.json';
 import documentsBS from './locales/bs/documents.json';
 import activityBS from './locales/bs/activity.json';
 import quickTipsBS from './locales/bs/quickTips.json';
+import settingsBS from './locales/bs/settings.json';
+import requestsBS from './locales/bs/requests.json';
+import livestreamBS from './locales/bs/livestream.json';
+import guideBS from './locales/bs/guide.json';
 
 // Import all DE translations
 import commonDE from './locales/de/common.json';
@@ -41,6 +45,10 @@ import badgesDE from './locales/de/badges.json';
 import documentsDE from './locales/de/documents.json';
 import activityDE from './locales/de/activity.json';
 import quickTipsDE from './locales/de/quickTips.json';
+import settingsDE from './locales/de/settings.json';
+import requestsDE from './locales/de/requests.json';
+import livestreamDE from './locales/de/livestream.json';
+import guideDE from './locales/de/guide.json';
 
 const resources = {
   bs: {
@@ -62,6 +70,10 @@ const resources = {
     documents: documentsBS,
     activity: activityBS,
     quickTips: quickTipsBS,
+    settings: settingsBS,
+    requests: requestsBS,
+    livestream: livestreamBS,
+    guide: guideBS,
   },
   de: {
     common: commonDE,
@@ -82,6 +94,10 @@ const resources = {
     documents: documentsDE,
     activity: activityDE,
     quickTips: quickTipsDE,
+    settings: settingsDE,
+    requests: requestsDE,
+    livestream: livestreamDE,
+    guide: guideDE,
   },
 };
 

@@ -23,6 +23,22 @@
     "setAsModerator": "Als Moderator festlegen",
     "removeFromModerators": "Moderator entfernen"
   },
+  "dashboard": {
+    "title": "Aufgabenübersicht",
+    "adminView": "Admin-Ansicht - Alle Aufgaben",
+    "moderatorView": "Moderator-Ansicht - Ihre Sektionen",
+    "all": "Alle",
+    "inProgress": "In Bearbeitung",
+    "pending": "Ausstehend",
+    "completed": "Abgeschlossen",
+    "cancelled": "Abgebrochen",
+    "archived": "Archiviert",
+    "noTasksWithStatus": "Keine Aufgaben mit Status \"{{status}}\"",
+    "taskCount_one": "{{count}} Aufgabe",
+    "taskCount_other": "{{count}} Aufgaben",
+    "loadingError": "Fehler beim Laden der Aufgaben. Bitte versuchen Sie es erneut.",
+    "deadlineLabel": "Frist:"
+  },
   "task": {
     "add": "Aufgabe hinzufügen",
     "edit": "Aufgabe bearbeiten",
@@ -43,7 +59,9 @@
       "label": "Status",
       "na_cekanju": "Ausstehend",
       "u_toku": "In Bearbeitung",
-      "zavrseno": "Abgeschlossen"
+      "zavrseno": "Abgeschlossen",
+      "otkazano": "Abgebrochen",
+      "arhiva": "Archiviert"
     },
     "markAsComplete": "Als abgeschlossen markieren",
     "markInProgress": "Als in Bearbeitung markieren",

@@ -28,13 +28,35 @@
   "roles": {
     "label": "Rollen",
     "admin": "Administrator",
+    "imam": "Imam",
     "clan_io": "Vorstandsmitglied",
     "clan": "Mitglied",
     "clan_porodice": "Familienmitglied"
   },
   "membershipStatuses": {
     "aktivan": "Aktiv",
-    "pasivan": "Inaktiv"
+    "pasivan": "Inaktiv",
+    "clan_porodice": "Familienmitglied"
+  },
+  "inactivityReasons": {
+    "smrt": "Tod",
+    "drugi_dzemat": "Andere Gemeinde",
+    "iskljucen": "Ausgeschlossen",
+    "nepoznato": "Unbekannt"
+  },
+  "modal": {
+    "addTitle": "Neuen Benutzer hinzufügen",
+    "editTitle": "Benutzer bearbeiten",
+    "photoLabel": "Benutzerfoto",
+    "changePhoto": "Foto ändern",
+    "addPhoto": "Foto hinzufügen",
+    "passwordHelper": "Leer lassen, um das bestehende Passwort beizubehalten",
+    "memberSinceHelper": "Leer lassen für heutiges Datum",
+    "categoriesPlaceholder": "Kategorie auswählen oder eingeben",
+    "skillsPlaceholder": "Fähigkeiten eingeben (z.B. Programmierung, Design...)",
+    "skillsHelper": "Fähigkeiten eingeben und Enter drücken",
+    "cancel": "Abbrechen",
+    "save": "Speichern"
   },
   "superadmin": {
     "label": "Superadmin-Zugriff",

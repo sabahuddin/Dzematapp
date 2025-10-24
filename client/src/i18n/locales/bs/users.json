@@ -28,13 +28,35 @@
   "roles": {
     "label": "Uloge",
     "admin": "Admin",
+    "imam": "Imam",
     "clan_io": "Član IO",
     "clan": "Član",
     "clan_porodice": "Član porodice"
   },
   "membershipStatuses": {
     "aktivan": "Aktivan",
-    "pasivan": "Pasivan"
+    "pasivan": "Pasivan",
+    "clan_porodice": "Član porodice"
+  },
+  "inactivityReasons": {
+    "smrt": "Smrt",
+    "drugi_dzemat": "Drugi džemat",
+    "iskljucen": "Isključen",
+    "nepoznato": "Nepoznato"
+  },
+  "modal": {
+    "addTitle": "Dodaj Novog Korisnika",
+    "editTitle": "Uredi Korisnika",
+    "photoLabel": "Fotografija korisnika",
+    "changePhoto": "Promijeni sliku",
+    "addPhoto": "Dodaj sliku",
+    "passwordHelper": "Ostavite prazno da zadržite postojeću šifru",
+    "memberSinceHelper": "Ostavite prazno za današnji datum",
+    "categoriesPlaceholder": "Odaberite ili unesite kategoriju",
+    "skillsPlaceholder": "Unesite vještine (npr. Programiranje, Dizajn...)",
+    "skillsHelper": "Unesite vještine i pritisnite Enter",
+    "cancel": "Odustani",
+    "save": "Spremi"
   },
   "superadmin": {
     "label": "Superadmin pristup",

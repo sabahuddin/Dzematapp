@@ -36,6 +36,23 @@
     "archived": "Archiviert",
     "draft": "Entwurf"
   },
+  "modal": {
+    "createTitle": "Ankündigung erstellen",
+    "editTitle": "Ankündigung bearbeiten",
+    "selectedFiles": "Ausgewählte Dateien zum Hochladen:",
+    "existingAttachments": "Vorhandene Anhänge:",
+    "uploadedBy": "Hochgeladen von",
+    "uploading": "Wird hochgeladen...",
+    "uploadFiles": "{{count}} Datei(en) hochladen",
+    "filesWillUpload": "Dateien werden nach Erstellung der Ankündigung hochgeladen.",
+    "supportedFormats": "Unterstützte Formate: JPG, PNG, PDF (max. {{size}}MB)",
+    "unsupportedFileType": "Nicht unterstützter Dateityp: {{fileName}}. Unterstützte Typen: JPG, PNG, PDF",
+    "fileTooLarge": "Datei {{fileName}} ist zu groß. Maximale Größe ist {{size}}MB.",
+    "fileDeleteSuccess": "Datei erfolgreich gelöscht",
+    "fileDeleteError": "Fehler beim Löschen der Datei",
+    "featuredLabel": "Hervorgehobene Ankündigung",
+    "save": "Speichern"
+  },
   "messages": {
     "createSuccess": "Ankündigung erfolgreich erstellt",
     "createError": "Fehler beim Erstellen der Ankündigung",

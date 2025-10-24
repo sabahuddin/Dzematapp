@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import {
   Dialog,
   DialogTitle,
@@ -50,6 +51,7 @@ export default function EventModal({
   createdById,
   isAdmin = false
 }: EventModalProps) {
+  const { t } = useTranslation(['events', 'common']);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -165,7 +167,7 @@ export default function EventModal({
       }}
     >
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        {event && !isAdmin ? 'Pregled Događaja' : (event ? 'Uredi Događaj' : 'Kreiraj Događaj')}
+        {event && !isAdmin ? t('events:viewEvent') : (event ? t('events:editEvent') : t('events:createEvent'))}
         <IconButton onClick={onClose} data-testid="close-event-modal">
           <Close />
         </IconButton>
@@ -177,7 +179,7 @@ export default function EventModal({
             <TextField
               fullWidth
               variant="outlined"
-              label="Naziv Događaja"
+              label={t('events:eventName')}
               value={formData.name}
               onChange={handleChange('name')}
               required
@@ -188,8 +190,8 @@ export default function EventModal({
             <RichTextEditor
               value={formData.description}
               onChange={(value) => setFormData(prev => ({ ...prev, description: value }))}
-              label="Detaljan Opis"
-              placeholder="Unesite detaljan opis događaja..."
+              label={t('events:detailedDescription')}
+              placeholder={t('events:detailedDescription')}
               readOnly={isReadOnly}
               data-testid="input-description"
             />
@@ -216,8 +218,8 @@ export default function EventModal({
                 <TextField
                   {...params}
                   variant="outlined"
-                  label="Kategorije"
-                  placeholder="Odaberite ili unesite kategoriju"
+                  label={t('common:common.categories')}
+                  placeholder={t('common:common.categories')}
                   InputLabelProps={{ shrink: true }}
                   data-testid="input-categories"
                 />
@@ -243,8 +245,8 @@ export default function EventModal({
                       {...params}
                       fullWidth
                       variant="outlined"
-                      label="Lokacija"
-                      placeholder="Unesite ili odaberite lokaciju"
+                      label={t('events:location')}
+                      placeholder={t('events:location')}
                       required
                       data-testid="input-location"
                     />
@@ -257,7 +259,7 @@ export default function EventModal({
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label="Datum i Vrijeme"
+                  label={t('events:dateTime')}
                   type="datetime-local"
                   value={formData.dateTime}
                   onChange={handleChange('dateTime')}
@@ -273,11 +275,11 @@ export default function EventModal({
             <TextField
               fullWidth
               variant="outlined"
-              label="Maksimalan broj učesnika"
+              label={t('events:maxAttendees')}
               type="number"
               value={formData.maxAttendees}
               onChange={handleChange('maxAttendees')}
-              helperText="Ostavite prazno za neograničeno"
+              helperText={t('common:common.optionalField')}
               disabled={isReadOnly}
               data-testid="input-maxAttendees"
             />
@@ -292,7 +294,7 @@ export default function EventModal({
                     data-testid="switch-rsvpEnabled"
                   />
                 }
-                label="Omogući Prijavu Dolaska (RSVP)"
+                label={t('events:rsvpEnabled')}
               />
               
               <FormControlLabel
@@ -304,7 +306,7 @@ export default function EventModal({
                     data-testid="switch-requireAdultsChildren"
                   />
                 }
-                label="Zahtijevaj Broj Odraslih/Djece"
+                label={t('events:requireAdultsChildren')}
               />
             </Box>
 
@@ -315,28 +317,28 @@ export default function EventModal({
                 <Box sx={{ mt: 3 }}>
                   <Typography variant="h6" sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
                     <People />
-                    Prijavljeni učesnici
+                    {t('common:common.registeredParticipants')}
                   </Typography>
                   
                   {rsvpQuery.isLoading ? (
-                    <Typography>Učitavanje...</Typography>
+                    <Typography>{t('common:common.loading')}</Typography>
                   ) : rsvpQuery.data && rsvpQuery.data.rsvps.length > 0 ? (
                     <>
                       <TableContainer component={Paper} variant="outlined">
                         <Table size="small">
                           <TableHead>
                             <TableRow>
-                              <TableCell><strong>Ime i prezime</strong></TableCell>
-                              <TableCell align="center"><strong>Broj odraslih</strong></TableCell>
-                              <TableCell align="center"><strong>Broj djece</strong></TableCell>
-                              <TableCell align="center"><strong>Ukupno</strong></TableCell>
+                              <TableCell><strong>{t('common:common.fullName')}</strong></TableCell>
+                              <TableCell align="center"><strong>{t('events:adults')}</strong></TableCell>
+                              <TableCell align="center"><strong>{t('events:children')}</strong></TableCell>
+                              <TableCell align="center"><strong>{t('common:common.total')}</strong></TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
                             {rsvpQuery.data.rsvps.map((rsvp) => (
                               <TableRow key={rsvp.id} data-testid={`rsvp-row-${rsvp.id}`}>
                                 <TableCell>
-                                  {rsvp.user ? `${rsvp.user.firstName} ${rsvp.user.lastName}` : 'Nepoznato'}
+                                  {rsvp.user ? `${rsvp.user.firstName} ${rsvp.user.lastName}` : t('messages:unknown')}
                                 </TableCell>
                                 <TableCell align="center">{rsvp.adultsCount ?? 1}</TableCell>
                                 <TableCell align="center">{rsvp.childrenCount ?? 0}</TableCell>
@@ -346,7 +348,7 @@ export default function EventModal({
                               </TableRow>
                             ))}
                             <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-                              <TableCell><strong>UKUPNO:</strong></TableCell>
+                              <TableCell><strong>{t('common:common.total').toUpperCase()}:</strong></TableCell>
                               <TableCell align="center"><strong>{rsvpQuery.data.totalAdults}</strong></TableCell>
                               <TableCell align="center"><strong>{rsvpQuery.data.totalChildren}</strong></TableCell>
                               <TableCell align="center"><strong>{rsvpQuery.data.totalAttendees}</strong></TableCell>
@@ -359,14 +361,14 @@ export default function EventModal({
                         <Typography variant="body2" color={
                           rsvpQuery.data.totalAttendees >= parseInt(formData.maxAttendees) ? 'error' : 'text.secondary'
                         } sx={{ mt: 1 }}>
-                          Maksimalan broj učesnika: {formData.maxAttendees}
+                          {t('events:maxAttendees')}: {formData.maxAttendees}
                           {rsvpQuery.data.totalAttendees >= parseInt(formData.maxAttendees) && 
-                            ' - KAPACITET DOSTIGNUT'}
+                            ` - ${t('common:common.capacityReached').toUpperCase()}`}
                         </Typography>
                       )}
                     </>
                   ) : (
-                    <Typography color="text.secondary">Nema prijavljenih učesnika.</Typography>
+                    <Typography color="text.secondary">{t('common:common.noRegisteredParticipants')}</Typography>
                   )}
                 </Box>
               </>
@@ -383,7 +385,7 @@ export default function EventModal({
                 startIcon={<CalendarMonth />}
                 data-testid="button-add-to-calendar"
               >
-                Dodaj u Kalendar
+                {t('events:addToCalendar')}
               </Button>
             )}
             <Button 
@@ -391,7 +393,7 @@ export default function EventModal({
               variant="outlined"
               data-testid="button-cancel"
             >
-              {isReadOnly ? 'Zatvori' : 'Odustani'}
+              {isReadOnly ? t('common:common.close') : t('common:common.cancel')}
             </Button>
             {!isReadOnly && (
               <Button 
@@ -399,7 +401,7 @@ export default function EventModal({
                 variant="contained"
                 data-testid="button-save"
               >
-                Spremi
+                {t('common:common.save')}
               </Button>
             )}
           </Box>
