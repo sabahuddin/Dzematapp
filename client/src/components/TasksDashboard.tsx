@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Card,
@@ -27,12 +28,15 @@ import { useLocation } from 'wouter';
 
 type TaskWithWorkGroup = Task & { workGroup: WorkGroup };
 
-const statusLabels: Record<string, string> = {
-  u_toku: 'U toku',
-  na_cekanju: 'Na čekanju',
-  završeno: 'Završeno',
-  otkazano: 'Otkazano',
-  arhiva: 'Arhiva'
+const getStatusLabel = (status: string, t: any): string => {
+  const statusMap: Record<string, string> = {
+    u_toku: t('tasks:dashboard.inProgress'),
+    na_cekanju: t('tasks:dashboard.pending'),
+    završeno: t('tasks:dashboard.completed'),
+    otkazano: t('tasks:dashboard.cancelled'),
+    arhiva: t('tasks:dashboard.archived')
+  };
+  return statusMap[status] || status;
 };
 
 const statusColors: Record<string, 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'> = {
@@ -108,6 +112,7 @@ interface TaskCardProps {
 }
 
 function TaskCard({ task }: TaskCardProps) {
+  const { t } = useTranslation(['tasks']);
   const [, setLocation] = useLocation();
 
   const handleClick = () => {
@@ -133,7 +138,7 @@ function TaskCard({ task }: TaskCardProps) {
             {task.title}
           </Typography>
           <Chip
-            label={statusLabels[task.status]}
+            label={getStatusLabel(task.status, t)}
             color={statusColors[task.status]}
             size="small"
             icon={statusIcons[task.status]}
@@ -167,7 +172,7 @@ function TaskCard({ task }: TaskCardProps) {
           />
           {task.dueDate && (
             <Typography variant="caption" color="text.secondary">
-              Rok: {new Date(task.dueDate).toLocaleDateString('hr-HR')}
+              {t('tasks:dashboard.deadlineLabel')} {new Date(task.dueDate).toLocaleDateString('hr-HR')}
             </Typography>
           )}
         </Box>
@@ -177,6 +182,7 @@ function TaskCard({ task }: TaskCardProps) {
 }
 
 export default function TasksDashboard() {
+  const { t } = useTranslation(['tasks']);
   const { user } = useAuth();
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
 
@@ -196,7 +202,7 @@ export default function TasksDashboard() {
   if (tasksQuery.error) {
     return (
       <Alert severity="error">
-        Greška pri učitavanju zadataka. Molimo pokušajte ponovo.
+        {t('tasks:dashboard.loadingError')}
       </Alert>
     );
   }
@@ -232,10 +238,10 @@ export default function TasksDashboard() {
     <Box>
       <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant="h5" sx={{ fontWeight: 600 }}>
-          Pregled Zadataka
+          {t('tasks:dashboard.title')}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {user?.isAdmin ? 'Admin pogled - Svi zadaci' : 'Moderator pogled - Vaše sekcije'}
+          {user?.isAdmin ? t('tasks:dashboard.adminView') : t('tasks:dashboard.moderatorView')}
         </Typography>
       </Box>
 
@@ -243,7 +249,7 @@ export default function TasksDashboard() {
         <Grid size={{ xs: 6, sm: 4, md: 2 }}>
           <StatCard
             icon={<Assignment />}
-            label="Svi"
+            label={t('tasks:dashboard.all')}
             count={taskStats.all}
             color="#757575"
             onClick={() => setSelectedStatus('all')}
@@ -253,7 +259,7 @@ export default function TasksDashboard() {
         <Grid size={{ xs: 6, sm: 4, md: 2 }}>
           <StatCard
             icon={<AccessTime />}
-            label="U toku"
+            label={t('tasks:dashboard.inProgress')}
             count={taskStats.u_toku}
             color="#1976d2"
             onClick={() => setSelectedStatus('u_toku')}
@@ -263,7 +269,7 @@ export default function TasksDashboard() {
         <Grid size={{ xs: 6, sm: 4, md: 2 }}>
           <StatCard
             icon={<HourglassEmpty />}
-            label="Na čekanju"
+            label={t('tasks:dashboard.pending')}
             count={taskStats.na_cekanju}
             color="#ed6c02"
             onClick={() => setSelectedStatus('na_cekanju')}
@@ -273,7 +279,7 @@ export default function TasksDashboard() {
         <Grid size={{ xs: 6, sm: 4, md: 2 }}>
           <StatCard
             icon={<CheckCircle />}
-            label="Završeno"
+            label={t('tasks:dashboard.completed')}
             count={taskStats.završeno}
             color="#2e7d32"
             onClick={() => setSelectedStatus('završeno')}
@@ -283,7 +289,7 @@ export default function TasksDashboard() {
         <Grid size={{ xs: 6, sm: 4, md: 2 }}>
           <StatCard
             icon={<Cancel />}
-            label="Otkazano"
+            label={t('tasks:dashboard.cancelled')}
             count={taskStats.otkazano}
             color="#d32f2f"
             onClick={() => setSelectedStatus('otkazano')}
@@ -293,7 +299,7 @@ export default function TasksDashboard() {
         <Grid size={{ xs: 6, sm: 4, md: 2 }}>
           <StatCard
             icon={<Archive />}
-            label="Arhiva"
+            label={t('tasks:dashboard.archived')}
             count={taskStats.arhiva}
             color="#616161"
             onClick={() => setSelectedStatus('arhiva')}
@@ -306,8 +312,8 @@ export default function TasksDashboard() {
         <Paper sx={{ p: 4, textAlign: 'center' }}>
           <Typography color="text.secondary">
             {selectedStatus === 'all' 
-              ? 'Nema zadataka' 
-              : `Nema zadataka sa statusom "${statusLabels[selectedStatus]}"`}
+              ? t('tasks:task.noTasks')
+              : t('tasks:dashboard.noTasksWithStatus', { status: getStatusLabel(selectedStatus, t) })}
           </Typography>
         </Paper>
       ) : (
@@ -325,7 +331,7 @@ export default function TasksDashboard() {
                   {workGroup.name}
                 </Typography>
                 <Chip
-                  label={`${tasks.length} ${tasks.length === 1 ? 'zadatak' : tasks.length < 5 ? 'zadatka' : 'zadataka'}`}
+                  label={t('tasks:dashboard.taskCount', { count: tasks.length })}
                   size="small"
                   color="primary"
                   variant="outlined"
