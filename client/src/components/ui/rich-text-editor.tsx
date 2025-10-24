@@ -172,6 +172,8 @@ export default function RichTextEditor({
           '& .ql-editor img': {
             width: '80%',
             height: 'auto',
+            aspectRatio: '4/3',
+            objectFit: 'cover',
             display: 'block',
             margin: '10px auto',
             cursor: 'pointer',

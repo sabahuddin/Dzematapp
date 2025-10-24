@@ -649,7 +649,7 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
                   alt="Task preview"
                   sx={{
                     width: '100%',
-                    maxHeight: 200,
+                    aspectRatio: '4/3',
                     objectFit: 'cover',
                     borderRadius: 1,
                     border: '2px solid #1976d2'
@@ -1044,7 +1044,7 @@ function TaskDetailDialog({
                       alt="Task preview"
                       sx={{
                         width: '100%',
-                        maxHeight: 200,
+                        aspectRatio: '4/3',
                         objectFit: 'cover',
                         borderRadius: 1,
                         border: '2px solid #1976d2'

@@ -554,17 +554,25 @@ export default function ShopPage() {
                       product.photos.length === 1 ? (
                         <CardMedia
                           component="img"
-                          height="200"
                           image={product.photos[0]}
                           alt={product.name}
-                          sx={{ cursor: 'pointer' }}
+                          sx={{ 
+                            cursor: 'pointer',
+                            aspectRatio: '4/3',
+                            objectFit: 'cover',
+                            width: '100%'
+                          }}
                           onClick={() => openFullscreenImage(product.photos![0])}
                         />
                       ) : (
-                        <ImageList sx={{ height: 200 }} cols={2} rowHeight={100}>
+                        <ImageList sx={{ aspectRatio: '4/3' }} cols={2}>
                           {product.photos.slice(0, 4).map((photo, idx) => (
                             <ImageListItem key={idx} sx={{ cursor: 'pointer' }} onClick={() => openFullscreenImage(photo)}>
-                              <img src={photo} alt={`${product.name} ${idx + 1}`} />
+                              <img 
+                                src={photo} 
+                                alt={`${product.name} ${idx + 1}`}
+                                style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                              />
                             </ImageListItem>
                           ))}
                         </ImageList>
@@ -679,17 +687,25 @@ export default function ShopPage() {
                         item.photos.length === 1 ? (
                           <CardMedia
                             component="img"
-                            height="200"
                             image={item.photos[0]}
                             alt={item.name}
-                            sx={{ cursor: 'pointer' }}
+                            sx={{ 
+                              cursor: 'pointer',
+                              aspectRatio: '4/3',
+                              objectFit: 'cover',
+                              width: '100%'
+                            }}
                             onClick={() => openFullscreenImage(item.photos![0])}
                           />
                         ) : (
-                          <ImageList sx={{ height: 200 }} cols={2} rowHeight={100}>
+                          <ImageList sx={{ aspectRatio: '4/3' }} cols={2}>
                             {item.photos.slice(0, 4).map((photo, idx) => (
                               <ImageListItem key={idx} sx={{ cursor: 'pointer' }} onClick={() => openFullscreenImage(photo)}>
-                                <img src={photo} alt={`${item.name} ${idx + 1}`} />
+                                <img 
+                                  src={photo} 
+                                  alt={`${item.name} ${idx + 1}`}
+                                  style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                                />
                               </ImageListItem>
                             ))}
                           </ImageList>
@@ -790,17 +806,25 @@ export default function ShopPage() {
                         item.photos.length === 1 ? (
                           <CardMedia
                             component="img"
-                            height="200"
                             image={item.photos[0]}
                             alt={item.name}
-                            sx={{ cursor: 'pointer' }}
+                            sx={{ 
+                              cursor: 'pointer',
+                              aspectRatio: '4/3',
+                              objectFit: 'cover',
+                              width: '100%'
+                            }}
                             onClick={() => openFullscreenImage(item.photos![0])}
                           />
                         ) : (
-                          <ImageList sx={{ height: 200 }} cols={2} rowHeight={100}>
+                          <ImageList sx={{ aspectRatio: '4/3' }} cols={2}>
                             {item.photos.slice(0, 4).map((photo, idx) => (
                               <ImageListItem key={idx} sx={{ cursor: 'pointer' }} onClick={() => openFullscreenImage(photo)}>
-                                <img src={photo} alt={`${item.name} ${idx + 1}`} />
+                                <img 
+                                  src={photo} 
+                                  alt={`${item.name} ${idx + 1}`}
+                                  style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                                />
                               </ImageListItem>
                             ))}
                           </ImageList>
@@ -885,17 +909,25 @@ export default function ShopPage() {
                         item.photos.length === 1 ? (
                           <CardMedia
                             component="img"
-                            height="200"
                             image={item.photos[0]}
                             alt={item.name}
-                            sx={{ cursor: 'pointer' }}
+                            sx={{ 
+                              cursor: 'pointer',
+                              aspectRatio: '4/3',
+                              objectFit: 'cover',
+                              width: '100%'
+                            }}
                             onClick={() => openFullscreenImage(item.photos![0])}
                           />
                         ) : (
-                          <ImageList sx={{ height: 200 }} cols={2} rowHeight={100}>
+                          <ImageList sx={{ aspectRatio: '4/3' }} cols={2}>
                             {item.photos.slice(0, 4).map((photo, idx) => (
                               <ImageListItem key={idx} sx={{ cursor: 'pointer' }} onClick={() => openFullscreenImage(photo)}>
-                                <img src={photo} alt={`${item.name} ${idx + 1}`} />
+                                <img 
+                                  src={photo} 
+                                  alt={`${item.name} ${idx + 1}`}
+                                  style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                                />
                               </ImageListItem>
                             ))}
                           </ImageList>
