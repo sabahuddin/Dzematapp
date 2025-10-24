@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Box,
@@ -80,9 +81,9 @@ interface WorkGroupCardProps {
 }
 
 function WorkGroupCard({ workGroup, onManageMembers, onManageTasks, onJoinRequest, currentUser }: WorkGroupCardProps) {
+  const { t } = useTranslation(['tasks', 'common']);
   const { toast } = useToast();
   
-  // Check if current user is a member of this work group
   const isMember = workGroup.members?.some((m: WorkGroupMember) => m.userId === currentUser?.id) || false;
   const isAdmin = currentUser?.isAdmin || false;
 
@@ -114,7 +115,7 @@ function WorkGroupCard({ workGroup, onManageMembers, onManageTasks, onJoinReques
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
             <People sx={{ fontSize: 16, mr: 0.5, color: 'text.secondary' }} />
             <Typography variant="body2" color="text.secondary">
-              {`${workGroup.members?.length || 0} članova`}
+              {t('members.count_many', { count: workGroup.members?.length || 0 })}
             </Typography>
           </Box>
           
@@ -127,14 +128,14 @@ function WorkGroupCard({ workGroup, onManageMembers, onManageTasks, onJoinReques
                   onClick={() => onManageMembers(workGroup)}
                   data-testid={`button-manage-members-${workGroup.id}`}
                 >
-                  Upravljaj Članovima
+                  {t('manageMembers')}
                 </Button>
                 <Button
                   variant="outlined"
                   onClick={() => onManageTasks(workGroup)}
                   data-testid={`button-manage-tasks-${workGroup.id}`}
                 >
-                  Upravljaj Zadacima
+                  {t('manageTasks')}
                 </Button>
               </>
             ) : isMember ? (
@@ -143,7 +144,7 @@ function WorkGroupCard({ workGroup, onManageMembers, onManageTasks, onJoinReques
                 onClick={() => onManageTasks(workGroup)}
                 data-testid={`button-view-tasks-${workGroup.id}`}
               >
-                Pogledaj Zadatke
+                {t('viewTasks')}
               </Button>
             ) : (
               <Button
@@ -151,7 +152,7 @@ function WorkGroupCard({ workGroup, onManageMembers, onManageTasks, onJoinReques
                 onClick={() => onJoinRequest(workGroup)}
                 data-testid={`button-join-${workGroup.id}`}
               >
-                Pridruži se
+                {t('joinSection')}
               </Button>
             )}
           </Box>
@@ -162,6 +163,7 @@ function WorkGroupCard({ workGroup, onManageMembers, onManageTasks, onJoinReques
 }
 
 export default function TaskManagerPage() {
+  const { t } = useTranslation(['tasks', 'common']);
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -172,27 +174,23 @@ export default function TaskManagerPage() {
   const [taskManagementDialogOpen, setTaskManagementDialogOpen] = useState(false);
   const [selectedWorkGroup, setSelectedWorkGroup] = useState<WorkGroup | null>(null);
 
-  // Fetch work groups
   const workGroupsQuery = useQuery<WorkGroup[]>({
     queryKey: ['/api/work-groups'],
     retry: 1,
   });
 
-  // Fetch access requests (only for admins)
   const accessRequestsQuery = useQuery<AccessRequest[]>({
     queryKey: ['/api/access-requests'],
     retry: 1,
     enabled: !!user?.isAdmin,
   });
 
-  // Fetch users for access request names (only for admins)
   const usersQuery = useQuery<User[]>({
     queryKey: ['/api/users'],
     retry: 1,
     enabled: !!user?.isAdmin,
   });
 
-  // Split work groups into member groups and other groups
   const { memberWorkGroups, otherWorkGroups } = React.useMemo(() => {
     if (!workGroupsQuery.data || !user) return { memberWorkGroups: [], otherWorkGroups: [] };
     
@@ -200,12 +198,10 @@ export default function TaskManagerPage() {
     const other: (WorkGroup & { members?: WorkGroupMember[] })[] = [];
     
     workGroupsQuery.data.forEach((workGroup: WorkGroup & { members?: WorkGroupMember[] }) => {
-      // Check if user is a member of THIS specific work group
       const isMember = workGroup.members?.some((m: WorkGroupMember) => 
         m.userId === user.id
       ) || false;
       
-      // For non-admin users, only put member groups in the main list
       if (user.isAdmin) {
         member.push(workGroup);
       } else if (isMember) {
@@ -218,7 +214,6 @@ export default function TaskManagerPage() {
     return { memberWorkGroups: member, otherWorkGroups: other };
   }, [workGroupsQuery.data, user]);
 
-  // Create work group mutation
   const createWorkGroupMutation = useMutation({
     mutationFn: async (workGroupData: any) => {
       const response = await apiRequest('/api/work-groups', 'POST', workGroupData);
@@ -226,14 +221,13 @@ export default function TaskManagerPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/work-groups'] });
-      toast({ title: 'Uspjeh', description: 'Sekcija je uspješno kreirana' });
+      toast({ title: t('common:success'), description: t('toasts.sectionCreated') });
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri kreiranju sekcije', variant: 'destructive' });
+      toast({ title: t('common:error'), description: t('toasts.sectionCreateError'), variant: 'destructive' });
     }
   });
 
-  // Create access request mutation
   const createAccessRequestMutation = useMutation({
     mutationFn: async (requestData: any) => {
       const response = await apiRequest('/api/access-requests', 'POST', requestData);
@@ -241,14 +235,13 @@ export default function TaskManagerPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/access-requests'] });
-      toast({ title: 'Uspjeh', description: 'Zahtjev za pristup je poslat' });
+      toast({ title: t('common:success'), description: t('toasts.accessRequestSent') });
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri slanju zahtjeva', variant: 'destructive' });
+      toast({ title: t('common:error'), description: t('toasts.accessRequestError'), variant: 'destructive' });
     }
   });
 
-  // Update access request mutation
   const updateAccessRequestMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
       const response = await apiRequest(`/api/access-requests/${id}`, 'PUT', { status });
@@ -256,11 +249,11 @@ export default function TaskManagerPage() {
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['/api/access-requests'] });
-      const action = variables.status === 'approved' ? 'odobren' : 'odbačen';
-      toast({ title: 'Uspjeh', description: `Zahtjev je ${action}` });
+      const action = variables.status === 'approved' ? t('toasts.requestApproved') : t('toasts.requestRejected');
+      toast({ title: t('common:success'), description: action });
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri ažuriranju zahtjeva', variant: 'destructive' });
+      toast({ title: t('common:error'), description: t('toasts.requestUpdateError'), variant: 'destructive' });
     }
   });
 
@@ -305,11 +298,9 @@ export default function TaskManagerPage() {
     updateAccessRequestMutation.mutate({ id: requestId, status: 'rejected' });
   };
 
-
-  // Get user name from users data
   const getUserName = (userId: string) => {
     const user = usersQuery.data?.find((u: any) => u.id === userId);
-    return user ? `${user.firstName} ${user.lastName}` : 'Nepoznat korisnik';
+    return user ? `${user.firstName} ${user.lastName}` : t('unknownUser');
   };
 
   const isLoading = user?.isAdmin 
@@ -331,7 +322,7 @@ export default function TaskManagerPage() {
   if (hasError) {
     return (
       <Alert severity="error">
-        Greška pri učitavanju podataka. Molimo pokušajte ponovo.
+        {t('loadingError')}
       </Alert>
     );
   }
@@ -339,19 +330,18 @@ export default function TaskManagerPage() {
   return (
     <Box>
       <Typography variant="h5" sx={{ fontWeight: 600, mb: 3 }}>
-        Sekcije
+        {t('title')}
       </Typography>
 
       {user?.isAdmin && (
         <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
           <Tabs value={tabValue} onChange={handleTabChange} aria-label="task manager tabs">
-            <Tab label="Sekcije" data-testid="tab-work-groups" />
-            <Tab label="Zahtjevi za Pristup" data-testid="tab-access-requests" />
+            <Tab label={t('tabs.sections')} data-testid="tab-work-groups" />
+            <Tab label={t('tabs.accessRequests')} data-testid="tab-access-requests" />
           </Tabs>
         </Box>
       )}
 
-      {/* Work Groups Tab */}
       <TabPanel value={tabValue} index={0}>
         {user?.isAdmin && (
           <Box sx={{ mb: 3 }}>
@@ -361,17 +351,16 @@ export default function TaskManagerPage() {
               onClick={handleCreateWorkGroup}
               data-testid="button-create-work-group"
             >
-              Kreiraj sekciju
+              {t('createSection')}
             </Button>
           </Box>
         )}
 
-        {/* Member Work Groups */}
         {memberWorkGroups.length > 0 && (
           <Box sx={{ mb: 4 }}>
             {!user?.isAdmin && (
               <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-                Moje sekcije
+                {t('mySections')}
               </Typography>
             )}
             <Grid container spacing={3}>
@@ -389,7 +378,6 @@ export default function TaskManagerPage() {
           </Box>
         )}
 
-        {/* Other Work Groups in Accordion */}
         {otherWorkGroups.length > 0 && (
           <Accordion defaultExpanded={false}>
             <AccordionSummary 
@@ -400,7 +388,7 @@ export default function TaskManagerPage() {
               }}
             >
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                Ostale sekcije ({otherWorkGroups.length})
+                {t('otherSections')} ({otherWorkGroups.length})
               </Typography>
             </AccordionSummary>
             <AccordionDetails sx={{ pt: 3 }}>
@@ -424,25 +412,24 @@ export default function TaskManagerPage() {
           <Card>
             <CardContent sx={{ textAlign: 'center', py: 6 }}>
               <Typography color="text.secondary">
-                Nema dostupnih sekcija
+                {t('noSectionsAvailable')}
               </Typography>
             </CardContent>
           </Card>
         )}
       </TabPanel>
 
-      {/* Access Requests Tab */}
       <TabPanel value={tabValue} index={1}>
         <Card>
           <TableContainer>
             <Table>
               <TableHead>
                 <TableRow sx={{ bgcolor: '#f8f9fa' }}>
-                  <TableCell sx={{ fontWeight: 600 }}>Ime Korisnika</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Naziv Sekcije</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Datum Zahtjeva</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>{t('accessRequests.userName')}</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>{t('accessRequests.sectionName')}</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>{t('accessRequests.requestDate')}</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>{t('accessRequests.status')}</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>{t('accessRequests.actions')}</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -451,15 +438,15 @@ export default function TaskManagerPage() {
                   return (
                     <TableRow key={request.id}>
                       <TableCell>{getUserName(request.userId)}</TableCell>
-                      <TableCell>{workGroup?.name || 'Nepoznata grupa'}</TableCell>
+                      <TableCell>{workGroup?.name || t('unknownGroup')}</TableCell>
                       <TableCell>
                         {request.requestDate ? new Date(request.requestDate).toLocaleDateString('hr-HR') : '-'}
                       </TableCell>
                       <TableCell>
                         <Chip
                           label={
-                            request.status === 'pending' ? 'Na čekanju' :
-                            request.status === 'approved' ? 'Odobren' : 'Odbačen'
+                            request.status === 'pending' ? t('accessRequests.pending') :
+                            request.status === 'approved' ? t('accessRequests.approved') : t('accessRequests.rejected')
                           }
                           color={
                             request.status === 'pending' ? 'warning' :
@@ -478,7 +465,7 @@ export default function TaskManagerPage() {
                               onClick={() => handleApproveRequest(request.id)}
                               data-testid={`button-approve-${request.id}`}
                             >
-                              Odobri
+                              {t('accessRequests.approve')}
                             </Button>
                             <Button
                               variant="outlined"
@@ -487,7 +474,7 @@ export default function TaskManagerPage() {
                               onClick={() => handleRejectRequest(request.id)}
                               data-testid={`button-reject-${request.id}`}
                             >
-                              Odbij
+                              {t('accessRequests.reject')}
                             </Button>
                           </Box>
                         )}
@@ -499,7 +486,7 @@ export default function TaskManagerPage() {
                   <TableRow>
                     <TableCell colSpan={5} sx={{ textAlign: 'center', py: 4 }}>
                       <Typography color="text.secondary">
-                        Nema zahtjeva za pristup
+                        {t('accessRequests.noRequests')}
                       </Typography>
                     </TableCell>
                   </TableRow>
@@ -510,7 +497,6 @@ export default function TaskManagerPage() {
         </Card>
       </TabPanel>
 
-      {/* Work Group Modal */}
       <WorkGroupModal
         open={workGroupModalOpen}
         onClose={() => setWorkGroupModalOpen(false)}
@@ -518,14 +504,12 @@ export default function TaskManagerPage() {
         workGroup={selectedWorkGroup}
       />
       
-      {/* Member Management Dialog */}
       <MemberManagementDialog
         open={memberManagementDialogOpen && selectedWorkGroup !== null}
         onClose={() => setMemberManagementDialogOpen(false)}
         workGroup={selectedWorkGroup || { id: '', name: '', description: '', createdAt: new Date(), visibility: 'public' }}
       />
       
-      {/* Task Management Dialog */}
       <Dialog
         open={taskManagementDialogOpen && selectedWorkGroup !== null}
         onClose={() => setTaskManagementDialogOpen(false)}
@@ -540,7 +524,7 @@ export default function TaskManagerPage() {
       >
         <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="h6">
-            Upravljanje Zadacima - {selectedWorkGroup?.name}
+            {t('taskDialog.title', { name: selectedWorkGroup?.name })}
           </Typography>
           <IconButton
             onClick={() => setTaskManagementDialogOpen(false)}
@@ -570,6 +554,7 @@ interface TaskCreateDialogProps {
 }
 
 function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCreateDialogProps) {
+  const { t } = useTranslation(['tasks', 'common']);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [descriptionImage, setDescriptionImage] = useState<string | null>(null);
@@ -612,13 +597,13 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Kreiraj Novi Zadatak</DialogTitle>
+      <DialogTitle>{t('taskDialog.createNew')}</DialogTitle>
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 2 }}>
           <TextField
             id="task-title"
             variant="outlined"
-            label="Naziv zadatka"
+            label={t('taskDialog.taskTitle')}
             value={title}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
             fullWidth
@@ -628,7 +613,7 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
           <TextField
             id="task-description"
             variant="outlined"
-            label="Opis zadatka"
+            label={t('taskDialog.taskDescription')}
             value={description}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)}
             fullWidth
@@ -639,7 +624,7 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
           
           <Box>
             <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-              Slika (opciono)
+              {t('taskDialog.image')}
             </Typography>
             <Button
               variant="outlined"
@@ -648,7 +633,7 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
               sx={{ justifyContent: 'flex-start', textTransform: 'none' }}
               data-testid="button-upload-task-image"
             >
-              {descriptionImage ? 'Promijeni sliku' : 'Dodaj sliku'}
+              {descriptionImage ? t('taskDialog.changeImage') : t('taskDialog.addImage')}
               <input
                 type="file"
                 hidden
@@ -692,22 +677,22 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
             id="task-status"
             variant="outlined"
             select
-            label="Status"
+            label={t('taskDialog.status')}
             value={status}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setStatus(e.target.value)}
             fullWidth
             data-testid="select-task-status"
           >
-            <MenuItem value="u_toku">U toku</MenuItem>
-            <MenuItem value="na_cekanju">Na čekanju</MenuItem>
-            <MenuItem value="završeno">Završeno</MenuItem>
-            <MenuItem value="otkazano">Otkazano</MenuItem>
-            <MenuItem value="arhiva">Arhiva</MenuItem>
+            <MenuItem value="u_toku">{t('task.status.u_toku')}</MenuItem>
+            <MenuItem value="na_cekanju">{t('task.status.na_cekanju')}</MenuItem>
+            <MenuItem value="završeno">{t('task.status.zavrseno')}</MenuItem>
+            <MenuItem value="otkazano">{t('task.status.otkazano')}</MenuItem>
+            <MenuItem value="arhiva">{t('task.status.arhiva')}</MenuItem>
           </TextField>
           <Autocomplete
             multiple
             options={members || []}
-            getOptionLabel={(option: any) => option.user ? `${option.user.firstName} ${option.user.lastName}` : 'Nepoznat korisnik'}
+            getOptionLabel={(option: any) => option.user ? `${option.user.firstName} ${option.user.lastName}` : t('unknownUser')}
             value={members?.filter((member: any) => assignedUserIds.includes(member.userId)) || []}
             onChange={(_, newValue) => {
               setAssignedUserIds(newValue.map((member: any) => member.userId));
@@ -717,15 +702,15 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
                 {...params}
                 id="task-assignees"
                 variant="outlined"
-                label="Dodijeli članovima"
-                placeholder="Odaberi članove..."
+                label={t('taskDialog.assignToMembers')}
+                placeholder={t('taskDialog.selectMembers')}
                 data-testid="select-task-assignees"
               />
             )}
             renderTags={(value, getTagProps) =>
               value.map((option: any, index: number) => (
                 <Chip
-                  label={option.user ? `${option.user.firstName} ${option.user.lastName}` : 'Nepoznat'}
+                  label={option.user ? `${option.user.firstName} ${option.user.lastName}` : t('unknownUser')}
                   {...getTagProps({ index })}
                   key={option.userId}
                 />
@@ -736,7 +721,7 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
           <TextField
             id="task-due-date"
             variant="outlined"
-            label="Rok izvršavanja"
+            label={t('taskDialog.dueDate')}
             type="date"
             value={dueDate}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDueDate(e.target.value)}
@@ -747,14 +732,16 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} data-testid="button-cancel-task">Otkaži</Button>
+        <Button onClick={onClose} data-testid="button-cancel-create-task">
+          {t('taskDialog.cancel')}
+        </Button>
         <Button 
           onClick={handleSubmit} 
-          variant="contained" 
-          disabled={!title}
-          data-testid="button-save-task"
+          variant="contained"
+          disabled={!title.trim()}
+          data-testid="button-submit-create-task"
         >
-          Sačuvaj
+          {t('common:buttons.save')}
         </Button>
       </DialogActions>
     </Dialog>
@@ -772,23 +759,33 @@ interface TaskDetailDialogProps {
   onTaskUpdated: () => void;
 }
 
-function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModeratorOrAdmin, members, onTaskUpdated }: TaskDetailDialogProps) {
+function TaskDetailDialog({ 
+  open, 
+  onClose, 
+  task, 
+  workGroup, 
+  currentUser, 
+  isModeratorOrAdmin,
+  members,
+  onTaskUpdated 
+}: TaskDetailDialogProps) {
+  const { t } = useTranslation(['tasks', 'common']);
   const { toast } = useToast();
-  const [newComment, setNewComment] = useState('');
-  const [commentImage, setCommentImage] = useState<string | null>(null);
+  const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
   const [moveModalOpen, setMoveModalOpen] = useState(false);
+  const [newComment, setNewComment] = useState('');
+  const [commentImage, setCommentImage] = useState<string | null>(null);
+  const [fullscreenImageOpen, setFullscreenImageOpen] = useState(false);
+  const [fullscreenImage, setFullscreenImage] = useState('');
+
   const [editedTitle, setEditedTitle] = useState('');
   const [editedDescription, setEditedDescription] = useState('');
   const [editedDescriptionImage, setEditedDescriptionImage] = useState<string | null>(null);
   const [editedStatus, setEditedStatus] = useState('');
   const [editedAssignedUserIds, setEditedAssignedUserIds] = useState<string[]>([]);
   const [editedDueDate, setEditedDueDate] = useState('');
-  const [fullscreenImageOpen, setFullscreenImageOpen] = useState(false);
-  const [fullscreenImage, setFullscreenImage] = useState('');
-  const queryClient = useQueryClient();
 
-  // Initialize edit form when task changes
   React.useEffect(() => {
     if (task) {
       setEditedTitle(task.title || '');
@@ -799,6 +796,71 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
       setEditedDueDate(task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : '');
     }
   }, [task]);
+
+  const commentsQuery = useQuery({
+    queryKey: ['/api/tasks', task?.id, 'comments'],
+    enabled: open && !!task?.id,
+    retry: 1,
+  });
+
+  const addCommentMutation = useMutation({
+    mutationFn: async (commentData: any) => {
+      const response = await apiRequest('/api/task-comments', 'POST', commentData);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/tasks', task?.id, 'comments'] });
+      toast({ title: t('common:success'), description: t('toasts.commentAdded') });
+      setNewComment('');
+      setCommentImage(null);
+    },
+    onError: () => {
+      toast({ title: t('common:error'), description: t('toasts.commentAddError'), variant: 'destructive' });
+    }
+  });
+
+  const updateTaskMutation = useMutation({
+    mutationFn: async (taskData: any) => {
+      const response = await apiRequest(`/api/tasks/${task.id}`, 'PUT', taskData);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/work-groups', workGroup?.id, 'tasks'] });
+      toast({ title: t('common:success'), description: t('toasts.taskStatusUpdated') });
+      onTaskUpdated();
+      setIsEditing(false);
+    },
+    onError: () => {
+      toast({ title: t('common:error'), description: t('toasts.taskUpdateError'), variant: 'destructive' });
+    }
+  });
+
+  const deleteTaskMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest(`/api/tasks/${task.id}`, 'DELETE');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/work-groups', workGroup?.id, 'tasks'] });
+      toast({ title: t('common:success'), description: t('toasts.taskDeleted') });
+      onClose();
+      onTaskUpdated();
+    },
+    onError: () => {
+      toast({ title: t('common:error'), description: t('toasts.taskDeleteError'), variant: 'destructive' });
+    }
+  });
+
+  const handleAddComment = () => {
+    if (!newComment.trim() && !commentImage) return;
+    
+    addCommentMutation.mutate({
+      taskId: task.id,
+      userId: currentUser?.id,
+      content: newComment,
+      commentImage: commentImage
+    });
+  };
 
   const handleCommentImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -822,93 +884,6 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
     }
   };
 
-  const openFullscreenImage = (imageUrl: string) => {
-    setFullscreenImage(imageUrl);
-    setFullscreenImageOpen(true);
-  };
-
-  // Fetch task comments
-  const commentsQuery = useQuery({
-    queryKey: ['/api/tasks', task?.id, 'comments'],
-    enabled: !!task?.id && open,
-    retry: 1,
-  });
-
-
-  // Add comment mutation
-  const addCommentMutation = useMutation({
-    mutationFn: async (commentData: { content: string; commentImage?: string | null }) => {
-      const response = await apiRequest(`/api/tasks/${task.id}/comments`, 'POST', commentData);
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/tasks', task.id, 'comments'] });
-      setNewComment('');
-      setCommentImage(null);
-      toast({ title: 'Uspjeh', description: 'Komentar je dodan' });
-    },
-    onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri dodavanju komentara', variant: 'destructive' });
-    }
-  });
-
-  // Update task mutation
-  const updateTaskMutation = useMutation({
-    mutationFn: async (taskData: any) => {
-      const response = await apiRequest(`/api/tasks/${task.id}`, 'PUT', taskData);
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/work-groups', workGroup?.id, 'tasks'] });
-      toast({ title: 'Uspjeh', description: 'Zadatak je ažuriran' });
-      setIsEditing(false);
-      onTaskUpdated();
-    },
-    onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri ažuriranju zadatka', variant: 'destructive' });
-    }
-  });
-
-  // Delete task mutation
-  const deleteTaskMutation = useMutation({
-    mutationFn: async () => {
-      const response = await apiRequest(`/api/tasks/${task.id}`, 'DELETE', {});
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/work-groups', workGroup?.id, 'tasks'] });
-      toast({ title: 'Uspjeh', description: 'Zadatak je obrisan' });
-      onClose();
-      onTaskUpdated();
-    },
-    onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri brisanju zadatka', variant: 'destructive' });
-    }
-  });
-
-  const handleAddComment = () => {
-    if (!newComment.trim() && !commentImage) return;
-    addCommentMutation.mutate({ 
-      content: newComment.trim() || '',
-      commentImage: commentImage || null
-    });
-  };
-
-  const handleSaveEdit = () => {
-    if (!editedTitle.trim()) return;
-    
-    const taskData = {
-      title: editedTitle,
-      description: editedDescription,
-      descriptionImage: editedDescriptionImage || null,
-      status: editedStatus,
-      assignedUserIds: editedAssignedUserIds.length > 0 ? editedAssignedUserIds : null,
-      dueDate: editedDueDate ? new Date(editedDueDate) : null,
-    };
-    
-    updateTaskMutation.mutate(taskData);
-  };
-
   const handleMarkPending = () => {
     updateTaskMutation.mutate({ status: 'na_cekanju' });
   };
@@ -917,9 +892,29 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
     updateTaskMutation.mutate({ status: 'završeno' });
   };
 
+  const handleSaveEdit = () => {
+    if (!editedTitle.trim()) return;
+    
+    updateTaskMutation.mutate({
+      title: editedTitle,
+      description: editedDescription,
+      descriptionImage: editedDescriptionImage,
+      status: editedStatus,
+      assignedUserIds: editedAssignedUserIds.length > 0 ? editedAssignedUserIds : null,
+      dueDate: editedDueDate ? new Date(editedDueDate) : null
+    });
+  };
+
   const handleDeleteTask = () => {
-    if (window.confirm('Da li ste sigurni da želite obrisati ovaj zadatak?')) {
+    if (window.confirm(t('common:messages.confirmDelete'))) {
       deleteTaskMutation.mutate();
+    }
+  };
+
+  const openFullscreenImage = (imageUrl: string | null) => {
+    if (imageUrl) {
+      setFullscreenImage(imageUrl);
+      setFullscreenImageOpen(true);
     }
   };
 
@@ -935,31 +930,36 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
   };
 
   const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'u_toku': return 'U toku';
-      case 'na_cekanju': return 'Na čekanju';
-      case 'završeno': return 'Završeno';
-      case 'otkazano': return 'Otkazano';
-      case 'arhiva': return 'Arhiva';
-      default: return status;
-    }
+    return t(`task.status.${status}`) || status;
   };
 
   const getAssignedUserName = (userId: string) => {
-    const member = members?.find((m: any) => m.userId === userId);
-    return member?.user ? `${member.user.firstName} ${member.user.lastName}` : 'Nepoznat korisnik';
+    const member = members.find((m: any) => m.userId === userId);
+    return member?.user ? `${member.user.firstName} ${member.user.lastName}` : t('unknownUser');
   };
+
+  const isAssignedUser = task?.assignedUserIds?.includes(currentUser?.id);
 
   if (!task) return null;
 
-  const isAssignedUser = task.assignedUserIds?.includes(currentUser?.id) || false;
-
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="h6">{isEditing ? 'Uredi Zadatak' : task.title}</Typography>
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          {!isEditing && isModeratorOrAdmin && (
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="md"
+      fullWidth
+      sx={{
+        '& .MuiDialog-paper': {
+          maxHeight: '90vh'
+        }
+      }}
+    >
+      <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1 }}>
+        <Typography variant="h6" sx={{ flex: 1 }}>
+          {task.title}
+        </Typography>
+        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+          {isModeratorOrAdmin && !isEditing && (
             <>
               <Button
                 variant="outlined"
@@ -967,7 +967,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                 onClick={() => setIsEditing(true)}
                 data-testid="button-edit-task"
               >
-                Uredi
+                {t('taskDialog.edit')}
               </Button>
               <Button
                 variant="outlined"
@@ -975,7 +975,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                 onClick={() => setMoveModalOpen(true)}
                 data-testid="button-move-task"
               >
-                Premjesti
+                {t('taskDialog.move')}
               </Button>
               <Button
                 variant="outlined"
@@ -984,7 +984,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                 onClick={handleDeleteTask}
                 data-testid="button-delete-task"
               >
-                Obriši
+                {t('taskDialog.delete')}
               </Button>
             </>
           )}
@@ -995,12 +995,11 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
       </DialogTitle>
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-          {/* Task Details / Edit Form */}
           {isEditing ? (
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               <TextField
                 variant="outlined"
-                label="Naziv zadatka"
+                label={t('taskDialog.taskTitle')}
                 value={editedTitle}
                 onChange={(e) => setEditedTitle(e.target.value)}
                 fullWidth
@@ -1009,7 +1008,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
               />
               <TextField
                 variant="outlined"
-                label="Opis zadatka"
+                label={t('taskDialog.taskDescription')}
                 value={editedDescription}
                 onChange={(e) => setEditedDescription(e.target.value)}
                 fullWidth
@@ -1020,7 +1019,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
               
               <Box>
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  Slika (opciono)
+                  {t('taskDialog.image')}
                 </Typography>
                 <Button
                   variant="outlined"
@@ -1029,7 +1028,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                   sx={{ justifyContent: 'flex-start', textTransform: 'none' }}
                   data-testid="button-upload-edit-task-image"
                 >
-                  {editedDescriptionImage ? 'Promijeni sliku' : 'Dodaj sliku'}
+                  {editedDescriptionImage ? t('taskDialog.changeImage') : t('taskDialog.addImage')}
                   <input
                     type="file"
                     hidden
@@ -1072,22 +1071,22 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
               <TextField
                 variant="outlined"
                 select
-                label="Status"
+                label={t('taskDialog.status')}
                 value={editedStatus}
                 onChange={(e) => setEditedStatus(e.target.value)}
                 fullWidth
                 data-testid="select-edit-task-status"
               >
-                <MenuItem value="u_toku">U toku</MenuItem>
-                <MenuItem value="na_cekanju">Na čekanju</MenuItem>
-                <MenuItem value="završeno">Završeno</MenuItem>
-                <MenuItem value="otkazano">Otkazano</MenuItem>
-                <MenuItem value="arhiva">Arhiva</MenuItem>
+                <MenuItem value="u_toku">{t('task.status.u_toku')}</MenuItem>
+                <MenuItem value="na_cekanju">{t('task.status.na_cekanju')}</MenuItem>
+                <MenuItem value="završeno">{t('task.status.zavrseno')}</MenuItem>
+                <MenuItem value="otkazano">{t('task.status.otkazano')}</MenuItem>
+                <MenuItem value="arhiva">{t('task.status.arhiva')}</MenuItem>
               </TextField>
               <Autocomplete
                 multiple
                 options={members || []}
-                getOptionLabel={(option: any) => option.user ? `${option.user.firstName} ${option.user.lastName}` : 'Nepoznat korisnik'}
+                getOptionLabel={(option: any) => option.user ? `${option.user.firstName} ${option.user.lastName}` : t('unknownUser')}
                 value={members?.filter((member: any) => editedAssignedUserIds.includes(member.userId)) || []}
                 onChange={(_, newValue) => {
                   setEditedAssignedUserIds(newValue.map((member: any) => member.userId));
@@ -1096,15 +1095,15 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                   <TextField
                     {...params}
                     variant="outlined"
-                    label="Dodijeli članovima"
-                    placeholder="Odaberi članove..."
+                    label={t('taskDialog.assignToMembers')}
+                    placeholder={t('taskDialog.selectMembers')}
                     data-testid="select-edit-task-assignees"
                   />
                 )}
                 renderTags={(value, getTagProps) =>
                   value.map((option: any, index: number) => (
                     <Chip
-                      label={option.user ? `${option.user.firstName} ${option.user.lastName}` : 'Nepoznat'}
+                      label={option.user ? `${option.user.firstName} ${option.user.lastName}` : t('unknownUser')}
                       {...getTagProps({ index })}
                       key={option.userId}
                     />
@@ -1114,7 +1113,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
               />
               <TextField
                 variant="outlined"
-                label="Rok izvršavanja"
+                label={t('taskDialog.dueDate')}
                 type="date"
                 value={editedDueDate}
                 onChange={(e) => setEditedDueDate(e.target.value)}
@@ -1124,7 +1123,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
               />
               <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
                 <Button onClick={() => setIsEditing(false)} data-testid="button-cancel-edit">
-                  Otkaži
+                  {t('taskDialog.cancel')}
                 </Button>
                 <Button 
                   onClick={handleSaveEdit} 
@@ -1132,7 +1131,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                   disabled={!editedTitle.trim()}
                   data-testid="button-save-edit"
                 >
-                  Sačuvaj
+                  {t('taskDialog.save')}
                 </Button>
               </Box>
             </Box>
@@ -1170,7 +1169,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                     {task.assignedUserIds.map((userId: string, index: number) => (
                       <Chip 
                         key={userId}
-                        label={`Dodijeljeno: ${getAssignedUserName(userId)}`} 
+                        label={`${t('taskDialog.assigned')}: ${getAssignedUserName(userId)}`} 
                         variant="outlined"
                         data-testid={`chip-task-assigned-${index}`}
                       />
@@ -1179,14 +1178,13 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                 )}
                 {task.dueDate && (
                   <Chip 
-                    label={`Rok: ${new Date(task.dueDate).toLocaleDateString('hr-HR')}`} 
+                    label={`${t('taskDialog.deadline')}: ${new Date(task.dueDate).toLocaleDateString('hr-HR')}`} 
                     variant="outlined"
                     data-testid="chip-task-due-date"
                   />
                 )}
               </Box>
               
-              {/* Action Buttons */}
               <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                 {isAssignedUser && task.status !== 'na_cekanju' && task.status !== 'završeno' && (
                   <Button
@@ -1195,7 +1193,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                     onClick={handleMarkPending}
                     data-testid="button-mark-pending"
                   >
-                    Označiti kao završeno
+                    {t('taskDetail.markPending')}
                   </Button>
                 )}
                 {isModeratorOrAdmin && task.status === 'na_cekanju' && (
@@ -1205,24 +1203,22 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                     onClick={handleApproveTask}
                     data-testid="button-approve-task"
                   >
-                    Odobri kao završeno
+                    {t('taskDetail.approveComplete')}
                   </Button>
                 )}
               </Box>
             </Box>
           )}
 
-          {/* Comments Section */}
           {!isEditing && (
             <Box>
-              <Typography variant="h6" sx={{ mb: 2 }}>Komentari</Typography>
+              <Typography variant="h6" sx={{ mb: 2 }}>{t('taskDetail.comments')}</Typography>
               
-              {/* Add Comment */}
               <Box sx={{ mb: 2 }}>
                 <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
                   <TextField
                     variant="outlined"
-                    placeholder="Dodaj komentar..."
+                    placeholder={t('taskDetail.addComment')}
                     value={newComment}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewComment(e.target.value)}
                     fullWidth
@@ -1235,7 +1231,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                     disabled={!newComment.trim() && !commentImage}
                     data-testid="button-add-comment"
                   >
-                    Dodaj
+                    {t('taskDetail.add')}
                   </Button>
                 </Box>
                 
@@ -1247,7 +1243,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                     sx={{ textTransform: 'none' }}
                     data-testid="button-upload-comment-image"
                   >
-                    {commentImage ? 'Promijeni sliku' : 'Dodaj sliku'}
+                    {commentImage ? t('taskDialog.changeImage') : t('taskDialog.addImage')}
                     <input
                       type="file"
                       hidden
@@ -1284,7 +1280,6 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                 )}
               </Box>
 
-              {/* Comments List */}
               <Box sx={{ 
                 display: 'flex', 
                 flexDirection: 'column', 
@@ -1318,7 +1313,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                       }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                           <Typography variant="caption" color="text.secondary">
-                            {comment.user ? `${comment.user.firstName} ${comment.user.lastName}` : 'Nepoznat korisnik'} • {new Date(comment.createdAt).toLocaleDateString('hr-HR')}
+                            {comment.user ? `${comment.user.firstName} ${comment.user.lastName}` : t('unknownUser')} • {new Date(comment.createdAt).toLocaleDateString('hr-HR')}
                           </Typography>
                           {comment.content && (
                             <div style={{ 
@@ -1355,7 +1350,7 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
                   ))
                 ) : (
                   <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
-                    Nema komentara
+                    {t('taskDetail.noComments')}
                   </Typography>
                 )}
               </Box>
@@ -1372,7 +1367,6 @@ function TaskDetailDialog({ open, onClose, task, workGroup, currentUser, isModer
         onMoveSuccess={onTaskUpdated}
       />
       
-      {/* Fullscreen Image Dialog */}
       <Dialog 
         open={fullscreenImageOpen} 
         onClose={() => setFullscreenImageOpen(false)} 
@@ -1423,6 +1417,7 @@ interface MoveTaskModalProps {
 }
 
 function MoveTaskModal({ open, onClose, task, currentWorkGroup, onMoveSuccess }: MoveTaskModalProps) {
+  const { t } = useTranslation(['tasks', 'common']);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedWorkGroupId, setSelectedWorkGroupId] = useState('');
@@ -1443,16 +1438,16 @@ function MoveTaskModal({ open, onClose, task, currentWorkGroup, onMoveSuccess }:
       queryClient.invalidateQueries({ queryKey: ['/api/work-groups'] });
       queryClient.invalidateQueries({ queryKey: ['/api/tasks'] });
       toast({ 
-        title: 'Uspjeh', 
-        description: `Zadatak uspješno premješten u ${newWorkGroup?.name || 'novu sekciju'}` 
+        title: t('common:success'), 
+        description: newWorkGroup ? t('toasts.taskMoved', { name: newWorkGroup.name }) : t('toasts.taskMovedGeneric')
       });
       onMoveSuccess();
       onClose();
     },
     onError: (error: any) => {
       toast({ 
-        title: 'Greška', 
-        description: error.message || 'Greška pri premještanju zadatka', 
+        title: t('common:error'), 
+        description: error.message || t('toasts.taskMoveError'), 
         variant: 'destructive' 
       });
     }
@@ -1461,8 +1456,8 @@ function MoveTaskModal({ open, onClose, task, currentWorkGroup, onMoveSuccess }:
   const handleMove = () => {
     if (!selectedWorkGroupId) {
       toast({ 
-        title: 'Greška', 
-        description: 'Molimo odaberite sekciju', 
+        title: t('common:error'), 
+        description: t('toasts.selectSection'), 
         variant: 'destructive' 
       });
       return;
@@ -1477,7 +1472,7 @@ function MoveTaskModal({ open, onClose, task, currentWorkGroup, onMoveSuccess }:
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="h6">Premjesti Zadatak</Typography>
+        <Typography variant="h6">{t('moveTask.title')}</Typography>
         <IconButton onClick={onClose}>
           <Close />
         </IconButton>
@@ -1485,12 +1480,12 @@ function MoveTaskModal({ open, onClose, task, currentWorkGroup, onMoveSuccess }:
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 2 }}>
           <Typography variant="body2" color="text.secondary">
-            Premjesti zadatak "{task?.title}" u drugu sekciju
+            {t('moveTask.description', { title: task?.title })}
           </Typography>
           <TextField
             variant="outlined"
             select
-            label="Odaberite sekciju"
+            label={t('moveTask.selectSection')}
             value={selectedWorkGroupId}
             onChange={(e) => setSelectedWorkGroupId(e.target.value)}
             fullWidth
@@ -1498,9 +1493,9 @@ function MoveTaskModal({ open, onClose, task, currentWorkGroup, onMoveSuccess }:
             data-testid="select-move-work-group"
           >
             {workGroupsQuery.isLoading ? (
-              <MenuItem value="" disabled>Učitavanje...</MenuItem>
+              <MenuItem value="" disabled>{t('moveTask.loading')}</MenuItem>
             ) : availableWorkGroups.length === 0 ? (
-              <MenuItem value="" disabled>Nema dostupnih sekcija</MenuItem>
+              <MenuItem value="" disabled>{t('moveTask.noSectionsAvailable')}</MenuItem>
             ) : (
               availableWorkGroups.map((workGroup) => (
                 <MenuItem key={workGroup.id} value={workGroup.id}>
@@ -1517,7 +1512,7 @@ function MoveTaskModal({ open, onClose, task, currentWorkGroup, onMoveSuccess }:
           disabled={moveTaskMutation.isPending}
           data-testid="button-cancel-move"
         >
-          Odustani
+          {t('moveTask.cancel')}
         </Button>
         <Button 
           onClick={handleMove} 
@@ -1525,7 +1520,7 @@ function MoveTaskModal({ open, onClose, task, currentWorkGroup, onMoveSuccess }:
           disabled={moveTaskMutation.isPending || !selectedWorkGroupId}
           data-testid="button-confirm-move"
         >
-          {moveTaskMutation.isPending ? 'Premještanje...' : 'Potvrdi'}
+          {moveTaskMutation.isPending ? t('moveTask.moving') : t('moveTask.confirm')}
         </Button>
       </DialogActions>
     </Dialog>
@@ -1539,27 +1534,25 @@ interface TaskManagementContentProps {
 }
 
 function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManagementContentProps) {
+  const { t } = useTranslation(['tasks', 'common']);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedTask, setSelectedTask] = useState<any>(null);
   const [createTaskOpen, setCreateTaskOpen] = useState(false);
   const [taskDetailOpen, setTaskDetailOpen] = useState(false);
 
-  // Fetch tasks for the work group
   const tasksQuery = useQuery({
     queryKey: ['/api/work-groups', workGroup?.id, 'tasks'],
     enabled: !!workGroup?.id,
     retry: 1,
   });
 
-  // Fetch work group members to check moderator status
   const membersQuery = useQuery({
     queryKey: ['/api/work-groups', workGroup?.id, 'members'],
     enabled: !!workGroup?.id,
     retry: 1,
   });
 
-  // Check if current user is moderator or admin
   const isModeratorOrAdmin = () => {
     if (!currentUser || !membersQuery.data) return false;
     if (currentUser.isAdmin) return true;
@@ -1568,7 +1561,6 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
     return userMembership?.isModerator || false;
   };
 
-  // Create task mutation
   const createTaskMutation = useMutation({
     mutationFn: async (taskData: any) => {
       const response = await apiRequest('/api/tasks', 'POST', taskData);
@@ -1576,15 +1568,14 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/work-groups', workGroup?.id, 'tasks'] });
-      toast({ title: 'Uspjeh', description: 'Zadatak je uspješno kreiran' });
+      toast({ title: t('common:success'), description: t('toasts.taskCreated') });
       setCreateTaskOpen(false);
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri kreiranju zadatka', variant: 'destructive' });
+      toast({ title: t('common:error'), description: t('toasts.taskCreateError'), variant: 'destructive' });
     }
   });
 
-  // Update task status mutation
   const updateTaskMutation = useMutation({
     mutationFn: async ({ taskId, status }: { taskId: string; status: string }) => {
       const response = await apiRequest(`/api/tasks/${taskId}`, 'PUT', { status });
@@ -1592,10 +1583,10 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/work-groups', workGroup?.id, 'tasks'] });
-      toast({ title: 'Uspjeh', description: 'Status zadatka je ažuriran' });
+      toast({ title: t('common:success'), description: t('toasts.taskStatusUpdated') });
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri ažuriranju zadatka', variant: 'destructive' });
+      toast({ title: t('common:error'), description: t('toasts.taskUpdateError'), variant: 'destructive' });
     }
   });
 
@@ -1624,14 +1615,7 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
   };
 
   const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'u_toku': return 'U toku';
-      case 'na_cekanju': return 'Na čekanju';
-      case 'završeno': return 'Završeno';
-      case 'otkazano': return 'Otkazano';
-      case 'arhiva': return 'Arhiva';
-      default: return status;
-    }
+    return t(`task.status.${status}`) || status;
   };
 
   const getAssignedUserNames = (userIds: string[]) => {
@@ -1639,7 +1623,7 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
     const members = Array.isArray(membersQuery.data) ? membersQuery.data : [];
     const names = userIds.map(userId => {
       const member = members.find((m: any) => m.userId === userId);
-      return member?.user ? `${member.user.firstName} ${member.user.lastName}` : 'Nepoznat';
+      return member?.user ? `${member.user.firstName} ${member.user.lastName}` : t('unknownUser');
     });
     return names.join(', ');
   };
@@ -1654,10 +1638,9 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
 
   return (
     <Box sx={{ p: 3 }}>
-      {/* Header with Create Task Button */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h6" sx={{ fontWeight: 600 }}>
-          Zadaci ({Array.isArray(tasksQuery.data) ? tasksQuery.data.length : 0})
+          {t('taskDialog.taskCount', { count: Array.isArray(tasksQuery.data) ? tasksQuery.data.length : 0 })}
         </Typography>
         {isModeratorOrAdmin() && (
           <Button
@@ -1665,12 +1648,11 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
             onClick={handleCreateTask}
             data-testid="button-create-task"
           >
-            Kreiraj Novi Zadatak
+            {t('taskDialog.createNew')}
           </Button>
         )}
       </Box>
 
-      {/* Task List */}
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         {Array.isArray(tasksQuery.data) && tasksQuery.data.length > 0 ? (
           tasksQuery.data.map((task: any) => (
@@ -1699,12 +1681,12 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
                       />
                       {task.assignedUserIds && task.assignedUserIds.length > 0 && (
                         <Typography variant="caption" color="text.secondary" data-testid={`task-assignees-${task.id}`}>
-                          Dodijeljeno: {getAssignedUserNames(task.assignedUserIds)}
+                          {t('taskDialog.assigned')}: {getAssignedUserNames(task.assignedUserIds)}
                         </Typography>
                       )}
                       {task.dueDate && (
                         <Typography variant="caption" color="text.secondary">
-                          Rok: {new Date(task.dueDate).toLocaleDateString('hr-HR')}
+                          {t('taskDialog.deadline')}: {new Date(task.dueDate).toLocaleDateString('hr-HR')}
                         </Typography>
                       )}
                     </Box>
@@ -1721,7 +1703,7 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
                         }}
                         data-testid={`button-complete-task-${task.id}`}
                       >
-                        Označiti kao završeno
+                        {t('taskDialog.markAsComplete')}
                       </Button>
                     )}
                   </Box>
@@ -1733,7 +1715,7 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
           <Card>
             <CardContent sx={{ textAlign: 'center', py: 6 }}>
               <Typography color="text.secondary">
-                Nema zadataka za ovu sekciju
+                {t('taskDialog.noTasksForSection')}
               </Typography>
               {isModeratorOrAdmin() && (
                 <Button
@@ -1742,7 +1724,7 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
                   sx={{ mt: 2 }}
                   data-testid="button-create-first-task"
                 >
-                  Kreiraj Prvi Zadatak
+                  {t('taskDialog.createFirstTask')}
                 </Button>
               )}
             </CardContent>
@@ -1750,7 +1732,6 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
         )}
       </Box>
 
-      {/* Create Task Dialog */}
       <TaskCreateDialog
         open={createTaskOpen}
         onClose={() => setCreateTaskOpen(false)}
@@ -1759,7 +1740,6 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
         onSave={createTaskMutation.mutate}
       />
 
-      {/* Task Detail Dialog */}
       <TaskDetailDialog
         open={taskDetailOpen}
         onClose={() => {
