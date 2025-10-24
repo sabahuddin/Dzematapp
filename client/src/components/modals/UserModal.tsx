@@ -36,6 +36,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import FamilySelectionDialog from './FamilySelectionDialog';
 import { useAuth } from '@/hooks/useAuth';
+import { useTranslation } from 'react-i18next';
 
 interface UserModalProps {
   open: boolean;
@@ -46,6 +47,7 @@ interface UserModalProps {
 }
 
 export default function UserModal({ open, onClose, onSave, user, isMemberView = false }: UserModalProps) {
+  const { t } = useTranslation(['users', 'common']);
   const { user: currentUser } = useAuth();
   
   // Check if current user is editing their own profile
@@ -181,21 +183,26 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
     enabled: !!user?.id,
   });
 
-  const predefinedCategories = ['Muškarci', 'Žene', 'Roditelji', 'Omladina'];
+  const predefinedCategories = [
+    t('categories.men'),
+    t('categories.women'),
+    t('categories.parents'),
+    t('categories.youth')
+  ];
 
   const availableRoles = [
-    { value: 'admin', label: 'Admin' },
-    { value: 'imam', label: 'Imam' },
-    { value: 'clan_io', label: 'Član IO' },
-    { value: 'clan', label: 'Član' },
-    { value: 'clan_porodice', label: 'Član porodice' }
+    { value: 'admin', label: t('roles.admin') },
+    { value: 'imam', label: t('roles.imam') },
+    { value: 'clan_io', label: t('roles.clan_io') },
+    { value: 'clan', label: t('roles.clan') },
+    { value: 'clan_porodice', label: t('roles.clan_porodice') }
   ];
 
   const inactiveReasonOptions = [
-    { value: 'Smrt', label: 'Smrt' },
-    { value: 'Drugi džemat', label: 'Drugi džemat' },
-    { value: 'Isključen', label: 'Isključen' },
-    { value: 'Nepoznato', label: 'Nepoznato' }
+    { value: 'Smrt', label: t('inactivityReasons.smrt') },
+    { value: 'Drugi džemat', label: t('inactivityReasons.drugi_dzemat') },
+    { value: 'Isključen', label: t('inactivityReasons.iskljucen') },
+    { value: 'Nepoznato', label: t('inactivityReasons.nepoznato') }
   ];
 
   const handleChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement | { value: unknown }>) => {
@@ -318,9 +325,9 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
   };
 
   const statusOptions = [
-    { value: 'aktivan', label: 'Aktivan' },
-    { value: 'pasivan', label: 'Pasivan' },
-    { value: 'član porodice', label: 'Član porodice' }
+    { value: 'aktivan', label: t('membershipStatuses.aktivan') },
+    { value: 'pasivan', label: t('membershipStatuses.pasivan') },
+    { value: 'član porodice', label: t('membershipStatuses.clan_porodice') }
   ];
 
   return (
@@ -334,7 +341,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
       }}
     >
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        {user ? 'Uredi Korisnika' : 'Dodaj Novog Korisnika'}
+        {user ? t('modal.editTitle') : t('modal.addTitle')}
         <IconButton onClick={onClose} data-testid="close-user-modal">
           <Close />
         </IconButton>
@@ -355,7 +362,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                 </Avatar>
                 <Box>
                   <Typography variant="subtitle1" sx={{ mb: 1 }}>
-                    Fotografija korisnika
+                    {t('modal.photoLabel')}
                   </Typography>
                   <Button
                     variant="outlined"
@@ -364,7 +371,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                     size="small"
                     data-testid="button-upload-photo"
                   >
-                    {photoPreview ? 'Promijeni sliku' : 'Dodaj sliku'}
+                    {photoPreview ? t('modal.changePhoto') : t('modal.addPhoto')}
                     <input
                       type="file"
                       hidden
@@ -383,7 +390,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
               <TextField
                 fullWidth
                 variant="outlined"
-                label="Ime"
+                label={t('firstName')}
                 value={formData.firstName}
                 onChange={handleChange('firstName')}
                 required
@@ -395,7 +402,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
               <TextField
                 fullWidth
                 variant="outlined"
-                label="Prezime"
+                label={t('lastName')}
                 value={formData.lastName}
                 onChange={handleChange('lastName')}
                 required
@@ -408,7 +415,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
               <TextField
                 fullWidth
                 variant="outlined"
-                label="Datum rođenja"
+                label={t('dateOfBirth')}
                 type="date"
                 value={formData.dateOfBirth}
                 onChange={handleChange('dateOfBirth')}
@@ -422,7 +429,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
               <TextField
                 fullWidth
                 variant="outlined"
-                label="Zanimanje"
+                label={t('occupation')}
                 value={formData.occupation}
                 onChange={handleChange('occupation')}
                 data-testid="input-occupation"
@@ -434,11 +441,11 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
               <TextField
                 fullWidth
                 variant="outlined"
-                label="Korisničko ime"
+                label={t('username')}
                 value={formData.username}
                 onChange={handleChange('username')}
                 required={!formData.roles.includes('clan_porodice')}
-                helperText={formData.roles.includes('clan_porodice') ? "Opciono za člana porodice" : ""}
+                helperText={formData.roles.includes('clan_porodice') ? t('family.usernameOptional') : ""}
                 data-testid="input-username"
               />
             </Grid>
@@ -447,12 +454,12 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
               <TextField
                 fullWidth
                 variant="outlined"
-                label="Šifra"
+                label={t('password')}
                 type="password"
                 value={formData.password}
                 onChange={handleChange('password')}
                 required={!user && !formData.roles.includes('clan_porodice')}
-                helperText={user ? "Ostavite prazno da zadržite postojeću šifru" : formData.roles.includes('clan_porodice') ? "Opciono za člana porodice" : ""}
+                helperText={user ? t('modal.passwordHelper') : formData.roles.includes('clan_porodice') ? t('family.usernameOptional') : ""}
                 data-testid="input-password"
               />
             </Grid>
@@ -462,11 +469,11 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
               <TextField
                 fullWidth
                 variant="outlined"
-                label="Telefon"
+                label={t('phone')}
                 type="tel"
                 value={formData.phone}
                 onChange={handleChange('phone')}
-                placeholder="+41 7x xxx xx xx"
+                placeholder={t('phonePlaceholder')}
                 data-testid="input-phone"
               />
             </Grid>
@@ -475,11 +482,11 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
               <TextField
                 fullWidth
                 variant="outlined"
-                label="Email"
+                label={t('email')}
                 type="email"
                 value={formData.email}
                 onChange={handleChange('email')}
-                helperText={formData.roles.includes('clan_porodice') ? "Opciono za člana porodice" : ""}
+                helperText={formData.roles.includes('clan_porodice') ? t('family.usernameOptional') : ""}
                 data-testid="input-email"
               />
             </Grid>
@@ -489,7 +496,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
               <TextField
                 fullWidth
                 variant="outlined"
-                label="Adresa"
+                label={t('address')}
                 value={formData.address}
                 onChange={handleChange('address')}
                 data-testid="input-address"
@@ -500,7 +507,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
               <TextField
                 fullWidth
                 variant="outlined"
-                label="Grad"
+                label={t('city')}
                 value={formData.city}
                 onChange={handleChange('city')}
                 data-testid="input-city"
@@ -511,7 +518,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
               <TextField
                 fullWidth
                 variant="outlined"
-                label="Poštanski broj"
+                label={t('postalCode')}
                 value={formData.postalCode}
                 onChange={handleChange('postalCode')}
                 data-testid="input-postalCode"
@@ -523,13 +530,13 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
               <TextField
                 fullWidth
                 variant="outlined"
-                label="Član od"
+                label={t('memberSince')}
                 type="date"
                 value={formData.membershipDate}
                 onChange={handleChange('membershipDate')}
                 InputLabelProps={{ shrink: true }}
                 inputProps={{ step: 1 }}
-                helperText={!user ? "Ostavite prazno za današnji datum" : ""}
+                helperText={!user ? t('modal.memberSinceHelper') : ""}
                 disabled={isMemberEditingSelf}
                 data-testid="input-membershipDate"
               />
@@ -537,10 +544,10 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
             
             <Grid size={{ xs: 12, sm: 6 }}>
               <FormControl fullWidth>
-                <InputLabel>Status članstva</InputLabel>
+                <InputLabel>{t('membershipStatus')}</InputLabel>
                 <Select
                   value={formData.status}
-                  label="Status članstva"
+                  label={t('membershipStatus')}
                   onChange={(e) => handleChange('status')(e as any)}
                   disabled={isMemberEditingSelf}
                   data-testid="select-status"
@@ -558,10 +565,10 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
             {formData.status === 'pasivan' && (
               <Grid size={{ xs: 12, sm: 6 }}>
                 <FormControl fullWidth>
-                  <InputLabel>Razlog pasivnosti</InputLabel>
+                  <InputLabel>{t('inactivityReason')}</InputLabel>
                   <Select
                     value={formData.inactiveReason || ''}
-                    label="Razlog pasivnosti"
+                    label={t('inactivityReason')}
                     onChange={(e) => setFormData(prev => ({ ...prev, inactiveReason: e.target.value as string }))}
                     data-testid="select-inactive-reason"
                   >
@@ -600,9 +607,9 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                   <TextField
                     {...params}
                     variant="outlined"
-                    label="Vještine"
-                    placeholder="Unesite vještine (npr. Programiranje, Dizajn...)"
-                    helperText="Unesite vještine i pritisnite Enter"
+                    label={t('skills')}
+                    placeholder={t('modal.skillsPlaceholder')}
+                    helperText={t('modal.skillsHelper')}
                     InputLabelProps={{ shrink: true }}
                     data-testid="input-skills"
                   />
@@ -635,8 +642,8 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                     <TextField
                       {...params}
                       variant="outlined"
-                      label="Kategorije"
-                      placeholder="Odaberite ili unesite kategoriju"
+                      label={t('common:common.categories')}
+                      placeholder={t('modal.categoriesPlaceholder')}
                       InputLabelProps={{ shrink: true }}
                       data-testid="input-categories"
                     />
@@ -650,7 +657,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
             {(currentUser?.isAdmin || isMemberEditingSelf) && (
               <Grid size={{ xs: 12, sm: isMemberEditingSelf ? 12 : 6 }}>
                 <FormControl fullWidth>
-                  <InputLabel>Uloge</InputLabel>
+                  <InputLabel>{t('roles.label')}</InputLabel>
                   <Select
                     multiple
                     value={formData.roles}
@@ -661,7 +668,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                         roles: typeof value === 'string' ? value.split(',') : value as string[]
                       }));
                     }}
-                    label="Uloge"
+                    label={t('roles.label')}
                     disabled={isMemberEditingSelf}
                     renderValue={(selected) => (
                       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
@@ -703,11 +710,11 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                       data-testid="switch-isAdmin"
                     />
                   }
-                  label="Superadmin pristup"
+                  label={t('superadmin.label')}
                   sx={{ mt: 1 }}
                 />
                 <Typography variant="caption" color="text.secondary" display="block" sx={{ ml: 4 }}>
-                  Superadmin može dodavati i uređivati sve korisnike
+                  {t('superadmin.description')}
                 </Typography>
               </Grid>
             )}
@@ -717,7 +724,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
               <Grid size={{ xs: 12 }}>
                 <Divider sx={{ my: 2 }} />
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                  <Typography variant="h6">Članovi porodice</Typography>
+                  <Typography variant="h6">{t('family.title')}</Typography>
                   <Button
                     variant="outlined"
                     startIcon={<Add />}
@@ -725,7 +732,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                     size="small"
                     data-testid="button-add-family-member"
                   >
-                    Dodaj člana porodice
+                    {t('family.addMember')}
                   </Button>
                 </Box>
                 
@@ -765,7 +772,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                     ))
                   ) : (
                     <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
-                      Nema dodanih članova porodice
+                      {t('family.noMembers')}
                     </Typography>
                   )}
                 </Box>
@@ -780,14 +787,14 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
             variant="outlined"
             data-testid="button-cancel"
           >
-            Odustani
+            {t('modal.cancel')}
           </Button>
           <Button 
             type="submit" 
             variant="contained"
             data-testid="button-save"
           >
-            Spremi
+            {t('modal.save')}
           </Button>
         </DialogActions>
       </form>
