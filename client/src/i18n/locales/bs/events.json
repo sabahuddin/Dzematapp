@@ -1,5 +1,6 @@
 {
   "title": "Događaji",
+  "pageTitle": "Događaji i Važni Datumi",
   "upcomingEvents": "Nadolazeći Događaji",
   "otherEvents": "Ostali Događaji",
   "pastEvents": "Završeni Događaji",
@@ -34,6 +35,14 @@
   "pastEventWarning": "Ovaj događaj je završen. Retroaktivna prijava nije moguća.",
   "noEvents": "Nema događaja",
   "noUpcomingEvents": "Nema nadolazećih događaja",
+  "actions": "Akcije",
+  "no": "Ne",
+  "confirmDelete": "Potvrdi Brisanje",
+  "confirmDeleteMessage": "Da li ste sigurni da želite obrisati događaj \"{{eventName}}\"?",
+  "loadingError": "Greška pri učitavanju podataka. Molimo pokušajte ponovo.",
+  "importantDateList": "Spisak Važnih Datuma",
+  "datePlaceholder": "npr. 15.03",
+  "dateHelperText": "Format: dd.mm (npr. 15.03 za 15. mart)",
   "calendar": {
     "title": "Kalendar Događaja",
     "monthView": "Mjesečni pregled"
@@ -48,5 +57,22 @@
     "description": "Opis",
     "noImportantDates": "Nema važnih datuma",
     "dateFormatError": "Datum mora biti u formatu dd.mm (npr. 15.03)"
+  },
+  "toast": {
+    "success": "Uspjeh",
+    "error": "Greška",
+    "eventCreated": "Događaj je uspješno kreiran",
+    "eventCreateError": "Greška pri kreiranju događaja",
+    "eventUpdated": "Događaj je uspješno ažuriran",
+    "eventUpdateError": "Greška pri ažuriranju događaja",
+    "eventDeleted": "Događaj je uspješno obrisan",
+    "eventDeleteError": "Greška pri brisanju događaja",
+    "importantDateAdded": "Važan datum je uspješno dodan",
+    "importantDateAddError": "Greška pri dodavanju važnog datuma",
+    "importantDateUpdated": "Važan datum je uspješno ažuriran",
+    "importantDateUpdateError": "Greška pri ažuriranju važnog datuma",
+    "importantDateDeleted": "Važan datum je uspješno obrisan",
+    "importantDateDeleteError": "Greška pri brisanju važnog datuma",
+    "fillNameAndDate": "Molimo popunite naziv i datum"
   }
 }

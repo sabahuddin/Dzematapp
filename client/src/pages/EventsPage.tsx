@@ -1,5 +1,6 @@
 import { useState, type SyntheticEvent } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Button,
@@ -82,6 +83,7 @@ function EventDay(props: PickersDayProps & { eventDates?: Date[] }) {
 }
 
 export default function EventsPage() {
+  const { t } = useTranslation(['events', 'common']);
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -121,10 +123,10 @@ export default function EventsPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/events'] });
-      toast({ title: 'Uspjeh', description: 'Događaj je uspješno kreiran' });
+      toast({ title: t('events:toast.success'), description: t('events:toast.eventCreated') });
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri kreiranju događaja', variant: 'destructive' });
+      toast({ title: t('events:toast.error'), description: t('events:toast.eventCreateError'), variant: 'destructive' });
     }
   });
 
@@ -135,10 +137,10 @@ export default function EventsPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/events'] });
-      toast({ title: 'Uspjeh', description: 'Događaj je uspješno ažuriran' });
+      toast({ title: t('events:toast.success'), description: t('events:toast.eventUpdated') });
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri ažuriranju događaja', variant: 'destructive' });
+      toast({ title: t('events:toast.error'), description: t('events:toast.eventUpdateError'), variant: 'destructive' });
     }
   });
 
@@ -148,10 +150,10 @@ export default function EventsPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/events'] });
-      toast({ title: 'Uspjeh', description: 'Događaj je uspješno obrisan' });
+      toast({ title: t('events:toast.success'), description: t('events:toast.eventDeleted') });
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri brisanju događaja', variant: 'destructive' });
+      toast({ title: t('events:toast.error'), description: t('events:toast.eventDeleteError'), variant: 'destructive' });
     }
   });
 
@@ -162,11 +164,11 @@ export default function EventsPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/important-dates'] });
-      toast({ title: 'Uspjeh', description: 'Važan datum je uspješno dodan' });
+      toast({ title: t('events:toast.success'), description: t('events:toast.importantDateAdded') });
       setImportantDateForm({ name: '', date: '' });
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri dodavanju važnog datuma', variant: 'destructive' });
+      toast({ title: t('events:toast.error'), description: t('events:toast.importantDateAddError'), variant: 'destructive' });
     }
   });
 
@@ -177,12 +179,12 @@ export default function EventsPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/important-dates'] });
-      toast({ title: 'Uspjeh', description: 'Važan datum je uspješno ažuriran' });
+      toast({ title: t('events:toast.success'), description: t('events:toast.importantDateUpdated') });
       setEditingImportantDate(null);
       setImportantDateForm({ name: '', date: '' });
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri ažuriranju važnog datuma', variant: 'destructive' });
+      toast({ title: t('events:toast.error'), description: t('events:toast.importantDateUpdateError'), variant: 'destructive' });
     }
   });
 
@@ -192,10 +194,10 @@ export default function EventsPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/important-dates'] });
-      toast({ title: 'Uspjeh', description: 'Važan datum je uspješno obrisan' });
+      toast({ title: t('events:toast.success'), description: t('events:toast.importantDateDeleted') });
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri brisanju važnog datuma', variant: 'destructive' });
+      toast({ title: t('events:toast.error'), description: t('events:toast.importantDateDeleteError'), variant: 'destructive' });
     }
   });
 
@@ -245,7 +247,7 @@ export default function EventsPage() {
   const handleImportantDateSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!importantDateForm.name || !importantDateForm.date) {
-      toast({ title: 'Greška', description: 'Molimo popunite naziv i datum', variant: 'destructive' });
+      toast({ title: t('events:toast.error'), description: t('events:toast.fillNameAndDate'), variant: 'destructive' });
       return;
     }
 
@@ -253,8 +255,8 @@ export default function EventsPage() {
     const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])$/;
     if (!dateRegex.test(importantDateForm.date)) {
       toast({ 
-        title: 'Greška', 
-        description: 'Datum mora biti u formatu dd.mm (npr. 15.03)', 
+        title: t('events:toast.error'), 
+        description: t('events:importantDate.dateFormatError'), 
         variant: 'destructive' 
       });
       return;
@@ -326,7 +328,7 @@ export default function EventsPage() {
         <TableCell>{formatDateTime(event.dateTime.toString())}</TableCell>
         <TableCell>{event.location}</TableCell>
         <TableCell>
-          {event.rsvpEnabled ? `${rsvpCount}/${maxAttendees}` : 'Ne'}
+          {event.rsvpEnabled ? `${rsvpCount}/${maxAttendees}` : t('events:no')}
         </TableCell>
         <TableCell>
           <Box sx={{ display: 'flex', gap: 0.5 }}>
@@ -375,7 +377,7 @@ export default function EventsPage() {
   if (eventsQuery.error || importantDatesQuery.error) {
     return (
       <Alert severity="error">
-        Greška pri učitavanju podataka. Molimo pokušajte ponovo.
+        {t('events:loadingError')}
       </Alert>
     );
   }
@@ -407,7 +409,7 @@ export default function EventsPage() {
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h5" sx={{ fontWeight: 600 }}>
-          Događaji i Važni Datumi
+          {t('events:pageTitle')}
         </Typography>
         {user?.isAdmin && activeTab === 0 && (
           <Button
@@ -416,7 +418,7 @@ export default function EventsPage() {
             onClick={handleCreateEvent}
             data-testid="button-add-event"
           >
-            Kreiraj Događaj
+            {t('events:createEvent')}
           </Button>
         )}
       </Box>
@@ -430,13 +432,13 @@ export default function EventsPage() {
           <Tab 
             icon={<CalendarMonth />} 
             iconPosition="start" 
-            label="Događaji" 
+            label={t('events:title')} 
             data-testid="tab-events"
           />
           <Tab 
             icon={<EventNote />} 
             iconPosition="start" 
-            label="Važni datumi" 
+            label={t('events:importantDates')} 
             data-testid="tab-important-dates"
           />
         </Tabs>
@@ -449,7 +451,7 @@ export default function EventsPage() {
           <Card sx={{ mb: 3 }}>
             <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                Kalendar Događaja
+                {t('events:calendar.title')}
               </Typography>
             </Box>
             <CardContent sx={{ p: 0 }}>
@@ -482,18 +484,18 @@ export default function EventsPage() {
           <Card sx={{ mb: 2 }}>
             <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                Nadolazeći Događaji
+                {t('events:upcomingEvents')}
               </Typography>
             </Box>
             <TableContainer>
               <Table>
                 <TableHead>
                   <TableRow sx={{ bgcolor: '#f8f9fa' }}>
-                    <TableCell sx={{ fontWeight: 600 }}>Naziv Događaja</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>Datum i Vrijeme</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>Lokacija</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>RSVP</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>{t('events:eventName')}</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>{t('events:dateTime')}</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>{t('events:location')}</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>{t('events:rsvp')}</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>{t('events:actions')}</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -502,7 +504,7 @@ export default function EventsPage() {
                     <TableRow>
                       <TableCell colSpan={5} sx={{ textAlign: 'center', py: 4 }}>
                         <Typography color="text.secondary">
-                          Nema nadolazećih događaja
+                          {t('events:noUpcomingEvents')}
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -525,7 +527,7 @@ export default function EventsPage() {
                 sx={{ bgcolor: '#f5f5f5' }}
               >
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                  Ostali Događaji ({otherUpcomingEvents.length})
+                  {t('events:otherEvents')} ({otherUpcomingEvents.length})
                 </Typography>
               </AccordionSummary>
               <AccordionDetails sx={{ p: 0 }}>
@@ -533,11 +535,11 @@ export default function EventsPage() {
                   <Table>
                     <TableHead>
                       <TableRow sx={{ bgcolor: '#fafafa' }}>
-                        <TableCell sx={{ fontWeight: 600 }}>Naziv Događaja</TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>Datum i Vrijeme</TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>Lokacija</TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>RSVP</TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>{t('events:eventName')}</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>{t('events:dateTime')}</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>{t('events:location')}</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>{t('events:rsvp')}</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>{t('events:actions')}</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -562,7 +564,7 @@ export default function EventsPage() {
                 sx={{ bgcolor: '#f5f5f5' }}
               >
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                  Završeni Događaji ({pastEvents.length})
+                  {t('events:pastEvents')} ({pastEvents.length})
                 </Typography>
               </AccordionSummary>
               <AccordionDetails sx={{ p: 0 }}>
@@ -570,11 +572,11 @@ export default function EventsPage() {
                   <Table>
                     <TableHead>
                       <TableRow sx={{ bgcolor: '#fafafa' }}>
-                        <TableCell sx={{ fontWeight: 600 }}>Naziv Događaja</TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>Datum i Vrijeme</TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>Lokacija</TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>RSVP</TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>{t('events:eventName')}</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>{t('events:dateTime')}</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>{t('events:location')}</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>{t('events:rsvp')}</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>{t('events:actions')}</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -595,13 +597,13 @@ export default function EventsPage() {
             <Card sx={{ mb: 3 }}>
               <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                  {editingImportantDate ? 'Uredi Važan Datum' : 'Dodaj Važan Datum'}
+                  {editingImportantDate ? t('events:importantDate.edit') : t('events:importantDate.add')}
                 </Typography>
               </Box>
               <CardContent>
                 <Box component="form" onSubmit={handleImportantDateSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                   <TextField
-                    label="Naziv"
+                    label={t('events:importantDate.name')}
                     value={importantDateForm.name}
                     onChange={(e) => setImportantDateForm({ ...importantDateForm, name: e.target.value })}
                     required
@@ -609,14 +611,14 @@ export default function EventsPage() {
                     data-testid="input-important-date-name"
                   />
                   <TextField
-                    label="Datum (dd.mm)"
+                    label={`${t('events:importantDate.date')} (${t('events:importantDate.dateFormat')})`}
                     value={importantDateForm.date}
                     onChange={(e) => setImportantDateForm({ ...importantDateForm, date: e.target.value })}
-                    placeholder="npr. 15.03"
+                    placeholder={t('events:datePlaceholder')}
                     required
                     fullWidth
                     data-testid="input-important-date-date"
-                    helperText="Format: dd.mm (npr. 15.03 za 15. mart)"
+                    helperText={t('events:dateHelperText')}
                   />
                   <Box sx={{ display: 'flex', gap: 2 }}>
                     <Button 
@@ -624,7 +626,7 @@ export default function EventsPage() {
                       variant="contained"
                       data-testid="button-submit-important-date"
                     >
-                      {editingImportantDate ? 'Ažuriraj' : 'Dodaj'}
+                      {editingImportantDate ? t('common:buttons.edit') : t('common:buttons.add')}
                     </Button>
                     {editingImportantDate && (
                       <Button 
@@ -632,7 +634,7 @@ export default function EventsPage() {
                         variant="outlined"
                         data-testid="button-cancel-edit-important-date"
                       >
-                        Odustani
+                        {t('common:buttons.cancel')}
                       </Button>
                     )}
                   </Box>
@@ -644,17 +646,17 @@ export default function EventsPage() {
           <Card>
             <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                Spisak Važnih Datuma
+                {t('events:importantDateList')}
               </Typography>
             </Box>
             <TableContainer>
               <Table>
                 <TableHead>
                   <TableRow sx={{ bgcolor: '#f8f9fa' }}>
-                    <TableCell sx={{ fontWeight: 600 }}>Datum</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>Naziv</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>{t('events:importantDate.date')}</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>{t('events:importantDate.name')}</TableCell>
                     {user?.isAdmin && (
-                      <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
+                      <TableCell sx={{ fontWeight: 600 }}>{t('events:actions')}</TableCell>
                     )}
                   </TableRow>
                 </TableHead>
@@ -691,7 +693,7 @@ export default function EventsPage() {
                     <TableRow>
                       <TableCell colSpan={user?.isAdmin ? 3 : 2} sx={{ textAlign: 'center', py: 4 }}>
                         <Typography color="text.secondary">
-                          Nema važnih datuma
+                          {t('events:importantDate.noImportantDates')}
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -708,15 +710,15 @@ export default function EventsPage() {
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
       >
-        <DialogTitle>Potvrdi Brisanje</DialogTitle>
+        <DialogTitle>{t('events:confirmDelete')}</DialogTitle>
         <DialogContent>
           <Typography>
-            Da li ste sigurni da želite obrisati događaj "{eventToDelete?.name}"?
+            {t('events:confirmDeleteMessage', { eventName: eventToDelete?.name })}
           </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteDialogOpen(false)} data-testid="button-cancel-delete">
-            Odustani
+            {t('common:buttons.cancel')}
           </Button>
           <Button 
             onClick={handleDeleteConfirm} 
@@ -724,7 +726,7 @@ export default function EventsPage() {
             variant="contained"
             data-testid="button-confirm-delete"
           >
-            Obriši
+            {t('common:buttons.delete')}
           </Button>
         </DialogActions>
       </Dialog>

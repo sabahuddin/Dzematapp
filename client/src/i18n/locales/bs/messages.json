@@ -16,9 +16,15 @@
   "markAsRead": "Označi kao pročitano",
   "markAsUnread": "Označi kao nepročitano",
   "noMessages": "Nema poruka",
+  "noConversations": "Nema konverzacija",
   "noSubject": "(Bez teme)",
   "searchMessages": "Pretraži poruke...",
+  "searchConversations": "Pretraži konverzacije...",
   "messagePlaceholder": "Unesite vašu poruku...",
+  "writeMessage": "Napišite poruku...",
   "unreadMessages": "Nepročitane poruke: {{count}}",
-  "readConfirmation": "Pročitano"
+  "readConfirmation": "Pročitano",
+  "yourConversations": "Vaše konverzacije",
+  "unknown": "Nepoznato",
+  "you": "Vi"
 }

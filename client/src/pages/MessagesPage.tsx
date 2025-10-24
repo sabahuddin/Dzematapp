@@ -11,6 +11,7 @@ import { format } from "date-fns";
 import NewMessageModal from "@/components/modals/NewMessageModal";
 import { useAuth } from "@/hooks/useAuth";
 import { Textarea } from "@/components/ui/textarea";
+import { useTranslation } from "react-i18next";
 
 interface MessageWithDetails {
   id: string;
@@ -47,6 +48,7 @@ interface Conversation {
 }
 
 export default function MessagesPage() {
+  const { t } = useTranslation(['messages']);
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [isNewMessageModalOpen, setIsNewMessageModalOpen] = useState(false);
@@ -142,12 +144,12 @@ export default function MessagesPage() {
       <div className="h-full flex flex-col">
         <div className="flex justify-between items-center p-6 border-b">
           <div>
-            <h1 className="text-3xl font-bold">Poruke</h1>
-            <p className="text-muted-foreground">Vaše konverzacije</p>
+            <h1 className="text-3xl font-bold">{t('title')}</h1>
+            <p className="text-muted-foreground">{t('yourConversations')}</p>
           </div>
           <Button onClick={() => setIsNewMessageModalOpen(true)} data-testid="button-new-message">
             <Plus className="h-4 w-4 mr-2" />
-            Nova poruka
+            {t('newMessage')}
           </Button>
         </div>
 
@@ -155,7 +157,7 @@ export default function MessagesPage() {
           <div className="flex items-center space-x-2">
             <Search className="h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Pretraži konverzacije..."
+              placeholder={t('searchConversations')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="max-w-sm"
@@ -172,7 +174,7 @@ export default function MessagesPage() {
           ) : filteredConversations.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
               <Mail className="h-12 w-12 mb-4" />
-              <p>Nema konverzacija</p>
+              <p>{t('noConversations')}</p>
             </div>
           ) : (
             <div className="divide-y">
@@ -204,7 +206,7 @@ export default function MessagesPage() {
                           <h3 className={`font-semibold truncate ${isUnread ? 'text-primary' : ''}`}>
                             {conversation.otherUser
                               ? `${conversation.otherUser.firstName} ${conversation.otherUser.lastName}`
-                              : "Nepoznato"}
+                              : t('unknown')}
                           </h3>
                           <span className="text-xs text-muted-foreground ml-2">
                             {format(new Date(conversation.lastMessage.createdAt), "dd.MM.yyyy.")}
@@ -212,7 +214,7 @@ export default function MessagesPage() {
                         </div>
                         
                         <p className={`text-sm truncate ${isUnread ? 'font-medium' : 'text-muted-foreground'}`}>
-                          {isSentByMe ? "Vi: " : ""}
+                          {isSentByMe ? `${t('you')}: ` : ""}
                           {conversation.lastMessage.content}
                         </p>
                       </div>
@@ -265,7 +267,7 @@ export default function MessagesPage() {
           <h2 className="font-semibold">
             {selectedConversation.otherUser
               ? `${selectedConversation.otherUser.firstName} ${selectedConversation.otherUser.lastName}`
-              : "Nepoznato"}
+              : t('unknown')}
           </h2>
           <p className="text-sm text-muted-foreground">
             {selectedConversation.lastMessage.subject}
@@ -307,7 +309,7 @@ export default function MessagesPage() {
       <div className="p-4 border-t">
         <div className="flex gap-2">
           <Textarea
-            placeholder="Napišite poruku..."
+            placeholder={t('writeMessage')}
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyDown={(e) => {

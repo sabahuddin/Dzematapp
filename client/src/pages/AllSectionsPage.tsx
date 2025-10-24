@@ -1,6 +1,7 @@
 import { Box, Typography, Card, CardContent, Button, Chip } from "@mui/material";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { useMarkAsViewed } from "@/hooks/useMarkAsViewed";
 import { useToast } from "@/hooks/use-toast";
@@ -8,6 +9,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { WorkGroup, WorkGroupMember, AccessRequest } from "@shared/schema";
 
 export default function AllSectionsPage() {
+  const { t } = useTranslation(['tasks', 'common']);
   const [, setLocation] = useLocation();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -31,16 +33,16 @@ export default function AllSectionsPage() {
     },
     onSuccess: () => {
       toast({
-        title: "Uspjeh",
-        description: "Zahtjev za pristup je poslan",
+        title: t('common:common.success'),
+        description: t('accessRequest.success'),
       });
       queryClient.invalidateQueries({ queryKey: ['/api/access-requests'] });
       queryClient.invalidateQueries({ queryKey: ['/api/access-requests/my'] });
     },
     onError: () => {
       toast({
-        title: "Greška",
-        description: "Nije moguće poslati zahtjev",
+        title: t('common:common.error'),
+        description: t('accessRequest.error'),
         variant: "destructive",
       });
     },
@@ -65,7 +67,7 @@ export default function AllSectionsPage() {
   if (isLoading) {
     return (
       <Box sx={{ p: 3 }}>
-        <Typography>Učitavanje...</Typography>
+        <Typography>{t('common:common.loading')}</Typography>
       </Box>
     );
   }
@@ -73,7 +75,7 @@ export default function AllSectionsPage() {
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom sx={{ mb: 3 }}>
-        Sekcije
+        {t('title')}
       </Typography>
 
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 3 }}>
@@ -101,13 +103,13 @@ export default function AllSectionsPage() {
                     onClick={() => setLocation(`/tasks?workGroupId=${workGroup.id}`)}
                     data-testid={`button-view-tasks-${workGroup.id}`}
                   >
-                    Pogledaj zadatke
+                    {t('viewTasks')}
                   </Button>
                 ) : (
                   <>
                     {getPendingRequest(workGroup.id) ? (
                       <Chip 
-                        label="Zahtjev na čekanju" 
+                        label={t('accessRequest.pending')} 
                         color="warning" 
                         size="small"
                         data-testid={`chip-pending-${workGroup.id}`}
@@ -120,7 +122,7 @@ export default function AllSectionsPage() {
                         disabled={requestAccessMutation.isPending}
                         data-testid={`button-request-access-${workGroup.id}`}
                       >
-                        Zatraži pristup
+                        {t('accessRequest.request')}
                       </Button>
                     )}
                   </>
@@ -133,7 +135,7 @@ export default function AllSectionsPage() {
 
       {(!workGroups || workGroups.length === 0) && (
         <Typography variant="body1" color="text.secondary">
-          Nema dostupnih sekcija
+          {t('noSections')}
         </Typography>
       )}
     </Box>

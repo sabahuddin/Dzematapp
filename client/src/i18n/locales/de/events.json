@@ -1,5 +1,6 @@
 {
   "title": "Veranstaltungen",
+  "pageTitle": "Veranstaltungen und Wichtige Termine",
   "upcomingEvents": "Bevorstehende Veranstaltungen",
   "otherEvents": "Weitere Veranstaltungen",
   "pastEvents": "Vergangene Veranstaltungen",
@@ -34,6 +35,14 @@
   "pastEventWarning": "Diese Veranstaltung ist beendet. Nachträgliche Anmeldung nicht möglich.",
   "noEvents": "Keine Veranstaltungen",
   "noUpcomingEvents": "Keine bevorstehenden Veranstaltungen",
+  "actions": "Aktionen",
+  "no": "Nein",
+  "confirmDelete": "Löschen bestätigen",
+  "confirmDeleteMessage": "Sind Sie sicher, dass Sie die Veranstaltung \"{{eventName}}\" löschen möchten?",
+  "loadingError": "Fehler beim Laden der Daten. Bitte versuchen Sie es erneut.",
+  "importantDateList": "Liste wichtiger Termine",
+  "datePlaceholder": "z.B. 15.03",
+  "dateHelperText": "Format: tt.mm (z.B. 15.03 für 15. März)",
   "calendar": {
     "title": "Veranstaltungskalender",
     "monthView": "Monatsansicht"
@@ -48,5 +57,22 @@
     "description": "Beschreibung",
     "noImportantDates": "Keine wichtigen Termine",
     "dateFormatError": "Datum muss im Format tt.mm sein (z.B. 15.03)"
+  },
+  "toast": {
+    "success": "Erfolgreich",
+    "error": "Fehler",
+    "eventCreated": "Veranstaltung wurde erfolgreich erstellt",
+    "eventCreateError": "Fehler beim Erstellen der Veranstaltung",
+    "eventUpdated": "Veranstaltung wurde erfolgreich aktualisiert",
+    "eventUpdateError": "Fehler beim Aktualisieren der Veranstaltung",
+    "eventDeleted": "Veranstaltung wurde erfolgreich gelöscht",
+    "eventDeleteError": "Fehler beim Löschen der Veranstaltung",
+    "importantDateAdded": "Wichtiges Datum wurde erfolgreich hinzugefügt",
+    "importantDateAddError": "Fehler beim Hinzufügen des wichtigen Datums",
+    "importantDateUpdated": "Wichtiges Datum wurde erfolgreich aktualisiert",
+    "importantDateUpdateError": "Fehler beim Aktualisieren des wichtigen Datums",
+    "importantDateDeleted": "Wichtiges Datum wurde erfolgreich gelöscht",
+    "importantDateDeleteError": "Fehler beim Löschen des wichtigen Datums",
+    "fillNameAndDate": "Bitte Name und Datum ausfüllen"
   }
 }

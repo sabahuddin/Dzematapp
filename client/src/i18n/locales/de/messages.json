@@ -16,9 +16,15 @@
   "markAsRead": "Als gelesen markieren",
   "markAsUnread": "Als ungelesen markieren",
   "noMessages": "Keine Nachrichten",
+  "noConversations": "Keine Gespräche",
   "noSubject": "(Kein Betreff)",
   "searchMessages": "Nachrichten durchsuchen...",
+  "searchConversations": "Gespräche durchsuchen...",
   "messagePlaceholder": "Geben Sie Ihre Nachricht ein...",
+  "writeMessage": "Nachricht schreiben...",
   "unreadMessages": "Ungelesene Nachrichten: {{count}}",
-  "readConfirmation": "Gelesen"
+  "readConfirmation": "Gelesen",
+  "yourConversations": "Ihre Gespräche",
+  "unknown": "Unbekannt",
+  "you": "Sie"
 }

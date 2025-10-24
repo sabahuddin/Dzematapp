@@ -55,12 +55,15 @@
     "assignedTo": "Zugewiesen an: {{members}}",
     "completedBy": "Abgeschlossen von: {{user}}"
   },
+  "viewTasks": "Aufgaben anzeigen",
   "accessRequest": {
     "request": "Zugriff anfordern",
     "requestSent": "Anfrage gesendet",
     "pending": "Anfrage ausstehend",
     "approve": "Zugriff gewähren",
-    "reject": "Anfrage ablehnen"
+    "reject": "Anfrage ablehnen",
+    "success": "Zugriffsanfrage wurde gesendet",
+    "error": "Anfrage konnte nicht gesendet werden"
   },
   "noSections": "Keine Sektionen"
 }

@@ -55,12 +55,15 @@
     "assignedTo": "Dodijeljeno: {{members}}",
     "completedBy": "Završio/la: {{user}}"
   },
+  "viewTasks": "Pogledaj zadatke",
   "accessRequest": {
     "request": "Zatraži pristup",
     "requestSent": "Zahtjev poslat",
     "pending": "Zahtjev na čekanju",
     "approve": "Odobri pristup",
-    "reject": "Odbij zahtjev"
+    "reject": "Odbij zahtjev",
+    "success": "Zahtjev za pristup je poslan",
+    "error": "Nije moguće poslati zahtjev"
   },
   "noSections": "Nema sekcija"
 }

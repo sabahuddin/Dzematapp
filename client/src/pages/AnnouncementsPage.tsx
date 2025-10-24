@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Box,
@@ -46,6 +47,7 @@ import { useMarkAsViewed } from '../hooks/useMarkAsViewed';
 import { apiRequest } from '../lib/queryClient';
 
 export default function AnnouncementsPage() {
+  const { t } = useTranslation(['announcements', 'common']);
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -73,10 +75,10 @@ export default function AnnouncementsPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/announcements'] });
-      toast({ title: 'Uspjeh', description: 'Obavijest je uspješno kreirana' });
+      toast({ title: t('common:common.success'), description: t('announcements:messages.createSuccess') });
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri kreiranju obavijesti', variant: 'destructive' });
+      toast({ title: t('common:common.error'), description: t('announcements:messages.createError'), variant: 'destructive' });
     }
   });
 
@@ -88,10 +90,10 @@ export default function AnnouncementsPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/announcements'] });
-      toast({ title: 'Uspjeh', description: 'Obavijest je uspješno ažurirana' });
+      toast({ title: t('common:common.success'), description: t('announcements:messages.updateSuccess') });
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri ažuriranju obavijesti', variant: 'destructive' });
+      toast({ title: t('common:common.error'), description: t('announcements:messages.updateError'), variant: 'destructive' });
     }
   });
 
@@ -102,10 +104,10 @@ export default function AnnouncementsPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/announcements'] });
-      toast({ title: 'Uspjeh', description: 'Obavijest je uspješno obrisana' });
+      toast({ title: t('common:common.success'), description: t('announcements:messages.deleteSuccess') });
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri brisanju obavijesti', variant: 'destructive' });
+      toast({ title: t('common:common.error'), description: t('announcements:messages.deleteError'), variant: 'destructive' });
     }
   });
 
@@ -155,14 +157,14 @@ export default function AnnouncementsPage() {
     onSuccess: (data, { files }) => {
       queryClient.invalidateQueries({ queryKey: ['/api/announcements'] });
       toast({ 
-        title: 'Uspjeh', 
-        description: `${files.length} fajl(ova) je uspješno učitano` 
+        title: t('common:common.success'), 
+        description: t('announcements:messages.filesUploadSuccess', { count: files.length })
       });
     },
     onError: () => {
       toast({ 
-        title: 'Greška', 
-        description: 'Greška pri učitavanju fajlova', 
+        title: t('common:common.error'), 
+        description: t('announcements:messages.filesUploadError'), 
         variant: 'destructive' 
       });
     }
@@ -223,13 +225,13 @@ export default function AnnouncementsPage() {
 
   const getStatusChip = (status: string, isFeatured: boolean) => {
     if (isFeatured) {
-      return <Chip label="Istaknuta" color="info" size="small" />;
+      return <Chip label={t('announcements:featured')} color="info" size="small" />;
     }
     switch (status) {
       case 'published':
-        return <Chip label="Objavljena" color="success" size="small" />;
+        return <Chip label={t('announcements:statuses.published')} color="success" size="small" />;
       case 'archived':
-        return <Chip label="Arhivirana" color="warning" size="small" />;
+        return <Chip label={t('announcements:statuses.archived')} color="warning" size="small" />;
       default:
         return <Chip label={status} color="default" size="small" />;
     }
@@ -294,12 +296,17 @@ export default function AnnouncementsPage() {
   if (announcementsQuery.error) {
     return (
       <Alert severity="error">
-        Greška pri učitavanju obavijesti. Molimo pokušajte ponovo.
+        {t('announcements:loadingError')}
       </Alert>
     );
   }
 
-  const predefinedCategories = ['Džemat', 'IZBCH', 'IZ', 'Ostalo'];
+  const predefinedCategories = [
+    t('announcements:categories.predefined.dzemat'),
+    t('announcements:categories.predefined.izbch'),
+    t('announcements:categories.predefined.iz'),
+    t('announcements:categories.predefined.other')
+  ];
   
   // Filter announcements
   const filteredAnnouncements = (announcementsQuery.data || []).filter((announcement: Announcement) => {
@@ -329,7 +336,7 @@ export default function AnnouncementsPage() {
       <Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
           <Typography variant="h5" sx={{ fontWeight: 600 }}>
-            Obavijesti
+            {t('announcements:title')}
           </Typography>
         </Box>
 
@@ -337,7 +344,7 @@ export default function AnnouncementsPage() {
         <Box sx={{ mb: 3, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
           <TextField
             variant="outlined"
-            placeholder="Pretraži obavijesti..."
+            placeholder={t('announcements:searchPlaceholder')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             sx={{ width: 350 }}
@@ -352,7 +359,7 @@ export default function AnnouncementsPage() {
               <TextField
                 {...params}
                 variant="outlined"
-                placeholder="Filtriraj po kategorijama"
+                placeholder={t('announcements:filterByCategories')}
                 data-testid="input-category-filter"
               />
             )}
@@ -370,7 +377,7 @@ export default function AnnouncementsPage() {
                   {latestAnnouncement.title}
                 </Typography>
                 {latestAnnouncement.isFeatured && (
-                  <Chip label="Istaknuta" color="info" size="small" />
+                  <Chip label={t('announcements:featured')} color="info" size="small" />
                 )}
               </Box>
               
@@ -398,7 +405,7 @@ export default function AnnouncementsPage() {
             </CardContent>
           </Card>
         ) : (
-          <Alert severity="info">Nema objavljenih obavijesti</Alert>
+          <Alert severity="info">{t('announcements:noPublishedAnnouncements')}</Alert>
         )}
 
         {/* Archive Button and List */}
@@ -410,7 +417,7 @@ export default function AnnouncementsPage() {
               sx={{ mb: 2 }}
               data-testid="button-toggle-archive"
             >
-              {showArchive ? 'Sakrij Arhivu' : `Prikaži Arhivu (${archivedAnnouncements.length})`}
+              {showArchive ? t('announcements:hideArchive') : t('announcements:showArchive', { count: archivedAnnouncements.length })}
             </Button>
             
             {showArchive && (
@@ -499,7 +506,7 @@ export default function AnnouncementsPage() {
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h5" sx={{ fontWeight: 600 }}>
-          Upravljanje Obavijestima
+          {t('announcements:manageAnnouncements')}
         </Typography>
         <Button
           variant="contained"
@@ -507,7 +514,7 @@ export default function AnnouncementsPage() {
           onClick={handleCreateAnnouncement}
           data-testid="button-add-announcement"
         >
-          Kreiraj Obavijest
+          {t('announcements:createAnnouncement')}
         </Button>
       </Box>
 
@@ -515,7 +522,7 @@ export default function AnnouncementsPage() {
       <Box sx={{ mb: 3, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
         <TextField
           variant="outlined"
-          placeholder="Pretraži obavijesti..."
+          placeholder={t('announcements:searchPlaceholder')}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           sx={{ width: 350 }}
@@ -530,7 +537,7 @@ export default function AnnouncementsPage() {
             <TextField
               {...params}
               variant="outlined"
-              placeholder="Filtriraj po kategorijama"
+              placeholder={t('announcements:filterByCategories')}
               data-testid="input-category-filter-admin"
             />
           )}
@@ -544,13 +551,13 @@ export default function AnnouncementsPage() {
           <Table>
             <TableHead>
               <TableRow sx={{ bgcolor: '#f8f9fa' }}>
-                <TableCell sx={{ fontWeight: 600 }}>Naslov</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Kategorije</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Autor</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Datum Objave</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Prilozi</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('announcements:announcementTitle')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('announcements:categories.label')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('announcements:author')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('announcements:publishDate')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('announcements:status')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('announcements:attachments')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('announcements:actions')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -587,7 +594,7 @@ export default function AnnouncementsPage() {
                         onClick={() => handleViewAnnouncement(announcement)}
                         sx={{ color: '#1976d2' }}
                         data-testid={`button-view-announcement-${announcement.id}`}
-                        title="Pregledaj"
+                        title={t('announcements:view')}
                       >
                         <Visibility fontSize="small" />
                       </IconButton>
@@ -596,7 +603,7 @@ export default function AnnouncementsPage() {
                         onClick={() => handleEditAnnouncement(announcement)}
                         sx={{ color: '#ed6c02' }}
                         data-testid={`button-edit-announcement-${announcement.id}`}
-                        title="Uredi"
+                        title={t('announcements:edit')}
                       >
                         <Edit fontSize="small" />
                       </IconButton>
@@ -605,7 +612,7 @@ export default function AnnouncementsPage() {
                         onClick={() => handleDeleteClick(announcement)}
                         sx={{ color: '#d32f2f' }}
                         data-testid={`button-delete-announcement-${announcement.id}`}
-                        title="Obriši"
+                        title={t('announcements:delete')}
                       >
                         <Delete fontSize="small" />
                       </IconButton>
@@ -617,7 +624,7 @@ export default function AnnouncementsPage() {
                 <TableRow>
                   <TableCell colSpan={7} sx={{ textAlign: 'center', py: 4 }}>
                     <Typography color="text.secondary">
-                      Nema obavijesti
+                      {t('announcements:noAnnouncements')}
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -633,15 +640,15 @@ export default function AnnouncementsPage() {
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
       >
-        <DialogTitle>Potvrdi Brisanje</DialogTitle>
+        <DialogTitle>{t('announcements:confirmDelete')}</DialogTitle>
         <DialogContent>
           <Typography>
-            Da li ste sigurni da želite obrisati obavijest "{announcementToDelete?.title}"?
+            {t('announcements:confirmDeleteMessage', { title: announcementToDelete?.title || '' })}
           </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteDialogOpen(false)} data-testid="button-cancel-delete">
-            Odustani
+            {t('announcements:cancel')}
           </Button>
           <Button 
             onClick={handleDeleteConfirm} 
@@ -649,7 +656,7 @@ export default function AnnouncementsPage() {
             variant="contained"
             data-testid="button-confirm-delete"
           >
-            Obriši
+            {t('announcements:delete')}
           </Button>
         </DialogActions>
       </Dialog>
