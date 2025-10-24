@@ -77,15 +77,17 @@ interface WorkGroupCardProps {
   onManageMembers: (workGroup: WorkGroup) => void;
   onManageTasks: (workGroup: WorkGroup) => void;
   onJoinRequest: (workGroup: WorkGroup) => void;
+  onCreateProposal: (workGroup: WorkGroup) => void;
   currentUser: any;
 }
 
-function WorkGroupCard({ workGroup, onManageMembers, onManageTasks, onJoinRequest, currentUser }: WorkGroupCardProps) {
+function WorkGroupCard({ workGroup, onManageMembers, onManageTasks, onJoinRequest, onCreateProposal, currentUser }: WorkGroupCardProps) {
   const { t } = useTranslation(['tasks', 'common']);
   const { toast } = useToast();
   
   const isMember = workGroup.members?.some((m: WorkGroupMember) => m.userId === currentUser?.id) || false;
   const isAdmin = currentUser?.isAdmin || false;
+  const isModerator = workGroup.members?.some((m: WorkGroupMember) => m.userId === currentUser?.id && m.isModerator) || false;
 
   return (
     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -137,6 +139,32 @@ function WorkGroupCard({ workGroup, onManageMembers, onManageTasks, onJoinReques
                 >
                   {t('manageTasks')}
                 </Button>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => onCreateProposal(workGroup)}
+                  data-testid={`button-create-proposal-${workGroup.id}`}
+                >
+                  Kreiraj Prijedlog
+                </Button>
+              </>
+            ) : isModerator ? (
+              <>
+                <Button
+                  variant="contained"
+                  onClick={() => onManageTasks(workGroup)}
+                  data-testid={`button-view-tasks-${workGroup.id}`}
+                >
+                  {t('viewTasks')}
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => onCreateProposal(workGroup)}
+                  data-testid={`button-create-proposal-${workGroup.id}`}
+                >
+                  Kreiraj Prijedlog
+                </Button>
               </>
             ) : isMember ? (
               <Button
@@ -172,6 +200,7 @@ export default function TaskManagerPage() {
   const [workGroupModalOpen, setWorkGroupModalOpen] = useState(false);
   const [memberManagementDialogOpen, setMemberManagementDialogOpen] = useState(false);
   const [taskManagementDialogOpen, setTaskManagementDialogOpen] = useState(false);
+  const [proposalModalOpen, setProposalModalOpen] = useState(false);
   const [selectedWorkGroup, setSelectedWorkGroup] = useState<WorkGroup | null>(null);
 
   const workGroupsQuery = useQuery<WorkGroup[]>({
@@ -280,6 +309,11 @@ export default function TaskManagerPage() {
     setTaskManagementDialogOpen(true);
   };
 
+  const handleCreateProposal = (workGroup: WorkGroup) => {
+    setSelectedWorkGroup(workGroup);
+    setProposalModalOpen(true);
+  };
+
   const handleJoinRequest = (workGroup: WorkGroup) => {
     if (!user?.id) return;
     
@@ -371,6 +405,7 @@ export default function TaskManagerPage() {
                   onManageMembers={handleManageMembers}
                   onManageTasks={handleManageGroupTasks}
                   onJoinRequest={handleJoinRequest}
+                  onCreateProposal={handleCreateProposal}
                   currentUser={user}
                 />
               ))}
@@ -400,6 +435,7 @@ export default function TaskManagerPage() {
                     onManageMembers={handleManageMembers}
                     onManageTasks={handleManageGroupTasks}
                     onJoinRequest={handleJoinRequest}
+                    onCreateProposal={handleCreateProposal}
                     currentUser={user}
                   />
                 ))}
@@ -510,6 +546,13 @@ export default function TaskManagerPage() {
         workGroup={selectedWorkGroup || { id: '', name: '', description: '', createdAt: new Date(), visibility: 'public' }}
       />
       
+      <ProposalModal
+        open={proposalModalOpen && selectedWorkGroup !== null}
+        onClose={() => setProposalModalOpen(false)}
+        workGroup={selectedWorkGroup}
+        currentUserId={user?.id || ''}
+      />
+      
       <Dialog
         open={taskManagementDialogOpen && selectedWorkGroup !== null}
         onClose={() => setTaskManagementDialogOpen(false)}
@@ -542,6 +585,176 @@ export default function TaskManagerPage() {
         </DialogContent>
       </Dialog>
     </Box>
+  );
+}
+
+interface ProposalModalProps {
+  open: boolean;
+  onClose: () => void;
+  workGroup: WorkGroup | null;
+  currentUserId: string;
+}
+
+function ProposalModal({ open, onClose, workGroup, currentUserId }: ProposalModalProps) {
+  const { t } = useTranslation(['tasks', 'common']);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  
+  const [who, setWho] = useState('');
+  const [what, setWhat] = useState('');
+  const [where, setWhere] = useState('');
+  const [when, setWhen] = useState('');
+  const [how, setHow] = useState('');
+  const [why, setWhy] = useState('');
+  const [budget, setBudget] = useState('');
+
+  const createProposalMutation = useMutation({
+    mutationFn: async (proposalData: any) => {
+      return await apiRequest('/api/proposals', 'POST', proposalData);
+    },
+    onSuccess: () => {
+      toast({
+        title: 'Uspjeh',
+        description: 'Prijedlog je uspješno kreiran i poslan na odobrenje.',
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/proposals'] });
+      handleClose();
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Greška',
+        description: error.message || 'Došlo je do greške prilikom kreiranja prijedloga.',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  const handleClose = () => {
+    setWho('');
+    setWhat('');
+    setWhere('');
+    setWhen('');
+    setHow('');
+    setWhy('');
+    setBudget('');
+    onClose();
+  };
+
+  const handleSubmit = () => {
+    if (!who || !what || !where || !when || !budget || !workGroup) {
+      toast({
+        title: 'Greška',
+        description: 'Molimo popunite sva obavezna polja.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    const proposalData = {
+      workGroupId: workGroup.id,
+      who,
+      what,
+      where,
+      when,
+      how: how || null,
+      why: why || null,
+      budget,
+      status: 'pending',
+      createdBy: currentUserId,
+    };
+
+    createProposalMutation.mutate(proposalData);
+  };
+
+  return (
+    <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+      <DialogTitle>Kreiraj Prijedlog za {workGroup?.name}</DialogTitle>
+      <DialogContent>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
+          <TextField
+            label="Ko izvodi (Who)"
+            value={who}
+            onChange={(e) => setWho(e.target.value)}
+            fullWidth
+            required
+            placeholder="Ko će izvršiti ovaj zadatak?"
+            data-testid="input-proposal-who"
+          />
+          <TextField
+            label="Šta je to (What)"
+            value={what}
+            onChange={(e) => setWhat(e.target.value)}
+            fullWidth
+            required
+            multiline
+            rows={3}
+            placeholder="Šta treba uraditi?"
+            data-testid="input-proposal-what"
+          />
+          <TextField
+            label="Gdje (Where)"
+            value={where}
+            onChange={(e) => setWhere(e.target.value)}
+            fullWidth
+            required
+            placeholder="Gdje će se izvršiti?"
+            data-testid="input-proposal-where"
+          />
+          <TextField
+            label="Kada (When)"
+            value={when}
+            onChange={(e) => setWhen(e.target.value)}
+            fullWidth
+            required
+            placeholder="Kada će se izvršiti?"
+            data-testid="input-proposal-when"
+          />
+          <TextField
+            label="Kako (How - Opciono)"
+            value={how}
+            onChange={(e) => setHow(e.target.value)}
+            fullWidth
+            multiline
+            rows={3}
+            placeholder="Kako će se izvršiti? (Opciono)"
+            data-testid="input-proposal-how"
+          />
+          <TextField
+            label="Zašto (Why - Opciono)"
+            value={why}
+            onChange={(e) => setWhy(e.target.value)}
+            fullWidth
+            multiline
+            rows={3}
+            placeholder="Zašto je ovo potrebno? (Opciono)"
+            data-testid="input-proposal-why"
+          />
+          <TextField
+            label="Budžet (CHF)"
+            value={budget}
+            onChange={(e) => setBudget(e.target.value)}
+            fullWidth
+            required
+            type="number"
+            placeholder="Procijenjeni budžet u CHF"
+            data-testid="input-proposal-budget"
+          />
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} data-testid="button-cancel-proposal">
+          Odustani
+        </Button>
+        <Button 
+          onClick={handleSubmit} 
+          variant="contained"
+          disabled={createProposalMutation.isPending}
+          data-testid="button-submit-proposal"
+        >
+          {createProposalMutation.isPending ? 'Kreiranje...' : 'Pošalji Prijedlog'}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }
 
