@@ -60,6 +60,10 @@ import {
   type InsertProject,
   type UserPreferences,
   type InsertUserPreferences,
+  type Proposal,
+  type InsertProposal,
+  type Receipt,
+  type InsertReceipt,
   users,
   announcements,
   events,
@@ -89,7 +93,9 @@ import {
   badges,
   userBadges,
   projects,
-  userPreferences
+  userPreferences,
+  proposals,
+  receipts
 } from "@shared/schema";
 import { db } from './db';
 import { eq, and, or, desc, asc, gt, sql, inArray } from 'drizzle-orm';
@@ -317,6 +323,27 @@ export interface IStorage {
   getUserPreferences(userId: string): Promise<import("@shared/schema").UserPreferences | undefined>;
   createUserPreferences(preferences: import("@shared/schema").InsertUserPreferences): Promise<import("@shared/schema").UserPreferences>;
   updateUserPreferences(userId: string, preferences: Partial<import("@shared/schema").InsertUserPreferences>): Promise<import("@shared/schema").UserPreferences | undefined>;
+
+  // Proposals (Moderator Proposals System)
+  createProposal(proposal: InsertProposal): Promise<Proposal>;
+  getProposal(id: string): Promise<Proposal | undefined>;
+  getAllProposals(): Promise<Proposal[]>;
+  getProposalsByWorkGroup(workGroupId: string): Promise<Proposal[]>;
+  getProposalsByStatus(status: string): Promise<Proposal[]>;
+  updateProposal(id: string, updates: Partial<InsertProposal>): Promise<Proposal | undefined>;
+  approveProposal(id: string, reviewedById: string, reviewComment?: string): Promise<Proposal | undefined>;
+  rejectProposal(id: string, reviewedById: string, reviewComment: string): Promise<Proposal | undefined>;
+
+  // Receipts (Expense Receipts System)
+  createReceipt(receipt: InsertReceipt): Promise<Receipt>;
+  getReceipt(id: string): Promise<Receipt | undefined>;
+  getAllReceipts(): Promise<Receipt[]>;
+  getReceiptsByTask(taskId: string): Promise<Receipt[]>;
+  getReceiptsByProposal(proposalId: string): Promise<Receipt[]>;
+  getReceiptsByStatus(status: string): Promise<Receipt[]>;
+  updateReceipt(id: string, updates: Partial<InsertReceipt>): Promise<Receipt | undefined>;
+  approveReceipt(id: string, reviewedById: string, reviewComment?: string): Promise<Receipt | undefined>;
+  rejectReceipt(id: string, reviewedById: string, reviewComment: string): Promise<Receipt | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1669,6 +1696,134 @@ export class DatabaseStorage implements IStorage {
       .where(eq(userPreferences.userId, userId))
       .returning();
     return prefs;
+  }
+
+  // Proposals (Moderator Proposals System)
+  async createProposal(proposal: InsertProposal): Promise<Proposal> {
+    const [p] = await db.insert(proposals).values(proposal).returning();
+    return p;
+  }
+
+  async getProposal(id: string): Promise<Proposal | undefined> {
+    const result = await db.select().from(proposals).where(eq(proposals.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getAllProposals(): Promise<Proposal[]> {
+    return await db.select().from(proposals).orderBy(desc(proposals.createdAt));
+  }
+
+  async getProposalsByWorkGroup(workGroupId: string): Promise<Proposal[]> {
+    return await db.select().from(proposals)
+      .where(eq(proposals.workGroupId, workGroupId))
+      .orderBy(desc(proposals.createdAt));
+  }
+
+  async getProposalsByStatus(status: string): Promise<Proposal[]> {
+    return await db.select().from(proposals)
+      .where(eq(proposals.status, status))
+      .orderBy(desc(proposals.createdAt));
+  }
+
+  async updateProposal(id: string, updates: Partial<InsertProposal>): Promise<Proposal | undefined> {
+    const [p] = await db.update(proposals)
+      .set(updates)
+      .where(eq(proposals.id, id))
+      .returning();
+    return p;
+  }
+
+  async approveProposal(id: string, reviewedById: string, reviewComment?: string): Promise<Proposal | undefined> {
+    const [p] = await db.update(proposals)
+      .set({ 
+        status: 'approved', 
+        reviewedById, 
+        reviewComment: reviewComment || null,
+        reviewedAt: new Date() 
+      })
+      .where(eq(proposals.id, id))
+      .returning();
+    return p;
+  }
+
+  async rejectProposal(id: string, reviewedById: string, reviewComment: string): Promise<Proposal | undefined> {
+    const [p] = await db.update(proposals)
+      .set({ 
+        status: 'rejected', 
+        reviewedById, 
+        reviewComment,
+        reviewedAt: new Date() 
+      })
+      .where(eq(proposals.id, id))
+      .returning();
+    return p;
+  }
+
+  // Receipts (Expense Receipts System)
+  async createReceipt(receipt: InsertReceipt): Promise<Receipt> {
+    const [r] = await db.insert(receipts).values(receipt).returning();
+    return r;
+  }
+
+  async getReceipt(id: string): Promise<Receipt | undefined> {
+    const result = await db.select().from(receipts).where(eq(receipts.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getAllReceipts(): Promise<Receipt[]> {
+    return await db.select().from(receipts).orderBy(desc(receipts.uploadedAt));
+  }
+
+  async getReceiptsByTask(taskId: string): Promise<Receipt[]> {
+    return await db.select().from(receipts)
+      .where(eq(receipts.taskId, taskId))
+      .orderBy(desc(receipts.uploadedAt));
+  }
+
+  async getReceiptsByProposal(proposalId: string): Promise<Receipt[]> {
+    return await db.select().from(receipts)
+      .where(eq(receipts.proposalId, proposalId))
+      .orderBy(desc(receipts.uploadedAt));
+  }
+
+  async getReceiptsByStatus(status: string): Promise<Receipt[]> {
+    return await db.select().from(receipts)
+      .where(eq(receipts.status, status))
+      .orderBy(desc(receipts.uploadedAt));
+  }
+
+  async updateReceipt(id: string, updates: Partial<InsertReceipt>): Promise<Receipt | undefined> {
+    const [r] = await db.update(receipts)
+      .set(updates)
+      .where(eq(receipts.id, id))
+      .returning();
+    return r;
+  }
+
+  async approveReceipt(id: string, reviewedById: string, reviewComment?: string): Promise<Receipt | undefined> {
+    const [r] = await db.update(receipts)
+      .set({ 
+        status: 'approved', 
+        reviewedById, 
+        reviewComment: reviewComment || null,
+        reviewedAt: new Date() 
+      })
+      .where(eq(receipts.id, id))
+      .returning();
+    return r;
+  }
+
+  async rejectReceipt(id: string, reviewedById: string, reviewComment: string): Promise<Receipt | undefined> {
+    const [r] = await db.update(receipts)
+      .set({ 
+        status: 'rejected', 
+        reviewedById, 
+        reviewComment,
+        reviewedAt: new Date() 
+      })
+      .where(eq(receipts.id, id))
+      .returning();
+    return r;
   }
 }
 
