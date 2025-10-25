@@ -2019,7 +2019,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Allow update only by owner or admin
       const user = await storage.getUser(req.session.userId!);
-      const isAdmin = user && (user.isAdmin || user.roles?.includes('admin') || user.roles?.includes('imam'));
+      const isAdmin = user?.isAdmin || false;
       if (item.userId !== req.session.userId && !isAdmin) {
         return res.status(403).json({ message: "Not authorized" });
       }
@@ -2043,7 +2043,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Allow deletion only by owner or admin
       const user = await storage.getUser(req.session.userId!);
-      const isAdmin = user && (user.isAdmin || user.roles?.includes('admin') || user.roles?.includes('imam'));
+      const isAdmin = user?.isAdmin || false;
       if (item.userId !== req.session.userId && !isAdmin) {
         return res.status(403).json({ message: "Not authorized" });
       }
@@ -2860,7 +2860,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Filter based on user role
-      if (user.roles?.includes('Admin') || user.roles?.includes('Član IO')) {
+      if (user.isAdmin || user.roles?.includes('clan_io')) {
         // Admins and IO members can see all proposals
         res.json(proposals);
       } else {
@@ -2897,7 +2897,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const workGroupMembers = await storage.getWorkGroupMembers(req.body.workGroupId);
       const userMembership = workGroupMembers.find(m => m.userId === user.id);
       const isModerator = userMembership?.isModerator;
-      const isAdmin = user.roles?.includes('Admin');
+      const isAdmin = user.isAdmin;
       
       if (!isModerator && !isAdmin) {
         return res.status(403).json({ message: "Only moderators and admins can create proposals" });
@@ -2926,7 +2926,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Only creator or admin can edit
-      if (proposal.createdById !== user.id && !user.roles?.includes('Admin')) {
+      if (proposal.createdById !== user.id && !user.isAdmin) {
         return res.status(403).json({ message: "Not authorized to edit this proposal" });
       }
       
@@ -2944,7 +2944,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = req.user!;
       
       // Only IO members and admins can approve
-      if (!user.roles?.includes('Član IO') && !user.roles?.includes('Admin')) {
+      if (!user.roles?.includes('clan_io') && !user.isAdmin) {
         return res.status(403).json({ message: "Only IO members and admins can approve proposals" });
       }
       
@@ -2962,7 +2962,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = req.user!;
       
       // Only IO members and admins can reject
-      if (!user.roles?.includes('Član IO') && !user.roles?.includes('Admin')) {
+      if (!user.roles?.includes('clan_io') && !user.isAdmin) {
         return res.status(403).json({ message: "Only IO members and admins can reject proposals" });
       }
       
@@ -2998,7 +2998,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Filter based on user role - blagajnik (treasurers) and admins see all
-      if (!user.roles?.includes('Admin') && !user.roles?.includes('Blagajnik')) {
+      if (!user.isAdmin && !user.roles?.includes('blagajnik')) {
         // Regular members only see their own receipts
         receipts = receipts.filter(r => r.uploadedById === user.id);
       }
@@ -3052,7 +3052,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = req.user!;
       
       // Only blagajnik and admins can approve receipts
-      if (!user.roles?.includes('Blagajnik') && !user.roles?.includes('Admin')) {
+      if (!user.roles?.includes('blagajnik') && !user.isAdmin) {
         return res.status(403).json({ message: "Only treasurers and admins can approve receipts" });
       }
       
@@ -3070,7 +3070,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = req.user!;
       
       // Only blagajnik and admins can reject receipts
-      if (!user.roles?.includes('Blagajnik') && !user.roles?.includes('Admin')) {
+      if (!user.roles?.includes('blagajnik') && !user.isAdmin) {
         return res.status(403).json({ message: "Only treasurers and admins can reject receipts" });
       }
       
