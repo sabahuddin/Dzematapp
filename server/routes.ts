@@ -736,12 +736,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Proslijedi userId i isAdmin za filtriranje po vidljivosti
       const userId = req.user?.id;
       const isAdmin = req.user?.isAdmin || false;
-      const isClanIO = req.user?.roles?.includes('clan_io') || false;
       
-      // Član IO vidi sve grupe kao admin
-      const canSeeAll = isAdmin || isClanIO;
-      
-      const workGroups = await storage.getAllWorkGroups(userId, canSeeAll);
+      const workGroups = await storage.getAllWorkGroups(userId, isAdmin);
       
       // Add members to each work group
       const workGroupsWithMembers = await Promise.all(
