@@ -30,6 +30,7 @@
   "viewTasks": "Aufgaben anzeigen",
   "joinSection": "Beitreten",
   "mySections": "Meine Sektionen",
+  "notMemberOfAnySection": "Sie sind Mitglied in keiner Sektion.",
   "otherSections": "Andere Sektionen",
   "noSectionsAvailable": "Keine Sektionen verfügbar",
   "unknownUser": "Unbekannter Benutzer",

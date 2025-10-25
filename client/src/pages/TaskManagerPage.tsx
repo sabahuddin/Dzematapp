@@ -248,12 +248,9 @@ export default function TaskManagerPage() {
       const isMember = workGroup.members?.some((m: WorkGroupMember) => 
         m.userId === user.id
       ) || false;
-      const isClanIO = user.roles?.includes('clan_io') || false;
       
-      // Admin i Član IO vide sve sekcije, ostali samo svoje i javne
-      if (user.isAdmin || isClanIO) {
-        member.push(workGroup);
-      } else if (isMember) {
+      // Svi korisnici: sekcije gdje su član idu u memberWorkGroups, ostale u otherWorkGroups
+      if (isMember) {
         member.push(workGroup);
       } else {
         other.push(workGroup);
@@ -453,13 +450,11 @@ export default function TaskManagerPage() {
           </Box>
         )}
 
-        {memberWorkGroups.length > 0 && (
+        {memberWorkGroups.length > 0 ? (
           <Box sx={{ mb: 4 }}>
-            {!user?.isAdmin && (
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-                {t('mySections')}
-              </Typography>
-            )}
+            <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+              {t('mySections')}
+            </Typography>
             <Grid container spacing={3}>
               {memberWorkGroups.map((workGroup: WorkGroup) => (
                 <WorkGroupCard 
@@ -473,6 +468,12 @@ export default function TaskManagerPage() {
                 />
               ))}
             </Grid>
+          </Box>
+        ) : (
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+              {t('notMemberOfAnySection')}
+            </Typography>
           </Box>
         )}
 

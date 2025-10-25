@@ -31,6 +31,7 @@
   "viewTasks": "Pogledaj Zadatke",
   "joinSection": "Pridruži se",
   "mySections": "Moje sekcije",
+  "notMemberOfAnySection": "Niste član nijedne sekcije.",
   "otherSections": "Ostale sekcije",
   "noSectionsAvailable": "Nema dostupnih sekcija",
   "unknownUser": "Nepoznat korisnik",
