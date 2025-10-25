@@ -747,6 +747,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const workGroupsWithMembers = await Promise.all(
         workGroups.map(async (wg) => {
           const members = await storage.getWorkGroupMembers(wg.id);
+          console.log(`Work Group ${wg.name} (${wg.id}) has ${members.length} members:`, members);
           return {
             ...wg,
             members
@@ -754,6 +755,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         })
       );
       
+      console.log(`Returning ${workGroupsWithMembers.length} work groups`);
       res.json(workGroupsWithMembers);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch work groups" });
