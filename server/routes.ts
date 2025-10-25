@@ -754,6 +754,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         })
       );
       
+      // Debug: Check what we're returning
+      console.log(`[DEBUG] User ${userId} - Returning ${workGroupsWithMembers.length} work groups:`);
+      workGroupsWithMembers.forEach(wg => {
+        console.log(`  - ${wg.name}: ${wg.members?.length || 0} members`, wg.members?.map((m: any) => m.userId) || []);
+      });
+      
       // Prevent caching of this endpoint
       res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
       res.setHeader('Pragma', 'no-cache');
