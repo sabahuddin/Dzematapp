@@ -1,0 +1,56 @@
+{
+  "title": "Finances",
+  "myPayments": "My payments",
+  "addPayment": "Add Payment",
+  "addNewPayment": "Add New Payment",
+  "editPayment": "Edit Payment",
+  "deletePayment": "Delete Payment",
+  "amount": "Amount",
+  "amountLabel": "Amount (CHF)",
+  "amountInCHF": "{{amount}} CHF",
+  "purpose": "Purpose",
+  "purposeLabel": "Payment purpose",
+  "purposes": {
+    "membership": "Membership",
+    "donation": "Donation",
+    "waqf": "Waqf",
+    "sergija": "Sergija",
+    "other": "Other"
+  },
+  "project": "Project",
+  "projectOptional": "For project (optional)",
+  "selectProject": "Select project",
+  "noProject": "Not for project",
+  "paymentDate": "Date",
+  "paymentDateLabel": "Payment date",
+  "paymentMethod": "Payment method",
+  "paymentMethods": {
+    "cash": "Cash",
+    "bank": "Bank"
+  },
+  "notes": "Notes",
+  "user": "User",
+  "selectUser": "Select user",
+  "unknown": "Unknown",
+  "searchPlaceholder": "Search by user, description or type...",
+  "filterByPurpose": "Filter by purpose",
+  "allCategories": "All categories",
+  "allPurposes": "All purposes",
+  "noPayments": "No financial payments",
+  "totalAmount": "Total amount: {{amount}} CHF",
+  "csvUpload": "Upload CSV",
+  "saving": "Saving...",
+  "messages": {
+    "created": "Payment created",
+    "updated": "Payment updated",
+    "deleted": "Payment deleted",
+    "errorLoading": "Error loading financial payments. Please try again.",
+    "errorSaving": "Error saving payment",
+    "errorDeleting": "Error deleting payment",
+    "confirmDelete": "Are you sure you want to delete this payment?"
+  },
+  "validation": {
+    "userRequired": "User is required",
+    "dateRequired": "Date is required"
+  }
+}

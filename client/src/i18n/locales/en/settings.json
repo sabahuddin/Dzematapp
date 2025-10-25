@@ -1,0 +1,162 @@
+{
+  "organization": {
+    "title": "Organization Information",
+    "subtitle": "This information will be displayed in the application footer and available to all users.",
+    "loading": "Loading...",
+    "basicInfo": "Basic information",
+    "contactInfo": "Contact information",
+    "socialMedia": "Social media",
+    "livestream": "Livestream",
+    "fields": {
+      "name": "Organization name",
+      "namePlaceholder": "Islamic Community",
+      "address": "Address",
+      "addressPlaceholder": "Congregation Street 123",
+      "phone": "Phone",
+      "phonePlaceholder": "+41 XX XXX XX XX",
+      "email": "Email",
+      "emailPlaceholder": "info@congregation.ch",
+      "facebookUrl": "Facebook URL",
+      "facebookPlaceholder": "https://facebook.com/yourcongregation",
+      "instagramUrl": "Instagram URL",
+      "instagramPlaceholder": "https://instagram.com/yourcongregation",
+      "youtubeUrl": "YouTube URL",
+      "youtubePlaceholder": "https://youtube.com/@yourcongregation",
+      "twitterUrl": "Twitter URL",
+      "twitterPlaceholder": "https://twitter.com/yourcongregation",
+      "livestreamUrl": "Livestream URL",
+      "livestreamUrlPlaceholder": "YouTube link or embed code",
+      "livestreamEnabled": "Enable livestream",
+      "livestreamTitle": "Livestream title",
+      "livestreamTitlePlaceholder": "Friday sermon live"
+    },
+    "save": "Save changes",
+    "toast": {
+      "success": "Successfully saved",
+      "successDescription": "Organization information has been updated successfully.",
+      "error": "Error",
+      "errorDescription": "Failed to save organization information."
+    }
+  },
+  "points": {
+    "title": "Point Settings",
+    "loading": "Loading...",
+    "noPermission": "You do not have permission to access this page.",
+    "configTitle": "Point System Configuration",
+    "configDescription": "Define how many points members earn for different activities",
+    "howItWorks": {
+      "title": "📋 How does the point system work?",
+      "payments": {
+        "title": "💰 Financial Contributions (CHF)",
+        "description": "Each contributed CHF brings points. Points are awarded immediately after entering the contribution (Membership, Donation, Waqf, Sergija, Other)."
+      },
+      "tasks": {
+        "title": "✅ Completed Tasks",
+        "description": "When a member marks a task as complete, admin approval is pending (0 points). Only when admin approves the task, all assigned members receive full points."
+      },
+      "events": {
+        "title": "🎉 Event RSVP",
+        "description": "When a member confirms attendance at an event (RSVP), they immediately receive points. Points are not deducted if member later cancels attendance."
+      },
+      "calculation": {
+        "title": "🔢 Calculation Example",
+        "description": "If set: 1 CHF = 10 points, 1 task = 50 points, 1 event = 20 points, a member who pays 100 CHF gets 1000 points, completes 5 tasks gets 250 points, attends 3 events gets 60 points. Total: 1310 points."
+      }
+    },
+    "fields": {
+      "pointsPerChf": "Points per CHF",
+      "pointsPerChfHelper": "How many points member gets for each contributed Swiss franc",
+      "pointsPerTask": "Points per task",
+      "pointsPerTaskHelper": "How many points member gets for each completed and approved task",
+      "pointsPerEvent": "Points per event",
+      "pointsPerEventHelper": "How many points member gets for confirming attendance (RSVP) at an event"
+    },
+    "save": "Save Settings",
+    "toast": {
+      "success": "Success",
+      "successDescription": "Point settings have been updated",
+      "error": "Error",
+      "errorDescription": "Error saving settings",
+      "loadError": "Error loading point settings. Please try again."
+    }
+  },
+  "livestreamSettings": {
+    "title": "Livestream Management",
+    "subtitle": "Enable live broadcast of events, sermons and programs",
+    "loading": "Loading...",
+    "whatIsLivestream": {
+      "title": "What is Livestream?",
+      "description1": "Livestream allows your community to follow events, sermons and programs in real time via internet, without needing to physically attend.",
+      "description2": "Users can follow livestream directly from the application, which allows access to persons who are absent, ill or distant."
+    },
+    "howToUse": {
+      "title": "How to use Livestream",
+      "step1": {
+        "title": "Choose streaming platform",
+        "description": "YouTube Live, Facebook Live, Twitch or other platform"
+      },
+      "step2": {
+        "title": "Start stream on platform",
+        "description": "Create livestream event and start broadcast"
+      },
+      "step3": {
+        "title": "Copy URL or embed code",
+        "description": "Copy link from YouTube/Facebook or embed iframe code"
+      },
+      "step4": {
+        "title": "Paste in field below",
+        "description": "Enter URL or embed code and enable livestream"
+      },
+      "step5": {
+        "title": "Save settings",
+        "description": "Users will immediately be able to follow stream from application"
+      }
+    },
+    "supportedFormats": {
+      "title": "Supported formats",
+      "youtube": "YouTube URL (https://youtube.com/watch?v=...)",
+      "youtubeLive": "YouTube Live URL (https://youtube.com/live/...)",
+      "iframe": "iFrame embed code (<iframe src=\"...\"></iframe>)",
+      "otherUrls": "Other URLs will be displayed as external links"
+    },
+    "examples": {
+      "title": "Embed code examples",
+      "youtube": "YouTube: https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "youtubeShort": "YouTube short: https://youtu.be/dQw4w9WgXcQ",
+      "iframe": "iFrame: <iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/dQw4w9WgXcQ\"></iframe>",
+      "youtubeAccordion": "YouTube Live",
+      "youtubeDescription": "Replace VIDEO_ID with your YouTube Live video ID",
+      "facebookAccordion": "Facebook Live",
+      "facebookDescription": "Replace VIDEO_URL with link to your Facebook Live event",
+      "directAccordion": "Direct URL",
+      "directDescription": "You can also use direct link to video"
+    },
+    "tips": {
+      "title": "Tips for successful livestream",
+      "tip1": "• Test livestream before event to ensure everything works",
+      "tip2": "• Ensure stable internet connection for uninterrupted broadcast",
+      "tip3": "• Notify community in advance about livestream event time",
+      "tip4": "• Use quality microphone and camera for better experience"
+    },
+    "fields": {
+      "livestreamEnabled": "Enable Livestream",
+      "livestreamEnabledHelper": "When enabled, users will see livestream",
+      "livestreamTitle": "Livestream Title (optional)",
+      "livestreamTitleHelper": "Displayed above video player (e.g. 'Friday sermon live')",
+      "livestreamUrl": "Livestream URL or Embed code",
+      "livestreamUrlHelper": "YouTube link, Facebook link, or iframe embed code"
+    },
+    "preview": {
+      "title": "Preview",
+      "enableToSee": "Enable livestream and enter URL to see preview",
+      "currentlyShowing": "Currently showing:"
+    },
+    "save": "Save Settings",
+    "toast": {
+      "success": "Success",
+      "successDescription": "Livestream settings saved",
+      "error": "Error",
+      "errorDescription": "Failed to save settings"
+    }
+  }
+}

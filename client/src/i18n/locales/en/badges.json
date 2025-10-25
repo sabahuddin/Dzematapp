@@ -1,0 +1,60 @@
+{
+  "title": "Badges",
+  "addBadge": "Add Badge",
+  "addNewBadge": "Add New Badge",
+  "editBadge": "Edit Badge",
+  "deleteBadge": "Delete Badge",
+  "badgeName": "Badge name",
+  "description": "Description",
+  "points": "Points required",
+  "icon": "Icon",
+  "color": "Color",
+  "noBadges": "No badges",
+  "earned": "Earned",
+  "notEarned": "Not earned",
+  "progress": "Progress: {{current}} / {{required}} points",
+  "myBadges": "My badges",
+  "allBadges": "All badges",
+  "earnedOn": "Earned: {{date}}",
+  "requirements": "Requirements to earn",
+  "tableHeaders": {
+    "name": "Name",
+    "description": "Description",
+    "criteriaType": "Criteria type",
+    "value": "Value",
+    "actions": "Actions"
+  },
+  "criteriaType": "Criteria type",
+  "criteriaValue": "Value",
+  "selectType": "-- Select type --",
+  "criteriaTypes": {
+    "points": "Total points",
+    "tasks_completed": "Number of completed tasks",
+    "contributions_amount": "Total contribution amount",
+    "events_attended": "Number of attended events"
+  },
+  "helperTexts": {
+    "criteriaType": "Type of activity required to earn badge",
+    "criteriaValue": "Minimum value required to earn badge"
+  },
+  "messages": {
+    "created": "Badge created",
+    "updated": "Badge updated",
+    "deleted": "Badge deleted",
+    "errorSaving": "Error saving badge",
+    "errorDeleting": "Error deleting badge",
+    "errorLoading": "Error loading badges. Please try again.",
+    "confirmDelete": "Are you sure you want to delete this badge?"
+  },
+  "validation": {
+    "nameRequired": "Name is required",
+    "descriptionRequired": "Description is required",
+    "criteriaTypeRequired": "Criteria type is required",
+    "criteriaValuePositive": "Value must be positive"
+  },
+  "emptyState": "No badges defined. Add a new badge using the \"Add Badge\" button.",
+  "accessDenied": "You do not have permission to access this page.",
+  "cancel": "Cancel",
+  "save": "Save",
+  "saving": "Saving..."
+}

@@ -50,6 +50,30 @@ import requestsDE from './locales/de/requests.json';
 import livestreamDE from './locales/de/livestream.json';
 import guideDE from './locales/de/guide.json';
 
+// Import all EN translations
+import commonEN from './locales/en/common.json';
+import loginEN from './locales/en/login.json';
+import navigationEN from './locales/en/navigation.json';
+import eventsEN from './locales/en/events.json';
+import announcementsEN from './locales/en/announcements.json';
+import usersEN from './locales/en/users.json';
+import tasksEN from './locales/en/tasks.json';
+import messagesEN from './locales/en/messages.json';
+import shopEN from './locales/en/shop.json';
+import vaktijaEN from './locales/en/vaktija.json';
+import financesEN from './locales/en/finances.json';
+import askImamEN from './locales/en/askImam.json';
+import dashboardEN from './locales/en/dashboard.json';
+import projectsEN from './locales/en/projects.json';
+import badgesEN from './locales/en/badges.json';
+import documentsEN from './locales/en/documents.json';
+import activityEN from './locales/en/activity.json';
+import quickTipsEN from './locales/en/quickTips.json';
+import settingsEN from './locales/en/settings.json';
+import requestsEN from './locales/en/requests.json';
+import livestreamEN from './locales/en/livestream.json';
+import guideEN from './locales/en/guide.json';
+
 const resources = {
   bs: {
     common: commonBS,
@@ -98,6 +122,30 @@ const resources = {
     requests: requestsDE,
     livestream: livestreamDE,
     guide: guideDE,
+  },
+  en: {
+    common: commonEN,
+    login: loginEN,
+    navigation: navigationEN,
+    events: eventsEN,
+    announcements: announcementsEN,
+    users: usersEN,
+    tasks: tasksEN,
+    messages: messagesEN,
+    shop: shopEN,
+    vaktija: vaktijaEN,
+    finances: financesEN,
+    askImam: askImamEN,
+    dashboard: dashboardEN,
+    projects: projectsEN,
+    badges: badgesEN,
+    documents: documentsEN,
+    activity: activityEN,
+    quickTips: quickTipsEN,
+    settings: settingsEN,
+    requests: requestsEN,
+    livestream: livestreamEN,
+    guide: guideEN,
   },
 };
 

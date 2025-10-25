@@ -1,0 +1,40 @@
+{
+  "title": "Quick tips",
+  "tips": [
+    {
+      "title": "Customize your Dashboard",
+      "description": "Click the 'Customize' button next to quick access to select up to 8 most frequently used functions."
+    },
+    {
+      "title": "Add events to calendar",
+      "description": "Press the 'Add to Calendar' button on Events page to add event directly to your personal calendar."
+    },
+    {
+      "title": "Track your points",
+      "description": "Check the 'Activity Log' page to see how you earn points through contributions, tasks and events."
+    },
+    {
+      "title": "Earn badges",
+      "description": "Collect points for activities in the congregation and unlock special badges. See the Badges page for all available badges."
+    },
+    {
+      "title": "Donate to projects",
+      "description": "Support congregation projects through the Projects page. Your contributions are automatically calculated toward the target amount."
+    },
+    {
+      "title": "Check prayer times",
+      "description": "Today's prayer times are displayed on the dashboard. For monthly overview click on 'Prayer Calendar'."
+    },
+    {
+      "title": "Contact sellers",
+      "description": "In the Shop, click on an item and use the 'Contact Seller' button to send a direct message."
+    },
+    {
+      "title": "Ask the Imam",
+      "description": "Ask the Imam questions anonymously or publicly through the 'Ask Imam' page. Answers can be archived for future reference."
+    }
+  ],
+  "previous": "Previous",
+  "next": "Next",
+  "tipNumber": "Tip {{current}} of {{total}}"
+}

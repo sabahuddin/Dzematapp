@@ -1,0 +1,56 @@
+{
+  "title": "Projects",
+  "addProject": "Add Project",
+  "addNewProject": "Add New Project",
+  "editProject": "Edit Project",
+  "deleteProject": "Delete Project",
+  "projectName": "Project name",
+  "description": "Description",
+  "goalAmount": "Goal amount (CHF)",
+  "goalAmountHelper": "Total amount needed to be collected",
+  "currentAmount": "Currently collected (CHF)",
+  "currentAmountHelper": "Amount already collected for this project",
+  "startDate": "Start date",
+  "endDate": "End date",
+  "status": {
+    "label": "Status",
+    "helper": "Project status",
+    "active": "Active",
+    "closed": "Closed",
+    "completed": "Completed",
+    "cancelled": "Cancelled"
+  },
+  "progress": "Progress",
+  "collected": "Collected:",
+  "contributors": "Contributors",
+  "noProjects": "No projects defined.",
+  "noProjectsAdmin": "Add a new project using the \"Add Project\" button.",
+  "viewDetails": "Project details",
+  "contribute": "Donate",
+  "amountRaised": "Collected: {{current}} of {{goal}} CHF",
+  "percentComplete": "{{percent}}% complete",
+  "currency": "CHF",
+  "buttons": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving..."
+  },
+  "validation": {
+    "nameRequired": "Name is required",
+    "descriptionRequired": "Description is required",
+    "goalAmountRequired": "Goal amount is required",
+    "goalAmountPositive": "Goal amount must be greater than 0",
+    "currentAmountPositive": "Current amount must be a positive number"
+  },
+  "toast": {
+    "success": "Success",
+    "error": "Error",
+    "projectCreated": "Project created successfully",
+    "projectUpdated": "Project updated successfully",
+    "projectDeleted": "Project deleted successfully",
+    "saveError": "Error saving project",
+    "deleteError": "Error deleting project",
+    "loadError": "Error loading projects. Please try again."
+  },
+  "confirmDelete": "Are you sure you want to delete this project?"
+}

@@ -1,0 +1,38 @@
+{
+  "title": "Requests & Applications",
+  "newRequest": "New Request",
+  "loading": "Loading...",
+  "noRequests": "You have no submitted requests",
+  "submitFirstRequest": "Submit first request",
+  "requestTypes": {
+    "wedding": "Wedding registration",
+    "mekteb": "Child registration for mekteb",
+    "facility": "Facility usage request",
+    "akika": "Akika registration"
+  },
+  "status": {
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected"
+  },
+  "dialog": {
+    "title": "New Request / Application",
+    "selectType": "Select request type",
+    "noteLabel": "Note (optional)",
+    "formNotAvailable": "Form for this request type will be available soon. Please contact administrator for more information.",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "submitting": "Submitting..."
+  },
+  "card": {
+    "submittedLabel": "Submitted:",
+    "adminNotesLabel": "Administrator notes:"
+  },
+  "toast": {
+    "success": "Success",
+    "successDescription": "Your request has been sent",
+    "error": "Error",
+    "errorDescription": "Failed to send request",
+    "selectTypeError": "Please select request type"
+  }
+}

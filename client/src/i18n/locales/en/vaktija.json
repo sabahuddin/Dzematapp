@@ -1,0 +1,53 @@
+{
+  "title": "Prayer Times",
+  "todaysPrayerTimes": "Today's prayer times",
+  "monthlyPrayerTimes": "Monthly prayer times",
+  "uploadCSV": "Upload CSV",
+  "uploadPrayerTimes": "Upload prayer times from CSV file",
+  "selectCSV": "Select CSV file",
+  "deleteAll": "Delete all",
+  "upload": "Upload",
+  "prayerNames": {
+    "fajr": "Fajr",
+    "sunrise": "Sunrise",
+    "sunriseFull": "Sunrise",
+    "dhuhr": "Dhuhr",
+    "asr": "Asr",
+    "maghrib": "Maghrib",
+    "isha": "Isha"
+  },
+  "csvFormat": "CSV file must contain columns: Date, Day, Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha",
+  "dateFormat": "Date format: dd.mm.yyyy (e.g. 21.10.2025)",
+  "selectedFile": "Selected file:",
+  "uploading": "Uploading...",
+  "cancel": "Cancel",
+  "noPrayerTimes": "No prayer times data",
+  "noPrayerTimesToday": "No prayer times data for today.",
+  "noPrayerTimesAll": "No prayer times uploaded.",
+  "uploadPrompt": "Upload CSV file with prayer times.",
+  "confirmDeleteAll": "Are you sure you want to delete all prayer times?",
+  "messages": {
+    "success": "Success",
+    "error": "Error",
+    "uploadSuccess": "Prayer times uploaded successfully",
+    "uploadError": "Error uploading CSV file",
+    "deleteSuccess": "All prayer times deleted",
+    "deleteError": "Error deleting prayer times"
+  },
+  "date": "Date",
+  "day": "Day",
+  "monthNames": {
+    "1": "January",
+    "2": "February",
+    "3": "March",
+    "4": "April",
+    "5": "May",
+    "6": "June",
+    "7": "July",
+    "8": "August",
+    "9": "September",
+    "10": "October",
+    "11": "November",
+    "12": "December"
+  }
+}

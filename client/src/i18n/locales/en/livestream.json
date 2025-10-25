@@ -1,0 +1,35 @@
+{
+  "title": "Livestream",
+  "subtitle": "Watch LIVE events from the congregation",
+  "loading": "Loading...",
+  "live": "LIVE",
+  "noActiveStream": {
+    "title": "Currently no active livestream",
+    "description": "Livestream will be available when administrator activates the broadcast",
+    "notActive": "Livestream not active",
+    "placeholder": "The stream will be displayed here when administrator sets up livestream",
+    "watchLabel": "Here you can watch:",
+    "items": {
+      "janaza": "Janaza prayers",
+      "lectures": "Sermons and lectures",
+      "events": "Special events",
+      "tarawih": "Tarawih prayers (Ramadan)"
+    }
+  },
+  "externalLink": {
+    "available": "Livestream is available on external platform",
+    "open": "Open livestream"
+  },
+  "info": {
+    "title": "About Live Stream",
+    "description": "Livestream functionality allows all congregation members and interested persons to follow important events directly from any device.",
+    "platformsLabel": "Supported platforms:",
+    "platforms": {
+      "youtube": "YouTube Live",
+      "facebook": "Facebook Live",
+      "twitch": "Twitch",
+      "embed": "Direct embed code",
+      "other": "Other streaming platforms"
+    }
+  }
+}

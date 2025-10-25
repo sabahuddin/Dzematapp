@@ -1,0 +1,48 @@
+{
+  "title": "Activity Log",
+  "myActivities": "My activities",
+  "activityType": "Activity type",
+  "date": "Date",
+  "points": "Points",
+  "description": "Description",
+  "user": "User",
+  "type": "Type",
+  "unknown": "Unknown",
+  "searchPlaceholder": "Search by user or description...",
+  "filterByType": "Filter by type",
+  "errorLoading": "Error loading activity log. Please try again.",
+  "types": {
+    "contribution_made": "Contribution made",
+    "task_completed": "Task completed",
+    "event_rsvp": "Event RSVP",
+    "announcement_read": "Announcement read",
+    "profile_updated": "Profile updated",
+    "project_contribution": "Project contribution",
+    "badge_earned": "Badge earned"
+  },
+  "filterOptions": {
+    "all": "All activities",
+    "task_completed": "Tasks completed",
+    "event_rsvp": "Event RSVPs",
+    "announcement_read": "Announcements read",
+    "contribution_made": "Contributions made",
+    "badge_earned": "Badges earned",
+    "profile_updated": "Profile updated",
+    "project_contribution": "Project contributions"
+  },
+  "activityLabels": {
+    "task_completed": "Task completed",
+    "event_rsvp": "Event RSVP",
+    "announcement_read": "Announcement read",
+    "contribution_made": "Contribution made",
+    "badge_earned": "Badge earned",
+    "profile_updated": "Profile updated",
+    "project_contribution": "Project contribution"
+  },
+  "noActivities": "No activities",
+  "totalPoints": "Total points: {{points}}",
+  "allTypes": "All types",
+  "thisMonth": "This month",
+  "lastMonth": "Last month",
+  "thisYear": "This year"
+}

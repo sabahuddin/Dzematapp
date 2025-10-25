@@ -1,0 +1,307 @@
+{
+  "pageHeader": {
+    "title": "DžematApp Guide",
+    "subtitle": "Complete manual for using the application",
+    "downloadPdf": "Download PDF"
+  },
+  "introduction": {
+    "title": "About the application",
+    "paragraph1": "DžematApp is a comprehensive web application developed for modern congregation administration. The application enables efficient management of all aspects of the congregation in one place - from member and financial records, through event and section organization, to communication with members and tracking their activities.",
+    "paragraph2": "The system uses modern design, intuitive interface and supports real-time notifications. The application is accessible from any device via web browser, and data is securely stored in the database with automatic backups."
+  },
+  "rolesSection": {
+    "title": "User roles",
+    "description": "The application supports four different roles with different access levels",
+    "accessLabel": "Access",
+    "roles": {
+      "admin": {
+        "name": "Admin",
+        "description": "Administrators have complete control over the application. They can manage all modules, create and delete content, assign roles, change system settings. Admin sees all data of all members and has access to all reports and statistics.",
+        "permissions": "Full control: users, finances, projects, badges, points, all modules"
+      },
+      "memberIO": {
+        "name": "Board Member",
+        "description": "Executive board members have a higher level of access than regular members. They can see all congregation members and access extended information. This role is intended for congregation board members.",
+        "permissions": "Extended view: all members, all events, all sections"
+      },
+      "member": {
+        "name": "Member",
+        "description": "Standard congregation members have access to basic application functions. They can see announcements, events, sections they are members of, their tasks, messages and their own profile. This is the most common role assigned to most members.",
+        "permissions": "Standard access: dashboard, announcements, events, their sections, messages, profile"
+      },
+      "familyMember": {
+        "name": "Family Member",
+        "description": "This role is intended for family members of regular members (spouses, children). They have limited access to the application - mainly can see announcements, events and basic information.",
+        "permissions": "Limited access: dashboard, announcements, events"
+      }
+    }
+  },
+  "tableOfContents": {
+    "title": "Contents - Application modules"
+  },
+  "detailedExplanation": "Detailed module explanation",
+  "keyFeatures": "Key features:",
+  "roleLabels": {
+    "admins": "Administrators",
+    "moderators": "Moderators",
+    "members": "Members",
+    "allUsers": "All users (including guests)"
+  },
+  "sections": {
+    "dashboard": {
+      "title": "Dashboard (Control panel)",
+      "description": "Dashboard is the central place of the application where each user gets a personalized overview of the most important information. This is the first page you see after logging in and serves as a quick overview of all congregation activities.",
+      "features": [
+        "Today's prayer times displayed at the top of the page",
+        "Customizable quick access with up to 8 favorite functions",
+        "Display of latest announcements with quick reading option",
+        "Calendar of upcoming events with RSVP information",
+        "Notifications for unread messages and new content"
+      ],
+      "admin": "Admin sees extended statistics: total number of members, number of active users, announcement and event statistics, active tasks in sections, and activity trends. Dashboard allows admin quick insight into all congregation aspects in one place.",
+      "member": "Members see personalized dashboard with their sections, assigned tasks, unread messages, upcoming events and latest announcements. Each member can customize their Quick Access widget with most frequently used functions."
+    },
+    "users": {
+      "title": "Users",
+      "description": "Module for managing all congregation members and their family relationships. Detailed member profiles are stored here with contact information, membership categories and activity history. The system supports creating family connections between members.",
+      "features": [
+        "Detailed profiles with photo, contact data and occupation",
+        "Role system: Admin, Board Member, Member, Family Member",
+        "Member categories: Men, Women, Parents, Children",
+        "Family relationships (spouse, child, parent, brother, sister)",
+        "Membership status: active, inactive, family member",
+        "Tracking membership date and inactivity reasons"
+      ],
+      "admin": "Admin has full control over users: can create new accounts, edit all data (first name, last name, email, phone, address, occupation), assign roles and categories, set activity status, create family connections between members. Admin sees all members and can filter them by various criteria. System also supports bulk user upload via Excel file.",
+      "member": "Each member can view and edit their profile - change their basic data such as first name, last name, email, phone, occupation and address. Members can see profiles of other members (depending on privacy settings) but cannot change others' data or assign roles."
+    },
+    "announcements": {
+      "title": "Announcements",
+      "description": "System for publishing important information and communication with congregation members. Announcements can be general or categorized, with text formatting option, adding images and scheduling publication.",
+      "features": [
+        "Announcement categorization: Congregation, IZBCH (Islamic Community BiH Switzerland), IC (Islamic Community), Other",
+        "Rich text editor for professional content formatting",
+        "Option to publish immediately or schedule for specific date and time",
+        "Announcement status: published, archived",
+        "Automatic notifications to members for new announcements",
+        "Publicly available announcements - visible to guests without logging in"
+      ],
+      "admin": "Administrators create, edit and delete announcements. Can use rich text editor for formatting (bold, italic, lists, headings), add categories, set status and decide whether announcement will be published immediately or scheduled for later. Admin sees announcement view statistics.",
+      "member": "Members can view all published announcements, filter them by categories and receive notifications when new announcement is published. System tracks which announcements member has already read and displays number of new announcements in navigation.",
+      "all": "Guests (logged out users) can see all published announcements which allows informing wider community without need for logging into system."
+    },
+    "events": {
+      "title": "Events",
+      "description": "Complete system for managing congregation events with calendar, RSVP functionalities and important dates. Enables organization of iftars, mawlids, educational programs, sports activities and other social events.",
+      "features": [
+        "Calendar with monthly view and event date marking",
+        "RSVP system with option to register adults and children",
+        "Categories: Iftar, Mawlid, Education, Sports, Charity, Youth, GAM",
+        "Important dates (Eid, Ramadan, etc.) that repeat every year",
+        "Automatic reminder sending before events",
+        "Option to add events to personal calendar",
+        "Record of confirmed attendance with number of people"
+      ],
+      "admin": "Admin creates events with all details: name, description, location, date and time, category, maximum number of attendees. Can see list of all who confirmed attendance (RSVP), number of adults and children. Admin manages important dates that system automatically displays every year. Can send reminders to members before events.",
+      "member": "Members view upcoming and past events, can confirm their attendance (RSVP) with number of adults and children, receive notifications for new events and reminders. Each member can add event to their personal calendar (Google Calendar, Apple Calendar, etc.). System does not allow retroactive registration for past events.",
+      "all": "Guests can see all published events which allows involving wider community. Guests can confirm attendance at public events without logging in."
+    },
+    "workgroups": {
+      "title": "Sections (Work groups)",
+      "description": "System for organizing members into work groups according to activities and areas of work. Each section can have its tasks, moderators and members. Sections can be public (visible to all) or private (access only to approved members).",
+      "features": [
+        "Creating unlimited number of sections (e.g. Administration, Halal food, Iftar, Cleaning)",
+        "Public and private sections with access control",
+        "Moderator system - members with section management rights",
+        "Multi-user tasks - assigning task to multiple members at once",
+        "Task status tracking: In Progress, Pending Approval, Completed",
+        "Task priorities: Low, Medium, High",
+        "Task completion deadlines",
+        "Point system for completed tasks"
+      ],
+      "admin": "Admin creates sections, sets their name, description and visibility (public/private). Adds members to sections and appoints moderators. Admin can create tasks with priority, deadline and description, and assign them to one member, multiple members at once or all section members. Admin approves tasks that members mark as completed.",
+      "moderator": "Section moderators have same rights as admin within their section. Can create tasks, assign them to members, approve completed tasks and manage section membership. Moderators cannot delete section but can fully manage its tasks.",
+      "member": "Members see all sections they are members of, can view tasks assigned to them, mark tasks as completed (after which they await admin/moderator approval) and earn points. Members can request access to private sections, and admin/moderator approves requests."
+    },
+    "messages": {
+      "title": "Messages",
+      "description": "Internal messaging system that allows administration to send messages to members. Messages can be sent to all members at once or targeted to specific categories (Men, Women, Parents, Children).",
+      "features": [
+        "Sending messages to all members or specific categories",
+        "Rich text editor for message formatting",
+        "Automatic notifications for unread messages",
+        "Message status tracking (read/unread)",
+        "Archive of all sent and received messages",
+        "Unread message counter in navigation"
+      ],
+      "admin": "Administrators can create new messages using rich text editor. When sending, they choose target group: all members, or specific categories (men only, women only, parents only, children only). Admin sees statistics of how many members received and read message. Messages are stored in archive and can be searched.",
+      "member": "Members receive messages from administration in their inbox. System automatically notifies members of new messages showing red badge with number of unread. Members can read, archive and search their messages. Cannot send messages to other members - this is one-way communication channel from administration to members."
+    },
+    "askImam": {
+      "title": "Ask Imam",
+      "description": "Private system that allows members to ask Islamic questions to congregation imam. Each member can ask question, track its status and get answer. Questions are private - each member sees only their questions.",
+      "features": [
+        "Privacy - each member sees only their questions",
+        "Question categories for easier organization",
+        "Question status: Active or Archived (answered)",
+        "Notifications when question is archived (answered)",
+        "History of all asked questions",
+        "New answers counter in navigation"
+      ],
+      "admin": "Admin (imam) sees all questions from all members. Can review active questions, answer them (outside application - by phone, email or in person) and then archive question which automatically notifies member that answer was given. Admin can filter questions by status and category, and see who asked each question.",
+      "member": "Members can ask new question with detailed description. Receive notification when admin archives their question which indicates answer was given. Each member sees only their questions - cannot see what other members are asking. This ensures privacy when asking personal or sensitive Islamic questions."
+    },
+    "requests": {
+      "title": "Requests & Applications",
+      "description": "Central system for submitting and processing various types of member requests to congregation. Includes requests for material assistance, organizing weddings, births, deaths, as well as new membership applications.",
+      "features": [
+        "Request types: Material assistance, Wedding, Birth, Death, Miscellaneous, Membership",
+        "Status tracking: Pending, Approved, Rejected",
+        "Detailed request descriptions with additional information",
+        "Request status change notifications",
+        "History of all requests with dates and decisions",
+        "Public membership application - available to guests too"
+      ],
+      "admin": "Admin sees all requests from all members organized by types and status. Can review details of each request, approve or reject it with note. System enables filtering requests by type, status and member. Admin gets notifications for new requests and can see monthly request statistics.",
+      "member": "Members submit requests to congregation with detailed description of their situation or need. After submission, can track status of their request (pending, approved, rejected) and receive notifications when admin changes status. Members see history of all their requests with submission dates and decisions.",
+      "all": "Guests (logged out users) can submit membership application to congregation without need for existing account. Enter their basic data (first name, last name, email, phone) and reason for application. Admin then processes application and creates user account if application is approved."
+    },
+    "shop": {
+      "title": "Shop",
+      "description": "Internal marketplace where members can buy and sell items within congregation. Admin publishes items on behalf of members, and interested buyers contact seller directly. All prices are in CHF (Swiss franc).",
+      "features": [
+        "Items with photos, description and price in CHF",
+        "Product categories for easier search",
+        "Product status: Active or Completed (sold)",
+        "Seller contact information",
+        "Notifications for new items",
+        "Image gallery for each product",
+        "Filtering by categories and status"
+      ],
+      "admin": "Admin adds new products with all details: name, price (CHF), detailed description, photos (can add multiple images) and seller contact information. Can edit existing products, change prices, add new images. When item is sold, admin marks it as \"Completed\". Admin gets notifications when member clicks \"Buy\" button indicating interest.",
+      "member": "Members browse all active products, can filter by categories and see detailed descriptions with images. When they find item they're interested in, click \"Buy\" which opens seller's contact information. Member then contacts seller directly (by phone, email or in person) to arrange purchase details. System notifies members about new products."
+    },
+    "vaktija": {
+      "title": "Prayer Times",
+      "description": "Display of Islamic prayer times for each day. Prayer times can be automatically loaded from CSV file from SwissMosque.ch website and displayed organized by months.",
+      "features": [
+        "Automatic loading from CSV file (SwissMosque.ch format)",
+        "Monthly prayer times display in accordion format",
+        "Today's prayer times highlighted on Dashboard",
+        "Display of all five daily prayers: Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha",
+        "Option to delete all prayer times and reload",
+        "Availability to all users, including guests"
+      ],
+      "admin": "Admin uploads prayer times via CSV file downloaded from SwissMosque.ch site. System automatically parses file and loads all prayer times for year. Admin can delete all existing prayer times and load new ones (e.g. at beginning of new year). System is designed to automatically recognize date and time format from CSV file.",
+      "member": "Members view prayer times organized by months in accordion format (only one month can be open at a time for clearer view). Today's prayer times are automatically displayed at top of Dashboard as soon as user logs in, enabling quick access to most important information.",
+      "all": "All users (including guests) have access to prayer times. This means people who are not congregation members can check prayer times, making information publicly available to wider community."
+    },
+    "finances": {
+      "title": "Finances",
+      "description": "Record of all financial contributions from congregation members. System enables tracking contributions, categorization by purpose and linking with projects. All transactions are recorded and stored in database.",
+      "features": [
+        "Contribution categories: Membership, Donation, Waqf, Sergija, Other",
+        "Linking contributions with projects",
+        "Automatic project amount update when adding contribution",
+        "Filtering contributions by categories, members and projects",
+        "Reports with sums by categories",
+        "Point system - each CHF brings points to member",
+        "History of all transactions with dates"
+      ],
+      "admin": "Admin adds contributions with all details: member who contributed, amount in CHF, purpose (category), contribution date, optional linking with project. Can edit existing contributions and delete them in case of error. Admin sees all contributions from all members, can filter by categories and generate reports. System automatically awards points to members for their contributions.",
+      "member": "Members can view only their contributions and their history. See how much they contributed in total, by which categories and which projects were supported by their contributions. Cannot add, change or delete contributions - only admin can do that. Members see points they earned through their financial contributions."
+    },
+    "projects": {
+      "title": "Projects",
+      "description": "Management of larger congregation projects that require fundraising. Each project has target amount, current progress and option to link financial contributions directly with project.",
+      "features": [
+        "Creating projects with target amount in CHF",
+        "Automatic tracking of current amount through linked contributions",
+        "Visual progress display (progress bar)",
+        "Project statuses: Active, Completed, Suspended",
+        "Detailed description and project purpose",
+        "Donation statistics by project",
+        "Public project visibility"
+      ],
+      "admin": "Admin creates new projects with name, detailed description, target amount and status. When member contributes money, admin can link that contribution with project, which automatically updates current project amount. Admin can edit projects, change status and see list of all donations linked with project. System automatically calculates percentage of goal completion.",
+      "member": "Members view all congregation projects, see fundraising progress and can get informed about project purpose. When member contributes money and admin links it with project, it's recorded as project contribution and member gets special activity in Activity Log. Members see transparent display of how their contributions are used."
+    },
+    "activity": {
+      "title": "Activity Log",
+      "description": "Complete record of all member activities in application. System automatically tracks who did what, when and how many points they earned. This enables transparency and gamification through reward system.",
+      "features": [
+        "Automatic logging of all activities",
+        "Activity types: Completed task, Event attendance, Financial contribution, Project contribution",
+        "Point assignment for different activities",
+        "Activity filtering by user and type",
+        "Display of date and time of each activity",
+        "Linking activities with entities (task, event, project)",
+        "Reports on most active members"
+      ],
+      "admin": "Admin sees complete activity of all members. Can filter by member to see all activities of one person, or by activity type to see e.g. all completed tasks. Admin uses this data for member engagement reports, trend tracking and rewarding most active members. Can see activity statistics by months.",
+      "member": "Members see their personal activity history - everything they did in application and how many points they earned for each activity. This includes completed tasks, event attendances, financial contributions and project contributions. Members can track their progress and see how active they are in congregation."
+    },
+    "badges": {
+      "title": "Badges",
+      "description": "Reward and recognition system for active congregation members. Badges are awarded automatically (based on achievements) or manually (by admin) for special community contribution.",
+      "features": [
+        "Creating badges with name, description and criteria",
+        "Automatic awarding based on conditions (e.g. 100 points, 10 completed tasks)",
+        "Manual awarding by admin for special achievements",
+        "Display of earned badges on member profile",
+        "Different badge types: Bronze, Silver, Gold, Special",
+        "Public visibility of earned badges",
+        "Notifications when member earns new badge"
+      ],
+      "admin": "Admin creates new badges defining their name, description, earning conditions and type. Can set automatic criteria (e.g. \"Earn 500 points\" or \"Complete 20 tasks\") or manually award badges to members for special contribution. Admin sees statistics of who earned which badges and can edit or delete existing badges.",
+      "member": "Members automatically receive badges when they meet set conditions. Receive notification when they earn new badge and can see all their badges on profile. Badges serve as motivation for active participation in congregation life and are visible recognition for their community contribution."
+    },
+    "points": {
+      "title": "Point System",
+      "description": "Gamification system that rewards member activity through point assignment. Points are awarded automatically for different activities and can be used for member ranking or granting special privileges.",
+      "features": [
+        "Points for event attendance (RSVP)",
+        "Points for completed tasks in sections",
+        "Points for financial contributions (1 CHF = X points)",
+        "Points for project contributions",
+        "Customizable point values for each activity",
+        "Member leaderboard (ranking table)",
+        "Total points visible on profile"
+      ],
+      "admin": "Admin in Point Settings defines how many points are awarded for each activity: how many for event attendance, how many for completed task, how many points per CHF for financial contributions. Admin can change these values at any time. System automatically applies new rules to future activities. Admin sees leaderboard of all members ranked by points.",
+      "member": "Members automatically collect points through their activities. Every time they attend event, complete task or give financial contribution, they get certain number of points. See their total points on profile and position on leaderboard. Points serve as motivation for more active participation and give visibility to each member's contribution."
+    },
+    "settings": {
+      "title": "Settings",
+      "description": "Configuration of basic congregation information, application settings and user personal data. Here are all administrative settings that control how application functions.",
+      "features": [
+        "Basic congregation data (name, address, contact)",
+        "Contact email and phone",
+        "Livestream settings (YouTube link)",
+        "Point system configuration",
+        "Password change",
+        "Notification settings",
+        "Logo and visual identity"
+      ],
+      "admin": "Admin has access to all settings: can edit congregation information (name, address, city, postal code, phone, email), set YouTube link for livestream, configure point values for different activities, set congregation logo. Admin can change their password and their profile settings.",
+      "member": "Members have limited access to settings - can change their password and edit basic data of their profile (first name, last name, email, phone, occupation, address). Cannot change application settings or congregation information."
+    }
+  },
+  "additionalInfo": {
+    "title": "Additional information and tips",
+    "notifications": "Application displays red badge indicators for new content in different modules. Number in badge shows how many new items exist.",
+    "autoRefresh": "Notifications and counters automatically refresh every 30 seconds without need for manual page refresh.",
+    "dateFormat": "All dates in application are displayed in European format dd.mm.yyyy (day.month.year).",
+    "currency": "All prices in Shop and Finance modules are expressed in CHF (Swiss franc).",
+    "guestAccess": "Certain content (announcements, events, prayer times) is available to guests without logging in.",
+    "security": "Application uses data encryption, secure passwords and regular backups.",
+    "support": "For technical help or questions about using application, contact congregation administrator.",
+    "notificationsLabel": "Notifications:",
+    "autoRefreshLabel": "Auto refresh:",
+    "dateFormatLabel": "Date format:",
+    "currencyLabel": "Currency:",
+    "guestAccessLabel": "Guest access:",
+    "securityLabel": "Security:",
+    "supportLabel": "Support:"
+  }
+}

@@ -102,6 +102,12 @@ export default function LoginPage() {
                     <Typography variant="caption" sx={{ fontWeight: 500 }}>DE</Typography>
                   </Box>
                 </ToggleButton>
+                <ToggleButton value="en" data-testid="language-en">
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    <Language fontSize="small" />
+                    <Typography variant="caption" sx={{ fontWeight: 500 }}>EN</Typography>
+                  </Box>
+                </ToggleButton>
               </ToggleButtonGroup>
             </Box>
 

@@ -1,0 +1,125 @@
+{
+  "title": "Users",
+  "addUser": "Add User",
+  "editUser": "Edit User",
+  "createUser": "Create New User",
+  "deleteUser": "Delete User",
+  "viewUser": "View User",
+  "searchUsers": "Search users",
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "username": "Username",
+  "password": "Password",
+  "email": "Email",
+  "phone": "Phone",
+  "phonePlaceholder": "+41 7x xxx xx xx",
+  "address": "Address",
+  "city": "City",
+  "postalCode": "Postal Code",
+  "dateOfBirth": "Date of Birth",
+  "occupation": "Occupation",
+  "memberSince": "Member Since",
+  "membershipStatus": "Membership Status",
+  "inactivityReason": "Inactivity Reason",
+  "skills": "Skills",
+  "photo": "Photo",
+  "uploadPhoto": "Upload Photo",
+  "removePhoto": "Remove Photo",
+  "roles": {
+    "label": "Roles",
+    "admin": "Admin",
+    "imam": "Imam",
+    "clan_io": "Board Member",
+    "clan": "Member",
+    "clan_porodice": "Family Member"
+  },
+  "membershipStatuses": {
+    "aktivan": "Active",
+    "pasivan": "Inactive",
+    "clan_porodice": "Family member"
+  },
+  "inactivityReasons": {
+    "smrt": "Death",
+    "drugi_dzemat": "Different congregation",
+    "iskljucen": "Excluded",
+    "nepoznato": "Unknown"
+  },
+  "modal": {
+    "addTitle": "Add New User",
+    "editTitle": "Edit User",
+    "photoLabel": "User photo",
+    "changePhoto": "Change photo",
+    "addPhoto": "Add photo",
+    "passwordHelper": "Leave empty to keep existing password",
+    "memberSinceHelper": "Leave empty for today's date",
+    "categoriesPlaceholder": "Select or enter category",
+    "skillsPlaceholder": "Enter skills (e.g. Programming, Design...)",
+    "skillsHelper": "Enter skills and press Enter",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "superadmin": {
+    "label": "Superadmin access",
+    "description": "Superadmin can add and edit all users"
+  },
+  "family": {
+    "title": "Family Members",
+    "addMember": "Add Family Member",
+    "selectExisting": "Select existing user",
+    "createNew": "Add new user",
+    "relationshipType": "Relationship type",
+    "relationships": {
+      "suprug": "Husband",
+      "supruga": "Wife",
+      "sin": "Son",
+      "kćerka": "Daughter",
+      "otac": "Father",
+      "majka": "Mother",
+      "brat": "Brother",
+      "sestra": "Sister",
+      "ostalo": "Other"
+    },
+    "noMembers": "No family members",
+    "removeMember": "Remove member",
+    "usernameOptional": "Optional for family member",
+    "createAndAdd": "Create and add",
+    "searchPlaceholder": "Search users",
+    "noUsersFound": "No users found",
+    "noAvailableUsers": "No available users"
+  },
+  "noUsers": "No users",
+  "totalUsers": "Total users: {{count}}",
+  "bulkUpload": "Bulk upload",
+  "search": "Search users...",
+  "filterByCategory": "Filter by category",
+  "filterBySkills": "Filter by skills",
+  "categories": {
+    "all": "All",
+    "men": "Men",
+    "women": "Women",
+    "parents": "Parents",
+    "youth": "Youth"
+  },
+  "table": {
+    "points": "Points",
+    "actions": "Actions"
+  },
+  "actions": {
+    "edit": "Edit",
+    "deactivate": "Deactivate",
+    "activate": "Activate",
+    "viewFamily": "Family"
+  },
+  "messages": {
+    "successCreate": "User created successfully",
+    "successUpdate": "User updated successfully",
+    "errorCreate": "Error creating user",
+    "errorUpdate": "Error updating user",
+    "loading": "Loading users...",
+    "error": "Error loading users"
+  },
+  "common": {
+    "success": "Success",
+    "error": "Error"
+  }
+}

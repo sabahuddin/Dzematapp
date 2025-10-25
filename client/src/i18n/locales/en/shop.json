@@ -1,0 +1,114 @@
+{
+  "title": "Shop",
+  "tabs": {
+    "dzematShop": "Shop",
+    "sell": "Selling",
+    "gift": "Gifting",
+    "archive": "Archive"
+  },
+  "buttons": {
+    "addProduct": "Add Product",
+    "addListing": "Add Listing",
+    "addGift": "Add Gift",
+    "buy": "Buy",
+    "edit": "Edit",
+    "delete": "Delete",
+    "complete": "Completed",
+    "cancel": "Cancel",
+    "save": "Save",
+    "update": "Update",
+    "publish": "Publish",
+    "submitOrder": "Submit order",
+    "send": "Send",
+    "sending": "Sending...",
+    "contactOwner": "Send message to owner",
+    "uploading": "Uploading..."
+  },
+  "labels": {
+    "name": "Name",
+    "description": "Description",
+    "price": "Price",
+    "priceWithCurrency": "Price (CHF)",
+    "size": "Size",
+    "quantity": "Quantity",
+    "color": "Color",
+    "notes": "Notes",
+    "messageContent": "Message content"
+  },
+  "placeholders": {
+    "enterMessage": "Enter your message..."
+  },
+  "display": {
+    "priceInCHF": "{{price}} CHF",
+    "size": "Size: {{size}}",
+    "color": "Color: {{color}}",
+    "inStock": "In stock: {{quantity}}",
+    "forSale": "For sale",
+    "giftLabel": "Gift",
+    "sold": "Sold",
+    "gifted": "Gifted",
+    "owner": "Owner: {{name}}",
+    "total": "Total: {{total}} CHF",
+    "loading": "Loading...",
+    "noArchivedItems": "No archived items",
+    "addPhotos": "Add photos ({{current}}/{{max}})",
+    "uploadLabel": "Upload {{number}}"
+  },
+  "dialogs": {
+    "addProduct": "Add Product",
+    "editProduct": "Edit Product",
+    "editListing": "Edit Listing",
+    "addSaleListing": "Add Sale Listing",
+    "addGiftListing": "Add Gift",
+    "order": "Order {{product}}",
+    "sendMessage": "Send message"
+  },
+  "tooltips": {
+    "editProduct": "Edit product",
+    "deleteProduct": "Delete product",
+    "completeProduct": "Completed"
+  },
+  "colors": {
+    "black": "Black",
+    "white": "White",
+    "blue": "Blue",
+    "red": "Red",
+    "green": "Green"
+  },
+  "toast": {
+    "tooManyPhotos": "Too many photos",
+    "maxPhotosDescription": "You can add maximum {{max}} photos",
+    "photosAdded": "Photos added successfully",
+    "photoUploadError": "Error uploading photos",
+    "productAdded": "Product added successfully",
+    "productAddError": "Error adding product",
+    "productDeleted": "Product deleted",
+    "productDeleteError": "Error deleting product",
+    "productUpdated": "Product updated successfully",
+    "productUpdateError": "Error updating product",
+    "productCompleted": "Product marked as completed",
+    "productCopied": "Product copied",
+    "productCopyError": "Error copying product",
+    "listingAdded": "Listing added successfully",
+    "listingAddError": "Error adding listing",
+    "listingUpdated": "Listing updated successfully",
+    "listingUpdateError": "Error updating listing",
+    "listingDeleted": "Listing deleted",
+    "listingDeleteError": "Error deleting listing",
+    "listingCompleted": "Listing marked as completed",
+    "listingCompleteError": "Error marking listing",
+    "orderSent": "Order sent",
+    "orderSentDescription": "You will be contacted shortly with details.",
+    "orderError": "Error sending order",
+    "messageError": "Error sending message",
+    "messageRequired": "Please enter message content",
+    "nameRequired": "Name is required",
+    "error": "Error"
+  },
+  "messages": {
+    "newOrder": "New order from Shop",
+    "orderContent": "{{user}} wants to buy: {{product}}{{quantity}}",
+    "quantityLabel": " (Quantity: {{quantity}})",
+    "shopMessage": "Message from Shop"
+  }
+}
