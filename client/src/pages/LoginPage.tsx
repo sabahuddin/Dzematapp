@@ -13,7 +13,6 @@ import {
   ToggleButtonGroup,
   ToggleButton
 } from '@mui/material';
-import { Language } from '@mui/icons-material';
 import { useAuth } from '../hooks/useAuth';
 import mosqueLogoPath from '@assets/ChatGPT Image 20. okt 2025. u 22_58_31_1760993927064.png';
 
@@ -92,19 +91,19 @@ export default function LoginPage() {
               >
                 <ToggleButton value="bs" data-testid="language-bs">
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                    <Language fontSize="small" />
+                    <span style={{ fontSize: '18px' }}>🇧🇦</span>
                     <Typography variant="caption" sx={{ fontWeight: 500 }}>BS</Typography>
                   </Box>
                 </ToggleButton>
                 <ToggleButton value="de" data-testid="language-de">
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                    <Language fontSize="small" />
+                    <span style={{ fontSize: '18px' }}>🇩🇪</span>
                     <Typography variant="caption" sx={{ fontWeight: 500 }}>DE</Typography>
                   </Box>
                 </ToggleButton>
                 <ToggleButton value="en" data-testid="language-en">
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                    <Language fontSize="small" />
+                    <span style={{ fontSize: '18px' }}>🇺🇸</span>
                     <Typography variant="caption" sx={{ fontWeight: 500 }}>EN</Typography>
                   </Box>
                 </ToggleButton>
