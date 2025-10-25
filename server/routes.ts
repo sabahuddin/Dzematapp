@@ -754,6 +754,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         })
       );
       
+      // Prevent caching of this endpoint
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
       res.json(workGroupsWithMembers);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch work groups" });

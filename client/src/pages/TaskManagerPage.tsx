@@ -217,6 +217,7 @@ export default function TaskManagerPage() {
     queryKey: ['/api/work-groups'],
     retry: 1,
     staleTime: 0,
+    gcTime: 0,
     refetchOnMount: 'always',
   });
 
