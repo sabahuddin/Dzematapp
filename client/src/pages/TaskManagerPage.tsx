@@ -1277,6 +1277,9 @@ function TaskDetailDialog({
   const [commentImage, setCommentImage] = useState<string | null>(null);
   const [fullscreenImageOpen, setFullscreenImageOpen] = useState(false);
   const [fullscreenImage, setFullscreenImage] = useState('');
+  const [receiptUploadDialogOpen, setReceiptUploadDialogOpen] = useState(false);
+  const [receiptFile, setReceiptFile] = useState<File | null>(null);
+  const [receiptAmount, setReceiptAmount] = useState('');
 
   const [editedTitle, setEditedTitle] = useState('');
   const [editedDescription, setEditedDescription] = useState('');
@@ -1353,6 +1356,58 @@ function TaskDetailDialog({
       toast({ title: t('common:error'), description: t('toasts.taskDeleteError'), variant: 'destructive' });
     }
   });
+
+  const uploadReceiptMutation = useMutation({
+    mutationFn: async (formData: FormData) => {
+      const response = await fetch('/api/receipts/upload', {
+        method: 'POST',
+        body: formData,
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({ message: 'Upload failed' }));
+        throw new Error(error.message || 'Upload failed');
+      }
+      
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/receipts'] });
+      toast({ 
+        title: 'Uspjeh', 
+        description: 'Račun je uspješno poslat.' 
+      });
+      setReceiptUploadDialogOpen(false);
+      setReceiptFile(null);
+      setReceiptAmount('');
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: 'Greška', 
+        description: error.message || 'Došlo je do greške prilikom slanja računa.', 
+        variant: 'destructive' 
+      });
+    }
+  });
+
+  const handleUploadReceipt = () => {
+    if (!receiptFile || !receiptAmount) {
+      toast({
+        title: 'Greška',
+        description: 'Molimo odaberite fajl i unesite iznos.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', receiptFile);
+    formData.append('taskId', task.id);
+    formData.append('amount', receiptAmount);
+
+    uploadReceiptMutation.mutate(formData);
+  };
 
   const handleAddComment = () => {
     if (!newComment.trim() && !commentImage) return;
@@ -1741,6 +1796,16 @@ function TaskDetailDialog({
                     {t('taskDetail.approveComplete')}
                   </Button>
                 )}
+                {isAssignedUser && task.status === 'završeno' && task.estimatedCost && (
+                  <Button
+                    variant="contained"
+                    color="info"
+                    onClick={() => setReceiptUploadDialogOpen(true)}
+                    data-testid="button-upload-receipt"
+                  >
+                    Pošalji Račun
+                  </Button>
+                )}
               </Box>
             </Box>
           )}
@@ -1938,6 +2003,62 @@ function TaskDetailDialog({
             objectFit: 'contain' 
           }} 
         />
+      </Dialog>
+
+      <Dialog 
+        open={receiptUploadDialogOpen} 
+        onClose={() => setReceiptUploadDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Pošalji Račun</DialogTitle>
+        <DialogContent>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
+            <Typography variant="body2" color="text.secondary">
+              Uploadujte račun za ovaj zadatak. Potrebno je priložiti fajl i unijeti iznos.
+            </Typography>
+            <Button
+              variant="outlined"
+              component="label"
+              fullWidth
+              data-testid="button-select-receipt-file"
+            >
+              {receiptFile ? receiptFile.name : 'Odaberi Fajl'}
+              <input
+                type="file"
+                hidden
+                accept="image/*,.pdf"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) setReceiptFile(file);
+                }}
+              />
+            </Button>
+            <TextField
+              label="Iznos (CHF)"
+              value={receiptAmount}
+              onChange={(e) => setReceiptAmount(e.target.value)}
+              fullWidth
+              required
+              type="number"
+              placeholder="Unesite iznos"
+              data-testid="input-receipt-amount"
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setReceiptUploadDialogOpen(false)} data-testid="button-cancel-receipt">
+            Odustani
+          </Button>
+          <Button 
+            onClick={handleUploadReceipt}
+            variant="contained"
+            disabled={uploadReceiptMutation.isPending || !receiptFile || !receiptAmount}
+            data-testid="button-submit-receipt"
+          >
+            {uploadReceiptMutation.isPending ? 'Uploadovanje...' : 'Pošalji'}
+          </Button>
+        </DialogActions>
       </Dialog>
     </Dialog>
   );
