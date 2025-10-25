@@ -1517,6 +1517,8 @@ function TaskDetailDialog({
   };
 
   const isAssignedUser = task?.assignedUserIds?.includes(currentUser?.id);
+  const isMemberOfWorkGroup = members.some((m: any) => m.userId === currentUser?.id);
+  const canComment = isMemberOfWorkGroup || currentUser?.isAdmin;
 
   if (!task) return null;
 
@@ -1826,26 +1828,27 @@ function TaskDetailDialog({
             <Box>
               <Typography variant="h6" sx={{ mb: 2 }}>{t('taskDetail.comments')}</Typography>
               
-              <Box sx={{ mb: 2 }}>
-                <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
-                  <TextField
-                    variant="outlined"
-                    placeholder={t('taskDetail.addComment')}
-                    value={newComment}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewComment(e.target.value)}
-                    fullWidth
-                    size="small"
-                    data-testid="input-new-comment"
-                  />
-                  <Button 
-                    onClick={handleAddComment} 
-                    variant="contained" 
-                    disabled={!newComment.trim() && !commentImage}
-                    data-testid="button-add-comment"
-                  >
-                    {t('taskDetail.add')}
-                  </Button>
-                </Box>
+              {canComment && (
+                <Box sx={{ mb: 2 }}>
+                  <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
+                    <TextField
+                      variant="outlined"
+                      placeholder={t('taskDetail.addComment')}
+                      value={newComment}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewComment(e.target.value)}
+                      fullWidth
+                      size="small"
+                      data-testid="input-new-comment"
+                    />
+                    <Button 
+                      onClick={handleAddComment} 
+                      variant="contained" 
+                      disabled={!newComment.trim() && !commentImage}
+                      data-testid="button-add-comment"
+                    >
+                      {t('taskDetail.add')}
+                    </Button>
+                  </Box>
                 
                 <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
                   <Button
@@ -1891,6 +1894,13 @@ function TaskDetailDialog({
                   </Box>
                 )}
               </Box>
+              )}
+              
+              {!canComment && (
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2, p: 2, bgcolor: 'action.hover', borderRadius: 1 }}>
+                  Postanite član sekcije da biste mogli komentirati.
+                </Typography>
+              )}
 
               <Box sx={{ 
                 display: 'flex', 
