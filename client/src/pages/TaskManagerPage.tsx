@@ -216,6 +216,8 @@ export default function TaskManagerPage() {
   const workGroupsQuery = useQuery<WorkGroup[]>({
     queryKey: ['/api/work-groups'],
     retry: 1,
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 
   const accessRequestsQuery = useQuery<AccessRequest[]>({
@@ -753,34 +755,34 @@ function ProposalsReviewContent({ proposals, workGroups, users, onApprove, onRej
                     </Box>
 
                     <Grid container spacing={2}>
-                      <Grid item xs={12} sm={6}>
+                      <Grid size={{ xs: 12, sm: 6 }}>
                         <Typography variant="body2" color="text.secondary">Ko izvodi:</Typography>
                         <Typography variant="body1">{proposal.who}</Typography>
                       </Grid>
-                      <Grid item xs={12} sm={6}>
+                      <Grid size={{ xs: 12, sm: 6 }}>
                         <Typography variant="body2" color="text.secondary">Gdje:</Typography>
                         <Typography variant="body1">{proposal.where}</Typography>
                       </Grid>
-                      <Grid item xs={12} sm={6}>
+                      <Grid size={{ xs: 12, sm: 6 }}>
                         <Typography variant="body2" color="text.secondary">Kada:</Typography>
                         <Typography variant="body1">{proposal.when}</Typography>
                       </Grid>
-                      <Grid item xs={12} sm={6}>
+                      <Grid size={{ xs: 12, sm: 6 }}>
                         <Typography variant="body2" color="text.secondary">Budžet:</Typography>
                         <Typography variant="body1" sx={{ fontWeight: 600 }}>{proposal.budget} CHF</Typography>
                       </Grid>
-                      <Grid item xs={12}>
+                      <Grid size={{ xs: 12 }}>
                         <Typography variant="body2" color="text.secondary">Šta:</Typography>
                         <Typography variant="body1">{proposal.what}</Typography>
                       </Grid>
                       {proposal.how && (
-                        <Grid item xs={12}>
+                        <Grid size={{ xs: 12 }}>
                           <Typography variant="body2" color="text.secondary">Kako:</Typography>
                           <Typography variant="body1">{proposal.how}</Typography>
                         </Grid>
                       )}
                       {proposal.why && (
-                        <Grid item xs={12}>
+                        <Grid size={{ xs: 12 }}>
                           <Typography variant="body2" color="text.secondary">Zašto:</Typography>
                           <Typography variant="body1">{proposal.why}</Typography>
                         </Grid>
