@@ -247,10 +247,21 @@ export default function TaskManagerPage() {
     const member: (WorkGroup & { members?: WorkGroupMember[] })[] = [];
     const other: (WorkGroup & { members?: WorkGroupMember[] })[] = [];
     
+    console.log('User ID:', user.id);
+    console.log('Work Groups Data:', workGroupsQuery.data);
+    
     workGroupsQuery.data.forEach((workGroup: WorkGroup & { members?: WorkGroupMember[] }) => {
+      console.log(`Checking WG "${workGroup.name}":`, {
+        members: workGroup.members,
+        hasMembersArray: Array.isArray(workGroup.members),
+        membersLength: workGroup.members?.length || 0
+      });
+      
       const isMember = workGroup.members?.some((m: WorkGroupMember) => 
         m.userId === user.id
       ) || false;
+      
+      console.log(`  -> Is member: ${isMember}`);
       
       // Svi korisnici: sekcije gdje su član idu u memberWorkGroups, ostale u otherWorkGroups
       if (isMember) {
@@ -259,6 +270,9 @@ export default function TaskManagerPage() {
         other.push(workGroup);
       }
     });
+    
+    console.log('Member work groups:', member.length, member.map(w => w.name));
+    console.log('Other work groups:', other.length, other.map(w => w.name));
     
     return { memberWorkGroups: member, otherWorkGroups: other };
   }, [workGroupsQuery.data, user]);
