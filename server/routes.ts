@@ -669,7 +669,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Log activity
       const pointsSettings = await storage.getPointsSettings();
-      const points = pointsSettings?.pointsPerEvent || 20;
+      const points = event.pointsValue || pointsSettings?.pointsPerEvent || 20;
       
       await storage.createActivityLog({
         userId: req.user!.id,
@@ -1036,7 +1036,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (statusChanged) {
         const workGroup = await storage.getWorkGroup(task.workGroupId);
         const settings = await storage.getPointsSettings();
-        const points = settings?.pointsPerTask || 50;
+        const points = task.pointsValue || settings?.pointsPerTask || 50;
 
         // If assigned user marked as na_cekanju (pending approval), log for that user WITHOUT points
         // Points are only awarded when admin approves (završeno status)

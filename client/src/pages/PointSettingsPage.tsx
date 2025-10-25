@@ -137,31 +137,39 @@ export default function PointSettingsPage() {
           {/* Points Explanation Section */}
           <Box sx={{ mb: 4, p: 2, bgcolor: 'background.default', borderRadius: 1 }}>
             <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 2 }}>
-              {t('points.howItWorks.title')}
+              Kako se Bodovi Dodjeljuju
             </Typography>
             <Stack spacing={1.5}>
               <Box>
                 <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                  {t('points.howItWorks.payments.title')}
+                  1. Finansijske Uplate (Članarine, Donacije)
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {t('points.howItWorks.payments.description')}
+                  Bodovi se dodjeljuju prema iznosu uplate. Svaki uloženi CHF donosi određeni broj bodova (definirano u "Bodova po CHF" polju ispod). Primjer: Ako je postavljeno 1 bod po CHF, uplata od 50 CHF = 50 bodova.
                 </Typography>
               </Box>
               <Box>
                 <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                  {t('points.howItWorks.tasks.title')}
+                  2. Završeni Zadaci (Sekcije)
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {t('points.howItWorks.tasks.description')}
+                  <strong>Varijabilni Bodovi:</strong> Admin ili moderator može dodijeliti različite vrijednosti bodova za svaki zadatak (10, 20, 30, ili 50 bodova) ovisno o težini i trajanju zadatka. Bodovi se dodjeljuju kada član završi zadatak i admin ga odobri.
                 </Typography>
               </Box>
               <Box>
                 <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                  {t('points.howItWorks.events.title')}
+                  3. Prisustvo na Događajima (RSVP)
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {t('points.howItWorks.events.description')}
+                  <strong>Varijabilni Bodovi:</strong> Admin može dodijeliti različite vrijednosti bodova za svaki događaj (10, 20, 30, ili 50 bodova) ovisno o važnosti događaja. Bodovi se dodjeljuju automatski nakon što član potvrdi prisustvo (RSVP) i događaj se završi.
+                </Typography>
+              </Box>
+              <Box>
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  4. Doprinosi Projektima
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Kada član uplati novac za specifičan projekat, dodjeljuju se bodovi prema "Bodova po CHF" postavci, plus se aktivnost bilježi kao doprinos projektu u Activity Log-u.
                 </Typography>
               </Box>
             </Stack>
