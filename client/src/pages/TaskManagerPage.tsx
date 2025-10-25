@@ -220,6 +220,14 @@ export default function TaskManagerPage() {
     enabled: !!user?.isAdmin,
   });
 
+  const isIOOrAdminCheck = user?.isAdmin || user?.roles?.includes('clan_io');
+  
+  const proposalsQuery = useQuery<any[]>({
+    queryKey: ['/api/proposals'],
+    retry: 1,
+    enabled: isIOOrAdminCheck,
+  });
+
   const { memberWorkGroups, otherWorkGroups } = React.useMemo(() => {
     if (!workGroupsQuery.data || !user) return { memberWorkGroups: [], otherWorkGroups: [] };
     
@@ -283,6 +291,46 @@ export default function TaskManagerPage() {
     },
     onError: () => {
       toast({ title: t('common:error'), description: t('toasts.requestUpdateError'), variant: 'destructive' });
+    }
+  });
+
+  const approveProposalMutation = useMutation({
+    mutationFn: async ({ id, comment }: { id: string; comment?: string }) => {
+      return await apiRequest(`/api/proposals/${id}/approve`, 'POST', { comment });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/proposals'] });
+      toast({ 
+        title: 'Uspjeh', 
+        description: 'Prijedlog je uspješno odobren.' 
+      });
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: 'Greška', 
+        description: error.message || 'Došlo je do greške prilikom odobravanja prijedloga.', 
+        variant: 'destructive' 
+      });
+    }
+  });
+
+  const rejectProposalMutation = useMutation({
+    mutationFn: async ({ id, comment }: { id: string; comment: string }) => {
+      return await apiRequest(`/api/proposals/${id}/reject`, 'POST', { comment });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/proposals'] });
+      toast({ 
+        title: 'Uspjeh', 
+        description: 'Prijedlog je odbijen.' 
+      });
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: 'Greška', 
+        description: error.message || 'Došlo je do greške prilikom odbijanja prijedloga.', 
+        variant: 'destructive' 
+      });
     }
   });
 
@@ -361,17 +409,20 @@ export default function TaskManagerPage() {
     );
   }
 
+  const isIOOrAdmin = user?.isAdmin || user?.roles?.includes('clan_io');
+
   return (
     <Box>
       <Typography variant="h5" sx={{ fontWeight: 600, mb: 3 }}>
         {t('title')}
       </Typography>
 
-      {user?.isAdmin && (
+      {isIOOrAdmin && (
         <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
           <Tabs value={tabValue} onChange={handleTabChange} aria-label="task manager tabs">
             <Tab label={t('tabs.sections')} data-testid="tab-work-groups" />
-            <Tab label={t('tabs.accessRequests')} data-testid="tab-access-requests" />
+            {user?.isAdmin && <Tab label={t('tabs.accessRequests')} data-testid="tab-access-requests" />}
+            <Tab label="Prijedlozi" data-testid="tab-proposals" />
           </Tabs>
         </Box>
       )}
@@ -455,82 +506,95 @@ export default function TaskManagerPage() {
         )}
       </TabPanel>
 
-      <TabPanel value={tabValue} index={1}>
-        <Card>
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow sx={{ bgcolor: '#f8f9fa' }}>
-                  <TableCell sx={{ fontWeight: 600 }}>{t('accessRequests.userName')}</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>{t('accessRequests.sectionName')}</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>{t('accessRequests.requestDate')}</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>{t('accessRequests.status')}</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>{t('accessRequests.actions')}</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {accessRequestsQuery.data?.map((request: AccessRequest) => {
-                  const workGroup = workGroupsQuery.data?.find((wg: WorkGroup) => wg.id === request.workGroupId);
-                  return (
-                    <TableRow key={request.id}>
-                      <TableCell>{getUserName(request.userId)}</TableCell>
-                      <TableCell>{workGroup?.name || t('unknownGroup')}</TableCell>
-                      <TableCell>
-                        {request.requestDate ? new Date(request.requestDate).toLocaleDateString('hr-HR') : '-'}
-                      </TableCell>
-                      <TableCell>
-                        <Chip
-                          label={
-                            request.status === 'pending' ? t('accessRequests.pending') :
-                            request.status === 'approved' ? t('accessRequests.approved') : t('accessRequests.rejected')
-                          }
-                          color={
-                            request.status === 'pending' ? 'warning' :
-                            request.status === 'approved' ? 'success' : 'error'
-                          }
-                          size="small"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        {request.status === 'pending' && (
-                          <Box sx={{ display: 'flex', gap: 1 }}>
-                            <Button
-                              variant="contained"
-                              size="small"
-                              startIcon={<Check />}
-                              onClick={() => handleApproveRequest(request.id)}
-                              data-testid={`button-approve-${request.id}`}
-                            >
-                              {t('accessRequests.approve')}
-                            </Button>
-                            <Button
-                              variant="outlined"
-                              size="small"
-                              startIcon={<Close />}
-                              onClick={() => handleRejectRequest(request.id)}
-                              data-testid={`button-reject-${request.id}`}
-                            >
-                              {t('accessRequests.reject')}
-                            </Button>
-                          </Box>
-                        )}
+      {user?.isAdmin && (
+        <TabPanel value={tabValue} index={1}>
+          <Card>
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow sx={{ bgcolor: '#f8f9fa' }}>
+                    <TableCell sx={{ fontWeight: 600 }}>{t('accessRequests.userName')}</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>{t('accessRequests.sectionName')}</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>{t('accessRequests.requestDate')}</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>{t('accessRequests.status')}</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>{t('accessRequests.actions')}</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {accessRequestsQuery.data?.map((request: AccessRequest) => {
+                    const workGroup = workGroupsQuery.data?.find((wg: WorkGroup) => wg.id === request.workGroupId);
+                    return (
+                      <TableRow key={request.id}>
+                        <TableCell>{getUserName(request.userId)}</TableCell>
+                        <TableCell>{workGroup?.name || t('unknownGroup')}</TableCell>
+                        <TableCell>
+                          {request.requestDate ? new Date(request.requestDate).toLocaleDateString('hr-HR') : '-'}
+                        </TableCell>
+                        <TableCell>
+                          <Chip
+                            label={
+                              request.status === 'pending' ? t('accessRequests.pending') :
+                              request.status === 'approved' ? t('accessRequests.approved') : t('accessRequests.rejected')
+                            }
+                            color={
+                              request.status === 'pending' ? 'warning' :
+                              request.status === 'approved' ? 'success' : 'error'
+                            }
+                            size="small"
+                          />
+                        </TableCell>
+                        <TableCell>
+                          {request.status === 'pending' && (
+                            <Box sx={{ display: 'flex', gap: 1 }}>
+                              <Button
+                                variant="contained"
+                                size="small"
+                                startIcon={<Check />}
+                                onClick={() => handleApproveRequest(request.id)}
+                                data-testid={`button-approve-${request.id}`}
+                              >
+                                {t('accessRequests.approve')}
+                              </Button>
+                              <Button
+                                variant="outlined"
+                                size="small"
+                                startIcon={<Close />}
+                                onClick={() => handleRejectRequest(request.id)}
+                                data-testid={`button-reject-${request.id}`}
+                              >
+                                {t('accessRequests.reject')}
+                              </Button>
+                            </Box>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                  {(!accessRequestsQuery.data || accessRequestsQuery.data.length === 0) && (
+                    <TableRow>
+                      <TableCell colSpan={5} sx={{ textAlign: 'center', py: 4 }}>
+                        <Typography color="text.secondary">
+                          {t('accessRequests.noRequests')}
+                        </Typography>
                       </TableCell>
                     </TableRow>
-                  );
-                })}
-                {(!accessRequestsQuery.data || accessRequestsQuery.data.length === 0) && (
-                  <TableRow>
-                    <TableCell colSpan={5} sx={{ textAlign: 'center', py: 4 }}>
-                      <Typography color="text.secondary">
-                        {t('accessRequests.noRequests')}
-                      </Typography>
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Card>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Card>
+        </TabPanel>
+      )}
+
+      <TabPanel value={tabValue} index={user?.isAdmin ? 2 : 1}>
+        <ProposalsReviewContent 
+          proposals={proposalsQuery.data || []}
+          workGroups={workGroupsQuery.data || []}
+          users={usersQuery.data || []}
+          onApprove={approveProposalMutation.mutate}
+          onReject={rejectProposalMutation.mutate}
+          isLoading={proposalsQuery.isLoading}
+        />
       </TabPanel>
 
       <WorkGroupModal
@@ -585,6 +649,192 @@ export default function TaskManagerPage() {
         </DialogContent>
       </Dialog>
     </Box>
+  );
+}
+
+interface ProposalsReviewContentProps {
+  proposals: any[];
+  workGroups: any[];
+  users: any[];
+  onApprove: (data: { id: string; comment?: string }) => void;
+  onReject: (data: { id: string; comment: string }) => void;
+  isLoading: boolean;
+}
+
+function ProposalsReviewContent({ proposals, workGroups, users, onApprove, onReject, isLoading }: ProposalsReviewContentProps) {
+  const [selectedProposal, setSelectedProposal] = useState<any | null>(null);
+  const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
+  const [reviewAction, setReviewAction] = useState<'approve' | 'reject'>('approve');
+  const [reviewComment, setReviewComment] = useState('');
+
+  const handleOpenReview = (proposal: any, action: 'approve' | 'reject') => {
+    setSelectedProposal(proposal);
+    setReviewAction(action);
+    setReviewComment('');
+    setReviewDialogOpen(true);
+  };
+
+  const handleSubmitReview = () => {
+    if (!selectedProposal) return;
+    
+    if (reviewAction === 'approve') {
+      onApprove({ id: selectedProposal.id, comment: reviewComment || undefined });
+    } else {
+      if (!reviewComment.trim()) {
+        return; // Reject zahtijeva komentar
+      }
+      onReject({ id: selectedProposal.id, comment: reviewComment });
+    }
+    
+    setReviewDialogOpen(false);
+    setSelectedProposal(null);
+    setReviewComment('');
+  };
+
+  const getWorkGroupName = (workGroupId: string) => {
+    return workGroups.find((wg: any) => wg.id === workGroupId)?.name || 'Nepoznata sekcija';
+  };
+
+  const getUserName = (userId: string) => {
+    const user = users.find((u: any) => u.id === userId);
+    return user ? `${user.firstName} ${user.lastName}` : 'Nepoznato';
+  };
+
+  if (isLoading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  const pendingProposals = proposals.filter((p: any) => p.status === 'pending');
+
+  return (
+    <>
+      <Card>
+        <CardContent>
+          <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+            Prijedlozi za Odobrenje
+          </Typography>
+          
+          {pendingProposals.length === 0 ? (
+            <Typography color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
+              Nema prijedloga za odobrenje
+            </Typography>
+          ) : (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              {pendingProposals.map((proposal: any) => (
+                <Card key={proposal.id} variant="outlined">
+                  <CardContent>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                      <Box>
+                        <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                          {getWorkGroupName(proposal.workGroupId)}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          Kreirao: {getUserName(proposal.createdBy)} • {new Date(proposal.createdAt).toLocaleDateString('hr-HR')}
+                        </Typography>
+                      </Box>
+                      <Chip label={proposal.status === 'pending' ? 'Na čekanju' : proposal.status} color="warning" size="small" />
+                    </Box>
+
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="body2" color="text.secondary">Ko izvodi:</Typography>
+                        <Typography variant="body1">{proposal.who}</Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="body2" color="text.secondary">Gdje:</Typography>
+                        <Typography variant="body1">{proposal.where}</Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="body2" color="text.secondary">Kada:</Typography>
+                        <Typography variant="body1">{proposal.when}</Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="body2" color="text.secondary">Budžet:</Typography>
+                        <Typography variant="body1" sx={{ fontWeight: 600 }}>{proposal.budget} CHF</Typography>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Typography variant="body2" color="text.secondary">Šta:</Typography>
+                        <Typography variant="body1">{proposal.what}</Typography>
+                      </Grid>
+                      {proposal.how && (
+                        <Grid item xs={12}>
+                          <Typography variant="body2" color="text.secondary">Kako:</Typography>
+                          <Typography variant="body1">{proposal.how}</Typography>
+                        </Grid>
+                      )}
+                      {proposal.why && (
+                        <Grid item xs={12}>
+                          <Typography variant="body2" color="text.secondary">Zašto:</Typography>
+                          <Typography variant="body1">{proposal.why}</Typography>
+                        </Grid>
+                      )}
+                    </Grid>
+
+                    <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
+                      <Button
+                        variant="contained"
+                        color="success"
+                        startIcon={<Check />}
+                        onClick={() => handleOpenReview(proposal, 'approve')}
+                        data-testid={`button-approve-proposal-${proposal.id}`}
+                      >
+                        Odobri
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        startIcon={<Close />}
+                        onClick={() => handleOpenReview(proposal, 'reject')}
+                        data-testid={`button-reject-proposal-${proposal.id}`}
+                      >
+                        Odbij
+                      </Button>
+                    </Box>
+                  </CardContent>
+                </Card>
+              ))}
+            </Box>
+          )}
+        </CardContent>
+      </Card>
+
+      <Dialog open={reviewDialogOpen} onClose={() => setReviewDialogOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>
+          {reviewAction === 'approve' ? 'Odobri Prijedlog' : 'Odbij Prijedlog'}
+        </DialogTitle>
+        <DialogContent>
+          <TextField
+            label={reviewAction === 'approve' ? 'Komentar (Opciono)' : 'Razlog odbijanja (Obavezno)'}
+            value={reviewComment}
+            onChange={(e) => setReviewComment(e.target.value)}
+            fullWidth
+            multiline
+            rows={4}
+            required={reviewAction === 'reject'}
+            sx={{ mt: 1 }}
+            data-testid="input-review-comment"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setReviewDialogOpen(false)} data-testid="button-cancel-review">
+            Odustani
+          </Button>
+          <Button 
+            onClick={handleSubmitReview}
+            variant="contained"
+            color={reviewAction === 'approve' ? 'success' : 'error'}
+            disabled={reviewAction === 'reject' && !reviewComment.trim()}
+            data-testid="button-submit-review"
+          >
+            {reviewAction === 'approve' ? 'Odobri' : 'Odbij'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 }
 
