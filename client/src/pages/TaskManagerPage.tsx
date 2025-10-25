@@ -88,6 +88,8 @@ function WorkGroupCard({ workGroup, onManageMembers, onManageTasks, onJoinReques
   const isMember = workGroup.members?.some((m: WorkGroupMember) => m.userId === currentUser?.id) || false;
   const isAdmin = currentUser?.isAdmin || false;
   const isModerator = workGroup.members?.some((m: WorkGroupMember) => m.userId === currentUser?.id && m.isModerator) || false;
+  const isClanIO = currentUser?.roles?.includes('clan_io') || false;
+  const canViewTasks = isAdmin || isMember || isClanIO;
 
   return (
     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -174,6 +176,14 @@ function WorkGroupCard({ workGroup, onManageMembers, onManageTasks, onJoinReques
               >
                 {t('viewTasks')}
               </Button>
+            ) : isClanIO ? (
+              <Button
+                variant="outlined"
+                onClick={() => onManageTasks(workGroup)}
+                data-testid={`button-view-tasks-${workGroup.id}`}
+              >
+                {t('viewTasks')} (Read-only)
+              </Button>
             ) : (
               <Button
                 variant="outlined"
@@ -238,8 +248,10 @@ export default function TaskManagerPage() {
       const isMember = workGroup.members?.some((m: WorkGroupMember) => 
         m.userId === user.id
       ) || false;
+      const isClanIO = user.roles?.includes('clan_io') || false;
       
-      if (user.isAdmin) {
+      // Admin i Član IO vide sve sekcije, ostali samo svoje i javne
+      if (user.isAdmin || isClanIO) {
         member.push(workGroup);
       } else if (isMember) {
         member.push(workGroup);
