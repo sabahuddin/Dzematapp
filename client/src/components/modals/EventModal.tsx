@@ -60,7 +60,8 @@ export default function EventModal({
     rsvpEnabled: true,
     requireAdultsChildren: false,
     maxAttendees: '',
-    categories: [] as string[]
+    categories: [] as string[],
+    pointsValue: 50
   });
 
   const predefinedCategories = [
@@ -96,7 +97,8 @@ export default function EventModal({
         rsvpEnabled: event.rsvpEnabled ?? true,
         requireAdultsChildren: event.requireAdultsChildren ?? false,
         maxAttendees: event.maxAttendees?.toString() || '',
-        categories: event.categories || []
+        categories: event.categories || [],
+        pointsValue: event.pointsValue || 50
       });
     } else {
       // Set default datetime to now + 1 hour (rounded to next hour) for Safari compatibility
@@ -112,7 +114,8 @@ export default function EventModal({
         rsvpEnabled: true,
         requireAdultsChildren: false,
         maxAttendees: '',
-        categories: []
+        categories: [],
+        pointsValue: 50
       });
     }
   }, [event, open]);
@@ -139,7 +142,8 @@ export default function EventModal({
       createdById,
       dateTime: new Date(formData.dateTime).toISOString(),
       maxAttendees: formData.maxAttendees ? parseInt(formData.maxAttendees, 10) : null,
-      categories: formData.categories.length > 0 ? formData.categories : null
+      categories: formData.categories.length > 0 ? formData.categories : null,
+      pointsValue: formData.pointsValue
     });
     onClose();
   };
@@ -283,6 +287,21 @@ export default function EventModal({
               disabled={isReadOnly}
               data-testid="input-maxAttendees"
             />
+            
+            <FormControl fullWidth variant="outlined" disabled={isReadOnly}>
+              <InputLabel>Bodovi za Prisustvo</InputLabel>
+              <Select
+                value={formData.pointsValue}
+                onChange={(e) => setFormData(prev => ({ ...prev, pointsValue: Number(e.target.value) }))}
+                label="Bodovi za Prisustvo"
+                data-testid="select-pointsValue"
+              >
+                <MenuItem value={10} data-testid="option-points-10">10 Bodova</MenuItem>
+                <MenuItem value={20} data-testid="option-points-20">20 Bodova</MenuItem>
+                <MenuItem value={30} data-testid="option-points-30">30 Bodova</MenuItem>
+                <MenuItem value={50} data-testid="option-points-50">50 Bodova</MenuItem>
+              </Select>
+            </FormControl>
             
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               <FormControlLabel
