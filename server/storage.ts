@@ -64,6 +64,10 @@ import {
   type InsertProposal,
   type Receipt,
   type InsertReceipt,
+  type CertificateTemplate,
+  type InsertCertificateTemplate,
+  type UserCertificate,
+  type InsertUserCertificate,
   users,
   announcements,
   events,
@@ -95,7 +99,9 @@ import {
   projects,
   userPreferences,
   proposals,
-  receipts
+  receipts,
+  certificateTemplates,
+  userCertificates
 } from "@shared/schema";
 import { db } from './db';
 import { eq, and, or, desc, asc, gt, sql, inArray } from 'drizzle-orm';
@@ -344,6 +350,22 @@ export interface IStorage {
   updateReceipt(id: string, updates: Partial<InsertReceipt>): Promise<Receipt | undefined>;
   approveReceipt(id: string, reviewedById: string, reviewComment?: string): Promise<Receipt | undefined>;
   rejectReceipt(id: string, reviewedById: string, reviewComment: string): Promise<Receipt | undefined>;
+
+  // Certificate Templates (Zahvalnice)
+  createCertificateTemplate(template: InsertCertificateTemplate): Promise<CertificateTemplate>;
+  getCertificateTemplate(id: string): Promise<CertificateTemplate | undefined>;
+  getAllCertificateTemplates(): Promise<CertificateTemplate[]>;
+  updateCertificateTemplate(id: string, updates: Partial<InsertCertificateTemplate>): Promise<CertificateTemplate | undefined>;
+  deleteCertificateTemplate(id: string): Promise<boolean>;
+
+  // User Certificates (Izdati Certifikati)
+  createUserCertificate(certificate: InsertUserCertificate): Promise<UserCertificate>;
+  getUserCertificate(id: string): Promise<UserCertificate | undefined>;
+  getUserCertificates(userId: string): Promise<UserCertificate[]>;
+  getAllUserCertificates(): Promise<UserCertificate[]>;
+  getUnviewedCertificatesCount(userId: string): Promise<number>;
+  markCertificateAsViewed(id: string): Promise<UserCertificate | undefined>;
+  deleteCertificate(id: string): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1824,6 +1846,78 @@ export class DatabaseStorage implements IStorage {
       .where(eq(receipts.id, id))
       .returning();
     return r;
+  }
+
+  // Certificate Templates (Zahvalnice)
+  async createCertificateTemplate(template: InsertCertificateTemplate): Promise<CertificateTemplate> {
+    const [t] = await db.insert(certificateTemplates).values(template).returning();
+    return t;
+  }
+
+  async getCertificateTemplate(id: string): Promise<CertificateTemplate | undefined> {
+    const result = await db.select().from(certificateTemplates).where(eq(certificateTemplates.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getAllCertificateTemplates(): Promise<CertificateTemplate[]> {
+    return await db.select().from(certificateTemplates).orderBy(desc(certificateTemplates.createdAt));
+  }
+
+  async updateCertificateTemplate(id: string, updates: Partial<InsertCertificateTemplate>): Promise<CertificateTemplate | undefined> {
+    const [t] = await db.update(certificateTemplates)
+      .set(updates)
+      .where(eq(certificateTemplates.id, id))
+      .returning();
+    return t;
+  }
+
+  async deleteCertificateTemplate(id: string): Promise<boolean> {
+    const result = await db.delete(certificateTemplates).where(eq(certificateTemplates.id, id)).returning();
+    return result.length > 0;
+  }
+
+  // User Certificates (Izdati Certifikati)
+  async createUserCertificate(certificate: InsertUserCertificate): Promise<UserCertificate> {
+    const [c] = await db.insert(userCertificates).values(certificate).returning();
+    return c;
+  }
+
+  async getUserCertificate(id: string): Promise<UserCertificate | undefined> {
+    const result = await db.select().from(userCertificates).where(eq(userCertificates.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getUserCertificates(userId: string): Promise<UserCertificate[]> {
+    return await db.select().from(userCertificates)
+      .where(eq(userCertificates.userId, userId))
+      .orderBy(desc(userCertificates.issuedAt));
+  }
+
+  async getAllUserCertificates(): Promise<UserCertificate[]> {
+    return await db.select().from(userCertificates).orderBy(desc(userCertificates.issuedAt));
+  }
+
+  async getUnviewedCertificatesCount(userId: string): Promise<number> {
+    const result = await db.select({ count: sql<number>`count(*)` })
+      .from(userCertificates)
+      .where(and(
+        eq(userCertificates.userId, userId),
+        eq(userCertificates.viewed, false)
+      ));
+    return Number(result[0]?.count || 0);
+  }
+
+  async markCertificateAsViewed(id: string): Promise<UserCertificate | undefined> {
+    const [c] = await db.update(userCertificates)
+      .set({ viewed: true })
+      .where(eq(userCertificates.id, id))
+      .returning();
+    return c;
+  }
+
+  async deleteCertificate(id: string): Promise<boolean> {
+    const result = await db.delete(userCertificates).where(eq(userCertificates.id, id)).returning();
+    return result.length > 0;
   }
 }
 

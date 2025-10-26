@@ -714,3 +714,47 @@ export type ProjectWithCreator = Project & {
     lastName: string;
   } | null;
 };
+
+// Certificate Templates (Zahvalnice Templates)
+export const certificateTemplates = pgTable("certificate_templates", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(), // Naziv template-a (npr. "Zahvala za doprinos", "Priznanje za volontiranje")
+  description: text("description"),
+  templateImage: text("template_image").notNull(), // Path do PNG slike
+  textPositionX: integer("text_position_x").default(400), // X koordinata gdje će se dodati ime
+  textPositionY: integer("text_position_y").default(300), // Y koordinata gdje će se dodati ime
+  fontSize: integer("font_size").default(48),
+  fontColor: text("font_color").default("#000000"),
+  fontFamily: text("font_family").default("Arial"),
+  createdById: varchar("created_by_id").notNull().references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// User Certificates (Izdati Certifikati)
+export const userCertificates = pgTable("user_certificates", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  templateId: varchar("template_id").notNull().references(() => certificateTemplates.id),
+  recipientName: text("recipient_name").notNull(), // Ime korisnika na certifikatu
+  generatedImage: text("generated_image").notNull(), // Path do generisane slike sa imenom
+  issuedById: varchar("issued_by_id").notNull().references(() => users.id),
+  issuedAt: timestamp("issued_at").defaultNow(),
+  viewed: boolean("viewed").default(false), // Da li je korisnik vidio certifikat
+});
+
+export const insertCertificateTemplateSchema = createInsertSchema(certificateTemplates).omit({ id: true, createdAt: true });
+export const insertUserCertificateSchema = createInsertSchema(userCertificates).omit({ id: true, issuedAt: true });
+
+export type CertificateTemplate = typeof certificateTemplates.$inferSelect;
+export type InsertCertificateTemplate = z.infer<typeof insertCertificateTemplateSchema>;
+export type UserCertificate = typeof userCertificates.$inferSelect;
+export type InsertUserCertificate = z.infer<typeof insertUserCertificateSchema>;
+
+export type UserCertificateWithTemplate = UserCertificate & {
+  template: CertificateTemplate | null;
+  issuedBy: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  } | null;
+};
