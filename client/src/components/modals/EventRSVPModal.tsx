@@ -37,6 +37,8 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
   const { toast } = useToast();
   const [adultsCount, setAdultsCount] = useState(1);
   const [childrenCount, setChildrenCount] = useState(0);
+  
+  console.log('EventRSVPModal - user:', user, 'isAdmin:', user?.isAdmin);
 
   // For admins: fetch all RSVPs for the event
   const { data: allRsvps, isLoading: isLoadingAllRsvps } = useQuery<EventRsvp[]>({
