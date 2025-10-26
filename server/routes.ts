@@ -3169,6 +3169,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/certificates/templates", requireAdmin, certificateUpload.single('templateImage'), async (req, res) => {
     try {
+      const user = req.user as User;
       const file = req.file;
       
       if (!file) {
@@ -3180,7 +3181,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         templateImagePath: `/uploads/certificates/${file.filename}`,
         textPositionX: parseInt(req.body.textPositionX),
         textPositionY: parseInt(req.body.textPositionY),
-        fontSize: parseInt(req.body.fontSize)
+        fontSize: parseInt(req.body.fontSize),
+        createdById: user.id
       });
       
       const template = await storage.createCertificateTemplate(validated);
