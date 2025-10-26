@@ -37,21 +37,26 @@ export async function generateCertificate(options: CertificateGenerationOptions)
   const canvas = createCanvas(imageWidth, imageHeight);
   const ctx = canvas.getContext('2d');
 
+  // Clear the canvas to ensure transparency
+  ctx.clearRect(0, 0, imageWidth, imageHeight);
+
   // Set up text rendering with multiple font fallbacks
   ctx.font = `bold ${fontSize}px "Times New Roman", "DejaVu Serif", "Liberation Serif", serif`;
   ctx.fillStyle = fontColor;
-  ctx.textAlign = 'center';  // Always center horizontally
-  ctx.textBaseline = 'middle';  // Always center vertically
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
 
-  // ALWAYS center the text in the middle of the image
-  // User will adjust template design (add line) to match this position
+  // Calculate exact center position
   const centerX = imageWidth / 2;
   const centerY = imageHeight / 2;
 
   console.log(`[Certificate] Image size: ${imageWidth}x${imageHeight}, centering text "${recipientName}" at (${centerX}, ${centerY}), font: ${fontSize}px`);
 
-  // Draw the text at the center
-  ctx.fillText(recipientName, centerX, centerY);
+  // Translate to center and draw text at origin (0,0) which is now the center
+  ctx.save();
+  ctx.translate(centerX, centerY);
+  ctx.fillText(recipientName, 0, 0);
+  ctx.restore();
 
   // Convert canvas to buffer
   const textBuffer = canvas.toBuffer('image/png');
