@@ -6,7 +6,8 @@ import { promises as fs } from "fs";
 import * as XLSX from "xlsx";
 import { storage } from "./storage";
 import { requireAuth, requireAdmin } from "./index";
-import { insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema, insertFinancialContributionSchema, insertActivityLogSchema, insertEventAttendanceSchema, insertPointsSettingsSchema, insertBadgeSchema, insertUserBadgeSchema, insertProjectSchema, insertProposalSchema, insertReceiptSchema } from "@shared/schema";
+import { generateCertificate, saveCertificate } from "./certificateService";
+import { insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema, insertFinancialContributionSchema, insertActivityLogSchema, insertEventAttendanceSchema, insertPointsSettingsSchema, insertBadgeSchema, insertUserBadgeSchema, insertProjectSchema, insertProposalSchema, insertReceiptSchema, insertCertificateTemplateSchema, insertUserCertificateSchema } from "@shared/schema";
 
 // Configure multer for photo uploads
 const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'photos');
@@ -90,6 +91,39 @@ const csvUpload = multer({
       cb(null, true);
     } else {
       cb(new Error('Only CSV files are allowed'));
+    }
+  }
+});
+
+// Configure multer for certificate template uploads
+const certificateUploadDir = path.join(process.cwd(), 'public', 'uploads', 'certificates');
+
+const certificateUpload = multer({
+  storage: multer.diskStorage({
+    destination: async (req, file, cb) => {
+      try {
+        await fs.mkdir(certificateUploadDir, { recursive: true });
+        cb(null, certificateUploadDir);
+      } catch (error) {
+        cb(error as Error, '');
+      }
+    },
+    filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      const extension = path.extname(file.originalname);
+      cb(null, `template-${uniqueSuffix}${extension}`);
+    }
+  }),
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit for templates
+    files: 1
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedMimes = ['image/png'];
+    if (allowedMimes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only PNG files are allowed for certificate templates'));
     }
   }
 });
@@ -3119,6 +3153,202 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error rejecting receipt:', error);
       res.status(500).json({ message: "Failed to reject receipt" });
+    }
+  });
+
+  // Certificate Templates Routes (Zahvalnice)
+  app.get("/api/certificates/templates", requireAdmin, async (req, res) => {
+    try {
+      const templates = await storage.getAllCertificateTemplates();
+      res.json(templates);
+    } catch (error) {
+      console.error('Error getting certificate templates:', error);
+      res.status(500).json({ message: "Failed to get certificate templates" });
+    }
+  });
+
+  app.post("/api/certificates/templates", requireAdmin, certificateUpload.single('templateImage'), async (req, res) => {
+    try {
+      const file = req.file;
+      
+      if (!file) {
+        return res.status(400).json({ message: "Template image is required" });
+      }
+      
+      const validated = insertCertificateTemplateSchema.parse({
+        ...req.body,
+        templateImagePath: `/uploads/certificates/${file.filename}`,
+        textPositionX: parseInt(req.body.textPositionX),
+        textPositionY: parseInt(req.body.textPositionY),
+        fontSize: parseInt(req.body.fontSize)
+      });
+      
+      const template = await storage.createCertificateTemplate(validated);
+      res.status(201).json(template);
+    } catch (error) {
+      console.error('Error creating certificate template:', error);
+      res.status(500).json({ message: "Failed to create certificate template" });
+    }
+  });
+
+  app.put("/api/certificates/templates/:id", requireAdmin, async (req, res) => {
+    try {
+      const updates = {
+        ...req.body,
+        ...(req.body.textPositionX && { textPositionX: parseInt(req.body.textPositionX) }),
+        ...(req.body.textPositionY && { textPositionY: parseInt(req.body.textPositionY) }),
+        ...(req.body.fontSize && { fontSize: parseInt(req.body.fontSize) })
+      };
+      
+      const updated = await storage.updateCertificateTemplate(req.params.id, updates);
+      if (!updated) {
+        return res.status(404).json({ message: "Certificate template not found" });
+      }
+      res.json(updated);
+    } catch (error) {
+      console.error('Error updating certificate template:', error);
+      res.status(500).json({ message: "Failed to update certificate template" });
+    }
+  });
+
+  app.delete("/api/certificates/templates/:id", requireAdmin, async (req, res) => {
+    try {
+      const success = await storage.deleteCertificateTemplate(req.params.id);
+      if (!success) {
+        return res.status(404).json({ message: "Certificate template not found" });
+      }
+      res.json({ message: "Certificate template deleted successfully" });
+    } catch (error) {
+      console.error('Error deleting certificate template:', error);
+      res.status(500).json({ message: "Failed to delete certificate template" });
+    }
+  });
+
+  // User Certificates Routes
+  app.get("/api/certificates/user", requireAuth, async (req, res) => {
+    try {
+      const user = req.user!;
+      const certificates = await storage.getUserCertificates(user.id);
+      res.json(certificates);
+    } catch (error) {
+      console.error('Error getting user certificates:', error);
+      res.status(500).json({ message: "Failed to get user certificates" });
+    }
+  });
+
+  app.get("/api/certificates/all", requireAdmin, async (req, res) => {
+    try {
+      const certificates = await storage.getAllUserCertificates();
+      res.json(certificates);
+    } catch (error) {
+      console.error('Error getting all certificates:', error);
+      res.status(500).json({ message: "Failed to get all certificates" });
+    }
+  });
+
+  app.get("/api/certificates/unviewed-count", requireAuth, async (req, res) => {
+    try {
+      const user = req.user!;
+      const count = await storage.getUnviewedCertificatesCount(user.id);
+      res.json({ count });
+    } catch (error) {
+      console.error('Error getting unviewed certificates count:', error);
+      res.status(500).json({ message: "Failed to get unviewed certificates count" });
+    }
+  });
+
+  app.post("/api/certificates/issue", requireAdmin, async (req, res) => {
+    try {
+      const { templateId, userIds, customMessage } = req.body;
+      
+      if (!templateId || !userIds || !Array.isArray(userIds) || userIds.length === 0) {
+        return res.status(400).json({ message: "Template ID and user IDs are required" });
+      }
+      
+      const template = await storage.getCertificateTemplate(templateId);
+      if (!template) {
+        return res.status(404).json({ message: "Certificate template not found" });
+      }
+      
+      const issuedCertificates = [];
+      
+      for (const userId of userIds) {
+        const user = await storage.getUser(userId);
+        if (!user) continue;
+        
+        const recipientName = `${user.firstName} ${user.lastName}`;
+        
+        // Generate certificate image
+        const certificateBuffer = await generateCertificate({
+          templateImagePath: template.templateImagePath,
+          recipientName,
+          textPositionX: template.textPositionX ?? 400,
+          textPositionY: template.textPositionY ?? 300,
+          fontSize: template.fontSize ?? 48,
+          fontColor: template.fontColor ?? "#000000",
+          textAlign: (template.textAlign as 'left' | 'center' | 'right') ?? 'center'
+        });
+        
+        // Save certificate image
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const filename = `certificate-${userId}-${uniqueSuffix}.png`;
+        const certificateUrl = await saveCertificate(certificateBuffer, filename);
+        
+        // Create user certificate record
+        const certificate = await storage.createUserCertificate({
+          userId,
+          templateId,
+          recipientName,
+          certificateImagePath: certificateUrl,
+          issuedById: req.user!.id,
+          message: customMessage || null
+        });
+        
+        issuedCertificates.push(certificate);
+      }
+      
+      res.status(201).json({ 
+        message: "Certificates issued successfully",
+        count: issuedCertificates.length,
+        certificates: issuedCertificates
+      });
+    } catch (error) {
+      console.error('Error issuing certificates:', error);
+      res.status(500).json({ message: "Failed to issue certificates" });
+    }
+  });
+
+  app.patch("/api/certificates/:id/viewed", requireAuth, async (req, res) => {
+    try {
+      const user = req.user!;
+      const certificate = await storage.getUserCertificate(req.params.id);
+      
+      if (!certificate) {
+        return res.status(404).json({ message: "Certificate not found" });
+      }
+      
+      if (certificate.userId !== user.id && !user.isAdmin) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
+      const updated = await storage.markCertificateAsViewed(req.params.id);
+      res.json(updated);
+    } catch (error) {
+      console.error('Error marking certificate as viewed:', error);
+      res.status(500).json({ message: "Failed to mark certificate as viewed" });
+    }
+  });
+
+  app.delete("/api/certificates/:id", requireAdmin, async (req, res) => {
+    try {
+      const success = await storage.deleteCertificate(req.params.id);
+      if (!success) {
+        return res.status(404).json({ message: "Certificate not found" });
+      }
+      res.json({ message: "Certificate deleted successfully" });
+    } catch (error) {
+      console.error('Error deleting certificate:', error);
+      res.status(500).json({ message: "Failed to delete certificate" });
     }
   });
 
