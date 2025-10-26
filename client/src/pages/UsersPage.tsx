@@ -28,7 +28,8 @@ import {
   Person,
   Groups,
   Upload,
-  Visibility
+  Visibility,
+  Download
 } from '@mui/icons-material';
 import { User } from '@shared/schema';
 import UserModal from '../components/modals/UserModal';
@@ -38,6 +39,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/use-toast';
 import { apiRequest } from '../lib/queryClient';
 import { useTranslation } from 'react-i18next';
+import { exportToExcel } from '../utils/excelExport';
 
 export default function UsersPage() {
   const { user: currentUser } = useAuth();
@@ -158,6 +160,52 @@ export default function UsersPage() {
     } else {
       createUserMutation.mutate(userData);
     }
+  };
+
+  const handleExportUsersToExcel = () => {
+    if (!filteredUsers || filteredUsers.length === 0) {
+      toast({
+        title: 'Greška',
+        description: 'Nema korisnika za export',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    const userData = filteredUsers.map((user: User) => [
+      `${user.firstName} ${user.lastName}`,
+      user.username || '-',
+      user.email || '-',
+      user.phone || '-',
+      user.membershipDate ? new Date(user.membershipDate).toLocaleDateString('hr-HR') : '-',
+      user.status || '-',
+      user.categories && user.categories.length > 0 ? user.categories.join(', ') : '-',
+      user.skills && user.skills.length > 0 ? user.skills.join(', ') : '-',
+      user.roles && user.roles.length > 0 ? user.roles.map(r => getRoleLabel(r)).join(', ') : '-'
+    ]);
+
+    exportToExcel({
+      title: 'Spisak korisnika',
+      filename: 'Korisnici',
+      sheetName: 'Korisnici',
+      headers: [
+        'Ime i prezime',
+        'Username',
+        'Email',
+        'Telefon',
+        'Član od',
+        'Status članstva',
+        'Kategorije',
+        'Vještine',
+        'Uloge'
+      ],
+      data: userData
+    });
+
+    toast({
+      title: 'Uspjeh',
+      description: 'Excel fajl je preuzet'
+    });
   };
 
   // Collect all unique skills from all users for filter options
@@ -439,6 +487,14 @@ export default function UsersPage() {
           {t('users:title')}
         </Typography>
         <Box sx={{ display: 'flex', gap: 2 }}>
+          <Button
+            variant="outlined"
+            startIcon={<Download />}
+            onClick={handleExportUsersToExcel}
+            data-testid="button-export-excel"
+          >
+            Exportuj u Excel
+          </Button>
           <Button
             variant="outlined"
             startIcon={<Upload />}

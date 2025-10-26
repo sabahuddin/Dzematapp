@@ -25,7 +25,7 @@ import { Event, EventRsvp } from '@shared/schema';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest, queryClient } from '@/lib/queryClient';
-import * as XLSX from 'xlsx';
+import { exportToExcel } from '@/utils/excelExport';
 
 interface EventRSVPModalProps {
   open: boolean;
@@ -182,34 +182,27 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
   const handleExportToExcel = () => {
     if (!allRsvps || !allRsvps.rsvps) return;
 
-    // Prepare data for Excel
-    const excelData = allRsvps.rsvps.map((rsvp: any) => ({
-      'Ime i prezime': `${rsvp.user?.firstName || ''} ${rsvp.user?.lastName || ''}`.trim(),
-      'Odrasli': rsvp.adultsCount || 0,
-      'Djeca': rsvp.childrenCount || 0,
-      'Ukupno': (rsvp.adultsCount || 0) + (rsvp.childrenCount || 0)
-    }));
+    // Prepare participant data
+    const participantData = allRsvps.rsvps.map((rsvp: any) => [
+      `${rsvp.user?.firstName || ''} ${rsvp.user?.lastName || ''}`.trim(),
+      rsvp.adultsCount || 0,
+      rsvp.childrenCount || 0,
+      (rsvp.adultsCount || 0) + (rsvp.childrenCount || 0)
+    ]);
 
-    // Add summary row
+    // Summary row
     const totals = getTotalAttendees();
-    excelData.push({
-      'Ime i prezime': 'UKUPNO:',
-      'Odrasli': totals.adults,
-      'Djeca': totals.children,
-      'Ukupno': totals.total
+    const summaryRow = ['UKUPNO:', totals.adults, totals.children, totals.total];
+
+    // Export using helper function
+    exportToExcel({
+      title: `Spisak prijavljenih za događaj - ${event.name}`,
+      filename: `Prijave_${event.name.replace(/[^a-zA-Z0-9]/g, '_')}`,
+      sheetName: 'Prijavljeni',
+      headers: ['Ime i prezime', 'Odrasli', 'Djeca', 'Ukupno'],
+      data: participantData,
+      summaryRow
     });
-
-    // Create worksheet and workbook
-    const worksheet = XLSX.utils.json_to_sheet(excelData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Prijavljeni');
-
-    // Generate filename with event name and date
-    const date = new Date().toLocaleDateString('sr-Latn-RS').replace(/\./g, '-');
-    const filename = `${event.name.replace(/[^a-zA-Z0-9]/g, '_')}_${date}.xlsx`;
-
-    // Download file
-    XLSX.writeFile(workbook, filename);
 
     toast({
       title: 'Uspjeh',

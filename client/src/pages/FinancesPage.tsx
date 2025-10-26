@@ -31,12 +31,14 @@ import {
   Add,
   Edit,
   Delete,
-  AttachMoney
+  AttachMoney,
+  Download
 } from '@mui/icons-material';
 import { FinancialContribution, User, Project, insertFinancialContributionSchema } from '@shared/schema';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/use-toast';
 import { apiRequest, queryClient } from '../lib/queryClient';
+import { exportToExcel } from '../utils/excelExport';
 
 export default function FinancesPage() {
   const { user: currentUser } = useAuth();
@@ -213,6 +215,53 @@ export default function FinancesPage() {
     return project?.name || null;
   };
 
+  const handleExportFinancesToExcel = () => {
+    if (!filteredContributions || filteredContributions.length === 0) {
+      toast({
+        title: 'Greška',
+        description: 'Nema podataka za export',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    const financeData = filteredContributions.map((contribution: FinancialContribution) => [
+      currentUser?.isAdmin ? getUserName(contribution.userId) : '-',
+      `CHF ${contribution.amount}`,
+      contribution.purpose,
+      getProjectName(contribution.projectId) || '-',
+      contribution.paymentDate ? new Date(contribution.paymentDate).toLocaleDateString('hr-HR') : '-',
+      contribution.paymentMethod || '-',
+      contribution.notes || '-'
+    ]);
+
+    // Calculate total
+    const total = filteredContributions.reduce((sum, c) => sum + Number(c.amount), 0);
+    const summaryRow = ['UKUPNO:', `CHF ${total.toFixed(2)}`, '', '', '', '', ''];
+
+    exportToExcel({
+      title: 'Spisak finansijskih uplata',
+      filename: 'Finansije',
+      sheetName: 'Finansije',
+      headers: [
+        'Korisnik',
+        'Iznos',
+        'Svrha',
+        'Projekat',
+        'Datum uplate',
+        'Način plaćanja',
+        'Napomene'
+      ],
+      data: financeData,
+      summaryRow
+    });
+
+    toast({
+      title: 'Uspjeh',
+      description: 'Excel fajl je preuzet'
+    });
+  };
+
   if (contributionsQuery.isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
@@ -236,14 +285,24 @@ export default function FinancesPage() {
           {currentUser?.isAdmin ? t('finances:title') : t('finances:myPayments')}
         </Typography>
         {currentUser?.isAdmin && (
-          <Button
-            variant="contained"
-            startIcon={<Add />}
-            onClick={() => handleOpenDialog()}
-            data-testid="button-add-contribution"
-          >
-            {t('finances:addPayment')}
-          </Button>
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <Button
+              variant="outlined"
+              startIcon={<Download />}
+              onClick={handleExportFinancesToExcel}
+              data-testid="button-export-excel"
+            >
+              Exportuj u Excel
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<Add />}
+              onClick={() => handleOpenDialog()}
+              data-testid="button-add-contribution"
+            >
+              {t('finances:addPayment')}
+            </Button>
+          </Box>
         )}
       </Box>
 

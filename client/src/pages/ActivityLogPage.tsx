@@ -31,14 +31,18 @@ import {
   Campaign,
   AttachMoney,
   EmojiEvents,
-  Work
+  Work,
+  Download
 } from '@mui/icons-material';
 import { ActivityLog, User } from '@shared/schema';
 import { useAuth } from '../hooks/useAuth';
+import { useToast } from '../hooks/use-toast';
+import { exportToExcel } from '../utils/excelExport';
 
 export default function ActivityLogPage() {
   const { t } = useTranslation(['activity']);
   const { user: currentUser } = useAuth();
+  const { toast } = useToast();
   const [filterType, setFilterType] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -131,6 +135,50 @@ export default function ActivityLogPage() {
     return matchesSearch;
   });
 
+  const handleExportActivityLogsToExcel = () => {
+    if (!filteredActivities || filteredActivities.length === 0) {
+      toast({
+        title: 'Greška',
+        description: 'Nema podataka za export',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    const activityData = filteredActivities.map((activity: ActivityLog) => [
+      currentUser?.isAdmin ? getUserName(activity.userId) : '-',
+      getActivityLabel(activity.activityType),
+      activity.description,
+      activity.points || 0,
+      activity.createdAt ? new Date(activity.createdAt).toLocaleDateString('hr-HR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }) : '-'
+    ]);
+
+    exportToExcel({
+      title: 'Zapisnik aktivnosti',
+      filename: 'Aktivnosti',
+      sheetName: 'Aktivnosti',
+      headers: [
+        'Korisnik',
+        'Tip aktivnosti',
+        'Opis',
+        'Bodovi',
+        'Datum i vrijeme'
+      ],
+      data: activityData
+    });
+
+    toast({
+      title: 'Uspjeh',
+      description: 'Excel fajl je preuzet'
+    });
+  };
+
   if (activityLogsQuery.isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
@@ -153,6 +201,16 @@ export default function ActivityLogPage() {
         <Typography variant="h5" sx={{ fontWeight: 600 }}>
           {currentUser?.isAdmin ? t('title') : t('myActivities')}
         </Typography>
+        {currentUser?.isAdmin && (
+          <Button
+            variant="outlined"
+            startIcon={<Download />}
+            onClick={handleExportActivityLogsToExcel}
+            data-testid="button-export-excel"
+          >
+            Exportuj u Excel
+          </Button>
+        )}
       </Box>
 
       <Card>
