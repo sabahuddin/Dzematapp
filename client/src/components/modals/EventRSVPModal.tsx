@@ -185,7 +185,7 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
     return (
       <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
         <DialogTitle>
-          Prijavljeni za Događaj - {event.name}
+          Pregled - {event.name}
         </DialogTitle>
         
         <DialogContent>
