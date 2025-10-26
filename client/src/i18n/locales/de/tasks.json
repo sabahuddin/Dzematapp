@@ -7,6 +7,7 @@
   "createSection": "Neue Sektion erstellen",
   "deleteSection": "Sektion löschen",
   "sectionName": "Sektionsname",
+  "sectionDescription": "Sektionsbeschreibung",
   "description": "Beschreibung",
   "visibility": {
     "label": "Sichtbarkeit",
@@ -57,6 +58,8 @@
   "toasts": {
     "sectionCreated": "Sektion wurde erfolgreich erstellt",
     "sectionCreateError": "Fehler beim Erstellen der Sektion",
+    "sectionUpdated": "Sektion wurde erfolgreich aktualisiert",
+    "sectionUpdateError": "Fehler beim Aktualisieren der Sektion",
     "accessRequestSent": "Zugriffsanfrage wurde gesendet",
     "accessRequestError": "Fehler beim Senden der Anfrage",
     "requestApproved": "Anfrage wurde genehmigt",

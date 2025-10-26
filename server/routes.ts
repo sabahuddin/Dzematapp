@@ -774,6 +774,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.put("/api/work-groups/:id", requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      // Check if work group exists
+      const workGroup = await storage.getWorkGroup(id);
+      if (!workGroup) {
+        return res.status(404).json({ message: "Work group not found" });
+      }
+
+      // Authorization check: Only admins or group moderators can update
+      const isAdmin = req.user!.isAdmin;
+      const isModerator = await storage.isUserModeratorOfWorkGroup(id, req.user!.id);
+      
+      if (!isAdmin && !isModerator) {
+        return res.status(403).json({ message: "Forbidden: Only admins or group moderators can update work groups" });
+      }
+
+      const updates = insertWorkGroupSchema.partial().parse(req.body);
+      const updatedWorkGroup = await storage.updateWorkGroup(id, updates);
+      
+      res.json(updatedWorkGroup);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid work group data" });
+    }
+  });
+
   // Work Group Members routes
   app.post("/api/work-groups/:id/members", requireAuth, async (req, res) => {
     try {

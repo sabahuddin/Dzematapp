@@ -7,6 +7,7 @@
   "createSection": "Create New Section",
   "deleteSection": "Delete Section",
   "sectionName": "Section Name",
+  "sectionDescription": "Section Description",
   "description": "Description",
   "visibility": {
     "label": "Visibility",
@@ -58,6 +59,8 @@
   "toasts": {
     "sectionCreated": "Section created successfully",
     "sectionCreateError": "Error creating section",
+    "sectionUpdated": "Section updated successfully",
+    "sectionUpdateError": "Error updating section",
     "accessRequestSent": "Access request sent",
     "accessRequestError": "Error sending request",
     "requestApproved": "Request approved",

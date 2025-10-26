@@ -51,6 +51,7 @@
     "optional": "Optional",
     "required": "Required",
     "save": "Save",
+    "saving": "Saving...",
     "cancel": "Cancel",
     "close": "Close",
     "optionalField": "Leave empty for unlimited",

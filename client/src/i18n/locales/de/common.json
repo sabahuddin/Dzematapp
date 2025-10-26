@@ -51,6 +51,7 @@
     "optional": "Optional",
     "required": "Erforderlich",
     "save": "Speichern",
+    "saving": "Speichern...",
     "cancel": "Abbrechen",
     "close": "Schließen",
     "optionalField": "Leer lassen für unbegrenzt",

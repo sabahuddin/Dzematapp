@@ -51,6 +51,7 @@
     "optional": "Opciono",
     "required": "Obavezno",
     "save": "Spremi",
+    "saving": "Spremanje...",
     "cancel": "Odustani",
     "close": "Zatvori",
     "optionalField": "Ostavite prazno za neograničeno",

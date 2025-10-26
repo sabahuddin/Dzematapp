@@ -37,7 +37,8 @@ import {
   People,
   Check,
   Close,
-  ExpandMore
+  ExpandMore,
+  Edit
 } from '@mui/icons-material';
 import { WorkGroup, AccessRequest, Task, WorkGroupMember, User } from '@shared/schema';
 import WorkGroupModal from '../components/modals/WorkGroupModal';
@@ -78,10 +79,11 @@ interface WorkGroupCardProps {
   onManageTasks: (workGroup: WorkGroup) => void;
   onJoinRequest: (workGroup: WorkGroup) => void;
   onCreateProposal: (workGroup: WorkGroup) => void;
+  onEditWorkGroup: (workGroup: WorkGroup) => void;
   currentUser: any;
 }
 
-function WorkGroupCard({ workGroup, onManageMembers, onManageTasks, onJoinRequest, onCreateProposal, currentUser }: WorkGroupCardProps) {
+function WorkGroupCard({ workGroup, onManageMembers, onManageTasks, onJoinRequest, onCreateProposal, onEditWorkGroup, currentUser }: WorkGroupCardProps) {
   const { t } = useTranslation(['tasks', 'common']);
   const { toast } = useToast();
   
@@ -90,6 +92,7 @@ function WorkGroupCard({ workGroup, onManageMembers, onManageTasks, onJoinReques
   const isModerator = workGroup.members?.some((m: WorkGroupMember) => m.userId === currentUser?.id && m.isModerator) || false;
   const isClanIO = currentUser?.roles?.includes('clan_io') || false;
   const canViewTasks = isAdmin || isMember || isClanIO;
+  const canEdit = isAdmin || isModerator;
 
   return (
     <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -104,9 +107,21 @@ function WorkGroupCard({ workGroup, onManageMembers, onManageTasks, onJoinReques
         }}
       >
         <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-          <Typography variant="h6" sx={{ fontWeight: 600, mb: 1.5 }}>
-            {workGroup.name}
-          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1.5 }}>
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              {workGroup.name}
+            </Typography>
+            {canEdit && (
+              <IconButton 
+                size="small" 
+                onClick={() => onEditWorkGroup(workGroup)}
+                data-testid={`button-edit-workgroup-${workGroup.id}`}
+                sx={{ ml: 1 }}
+              >
+                <Edit fontSize="small" />
+              </IconButton>
+            )}
+          </Box>
           
           <Typography 
             variant="body2" 
@@ -208,10 +223,12 @@ export default function TaskManagerPage() {
   
   const [tabValue, setTabValue] = useState(0);
   const [workGroupModalOpen, setWorkGroupModalOpen] = useState(false);
+  const [editWorkGroupModalOpen, setEditWorkGroupModalOpen] = useState(false);
   const [memberManagementDialogOpen, setMemberManagementDialogOpen] = useState(false);
   const [taskManagementDialogOpen, setTaskManagementDialogOpen] = useState(false);
   const [proposalModalOpen, setProposalModalOpen] = useState(false);
   const [selectedWorkGroup, setSelectedWorkGroup] = useState<WorkGroup | null>(null);
+  const [editFormData, setEditFormData] = useState({ name: '', description: '' });
 
   const workGroupsQuery = useQuery<WorkGroup[]>({
     queryKey: ['/api/work-groups'],
@@ -274,6 +291,21 @@ export default function TaskManagerPage() {
     },
     onError: () => {
       toast({ title: t('common:error'), description: t('toasts.sectionCreateError'), variant: 'destructive' });
+    }
+  });
+
+  const updateWorkGroupMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string, data: { name: string, description: string } }) => {
+      const response = await apiRequest(`/api/work-groups/${id}`, 'PUT', data);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/work-groups'] });
+      setEditWorkGroupModalOpen(false);
+      toast({ title: t('common:success'), description: t('toasts.sectionUpdated') });
+    },
+    onError: () => {
+      toast({ title: t('common:error'), description: t('toasts.sectionUpdateError'), variant: 'destructive' });
     }
   });
 
@@ -367,6 +399,20 @@ export default function TaskManagerPage() {
   const handleManageGroupTasks = (workGroup: WorkGroup) => {
     setSelectedWorkGroup(workGroup);
     setTaskManagementDialogOpen(true);
+  };
+
+  const handleEditWorkGroup = (workGroup: WorkGroup) => {
+    setSelectedWorkGroup(workGroup);
+    setEditFormData({ name: workGroup.name, description: workGroup.description || '' });
+    setEditWorkGroupModalOpen(true);
+  };
+
+  const handleUpdateWorkGroup = () => {
+    if (!selectedWorkGroup) return;
+    updateWorkGroupMutation.mutate({
+      id: selectedWorkGroup.id,
+      data: editFormData
+    });
   };
 
   const handleCreateProposal = (workGroup: WorkGroup) => {
@@ -467,6 +513,7 @@ export default function TaskManagerPage() {
                   onManageTasks={handleManageGroupTasks}
                   onJoinRequest={handleJoinRequest}
                   onCreateProposal={handleCreateProposal}
+                  onEditWorkGroup={handleEditWorkGroup}
                   currentUser={user}
                 />
               ))}
@@ -503,6 +550,7 @@ export default function TaskManagerPage() {
                     onManageTasks={handleManageGroupTasks}
                     onJoinRequest={handleJoinRequest}
                     onCreateProposal={handleCreateProposal}
+                    onEditWorkGroup={handleEditWorkGroup}
                     currentUser={user}
                   />
                 ))}
@@ -625,6 +673,48 @@ export default function TaskManagerPage() {
         onClose={() => setMemberManagementDialogOpen(false)}
         workGroup={selectedWorkGroup || { id: '', name: '', description: '', createdAt: new Date(), visibility: 'public' }}
       />
+
+      <Dialog 
+        open={editWorkGroupModalOpen} 
+        onClose={() => setEditWorkGroupModalOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>{t('editSection')}</DialogTitle>
+        <DialogContent>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+            <TextField
+              label={t('sectionName')}
+              fullWidth
+              value={editFormData.name}
+              onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
+              data-testid="input-edit-section-name"
+            />
+            <TextField
+              label={t('sectionDescription')}
+              fullWidth
+              multiline
+              rows={4}
+              value={editFormData.description}
+              onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
+              data-testid="input-edit-section-description"
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEditWorkGroupModalOpen(false)} data-testid="button-cancel-edit">
+            {t('common:cancel')}
+          </Button>
+          <Button 
+            onClick={handleUpdateWorkGroup} 
+            variant="contained"
+            disabled={!editFormData.name || updateWorkGroupMutation.isPending}
+            data-testid="button-save-edit"
+          >
+            {updateWorkGroupMutation.isPending ? t('common:saving') : t('common:save')}
+          </Button>
+        </DialogActions>
+      </Dialog>
       
       <ProposalModal
         open={proposalModalOpen && selectedWorkGroup !== null}

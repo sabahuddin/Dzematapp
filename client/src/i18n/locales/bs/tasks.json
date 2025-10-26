@@ -7,6 +7,7 @@
   "createSection": "Kreiraj Novu Sekciju",
   "deleteSection": "Obriši Sekciju",
   "sectionName": "Naziv Sekcije",
+  "sectionDescription": "Opis Sekcije",
   "description": "Opis",
   "visibility": {
     "label": "Vidljivost",
@@ -58,6 +59,8 @@
   "toasts": {
     "sectionCreated": "Sekcija je uspješno kreirana",
     "sectionCreateError": "Greška pri kreiranju sekcije",
+    "sectionUpdated": "Sekcija je uspješno ažurirana",
+    "sectionUpdateError": "Greška pri ažuriranju sekcije",
     "accessRequestSent": "Zahtjev za pristup je poslat",
     "accessRequestError": "Greška pri slanju zahtjeva",
     "requestApproved": "Zahtjev je odobren",
