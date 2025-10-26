@@ -40,22 +40,18 @@ export async function generateCertificate(options: CertificateGenerationOptions)
   // Set up text rendering with multiple font fallbacks
   ctx.font = `bold ${fontSize}px "Times New Roman", "DejaVu Serif", "Liberation Serif", serif`;
   ctx.fillStyle = fontColor;
-  ctx.textBaseline = 'middle';  // Changed from 'top' to 'middle' for better centering
+  ctx.textAlign = 'center';  // Always center horizontally
+  ctx.textBaseline = 'middle';  // Always center vertically
 
-  // Calculate text position based on alignment
-  let xPosition = textPositionX;
-  if (textAlign === 'center') {
-    const textMetrics = ctx.measureText(recipientName);
-    xPosition = textPositionX - (textMetrics.width / 2);
-  } else if (textAlign === 'right') {
-    const textMetrics = ctx.measureText(recipientName);
-    xPosition = textPositionX - textMetrics.width;
-  }
+  // ALWAYS center the text in the middle of the image
+  // User will adjust template design (add line) to match this position
+  const centerX = imageWidth / 2;
+  const centerY = imageHeight / 2;
 
-  console.log(`[Certificate] Rendering text "${recipientName}" at position (${xPosition}, ${textPositionY}), font: ${fontSize}px, align: ${textAlign}`);
+  console.log(`[Certificate] Image size: ${imageWidth}x${imageHeight}, centering text "${recipientName}" at (${centerX}, ${centerY}), font: ${fontSize}px`);
 
-  // Draw the text
-  ctx.fillText(recipientName, xPosition, textPositionY);
+  // Draw the text at the center
+  ctx.fillText(recipientName, centerX, centerY);
 
   // Convert canvas to buffer
   const textBuffer = canvas.toBuffer('image/png');
