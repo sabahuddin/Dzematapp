@@ -659,8 +659,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { id } = req.params;
       const rsvpStats = await storage.getEventRsvps(id);
-      // Return only the rsvps array for admin view
-      res.json(rsvpStats.rsvps);
+      res.json(rsvpStats);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch RSVPs" });
     }

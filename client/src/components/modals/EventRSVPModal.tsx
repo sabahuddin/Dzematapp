@@ -37,11 +37,9 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
   const { toast } = useToast();
   const [adultsCount, setAdultsCount] = useState(1);
   const [childrenCount, setChildrenCount] = useState(0);
-  
-  console.log('EventRSVPModal - user:', user, 'isAdmin:', user?.isAdmin);
 
   // For admins: fetch all RSVPs for the event
-  const { data: allRsvps, isLoading: isLoadingAllRsvps } = useQuery<EventRsvp[]>({
+  const { data: allRsvps, isLoading: isLoadingAllRsvps } = useQuery<{ rsvps: any[], totalAdults: number, totalChildren: number, totalAttendees: number }>({
     queryKey: ['/api/events', event.id, 'rsvps'],
     queryFn: async () => {
       const response = await fetch(`/api/events/${event.id}/rsvps`, {
@@ -172,10 +170,12 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
   };
 
   const getTotalAttendees = () => {
-    if (!allRsvps || !Array.isArray(allRsvps)) return { adults: 0, children: 0, total: 0 };
-    const adults = allRsvps.reduce((sum, rsvp) => sum + (rsvp.adultsCount || 0), 0);
-    const children = allRsvps.reduce((sum, rsvp) => sum + (rsvp.childrenCount || 0), 0);
-    return { adults, children, total: adults + children };
+    if (!allRsvps) return { adults: 0, children: 0, total: 0 };
+    return { 
+      adults: allRsvps.totalAdults, 
+      children: allRsvps.totalChildren, 
+      total: allRsvps.totalAttendees 
+    };
   };
 
   // Admin view - show list of attendees
@@ -204,7 +204,7 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
                 </Typography>
               </Box>
 
-              {allRsvps && allRsvps.length > 0 ? (
+              {allRsvps && allRsvps.rsvps && allRsvps.rsvps.length > 0 ? (
                 <TableContainer component={Paper} variant="outlined">
                   <Table size="small">
                     <TableHead>
@@ -217,7 +217,7 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {allRsvps.map((rsvp: any) => (
+                      {allRsvps.rsvps.map((rsvp: any) => (
                         <TableRow key={rsvp.id} data-testid={`row-rsvp-${rsvp.id}`}>
                           <TableCell>
                             {rsvp.user?.firstName} {rsvp.user?.lastName}
