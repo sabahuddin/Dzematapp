@@ -25,6 +25,7 @@
     "myCertificates": "My Certificates",
     "certificateTemplates": "Certificates - Templates",
     "issueCertificates": "Issue Certificate",
+    "allCertificates": "All Certificates",
     "livestreamSettings": "Livestream Settings",
     "organizationSettings": "Organization Info"
   },

@@ -79,6 +79,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     { path: '/my-certificates', label: t('navigation:menu.myCertificates'), icon: CardGiftcard, showBadge: true },
     { path: '/certificate-templates', label: t('navigation:menu.certificateTemplates'), icon: CardGiftcard, adminOnly: true },
     { path: '/issue-certificates', label: t('navigation:menu.issueCertificates'), icon: CardGiftcard, adminOnly: true },
+    { path: '/all-certificates', label: t('navigation:menu.allCertificates'), icon: CardGiftcard, adminOnly: true },
     { path: '/documents', label: t('navigation:menu.documents'), icon: Description },
     { path: '/shop', label: t('navigation:menu.shop'), icon: Store, showBadge: true },
     { path: '/requests', label: t('navigation:menu.requests'), icon: Assignment },

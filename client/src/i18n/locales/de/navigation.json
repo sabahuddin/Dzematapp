@@ -25,6 +25,7 @@
     "myCertificates": "Meine Urkunden",
     "certificateTemplates": "Urkunden - Vorlagen",
     "issueCertificates": "Urkunde ausstellen",
+    "allCertificates": "Alle Urkunden",
     "livestreamSettings": "Livestream-Verwaltung",
     "organizationSettings": "Organisationsdaten"
   },
