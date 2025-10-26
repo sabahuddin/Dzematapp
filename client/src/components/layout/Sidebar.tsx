@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -15,7 +15,8 @@ import {
   useMediaQuery,
   Divider,
   Badge,
-  Tooltip
+  Tooltip,
+  Collapse
 } from '@mui/material';
 import {
   Dashboard,
@@ -40,7 +41,10 @@ import {
   Timeline,
   EmojiEvents,
   Work,
-  CardGiftcard
+  CardGiftcard,
+  ExpandLess,
+  ExpandMore,
+  OndemandVideo
 } from '@mui/icons-material';
 import { SiFacebook, SiInstagram, SiYoutube, SiX } from 'react-icons/si';
 import { useAuth } from '@/contexts/AuthContext';
@@ -62,6 +66,8 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { user } = useAuth();
   const { t } = useTranslation(['navigation']);
+  const [zahvaleOpen, setZahvaleOpen] = useState(false);
+  const [mediaOpen, setMediaOpen] = useState(false);
 
   const menuItems = [
     { path: '/dashboard', label: t('navigation:menu.dashboard'), icon: Dashboard },
@@ -76,18 +82,24 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     { path: '/tasks', label: t('navigation:menu.tasks'), labelForMember: t('navigation:menu.sections'), pathForMember: '/sections', icon: Task, showBadge: true },
     { path: '/messages', label: t('navigation:menu.messages'), icon: Mail, showBadge: true },
     { path: '/ask-imam', label: t('navigation:menu.askImam'), icon: QuestionAnswer, showBadge: true },
+    { path: '/documents', label: t('navigation:menu.documents'), icon: Description },
+    { path: '/shop', label: t('navigation:menu.shop'), icon: Store, showBadge: true },
+    { path: '/requests', label: t('navigation:menu.requests'), icon: Assignment },
+    { path: '/vaktija', label: t('navigation:menu.vaktija'), icon: Schedule },
+    { path: '/vodic', label: t('navigation:menu.guide'), icon: Info },
+    { path: '/organization-settings', label: t('navigation:menu.organizationSettings'), icon: Settings, adminOnly: true },
+  ];
+
+  const zahvaleItems = [
     { path: '/my-certificates', label: t('navigation:menu.myCertificates'), icon: CardGiftcard, showBadge: true },
     { path: '/certificate-templates', label: t('navigation:menu.certificateTemplates'), icon: CardGiftcard, adminOnly: true },
     { path: '/issue-certificates', label: t('navigation:menu.issueCertificates'), icon: CardGiftcard, adminOnly: true },
     { path: '/all-certificates', label: t('navigation:menu.allCertificates'), icon: CardGiftcard, adminOnly: true },
-    { path: '/documents', label: t('navigation:menu.documents'), icon: Description },
-    { path: '/shop', label: t('navigation:menu.shop'), icon: Store, showBadge: true },
-    { path: '/requests', label: t('navigation:menu.requests'), icon: Assignment },
+  ];
+
+  const mediaItems = [
     { path: '/livestream', label: t('navigation:menu.livestream'), icon: Radio },
-    { path: '/vaktija', label: t('navigation:menu.vaktija'), icon: Schedule },
-    { path: '/vodic', label: t('navigation:menu.guide'), icon: Info },
     { path: '/livestream-settings', label: t('navigation:menu.livestreamSettings'), icon: Radio, adminOnly: true },
-    { path: '/organization-settings', label: t('navigation:menu.organizationSettings'), icon: Settings, adminOnly: true },
   ];
 
   const { data: unreadCount } = useQuery<{ count: number }>({
@@ -217,9 +229,6 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
               case '/shop':
                 badgeCount = notificationCounts.shop;
                 break;
-              case '/my-certificates':
-                badgeCount = unviewedCertificatesCount?.count || 0;
-                break;
             }
           }
           
@@ -272,6 +281,165 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
             </ListItem>
           );
         })}
+
+        {/* Zahvale Menu Group */}
+        <ListItem disablePadding sx={{ width: '100%', maxWidth: '100%' }}>
+          <ListItemButton
+            onClick={() => setZahvaleOpen(!zahvaleOpen)}
+            sx={{
+              mx: 1,
+              borderRadius: 1,
+              bgcolor: 'transparent',
+              color: '#666',
+              justifyContent: collapsed ? 'center' : 'flex-start',
+              px: collapsed ? 0 : 2,
+              minWidth: 0,
+              '&:hover': {
+                bgcolor: '#f5f5f5',
+                color: '#1976d2'
+              }
+            }}
+            data-testid="nav-zahvale-group"
+          >
+            <ListItemIcon sx={{ color: 'inherit', minWidth: collapsed ? 'auto' : 40, justifyContent: 'center' }}>
+              {unviewedCertificatesCount && unviewedCertificatesCount.count > 0 ? (
+                <Badge badgeContent={unviewedCertificatesCount.count} color="error" data-testid="badge-zahvale">
+                  <CardGiftcard />
+                </Badge>
+              ) : (
+                <CardGiftcard />
+              )}
+            </ListItemIcon>
+            {!collapsed && (
+              <>
+                <ListItemText primary="Zahvale" />
+                {zahvaleOpen ? <ExpandLess /> : <ExpandMore />}
+              </>
+            )}
+          </ListItemButton>
+        </ListItem>
+        {!collapsed && (
+          <Collapse in={zahvaleOpen} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              {zahvaleItems.map((item) => {
+                if (item.adminOnly && !user?.isAdmin) return null;
+                
+                const Icon = item.icon;
+                const isActive = location === item.path;
+                let badgeCount = 0;
+                
+                if (item.path === '/my-certificates' && unviewedCertificatesCount) {
+                  badgeCount = unviewedCertificatesCount.count || 0;
+                }
+                
+                const showBadge = item.showBadge && badgeCount > 0;
+                
+                return (
+                  <ListItem key={item.path} disablePadding sx={{ width: '100%', maxWidth: '100%' }}>
+                    <ListItemButton
+                      onClick={() => handleNavigation(item.path)}
+                      sx={{
+                        mx: 1,
+                        ml: 4,
+                        borderRadius: 1,
+                        bgcolor: isActive ? '#e3f2fd' : 'transparent',
+                        color: isActive ? '#1976d2' : '#666',
+                        borderRight: isActive ? '3px solid #1976d2' : 'none',
+                        px: 2,
+                        '&:hover': {
+                          bgcolor: '#f5f5f5',
+                          color: '#1976d2'
+                        }
+                      }}
+                      data-testid={`nav-${item.path.slice(1)}`}
+                    >
+                      <ListItemIcon sx={{ color: 'inherit', minWidth: 40, justifyContent: 'center' }}>
+                        {showBadge ? (
+                          <Badge badgeContent={badgeCount} color="error">
+                            <Icon />
+                          </Badge>
+                        ) : (
+                          <Icon />
+                        )}
+                      </ListItemIcon>
+                      <ListItemText primary={item.label} />
+                    </ListItemButton>
+                  </ListItem>
+                );
+              })}
+            </List>
+          </Collapse>
+        )}
+
+        {/* Media Menu Group */}
+        <ListItem disablePadding sx={{ width: '100%', maxWidth: '100%' }}>
+          <ListItemButton
+            onClick={() => setMediaOpen(!mediaOpen)}
+            sx={{
+              mx: 1,
+              borderRadius: 1,
+              bgcolor: 'transparent',
+              color: '#666',
+              justifyContent: collapsed ? 'center' : 'flex-start',
+              px: collapsed ? 0 : 2,
+              minWidth: 0,
+              '&:hover': {
+                bgcolor: '#f5f5f5',
+                color: '#1976d2'
+              }
+            }}
+            data-testid="nav-media-group"
+          >
+            <ListItemIcon sx={{ color: 'inherit', minWidth: collapsed ? 'auto' : 40, justifyContent: 'center' }}>
+              <OndemandVideo />
+            </ListItemIcon>
+            {!collapsed && (
+              <>
+                <ListItemText primary="Media" />
+                {mediaOpen ? <ExpandLess /> : <ExpandMore />}
+              </>
+            )}
+          </ListItemButton>
+        </ListItem>
+        {!collapsed && (
+          <Collapse in={mediaOpen} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              {mediaItems.map((item) => {
+                if (item.adminOnly && !user?.isAdmin) return null;
+                
+                const Icon = item.icon;
+                const isActive = location === item.path;
+                
+                return (
+                  <ListItem key={item.path} disablePadding sx={{ width: '100%', maxWidth: '100%' }}>
+                    <ListItemButton
+                      onClick={() => handleNavigation(item.path)}
+                      sx={{
+                        mx: 1,
+                        ml: 4,
+                        borderRadius: 1,
+                        bgcolor: isActive ? '#e3f2fd' : 'transparent',
+                        color: isActive ? '#1976d2' : '#666',
+                        borderRight: isActive ? '3px solid #1976d2' : 'none',
+                        px: 2,
+                        '&:hover': {
+                          bgcolor: '#f5f5f5',
+                          color: '#1976d2'
+                        }
+                      }}
+                      data-testid={`nav-${item.path.slice(1)}`}
+                    >
+                      <ListItemIcon sx={{ color: 'inherit', minWidth: 40, justifyContent: 'center' }}>
+                        <Icon />
+                      </ListItemIcon>
+                      <ListItemText primary={item.label} />
+                    </ListItemButton>
+                  </ListItem>
+                );
+              })}
+            </List>
+          </Collapse>
+        )}
       </List>
 
       {/* Info Section and Social Media */}
