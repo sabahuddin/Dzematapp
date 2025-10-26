@@ -43,12 +43,14 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
     queryKey: ['/api/events', event.id, 'rsvps'],
     queryFn: async () => {
       const response = await fetch(`/api/events/${event.id}/rsvps`, {
-        credentials: 'include'
+        credentials: 'include',
+        cache: 'no-cache'
       });
       if (!response.ok) throw new Error('Failed to fetch RSVPs');
       return response.json();
     },
-    enabled: open && !!user?.isAdmin
+    enabled: open && !!user?.isAdmin,
+    staleTime: 0
   });
 
   // For regular users: fetch their own RSVP
@@ -168,7 +170,7 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
   };
 
   const getTotalAttendees = () => {
-    if (!allRsvps) return { adults: 0, children: 0, total: 0 };
+    if (!allRsvps || !Array.isArray(allRsvps)) return { adults: 0, children: 0, total: 0 };
     const adults = allRsvps.reduce((sum, rsvp) => sum + (rsvp.adultsCount || 0), 0);
     const children = allRsvps.reduce((sum, rsvp) => sum + (rsvp.childrenCount || 0), 0);
     return { adults, children, total: adults + children };
