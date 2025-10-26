@@ -33,6 +33,7 @@ import ActivityLogPage from "@/pages/ActivityLogPage";
 import PointSettingsPage from "@/pages/PointSettingsPage";
 import BadgesPage from "@/pages/BadgesPage";
 import ProjectsPage from "@/pages/ProjectsPage";
+import CertificateTemplatesPage from "@/pages/CertificateTemplatesPage";
 import NotFound from "@/pages/not-found";
 
 // Layout
@@ -227,6 +228,12 @@ function Router() {
       <Route path="/projects">
         <ProtectedRoute>
           <ProjectsPage />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path="/certificate-templates">
+        <ProtectedRoute>
+          <CertificateTemplatesPage />
         </ProtectedRoute>
       </Route>
       
