@@ -22,6 +22,9 @@
     "pointSettings": "Punkteeinstellungen",
     "badges": "Abzeichen",
     "projects": "Projekte",
+    "myCertificates": "Meine Urkunden",
+    "certificateTemplates": "Urkunden - Vorlagen",
+    "issueCertificates": "Urkunde ausstellen",
     "livestreamSettings": "Livestream-Verwaltung",
     "organizationSettings": "Organisationsdaten"
   },

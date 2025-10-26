@@ -39,7 +39,8 @@ import {
   AttachMoney,
   Timeline,
   EmojiEvents,
-  Work
+  Work,
+  CardGiftcard
 } from '@mui/icons-material';
 import { SiFacebook, SiInstagram, SiYoutube, SiX } from 'react-icons/si';
 import { useAuth } from '@/contexts/AuthContext';
@@ -75,6 +76,9 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     { path: '/tasks', label: t('navigation:menu.tasks'), labelForMember: t('navigation:menu.sections'), pathForMember: '/sections', icon: Task, showBadge: true },
     { path: '/messages', label: t('navigation:menu.messages'), icon: Mail, showBadge: true },
     { path: '/ask-imam', label: t('navigation:menu.askImam'), icon: QuestionAnswer, showBadge: true },
+    { path: '/my-certificates', label: t('navigation:menu.myCertificates'), icon: CardGiftcard, showBadge: true },
+    { path: '/certificate-templates', label: t('navigation:menu.certificateTemplates'), icon: CardGiftcard, adminOnly: true },
+    { path: '/issue-certificates', label: t('navigation:menu.issueCertificates'), icon: CardGiftcard, adminOnly: true },
     { path: '/documents', label: t('navigation:menu.documents'), icon: Description },
     { path: '/shop', label: t('navigation:menu.shop'), icon: Store, showBadge: true },
     { path: '/requests', label: t('navigation:menu.requests'), icon: Assignment },
@@ -88,6 +92,12 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
   const { data: unreadCount } = useQuery<{ count: number }>({
     queryKey: ['/api/messages/unread-count'],
     refetchInterval: 30000,
+  });
+
+  const { data: unviewedCertificatesCount } = useQuery<{ count: number }>({
+    queryKey: ['/api/certificates/unviewed-count'],
+    refetchInterval: 30000,
+    enabled: !!user,
   });
 
   const { data: notificationCounts } = useQuery<{ shop: number; events: number; announcements: number; imamQuestions: number; tasks: number; accessRequests: number }>({
@@ -205,6 +215,9 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
                 break;
               case '/shop':
                 badgeCount = notificationCounts.shop;
+                break;
+              case '/my-certificates':
+                badgeCount = unviewedCertificatesCount?.count || 0;
                 break;
             }
           }

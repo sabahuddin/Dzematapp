@@ -49,8 +49,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-const templateFormSchema = z.object({
-  name: z.string().min(1, "Naziv je obavezan"),
+const createTemplateFormSchema = (t: any) => z.object({
+  name: z.string().min(1, t('certificates:templates.name')),
   description: z.string().optional(),
   textPositionX: z.number().min(0),
   textPositionY: z.number().min(0),
@@ -77,7 +77,7 @@ interface CertificateTemplate {
 }
 
 export default function CertificateTemplatesPage() {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['certificates']);
   const { toast } = useToast();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<CertificateTemplate | null>(null);
@@ -85,7 +85,7 @@ export default function CertificateTemplatesPage() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const form = useForm<TemplateFormData>({
-    resolver: zodResolver(templateFormSchema),
+    resolver: zodResolver(createTemplateFormSchema(t)),
     defaultValues: {
       name: "",
       description: "",

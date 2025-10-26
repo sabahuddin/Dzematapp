@@ -22,6 +22,9 @@
     "pointSettings": "Postavke bodova",
     "badges": "Značke",
     "projects": "Projekti",
+    "myCertificates": "Moje zahvale",
+    "certificateTemplates": "Zahvalnice - Templatei",
+    "issueCertificates": "Izdaj zahvalnicu",
     "livestreamSettings": "Livestream uprav.",
     "organizationSettings": "Org. podaci"
   },

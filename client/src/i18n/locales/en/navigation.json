@@ -22,6 +22,9 @@
     "pointSettings": "Point Settings",
     "badges": "Badges",
     "projects": "Projects",
+    "myCertificates": "My Certificates",
+    "certificateTemplates": "Certificates - Templates",
+    "issueCertificates": "Issue Certificate",
     "livestreamSettings": "Livestream Settings",
     "organizationSettings": "Organization Info"
   },
