@@ -1417,7 +1417,7 @@ function TaskDetailDialog({
 
   const addCommentMutation = useMutation({
     mutationFn: async (commentData: any) => {
-      const response = await apiRequest('/api/task-comments', 'POST', commentData);
+      const response = await apiRequest(`/api/tasks/${task?.id}/comments`, 'POST', commentData);
       return response.json();
     },
     onSuccess: () => {
@@ -1519,8 +1519,6 @@ function TaskDetailDialog({
     if (!newComment.trim() && !commentImage) return;
     
     addCommentMutation.mutate({
-      taskId: task.id,
-      userId: currentUser?.id,
       content: newComment,
       commentImage: commentImage
     });
