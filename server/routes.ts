@@ -3276,9 +3276,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       for (const userId of userIds) {
         const user = await storage.getUser(userId);
-        if (!user) continue;
+        if (!user) {
+          console.log(`[Certificates] User not found: ${userId}`);
+          continue;
+        }
         
         const recipientName = `${user.firstName} ${user.lastName}`;
+        console.log(`[Certificates] Processing certificate for user ${userId}: ${recipientName}`);
         
         // Generate certificate image
         const certificateBuffer = await generateCertificate({
@@ -3295,6 +3299,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         const filename = `certificate-${userId}-${uniqueSuffix}.png`;
         const certificateUrl = await saveCertificate(certificateBuffer, filename);
+        console.log(`[Certificates] Saved certificate for ${recipientName} to ${certificateUrl}`);
         
         // Create user certificate record
         const certificate = await storage.createUserCertificate({
@@ -3305,6 +3310,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           issuedById: req.user!.id,
           message: customMessage || null
         });
+        console.log(`[Certificates] Created DB record for ${recipientName}: certId=${certificate.id}, userId=${userId}, imageUrl=${certificateUrl}`);
         
         issuedCertificates.push(certificate);
       }
