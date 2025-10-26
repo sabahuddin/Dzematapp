@@ -10,8 +10,17 @@ import {
   Box,
   Typography,
   Alert,
-  CircularProgress
+  CircularProgress,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton
 } from '@mui/material';
+import { Delete } from '@mui/icons-material';
 import { Event, EventRsvp } from '@shared/schema';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
@@ -29,6 +38,20 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
   const [adultsCount, setAdultsCount] = useState(1);
   const [childrenCount, setChildrenCount] = useState(0);
 
+  // For admins: fetch all RSVPs for the event
+  const { data: allRsvps, isLoading: isLoadingAllRsvps } = useQuery<EventRsvp[]>({
+    queryKey: ['/api/events', event.id, 'rsvps'],
+    queryFn: async () => {
+      const response = await fetch(`/api/events/${event.id}/rsvps`, {
+        credentials: 'include'
+      });
+      if (!response.ok) throw new Error('Failed to fetch RSVPs');
+      return response.json();
+    },
+    enabled: open && !!user?.isAdmin
+  });
+
+  // For regular users: fetch their own RSVP
   const { data: userRsvp, isLoading } = useQuery<EventRsvp | null>({
     queryKey: ['/api/events', event.id, 'user-rsvp'],
     queryFn: async () => {
@@ -38,7 +61,7 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
       if (!response.ok) return null;
       return response.json();
     },
-    enabled: open && !!user
+    enabled: open && !!user && !user.isAdmin
   });
 
   useEffect(() => {
@@ -98,8 +121,10 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
   });
 
   const deleteRsvpMutation = useMutation({
-    mutationFn: async () => {
-      return apiRequest(`/api/events/${event.id}/rsvp/${userRsvp!.id}`, 'DELETE');
+    mutationFn: async (rsvpId?: string) => {
+      const id = rsvpId || userRsvp?.id;
+      if (!id) throw new Error('No RSVP ID provided');
+      return apiRequest(`/api/events/${event.id}/rsvp/${id}`, 'DELETE');
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/events', event.id, 'user-rsvp'] });
@@ -109,7 +134,9 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
         title: 'Uspjeh',
         description: 'Uspješno ste otkazali prijavu'
       });
-      onClose();
+      if (!user?.isAdmin) {
+        onClose();
+      }
     },
     onError: () => {
       toast({
@@ -130,10 +157,107 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
 
   const handleDelete = () => {
     if (window.confirm('Da li ste sigurni da želite otkazati prijavu?')) {
-      deleteRsvpMutation.mutate();
+      deleteRsvpMutation.mutate(undefined);
     }
   };
 
+  const handleAdminDeleteRsvp = (rsvpId: string) => {
+    if (window.confirm('Da li ste sigurni da želite obrisati ovu prijavu?')) {
+      deleteRsvpMutation.mutate(rsvpId);
+    }
+  };
+
+  const getTotalAttendees = () => {
+    if (!allRsvps) return { adults: 0, children: 0, total: 0 };
+    const adults = allRsvps.reduce((sum, rsvp) => sum + (rsvp.adultsCount || 0), 0);
+    const children = allRsvps.reduce((sum, rsvp) => sum + (rsvp.childrenCount || 0), 0);
+    return { adults, children, total: adults + children };
+  };
+
+  // Admin view - show list of attendees
+  if (user?.isAdmin) {
+    const totals = getTotalAttendees();
+    
+    return (
+      <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+        <DialogTitle>
+          Prijavljeni za Događaj - {event.name}
+        </DialogTitle>
+        
+        <DialogContent>
+          {isLoadingAllRsvps ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <Box sx={{ pt: 2 }}>
+              <Box sx={{ mb: 3, p: 2, bgcolor: '#f5f5f5', borderRadius: 1 }}>
+                <Typography variant="body1" sx={{ fontWeight: 600 }}>
+                  Ukupno prijavljenih: {totals.total} osoba
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Odraslih: {totals.adults} | Djece: {totals.children}
+                </Typography>
+              </Box>
+
+              {allRsvps && allRsvps.length > 0 ? (
+                <TableContainer component={Paper} variant="outlined">
+                  <Table size="small">
+                    <TableHead>
+                      <TableRow sx={{ bgcolor: '#fafafa' }}>
+                        <TableCell sx={{ fontWeight: 600 }}>Korisnik</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>Odrasli</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>Djeca</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>Ukupno</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {allRsvps.map((rsvp: any) => (
+                        <TableRow key={rsvp.id} data-testid={`row-rsvp-${rsvp.id}`}>
+                          <TableCell>
+                            {rsvp.user?.firstName} {rsvp.user?.lastName}
+                          </TableCell>
+                          <TableCell>{rsvp.adultsCount || 0}</TableCell>
+                          <TableCell>{rsvp.childrenCount || 0}</TableCell>
+                          <TableCell>
+                            {(rsvp.adultsCount || 0) + (rsvp.childrenCount || 0)}
+                          </TableCell>
+                          <TableCell>
+                            <IconButton
+                              size="small"
+                              color="error"
+                              onClick={() => handleAdminDeleteRsvp(rsvp.id)}
+                              disabled={deleteRsvpMutation.isPending}
+                              data-testid={`button-delete-rsvp-${rsvp.id}`}
+                            >
+                              <Delete fontSize="small" />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              ) : (
+                <Alert severity="info">
+                  Još niko nije prijavljen za ovaj događaj.
+                </Alert>
+              )}
+            </Box>
+          )}
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={onClose} data-testid="button-close-admin-rsvp">
+            Zatvori
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+
+  // Regular user view - show RSVP form
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>
