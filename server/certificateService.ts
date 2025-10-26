@@ -37,10 +37,10 @@ export async function generateCertificate(options: CertificateGenerationOptions)
   const canvas = createCanvas(imageWidth, imageHeight);
   const ctx = canvas.getContext('2d');
 
-  // Set up text rendering
-  ctx.font = `${fontSize}px Arial`;
+  // Set up text rendering with multiple font fallbacks
+  ctx.font = `bold ${fontSize}px "Times New Roman", "DejaVu Serif", "Liberation Serif", serif`;
   ctx.fillStyle = fontColor;
-  ctx.textBaseline = 'top';
+  ctx.textBaseline = 'middle';  // Changed from 'top' to 'middle' for better centering
 
   // Calculate text position based on alignment
   let xPosition = textPositionX;
@@ -51,6 +51,8 @@ export async function generateCertificate(options: CertificateGenerationOptions)
     const textMetrics = ctx.measureText(recipientName);
     xPosition = textPositionX - textMetrics.width;
   }
+
+  console.log(`[Certificate] Rendering text "${recipientName}" at position (${xPosition}, ${textPositionY}), font: ${fontSize}px, align: ${textAlign}`);
 
   // Draw the text
   ctx.fillText(recipientName, xPosition, textPositionY);
