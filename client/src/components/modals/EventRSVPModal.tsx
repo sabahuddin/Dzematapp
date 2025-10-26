@@ -20,11 +20,12 @@ import {
   Paper,
   IconButton
 } from '@mui/material';
-import { Delete } from '@mui/icons-material';
+import { Delete, Download } from '@mui/icons-material';
 import { Event, EventRsvp } from '@shared/schema';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest, queryClient } from '@/lib/queryClient';
+import * as XLSX from 'xlsx';
 
 interface EventRSVPModalProps {
   open: boolean;
@@ -178,6 +179,44 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
     };
   };
 
+  const handleExportToExcel = () => {
+    if (!allRsvps || !allRsvps.rsvps) return;
+
+    // Prepare data for Excel
+    const excelData = allRsvps.rsvps.map((rsvp: any) => ({
+      'Ime i prezime': `${rsvp.user?.firstName || ''} ${rsvp.user?.lastName || ''}`.trim(),
+      'Odrasli': rsvp.adultsCount || 0,
+      'Djeca': rsvp.childrenCount || 0,
+      'Ukupno': (rsvp.adultsCount || 0) + (rsvp.childrenCount || 0)
+    }));
+
+    // Add summary row
+    const totals = getTotalAttendees();
+    excelData.push({
+      'Ime i prezime': 'UKUPNO:',
+      'Odrasli': totals.adults,
+      'Djeca': totals.children,
+      'Ukupno': totals.total
+    });
+
+    // Create worksheet and workbook
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Prijavljeni');
+
+    // Generate filename with event name and date
+    const date = new Date().toLocaleDateString('sr-Latn-RS').replace(/\./g, '-');
+    const filename = `${event.name.replace(/[^a-zA-Z0-9]/g, '_')}_${date}.xlsx`;
+
+    // Download file
+    XLSX.writeFile(workbook, filename);
+
+    toast({
+      title: 'Uspjeh',
+      description: 'Excel fajl je preuzet'
+    });
+  };
+
   // Admin view - show list of attendees
   if (user?.isAdmin) {
     const totals = getTotalAttendees();
@@ -253,6 +292,16 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
         </DialogContent>
 
         <DialogActions>
+          <Button 
+            onClick={handleExportToExcel}
+            startIcon={<Download />}
+            variant="outlined"
+            disabled={!allRsvps || !allRsvps.rsvps || allRsvps.rsvps.length === 0}
+            data-testid="button-export-excel"
+          >
+            Exportuj u Excel
+          </Button>
+          <Box sx={{ flexGrow: 1 }} />
           <Button onClick={onClose} data-testid="button-close-admin-rsvp">
             Zatvori
           </Button>
