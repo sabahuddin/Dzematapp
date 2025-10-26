@@ -49,8 +49,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-const createTemplateFormSchema = (t: any) => z.object({
-  name: z.string().min(1, t('certificates:templates.name')),
+const templateFormSchema = z.object({
+  name: z.string().min(1, "Naziv je obavezan"),
   description: z.string().optional(),
   textPositionX: z.number().min(0),
   textPositionY: z.number().min(0),
@@ -85,13 +85,13 @@ export default function CertificateTemplatesPage() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const form = useForm<TemplateFormData>({
-    resolver: zodResolver(createTemplateFormSchema(t)),
+    resolver: zodResolver(templateFormSchema),
     defaultValues: {
       name: "",
       description: "",
-      textPositionX: 400,
-      textPositionY: 300,
-      fontSize: 48,
+      textPositionX: 512,
+      textPositionY: 165,
+      fontSize: 72,
       fontColor: "#000000",
       textAlign: "center",
     },
@@ -394,12 +394,35 @@ export default function CertificateTemplatesPage() {
                     )}
                   </div>
                   {previewUrl && (
-                    <img
-                      src={previewUrl}
-                      alt="Preview"
-                      className="mt-2 max-w-full h-48 object-contain border rounded"
-                      data-testid="img-preview"
-                    />
+                    <div>
+                      <div className="relative mt-2 inline-block">
+                        <img
+                          src={previewUrl}
+                          alt="Preview"
+                          className="max-w-full h-64 object-contain border rounded"
+                          data-testid="img-preview"
+                        />
+                        <div
+                          className="absolute border-2 border-red-500 bg-red-500/10"
+                          style={{
+                            left: `${((form.watch('textPositionX') || 0) / 1024) * 100}%`,
+                            top: `${((form.watch('textPositionY') || 0) / 724) * 100}%`,
+                            transform: 'translate(-50%, -50%)',
+                            fontSize: `${Math.min((form.watch('fontSize') || 48) / 10, 16)}px`,
+                            color: form.watch('fontColor') || '#000000',
+                            textAlign: form.watch('textAlign') as any || 'center',
+                            minWidth: '200px',
+                            padding: '4px 8px',
+                            pointerEvents: 'none',
+                          }}
+                        >
+                          Ime Prezime
+                        </div>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Crveni okvir pokazuje približnu poziciju imena na template-u
+                      </p>
+                    </div>
                   )}
                 </div>
               )}
@@ -407,12 +430,33 @@ export default function CertificateTemplatesPage() {
               {selectedTemplate && previewUrl && (
                 <div>
                   <FormLabel>Trenutna slika</FormLabel>
-                  <img
-                    src={previewUrl}
-                    alt="Current template"
-                    className="mt-2 max-w-full h-48 object-contain border rounded"
-                    data-testid="img-current-template"
-                  />
+                  <div className="relative mt-2 inline-block">
+                    <img
+                      src={previewUrl}
+                      alt="Current template"
+                      className="max-w-full h-64 object-contain border rounded"
+                      data-testid="img-current-template"
+                    />
+                    <div
+                      className="absolute border-2 border-red-500 bg-red-500/10"
+                      style={{
+                        left: `${((form.watch('textPositionX') || 0) / 1024) * 100}%`,
+                        top: `${((form.watch('textPositionY') || 0) / 724) * 100}%`,
+                        transform: 'translate(-50%, -50%)',
+                        fontSize: `${Math.min((form.watch('fontSize') || 48) / 10, 16)}px`,
+                        color: form.watch('fontColor') || '#000000',
+                        textAlign: form.watch('textAlign') as any || 'center',
+                        minWidth: '200px',
+                        padding: '4px 8px',
+                        pointerEvents: 'none',
+                      }}
+                    >
+                      Ime Prezime
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Crveni okvir pokazuje približnu poziciju imena na template-u
+                  </p>
                 </div>
               )}
 
@@ -444,65 +488,71 @@ export default function CertificateTemplatesPage() {
                 )}
               />
 
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="textPositionX"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Pozicija X</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          {...field}
-                          onChange={(e) => field.onChange(parseInt(e.target.value))}
-                          data-testid="input-position-x"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              <div className="space-y-2">
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="textPositionX"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Pozicija X</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            {...field}
+                            onChange={(e) => field.onChange(parseInt(e.target.value))}
+                            data-testid="input-position-x"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="textPositionY"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Pozicija Y</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          {...field}
-                          onChange={(e) => field.onChange(parseInt(e.target.value))}
-                          data-testid="input-position-y"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <FormField
+                    control={form.control}
+                    name="textPositionY"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Pozicija Y</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            {...field}
+                            onChange={(e) => field.onChange(parseInt(e.target.value))}
+                            data-testid="input-position-y"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  💡 Za centriranje: X=512, Y=165. Prilagodite prema potrebi koristeći preview gore.
+                </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="fontSize"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Veličina fonta</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          {...field}
-                          onChange={(e) => field.onChange(parseInt(e.target.value))}
-                          data-testid="input-font-size"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              <div className="space-y-2">
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="fontSize"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Veličina fonta</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            {...field}
+                            onChange={(e) => field.onChange(parseInt(e.target.value))}
+                            data-testid="input-font-size"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
                 <FormField
                   control={form.control}
@@ -530,6 +580,10 @@ export default function CertificateTemplatesPage() {
                     </FormItem>
                   )}
                 />
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  💡 Preporučeno: Font 64-80px za dobru čitljivost
+                </p>
               </div>
 
               <FormField
