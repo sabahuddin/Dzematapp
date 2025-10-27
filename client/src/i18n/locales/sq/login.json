@@ -1,14 +1,12 @@
 {
-  "title": "Mirë se vini në DžematApp",
-  "subtitle": "Platforma për menaxhimin e komunitetit të xhamisë",
+  "title": "DžematApp",
+  "subtitle": "Admin Dashboard",
   "username": "Emri i përdoruesit",
   "password": "Fjalëkalimi",
   "loginButton": "Hyr",
-  "guestAccess": "Qasja si vizitor",
-  "enterAsGuest": "Hyr si vizitor",
   "loggingIn": "Duke u kyçur...",
-  "errors": {
-    "invalidCredentials": "Emri i përdoruesit ose fjalëkalimi i gabuar",
-    "loginFailed": "Kyçja dështoi. Ju lutemi provoni përsëri."
-  }
+  "guestButton": "Mysafir",
+  "demoCredentials": "Të dhënat demo:",
+  "language": "Gjuha",
+  "selectLanguage": "Zgjidh gjuhën"
 }
