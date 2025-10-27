@@ -1,11 +1,352 @@
 {
-  "title": "Udhëzuesi",
-  "welcome": "Mirë se vini në DžematApp",
-  "gettingStarted": "Fillimi",
-  "features": "Karakteristikat",
-  "tutorials": "Tutoriale",
-  "faq": "Pyetje të shpeshta",
-  "support": "Mbështetje",
-  "contactUs": "Na kontaktoni",
-  "loading": "Duke ngarkuar..."
+  "pageHeader": {
+    "title": "Udhëzuesi i DžematApp",
+    "subtitle": "Udhëzime të plota për përdorimin e aplikacionit",
+    "downloadPDF": "Shkarko PDF"
+  },
+  "introduction": {
+    "title": "Rreth aplikacionit",
+    "paragraph1": "DžematApp është një aplikacion gjithëpërfshirës web i zhvilluar për administrimin modern të xhematit. Aplikacioni mundëson menaxhim efikas të të gjitha aspekteve të xhematit në një vend - nga evidenca e anëtarëve dhe financave, organizimi i ngjarjeve dhe seksioneve, deri te komunikimi me anëtarët dhe ndjekja e aktivitetit të tyre.",
+    "paragraph2": "Sistemi përdor dizajn modern, ndërfaqe intuitiv dhe mbështet njoftime në kohë reale. Aplikacioni është i available nga çdo pajisje përmes shfletuesit web, dhe të dhënat ruhen në mënyrë të sigurt në bazën e të dhënave me backup automatik."
+  },
+  "rolesSection": {
+    "title": "Rolet e përdoruesve",
+    "description": "Aplikacioni mbështet katër role të ndryshme me nivele të ndryshme të aksesit",
+    "accessLabel": "Aksesi",
+    "roles": {
+      "admin": {
+        "name": "Admin",
+        "description": "Administratorët kanë kontroll të plotë mbi aplikacionin. Mund të menaxhojnë të gjitha modulet, të krijojnë dhe fshijnë përmbajtje, të caktojnë role, të ndryshojnë cilësimet e sistemit. Admini sheh të gjitha të dhënat e të gjithë anëtarëve dhe ka akses në të gjitha raportet dhe statistikat.",
+        "permissions": "Kontroll i plotë: përdoruesit, financat, projektet, simbolet, pikët, të gjitha modulet"
+      },
+      "memberIO": {
+        "name": "Anëtar i Bordit Ekzekutiv",
+        "description": "Anëtarët e Bordit Ekzekutiv kanë nivel më të lartë aksesi sesa anëtarët e rregullt. Mund të shohin të gjithë anëtarët e xhematit dhe të aksesojnë informacione të zgjeruara. Ky rol është i destinuar për anëtarët e bordit drejtues të xhematit.",
+        "permissions": "Pamje e zgjeruar: të gjithë anëtarët, të gjitha ngjarjet, të gjitha seksionet"
+      },
+      "member": {
+        "name": "Anëtar",
+        "description": "Anëtarët standardë të xhematit kanë akses në funksionet bazë të aplikacionit. Mund të shohin njoftimet, ngjarjet, seksionet ku janë anëtarë, detyrat e tyre, mesazhet dhe profilin e tyre. Ky është roli më i zakonshëm që i caktohet shumicës së anëtarëve.",
+        "permissions": "Akses standard: dashboard, njoftime, ngjarje, seksionet e mia, mesazhe, profili"
+      },
+      "familyMember": {
+        "name": "Anëtar i Familjes",
+        "description": "Ky rol është i destinuar për anëtarët e familjes së anëtarëve të rregullt (bashkëshortë, fëmijë). Kanë akses të kufizuar në aplikacion - kryesisht mund të shohin njoftime, ngjarje dhe informacione bazë.",
+        "permissions": "Akses i kufizuar: dashboard, njoftime, ngjarje"
+      }
+    }
+  },
+  "tableOfContents": {
+    "title": "Përmbajtja - Modulet e aplikacionit"
+  },
+  "detailedExplanation": "Shpjegim i detajuar i moduleve",
+  "keyFeatures": "Funksionet kryesore:",
+  "roleLabels": {
+    "admins": "Administratorët",
+    "moderators": "Moderatorët",
+    "members": "Anëtarët",
+    "allUsers": "Të gjithë përdoruesit (përfshirë mysafirët)"
+  },
+  "sections": {
+    "dashboard": {
+      "title": "Dashboard (Paneli i Kontrollit)",
+      "description": "Dashboard është vendi qendror i aplikacionit ku çdo përdorues merr një pamje të personalizuar të informacioneve më të rëndësishme. Kjo është faqja e parë që shihni pas hyrjes dhe shërben si një pamje e shpejtë e të gjitha aktiviteteve në xhemat.",
+      "features": [
+        "Pamje e vakijave të sotme (kohët e namazit) në krye të faqes",
+        "Akses i shpejtë i personalizueshëm (Quick Access) me deri në 8 funksione të preferuara",
+        "Shfaqja e njoftimeve më të fundit me mundësi leximi të shpejtë",
+        "Kalendari i ngjarjeve të ardhshme me informacione RSVP",
+        "Njoftime për mesazhe të palexuara dhe përmbajtje të reja"
+      ],
+      "admin": "Admini sheh statistika të zgjeruara: numri total i anëtarëve, numri i përdoruesve aktivë, statistikat e njoftimeve dhe ngjarjeve, detyrat aktive në seksione, dhe tendencat e aktivitetit. Dashboard i mundëson adminit një pamje të shpejtë të të gjitha aspekteve të xhematit në një vend.",
+      "member": "Anëtarët shohin një dashboard të personalizuar me seksionet e tyre, detyrat e caktuara, mesazhet e palexuara, ngjarjet e ardhshme dhe njoftimet më të fundit. Çdo anëtar mund ta personalizojë widget-in e tyre Quick Access me funksionet më të përdorura."
+    },
+    "users": {
+      "title": "Përdoruesit",
+      "description": "Moduli për menaxhimin e të gjithë anëtarëve të xhematit dhe lidhjeve të tyre familjare. Këtu ruhen profile të detajuara të anëtarëve me informacione kontakti, kategori të përkatësisë dhe histori aktiviteti. Sistemi mbështet krijimin e lidhjeve familjare midis anëtarëve.",
+      "features": [
+        "Profile të detajuara me foto, të dhëna kontakti dhe profesion",
+        "Sistemi i roleve: Admin, Anëtar i Bordit, Anëtar, Anëtar i Familjes",
+        "Kategoritë e anëtarëve: Burra, Gra, Prindër, Fëmijë",
+        "Lidhje familjare (bashkëshort, fëmijë, prind, vëlla, motër)",
+        "Statusi i anëtarësisë: aktiv, pasiv, anëtar i familjes",
+        "Ndjekja e datës së anëtarësimit dhe arsyes së pasivitetit"
+      ],
+      "admin": "Admini ka kontroll të plotë mbi përdoruesit: mund të krijojë llogari të reja, të modifikojë të gjitha të dhënat (emri, mbiemri, email, telefoni, adresa, profesioni), të caktojë role dhe kategori, të vendosë statusin e aktivitetit, të krijojë lidhje familjare midis anëtarëve. Admini sheh të gjithë anëtarët dhe mund t'i filtrojë sipas kritereve të ndryshme. Sistemi gjithashtu mbështet ngarkimin masiv të përdoruesve përmes skedarit Excel.",
+      "member": "Çdo anëtar mund të shohë dhe modifikojë profilin e tyre - të ndryshojë të dhënat e tyre bazë si emri, mbiemri, email, telefoni, profesioni dhe adresa. Anëtarët mund të shohin profilet e anëtarëve të tjerë (në varësi të cilësimeve të privatësisë) por nuk mund të ndryshojnë të dhënat e të tjerëve as të caktojnë role."
+    },
+    "announcements": {
+      "title": "Njoftimet",
+      "description": "Sistemi për publikimin e informacioneve të rëndësishme dhe komunikimin me anëtarët e xhematit. Njoftimet mund të jenë të përgjithshme ose të kategorizuara, me mundësi formatimi të tekstit, shtimi i imazheve dhe planifikimi i publikimit.",
+      "features": [
+        "Kategorizimi i njoftimeve: Xhemat, IZBCH (Bashkësia Islame e BiH Zvicër), IZ (Bashkësia Islame), Të tjera",
+        "Redaktues i pasur teksti për formatim profesional të përmbajtjes",
+        "Mundësia e publikimit të menjëhershëm ose planifikimi për datë dhe kohë të caktuar",
+        "Statusi i njoftimeve: publikuar, arkivuar",
+        "Njoftime automatike për anëtarët për njoftime të reja",
+        "Njoftime publike të dukshme - të dukshme edhe për mysafirët pa hyrje"
+      ],
+      "admin": "Administratorët krijojnë, modifikojnë dhe fshijnë njoftime. Mund të përdorin redaktuesin e pasur të tekstit për formatim (bold, italic, lista, tituj), të shtojnë kategori, të vendosin statusin dhe të vendosin nëse njoftimi do të publikohet menjëherë ose planifikohet për më vonë. Admini sheh statistikat e shikimeve të njoftimeve.",
+      "member": "Anëtarët mund të shfletojnë të gjitha njoftimet e publikuara, t'i filtrojnë sipas kategorive dhe marrin njoftime kur publikohet një njoftim i ri. Sistemi ndjek cilat njoftime janë lexuar tashmë nga anëtari dhe shfaq numrin e njoftimeve të reja në navigim.",
+      "all": "Mysafirët (përdoruesit e palogarizuar) mund të shohin të gjitha njoftimet e publikuara që mundëson informimin e komunitetit më të gjerë pa nevojën për hyrje në sistem."
+    },
+    "events": {
+      "title": "Ngjarjet",
+      "description": "Sistem i plotë për menaxhimin e ngjarjeve në xhemat me kalendar, funksionalitete RSVP dhe data të rëndësishme. Mundëson organizimin e iftar-eve, mevlud-eve, programeve edukative, aktiviteteve sportive dhe ngjarjeve të tjera sociale.",
+      "features": [
+        "Kalendari me pamje mujore dhe shënjimin e datave të ngjarjeve",
+        "Sistemi RSVP me mundësi regjistrimi të të rriturve dhe fëmijëve",
+        "Kategoritë: Iftar, Mevlud, Edukim, Sport, Humanitar, Rinia, GAM",
+        "Data të rëndësishme (Bajram, Ramazan, etj.) që përsëriten çdo vit",
+        "Dërgimi automatik i kujtuesve para ngjarjes",
+        "Mundësia e shtimit të ngjarjes në kalendarin personal",
+        "Evidenca e konfirmimeve të arritjes me numrin e personave"
+      ],
+      "admin": "Admini krijon ngjarje me të gjitha detajet: emri, përshkrimi, vendndodhja, data dhe koha, kategoria, numri maksimal i pjesëmarrësve. Mund të shohë listën e të gjithëve që kanë konfirmuar arritjen (RSVP), numrin e të rriturve dhe fëmijëve. Admini menaxhon datat e rëndësishme që sistemi automatikisht i shfaq çdo vit. Mund të dërgojë kujtues anëtarëve para ngjarjes.",
+      "member": "Anëtarët shfletojnë ngjarjet e ardhshme dhe të kaluara, mund të konfirmojnë arritjen e tyre (RSVP) me numrin e të rriturve dhe fëmijëve, marrin njoftime për ngjarje të reja dhe kujtues. Çdo anëtar mund ta shtojë ngjarjen në kalendarin e tyre personal (Google Calendar, Apple Calendar, etj.). Sistemi nuk lejon regjistrim retroaktiv në ngjarjet e kaluara.",
+      "all": "Mysafirët mund të shohin të gjitha ngjarjet e publikuara që mundëson përfshirjen e komunitetit më të gjerë. Mysafirët mund të konfirmojnë arritjen në ngjarjet publike pa hyrje."
+    },
+    "workgroups": {
+      "title": "Seksionet (Grupet e Punës)",
+      "description": "Sistemi për organizimin e anëtarëve në grupe pune sipas aktiviteteve dhe fushave të punës. Çdo seksion mund të ketë detyrat e tij, moderatorët dhe anëtarët. Seksionet mund të jenë publike (të dukshme për të gjithë) ose private (akses vetëm për anëtarët e miratuar).",
+      "features": [
+        "Krijimi i një numri të pakufizuar seksionesh (p.sh. Administrata, Ushqimi Halal, Iftar, Pastrimi)",
+        "Seksione publike dhe private me kontroll të aksesit",
+        "Sistemi i moderatorëve - anëtarë me të drejta menaxhimi të seksionit",
+        "Detyra me shumë përdorues - caktimi i detyrës për disa anëtarë njëkohësisht",
+        "Ndjekja e statusit të detyrave: Në vazhdim, Në pritje të miratimit, I përfunduar",
+        "Prioritetet e detyrave: Të ulët, Mesatar, Të lartë",
+        "Afatet për përfundimin e detyrave",
+        "Sistemi i pikëve për detyrat e përfunduara"
+      ],
+      "admin": "Admini krijon seksione, vendos emrin, përshkrimin dhe dukshmërinë e tyre (publike/private). Shton anëtarë në seksione dhe vendos moderatorë. Admini mund të krijojë detyra me prioritet, afat dhe përshkrim, dhe t'i caktojë ato një anëtari, shumë anëtarëve njëkohësisht ose të gjithë anëtarëve të seksionit. Admini miraton detyrat që anëtarët i shënojnë si të përfunduara.",
+      "moderator": "Moderatorët e seksionit kanë të njëjtat të drejta si admini brenda seksionit të tyre. Mund të krijojnë detyra, t'i caktojnë ato anëtarëve, të miratojnë detyrat e përfunduara dhe të menaxhojnë anëtarësinë në seksion. Moderatorët nuk mund ta fshijnë seksionin por mund të menaxhojnë plotësisht detyrat e tij.",
+      "member": "Anëtarët shohin të gjitha seksionet ku janë anëtarë, mund të shfletojnë detyrat e caktuara atyre, të shënojnë detyrat si të përfunduara (pas së cilës presin miratimin admin/moderator) dhe të fitojnë pikë. Anëtarët mund të kërkojnë akses në seksionet private, dhe admin/moderatori miraton kërkesat."
+    },
+    "messages": {
+      "title": "Mesazhet",
+      "description": "Sistemi i brendshëm i mesazheve që i mundëson administrimit të dërgojë mesazhe anëtarëve. Mesazhet mund të dërgohen të gjithë anëtarëve njëkohësisht ose të synuara sipas kategorive specifike (Burra, Gra, Prindër, Fëmijë).",
+      "features": [
+        "Dërgimi i mesazheve të gjithë anëtarëve ose kategorive specifike",
+        "Redaktues i pasur teksti për formatimin e mesazheve",
+        "Njoftime automatike për mesazhe të palexuara",
+        "Ndjekja e statusit të mesazheve (lexuar/i palexuar)",
+        "Arkiva e të gjitha mesazheve të dërguara dhe të marra",
+        "Numëruesi i mesazheve të palexuara në navigim"
+      ],
+      "admin": "Administratorët mund të krijojnë mesazhe të reja duke përdorur redaktuesin e pasur të tekstit. Gjatë dërgimit zgjedhin grupin e synuar: të gjithë anëtarët, ose kategori specifike (vetëm burra, vetëm gra, vetëm prindër, vetëm fëmijë). Admini sheh statistikat e sa anëtarë kanë marrë dhe lexuar mesazhin. Mesazhet ruhen në arkivë dhe mund të kërkohen.",
+      "member": "Anëtarët marrin mesazhe nga administrata në inbox-in e tyre. Sistemi njofton automatikisht anëtarët për mesazhe të reja duke shfaqur një emblemë të kuqe me numrin e të palexuarve. Anëtarët mund të lexojnë, arkivojnë dhe kërkojnë mesazhet e tyre. Nuk mund të dërgojnë mesazhe anëtarëve të tjerë - ky është një kanal komunikimi njëdrejtimësh nga administrata te anëtarët."
+    },
+    "askImam": {
+      "title": "Pyetjet për Imamin",
+      "description": "Sistem privat që u mundëson anëtarëve të bëjnë pyetje islame imamit të xhematit. Çdo anëtar mund të bëjë pyetje, të ndjekë statusin e tij dhe të marrë përgjigje. Pyetjet janë private - çdo anëtar sheh vetëm pyetjet e veta.",
+      "features": [
+        "Privatësia - çdo anëtar sheh vetëm pyetjet e veta",
+        "Kategoritë e pyetjeve për organizim më të lehtë",
+        "Statusi i pyetjes: Aktiv ose Arkivuar (i përgjigjur)",
+        "Njoftime kur pyetja është arkivuar (i përgjigjur)",
+        "Historia e të gjitha pyetjeve të bëra",
+        "Numëruesi i përgjigjeve të reja në navigim"
+      ],
+      "admin": "Admini (imami) sheh të gjitha pyetjet e të gjithë anëtarëve. Mund të shfletojë pyetjet aktive, t'u përgjigjet atyre (jashtë aplikacionit - me telefon, email ose personalisht) dhe pastaj të arkivojë pyetjen që automatikisht njofton anëtarin se përgjigja është dhënë. Admini mund t'i filtrojë pyetjet sipas statusit dhe kategorisë, dhe të shohë kush ka bërë çdo pyetje.",
+      "member": "Anëtarët mund të bëjnë pyetje të reja me përshkrim të detajuar. Marrin njoftim kur admini arkivon pyetjen e tyre që tregon se përgjigja është dhënë. Çdo anëtar sheh vetëm pyetjet e veta - nuk mund të shohë çfarë pyesin anëtarët e tjerë. Kjo siguron privatësinë në bërjen e pyetjeve personale ose të ndjeshme islame."
+    },
+    "requests": {
+      "title": "Kërkesat dhe Aplikimet",
+      "description": "Sistem qendror për paraqitjen dhe përpunimin e llojeve të ndryshme të kërkesave të anëtarëve ndaj xhematit. Përfshin kërkesa për ndihmë materiale, organizimin e dasmave, lindjes, vdekjes, si dhe aplikimet për anëtarësi të re.",
+      "features": [
+        "Llojet e kërkesave: Ndihmë Materiale, Martesë, Lindje, Vdekje, Të ndryshme, Anëtarësi",
+        "Ndjekja e statusit: Në pritje, Miratuar, Refuzuar",
+        "Përshkrime të detajuara të kërkesave me informacione shtesë",
+        "Njoftime për ndryshimin e statusit të kërkesës",
+        "Historia e të gjitha kërkesave me data dhe vendime",
+        "Aplikimi publik për anëtarësi - i disponueshëm edhe për mysafirët"
+      ],
+      "admin": "Admini sheh të gjitha kërkesat e të gjithë anëtarëve të organizuara sipas llojeve dhe statusit. Mund të shfletojë detajet e çdo kërkese, ta miratojë ose refuzojë atë me shënim. Sistemi mundëson filtrimin e kërkesave sipas llojit, statusit dhe anëtarit. Admini merr njoftime për kërkesa të reja dhe mund të shohë statistika të kërkesave sipas muajve.",
+      "member": "Anëtarët paraqesin kërkesa te xhemati me përshkrim të detajuar të situatës ose nevojës së tyre. Pas paraqitjes, mund të ndjekin statusin e kërkesës së tyre (në pritje, miratuar, refuzuar) dhe marrin njoftime kur admini ndryshon statusin. Anëtarët shohin historinë e të gjitha kërkesave të tyre me datat e paraqitjes dhe vendimeve.",
+      "all": "Mysafirët (përdoruesit e palogarizuar) mund të paraqesin aplikim për anëtarësi në xhemat pa nevojën për llogari ekzistuese. Fusin të dhënat e tyre bazë (emri, mbiemri, email, telefoni) dhe arsyen e aplikimit. Admini pastaj përpunon aplikimin dhe krijon llogari përdoruesi nëse aplikimi miratohet."
+    },
+    "shop": {
+      "title": "DžematShop (Dyqani)",
+      "description": "Treg i brendshëm ku anëtarët mund të blejnë dhe shesin artikuj brenda xhematit. Admini publikon artikuj në emër të anëtarëve, dhe blerësit e interesuar kontaktojnë shitësin drejtpërdrejt. Të gjitha çmimet janë në CHF (franga zviceran).",
+      "features": [
+        "Artikuj me fotografi, përshkrim dhe çmim në CHF",
+        "Kategoritë e produkteve për kërkim më të lehtë",
+        "Statusi i produktit: Aktiv ose I përfunduar (i shitur)",
+        "Informacione kontakti të shitësit",
+        "Njoftime për artikuj të rinj",
+        "Galeria e imazheve për çdo produkt",
+        "Filtrimi sipas kategorive dhe statusit"
+      ],
+      "admin": "Admini shton produkte të reja me të gjitha detajet: emri, çmimi (CHF), përshkrimi i detajuar, fotografitë (mund të jetë më shumë imazhe) dhe informacione kontakti të shitësit. Mund të modifikojë produktet ekzistuese, të ndryshojë çmimet, të shtojë imazhe të reja. Kur artikulli shitet, admini e shënon si 'I përfunduar'. Admini merr njoftime kur një anëtar klikon butonin 'Blej' që tregon interes.",
+      "member": "Anëtarët shfletojnë të gjithë produktet aktive, mund t'i filtrojnë sipas kategorive dhe të shohin përshkrime të detajuara me imazhe. Kur gjejnë një artikull që u intereson, klikojnë 'Blej' që hap informacionet e kontaktit të shitësit. Anëtari pastaj kontakton shitësin drejtpërdrejt (me telefon, email ose personalisht) për të rënë dakord për detajet e blerjes. Sistemi njofton anëtarët për produkte të reja."
+    },
+    "vaktija": {
+      "title": "Vaktija (Kohët e Namazit)",
+      "description": "Shfaqja e kohëve islame të namazit (namazit) për çdo ditë. Vakijat mund të ngarkohen automatikisht nga skedari CSV nga faqja e internetit SwissMosque.ch dhe shfaqen të organizuara sipas muajve.",
+      "features": [
+        "Ngarkimi automatik nga skedari CSV (formati SwissMosque.ch)",
+        "Shfaqje mujore e vakijave në format akordeoni",
+        "Vaktija e sotme e theksuar në Dashboard",
+        "Shfaqja e të pesë namazeve ditore: Sabah, Lindja e diellit, Dreka, Ikindija, Akshami, Jacia",
+        "Mundësia e fshirjes së të gjitha vakijave dhe ringarkimit",
+        "Disponueshmëria për të gjithë përdoruesit, përfshirë mysafirët"
+      ],
+      "admin": "Admini ngarkon vakijat përmes skedarit CSV që shkarkohet nga faqja SwissMosque.ch. Sistemi automatikisht e analizon skedarin dhe ngarkon të gjitha vakijat për vitin. Admini mund të fshijë të gjitha vakijat ekzistuese dhe të ngarkojë të reja (p.sh. në fillim të vitit të ri). Sistemi është dizajnuar të njohë automatikisht formatin e datës dhe kohës nga skedari CSV.",
+      "member": "Anëtarët shfletojnë vakijat e organizuara sipas muajve në format akordeoni (vetëm një muaj mund të jetë i hapur njëkohësisht për pamje më të qartë). Vaktija e sotme shfaqet automatikisht në krye të Dashboard-it sapo përdoruesi hyn, duke mundësuar akses të shpejtë në informacionin më të rëndësishëm.",
+      "all": "Të gjithë përdoruesit (përfshirë mysafirët) kanë akses në vaktija. Kjo do të thotë që edhe njerëzit që nuk janë anëtarë të xhematit mund të kontrollojnë kohët e namazit, duke e bërë informacionin të disponueshëm publikisht për komunitetin më të gjerë."
+    },
+    "finances": {
+      "title": "Financat",
+      "description": "Evidenca e të gjitha kontributeve financiare të anëtarëve të xhematit. Sistemi mundëson ndjekjen e pagesave, kategorizimin sipas qëllimit dhe lidhjen me projektet. Të gjitha transaksionet regjistrohen dhe ruhen në bazën e të dhënave.",
+      "features": [
+        "Kategoritë e pagesave: Kotizacioni, Donacioni, Vakëfi, Sergija, Të tjera",
+        "Lidhja e pagesave me projektet",
+        "Përditësimi automatik i shumës së projektit gjatë shtimit të pagesës",
+        "Filtrimi i pagesave sipas kategorive, anëtarëve dhe projekteve",
+        "Raporte me shuma sipas kategorive",
+        "Sistemi i pikëve - çdo CHF sjell pikë anëtarit",
+        "Historia e të gjitha transaksioneve me data"
+      ],
+      "admin": "Admini shton pagesa me të gjitha detajet: anëtari që ka paguar, shuma në CHF, qëllimi (kategoria), data e pagesës, lidhja opsionale me projektin. Mund të modifikojë pagesat ekzistuese dhe t'i fshijë ato në rast gabimi. Admini sheh të gjitha pagesat e të gjithë anëtarëve, mund t'i filtrojë sipas kategorive dhe të nxjerrë raporte. Sistemi automatikisht cakton pikë anëtarëve për pagesat e tyre.",
+      "member": "Anëtarët mund të shfletojnë vetëm pagesat e tyre dhe historinë e tyre. Shohin sa kanë paguar gjithsej, sipas cilave kategori dhe cilat projekte janë mbështetur nga pagesat e tyre. Nuk mund të shtojnë, ndryshojnë ose fshijnë pagesa - këtë mund ta bëjë vetëm admini. Anëtarët shohin pikët që kanë fituar përmes kontributeve të tyre financiare."
+    },
+    "projects": {
+      "title": "Projektet",
+      "description": "Menaxhimi i projekteve më të mëdha të xhematit që kërkojnë mbledhjen e fondeve. Çdo projekt ka një shumë të synuar, progres aktual dhe mundësinë e lidhjes së kontributeve financiare direkt me projektin.",
+      "features": [
+        "Krijimi i projekteve me shumë të synuar në CHF",
+        "Ndjekja automatike e shumës aktuale përmes pagesave të lidhura",
+        "Shfaqje vizuale e progresit (shiriti i progresit)",
+        "Statusi i projekteve: Aktiv, I përfunduar, I pezulluar",
+        "Përshkrim i detajuar dhe qëllimi i projektit",
+        "Statistikat e donacioneve sipas projektit",
+        "Dukshmëria publike e projekteve"
+      ],
+      "admin": "Admini krijon projekte të reja me emër, përshkrim të detajuar, shumë të synuar dhe status. Kur një anëtar paguan para, admini mund ta lidhë atë pagesë me projektin, që automatikisht përditëson shumën aktuale të projektit. Admini mund të modifikojë projektet, të ndryshojë statusin dhe të shohë listën e të gjitha donacioneve të lidhura me projektin. Sistemi automatikisht llogarit përqindjen e përmbushjes së qëllimit.",
+      "member": "Anëtarët shfletojnë të gjitha projektet e xhematit, shohin progresin e mbledhjes së fondeve dhe mund të informohen për qëllimin e projektit. Kur një anëtar paguan para dhe admini i lidh ato me projektin, kjo regjistrohet si kontribut në projekt dhe anëtari merr një aktivitet të veçantë në Activity Log. Anëtarët shohin një pamje transparente se si përdoren kontributet e tyre."
+    },
+    "activity": {
+      "title": "Aktivitetet (Activity Log)",
+      "description": "Evidenca e plotë e të gjitha aktiviteteve të anëtarëve në aplikacion. Sistemi automatikisht ndjek kush ka bërë çfarë, kur dhe sa pikë ka fituar. Kjo mundëson transparencë dhe gamifikacion përmes sistemit të shpërblimeve.",
+      "features": [
+        "Regjistrimi automatik i të gjitha aktiviteteve",
+        "Llojet e aktiviteteve: Detyra e përfunduar, Pjesëmarrja në ngjarje, Kontributi financiar, Kontributi në projekt",
+        "Caktimi i pikëve për aktivitete të ndryshme",
+        "Filtrimi i aktiviteteve sipas përdoruesit dhe llojit",
+        "Shfaqja e datës dhe kohës së çdo aktiviteti",
+        "Lidhja e aktiviteteve me entitete (detyra, ngjarje, projekt)",
+        "Raporte për anëtarët më aktivë"
+      ],
+      "admin": "Admini sheh aktivitetin e plotë të të gjithë anëtarëve. Mund ta filtrojë sipas anëtarit për të parë të gjitha aktivitetet e një personi, ose sipas llojit të aktivitetit për të parë p.sh. të gjitha detyrat e përfunduara. Admini përdor këto të dhëna për raporte mbi angazhimin e anëtarëve, ndjekjen e tendencave dhe shpërblimin e anëtarëve më aktivë. Mund të shohë statistikat e aktivitetit sipas muajve.",
+      "member": "Anëtarët shohin historinë e tyre personale të aktivitetit - çfarë kanë bërë në aplikacion dhe sa pikë kanë fituar për çdo aktivitet. Kjo përfshin detyrat e përfunduara, pjesëmarrjet në ngjarje, kontributet financiare dhe kontributet në projekte. Anëtarët mund të ndjekin progresin e tyre dhe të shohin sa aktivë janë në xhemat."
+    },
+    "badges": {
+      "title": "Simbolet (Badges)",
+      "description": "Sistemi i shpërblimeve dhe njohjes për anëtarët aktivë të xhematit. Simbolet jepen automatikisht (bazuar në arritje) ose manualisht (nga admini) për kontribut të veçantë në komunitet.",
+      "features": [
+        "Krijimi i simboleve me emër, përshkrim dhe kritere",
+        "Dhënia automatike bazuar në kushte (p.sh. 100 pikë, 10 detyra të përfunduara)",
+        "Dhënia manuale nga admini për arritje të veçanta",
+        "Shfaqja e simboleve të fituara në profilin e anëtarit",
+        "Lloje të ndryshme simbolesh: Bronz, Argjend, Ar, Special",
+        "Dukshmëria publike e simboleve të fituara",
+        "Njoftime kur anëtari fiton simbol të ri"
+      ],
+      "admin": "Admini krijon simbole të reja duke përcaktuar emrin e tyre, përshkrimin, kushtet për fitimin dhe llojin. Mund të vendosë kritere automatike (p.sh. 'Fito 500 pikë' ose 'Përfundo 20 detyra') ose të japë manualisht simbole anëtarëve për kontribut të veçantë. Admini sheh statistikat se kush ka fituar cilat simbole dhe mund të modifikojë ose fshijë simbolet ekzistuese.",
+      "member": "Anëtarët marrin automatikisht simbole kur plotësojnë kushtet e vendosura. Marrin njoftim kur fitojnë simbol të ri dhe mund të shohin të gjitha simbolet e tyre në profil. Simbolet shërbejnë si motivim për pjesëmarrje aktive në jetën e xhematit dhe janë njohje e dukshme për kontributin e tyre në komunitet."
+    },
+    "points": {
+      "title": "Sistemi i Pikëve",
+      "description": "Sistem gamifikimi që shpërblen aktivitetin e anëtarëve përmes caktimit të pikëve. Pikët jepen automatikisht për aktivitete të ndryshme dhe mund të përdoren për renditjen e anëtarëve ose dhënien e privilegjeve të veçanta.",
+      "features": [
+        "Pikë për pjesëmarrje në ngjarje (RSVP)",
+        "Pikë për detyra të përfunduara në seksione",
+        "Pikë për kontribute financiare (1 CHF = X pikë)",
+        "Pikë për kontribute në projekte",
+        "Vlera të personalizueshme të pikëve për çdo aktivitet",
+        "Leaderboard (tabela e renditjes) e anëtarëve",
+        "Numri total i pikëve i dukshëm në profil"
+      ],
+      "admin": "Admini në Cilësimet e Pikëve përcakton sa pikë jepen për çdo aktivitet: sa për pjesëmarrje në ngjarje, sa për detyrë të përfunduar, sa pikë për CHF për kontribute financiare. Admini mund të ndryshojë këto vlera në çdo kohë. Sistemi automatikisht aplikon rregullat e reja në aktivitetet e ardhshme. Admini sheh leaderboard-in e të gjithë anëtarëve të renditur sipas pikëve.",
+      "member": "Anëtarët mbledhin automatikisht pikë përmes aktiviteteve të tyre. Çdo herë që marrin pjesë në ngjarje, përfundojnë detyrë ose japin kontribut financiar, marrin një numër të caktuar pikësh. Shohin numrin e tyre total të pikëve në profil dhe pozicionin në leaderboard. Pikët shërbejnë si motivim për pjesëmarrje më aktive dhe japin dukshmëri kontributit të çdo anëtari."
+    },
+    "certificates": {
+      "title": "Mirënjohjët (Certifikatat)",
+      "description": "Sistemi për krijimin dhe lëshimin e certifikatave të mirënjohjes për anëtarët për kontributin e tyre në xhemat. Administratorët mund të dizajnojnë shabllone me imazhe sfondi dhe të personalizojnë çdo certifikatë me emrin e anëtarit, përshkrimin e kontributit dhe datën e lëshimit.",
+      "features": [
+        "Krijimi i shablloneve me imazhe sfondi PNG",
+        "Personalizimi për çdo anëtar (emri, mbiemri, përshkrimi)",
+        "Shtimi automatik i datës së lëshimit",
+        "Shkarkimi i certifikatave në format PDF",
+        "Historia e të gjitha certifikatave të lëshuara",
+        "Pamja e certifikatave personale për çdo anëtar",
+        "Mundësia e rilëshimit të së njëjtës certifikatë"
+      ],
+      "admin": "Admini krijon shabllone certifikatash duke ngarkuar imazhe sfondi PNG me pamje profesionale. Për çdo certifikatë mund të vendosë emrin e shabllonit dhe përshkrimin. Kur dëshiron të lëshojë certifikatë për një anëtar, zgjedh shabllonin, zgjedh anëtarin nga lista, fut përshkrim të detajuar për çfarë jepet njohja dhe sistemi automatikisht gjeneron një certifikatë të personalizuar me emrin e anëtarit dhe datën aktuale. Admini sheh të gjitha certifikatat e lëshuara të të gjithë anëtarëve dhe mund t'i shkarkojë ato si PDF.",
+      "member": "Anëtarët aksesojnë modulin e tyre 'Mirënjohjët e Mia' ku shohin të gjitha certifikatat që u janë lëshuar gjatë anëtarësisë. Për çdo certifikatë shohin sfondin e shabllonit, tekstin e tyre dhe datën e lëshimit. Mund t'i shkarkojnë certifikatat e tyre në format PDF për ruajtje ose printim. Sistemi mban historinë e plotë të të gjitha certifikatave të anëtarit."
+    },
+    "documents": {
+      "title": "Dokumentet",
+      "description": "Bibliotekë e centralizuar për ruajtjen dhe ndarjen e dokumenteve të rëndësishme të xhematit. Administratorët mund të ngarkojnë dokumente PDF (statuti, rregulloret, procesverbalet, raportet) dhe t'i bëjnë ato të disponueshme për anëtarët me kontroll të dukshmërisë.",
+      "features": [
+        "Ngarkimi i dokumenteve PDF me përshkrim dhe kategori",
+        "Kontrolli i dukshmërisë: Të gjithë anëtarët ose Vetëm adminët/Bordi",
+        "Kategoritë: Statuti, Procesverbali, Raporti, Rregullorja, Të tjera",
+        "Data e ngarkimit dhe informacioni për ngarkuesin",
+        "Shikimi dhe shkarkimi i dokumenteve",
+        "Kërkimi sipas emrit ose kategorisë",
+        "Ruajtja e sigurt në bazën e të dhënave"
+      ],
+      "admin": "Admini ngarkon dokumente me emër, përshkrim të detajuar, kategori dhe cilësim dukshmërie. Mund të vendosë nëse dokumenti do të jetë i dukshëm për të gjithë anëtarët ose vetëm për administratorët dhe anëtarët e bordit. Admini mund të modifikojë dokumentet ekzistuese (emri, përshkrimi, kategoria, dukshmëria) ose t'i fshijë ato. Sheh listën e plotë të të gjitha dokumenteve me info kush dhe kur ka ngarkuar.",
+      "member": "Anëtarët shfletojnë dokumentet që u janë të disponueshme sipas cilësimeve të dukshmërisë. Mund t'i filtrojnë dokumentet sipas kategorive, të kërkojnë sipas emrit dhe të shkarkojnë dokumentet PDF në pajisjen e tyre. Çdo anëtar sheh datën e ngarkimit dhe një përshkrim të shkurtër të dokumentit para se ta shkarkojë. Anëtarët nuk mund të ngarkojnë ose ndryshojnë dokumente."
+    },
+    "media": {
+      "title": "Media (Livestream)",
+      "description": "Moduli për transmetimet livestream të namazit të xhumasë, ligjëratave dhe programeve të tjera përmes platformës YouTube. Administratorët vendosin lidhjen YouTube që shfaqet për të gjithë anëtarët dhe mysafirët në kohë reale.",
+      "features": [
+        "Player video YouTube i integruar",
+        "Detektimi automatik i transmetimit live",
+        "I disponueshëm për të gjithë përdoruesit përfshirë mysafirët",
+        "Cilësimet e lidhjes livestream nga admini",
+        "Opsioni i ekranit të plotë për shfaqje më të mirë",
+        "Përditësimi automatik pa rifreskimin e faqes"
+      ],
+      "admin": "Admini në cilësimet e Livestream fut lidhjen YouTube (URL) të kanalit ose videos që përdoret për transmetimet. Lidhja integrohet automatikisht në aplikacion dhe bëhet e disponueshme për të gjithë përdoruesit. Admini mund ta ndryshojë lidhjen në një kanal ose video të ri në çdo kohë. Nuk kërkohet njohuri teknike - thjesht kopjoni URL-në e YouTube dhe sistemi automatikisht e shfaq atë.",
+      "member": "Anëtarët aksesojnë modulin Livestream ku mund të shikojnë transmetimet live të namazit të xhumasë, mevludeve, ligjëratave dhe programeve të tjera drejtpërdrejt nga aplikacioni. Playeri i videos ka kontrolle standarde (luaj, pauzë, volumi, ekran i plotë) dhe automatikisht detekton kur transmetimi është live. Nuk kërkohet regjistrimi në YouTube për shikimin.",
+      "all": "Mysafirët (përdoruesit e paloguar) gjithashtu kanë akses në modulin livestream që mundëson komunitetin më të gjerë të ndjekë programin e xhematit pa nevojën për hyrje. Kjo zgjeron shtrirjen e transmetimit dhe mundëson përfshirjen e të gjithë të interesuarve."
+    },
+    "settings": {
+      "title": "Cilësimet",
+      "description": "Konfigurimi i informacioneve bazë për xhematin, cilësimet e aplikacionit dhe të dhënat personale të përdoruesit. Këtu gjenden të gjitha cilësimet administrative që kontrollojnë se si funksionon aplikacioni.",
+      "features": [
+        "Të dhënat bazë për xhematin (emri, adresa, kontakti)",
+        "Email dhe telefoni për kontakt",
+        "Cilësimet e livestream (lidhja YouTube)",
+        "Konfigurimi i sistemit të pikëve",
+        "Ndryshimi i fjalëkalimit",
+        "Cilësimet e njoftimeve",
+        "Logoja dhe identiteti vizual"
+      ],
+      "admin": "Admini ka akses në të gjitha cilësimet: mund të modifikojë informacionet për xhematin (emri, adresa, qyteti, kodi postar, telefoni, email), të vendosë lidhjen YouTube për livestream, të konfigurojë vlerat e pikëve për aktivitete të ndryshme, të vendosë logon e xhematit. Admini mund ta ndryshojë fjalëkalimin e tij dhe cilësimet e profilit të tij.",
+      "member": "Anëtarët kanë akses të kufizuar në cilësime - mund ta ndryshojnë fjalëkalimin e tyre dhe të modifikojnë të dhënat bazë të profilit të tyre (emri, mbiemri, email, telefoni, profesioni, adresa). Nuk mund të ndryshojnë cilësimet e aplikacionit ose informacionet për xhematin."
+    }
+  },
+  "additionalInfo": {
+    "title": "Informacione shtesë dhe këshilla",
+    "notifications": "Aplikacioni shfaq tregues emblemash të kuqe për përmbajtje të re në module të ndryshme. Numri në emblemë tregon sa artikuj të rinj ekzistojnë.",
+    "autoRefresh": "Njoftimet dhe numëruesit rifresk ohen automatikisht çdo 30 sekonda pa nevojën për rifreskimin manual të faqes.",
+    "dateFormat": "Të gjitha datat në aplikacion shfaqen në format evropian dd.mm.yyyy (ditë.muaj.vit).",
+    "currency": "Të gjitha çmimet në modulet DžematShop dhe Financa janë të shprehura në CHF (franga zvicerane).",
+    "guestAccess": "Përmbajtje të caktuara (njoftime, ngjarje, vaktija) janë të disponueshme edhe për mysafirët pa hyrje.",
+    "security": "Aplikacioni përdor enkriptimin e të dhënave, fjalëkalime të sigurta dhe backup-e të rregullta.",
+    "support": "Për ndihmë teknike ose pyetje rreth përdorimit të aplikacionit, kontaktoni administratorin e xhematit.",
+    "notificationsLabel": "Njoftimet:",
+    "autoRefreshLabel": "Rifreskimi automatik:",
+    "dateFormatLabel": "Formati i datës:",
+    "currencyLabel": "Valuta:",
+    "guestAccessLabel": "Aksesi i mysafirit:",
+    "securityLabel": "Siguria:",
+    "supportLabel": "Mbështetja:"
+  }
 }

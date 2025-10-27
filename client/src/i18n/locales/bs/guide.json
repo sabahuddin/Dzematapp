@@ -271,6 +271,51 @@
       "admin": "Admin u Postavkama bodova definiše koliko bodova se dodjeljuje za svaku aktivnost: koliko za prisustvo na događaju, koliko za završen zadatak, koliko bodova po CHF za finansijske priloge. Admin može u bilo kojem trenutku promijeniti ove vrijednosti. Sistem automatski primjenjuje nova pravila na buduće aktivnosti. Admin vidi leaderboard svih članova rangiranih po bodovima.",
       "member": "Članovi automatski sakupljaju bodove kroz svoje aktivnosti. Svaki put kada prisustvuju događaju, završe zadatak ili daju finansijski prilog, dobijaju određen broj bodova. Vide svoj ukupan broj bodova na profilu i poziciju na leaderboard-u. Bodovi služe kao motivacija za aktivnije učešće i daju vidljivost doprinosu svakog člana."
     },
+    "certificates": {
+      "title": "Zahvale (Priznanja)",
+      "description": "Sistem za kreiranje i izdavanje zahvalnica članovima za njihov doprinos džematu. Administratori mogu dizajnirati template-e sa pozadinskim slikama i personalizovati svaku zahvalnicu sa imenom člana, opisom doprinosa i datumom izdavanja.",
+      "features": [
+        "Kreiranje template-a sa PNG pozadinskim slikama",
+        "Personalizacija za svakog člana (ime, prezime, opis)",
+        "Automatsko dodavanje datuma izdavanja",
+        "Preuzimanje zahvalnica u PDF formatu",
+        "Historija svih izdanih zahvalnica",
+        "Pregled ličnih zahvalnica za svakog člana",
+        "Mogućnost ponovnog izdavanja iste zahvalnice"
+      ],
+      "admin": "Admin kreira template-e zahvalnica uploadujući PNG pozadinske slike profesionalnog izgleda. Za svaku zahvalnicu može postaviti naziv template-a i opis. Kada želi izdati zahvalnicu članu, bira template, bira člana iz liste, unosi detaljan opis za šta se priznanje dodjeljuje i sistem automatski generiše personalizovanu zahvalnicu sa imenom člana i trenutnim datumom. Admin vidi sve izdane zahvalnice svih članova i može ih preuzeti kao PDF.",
+      "member": "Članovi pristupaju svom modulu 'Moje zahvale' gdje vide sve zahvalnice koje su im izdane tokom članstva. Za svaku zahvalnicu vide template pozadinu, svoj tekst i datum izdavanja. Mogu preuzeti svoje zahvalnice u PDF formatu za čuvanje ili štampanje. Sistem čuva kompletnu historiju svih zahvalnica člana."
+    },
+    "documents": {
+      "title": "Dokumenti",
+      "description": "Centralizovana biblioteka za čuvanje i dijeljenje važnih dokumenata džemata. Administratori mogu uploadovati PDF dokumente (statuti, pravilnici, zapisnici, izvještaji) i učiniti ih dostupnim članovima sa kontrolom vidljivosti.",
+      "features": [
+        "Upload PDF dokumenta sa opisom i kategorijom",
+        "Kontrola vidljivosti: Svi članovi ili Samo admini/IO",
+        "Kategorije: Statut, Zapisnik, Izvještaj, Pravilnik, Ostalo",
+        "Datum uploada i informacija ko je dodao dokument",
+        "Pregled i preuzimanje dokumenata",
+        "Pretraga po nazivu ili kategoriji",
+        "Sigurno čuvanje u bazi podataka"
+      ],
+      "admin": "Admin uploaduje dokumente sa nazivom, detaljnim opisom, kategorijom i postavkom vidljivosti. Može odlučiti da li će dokument biti vidljiv svim članovima ili samo administratorima i članovima IO. Admin može uređivati postojeće dokumente (naziv, opis, kategorija, vidljivost) ili ih brisati. Vidi kompletnu listu svih dokumenata sa info ko je i kada uploadovao.",
+      "member": "Članovi pregledaju dokumente koji su im dostupni prema postavkama vidljivosti. Mogu filtrirati dokumente po kategorijama, pretraživati po nazivu i preuzimati PDF dokumente na svoj uređaj. Svaki član vidi datum uploada i kratak opis dokumenta prije nego što ga preuzme. Članovi ne mogu uploadovati ili mijenjati dokumente."
+    },
+    "media": {
+      "title": "Media (Livestream)",
+      "description": "Modul za livestream prenose džumua, predavanja i drugih programa putem YouTube platforme. Administratori postavljaju YouTube link koji se prikazuje svim članovima i gostima u realnom vremenu.",
+      "features": [
+        "Embedovani YouTube video player",
+        "Automatska detekcija live prenosa",
+        "Dostupno svim korisnicima uključujući goste",
+        "Postavke livestream linka od strane admina",
+        "Full-screen opcija za bolji prikaz",
+        "Automatsko ažuriranje bez potrebe za osvježavanjem stranice"
+      ],
+      "admin": "Admin u Livestream postavkama unosi YouTube link (URL) kanala ili videa koji se koristi za prenose. Link se automatski embeduje u aplikaciju i postaje dostupan svim korisnicima. Admin može u bilo kojem trenutku promijeniti link na novi kanal ili video. Nema potrebe za tehničkim znanjem - samo se kopira YouTube URL i sistem ga automatski prikazuje.",
+      "member": "Članovi pristupaju Livestream modulu gdje mogu gledati live prenose džumua, mevluda, predavanja i drugih programa direktno iz aplikacije. Video player ima standardne kontrole (play, pause, volume, full-screen) i automatski detektuje kada je prenos uživo. Nije potrebna YouTube registracija za gledanje.",
+      "all": "Gosti (neprijavljeni korisnici) takođe imaju pristup livestream modulu što omogućava široj zajednici da prati program džemata bez potrebe za prijavljivanjem. Ovo proširuje doseg prenosa i omogućava uključivanje svih zainteresovanih."
+    },
     "settings": {
       "title": "Postavke",
       "description": "Konfiguracija osnovnih informacija o džematu, postavki aplikacije i ličnih podataka korisnika. Ovdje se nalaze sve administrativne postavke koje kontrolišu kako aplikacija funkcioniše.",

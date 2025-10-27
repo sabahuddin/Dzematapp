@@ -27,6 +27,9 @@ import {
   WorkspacePremium,
   FolderOpen,
   Timeline,
+  CardGiftcard,
+  Description,
+  OndemandVideo,
 } from '@mui/icons-material';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
@@ -114,6 +117,21 @@ export default function GuidePage() {
       icon: <EmojiEvents sx={{ fontSize: 28 }} />,
       key: 'points',
       color: '#d84315',
+    },
+    {
+      icon: <CardGiftcard sx={{ fontSize: 28 }} />,
+      key: 'certificates',
+      color: '#e91e63',
+    },
+    {
+      icon: <Description sx={{ fontSize: 28 }} />,
+      key: 'documents',
+      color: '#3f51b5',
+    },
+    {
+      icon: <OndemandVideo sx={{ fontSize: 28 }} />,
+      key: 'media',
+      color: '#ff5722',
     },
     {
       icon: <Settings sx={{ fontSize: 28 }} />,
@@ -250,7 +268,7 @@ export default function GuidePage() {
         </Typography>
         <Grid container spacing={2}>
           {sections.map((section, index) => (
-            <Grid item xs={12} sm={6} key={index}>
+            <Grid key={index} sx={{ width: { xs: '100%', sm: '50%' }, p: 1 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                 <Box
                   sx={{

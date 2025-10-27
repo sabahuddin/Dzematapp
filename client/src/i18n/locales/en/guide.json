@@ -271,6 +271,51 @@
       "admin": "Admin in Point Settings defines how many points are awarded for each activity: how many for event attendance, how many for completed task, how many points per CHF for financial contributions. Admin can change these values at any time. System automatically applies new rules to future activities. Admin sees leaderboard of all members ranked by points.",
       "member": "Members automatically collect points through their activities. Every time they attend event, complete task or give financial contribution, they get certain number of points. See their total points on profile and position on leaderboard. Points serve as motivation for more active participation and give visibility to each member's contribution."
     },
+    "certificates": {
+      "title": "Acknowledgements (Certificates)",
+      "description": "System for creating and issuing certificates to members for their contribution to congregation. Administrators can design templates with background images and personalize each certificate with member's name, contribution description and issue date.",
+      "features": [
+        "Creating templates with PNG background images",
+        "Personalization for each member (first name, last name, description)",
+        "Automatic addition of issue date",
+        "Download of certificates in PDF format",
+        "History of all issued certificates",
+        "Overview of personal certificates for each member",
+        "Ability to reissue same certificate"
+      ],
+      "admin": "Admin creates certificate templates by uploading professional-looking PNG background images. For each certificate can set template name and description. When wanting to issue certificate to member, selects template, chooses member from list, enters detailed description for what recognition is awarded and system automatically generates personalized certificate with member's name and current date. Admin sees all issued certificates of all members and can download them as PDF.",
+      "member": "Members access their 'My Certificates' module where they see all certificates issued to them during membership. For each certificate they see template background, their text and issue date. Can download their certificates in PDF format for saving or printing. System keeps complete history of all member's certificates."
+    },
+    "documents": {
+      "title": "Documents",
+      "description": "Centralized library for storing and sharing important congregation documents. Administrators can upload PDF documents (statutes, regulations, minutes, reports) and make them available to members with visibility control.",
+      "features": [
+        "Upload of PDF documents with description and category",
+        "Visibility control: All members or Only admins/Board",
+        "Categories: Statute, Minutes, Report, Regulation, Other",
+        "Upload date and information about uploader",
+        "View and download of documents",
+        "Search by name or category",
+        "Secure storage in database"
+      ],
+      "admin": "Admin uploads documents with name, detailed description, category and visibility setting. Can decide whether document will be visible to all members or only to administrators and board members. Admin can edit existing documents (name, description, category, visibility) or delete them. Sees complete list of all documents with info about who uploaded when.",
+      "member": "Members browse documents available to them according to visibility settings. Can filter documents by categories, search by name and download PDF documents to their device. Each member sees upload date and brief description of document before downloading it. Members cannot upload or change documents."
+    },
+    "media": {
+      "title": "Media (Livestream)",
+      "description": "Module for livestream broadcasts of Friday prayers, lectures and other programs via YouTube platform. Administrators set YouTube link that is displayed to all members and guests in real time.",
+      "features": [
+        "Embedded YouTube video player",
+        "Automatic detection of live broadcast",
+        "Available to all users including guests",
+        "Livestream link settings by admin",
+        "Full-screen option for better display",
+        "Automatic update without page refresh"
+      ],
+      "admin": "Admin in Livestream settings enters YouTube link (URL) of channel or video used for broadcasts. Link is automatically embedded in application and becomes available to all users. Admin can change link to new channel or video at any time. No technical knowledge needed - just copy YouTube URL and system automatically displays it.",
+      "member": "Members access Livestream module where they can watch live broadcasts of Friday prayers, mevluds, lectures and other programs directly from application. Video player has standard controls (play, pause, volume, full-screen) and automatically detects when broadcast is live. No YouTube registration required for watching.",
+      "all": "Guests (non-logged users) also have access to livestream module which enables wider community to follow congregation program without need for logging in. This extends broadcast reach and enables inclusion of all interested parties."
+    },
     "settings": {
       "title": "Settings",
       "description": "Configuration of basic congregation information, application settings and user personal data. Here are all administrative settings that control how application functions.",

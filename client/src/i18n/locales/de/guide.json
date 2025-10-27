@@ -271,6 +271,51 @@
       "admin": "Der Admin definiert in den Punkteeinstellungen, wie viele Punkte für jede Aktivität vergeben werden: wie viele für die Teilnahme an einer Veranstaltung, wie viele für eine abgeschlossene Aufgabe, wie viele Punkte pro CHF für finanzielle Beiträge. Der Admin kann diese Werte jederzeit ändern. Das System wendet die neuen Regeln automatisch auf zukünftige Aktivitäten an. Der Admin sieht das Leaderboard aller nach Punkten geordneten Mitglieder.",
       "member": "Mitglieder sammeln automatisch Punkte durch ihre Aktivitäten. Jedes Mal, wenn sie an einer Veranstaltung teilnehmen, eine Aufgabe abschließen oder einen finanziellen Beitrag leisten, erhalten sie eine bestimmte Anzahl von Punkten. Sie sehen ihre Gesamtzahl der Punkte im Profil und ihre Position auf dem Leaderboard. Punkte dienen als Motivation für aktivere Teilnahme und geben Sichtbarkeit des Beitrags jedes Mitglieds."
     },
+    "certificates": {
+      "title": "Anerkennungen (Urkunden)",
+      "description": "System zur Erstellung und Ausstellung von Anerkennungsurkunden an Mitglieder für ihren Beitrag zur Gemeinde. Administratoren können Vorlagen mit Hintergrundbildern gestalten und jede Urkunde mit dem Namen des Mitglieds, einer Beschreibung des Beitrags und dem Ausstellungsdatum personalisieren.",
+      "features": [
+        "Erstellung von Vorlagen mit PNG-Hintergrundbildern",
+        "Personalisierung für jedes Mitglied (Vor- und Nachname, Beschreibung)",
+        "Automatisches Hinzufügen des Ausstellungsdatums",
+        "Download von Urkunden im PDF-Format",
+        "Historie aller ausgestellten Urkunden",
+        "Übersicht persönlicher Urkunden für jedes Mitglied",
+        "Möglichkeit zur erneuten Ausstellung derselben Urkunde"
+      ],
+      "admin": "Der Admin erstellt Urkundenvorlagen durch Hochladen professionell aussehender PNG-Hintergrundbilder. Für jede Urkunde kann der Vorlagenname und die Beschreibung festgelegt werden. Wenn eine Urkunde an ein Mitglied ausgestellt werden soll, wird die Vorlage ausgewählt, das Mitglied aus der Liste gewählt, eine detaillierte Beschreibung für die Anerkennung eingegeben, und das System generiert automatisch eine personalisierte Urkunde mit dem Namen des Mitglieds und dem aktuellen Datum. Der Admin sieht alle ausgestellten Urkunden aller Mitglieder und kann sie als PDF herunterladen.",
+      "member": "Mitglieder greifen auf ihr Modul 'Meine Urkunden' zu, wo sie alle Urkunden sehen, die ihnen während ihrer Mitgliedschaft ausgestellt wurden. Für jede Urkunde sehen sie den Vorlagenhintergrund, ihren Text und das Ausstellungsdatum. Sie können ihre Urkunden im PDF-Format zum Speichern oder Drucken herunterladen. Das System bewahrt die vollständige Historie aller Urkunden des Mitglieds auf."
+    },
+    "documents": {
+      "title": "Dokumente",
+      "description": "Zentralisierte Bibliothek zur Aufbewahrung und Weitergabe wichtiger Gemeindedokumente. Administratoren können PDF-Dokumente (Satzungen, Vorschriften, Protokolle, Berichte) hochladen und sie den Mitgliedern mit Sichtbarkeitskontrolle zur Verfügung stellen.",
+      "features": [
+        "Upload von PDF-Dokumenten mit Beschreibung und Kategorie",
+        "Sichtbarkeitskontrolle: Alle Mitglieder oder nur Admins/Vorstand",
+        "Kategorien: Satzung, Protokoll, Bericht, Vorschrift, Sonstiges",
+        "Upload-Datum und Information über den Hochladenden",
+        "Anzeige und Download von Dokumenten",
+        "Suche nach Name oder Kategorie",
+        "Sichere Speicherung in der Datenbank"
+      ],
+      "admin": "Der Admin lädt Dokumente mit Name, detaillierter Beschreibung, Kategorie und Sichtbarkeitseinstellung hoch. Kann entscheiden, ob das Dokument für alle Mitglieder oder nur für Administratoren und Vorstandsmitglieder sichtbar sein soll. Der Admin kann bestehende Dokumente bearbeiten (Name, Beschreibung, Kategorie, Sichtbarkeit) oder löschen. Sieht die vollständige Liste aller Dokumente mit Informationen darüber, wer wann hochgeladen hat.",
+      "member": "Mitglieder durchsuchen Dokumente, die ihnen gemäß den Sichtbarkeitseinstellungen zur Verfügung stehen. Können Dokumente nach Kategorien filtern, nach Name suchen und PDF-Dokumente auf ihr Gerät herunterladen. Jedes Mitglied sieht das Upload-Datum und eine kurze Beschreibung des Dokuments, bevor es heruntergeladen wird. Mitglieder können keine Dokumente hochladen oder ändern."
+    },
+    "media": {
+      "title": "Medien (Livestream)",
+      "description": "Modul für Livestream-Übertragungen von Freitagsgebeten, Vorträgen und anderen Programmen über die YouTube-Plattform. Administratoren legen den YouTube-Link fest, der allen Mitgliedern und Gästen in Echtzeit angezeigt wird.",
+      "features": [
+        "Eingebetteter YouTube-Videoplayer",
+        "Automatische Erkennung von Live-Übertragungen",
+        "Verfügbar für alle Benutzer einschließlich Gäste",
+        "Einstellungen des Livestream-Links durch Admin",
+        "Vollbildoption für bessere Anzeige",
+        "Automatische Aktualisierung ohne Seitenaktualisierung"
+      ],
+      "admin": "Der Admin gibt in den Livestream-Einstellungen den YouTube-Link (URL) des Kanals oder Videos ein, der für Übertragungen verwendet wird. Der Link wird automatisch in die Anwendung eingebettet und wird für alle Benutzer verfügbar. Der Admin kann jederzeit den Link auf einen neuen Kanal oder ein neues Video ändern. Keine technischen Kenntnisse erforderlich - einfach die YouTube-URL kopieren und das System zeigt sie automatisch an.",
+      "member": "Mitglieder greifen auf das Livestream-Modul zu, wo sie Live-Übertragungen von Freitagsgebeten, Mevluds, Vorträgen und anderen Programmen direkt aus der Anwendung ansehen können. Der Videoplayer verfügt über Standardsteuerungen (Abspielen, Pause, Lautstärke, Vollbild) und erkennt automatisch, wann die Übertragung live ist. Keine YouTube-Registrierung zum Ansehen erforderlich.",
+      "all": "Gäste (nicht angemeldete Benutzer) haben ebenfalls Zugriff auf das Livestream-Modul, was es der breiteren Gemeinschaft ermöglicht, das Gemeindeprogramm ohne Anmeldung zu verfolgen. Dies erweitert die Reichweite der Übertragung und ermöglicht die Einbeziehung aller Interessierten."
+    },
     "settings": {
       "title": "Einstellungen",
       "description": "Konfiguration grundlegender Informationen über die Gemeinde, Anwendungseinstellungen und persönlicher Benutzerdaten. Hier befinden sich alle administrativen Einstellungen, die steuern, wie die Anwendung funktioniert.",
