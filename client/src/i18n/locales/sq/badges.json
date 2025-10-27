@@ -1,27 +1,60 @@
 {
   "title": "Distinktivët",
   "addBadge": "Shto Distinktiv",
+  "addNewBadge": "Shto Distinktiv të Ri",
   "editBadge": "Redakto Distinktiv",
-  "badgeDetails": "Detajet e Distinktivit",
-  "name": "Emri",
+  "deleteBadge": "Fshi Distinktiv",
+  "badgeName": "Emri i distinktivit",
   "description": "Përshkrimi",
+  "points": "Pikë të nevojshme",
   "icon": "Ikona",
-  "pointsRequired": "Pikë të nevojshme",
-  "level": "Niveli",
-  "bronze": "Bronz",
-  "silver": "Argjend",
-  "gold": "Ar",
-  "platinum": "Platinë",
+  "color": "Ngjyra",
+  "noBadges": "Nuk ka distinktivë",
   "earned": "Fituar",
   "notEarned": "Nuk është fituar",
+  "progress": "Progresi: {{current}} / {{required}} pikë",
   "myBadges": "Distinktivët e Mi",
   "allBadges": "Të gjithë Distinktivët",
-  "noBadges": "Nuk ka distinktivë",
-  "badgeCreated": "Distinktivi u krijua",
-  "badgeUpdated": "Distinktivi u përditësua",
-  "badgeDeleted": "Distinktivi u fshi",
-  "errorCreating": "Gabim gjatë krijimit të distinktivit",
-  "errorUpdating": "Gabim gjatë përditësimit të distinktivit",
-  "errorDeleting": "Gabim gjatë fshirjes së distinktivit",
-  "loading": "Duke ngarkuar..."
+  "earnedOn": "Fituar: {{date}}",
+  "requirements": "Kushtet për fitimin",
+  "tableHeaders": {
+    "name": "Emri",
+    "description": "Përshkrimi",
+    "criteriaType": "Lloji i kritereve",
+    "value": "Vlera",
+    "actions": "Veprime"
+  },
+  "criteriaType": "Lloji i kritereve",
+  "criteriaValue": "Vlera",
+  "selectType": "-- Zgjidhni llojin --",
+  "criteriaTypes": {
+    "points": "Pikë totale",
+    "tasks_completed": "Numri i detyrave të përfunduara",
+    "contributions_amount": "Shuma totale e pagesave",
+    "events_attended": "Numri i ngjarjeve të ndjekura"
+  },
+  "helperTexts": {
+    "criteriaType": "Lloji i aktivitetit të nevojshëm për të marrë distinktiv",
+    "criteriaValue": "Vlera minimale e nevojshme për të marrë distinktiv"
+  },
+  "messages": {
+    "created": "Distinktivi u krijua",
+    "updated": "Distinktivi u përditësua",
+    "deleted": "Distinktivi u fshi",
+    "errorSaving": "Gabim gjatë ruajtjes së distinktivit",
+    "errorDeleting": "Gabim gjatë fshirjes së distinktivit",
+    "errorLoading": "Gabim gjatë ngarkimit të distinktivëve. Ju lutemi provoni përsëri.",
+    "confirmDelete": "Jeni të sigurt që dëshironi të fshini këtë distinktiv?"
+  },
+  "validation": {
+    "nameRequired": "Emri është i detyrueshëm",
+    "descriptionRequired": "Përshkrimi është i detyrueshëm",
+    "criteriaTypeRequired": "Lloji i kritereve është i detyrueshëm",
+    "criteriaValuePositive": "Vlera duhet të jetë pozitive"
+  },
+  "emptyState": "Nuk ka distinktivë të përcaktuar. Shtoni një distinktiv të ri duke përdorur butonin \"Shto Distinktiv\".",
+  "accessDenied": "Nuk keni leje për të hyrë në këtë faqe.",
+  "cancel": "Anulo",
+  "save": "Ruaj",
+  "saving": "Duke ruajtur..."
 }

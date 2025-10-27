@@ -1,36 +1,48 @@
 {
   "title": "Log i Aktiviteteve",
   "myActivities": "Aktivitetet e Mia",
-  "searchPlaceholder": "Kërko aktivitete...",
-  "filterByType": "Filtro sipas llojit",
-  "allTypes": "Të gjitha llojet",
-  "user": "Përdoruesi",
   "activityType": "Lloji i aktivitetit",
-  "description": "Përshkrimi",
-  "points": "Pikë",
   "date": "Data",
-  "time": "Koha",
+  "points": "Pikë",
+  "description": "Përshkrimi",
+  "user": "Përdoruesi",
+  "type": "Lloji",
+  "unknown": "I panjohur",
+  "searchPlaceholder": "Kërko sipas përdoruesit ose përshkrimit...",
+  "filterByType": "Filtro sipas llojit",
+  "errorLoading": "Gabim gjatë ngarkimit të log-ut të aktiviteteve. Ju lutemi provoni përsëri.",
+  "types": {
+    "contribution_made": "Pagesa e kryer",
+    "task_completed": "Detyra e përfunduar",
+    "event_rsvp": "Regjistrimi në ngjarje",
+    "announcement_read": "Njoftimi i lexuar",
+    "profile_updated": "Profili u përditësua",
+    "project_contribution": "Kontributi në projekt",
+    "badge_earned": "Distinktivi i fituar"
+  },
+  "filterOptions": {
+    "all": "Të gjitha aktivitetet",
+    "task_completed": "Detyrat e përfunduara",
+    "event_rsvp": "RSVP ngjarjet",
+    "announcement_read": "Njoftimet e lexuara",
+    "contribution_made": "Pagesat e kryera",
+    "badge_earned": "Distinktivët e fituar",
+    "profile_updated": "Profili u përditësua",
+    "project_contribution": "Kontributet në projekte"
+  },
   "activityLabels": {
     "task_completed": "Detyra e përfunduar",
     "event_rsvp": "RSVP në ngjarje",
-    "announcement_read": "Njoftim i lexuar",
-    "contribution_made": "Kontribut i bërë",
-    "badge_earned": "Distinktiv i fituar",
+    "announcement_read": "Njoftimi i lexuar",
+    "contribution_made": "Pagesa e kryer",
+    "badge_earned": "Distinktivi i fituar",
     "profile_updated": "Profili u përditësua",
-    "project_contribution": "Kontribut në projekt"
-  },
-  "filterOptions": {
-    "all": "Të gjitha",
-    "task_completed": "Detyrë e përfunduar",
-    "event_rsvp": "RSVP në ngjarje",
-    "announcement_read": "Njoftim i lexuar",
-    "contribution_made": "Kontribut i bërë",
-    "badge_earned": "Distinktiv i fituar",
-    "profile_updated": "Profili u përditësua",
-    "project_contribution": "Kontribut në projekt"
+    "project_contribution": "Kontributi në projekt"
   },
   "noActivities": "Nuk ka aktivitete",
-  "errorLoading": "Gabim gjatë ngarkimit të aktiviteteve",
-  "loading": "Duke ngarkuar...",
-  "unknown": "I panjohur"
+  "totalPoints": "Pikë totale: {{points}}",
+  "allTypes": "Të gjitha llojet",
+  "thisMonth": "Këtë muaj",
+  "lastMonth": "Muajin e kaluar",
+  "thisYear": "Këtë vit"
 }

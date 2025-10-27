@@ -1,19 +1,162 @@
 {
-  "title": "Cilësimet e Organizatës",
-  "organizationInfo": "Informacione të Organizatës",
-  "name": "Emri",
-  "address": "Adresa",
-  "phone": "Telefoni",
-  "email": "Email",
-  "website": "Faqja e internetit",
-  "socialMedia": "Rrjetet Sociale",
-  "facebook": "Facebook",
-  "instagram": "Instagram",
-  "youtube": "YouTube",
-  "twitter": "Twitter",
-  "save": "Ruaj",
-  "cancel": "Anulo",
-  "settingsUpdated": "Cilësimet u përditësuan",
-  "errorUpdating": "Gabim gjatë përditësimit të cilësimeve",
-  "loading": "Duke ngarkuar..."
+  "organization": {
+    "title": "Të dhënat e Organizatës",
+    "subtitle": "Këto të dhëna do të shfaqen në fund të aplikacionit dhe do të jenë të disponueshme për të gjithë përdoruesit.",
+    "loading": "Duke ngarkuar...",
+    "basicInfo": "Të dhëna bazë",
+    "contactInfo": "Të dhënat e kontaktit",
+    "socialMedia": "Rrjetet Sociale",
+    "livestream": "Livestream",
+    "fields": {
+      "name": "Emri i organizatës",
+      "namePlaceholder": "Komuniteti Islamik",
+      "address": "Adresa",
+      "addressPlaceholder": "Rruga e Xhematit 123",
+      "phone": "Telefoni",
+      "phonePlaceholder": "+41 XX XXX XX XX",
+      "email": "Email",
+      "emailPlaceholder": "info@xhemat.ch",
+      "facebookUrl": "Facebook URL",
+      "facebookPlaceholder": "https://facebook.com/xhematiJuaj",
+      "instagramUrl": "Instagram URL",
+      "instagramPlaceholder": "https://instagram.com/xhematiJuaj",
+      "youtubeUrl": "YouTube URL",
+      "youtubePlaceholder": "https://youtube.com/@xhematiJuaj",
+      "twitterUrl": "Twitter URL",
+      "twitterPlaceholder": "https://twitter.com/xhematiJuaj",
+      "livestreamUrl": "Livestream URL",
+      "livestreamUrlPlaceholder": "Linku i YouTube ose kodi embed",
+      "livestreamEnabled": "Aktivizo livestream",
+      "livestreamTitle": "Titulli i livestream",
+      "livestreamTitlePlaceholder": "Hutbja e xhumasë live"
+    },
+    "save": "Ruaj ndryshimet",
+    "toast": {
+      "success": "U ruajt me sukses",
+      "successDescription": "Të dhënat e organizatës u përditësuan me sukses.",
+      "error": "Gabim",
+      "errorDescription": "Nuk është e mundur të ruhen të dhënat e organizatës."
+    }
+  },
+  "points": {
+    "title": "Cilësimet e Pikëve",
+    "loading": "Duke ngarkuar...",
+    "noPermission": "Nuk keni leje për të hyrë në këtë faqe.",
+    "configTitle": "Konfigurimi i Sistemit të Pikëve",
+    "configDescription": "Përcaktoni sa pikë fitojnë anëtarët për aktivitete të ndryshme",
+    "howItWorks": {
+      "title": "📋 Si funksionon sistemi i pikëve?",
+      "payments": {
+        "title": "💰 Pagesat Financiare (CHF)",
+        "description": "Çdo CHF i paguar sjell pikë. Pikët jepen menjëherë pas regjistrimit të pagesës (Anëtarësimi, Donacioni, Vakëfi, Sergija, Tjetër)."
+      },
+      "tasks": {
+        "title": "✅ Detyra të Përfunduara",
+        "description": "Kur një anëtar shënon një detyrë si të përfunduar, pritet miratimi i admin (0 pikë). Vetëm kur admini aprovon detyrën, të gjithë anëtarët e caktuar marrin numrin e plotë të pikëve."
+      },
+      "events": {
+        "title": "🎉 RSVP në Ngjarje",
+        "description": "Kur një anëtar konfirmon pjesëmarrjen në një ngjarje (RSVP), merr menjëherë pikë. Pikët nuk hiqen nëse anëtari anulon më vonë pjesëmarrjen."
+      },
+      "calculation": {
+        "title": "🔢 Shembull Llogaritjeje",
+        "description": "Nëse është vendosur: 1 CHF = 10 pikë, 1 detyrë = 50 pikë, 1 ngjarje = 20 pikë, anëtari që paguan 100 CHF merr 1000 pikë, përfundon 5 detyra merr 250 pikë, merr pjesë në 3 ngjarje merr 60 pikë. Totali: 1310 pikë."
+      }
+    },
+    "fields": {
+      "pointsPerChf": "Pikë për CHF",
+      "pointsPerChfHelper": "Sa pikë merr anëtari për çdo frank zviceran të paguar",
+      "pointsPerTask": "Pikë për detyrë",
+      "pointsPerTaskHelper": "Sa pikë merr anëtari për çdo detyrë të përfunduar dhe të aprovuar",
+      "pointsPerEvent": "Pikë për ngjarje",
+      "pointsPerEventHelper": "Sa pikë merr anëtari për konfirmimin e pjesëmarrjes (RSVP) në një ngjarje"
+    },
+    "save": "Ruaj Cilësimet",
+    "toast": {
+      "success": "Sukses",
+      "successDescription": "Cilësimet e pikëve u përditësuan",
+      "error": "Gabim",
+      "errorDescription": "Gabim gjatë ruajtjes së cilësimeve",
+      "loadError": "Gabim gjatë ngarkimit të cilësimeve të pikëve. Ju lutemi provoni përsëri."
+    }
+  },
+  "livestreamSettings": {
+    "title": "Menaxhimi i Livestream",
+    "subtitle": "Aktivizoni transmetimin e drejtpërdrejtë të ngjarjeve, hutbeve dhe programeve live",
+    "loading": "Duke ngarkuar...",
+    "whatIsLivestream": {
+      "title": "Çfarë është Livestream?",
+      "description1": "Livestream mundëson komunitetin tuaj të ndjekë ngjarje, hutbe dhe programe në kohë reale përmes internetit, pa pasur nevojë të jenë fizikisht të pranishëm.",
+      "description2": "Përdoruesit mund të ndjekin livestream drejtpërdrejt nga aplikacioni, duke lejuar qasje për personat që janë të larguar, të sëmurë ose në distancë."
+    },
+    "howToUse": {
+      "title": "Si të përdorni Livestream",
+      "step1": {
+        "title": "Zgjidhni platformën për streaming",
+        "description": "YouTube Live, Facebook Live, Twitch ose platformë tjetër"
+      },
+      "step2": {
+        "title": "Filloni stream në platformë",
+        "description": "Krijoni një ngjarje livestream dhe filloni transmetimin"
+      },
+      "step3": {
+        "title": "Kopjoni URL ose kodin embed",
+        "description": "Kopjoni linkun nga YouTube/Facebook ose kodin iframe embed"
+      },
+      "step4": {
+        "title": "Ngjiteni në fushën më poshtë",
+        "description": "Vendosni URL ose kodin embed dhe aktivizoni livestream"
+      },
+      "step5": {
+        "title": "Ruani cilësimet",
+        "description": "Përdoruesit do të mund të ndjekin menjëherë stream nga aplikacioni"
+      }
+    },
+    "supportedFormats": {
+      "title": "Formatet e mbështetura",
+      "youtube": "YouTube URL (https://youtube.com/watch?v=...)",
+      "youtubeLive": "YouTube Live URL (https://youtube.com/live/...)",
+      "iframe": "Kodi iFrame embed (<iframe src=\"...\"></iframe>)",
+      "otherUrls": "URL-të e tjera do të shfaqen si lidhje të jashtme"
+    },
+    "examples": {
+      "title": "Shembuj të kodeve embed",
+      "youtube": "YouTube: https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "youtubeShort": "YouTube i shkurtër: https://youtu.be/dQw4w9WgXcQ",
+      "iframe": "iFrame: <iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/dQw4w9WgXcQ\"></iframe>",
+      "youtubeAccordion": "YouTube Live",
+      "youtubeDescription": "Zëvendësoni VIDEO_ID me ID-në e videos suaj YouTube Live",
+      "facebookAccordion": "Facebook Live",
+      "facebookDescription": "Zëvendësoni VIDEO_URL me linkun e ngjarjes suaj Facebook Live",
+      "directAccordion": "URL i Drejtpërdrejtë",
+      "directDescription": "Mund të përdorni edhe një link të drejtpërdrejtë të videos"
+    },
+    "tips": {
+      "title": "Këshilla për një livestream të suksesshëm",
+      "tip1": "• Testoni livestream para ngjarjes për të siguruar që gjithçka funksionon",
+      "tip2": "• Siguroni një lidhje të qëndrueshme interneti për transmetim pa ndërprerje",
+      "tip3": "• Njoftoni komunitetin paraprakisht për kohën e ngjarjes livestream",
+      "tip4": "• Përdorni mikrofon dhe kamerë me cilësi të lartë për përvojë më të mirë"
+    },
+    "fields": {
+      "livestreamEnabled": "Aktivizo Livestream",
+      "livestreamEnabledHelper": "Kur është i aktivizuar, përdoruesit do të shohin livestream",
+      "livestreamTitle": "Titulli i Livestream (opsionale)",
+      "livestreamTitleHelper": "Shfaqet mbi video playerin (p.sh. 'Hutbja e xhumasë live')",
+      "livestreamUrl": "Livestream URL ose Kodi Embed",
+      "livestreamUrlHelper": "Linku i YouTube, linku i Facebook, ose kodi iframe embed"
+    },
+    "preview": {
+      "title": "Parashikimi",
+      "enableToSee": "Aktivizoni livestream dhe vendosni URL për të parë parashikimin",
+      "currentlyShowing": "Aktualisht po shfaqet:"
+    },
+    "save": "Ruaj Cilësimet",
+    "toast": {
+      "success": "Sukses",
+      "successDescription": "Cilësimet e livestream u ruajtën",
+      "error": "Gabim",
+      "errorDescription": "Nuk është e mundur të ruhen cilësimet"
+    }
+  }
 }

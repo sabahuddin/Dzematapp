@@ -1,18 +1,35 @@
 {
   "title": "Livestream",
-  "settings": "Cilësimet e Livestream",
-  "streamUrl": "URL e Stream",
-  "streamKey": "Çelësi i Stream",
-  "isLive": "Është Live",
-  "startStream": "Fillo Stream",
-  "stopStream": "Ndalo Stream",
-  "viewStream": "Shiko Stream",
-  "noStream": "Nuk ka stream aktiv",
-  "streamStarted": "Streami filloi",
-  "streamStopped": "Streami u ndal",
-  "streamUpdated": "Streami u përditësua",
-  "errorStarting": "Gabim gjatë fillimit të streamit",
-  "errorStopping": "Gabim gjatë ndalimit të streamit",
-  "errorUpdating": "Gabim gjatë përditësimit të streamit",
-  "loading": "Duke ngarkuar..."
+  "subtitle": "Ndiqni ngjarjet LIVE nga xhemati",
+  "loading": "Duke ngarkuar...",
+  "live": "LIVE",
+  "noActiveStream": {
+    "title": "Aktualisht nuk ka livestream aktiv",
+    "description": "Livestream do të jetë i disponueshëm kur administratori aktivizon transmetimin",
+    "notActive": "Livestream nuk është aktiv",
+    "placeholder": "Këtu do të shfaqet transmetimi kur administratori vendos livestream",
+    "watchLabel": "Këtu mund të ndiqni:",
+    "items": {
+      "janaza": "Namazin e xhenazes",
+      "lectures": "Hutbe dhe ligjërime",
+      "events": "Ngjarje speciale",
+      "tarawih": "Namazin e teravisë (Ramazan)"
+    }
+  },
+  "externalLink": {
+    "available": "Livestream është i disponueshëm në platformë të jashtme",
+    "open": "Hap livestream"
+  },
+  "info": {
+    "title": "Rreth Transmetimit Live",
+    "description": "Funksionaliteti i livestream mundëson të gjithë anëtarëve të xhematit dhe personave të interesuar të ndjekin ngjarje të rëndësishme drejtpërdrejt nga çdo pajisje.",
+    "platformsLabel": "Platformat e mbështetura:",
+    "platforms": {
+      "youtube": "YouTube Live",
+      "facebook": "Facebook Live",
+      "twitch": "Twitch",
+      "embed": "Kod i drejtpërdrejtë embed",
+      "other": "Platforma të tjera streaming"
+    }
+  }
 }

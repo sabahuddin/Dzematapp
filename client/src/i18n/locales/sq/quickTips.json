@@ -1,9 +1,40 @@
 {
   "title": "Këshilla të Shpejta",
-  "tip1": "Përdorni qasjen e shpejtë për të aksesuar faqet më të përdorura",
-  "tip2": "Kontrolloni dashboard-in tuaj çdo ditë për përditësime",
-  "tip3": "Mos harroni të përgjigeni në ngjarjet e ardhshme",
-  "tip4": "Mbani profilin tuaj të përditësuar",
-  "tip5": "Përdorni mesazhet për të komunikuar me anëtarët e tjerë",
-  "loading": "Duke ngarkuar..."
+  "tips": [
+    {
+      "title": "Përshtatni Dashboard-in tuaj",
+      "description": "Klikoni butonin 'Përshtat' pranë qasjes së shpejtë për të zgjedhur deri në 8 funksionet më të përdorura."
+    },
+    {
+      "title": "Shtoni ngjarje në kalendar",
+      "description": "Shtypni butonin 'Shto në Kalendar' në faqen e Ngjarjeve për të shtuar ngjarjen drejtpërdrejt në kalendarin tuaj personal."
+    },
+    {
+      "title": "Ndiqni pikët tuaja",
+      "description": "Shikoni faqen 'Log i Aktiviteteve' për të parë se si fitoni pikë përmes pagesave, detyrave dhe ngjarjeve."
+    },
+    {
+      "title": "Fitoni distinktivë",
+      "description": "Mblidhni pikë për aktivitetet në xhemat dhe zhbllokoni distinktivë speciale. Shihni faqen e Distinktivëve për të gjithë distinktivët e disponueshëm."
+    },
+    {
+      "title": "Dhuroni për projekte",
+      "description": "Mbështetni projektet e xhematit përmes faqes së Projekteve. Pagesat tuaja llogariten automatikisht drejt shumës së synuar."
+    },
+    {
+      "title": "Shikoni kohët e namazit",
+      "description": "Kohët e namazit për sot shfaqen në dashboard. Për pamje mujore klikoni në 'Kalendari i vaktisë'."
+    },
+    {
+      "title": "Kontaktoni shitësit",
+      "description": "Në XhematShop, klikoni në një artikull dhe përdorni butonin 'Kontakto shitësin' për të dërguar mesazh të drejtpërdrejtë."
+    },
+    {
+      "title": "Pyetni Imamin",
+      "description": "Bëni pyetje Imamit në mënyrë anonime ose publike përmes faqes 'Pyet Imamin'. Përgjigjet mund të arkivohen për referencë të ardhshme."
+    }
+  ],
+  "previous": "I mëparshëm",
+  "next": "Tjetër",
+  "tipNumber": "Këshilla {{current}} nga {{total}}"
 }

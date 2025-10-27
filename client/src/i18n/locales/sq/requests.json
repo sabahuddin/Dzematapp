@@ -1,27 +1,38 @@
 {
   "title": "Kërkesat dhe Aplikimet",
-  "membershipRequests": "Kërkesat për Anëtarësim",
-  "accessRequests": "Kërkesat për Qasje",
   "newRequest": "Kërkesë e Re",
-  "requestDetails": "Detajet e Kërkesës",
-  "applicantName": "Emri i aplikuesit",
-  "email": "Email",
-  "phone": "Telefoni",
-  "requestType": "Lloji i kërkesës",
-  "status": "Statusi",
-  "pending": "Në pritje",
-  "approved": "Miratuar",
-  "rejected": "Refuzuar",
-  "approve": "Aprovo",
-  "reject": "Refuzo",
-  "submitRequest": "Dërgo Kërkesë",
-  "message": "Mesazhi",
-  "noRequests": "Nuk ka kërkesa",
-  "requestSubmitted": "Kërkesa u dërgua",
-  "requestApproved": "Kërkesa u miratua",
-  "requestRejected": "Kërkesa u refuzua",
-  "errorSubmitting": "Gabim gjatë dërgimit të kërkesës",
-  "errorApproving": "Gabim gjatë miratimit të kërkesës",
-  "errorRejecting": "Gabim gjatë refuzimit të kërkesës",
-  "loading": "Duke ngarkuar..."
+  "loading": "Duke ngarkuar...",
+  "noRequests": "Nuk keni dërguar kërkesa",
+  "submitFirstRequest": "Dërgoni kërkesën e parë",
+  "requestTypes": {
+    "wedding": "Aplikimi për martesë",
+    "mekteb": "Aplikimi i fëmijës për mekteb",
+    "facility": "Kërkesë për përdorimin e hapësirave",
+    "akika": "Aplikimi i akikës"
+  },
+  "status": {
+    "pending": "Në pritje",
+    "approved": "Miratuar",
+    "rejected": "Refuzuar"
+  },
+  "dialog": {
+    "title": "Kërkesë / Aplikim i Ri",
+    "selectType": "Zgjidhni llojin e kërkesës",
+    "noteLabel": "Shënim (opsionale)",
+    "formNotAvailable": "Forma për këtë lloj kërkese do të jetë e disponueshme së shpejti. Ju lutemi kontaktoni administratorin për më shumë informacion.",
+    "cancel": "Anulo",
+    "submit": "Dërgo",
+    "submitting": "Duke dërguar..."
+  },
+  "card": {
+    "submittedLabel": "Dërguar:",
+    "adminNotesLabel": "Shënimi i administratorit:"
+  },
+  "toast": {
+    "success": "Sukses",
+    "successDescription": "Kërkesa juaj u dërgua",
+    "error": "Gabim",
+    "errorDescription": "Nuk është e mundur të dërgohet kërkesa",
+    "selectTypeError": "Ju lutemi zgjidhni llojin e kërkesës"
+  }
 }
