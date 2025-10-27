@@ -170,7 +170,7 @@ export default function GuidePage() {
             }
             @page {
               size: A4;
-              margin: 2cm;
+              margin: 1.5cm;
             }
             .no-print {
               display: none !important;
@@ -180,6 +180,31 @@ export default function GuidePage() {
             }
             .section-block {
               page-break-inside: avoid;
+            }
+            /* Sakrij sidebar i koristi punu širinu za PDF */
+            nav, aside, .sidebar, [role="navigation"] {
+              display: none !important;
+            }
+            main {
+              margin-left: 0 !important;
+              width: 100% !important;
+              max-width: 100% !important;
+            }
+            .MuiContainer-root {
+              max-width: 100% !important;
+              padding-left: 0 !important;
+              padding-right: 0 !important;
+              margin: 0 !important;
+            }
+            /* Puna širina za sadržaj */
+            body {
+              margin: 0;
+              padding: 0;
+            }
+            p, .MuiTypography-root {
+              word-wrap: break-word;
+              overflow-wrap: break-word;
+              hyphens: auto;
             }
           }
         `}
@@ -261,37 +286,48 @@ export default function GuidePage() {
         ))}
       </Box>
 
-      {/* Table of Contents */}
+      {/* Table of Contents - Meni */}
       <Box sx={{ mb: 5 }} className="page-break">
         <Typography variant="h5" sx={{ fontWeight: 700, mb: 3, color: '#1a237e' }}>
           {t('guide:tableOfContents.title')}
         </Typography>
-        <Grid container spacing={2}>
-          {sections.map((section, index) => (
-            <Grid key={index} sx={{ width: { xs: '100%', sm: '50%' }, p: 1 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+        <Divider sx={{ mb: 3 }} />
+        <Box sx={{ display: 'grid', gap: 2 }}>
+          {sections.map((section, index) => {
+            const shortDesc = t(`guide:sections.${section.key}.shortDesc`, { defaultValue: '' });
+            
+            return (
+              <Box key={index} sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
                 <Box
                   sx={{
                     bgcolor: section.color,
                     borderRadius: 1.5,
-                    p: 1,
+                    p: 1.2,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     color: 'white',
-                    minWidth: 40,
-                    minHeight: 40,
+                    minWidth: 44,
+                    minHeight: 44,
+                    flexShrink: 0,
                   }}
                 >
                   {section.icon}
                 </Box>
-                <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                  {t(`guide:sections.${section.key}.title`)}
-                </Typography>
+                <Box sx={{ flex: 1 }}>
+                  <Typography variant="body1" sx={{ fontWeight: 600, mb: 0.3 }}>
+                    {t(`guide:sections.${section.key}.title`)}
+                  </Typography>
+                  {shortDesc && (
+                    <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
+                      {shortDesc}
+                    </Typography>
+                  )}
+                </Box>
               </Box>
-            </Grid>
-          ))}
-        </Grid>
+            );
+          })}
+        </Box>
       </Box>
 
       {/* Sections - Full Width */}

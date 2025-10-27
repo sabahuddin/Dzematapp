@@ -50,7 +50,8 @@
   "sections": {
     "dashboard": {
       "title": "Dashboard (Kontrolna ploča)",
-      "description": "Dashboard je centralno mjesto aplikacije gdje svaki korisnik dobiva personalizovani pregled najvažnijih informacija. Ovo je prva stranica koju vidite nakon prijavljivanja i služi kao brzi pregled svih aktivnosti u džematu.",
+      "shortDesc": "Pregled aktivnosti i statistike džemata",
+      "description": "Dashboard je centralno mjesto aplikacije gdje svaki korisnik dobiva personalizovani pregled najvažnjih informacija. Ovo je prva stranica koju vidite nakon prijavljivanja i služi kao brzi pregled svih aktivnosti u džematu.",
       "features": [
         "Pregled današnjih vaktija (vremena klanjanja) na vrhu stranice",
         "Prilagodljivi brzi pristup (Quick Access) sa do 8 omiljenih funkcija",
@@ -63,6 +64,7 @@
     },
     "users": {
       "title": "Korisnici",
+      "shortDesc": "Upravljanje članovima i profilima",
       "description": "Modul za upravljanje svim članovima džemata i njihovim porodičnim vezama. Ovdje se čuvaju detaljni profili članova sa kontakt informacijama, kategorijama pripadnosti i historijom aktivnosti. Sistem podržava kreiranje porodičnih veza između članova.",
       "features": [
         "Detaljni profili sa fotografijom, kontakt podacima i zanimanjem",
@@ -77,6 +79,7 @@
     },
     "announcements": {
       "title": "Obavijesti",
+      "shortDesc": "Obavijesti i informacije za članove",
       "description": "Sistem za objavljivanje važnih informacija i komunikaciju sa članovima džemata. Obavijesti mogu biti opće ili kategorizovane, sa mogućnošću formatiranja teksta, dodavanja slika i planiranja objavljivanja.",
       "features": [
         "Kategorizacija obavijesti: Džemat, IZBCH (Islamska zajednica BiH Švicarska), IZ (Islamska zajednica), Ostalo",
@@ -92,6 +95,7 @@
     },
     "events": {
       "title": "Događaji",
+      "shortDesc": "Organizacija događaja i RSVP sistem",
       "description": "Kompletni sistem za upravljanje događajima u džematu sa kalendarom, RSVP funkcionalnostima i važnim datumima. Omogućava organizaciju iftara, mevluda, edukativnih programa, sportskih aktivnosti i drugih društvenih događaja.",
       "features": [
         "Kalendar sa mjesečnim prikazom i označavanjem datuma događaja",
@@ -108,6 +112,7 @@
     },
     "workgroups": {
       "title": "Sekcije (Radne grupe)",
+      "shortDesc": "Sekcije i dodjeljivanje zadataka",
       "description": "Sistem za organizaciju članova u radne grupe prema aktivnostima i područjima rada. Svaka sekcija može imati svoje zadatke, moderatore i članove. Sekcije mogu biti javne (vidljive svima) ili privatne (pristup samo odobrenim članovima).",
       "features": [
         "Kreiranje neograničenog broja sekcija (npr. Administracija, Halal hrana, Iftar, Čišćenje)",
@@ -125,6 +130,7 @@
     },
     "messages": {
       "title": "Poruke",
+      "shortDesc": "Komunikacija administratora sa članovima",
       "description": "Interni messaging sistem koji omogućava administraciji da šalje poruke članovima. Poruke mogu biti poslane svim članovima odjednom ili targetirane prema specifičnim kategorijama (Muškarci, Žene, Roditelji, Djeca).",
       "features": [
         "Slanje poruka svim članovima ili specifičnim kategorijama",
@@ -139,6 +145,7 @@
     },
     "askImam": {
       "title": "Pitanja za Imama",
+      "shortDesc": "Pitanja za imama džemata",
       "description": "Privatni sistem koji omogućava članovima da postavljaju islamska pitanja imamu džemata. Svaki član može postaviti pitanje, pratiti njegov status i dobiti odgovor. Pitanja su privatna - svaki član vidi samo svoja pitanja.",
       "features": [
         "Privatnost - svaki član vidi samo svoja pitanja",
@@ -153,6 +160,7 @@
     },
     "requests": {
       "title": "Zahtjevi i Prijave",
+      "shortDesc": "Zahtjevi članova prema džematu",
       "description": "Centralni sistem za podnošenje i obradu različitih vrsta zahtjeva članova prema džematu. Uključuje zahtjeve za materijalnu pomoć, organizaciju vjenčanja, rođenja, smrti, kao i prijave za novo članstvo.",
       "features": [
         "Tipovi zahtjeva: Materijalna pomoć, Vjenčanje, Rodenje, Smrt, Razno, Članstvo",
@@ -168,6 +176,7 @@
     },
     "shop": {
       "title": "DžematShop (Prodavnica)",
+      "shortDesc": "Prodaja i kupovina među članovima",
       "description": "Interni marketplace gdje članovi mogu kupovati i prodavati artikle unutar džemata. Admin objavljuje artikle u ime članova, a zainteresovani kupci kontaktiraju prodavca direktno. Sve cijene su u CHF (švicarski franak).",
       "features": [
         "Artikli sa fotografijama, opisom i cijenom u CHF",
@@ -183,6 +192,7 @@
     },
     "vaktija": {
       "title": "Vaktija (Prayer Times)",
+      "shortDesc": "Vremena klanjanja za svaki dan",
       "description": "Prikaz islamskih vremena klanjanja (namaza) za svaki dan. Vaktije se mogu učitati automatski iz CSV fajla sa SwissMosque.ch web stranice i prikazuju se organizovano po mjesecima.",
       "features": [
         "Automatsko učitavanje iz CSV fajla (format SwissMosque.ch)",
@@ -198,6 +208,7 @@
     },
     "finances": {
       "title": "Finansije",
+      "shortDesc": "Evidencija finansijskih uplata članova",
       "description": "Evidencija svih finansijskih priloga članova džemata. Sistem omogućava praćenje uplata, kategorizaciju po svrsi i povezivanje sa projektima. Sve transakcije se evidentiraju i čuvaju u bazi podataka.",
       "features": [
         "Kategorije uplata: Članarina, Donacija, Vakuf, Sergija, Ostalo",
@@ -213,6 +224,7 @@
     },
     "projects": {
       "title": "Projekti",
+      "shortDesc": "Projekti džemata i donacije",
       "description": "Upravljanje većim projektima džemata koji zahtijevaju sakupljanje sredstava. Svaki projekat ima ciljani iznos, trenutni napredak i mogućnost povezivanja finansijskih priloga direktno sa projektom.",
       "features": [
         "Kreiranje projekata sa ciljanim iznosom u CHF",
@@ -228,6 +240,7 @@
     },
     "activity": {
       "title": "Aktivnosti (Activity Log)",
+      "shortDesc": "Praćenje aktivnosti i bodova",
       "description": "Kompletna evidencija svih aktivnosti članova u aplikaciji. Sistem automatski prati ko je šta uradio, kada i koliko bodova je zaradio. Ovo omogućava transparentnost i gamifikaciju kroz sistem nagrada.",
       "features": [
         "Automatsko logovanje svih aktivnosti",
@@ -243,6 +256,7 @@
     },
     "badges": {
       "title": "Značke (Badges)",
+      "shortDesc": "Sistem znački i postignuća",
       "description": "Sistem nagrada i priznanja za aktivne članove džemata. Značke se dodjeljuju automatski (na osnovu postignuća) ili ručno (od strane admina) za poseban doprinos zajednici.",
       "features": [
         "Kreiranje znački sa nazivom, opisom i kriterijima",
@@ -258,6 +272,7 @@
     },
     "points": {
       "title": "Sistem Bodova",
+      "shortDesc": "Gamifikacija kroz sistem bodova",
       "description": "Gamifikacijski sistem koji nagrađuje aktivnost članova kroz dodjeljivanje bodova. Bodovi se dodjeljuju automatski za različite aktivnosti i mogu se koristiti za rangiranje članova ili dodjelu posebnih privilegija.",
       "features": [
         "Bodovi za prisustvo na događajima (RSVP)",
@@ -273,6 +288,7 @@
     },
     "certificates": {
       "title": "Zahvale (Priznanja)",
+      "shortDesc": "Izdavanje zahvalnica i priznanja",
       "description": "Sistem za kreiranje i izdavanje zahvalnica članovima za njihov doprinos džematu. Administratori mogu dizajnirati template-e sa pozadinskim slikama i personalizovati svaku zahvalnicu sa imenom člana, opisom doprinosa i datumom izdavanja.",
       "features": [
         "Kreiranje template-a sa PNG pozadinskim slikama",
@@ -288,6 +304,7 @@
     },
     "documents": {
       "title": "Dokumenti",
+      "shortDesc": "Centralna biblioteka važnih dokumenata",
       "description": "Centralizovana biblioteka za čuvanje i dijeljenje važnih dokumenata džemata. Administratori mogu uploadovati PDF dokumente (statuti, pravilnici, zapisnici, izvještaji) i učiniti ih dostupnim članovima sa kontrolom vidljivosti.",
       "features": [
         "Upload PDF dokumenta sa opisom i kategorijom",
@@ -303,6 +320,7 @@
     },
     "media": {
       "title": "Media (Livestream)",
+      "shortDesc": "YouTube livestream prijenosi programa",
       "description": "Modul za livestream prenose džumua, predavanja i drugih programa putem YouTube platforme. Administratori postavljaju YouTube link koji se prikazuje svim članovima i gostima u realnom vremenu.",
       "features": [
         "Embedovani YouTube video player",
@@ -318,6 +336,7 @@
     },
     "settings": {
       "title": "Postavke",
+      "shortDesc": "Postavke aplikacije i profila",
       "description": "Konfiguracija osnovnih informacija o džematu, postavki aplikacije i ličnih podataka korisnika. Ovdje se nalaze sve administrativne postavke koje kontrolišu kako aplikacija funkcioniše.",
       "features": [
         "Osnovni podaci o džematu (naziv, adresa, kontakt)",
