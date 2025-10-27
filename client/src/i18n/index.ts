@@ -25,6 +25,7 @@ import settingsBS from './locales/bs/settings.json';
 import requestsBS from './locales/bs/requests.json';
 import livestreamBS from './locales/bs/livestream.json';
 import guideBS from './locales/bs/guide.json';
+import certificatesBS from './locales/bs/certificates.json';
 
 // Import all DE translations
 import commonDE from './locales/de/common.json';
@@ -49,6 +50,7 @@ import settingsDE from './locales/de/settings.json';
 import requestsDE from './locales/de/requests.json';
 import livestreamDE from './locales/de/livestream.json';
 import guideDE from './locales/de/guide.json';
+import certificatesDE from './locales/de/certificates.json';
 
 // Import all EN translations
 import commonEN from './locales/en/common.json';
@@ -73,6 +75,32 @@ import settingsEN from './locales/en/settings.json';
 import requestsEN from './locales/en/requests.json';
 import livestreamEN from './locales/en/livestream.json';
 import guideEN from './locales/en/guide.json';
+import certificatesEN from './locales/en/certificates.json';
+
+// Import all SQ (Albanian) translations
+import commonSQ from './locales/sq/common.json';
+import loginSQ from './locales/sq/login.json';
+import navigationSQ from './locales/sq/navigation.json';
+import eventsSQ from './locales/sq/events.json';
+import announcementsSQ from './locales/sq/announcements.json';
+import usersSQ from './locales/sq/users.json';
+import tasksSQ from './locales/sq/tasks.json';
+import messagesSQ from './locales/sq/messages.json';
+import shopSQ from './locales/sq/shop.json';
+import vaktijaSQ from './locales/sq/vaktija.json';
+import financesSQ from './locales/sq/finances.json';
+import askImamSQ from './locales/sq/askImam.json';
+import dashboardSQ from './locales/sq/dashboard.json';
+import projectsSQ from './locales/sq/projects.json';
+import badgesSQ from './locales/sq/badges.json';
+import documentsSQ from './locales/sq/documents.json';
+import activitySQ from './locales/sq/activity.json';
+import quickTipsSQ from './locales/sq/quickTips.json';
+import settingsSQ from './locales/sq/settings.json';
+import requestsSQ from './locales/sq/requests.json';
+import livestreamSQ from './locales/sq/livestream.json';
+import guideSQ from './locales/sq/guide.json';
+import certificatesSQ from './locales/sq/certificates.json';
 
 const resources = {
   bs: {
@@ -98,6 +126,7 @@ const resources = {
     requests: requestsBS,
     livestream: livestreamBS,
     guide: guideBS,
+    certificates: certificatesBS,
   },
   de: {
     common: commonDE,
@@ -122,6 +151,7 @@ const resources = {
     requests: requestsDE,
     livestream: livestreamDE,
     guide: guideDE,
+    certificates: certificatesDE,
   },
   en: {
     common: commonEN,
@@ -146,6 +176,32 @@ const resources = {
     requests: requestsEN,
     livestream: livestreamEN,
     guide: guideEN,
+    certificates: certificatesEN,
+  },
+  sq: {
+    common: commonSQ,
+    login: loginSQ,
+    navigation: navigationSQ,
+    events: eventsSQ,
+    announcements: announcementsSQ,
+    users: usersSQ,
+    tasks: tasksSQ,
+    messages: messagesSQ,
+    shop: shopSQ,
+    vaktija: vaktijaSQ,
+    finances: financesSQ,
+    askImam: askImamSQ,
+    dashboard: dashboardSQ,
+    projects: projectsSQ,
+    badges: badgesSQ,
+    documents: documentsSQ,
+    activity: activitySQ,
+    quickTips: quickTipsSQ,
+    settings: settingsSQ,
+    requests: requestsSQ,
+    livestream: livestreamSQ,
+    guide: guideSQ,
+    certificates: certificatesSQ,
   },
 };
 

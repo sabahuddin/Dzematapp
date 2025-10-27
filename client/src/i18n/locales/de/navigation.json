@@ -27,7 +27,9 @@
     "issueCertificates": "Urkunde ausstellen",
     "allCertificates": "Alle Urkunden",
     "livestreamSettings": "Livestream-Verwaltung",
-    "organizationSettings": "Organisationsdaten"
+    "organizationSettings": "Organisationsdaten",
+    "zahvaleGroup": "Anerkennungen",
+    "mediaGroup": "Medien"
   },
   "appBar": {
     "welcome": "Willkommen im DžematApp Admin Panel",

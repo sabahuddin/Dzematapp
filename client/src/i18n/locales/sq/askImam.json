@@ -1,0 +1,22 @@
+{
+  "title": "Pyet Imamin",
+  "askQuestion": "Bëj Pyetje",
+  "myQuestions": "Pyetjet e Mia",
+  "allQuestions": "Të gjitha Pyetjet",
+  "question": "Pyetja",
+  "answer": "Përgjigjja",
+  "status": "Statusi",
+  "pending": "Në pritje",
+  "answered": "U përgjigj",
+  "archived": "Arkivuar",
+  "askNewQuestion": "Bëj pyetje të re",
+  "enterQuestion": "Shkruani pyetjen tuaj...",
+  "submit": "Dërgo",
+  "noQuestions": "Nuk ka pyetje",
+  "questionSubmitted": "Pyetja u dërgua",
+  "answerSubmitted": "Përgjigjja u dërgua",
+  "questionArchived": "Pyetja u arkivua",
+  "errorSubmitting": "Gabim gjatë dërgimit të pyetjes",
+  "errorAnswering": "Gabim gjatë përgjigjjes",
+  "loading": "Duke ngarkuar..."
+}

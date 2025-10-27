@@ -27,7 +27,9 @@
     "issueCertificates": "Izdaj zahvalnicu",
     "allCertificates": "Sve zahvale",
     "livestreamSettings": "Livestream uprav.",
-    "organizationSettings": "Org. podaci"
+    "organizationSettings": "Org. podaci",
+    "zahvaleGroup": "Zahvale",
+    "mediaGroup": "Media"
   },
   "appBar": {
     "welcome": "Dobrodošli u DžematApp Admin Panel",

@@ -27,7 +27,9 @@
     "issueCertificates": "Issue Certificate",
     "allCertificates": "All Certificates",
     "livestreamSettings": "Livestream Settings",
-    "organizationSettings": "Organization Info"
+    "organizationSettings": "Organization Info",
+    "zahvaleGroup": "Acknowledgements",
+    "mediaGroup": "Media"
   },
   "appBar": {
     "welcome": "Welcome to DžematApp Admin Panel",

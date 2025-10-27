@@ -1,0 +1,36 @@
+{
+  "title": "Log i Aktiviteteve",
+  "myActivities": "Aktivitetet e Mia",
+  "searchPlaceholder": "Kërko aktivitete...",
+  "filterByType": "Filtro sipas llojit",
+  "allTypes": "Të gjitha llojet",
+  "user": "Përdoruesi",
+  "activityType": "Lloji i aktivitetit",
+  "description": "Përshkrimi",
+  "points": "Pikë",
+  "date": "Data",
+  "time": "Koha",
+  "activityLabels": {
+    "task_completed": "Detyra e përfunduar",
+    "event_rsvp": "RSVP në ngjarje",
+    "announcement_read": "Njoftim i lexuar",
+    "contribution_made": "Kontribut i bërë",
+    "badge_earned": "Distinktiv i fituar",
+    "profile_updated": "Profili u përditësua",
+    "project_contribution": "Kontribut në projekt"
+  },
+  "filterOptions": {
+    "all": "Të gjitha",
+    "task_completed": "Detyrë e përfunduar",
+    "event_rsvp": "RSVP në ngjarje",
+    "announcement_read": "Njoftim i lexuar",
+    "contribution_made": "Kontribut i bërë",
+    "badge_earned": "Distinktiv i fituar",
+    "profile_updated": "Profili u përditësua",
+    "project_contribution": "Kontribut në projekt"
+  },
+  "noActivities": "Nuk ka aktivitete",
+  "errorLoading": "Gabim gjatë ngarkimit të aktiviteteve",
+  "loading": "Duke ngarkuar...",
+  "unknown": "I panjohur"
+}

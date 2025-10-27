@@ -1,0 +1,19 @@
+{
+  "title": "Cilësimet e Organizatës",
+  "organizationInfo": "Informacione të Organizatës",
+  "name": "Emri",
+  "address": "Adresa",
+  "phone": "Telefoni",
+  "email": "Email",
+  "website": "Faqja e internetit",
+  "socialMedia": "Rrjetet Sociale",
+  "facebook": "Facebook",
+  "instagram": "Instagram",
+  "youtube": "YouTube",
+  "twitter": "Twitter",
+  "save": "Ruaj",
+  "cancel": "Anulo",
+  "settingsUpdated": "Cilësimet u përditësuan",
+  "errorUpdating": "Gabim gjatë përditësimit të cilësimeve",
+  "loading": "Duke ngarkuar..."
+}

@@ -1,0 +1,18 @@
+{
+  "title": "Livestream",
+  "settings": "Cilësimet e Livestream",
+  "streamUrl": "URL e Stream",
+  "streamKey": "Çelësi i Stream",
+  "isLive": "Është Live",
+  "startStream": "Fillo Stream",
+  "stopStream": "Ndalo Stream",
+  "viewStream": "Shiko Stream",
+  "noStream": "Nuk ka stream aktiv",
+  "streamStarted": "Streami filloi",
+  "streamStopped": "Streami u ndal",
+  "streamUpdated": "Streami u përditësua",
+  "errorStarting": "Gabim gjatë fillimit të streamit",
+  "errorStopping": "Gabim gjatë ndalimit të streamit",
+  "errorUpdating": "Gabim gjatë përditësimit të streamit",
+  "loading": "Duke ngarkuar..."
+}

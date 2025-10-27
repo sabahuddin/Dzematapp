@@ -312,7 +312,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
             </ListItemIcon>
             {!collapsed && (
               <>
-                <ListItemText primary="Zahvale" />
+                <ListItemText primary={t('navigation:menu.zahvaleGroup')} />
                 {zahvaleOpen ? <ExpandLess /> : <ExpandMore />}
               </>
             )}
@@ -395,7 +395,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
             </ListItemIcon>
             {!collapsed && (
               <>
-                <ListItemText primary="Media" />
+                <ListItemText primary={t('navigation:menu.mediaGroup')} />
                 {mediaOpen ? <ExpandLess /> : <ExpandMore />}
               </>
             )}

@@ -1,0 +1,22 @@
+{
+  "title": "Dokumentet",
+  "addDocument": "Shto Dokument",
+  "editDocument": "Redakto Dokumentin",
+  "uploadDocument": "Ngarko Dokument",
+  "name": "Emri",
+  "description": "Përshkrimi",
+  "category": "Kategoria",
+  "uploadDate": "Data e ngarkimit",
+  "fileSize": "Madhësia e skedarit",
+  "download": "Shkarko",
+  "view": "Shiko",
+  "delete": "Fshi",
+  "noDocuments": "Nuk ka dokumente",
+  "documentUploaded": "Dokumenti u ngarkua",
+  "documentUpdated": "Dokumenti u përditësua",
+  "documentDeleted": "Dokumenti u fshi",
+  "errorUploading": "Gabim gjatë ngarkimit të dokumentit",
+  "errorUpdating": "Gabim gjatë përditësimit të dokumentit",
+  "errorDeleting": "Gabim gjatë fshirjes së dokumentit",
+  "loading": "Duke ngarkuar..."
+}
