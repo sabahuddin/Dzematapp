@@ -518,137 +518,141 @@ export default function DashboardHome() {
           </Grid>
         </Grid>
 
-        {/* Calendar and Events in their own row */}
-        <Grid container spacing={3} sx={{ mt: 0 }}>
+        {/* Calendar and Events side by side */}
+        <Box 
+          sx={{ 
+            display: 'flex', 
+            gap: 3, 
+            mt: 3,
+            flexDirection: { xs: 'column', md: 'row' },
+            '& > *': { flex: 1 }
+          }}
+        >
           {/* Calendar */}
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Card sx={{ height: '100%' }}>
-              <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', gap: 2 }}>
-                <CalendarMonth sx={{ color: '#1976d2' }} />
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                  {t('dashboard:eventCalendar')}
-                </Typography>
-              </Box>
-              <CardContent>
-                <DateCalendar
-                  value={selectedDate}
-                  onChange={(newDate) => setSelectedDate(newDate)}
-                  slots={{
-                    day: EventDay,
-                  }}
-                  slotProps={{
-                    day: {
-                      eventDates,
-                      selectedDate,
-                    } as any,
-                  }}
-                  dayOfWeekFormatter={(day) => {
-                    const dayNames = ['N', 'P', 'U', 'S', 'Č', 'P', 'S'];
-                    return dayNames[day.getDay()];
-                  }}
-                  sx={{
-                    width: '100%',
-                    '& .MuiPickersCalendarHeader-root': {
-                      paddingLeft: 2,
-                      paddingRight: 2,
-                    },
-                    '& .MuiDayCalendar-header': {
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      paddingLeft: '4px',
-                      paddingRight: '4px',
-                    },
-                    '& .MuiDayCalendar-weekDayLabel': {
-                      fontWeight: 600,
-                      fontSize: '0.875rem',
-                      color: '#374151',
-                      width: '36px',
-                      height: '36px',
-                      margin: '0 2px',
-                    },
-                    '& .MuiDayCalendar-weekContainer': {
-                      justifyContent: 'space-between',
-                      margin: '0',
-                    },
-                    '& .MuiPickersDay-root': {
-                      width: '36px',
-                      height: '36px',
-                      margin: '0 2px',
-                    }
-                  }}
-                />
-              </CardContent>
-            </Card>
-          </Grid>
+          <Card sx={{ height: '100%' }}>
+            <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', gap: 2 }}>
+              <CalendarMonth sx={{ color: '#1976d2' }} />
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                {t('dashboard:eventCalendar')}
+              </Typography>
+            </Box>
+            <CardContent>
+              <DateCalendar
+                value={selectedDate}
+                onChange={(newDate) => setSelectedDate(newDate)}
+                slots={{
+                  day: EventDay,
+                }}
+                slotProps={{
+                  day: {
+                    eventDates,
+                    selectedDate,
+                  } as any,
+                }}
+                dayOfWeekFormatter={(day) => {
+                  const dayNames = ['N', 'P', 'U', 'S', 'Č', 'P', 'S'];
+                  return dayNames[day.getDay()];
+                }}
+                sx={{
+                  width: '100%',
+                  '& .MuiPickersCalendarHeader-root': {
+                    paddingLeft: 2,
+                    paddingRight: 2,
+                  },
+                  '& .MuiDayCalendar-header': {
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    paddingLeft: '4px',
+                    paddingRight: '4px',
+                  },
+                  '& .MuiDayCalendar-weekDayLabel': {
+                    fontWeight: 600,
+                    fontSize: '0.875rem',
+                    color: '#374151',
+                    width: '36px',
+                    height: '36px',
+                    margin: '0 2px',
+                  },
+                  '& .MuiDayCalendar-weekContainer': {
+                    justifyContent: 'space-between',
+                    margin: '0',
+                  },
+                  '& .MuiPickersDay-root': {
+                    width: '36px',
+                    height: '36px',
+                    margin: '0 2px',
+                  }
+                }}
+              />
+            </CardContent>
+          </Card>
           
           {/* Today's Events */}
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Card sx={{ height: '100%' }}>
-              <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Event sx={{ color: '#ed6c02' }} />
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                  {selectedDate ? (
-                    <>
-                      {t('dashboard:eventsFor')} {format(selectedDate, 'dd.MM.yyyy.')}
-                    </>
-                  ) : (
-                    t('dashboard:todaysEvents')
-                  )}
-                </Typography>
-              </Box>
-              <CardContent>
-                {(() => {
-                  const dateToShow = selectedDate || new Date();
-                  const dateEvents = allEvents.filter(event => 
-                    isSameDay(new Date(event.dateTime), dateToShow)
-                  );
-                  
-                  if (dateEvents.length === 0) {
-                    return (
-                      <Box sx={{ py: 3, textAlign: 'center' }}>
-                        <Typography color="text.secondary">
-                          {t('dashboard:noEventsForDate')}
-                        </Typography>
-                      </Box>
-                    );
-                  }
-                  
+          <Card sx={{ height: '100%' }}>
+            <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Event sx={{ color: '#ed6c02' }} />
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                {selectedDate ? (
+                  <>
+                    {t('dashboard:eventsFor')} {format(selectedDate, 'dd.MM.yyyy.')}
+                  </>
+                ) : (
+                  t('dashboard:todaysEvents')
+                )}
+              </Typography>
+            </Box>
+            <CardContent>
+              {(() => {
+                const dateToShow = selectedDate || new Date();
+                const dateEvents = allEvents.filter(event => 
+                  isSameDay(new Date(event.dateTime), dateToShow)
+                );
+                
+                if (dateEvents.length === 0) {
                   return (
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                      {dateEvents.map((event: EventType) => (
-                        <Link key={event.id} href="/events">
-                          <Card 
-                            variant="outlined"
-                            sx={{ 
-                              cursor: 'pointer',
-                              transition: 'all 0.2s',
-                              '&:hover': {
-                                boxShadow: 2,
-                                transform: 'translateY(-2px)',
-                              }
-                            }}
-                          >
-                            <CardContent sx={{ p: 2 }}>
-                              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1, color: 'primary.main' }}>
-                                {event.name}
-                              </Typography>
-                              <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                                ⏰ {format(new Date(event.dateTime), 'HH:mm')}
-                              </Typography>
-                              <Typography variant="body2" color="text.secondary">
-                                📍 {event.location}
-                              </Typography>
-                            </CardContent>
-                          </Card>
-                        </Link>
-                      ))}
+                    <Box sx={{ py: 3, textAlign: 'center' }}>
+                      <Typography color="text.secondary">
+                        {t('dashboard:noEventsForDate')}
+                      </Typography>
                     </Box>
                   );
-                })()}
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
+                }
+                
+                return (
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    {dateEvents.map((event: EventType) => (
+                      <Link key={event.id} href="/events">
+                        <Card 
+                          variant="outlined"
+                          sx={{ 
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                            '&:hover': {
+                              boxShadow: 2,
+                              transform: 'translateY(-2px)',
+                            }
+                          }}
+                        >
+                          <CardContent sx={{ p: 2 }}>
+                            <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1, color: 'primary.main' }}>
+                              {event.name}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                              ⏰ {format(new Date(event.dateTime), 'HH:mm')}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              📍 {event.location}
+                            </Typography>
+                          </CardContent>
+                        </Card>
+                      </Link>
+                    ))}
+                  </Box>
+                );
+              })()}
+            </CardContent>
+          </Card>
+        </Box>
 
         {/* My Messages and My Sections */}
         <Grid container spacing={3} sx={{ mt: 0 }}>
