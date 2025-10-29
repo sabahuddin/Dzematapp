@@ -41,6 +41,7 @@
   "from": "From",
   "noSectionMembership": "You are not a member of any section",
   "eventsFor": "Events for",
+  "todaysEvents": "Today's events",
   "noEventsForDate": "No events for selected date",
   "rsvpButton": "RSVP",
   "remindMeButton": "Remind me",

@@ -41,6 +41,7 @@
   "from": "Von",
   "noSectionMembership": "Sie sind kein Mitglied einer Sektion",
   "eventsFor": "Veranstaltungen für",
+  "todaysEvents": "Heutige Veranstaltungen",
   "noEventsForDate": "Keine Veranstaltungen für das gewählte Datum",
   "rsvpButton": "Anmelden",
   "remindMeButton": "Erinnere mich",
