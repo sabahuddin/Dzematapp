@@ -514,17 +514,34 @@ export default function EventsPage() {
                 }}
                 sx={{
                   width: '100%',
+                  maxWidth: '400px',
+                  margin: '0 auto',
                   '& .MuiPickersCalendarHeader-root': {
                     paddingLeft: 2,
                     paddingRight: 2,
                   },
-                  '& .MuiDayCalendar-weekContainer': {
-                    justifyContent: 'space-around',
+                  '& .MuiDayCalendar-header': {
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    paddingLeft: '8px',
+                    paddingRight: '8px',
                   },
                   '& .MuiDayCalendar-weekDayLabel': {
                     fontWeight: 600,
                     fontSize: '0.875rem',
                     color: '#374151',
+                    width: '36px',
+                    height: '36px',
+                    margin: '0 2px',
+                  },
+                  '& .MuiDayCalendar-weekContainer': {
+                    justifyContent: 'space-between',
+                    margin: '0',
+                  },
+                  '& .MuiPickersDay-root': {
+                    width: '36px',
+                    height: '36px',
+                    margin: '0 2px',
                   }
                 }}
               />
@@ -584,9 +601,20 @@ export default function EventsPage() {
                                   <strong>{t('events:location')}:</strong> {event.location}
                                 </Typography>
                                 {event.description && (
-                                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                                    {event.description}
-                                  </Typography>
+                                  <Box 
+                                    sx={{ 
+                                      mt: 1,
+                                      '& p': { margin: '4px 0' },
+                                      '& img': { 
+                                        maxWidth: '200px',
+                                        height: 'auto',
+                                        borderRadius: '4px',
+                                        display: 'block',
+                                        margin: '8px 0'
+                                      }
+                                    }}
+                                    dangerouslySetInnerHTML={{ __html: event.description }}
+                                  />
                                 )}
                               </Box>
                               <Box sx={{ display: 'flex', gap: 0.5, ml: 2 }}>
