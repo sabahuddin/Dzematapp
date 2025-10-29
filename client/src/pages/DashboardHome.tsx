@@ -516,9 +516,12 @@ export default function DashboardHome() {
               </CardContent>
             </Card>
           </Grid>
+        </Grid>
 
+        {/* Calendar and Events in their own row */}
+        <Grid container spacing={3} sx={{ mt: 0 }}>
           {/* Calendar */}
-          <Grid size={{ xs: 12, lg: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <Card sx={{ height: '100%' }}>
               <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', gap: 2 }}>
                 <CalendarMonth sx={{ color: '#1976d2' }} />
@@ -579,7 +582,7 @@ export default function DashboardHome() {
           </Grid>
           
           {/* Today's Events */}
-          <Grid size={{ xs: 12, lg: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <Card sx={{ height: '100%' }}>
               <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', gap: 2 }}>
                 <Event sx={{ color: '#ed6c02' }} />
@@ -645,7 +648,10 @@ export default function DashboardHome() {
               </CardContent>
             </Card>
           </Grid>
+        </Grid>
 
+        {/* My Messages and My Sections */}
+        <Grid container spacing={3} sx={{ mt: 0 }}>
           {/* My Messages */}
           <Grid size={{ xs: 12, md: 6, lg: 4 }}>
             <Card sx={{ height: '100%' }}>
