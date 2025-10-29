@@ -536,7 +536,7 @@ export default function DashboardHome() {
                 {t('dashboard:eventCalendar')}
               </Typography>
             </Box>
-            <CardContent>
+            <CardContent sx={{ px: 3, py: 2 }}>
               <DateCalendar
                 value={selectedDate}
                 onChange={(newDate) => setSelectedDate(newDate)}
