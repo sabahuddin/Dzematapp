@@ -536,56 +536,63 @@ export default function DashboardHome() {
                 {t('dashboard:eventCalendar')}
               </Typography>
             </Box>
-            <CardContent sx={{ p: 0 }}>
-              <div style={{ padding: '0 24px' }}>
-                <DateCalendar
-                  value={selectedDate}
-                  onChange={(newDate) => setSelectedDate(newDate)}
-                  slots={{
-                    day: EventDay,
-                  }}
-                  slotProps={{
-                    day: {
-                      eventDates,
-                      selectedDate,
-                    } as any,
-                  }}
-                  dayOfWeekFormatter={(day) => {
-                    const dayNames = ['N', 'P', 'U', 'S', 'Č', 'P', 'S'];
-                    return dayNames[day.getDay()];
-                  }}
-                  sx={{
-                    width: '100%',
-                    '& .MuiPickersCalendarHeader-root': {
-                      paddingLeft: 2,
-                      paddingRight: 2,
-                    },
-                    '& .MuiDayCalendar-header': {
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      paddingLeft: '4px',
-                      paddingRight: '4px',
-                    },
-                    '& .MuiDayCalendar-weekDayLabel': {
-                      fontWeight: 600,
-                      fontSize: '0.875rem',
-                      color: '#374151',
-                      width: '36px',
-                      height: '36px',
-                      margin: '0 2px',
-                    },
-                    '& .MuiDayCalendar-weekContainer': {
-                      justifyContent: 'space-between',
-                      margin: '0',
-                    },
-                    '& .MuiPickersDay-root': {
-                      width: '36px',
-                      height: '36px',
-                      margin: '0 2px',
-                    }
-                  }}
-                />
-              </div>
+            <CardContent>
+              <DateCalendar
+                value={selectedDate}
+                onChange={(newDate) => setSelectedDate(newDate)}
+                slots={{
+                  day: EventDay,
+                }}
+                slotProps={{
+                  day: {
+                    eventDates,
+                    selectedDate,
+                  } as any,
+                }}
+                dayOfWeekFormatter={(day) => {
+                  const dayNames = ['N', 'P', 'U', 'S', 'Č', 'P', 'S'];
+                  return dayNames[day.getDay()];
+                }}
+                sx={{
+                  width: '100%',
+                  '& .MuiPickersCalendarHeader-root': {
+                    paddingLeft: '24px !important',
+                    paddingRight: '24px !important',
+                  },
+                  '& .MuiDayCalendar-header': {
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    paddingLeft: '24px !important',
+                    paddingRight: '24px !important',
+                  },
+                  '& .MuiDayCalendar-slideTransition': {
+                    minHeight: 'auto',
+                    paddingLeft: '24px',
+                    paddingRight: '24px',
+                  },
+                  '& .MuiDayCalendar-monthContainer': {
+                    paddingLeft: '24px',
+                    paddingRight: '24px',
+                  },
+                  '& .MuiDayCalendar-weekDayLabel': {
+                    fontWeight: 600,
+                    fontSize: '0.875rem',
+                    color: '#374151',
+                    width: '36px',
+                    height: '36px',
+                    margin: '0 2px',
+                  },
+                  '& .MuiDayCalendar-weekContainer': {
+                    justifyContent: 'space-between',
+                    margin: '0',
+                  },
+                  '& .MuiPickersDay-root': {
+                    width: '36px',
+                    height: '36px',
+                    margin: '0 2px',
+                  }
+                }}
+              />
             </CardContent>
           </Card>
           
