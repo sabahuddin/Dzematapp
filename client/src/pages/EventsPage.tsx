@@ -41,7 +41,7 @@ import {
 } from '@mui/icons-material';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay';
-import { isSameDay, format } from 'date-fns';
+import { isSameDay, format, isWeekend } from 'date-fns';
 import { Event, ImportantDate } from '@shared/schema';
 import EventModal from '../components/modals/EventModal';
 import EventViewModal from '../components/modals/EventViewModal';
@@ -51,9 +51,12 @@ import { useToast } from '../hooks/use-toast';
 import { useMarkAsViewed } from '../hooks/useMarkAsViewed';
 import { apiRequest } from '../lib/queryClient';
 
-function EventDay(props: PickersDayProps & { eventDates?: Date[] }) {
-  const { eventDates = [], day, outsideCurrentMonth, ...other } = props;
+function EventDay(props: PickersDayProps & { eventDates?: Date[]; selectedDate?: Date | null }) {
+  const { eventDates = [], selectedDate, day, outsideCurrentMonth, ...other } = props;
   const hasEvent = eventDates.some((eventDate: Date) => isSameDay(eventDate, day));
+  const isToday = isSameDay(day, new Date());
+  const isSelected = selectedDate ? isSameDay(day, selectedDate) : false;
+  const isWeekendDay = isWeekend(day);
 
   return (
     <Badge
@@ -62,8 +65,8 @@ function EventDay(props: PickersDayProps & { eventDates?: Date[] }) {
       badgeContent={hasEvent ? '•' : undefined}
       sx={{
         '& .MuiBadge-badge': {
-          backgroundColor: '#ed6c02',
-          color: '#ed6c02',
+          backgroundColor: '#10b981',
+          color: '#10b981',
           minWidth: 6,
           height: 6,
           borderRadius: '50%',
@@ -77,6 +80,44 @@ function EventDay(props: PickersDayProps & { eventDates?: Date[] }) {
         {...other} 
         day={day} 
         outsideCurrentMonth={outsideCurrentMonth}
+        sx={{
+          backgroundColor: outsideCurrentMonth 
+            ? 'transparent'
+            : isSelected 
+            ? '#3b82f6 !important' 
+            : isToday 
+            ? '#fbbf24 !important'
+            : isWeekendDay 
+            ? '#f3f4f6'
+            : hasEvent
+            ? '#d1fae5'
+            : 'transparent',
+          color: outsideCurrentMonth
+            ? '#9ca3af'
+            : isSelected || isToday
+            ? '#ffffff !important'
+            : hasEvent
+            ? '#065f46'
+            : isWeekendDay
+            ? '#6b7280'
+            : 'inherit',
+          fontWeight: isToday || isSelected || hasEvent ? 600 : 400,
+          '&:hover': {
+            backgroundColor: outsideCurrentMonth
+              ? '#f9fafb'
+              : isSelected
+              ? '#2563eb !important'
+              : isToday
+              ? '#f59e0b !important'
+              : isWeekendDay
+              ? '#e5e7eb'
+              : hasEvent
+              ? '#a7f3d0'
+              : '#f3f4f6',
+          },
+          border: isToday ? '2px solid #f59e0b' : 'none',
+          borderRadius: '8px',
+        }}
       />
     </Badge>
   );
@@ -464,7 +505,12 @@ export default function EventsPage() {
                 slotProps={{
                   day: {
                     eventDates,
+                    selectedDate,
                   } as any,
+                }}
+                dayOfWeekFormatter={(day) => {
+                  const dayNames = ['N', 'P', 'U', 'S', 'Č', 'P', 'S'];
+                  return dayNames[day.getDay()];
                 }}
                 sx={{
                   width: '100%',
@@ -474,11 +520,119 @@ export default function EventsPage() {
                   },
                   '& .MuiDayCalendar-weekContainer': {
                     justifyContent: 'space-around',
+                  },
+                  '& .MuiDayCalendar-weekDayLabel': {
+                    fontWeight: 600,
+                    fontSize: '0.875rem',
+                    color: '#374151',
                   }
                 }}
               />
             </CardContent>
           </Card>
+
+          {/* Selected Date Events */}
+          {selectedDate && (
+            <Card sx={{ mb: 3 }}>
+              <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', bgcolor: '#f8f9fa' }}>
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                  {t('events:eventsFor')} {format(selectedDate, 'dd.MM.yyyy.')}
+                </Typography>
+              </Box>
+              <CardContent>
+                {(() => {
+                  const selectedDateEvents = allEvents.filter(event => 
+                    isSameDay(new Date(event.dateTime), selectedDate)
+                  );
+                  
+                  if (selectedDateEvents.length === 0) {
+                    return (
+                      <Box sx={{ py: 3, textAlign: 'center' }}>
+                        <Typography color="text.secondary">
+                          {t('events:noEventsForDate')}
+                        </Typography>
+                      </Box>
+                    );
+                  }
+                  
+                  return (
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                      {selectedDateEvents.map((event: Event) => (
+                        <Card 
+                          key={event.id} 
+                          variant="outlined"
+                          sx={{ 
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                            '&:hover': {
+                              boxShadow: 2,
+                              transform: 'translateY(-2px)',
+                            }
+                          }}
+                          onClick={() => handleEventClick(event)}
+                        >
+                          <CardContent sx={{ p: 2 }}>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+                              <Box sx={{ flex: 1 }}>
+                                <Typography variant="h6" sx={{ fontWeight: 600, mb: 1, color: 'primary.main' }}>
+                                  {event.name}
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                  <strong>{t('events:time')}:</strong> {format(new Date(event.dateTime), 'HH:mm')}
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                  <strong>{t('events:location')}:</strong> {event.location}
+                                </Typography>
+                                {event.description && (
+                                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                                    {event.description}
+                                  </Typography>
+                                )}
+                              </Box>
+                              <Box sx={{ display: 'flex', gap: 0.5, ml: 2 }}>
+                                {event.rsvpEnabled && (
+                                  <Chip 
+                                    label={`${getRsvpCount(event)}/${event.maxAttendees || '∞'}`}
+                                    size="small"
+                                    color="primary"
+                                    variant="outlined"
+                                  />
+                                )}
+                                {user?.isAdmin && (
+                                  <>
+                                    <IconButton
+                                      size="small"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleEditEvent(event);
+                                      }}
+                                      sx={{ color: '#ed6c02' }}
+                                    >
+                                      <Edit fontSize="small" />
+                                    </IconButton>
+                                    <IconButton
+                                      size="small"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDeleteClick(event);
+                                      }}
+                                      sx={{ color: '#d32f2f' }}
+                                    >
+                                      <Delete fontSize="small" />
+                                    </IconButton>
+                                  </>
+                                )}
+                              </Box>
+                            </Box>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </Box>
+                  );
+                })()}
+              </CardContent>
+            </Card>
+          )}
 
           {/* Top 3 Upcoming Events */}
           <Card sx={{ mb: 2 }}>
