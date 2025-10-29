@@ -505,7 +505,7 @@ export default function EventsPage() {
                   {t('events:calendar.title')}
                 </Typography>
               </Box>
-              <CardContent sx={{ p: 0 }}>
+              <CardContent sx={{ px: 3, py: 2 }}>
                 <DateCalendar
                   value={selectedDate}
                   onChange={(newDate) => setSelectedDate(newDate)}
@@ -524,6 +524,7 @@ export default function EventsPage() {
                   }}
                   sx={{
                     width: '100%',
+                    mx: 0,
                     '& .MuiPickersCalendarHeader-root': {
                       paddingLeft: 2,
                       paddingRight: 2,
@@ -531,8 +532,8 @@ export default function EventsPage() {
                     '& .MuiDayCalendar-header': {
                       display: 'flex',
                       justifyContent: 'space-between',
-                      paddingLeft: '8px',
-                      paddingRight: '8px',
+                      paddingLeft: '4px',
+                      paddingRight: '4px',
                     },
                     '& .MuiDayCalendar-weekDayLabel': {
                       fontWeight: 600,
