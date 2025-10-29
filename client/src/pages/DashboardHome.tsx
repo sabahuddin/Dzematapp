@@ -654,143 +654,147 @@ export default function DashboardHome() {
           </Card>
         </Box>
 
-        {/* My Messages and My Sections */}
-        <Grid container spacing={3} sx={{ mt: 0 }}>
+        {/* My Messages and My Sections side by side */}
+        <Box 
+          sx={{ 
+            display: 'flex', 
+            gap: 3, 
+            mt: 3,
+            flexDirection: { xs: 'column', md: 'row' },
+            '& > *': { flex: 1 }
+          }}
+        >
           {/* My Messages */}
-          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-            <Card sx={{ height: '100%' }}>
-              <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <Mail sx={{ color: '#1976d2' }} />
-                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                    {t('dashboard:myMessages')}
-                  </Typography>
-                  {unreadMessages.length > 0 && (
-                    <Badge badgeContent={unreadMessages.length} color="error" data-testid="badge-unread-messages" />
-                  )}
-                </Box>
-                <Link href="/messages">
-                  <Button 
-                    size="small" 
-                    endIcon={<ChevronRight />}
-                    sx={{ textTransform: 'none' }}
-                    data-testid="link-all-messages"
-                  >
-                    {t('dashboard:all')}
-                  </Button>
-                </Link>
-              </Box>
-              <CardContent>
-                {unreadMessages.length > 0 ? (
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    {unreadMessages.slice(0, 3).map((message) => (
-                      <Link key={message.id} href="/messages">
-                        <Box 
-                          sx={{ 
-                            p: 2, 
-                            borderRadius: 1, 
-                            bgcolor: '#e3f2fd',
-                            borderLeft: '4px solid #1976d2',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s',
-                            '&:hover': {
-                              bgcolor: '#bbdefb',
-                              transform: 'translateX(4px)'
-                            }
-                          }}
-                          data-testid={`message-preview-${message.id}`}
-                        >
-                          <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                            {message.subject}
-                          </Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            {t('dashboard:from')}: {message.sender?.firstName} {message.sender?.lastName}
-                          </Typography>
-                        </Box>
-                      </Link>
-                    ))}
-                  </Box>
-                ) : (
-                  <Typography color="text.secondary">
-                    {t('dashboard:noUnreadMessages')}
-                  </Typography>
+          <Card sx={{ height: '100%' }}>
+            <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Mail sx={{ color: '#1976d2' }} />
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                  {t('dashboard:myMessages')}
+                </Typography>
+                {unreadMessages.length > 0 && (
+                  <Badge badgeContent={unreadMessages.length} color="error" data-testid="badge-unread-messages" />
                 )}
-              </CardContent>
-            </Card>
-          </Grid>
+              </Box>
+              <Link href="/messages">
+                <Button 
+                  size="small" 
+                  endIcon={<ChevronRight />}
+                  sx={{ textTransform: 'none' }}
+                  data-testid="link-all-messages"
+                >
+                  {t('dashboard:all')}
+                </Button>
+              </Link>
+            </Box>
+            <CardContent>
+              {unreadMessages.length > 0 ? (
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  {unreadMessages.slice(0, 3).map((message) => (
+                    <Link key={message.id} href="/messages">
+                      <Box 
+                        sx={{ 
+                          p: 2, 
+                          borderRadius: 1, 
+                          bgcolor: '#e3f2fd',
+                          borderLeft: '4px solid #1976d2',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                          '&:hover': {
+                            bgcolor: '#bbdefb',
+                            transform: 'translateX(4px)'
+                          }
+                        }}
+                        data-testid={`message-preview-${message.id}`}
+                      >
+                        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                          {message.subject}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {t('dashboard:from')}: {message.sender?.firstName} {message.sender?.lastName}
+                        </Typography>
+                      </Box>
+                    </Link>
+                  ))}
+                </Box>
+              ) : (
+                <Typography color="text.secondary">
+                  {t('dashboard:noUnreadMessages')}
+                </Typography>
+              )}
+            </CardContent>
+          </Card>
 
           {/* My Sections */}
-          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-            <Card sx={{ height: '100%' }}>
-              <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <Workspaces sx={{ color: '#9c27b0' }} />
-                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                    {t('dashboard:mySections')}
-                  </Typography>
-                </Box>
-                <Link href="/tasks">
-                  <Button 
-                    size="small" 
-                    endIcon={<ChevronRight />}
-                    sx={{ textTransform: 'none' }}
-                    data-testid="link-all-sections"
-                  >
-                    {t('dashboard:all')}
-                  </Button>
-                </Link>
+          <Card sx={{ height: '100%' }}>
+            <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Workspaces sx={{ color: '#9c27b0' }} />
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                  {t('dashboard:mySections')}
+                </Typography>
               </Box>
-              <CardContent>
-                {userWorkGroups.length > 0 ? (
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    {userWorkGroups.slice(0, 4).map((workGroup) => (
-                      <Link key={workGroup.id} href="/tasks">
-                        <Box 
-                          sx={{ 
-                            p: 2, 
-                            borderRadius: 1, 
-                            bgcolor: '#f3e5f5',
-                            borderLeft: '4px solid #9c27b0',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s',
-                            '&:hover': {
-                              bgcolor: '#e1bee7',
-                              transform: 'translateX(4px)'
-                            }
-                          }}
-                          data-testid={`section-preview-${workGroup.id}`}
-                        >
-                          <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                            {workGroup.name}
+              <Link href="/tasks">
+                <Button 
+                  size="small" 
+                  endIcon={<ChevronRight />}
+                  sx={{ textTransform: 'none' }}
+                  data-testid="link-all-sections"
+                >
+                  {t('dashboard:all')}
+                </Button>
+              </Link>
+            </Box>
+            <CardContent>
+              {userWorkGroups.length > 0 ? (
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  {userWorkGroups.slice(0, 4).map((workGroup) => (
+                    <Link key={workGroup.id} href="/tasks">
+                      <Box 
+                        sx={{ 
+                          p: 2, 
+                          borderRadius: 1, 
+                          bgcolor: '#f3e5f5',
+                          borderLeft: '4px solid #9c27b0',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                          '&:hover': {
+                            bgcolor: '#e1bee7',
+                            transform: 'translateX(4px)'
+                          }
+                        }}
+                        data-testid={`section-preview-${workGroup.id}`}
+                      >
+                        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                          {workGroup.name}
+                        </Typography>
+                        {workGroup.description && (
+                          <Typography 
+                            variant="caption" 
+                            color="text.secondary"
+                            sx={{
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              display: '-webkit-box',
+                              WebkitLineClamp: 1,
+                              WebkitBoxOrient: 'vertical'
+                            }}
+                          >
+                            {workGroup.description}
                           </Typography>
-                          {workGroup.description && (
-                            <Typography 
-                              variant="caption" 
-                              color="text.secondary"
-                              sx={{
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                display: '-webkit-box',
-                                WebkitLineClamp: 1,
-                                WebkitBoxOrient: 'vertical'
-                              }}
-                            >
-                              {workGroup.description}
-                            </Typography>
-                          )}
-                        </Box>
-                      </Link>
-                    ))}
-                  </Box>
-                ) : (
-                  <Typography color="text.secondary">
-                    {t('dashboard:noSectionMembership')}
-                  </Typography>
-                )}
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
+                        )}
+                      </Box>
+                    </Link>
+                  ))}
+                </Box>
+              ) : (
+                <Typography color="text.secondary">
+                  {t('dashboard:noSectionMembership')}
+                </Typography>
+              )}
+            </CardContent>
+          </Card>
+        </Box>
 
         {/* Date Events Modal */}
         <Dialog
