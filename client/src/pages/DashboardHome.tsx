@@ -536,7 +536,7 @@ export default function DashboardHome() {
                 {t('dashboard:eventCalendar')}
               </Typography>
             </Box>
-            <CardContent>
+            <CardContent sx={{ px: 3, py: 2 }}>
               <DateCalendar
                 value={selectedDate}
                 onChange={(newDate) => setSelectedDate(newDate)}
@@ -555,24 +555,16 @@ export default function DashboardHome() {
                 }}
                 sx={{
                   width: '100%',
+                  mx: 0,
                   '& .MuiPickersCalendarHeader-root': {
-                    paddingLeft: '24px !important',
-                    paddingRight: '24px !important',
+                    paddingLeft: 2,
+                    paddingRight: 2,
                   },
                   '& .MuiDayCalendar-header': {
                     display: 'flex',
                     justifyContent: 'space-between',
-                    paddingLeft: '24px !important',
-                    paddingRight: '24px !important',
-                  },
-                  '& .MuiDayCalendar-slideTransition': {
-                    minHeight: 'auto',
-                    paddingLeft: '24px',
-                    paddingRight: '24px',
-                  },
-                  '& .MuiDayCalendar-monthContainer': {
-                    paddingLeft: '24px',
-                    paddingRight: '24px',
+                    paddingLeft: '4px',
+                    paddingRight: '4px',
                   },
                   '& .MuiDayCalendar-weekDayLabel': {
                     fontWeight: 600,
