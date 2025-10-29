@@ -554,8 +554,8 @@ export default function DashboardHome() {
                   return dayNames[day.getDay()];
                 }}
                 sx={{
-                  width: '100%',
-                  px: 3,
+                  width: 'calc(100% - 48px)',
+                  mx: 3,
                   '& .MuiPickersCalendarHeader-root': {
                     paddingLeft: 2,
                     paddingRight: 2,
