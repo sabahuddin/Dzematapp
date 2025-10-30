@@ -101,7 +101,8 @@ import {
   proposals,
   receipts,
   certificateTemplates,
-  userCertificates
+  userCertificates,
+  membershipApplications
 } from "@shared/schema";
 import { db } from './db';
 import { eq, and, or, desc, asc, gt, sql, inArray } from 'drizzle-orm';
@@ -366,6 +367,14 @@ export interface IStorage {
   getUnviewedCertificatesCount(userId: string): Promise<number>;
   markCertificateAsViewed(id: string): Promise<UserCertificate | undefined>;
   deleteCertificate(id: string): Promise<boolean>;
+
+  // Membership Applications (Pristupnice)
+  createMembershipApplication(application: import("@shared/schema").InsertMembershipApplication): Promise<import("@shared/schema").MembershipApplication>;
+  getMembershipApplication(id: string): Promise<import("@shared/schema").MembershipApplication | undefined>;
+  getAllMembershipApplications(): Promise<import("@shared/schema").MembershipApplication[]>;
+  updateMembershipApplication(id: string, updates: Partial<import("@shared/schema").InsertMembershipApplication>): Promise<import("@shared/schema").MembershipApplication | undefined>;
+  reviewMembershipApplication(id: string, status: string, reviewedById: string, reviewNotes?: string): Promise<import("@shared/schema").MembershipApplication | undefined>;
+  deleteMembershipApplication(id: string): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1917,6 +1926,53 @@ export class DatabaseStorage implements IStorage {
 
   async deleteCertificate(id: string): Promise<boolean> {
     const result = await db.delete(userCertificates).where(eq(userCertificates.id, id)).returning();
+    return result.length > 0;
+  }
+
+  // Membership Applications (Pristupnice)
+  async createMembershipApplication(application: import("@shared/schema").InsertMembershipApplication): Promise<import("@shared/schema").MembershipApplication> {
+    const [app] = await db.insert(membershipApplications).values(application).returning();
+    
+    await this.createActivity({
+      type: "membership_application",
+      description: `Nova pristupnica: ${app.firstName} ${app.lastName}`,
+    });
+    
+    return app;
+  }
+
+  async getMembershipApplication(id: string): Promise<import("@shared/schema").MembershipApplication | undefined> {
+    const result = await db.select().from(membershipApplications).where(eq(membershipApplications.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getAllMembershipApplications(): Promise<import("@shared/schema").MembershipApplication[]> {
+    return await db.select().from(membershipApplications).orderBy(desc(membershipApplications.createdAt));
+  }
+
+  async updateMembershipApplication(id: string, updates: Partial<import("@shared/schema").InsertMembershipApplication>): Promise<import("@shared/schema").MembershipApplication | undefined> {
+    const [app] = await db.update(membershipApplications)
+      .set(updates)
+      .where(eq(membershipApplications.id, id))
+      .returning();
+    return app;
+  }
+
+  async reviewMembershipApplication(id: string, status: string, reviewedById: string, reviewNotes?: string): Promise<import("@shared/schema").MembershipApplication | undefined> {
+    const [app] = await db.update(membershipApplications)
+      .set({ 
+        status, 
+        reviewedById, 
+        reviewNotes: reviewNotes || null,
+        reviewedAt: new Date() 
+      })
+      .where(eq(membershipApplications.id, id))
+      .returning();
+    return app;
+  }
+
+  async deleteMembershipApplication(id: string): Promise<boolean> {
+    const result = await db.delete(membershipApplications).where(eq(membershipApplications.id, id)).returning();
     return result.length > 0;
   }
 }
