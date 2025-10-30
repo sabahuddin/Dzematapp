@@ -72,19 +72,19 @@ function MembershipApplicationForm() {
     gender: 'muško',
     dateOfBirth: '',
     placeOfBirth: '',
-    address: '',
+    streetAddress: '',
     postalCode: '',
     city: '',
     occupation: '',
-    skills: '',
+    skillsHobbies: '',
     maritalStatus: 'neoženjen/neudana',
     spouseName: '',
-    children: '',
-    membershipFee: '50',
+    childrenInfo: '',
+    monthlyFee: '50',
     invoiceDelivery: 'email',
     email: '',
     phone: '',
-    startDate: '',
+    membershipStartDate: '',
   });
 
   const [photoFile, setPhotoFile] = useState<File | null>(null);
@@ -135,7 +135,7 @@ function MembershipApplicationForm() {
       if (photoFile) {
         try {
           const photoUrl = await uploadPhotoMutation.mutateAsync(photoFile);
-          finalData.photoUrl = photoUrl;
+          finalData.photo = photoUrl;
         } catch (error) {
           console.error('Photo upload failed:', error);
           setSubmitError('Greška pri učitavanju fotografije');
@@ -147,16 +147,16 @@ function MembershipApplicationForm() {
         const date = new Date(finalData.dateOfBirth);
         finalData.dateOfBirth = format(date, 'dd.MM.yyyy');
       }
-      if (finalData.startDate) {
-        const date = new Date(finalData.startDate);
-        finalData.startDate = format(date, 'dd.MM.yyyy');
+      if (finalData.membershipStartDate) {
+        const date = new Date(finalData.membershipStartDate);
+        finalData.membershipStartDate = format(date, 'dd.MM.yyyy');
       }
 
-      finalData.membershipFee = parseInt(finalData.membershipFee, 10);
+      finalData.monthlyFee = parseInt(finalData.monthlyFee, 10);
 
       if (!finalData.spouseName) finalData.spouseName = null;
-      if (!finalData.children) finalData.children = null;
-      if (!finalData.skills) finalData.skills = null;
+      if (!finalData.childrenInfo) finalData.childrenInfo = null;
+      if (!finalData.skillsHobbies) finalData.skillsHobbies = null;
 
       await submitApplicationMutation.mutateAsync(finalData);
       
@@ -167,19 +167,19 @@ function MembershipApplicationForm() {
         gender: 'muško',
         dateOfBirth: '',
         placeOfBirth: '',
-        address: '',
+        streetAddress: '',
         postalCode: '',
         city: '',
         occupation: '',
-        skills: '',
+        skillsHobbies: '',
         maritalStatus: 'neoženjen/neudana',
         spouseName: '',
-        children: '',
-        membershipFee: '50',
+        childrenInfo: '',
+        monthlyFee: '50',
         invoiceDelivery: 'email',
         email: '',
         phone: '',
-        startDate: '',
+        membershipStartDate: '',
       });
       setPhotoFile(null);
       setPhotoPreview(null);
@@ -333,9 +333,9 @@ function MembershipApplicationForm() {
               fullWidth
               required
               label="Adresa"
-              value={formData.address}
-              onChange={handleChange('address')}
-              data-testid="input-address"
+              value={formData.streetAddress}
+              onChange={handleChange('streetAddress')}
+              data-testid="input-streetAddress"
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 4 }}>
@@ -373,11 +373,11 @@ function MembershipApplicationForm() {
             <TextField
               fullWidth
               label="Posebne sposobnosti (opciono)"
-              value={formData.skills}
-              onChange={handleChange('skills')}
+              value={formData.skillsHobbies}
+              onChange={handleChange('skillsHobbies')}
               multiline
               rows={2}
-              data-testid="input-skills"
+              data-testid="input-skillsHobbies"
             />
           </Grid>
         </Grid>
@@ -422,12 +422,12 @@ function MembershipApplicationForm() {
             <TextField
               fullWidth
               label="Djeca (imena i godine rođenja, opciono)"
-              value={formData.children}
-              onChange={handleChange('children')}
+              value={formData.childrenInfo}
+              onChange={handleChange('childrenInfo')}
               multiline
               rows={2}
               placeholder="Npr: Amir (2010), Amina (2015)"
-              data-testid="input-children"
+              data-testid="input-childrenInfo"
             />
           </Grid>
         </Grid>
@@ -441,12 +441,12 @@ function MembershipApplicationForm() {
         <Grid container spacing={2}>
           <Grid size={{ xs: 12 }}>
             <FormControl fullWidth>
-              <InputLabel>Visina godišnje članarine (CHF)</InputLabel>
+              <InputLabel>Visina mjesečne članarine (CHF)</InputLabel>
               <Select
-                value={formData.membershipFee}
-                onChange={(e) => setFormData(prev => ({ ...prev, membershipFee: e.target.value }))}
-                label="Visina godišnje članarine (CHF)"
-                data-testid="select-membershipFee"
+                value={formData.monthlyFee}
+                onChange={(e) => setFormData(prev => ({ ...prev, monthlyFee: e.target.value }))}
+                label="Visina mjesečne članarine (CHF)"
+                data-testid="select-monthlyFee"
               >
                 <MenuItem value="30">30 CHF</MenuItem>
                 <MenuItem value="40">40 CHF</MenuItem>
@@ -504,10 +504,10 @@ function MembershipApplicationForm() {
               required
               type="date"
               label="Datum pristupanja"
-              value={formData.startDate}
-              onChange={handleChange('startDate')}
+              value={formData.membershipStartDate}
+              onChange={handleChange('membershipStartDate')}
               InputLabelProps={{ shrink: true }}
-              data-testid="input-startDate"
+              data-testid="input-membershipStartDate"
             />
           </Grid>
         </Grid>
