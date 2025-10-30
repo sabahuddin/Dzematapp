@@ -19,13 +19,25 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  Grid,
+  Alert,
+  MenuItem,
+  Select,
+  InputLabel,
 } from '@mui/material';
-import { Announcement, Event, Assignment, Schedule } from '@mui/icons-material';
+import { Announcement, Event, Assignment, Schedule, CloudUpload, CheckCircle } from '@mui/icons-material';
 import { useLocation } from 'wouter';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import type { Announcement as AnnouncementType, Event as EventType, PrayerTime } from '@shared/schema';
 import { format } from 'date-fns';
 import mosqueLogoPath from '@assets/ChatGPT Image 20. okt 2025. u 22_58_31_1761044165883.png';
+import { apiRequest } from '@/lib/queryClient';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -50,6 +62,469 @@ function TabPanel(props: TabPanelProps) {
         </Box>
       )}
     </div>
+  );
+}
+
+function MembershipApplicationForm() {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    gender: 'muško',
+    dateOfBirth: '',
+    placeOfBirth: '',
+    address: '',
+    postalCode: '',
+    city: '',
+    occupation: '',
+    skills: '',
+    maritalStatus: 'neoženjen/neudana',
+    spouseName: '',
+    children: '',
+    membershipFee: '50',
+    invoiceDelivery: 'email',
+    email: '',
+    phone: '',
+    startDate: '',
+  });
+
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const uploadPhotoMutation = useMutation({
+    mutationFn: async (file: File) => {
+      const formDataUpload = new FormData();
+      formDataUpload.append('photo', file);
+      const response = await fetch('/api/upload/photo', {
+        method: 'POST',
+        body: formDataUpload,
+      });
+      if (!response.ok) throw new Error('Photo upload failed');
+      const result = await response.json();
+      return result.photoUrl;
+    },
+  });
+
+  const submitApplicationMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await apiRequest('/api/membership-applications', 'POST', data);
+      return await response.json();
+    },
+  });
+
+  const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setPhotoFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhotoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setSubmitError(null);
+
+    try {
+      let finalData: any = { ...formData };
+
+      if (photoFile) {
+        try {
+          const photoUrl = await uploadPhotoMutation.mutateAsync(photoFile);
+          finalData.photoUrl = photoUrl;
+        } catch (error) {
+          console.error('Photo upload failed:', error);
+          setSubmitError('Greška pri učitavanju fotografije');
+          return;
+        }
+      }
+
+      if (finalData.dateOfBirth) {
+        const date = new Date(finalData.dateOfBirth);
+        finalData.dateOfBirth = format(date, 'dd.MM.yyyy');
+      }
+      if (finalData.startDate) {
+        const date = new Date(finalData.startDate);
+        finalData.startDate = format(date, 'dd.MM.yyyy');
+      }
+
+      finalData.membershipFee = parseInt(finalData.membershipFee, 10);
+
+      if (!finalData.spouseName) finalData.spouseName = null;
+      if (!finalData.children) finalData.children = null;
+      if (!finalData.skills) finalData.skills = null;
+
+      await submitApplicationMutation.mutateAsync(finalData);
+      
+      setSubmitSuccess(true);
+      setFormData({
+        firstName: '',
+        lastName: '',
+        gender: 'muško',
+        dateOfBirth: '',
+        placeOfBirth: '',
+        address: '',
+        postalCode: '',
+        city: '',
+        occupation: '',
+        skills: '',
+        maritalStatus: 'neoženjen/neudana',
+        spouseName: '',
+        children: '',
+        membershipFee: '50',
+        invoiceDelivery: 'email',
+        email: '',
+        phone: '',
+        startDate: '',
+      });
+      setPhotoFile(null);
+      setPhotoPreview(null);
+    } catch (error) {
+      console.error('Application submission failed:', error);
+      setSubmitError('Greška pri slanju zahtjeva. Pokušajte ponovo.');
+    }
+  };
+
+  const handleChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | { value: unknown }>) => {
+    const value = event.target.value;
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  if (submitSuccess) {
+    return (
+      <Box sx={{ maxWidth: 600, mx: 'auto', textAlign: 'center', py: 4 }}>
+        <CheckCircle sx={{ fontSize: 80, color: 'success.main', mb: 2 }} />
+        <Typography variant="h5" gutterBottom color="success.main">
+          Zahtjev uspješno poslan!
+        </Typography>
+        <Typography variant="body1" color="text.secondary" paragraph>
+          Hvala vam na prijavi za članstvo u našem džematu.
+        </Typography>
+        <Typography variant="body2" color="text.secondary" paragraph>
+          Pregledaćemo vaš zahtjev i kontaktirati vas uskoro.
+        </Typography>
+        <Button 
+          variant="contained" 
+          onClick={() => setSubmitSuccess(false)}
+          sx={{ mt: 2 }}
+          data-testid="button-submit-another"
+        >
+          Pošalji novu pristupnicu
+        </Button>
+      </Box>
+    );
+  }
+
+  return (
+    <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 800, mx: 'auto' }}>
+      <Typography variant="h5" gutterBottom>
+        Zahtjev za članstvo
+      </Typography>
+      <Typography variant="body2" color="text.secondary" paragraph>
+        Popunite formu ispod kako biste aplicirali za članstvo u našem džematu.
+      </Typography>
+
+      {submitError && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {submitError}
+        </Alert>
+      )}
+
+      <Card sx={{ p: 3, mb: 3 }}>
+        <Typography variant="h6" gutterBottom>
+          Lični podaci
+        </Typography>
+        
+        <Grid container spacing={2}>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label="Ime"
+              value={formData.firstName}
+              onChange={handleChange('firstName')}
+              data-testid="input-firstName"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label="Prezime"
+              value={formData.lastName}
+              onChange={handleChange('lastName')}
+              data-testid="input-lastName"
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12 }}>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">Pol</FormLabel>
+              <RadioGroup
+                row
+                value={formData.gender}
+                onChange={handleChange('gender')}
+                data-testid="radio-gender"
+              >
+                <FormControlLabel value="muško" control={<Radio />} label="Muško" />
+                <FormControlLabel value="žensko" control={<Radio />} label="Žensko" />
+              </RadioGroup>
+            </FormControl>
+          </Grid>
+
+          <Grid size={{ xs: 12 }}>
+            <Typography variant="subtitle2" gutterBottom sx={{ mt: 2, mb: 1 }}>
+              Fotografija (opciono)
+            </Typography>
+            <Button
+              variant="outlined"
+              component="label"
+              startIcon={<CloudUpload />}
+              data-testid="button-upload-photo"
+            >
+              {photoFile ? 'Promijeni fotografiju' : 'Učitaj fotografiju'}
+              <input
+                type="file"
+                hidden
+                accept="image/*"
+                onChange={handlePhotoChange}
+              />
+            </Button>
+            {photoPreview && (
+              <Box sx={{ mt: 2 }}>
+                <img
+                  src={photoPreview}
+                  alt="Preview"
+                  style={{ maxWidth: '200px', maxHeight: '200px', borderRadius: '8px' }}
+                />
+              </Box>
+            )}
+          </Grid>
+
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              type="date"
+              label="Datum rođenja"
+              value={formData.dateOfBirth}
+              onChange={handleChange('dateOfBirth')}
+              InputLabelProps={{ shrink: true }}
+              data-testid="input-dateOfBirth"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label="Mjesto rođenja"
+              value={formData.placeOfBirth}
+              onChange={handleChange('placeOfBirth')}
+              data-testid="input-placeOfBirth"
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12 }}>
+            <TextField
+              fullWidth
+              required
+              label="Adresa"
+              value={formData.address}
+              onChange={handleChange('address')}
+              data-testid="input-address"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 4 }}>
+            <TextField
+              fullWidth
+              required
+              label="Poštanski broj"
+              value={formData.postalCode}
+              onChange={handleChange('postalCode')}
+              data-testid="input-postalCode"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 8 }}>
+            <TextField
+              fullWidth
+              required
+              label="Grad"
+              value={formData.city}
+              onChange={handleChange('city')}
+              data-testid="input-city"
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12 }}>
+            <TextField
+              fullWidth
+              required
+              label="Zanimanje"
+              value={formData.occupation}
+              onChange={handleChange('occupation')}
+              data-testid="input-occupation"
+            />
+          </Grid>
+          <Grid size={{ xs: 12 }}>
+            <TextField
+              fullWidth
+              label="Posebne sposobnosti (opciono)"
+              value={formData.skills}
+              onChange={handleChange('skills')}
+              multiline
+              rows={2}
+              data-testid="input-skills"
+            />
+          </Grid>
+        </Grid>
+      </Card>
+
+      <Card sx={{ p: 3, mb: 3 }}>
+        <Typography variant="h6" gutterBottom>
+          Porodični podaci
+        </Typography>
+
+        <Grid container spacing={2}>
+          <Grid size={{ xs: 12 }}>
+            <FormControl fullWidth>
+              <InputLabel>Bračno stanje</InputLabel>
+              <Select
+                value={formData.maritalStatus}
+                onChange={(e) => setFormData(prev => ({ ...prev, maritalStatus: e.target.value }))}
+                label="Bračno stanje"
+                data-testid="select-maritalStatus"
+              >
+                <MenuItem value="neoženjen/neudana">Neoženjen/Neudana</MenuItem>
+                <MenuItem value="oženjen/udata">Oženjen/Udata</MenuItem>
+                <MenuItem value="razveden/razvedena">Razveden/Razvedena</MenuItem>
+                <MenuItem value="udovac/udovica">Udovac/Udovica</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+
+          {(formData.maritalStatus === 'oženjen/udata') && (
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                fullWidth
+                label="Ime bračnog partnera"
+                value={formData.spouseName}
+                onChange={handleChange('spouseName')}
+                data-testid="input-spouseName"
+              />
+            </Grid>
+          )}
+
+          <Grid size={{ xs: 12 }}>
+            <TextField
+              fullWidth
+              label="Djeca (imena i godine rođenja, opciono)"
+              value={formData.children}
+              onChange={handleChange('children')}
+              multiline
+              rows={2}
+              placeholder="Npr: Amir (2010), Amina (2015)"
+              data-testid="input-children"
+            />
+          </Grid>
+        </Grid>
+      </Card>
+
+      <Card sx={{ p: 3, mb: 3 }}>
+        <Typography variant="h6" gutterBottom>
+          Podaci o članstvu
+        </Typography>
+
+        <Grid container spacing={2}>
+          <Grid size={{ xs: 12 }}>
+            <FormControl fullWidth>
+              <InputLabel>Visina godišnje članarine (CHF)</InputLabel>
+              <Select
+                value={formData.membershipFee}
+                onChange={(e) => setFormData(prev => ({ ...prev, membershipFee: e.target.value }))}
+                label="Visina godišnje članarine (CHF)"
+                data-testid="select-membershipFee"
+              >
+                <MenuItem value="30">30 CHF</MenuItem>
+                <MenuItem value="40">40 CHF</MenuItem>
+                <MenuItem value="50">50 CHF</MenuItem>
+                <MenuItem value="60">60 CHF</MenuItem>
+                <MenuItem value="70">70 CHF</MenuItem>
+                <MenuItem value="80">80 CHF</MenuItem>
+                <MenuItem value="90">90 CHF</MenuItem>
+                <MenuItem value="100">100 CHF</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+
+          <Grid size={{ xs: 12 }}>
+            <FormControl fullWidth>
+              <InputLabel>Način dostave računa</InputLabel>
+              <Select
+                value={formData.invoiceDelivery}
+                onChange={(e) => setFormData(prev => ({ ...prev, invoiceDelivery: e.target.value }))}
+                label="Način dostave računa"
+                data-testid="select-invoiceDelivery"
+              >
+                <MenuItem value="email">Email</MenuItem>
+                <MenuItem value="pošta">Poštom</MenuItem>
+                <MenuItem value="lično">Lično preuzimanje</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label="Email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange('email')}
+              data-testid="input-email"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label="Telefon"
+              value={formData.phone}
+              onChange={handleChange('phone')}
+              data-testid="input-phone"
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12 }}>
+            <TextField
+              fullWidth
+              required
+              type="date"
+              label="Datum pristupanja"
+              value={formData.startDate}
+              onChange={handleChange('startDate')}
+              InputLabelProps={{ shrink: true }}
+              data-testid="input-startDate"
+            />
+          </Grid>
+        </Grid>
+      </Card>
+
+      <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 3 }}>
+        <Button
+          type="submit"
+          variant="contained"
+          size="large"
+          disabled={submitApplicationMutation.isPending || uploadPhotoMutation.isPending}
+          data-testid="button-submit-application"
+        >
+          {submitApplicationMutation.isPending ? 'Slanje...' : 'Pošalji zahtjev'}
+        </Button>
+      </Stack>
+    </Box>
   );
 }
 
@@ -359,15 +834,7 @@ export default function GuestPage() {
             </TabPanel>
 
             <TabPanel value={tabValue} index={3}>
-              <Typography variant="h5" gutterBottom>
-                Zahtjev za članstvo
-              </Typography>
-              <Typography variant="body1" color="text.secondary" paragraph>
-                Forma za prijavu članstva će biti dostupna uskoro.
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Za više informacija, molimo kontaktirajte administraciju džemata.
-              </Typography>
+              <MembershipApplicationForm />
             </TabPanel>
           </CardContent>
         </Card>
