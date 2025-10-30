@@ -68,6 +68,12 @@ import {
   type InsertCertificateTemplate,
   type UserCertificate,
   type InsertUserCertificate,
+  type MembershipApplication,
+  type InsertMembershipApplication,
+  type AkikaApplication,
+  type InsertAkikaApplication,
+  type MarriageApplication,
+  type InsertMarriageApplication,
   users,
   announcements,
   events,
@@ -102,7 +108,9 @@ import {
   receipts,
   certificateTemplates,
   userCertificates,
-  membershipApplications
+  membershipApplications,
+  akikaApplications,
+  marriageApplications
 } from "@shared/schema";
 import { db } from './db';
 import { eq, and, or, desc, asc, gt, sql, inArray } from 'drizzle-orm';
@@ -369,12 +377,28 @@ export interface IStorage {
   deleteCertificate(id: string): Promise<boolean>;
 
   // Membership Applications (Pristupnice)
-  createMembershipApplication(application: import("@shared/schema").InsertMembershipApplication): Promise<import("@shared/schema").MembershipApplication>;
-  getMembershipApplication(id: string): Promise<import("@shared/schema").MembershipApplication | undefined>;
-  getAllMembershipApplications(): Promise<import("@shared/schema").MembershipApplication[]>;
-  updateMembershipApplication(id: string, updates: Partial<import("@shared/schema").InsertMembershipApplication>): Promise<import("@shared/schema").MembershipApplication | undefined>;
-  reviewMembershipApplication(id: string, status: string, reviewedById: string, reviewNotes?: string): Promise<import("@shared/schema").MembershipApplication | undefined>;
+  createMembershipApplication(application: InsertMembershipApplication): Promise<MembershipApplication>;
+  getMembershipApplication(id: string): Promise<MembershipApplication | undefined>;
+  getAllMembershipApplications(): Promise<MembershipApplication[]>;
+  updateMembershipApplication(id: string, updates: Partial<InsertMembershipApplication>): Promise<MembershipApplication | undefined>;
+  reviewMembershipApplication(id: string, status: string, reviewedById: string, reviewNotes?: string): Promise<MembershipApplication | undefined>;
   deleteMembershipApplication(id: string): Promise<boolean>;
+
+  // Akika Applications (Prijave akike)
+  createAkikaApplication(application: InsertAkikaApplication): Promise<AkikaApplication>;
+  getAkikaApplication(id: string): Promise<AkikaApplication | undefined>;
+  getAllAkikaApplications(): Promise<AkikaApplication[]>;
+  updateAkikaApplication(id: string, updates: Partial<InsertAkikaApplication>): Promise<AkikaApplication | undefined>;
+  reviewAkikaApplication(id: string, status: string, reviewedById: string, reviewNotes?: string): Promise<AkikaApplication | undefined>;
+  deleteAkikaApplication(id: string): Promise<boolean>;
+
+  // Marriage Applications (Prijave šerijatskog vjenčanja)
+  createMarriageApplication(application: InsertMarriageApplication): Promise<MarriageApplication>;
+  getMarriageApplication(id: string): Promise<MarriageApplication | undefined>;
+  getAllMarriageApplications(): Promise<MarriageApplication[]>;
+  updateMarriageApplication(id: string, updates: Partial<InsertMarriageApplication>): Promise<MarriageApplication | undefined>;
+  reviewMarriageApplication(id: string, status: string, reviewedById: string, reviewNotes?: string): Promise<MarriageApplication | undefined>;
+  deleteMarriageApplication(id: string): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1930,7 +1954,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Membership Applications (Pristupnice)
-  async createMembershipApplication(application: import("@shared/schema").InsertMembershipApplication): Promise<import("@shared/schema").MembershipApplication> {
+  async createMembershipApplication(application: InsertMembershipApplication): Promise<MembershipApplication> {
     const [app] = await db.insert(membershipApplications).values(application).returning();
     
     await this.createActivity({
@@ -1941,16 +1965,16 @@ export class DatabaseStorage implements IStorage {
     return app;
   }
 
-  async getMembershipApplication(id: string): Promise<import("@shared/schema").MembershipApplication | undefined> {
+  async getMembershipApplication(id: string): Promise<MembershipApplication | undefined> {
     const result = await db.select().from(membershipApplications).where(eq(membershipApplications.id, id)).limit(1);
     return result[0];
   }
 
-  async getAllMembershipApplications(): Promise<import("@shared/schema").MembershipApplication[]> {
+  async getAllMembershipApplications(): Promise<MembershipApplication[]> {
     return await db.select().from(membershipApplications).orderBy(desc(membershipApplications.createdAt));
   }
 
-  async updateMembershipApplication(id: string, updates: Partial<import("@shared/schema").InsertMembershipApplication>): Promise<import("@shared/schema").MembershipApplication | undefined> {
+  async updateMembershipApplication(id: string, updates: Partial<InsertMembershipApplication>): Promise<MembershipApplication | undefined> {
     const [app] = await db.update(membershipApplications)
       .set(updates)
       .where(eq(membershipApplications.id, id))
@@ -1958,7 +1982,7 @@ export class DatabaseStorage implements IStorage {
     return app;
   }
 
-  async reviewMembershipApplication(id: string, status: string, reviewedById: string, reviewNotes?: string): Promise<import("@shared/schema").MembershipApplication | undefined> {
+  async reviewMembershipApplication(id: string, status: string, reviewedById: string, reviewNotes?: string): Promise<MembershipApplication | undefined> {
     const [app] = await db.update(membershipApplications)
       .set({ 
         status, 
@@ -1973,6 +1997,100 @@ export class DatabaseStorage implements IStorage {
 
   async deleteMembershipApplication(id: string): Promise<boolean> {
     const result = await db.delete(membershipApplications).where(eq(membershipApplications.id, id)).returning();
+    return result.length > 0;
+  }
+
+  // Akika Applications (Prijave akike)
+  async createAkikaApplication(application: InsertAkikaApplication): Promise<AkikaApplication> {
+    const [app] = await db.insert(akikaApplications).values(application).returning();
+    
+    await this.createActivity({
+      type: "akika_application",
+      description: `Nova prijava akike: ${app.childName}`,
+    });
+    
+    return app;
+  }
+
+  async getAkikaApplication(id: string): Promise<AkikaApplication | undefined> {
+    const result = await db.select().from(akikaApplications).where(eq(akikaApplications.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getAllAkikaApplications(): Promise<AkikaApplication[]> {
+    return await db.select().from(akikaApplications).orderBy(desc(akikaApplications.createdAt));
+  }
+
+  async updateAkikaApplication(id: string, updates: Partial<InsertAkikaApplication>): Promise<AkikaApplication | undefined> {
+    const [app] = await db.update(akikaApplications)
+      .set(updates)
+      .where(eq(akikaApplications.id, id))
+      .returning();
+    return app;
+  }
+
+  async reviewAkikaApplication(id: string, status: string, reviewedById: string, reviewNotes?: string): Promise<AkikaApplication | undefined> {
+    const [app] = await db.update(akikaApplications)
+      .set({ 
+        status, 
+        reviewedById, 
+        reviewNotes: reviewNotes || null,
+        reviewedAt: new Date() 
+      })
+      .where(eq(akikaApplications.id, id))
+      .returning();
+    return app;
+  }
+
+  async deleteAkikaApplication(id: string): Promise<boolean> {
+    const result = await db.delete(akikaApplications).where(eq(akikaApplications.id, id)).returning();
+    return result.length > 0;
+  }
+
+  // Marriage Applications (Prijave šerijatskog vjenčanja)
+  async createMarriageApplication(application: InsertMarriageApplication): Promise<MarriageApplication> {
+    const [app] = await db.insert(marriageApplications).values(application).returning();
+    
+    await this.createActivity({
+      type: "marriage_application",
+      description: `Nova prijava šerijatskog vjenčanja: ${app.groomFirstName} ${app.groomLastName} i ${app.brideFirstName} ${app.brideLastName}`,
+    });
+    
+    return app;
+  }
+
+  async getMarriageApplication(id: string): Promise<MarriageApplication | undefined> {
+    const result = await db.select().from(marriageApplications).where(eq(marriageApplications.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getAllMarriageApplications(): Promise<MarriageApplication[]> {
+    return await db.select().from(marriageApplications).orderBy(desc(marriageApplications.createdAt));
+  }
+
+  async updateMarriageApplication(id: string, updates: Partial<InsertMarriageApplication>): Promise<MarriageApplication | undefined> {
+    const [app] = await db.update(marriageApplications)
+      .set(updates)
+      .where(eq(marriageApplications.id, id))
+      .returning();
+    return app;
+  }
+
+  async reviewMarriageApplication(id: string, status: string, reviewedById: string, reviewNotes?: string): Promise<MarriageApplication | undefined> {
+    const [app] = await db.update(marriageApplications)
+      .set({ 
+        status, 
+        reviewedById, 
+        reviewNotes: reviewNotes || null,
+        reviewedAt: new Date() 
+      })
+      .where(eq(marriageApplications.id, id))
+      .returning();
+    return app;
+  }
+
+  async deleteMarriageApplication(id: string): Promise<boolean> {
+    const result = await db.delete(marriageApplications).where(eq(marriageApplications.id, id)).returning();
     return result.length > 0;
   }
 }

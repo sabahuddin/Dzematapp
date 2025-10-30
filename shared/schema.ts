@@ -808,3 +808,120 @@ export const insertMembershipApplicationSchema = createInsertSchema(membershipAp
 
 export type MembershipApplication = typeof membershipApplications.$inferSelect;
 export type InsertMembershipApplication = z.infer<typeof insertMembershipApplicationSchema>;
+
+// Prijave Akike
+export const akikaApplications = pgTable("akika_applications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  // Da li je član džemata
+  isMember: boolean("is_member").notNull().default(true),
+  
+  // Podaci o roditeljima
+  fatherName: text("father_name").notNull(),
+  motherName: text("mother_name").notNull(),
+  
+  // Podaci o djetetu
+  childName: text("child_name").notNull(),
+  childGender: text("child_gender").notNull(), // muško, žensko
+  childDateOfBirth: text("child_date_of_birth").notNull(),
+  childPlaceOfBirth: text("child_place_of_birth").notNull(),
+  
+  // Podaci o željenom mjestu i terminu akike
+  location: text("location").notNull(), // Islamski centar GAM, Druga adresa
+  organizeCatering: boolean("organize_catering").default(false),
+  
+  // Dodatna adresa ako nije IC GAM
+  customAddress: text("custom_address"),
+  customCity: text("custom_city"),
+  customCanton: text("custom_canton"),
+  customPostalCode: text("custom_postal_code"),
+  
+  phone: text("phone").notNull(),
+  notes: text("notes"),
+  
+  // Status i metadata
+  status: text("status").notNull().default("pending"), // pending, approved, rejected
+  reviewedById: varchar("reviewed_by_id").references(() => users.id),
+  reviewedAt: timestamp("reviewed_at"),
+  reviewNotes: text("review_notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertAkikaApplicationSchema = createInsertSchema(akikaApplications).omit({
+  id: true,
+  createdAt: true,
+  reviewedAt: true,
+});
+
+export type AkikaApplication = typeof akikaApplications.$inferSelect;
+export type InsertAkikaApplication = z.infer<typeof insertAkikaApplicationSchema>;
+
+// Prijave šerijatskog vjenčanja
+export const marriageApplications = pgTable("marriage_applications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  
+  // Podaci o mladoženji
+  groomLastName: text("groom_last_name").notNull(),
+  groomFirstName: text("groom_first_name").notNull(),
+  groomDateOfBirth: text("groom_date_of_birth").notNull(),
+  groomPlaceOfBirth: text("groom_place_of_birth").notNull(),
+  groomNationality: text("groom_nationality").notNull(),
+  groomStreetAddress: text("groom_street_address").notNull(),
+  groomPostalCode: text("groom_postal_code").notNull(),
+  groomCity: text("groom_city").notNull(),
+  groomFatherName: text("groom_father_name").notNull(),
+  groomMotherName: text("groom_mother_name").notNull(),
+  
+  // Podaci o mladi
+  brideLastName: text("bride_last_name").notNull(),
+  brideFirstName: text("bride_first_name").notNull(),
+  brideDateOfBirth: text("bride_date_of_birth").notNull(),
+  bridePlaceOfBirth: text("bride_place_of_birth").notNull(),
+  brideNationality: text("bride_nationality").notNull(),
+  brideStreetAddress: text("bride_street_address").notNull(),
+  bridePostalCode: text("bride_postal_code").notNull(),
+  brideCity: text("bride_city").notNull(),
+  brideFatherName: text("bride_father_name").notNull(),
+  brideMotherName: text("bride_mother_name").notNull(),
+  
+  // Podaci o vjenčanju
+  selectedLastName: text("selected_last_name").notNull(),
+  mahr: text("mahr").notNull(), // Mehr
+  civilMarriageDate: text("civil_marriage_date").notNull(),
+  civilMarriageLocation: text("civil_marriage_location").notNull(),
+  
+  // Svjedoci
+  witness1Name: text("witness1_name").notNull(),
+  witness2Name: text("witness2_name").notNull(),
+  witness3Name: text("witness3_name"),
+  witness4Name: text("witness4_name"),
+  
+  // Datum i vrijeme šerijatskog vjenčanja
+  proposedDateTime: text("proposed_date_time").notNull(),
+  location: text("location").notNull(), // Islamski centar GAM, Drugo mjesto
+  
+  // Dodatna adresa ako nije IC GAM
+  customAddress: text("custom_address"),
+  customCity: text("custom_city"),
+  customCanton: text("custom_canton"),
+  customPostalCode: text("custom_postal_code"),
+  
+  phone: text("phone").notNull(),
+  civilMarriageProof: text("civil_marriage_proof"), // URL/path to uploaded document
+  notes: text("notes"),
+  
+  // Status i metadata
+  status: text("status").notNull().default("pending"), // pending, approved, rejected
+  reviewedById: varchar("reviewed_by_id").references(() => users.id),
+  reviewedAt: timestamp("reviewed_at"),
+  reviewNotes: text("review_notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertMarriageApplicationSchema = createInsertSchema(marriageApplications).omit({
+  id: true,
+  createdAt: true,
+  reviewedAt: true,
+});
+
+export type MarriageApplication = typeof marriageApplications.$inferSelect;
+export type InsertMarriageApplication = z.infer<typeof insertMarriageApplicationSchema>;

@@ -7,7 +7,7 @@ import * as XLSX from "xlsx";
 import { storage } from "./storage";
 import { requireAuth, requireAdmin } from "./index";
 import { generateCertificate, saveCertificate } from "./certificateService";
-import { type User, insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema, insertFinancialContributionSchema, insertActivityLogSchema, insertEventAttendanceSchema, insertPointsSettingsSchema, insertBadgeSchema, insertUserBadgeSchema, insertProjectSchema, insertProposalSchema, insertReceiptSchema, insertCertificateTemplateSchema, insertUserCertificateSchema } from "@shared/schema";
+import { type User, insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema, insertFinancialContributionSchema, insertActivityLogSchema, insertEventAttendanceSchema, insertPointsSettingsSchema, insertBadgeSchema, insertUserBadgeSchema, insertProjectSchema, insertProposalSchema, insertReceiptSchema, insertCertificateTemplateSchema, insertUserCertificateSchema, insertMembershipApplicationSchema, insertAkikaApplicationSchema, insertMarriageApplicationSchema } from "@shared/schema";
 
 // Configure multer for photo uploads
 const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'photos');
@@ -3363,7 +3363,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Membership Applications (Pristupnice)
   app.post("/api/membership-applications", async (req, res) => {
     try {
-      const application = await storage.createMembershipApplication(req.body);
+      const validated = insertMembershipApplicationSchema.parse(req.body);
+      const application = await storage.createMembershipApplication(validated);
       res.status(201).json(application);
     } catch (error) {
       console.error('Error creating membership application:', error);
@@ -3396,7 +3397,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.patch("/api/membership-applications/:id", requireAdmin, async (req, res) => {
     try {
-      const updated = await storage.updateMembershipApplication(req.params.id, req.body);
+      const validated = insertMembershipApplicationSchema.partial().parse(req.body);
+      const updated = await storage.updateMembershipApplication(req.params.id, validated);
       if (!updated) {
         return res.status(404).json({ message: "Application not found" });
       }
@@ -3436,6 +3438,168 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error deleting membership application:', error);
       res.status(500).json({ message: "Failed to delete membership application" });
+    }
+  });
+
+  // Akika Applications (Prijave akike)
+  app.post("/api/akika-applications", async (req, res) => {
+    try {
+      const validated = insertAkikaApplicationSchema.parse(req.body);
+      const application = await storage.createAkikaApplication(validated);
+      res.status(201).json(application);
+    } catch (error) {
+      console.error('Error creating akika application:', error);
+      res.status(500).json({ message: "Failed to create akika application" });
+    }
+  });
+
+  app.get("/api/akika-applications", requireAdmin, async (req, res) => {
+    try {
+      const applications = await storage.getAllAkikaApplications();
+      res.json(applications);
+    } catch (error) {
+      console.error('Error getting akika applications:', error);
+      res.status(500).json({ message: "Failed to get akika applications" });
+    }
+  });
+
+  app.get("/api/akika-applications/:id", requireAdmin, async (req, res) => {
+    try {
+      const application = await storage.getAkikaApplication(req.params.id);
+      if (!application) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+      res.json(application);
+    } catch (error) {
+      console.error('Error getting akika application:', error);
+      res.status(500).json({ message: "Failed to get akika application" });
+    }
+  });
+
+  app.patch("/api/akika-applications/:id", requireAdmin, async (req, res) => {
+    try {
+      const validated = insertAkikaApplicationSchema.partial().parse(req.body);
+      const updated = await storage.updateAkikaApplication(req.params.id, validated);
+      if (!updated) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+      res.json(updated);
+    } catch (error) {
+      console.error('Error updating akika application:', error);
+      res.status(500).json({ message: "Failed to update akika application" });
+    }
+  });
+
+  app.patch("/api/akika-applications/:id/review", requireAdmin, async (req, res) => {
+    try {
+      const { status, reviewNotes } = req.body;
+      const updated = await storage.reviewAkikaApplication(
+        req.params.id, 
+        status, 
+        req.user!.id, 
+        reviewNotes
+      );
+      if (!updated) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+      res.json(updated);
+    } catch (error) {
+      console.error('Error reviewing akika application:', error);
+      res.status(500).json({ message: "Failed to review akika application" });
+    }
+  });
+
+  app.delete("/api/akika-applications/:id", requireAdmin, async (req, res) => {
+    try {
+      const success = await storage.deleteAkikaApplication(req.params.id);
+      if (!success) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+      res.json({ message: "Application deleted successfully" });
+    } catch (error) {
+      console.error('Error deleting akika application:', error);
+      res.status(500).json({ message: "Failed to delete akika application" });
+    }
+  });
+
+  // Marriage Applications (Prijave šerijatskog vjenčanja)
+  app.post("/api/marriage-applications", async (req, res) => {
+    try {
+      const validated = insertMarriageApplicationSchema.parse(req.body);
+      const application = await storage.createMarriageApplication(validated);
+      res.status(201).json(application);
+    } catch (error) {
+      console.error('Error creating marriage application:', error);
+      res.status(500).json({ message: "Failed to create marriage application" });
+    }
+  });
+
+  app.get("/api/marriage-applications", requireAdmin, async (req, res) => {
+    try {
+      const applications = await storage.getAllMarriageApplications();
+      res.json(applications);
+    } catch (error) {
+      console.error('Error getting marriage applications:', error);
+      res.status(500).json({ message: "Failed to get marriage applications" });
+    }
+  });
+
+  app.get("/api/marriage-applications/:id", requireAdmin, async (req, res) => {
+    try {
+      const application = await storage.getMarriageApplication(req.params.id);
+      if (!application) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+      res.json(application);
+    } catch (error) {
+      console.error('Error getting marriage application:', error);
+      res.status(500).json({ message: "Failed to get marriage application" });
+    }
+  });
+
+  app.patch("/api/marriage-applications/:id", requireAdmin, async (req, res) => {
+    try {
+      const validated = insertMarriageApplicationSchema.partial().parse(req.body);
+      const updated = await storage.updateMarriageApplication(req.params.id, validated);
+      if (!updated) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+      res.json(updated);
+    } catch (error) {
+      console.error('Error updating marriage application:', error);
+      res.status(500).json({ message: "Failed to update marriage application" });
+    }
+  });
+
+  app.patch("/api/marriage-applications/:id/review", requireAdmin, async (req, res) => {
+    try {
+      const { status, reviewNotes } = req.body;
+      const updated = await storage.reviewMarriageApplication(
+        req.params.id, 
+        status, 
+        req.user!.id, 
+        reviewNotes
+      );
+      if (!updated) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+      res.json(updated);
+    } catch (error) {
+      console.error('Error reviewing marriage application:', error);
+      res.status(500).json({ message: "Failed to review marriage application" });
+    }
+  });
+
+  app.delete("/api/marriage-applications/:id", requireAdmin, async (req, res) => {
+    try {
+      const success = await storage.deleteMarriageApplication(req.params.id);
+      if (!success) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+      res.json({ message: "Application deleted successfully" });
+    } catch (error) {
+      console.error('Error deleting marriage application:', error);
+      res.status(500).json({ message: "Failed to delete marriage application" });
     }
   });
 
