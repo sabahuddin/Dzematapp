@@ -38,6 +38,7 @@ import CertificateTemplatesPage from "@/pages/CertificateTemplatesPage";
 import IssueCertificatesPage from "@/pages/IssueCertificatesPage";
 import MyCertificatesPage from "@/pages/MyCertificatesPage";
 import AllCertificatesPage from "@/pages/AllCertificatesPage";
+import MembershipApplicationsPage from "@/pages/MembershipApplicationsPage";
 import NotFound from "@/pages/not-found";
 
 // Layout
@@ -256,6 +257,12 @@ function Router() {
       <Route path="/all-certificates">
         <ProtectedRoute>
           <AllCertificatesPage />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path="/membership-applications">
+        <ProtectedRoute>
+          <MembershipApplicationsPage />
         </ProtectedRoute>
       </Route>
       
