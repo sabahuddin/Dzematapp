@@ -760,3 +760,51 @@ export type UserCertificateWithTemplate = UserCertificate & {
     lastName: string;
   } | null;
 };
+
+// Membership Applications (Pristupnice)
+export const membershipApplications = pgTable("membership_applications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  // Lični podaci
+  lastName: text("last_name").notNull(),
+  firstName: text("first_name").notNull(),
+  gender: text("gender").notNull(), // M, Ž
+  photo: text("photo"), // Profile photo path
+  dateOfBirth: text("date_of_birth").notNull(),
+  placeOfBirth: text("place_of_birth").notNull(),
+  country: text("country").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone").notNull(),
+  streetAddress: text("street_address").notNull(),
+  postalCode: text("postal_code").notNull(),
+  city: text("city").notNull(),
+  employmentStatus: text("employment_status").notNull(), // Zaposlen/a, Nezaposlen/a, Penzioner/Renta/Socijala, Učenik/Student
+  occupation: text("occupation"),
+  skillsHobbies: text("skills_hobbies"), // Hobi, vještina, znanje koje može pomoći džematu
+  
+  // Informacije o porodici
+  maritalStatus: text("marital_status").notNull(), // Neoženjen/Neuddata, Oženjen/Udata, Razveden/a, Hudovac/a
+  spouseName: text("spouse_name"),
+  spousePhone: text("spouse_phone"),
+  childrenInfo: text("children_info"), // Imena djece sa datumom rođenja
+  
+  // Informacije o članarini
+  monthlyFee: integer("monthly_fee").notNull(), // 30, 35, 40, 50, 100
+  invoiceDelivery: text("invoice_delivery").notNull(), // Poštom, E-mailom
+  membershipStartDate: text("membership_start_date").notNull(),
+  
+  // Status i metadata
+  status: text("status").notNull().default("pending"), // pending, approved, rejected
+  reviewedById: varchar("reviewed_by_id").references(() => users.id),
+  reviewedAt: timestamp("reviewed_at"),
+  reviewNotes: text("review_notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertMembershipApplicationSchema = createInsertSchema(membershipApplications).omit({
+  id: true,
+  createdAt: true,
+  reviewedAt: true,
+});
+
+export type MembershipApplication = typeof membershipApplications.$inferSelect;
+export type InsertMembershipApplication = z.infer<typeof insertMembershipApplicationSchema>;
