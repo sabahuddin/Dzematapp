@@ -1,0 +1,39 @@
+{
+  "pageTitle": "Anfragen und Anmeldungen",
+  "pageDescription": "Hier können Sie Anfragen für verschiedene Dienstleistungen und Eventanmeldungen einreichen.",
+  "akika": {
+    "title": "Akika-Anmeldung",
+    "description": "Füllen Sie das Formular unten aus, um eine Akika für ein Neugeborenes anzumelden.",
+    "parentData": "Elterndaten",
+    "childData": "Kinderdaten",
+    "locationData": "Ort- und Zeitangaben für die Akika",
+    "fatherName": "Vor- und Nachname des Vaters",
+    "motherName": "Vor- und Nachname der Mutter",
+    "childName": "Vor- und Nachname des Kindes",
+    "childGender": "Geschlecht",
+    "genderMale": "Männlich",
+    "genderFemale": "Weiblich",
+    "childDateOfBirth": "Geburtsdatum des Kindes",
+    "childPlaceOfBirth": "Geburtsort des Kindes",
+    "location": "Wo soll die Akika stattfinden?",
+    "locationGAM": "Islamisches Zentrum GAM",
+    "locationOther": "Andere Adresse",
+    "customAddress": "Straße und Hausnummer",
+    "customPostalCode": "Postleitzahl",
+    "customCity": "Stadt",
+    "customCanton": "Kanton",
+    "phone": "Kontakttelefon",
+    "notes": "Anmerkung (optional)",
+    "submit": "Anfrage senden",
+    "submitting": "Wird gesendet...",
+    "successTitle": "Anfrage erfolgreich gesendet!",
+    "successMessage": "Vielen Dank für Ihre Akika-Anmeldung.",
+    "successDescription": "Wir werden Ihre Anfrage prüfen und uns in Kürze bei Ihnen melden.",
+    "submitAnother": "Neue Anmeldung senden",
+    "error": "Fehler beim Senden der Anfrage. Bitte versuchen Sie es erneut."
+  },
+  "marriage": {
+    "title": "Anmeldung einer religiösen Eheschließung",
+    "description": "Das Formular für die Anmeldung einer religiösen Eheschließung wird bald verfügbar sein."
+  }
+}

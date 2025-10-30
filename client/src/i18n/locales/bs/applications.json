@@ -1,0 +1,39 @@
+{
+  "pageTitle": "Zahtjevi i prijave",
+  "pageDescription": "Ovdje možete podnijeti zahtjeve za različite usluge i prijave događaja.",
+  "akika": {
+    "title": "Prijava akike",
+    "description": "Popunite formu ispod kako biste prijavili akiku za novorođenče.",
+    "parentData": "Podaci o roditeljima",
+    "childData": "Podaci o djetetu",
+    "locationData": "Podaci o mjestu i terminu akike",
+    "fatherName": "Ime i prezime oca",
+    "motherName": "Ime i prezime majke",
+    "childName": "Ime i prezime djeteta",
+    "childGender": "Spol",
+    "genderMale": "Muško",
+    "genderFemale": "Žensko",
+    "childDateOfBirth": "Datum rođenja djeteta",
+    "childPlaceOfBirth": "Mjesto rođenja djeteta",
+    "location": "Gdje bi se akika obavila?",
+    "locationGAM": "Islamski centar GAM",
+    "locationOther": "Druga adresa",
+    "customAddress": "Ulica i broj",
+    "customPostalCode": "Poštanski broj",
+    "customCity": "Grad",
+    "customCanton": "Kanton",
+    "phone": "Telefon za kontakt",
+    "notes": "Napomena (opciono)",
+    "submit": "Pošalji zahtjev",
+    "submitting": "Slanje...",
+    "successTitle": "Zahtjev uspješno poslan!",
+    "successMessage": "Hvala vam na prijavi akike.",
+    "successDescription": "Pregledaćemo vaš zahtjev i kontaktirati vas uskoro.",
+    "submitAnother": "Pošalji novu prijavu",
+    "error": "Greška pri slanju zahtjeva. Pokušajte ponovo."
+  },
+  "marriage": {
+    "title": "Prijava šerijatskog vjenčanja",
+    "description": "Forma za prijavu šerijatskog vjenčanja će uskoro biti dostupna."
+  }
+}

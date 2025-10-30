@@ -85,6 +85,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     { path: '/documents', label: t('navigation:menu.documents'), icon: Description },
     { path: '/shop', label: t('navigation:menu.shop'), icon: Store, showBadge: true },
     { path: '/requests', label: t('navigation:menu.requests'), icon: Assignment },
+    { path: '/applications', label: t('navigation:menu.applications'), icon: Assignment },
     { path: '/vaktija', label: t('navigation:menu.vaktija'), icon: Schedule },
     { path: '/vodic', label: t('navigation:menu.guide'), icon: Info },
     { path: '/organization-settings', label: t('navigation:menu.organizationSettings'), icon: Settings, adminOnly: true },

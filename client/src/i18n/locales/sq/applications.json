@@ -1,0 +1,39 @@
+{
+  "pageTitle": "Kërkesa dhe Aplikimet",
+  "pageDescription": "Këtu mund të paraqisni kërkesa për shërbime të ndryshme dhe aplikime për ngjarje.",
+  "akika": {
+    "title": "Aplikimi i Akikës",
+    "description": "Plotësoni formularin më poshtë për të regjistruar një akikë për një të porsalindur.",
+    "parentData": "Informacioni i Prindërve",
+    "childData": "Informacioni i Fëmijës",
+    "locationData": "Informacioni mbi Vendndodhjen dhe Kohën",
+    "fatherName": "Emri i Plotë i Babait",
+    "motherName": "Emri i Plotë i Nënës",
+    "childName": "Emri i Plotë i Fëmijës",
+    "childGender": "Gjinia",
+    "genderMale": "Mashkull",
+    "genderFemale": "Femër",
+    "childDateOfBirth": "Data e Lindjes së Fëmijës",
+    "childPlaceOfBirth": "Vendi i Lindjes së Fëmijës",
+    "location": "Ku duhet të zhvillohet akika?",
+    "locationGAM": "Qendra Islame GAM",
+    "locationOther": "Adresë Tjetër",
+    "customAddress": "Rruga dhe Numri",
+    "customPostalCode": "Kodi Postar",
+    "customCity": "Qyteti",
+    "customCanton": "Kantoni",
+    "phone": "Telefoni i Kontaktit",
+    "notes": "Shënime (opsionale)",
+    "submit": "Dërgo Kërkesën",
+    "submitting": "Duke dërguar...",
+    "successTitle": "Kërkesa u Dërgua me Sukses!",
+    "successMessage": "Faleminderit për aplikimin tuaj të akikës.",
+    "successDescription": "Do të rishikojmë kërkesën tuaj dhe do t'ju kontaktojmë së shpejti.",
+    "submitAnother": "Dërgo Aplikim Tjetër",
+    "error": "Gabim në dërgimin e kërkesës. Ju lutemi provoni përsëri."
+  },
+  "marriage": {
+    "title": "Aplikimi i Martesës Fetare",
+    "description": "Formulari për aplikimin e martesës fetare do të jetë i disponueshëm së shpejti."
+  }
+}

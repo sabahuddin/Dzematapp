@@ -1,0 +1,39 @@
+{
+  "pageTitle": "Requests & Applications",
+  "pageDescription": "Here you can submit requests for various services and event applications.",
+  "akika": {
+    "title": "Akika Application",
+    "description": "Fill out the form below to register an akika for a newborn.",
+    "parentData": "Parent Information",
+    "childData": "Child Information",
+    "locationData": "Location and Timing Information",
+    "fatherName": "Father's Full Name",
+    "motherName": "Mother's Full Name",
+    "childName": "Child's Full Name",
+    "childGender": "Gender",
+    "genderMale": "Male",
+    "genderFemale": "Female",
+    "childDateOfBirth": "Child's Date of Birth",
+    "childPlaceOfBirth": "Child's Place of Birth",
+    "location": "Where should the akika take place?",
+    "locationGAM": "Islamic Center GAM",
+    "locationOther": "Other Address",
+    "customAddress": "Street and Number",
+    "customPostalCode": "Postal Code",
+    "customCity": "City",
+    "customCanton": "Canton",
+    "phone": "Contact Phone",
+    "notes": "Notes (optional)",
+    "submit": "Submit Request",
+    "submitting": "Submitting...",
+    "successTitle": "Request Submitted Successfully!",
+    "successMessage": "Thank you for your akika application.",
+    "successDescription": "We will review your request and contact you soon.",
+    "submitAnother": "Submit Another Application",
+    "error": "Error submitting request. Please try again."
+  },
+  "marriage": {
+    "title": "Religious Marriage Application",
+    "description": "The form for religious marriage application will be available soon."
+  }
+}
