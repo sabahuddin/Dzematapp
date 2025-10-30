@@ -3360,6 +3360,85 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Membership Applications (Pristupnice)
+  app.post("/api/membership-applications", async (req, res) => {
+    try {
+      const application = await storage.createMembershipApplication(req.body);
+      res.status(201).json(application);
+    } catch (error) {
+      console.error('Error creating membership application:', error);
+      res.status(500).json({ message: "Failed to create membership application" });
+    }
+  });
+
+  app.get("/api/membership-applications", requireAdmin, async (req, res) => {
+    try {
+      const applications = await storage.getAllMembershipApplications();
+      res.json(applications);
+    } catch (error) {
+      console.error('Error getting membership applications:', error);
+      res.status(500).json({ message: "Failed to get membership applications" });
+    }
+  });
+
+  app.get("/api/membership-applications/:id", requireAdmin, async (req, res) => {
+    try {
+      const application = await storage.getMembershipApplication(req.params.id);
+      if (!application) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+      res.json(application);
+    } catch (error) {
+      console.error('Error getting membership application:', error);
+      res.status(500).json({ message: "Failed to get membership application" });
+    }
+  });
+
+  app.patch("/api/membership-applications/:id", requireAdmin, async (req, res) => {
+    try {
+      const updated = await storage.updateMembershipApplication(req.params.id, req.body);
+      if (!updated) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+      res.json(updated);
+    } catch (error) {
+      console.error('Error updating membership application:', error);
+      res.status(500).json({ message: "Failed to update membership application" });
+    }
+  });
+
+  app.patch("/api/membership-applications/:id/review", requireAdmin, async (req, res) => {
+    try {
+      const { status, reviewNotes } = req.body;
+      const updated = await storage.reviewMembershipApplication(
+        req.params.id, 
+        status, 
+        req.user!.id, 
+        reviewNotes
+      );
+      if (!updated) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+      res.json(updated);
+    } catch (error) {
+      console.error('Error reviewing membership application:', error);
+      res.status(500).json({ message: "Failed to review membership application" });
+    }
+  });
+
+  app.delete("/api/membership-applications/:id", requireAdmin, async (req, res) => {
+    try {
+      const success = await storage.deleteMembershipApplication(req.params.id);
+      if (!success) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+      res.json({ message: "Application deleted successfully" });
+    } catch (error) {
+      console.error('Error deleting membership application:', error);
+      res.status(500).json({ message: "Failed to delete membership application" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
