@@ -24,6 +24,7 @@
     "customCanton": "Kantoni",
     "phone": "Telefoni i Kontaktit",
     "notes": "Shënime (opsionale)",
+    "notesPlaceholder": "Propozoni datën, kohën dhe vendin për akikën.",
     "submit": "Dërgo Kërkesën",
     "submitting": "Duke dërguar...",
     "successTitle": "Kërkesa u Dërgua me Sukses!",

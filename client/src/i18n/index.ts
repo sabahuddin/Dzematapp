@@ -26,6 +26,7 @@ import requestsBS from './locales/bs/requests.json';
 import livestreamBS from './locales/bs/livestream.json';
 import guideBS from './locales/bs/guide.json';
 import certificatesBS from './locales/bs/certificates.json';
+import applicationsBS from './locales/bs/applications.json';
 
 // Import all DE translations
 import commonDE from './locales/de/common.json';
@@ -51,6 +52,7 @@ import requestsDE from './locales/de/requests.json';
 import livestreamDE from './locales/de/livestream.json';
 import guideDE from './locales/de/guide.json';
 import certificatesDE from './locales/de/certificates.json';
+import applicationsDE from './locales/de/applications.json';
 
 // Import all EN translations
 import commonEN from './locales/en/common.json';
@@ -76,6 +78,7 @@ import requestsEN from './locales/en/requests.json';
 import livestreamEN from './locales/en/livestream.json';
 import guideEN from './locales/en/guide.json';
 import certificatesEN from './locales/en/certificates.json';
+import applicationsEN from './locales/en/applications.json';
 
 // Import all SQ (Albanian) translations
 import commonSQ from './locales/sq/common.json';
@@ -101,6 +104,7 @@ import requestsSQ from './locales/sq/requests.json';
 import livestreamSQ from './locales/sq/livestream.json';
 import guideSQ from './locales/sq/guide.json';
 import certificatesSQ from './locales/sq/certificates.json';
+import applicationsSQ from './locales/sq/applications.json';
 
 const resources = {
   bs: {
@@ -127,6 +131,7 @@ const resources = {
     livestream: livestreamBS,
     guide: guideBS,
     certificates: certificatesBS,
+    applications: applicationsBS,
   },
   de: {
     common: commonDE,
@@ -152,6 +157,7 @@ const resources = {
     livestream: livestreamDE,
     guide: guideDE,
     certificates: certificatesDE,
+    applications: applicationsDE,
   },
   en: {
     common: commonEN,
@@ -177,6 +183,7 @@ const resources = {
     livestream: livestreamEN,
     guide: guideEN,
     certificates: certificatesEN,
+    applications: applicationsEN,
   },
   sq: {
     common: commonSQ,
@@ -202,6 +209,7 @@ const resources = {
     livestream: livestreamSQ,
     guide: guideSQ,
     certificates: certificatesSQ,
+    applications: applicationsSQ,
   },
 };
 

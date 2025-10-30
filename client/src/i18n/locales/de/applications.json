@@ -24,6 +24,7 @@
     "customCanton": "Kanton",
     "phone": "Kontakttelefon",
     "notes": "Anmerkung (optional)",
+    "notesPlaceholder": "Schlagen Sie Datum, Uhrzeit und Ort für die Akika vor.",
     "submit": "Anfrage senden",
     "submitting": "Wird gesendet...",
     "successTitle": "Anfrage erfolgreich gesendet!",

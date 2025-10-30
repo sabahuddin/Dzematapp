@@ -24,6 +24,7 @@
     "customCanton": "Canton",
     "phone": "Contact Phone",
     "notes": "Notes (optional)",
+    "notesPlaceholder": "Suggest date, time and place for the akika.",
     "submit": "Submit Request",
     "submitting": "Submitting...",
     "successTitle": "Request Submitted Successfully!",

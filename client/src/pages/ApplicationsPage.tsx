@@ -93,7 +93,7 @@ function AkikaApplicationForm() {
       });
     } catch (error) {
       console.error('Application submission failed:', error);
-      setSubmitError('Greška pri slanju zahtjeva. Pokušajte ponovo.');
+      setSubmitError(t("akika.error"));
     }
   };
 
@@ -107,13 +107,13 @@ function AkikaApplicationForm() {
       <Box sx={{ maxWidth: 600, mx: 'auto', textAlign: 'center', py: 4 }}>
         <CheckCircle sx={{ fontSize: 80, color: 'success.main', mb: 2 }} />
         <Typography variant="h5" gutterBottom color="success.main">
-          Zahtjev uspješno poslan!
+          {t("akika.successTitle")}
         </Typography>
         <Typography variant="body1" color="text.secondary" paragraph>
-          Hvala vam na prijavi akike.
+          {t("akika.successMessage")}
         </Typography>
         <Typography variant="body2" color="text.secondary" paragraph>
-          Pregledaćemo vaš zahtjev i kontaktirati vas uskoro.
+          {t("akika.successDescription")}
         </Typography>
         <Button 
           variant="contained" 
@@ -121,7 +121,7 @@ function AkikaApplicationForm() {
           sx={{ mt: 2 }}
           data-testid="button-submit-another-akika"
         >
-          Pošalji novu prijavu
+          {t("akika.submitAnother")}
         </Button>
       </Box>
     );
@@ -130,10 +130,10 @@ function AkikaApplicationForm() {
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 800, mx: 'auto' }}>
       <Typography variant="h5" gutterBottom>
-        Prijava akike
+        {t("akika.title")}
       </Typography>
       <Typography variant="body2" color="text.secondary" paragraph>
-        Popunite formu ispod kako biste prijavili akiku za novorođenče.
+        {t("akika.description")}
       </Typography>
 
       {submitError && (
@@ -144,7 +144,7 @@ function AkikaApplicationForm() {
 
       <Card sx={{ p: 3, mb: 3 }}>
         <Typography variant="h6" gutterBottom>
-          Podaci o roditeljima
+          {t("akika.parentData")}
         </Typography>
         
         <Grid container spacing={2}>
@@ -152,7 +152,7 @@ function AkikaApplicationForm() {
             <TextField
               fullWidth
               required
-              label="Ime i prezime oca"
+              label={t("akika.fatherName")}
               value={formData.fatherName}
               onChange={handleChange('fatherName')}
               data-testid="input-fatherName"
@@ -162,7 +162,7 @@ function AkikaApplicationForm() {
             <TextField
               fullWidth
               required
-              label="Ime i prezime majke"
+              label={t("akika.motherName")}
               value={formData.motherName}
               onChange={handleChange('motherName')}
               data-testid="input-motherName"
@@ -173,7 +173,7 @@ function AkikaApplicationForm() {
 
       <Card sx={{ p: 3, mb: 3 }}>
         <Typography variant="h6" gutterBottom>
-          Podaci o djetetu
+          {t("akika.childData")}
         </Typography>
         
         <Grid container spacing={2}>
@@ -181,7 +181,7 @@ function AkikaApplicationForm() {
             <TextField
               fullWidth
               required
-              label="Ime i prezime djeteta"
+              label={t("akika.childName")}
               value={formData.childName}
               onChange={handleChange('childName')}
               data-testid="input-childName"
@@ -189,15 +189,15 @@ function AkikaApplicationForm() {
           </Grid>
           <Grid size={{ xs: 12, sm: 6 }}>
             <FormControl fullWidth required>
-              <InputLabel>Spol</InputLabel>
+              <InputLabel>{t("akika.childGender")}</InputLabel>
               <Select
                 value={formData.childGender}
                 onChange={(e) => setFormData(prev => ({ ...prev, childGender: e.target.value }))}
-                label="Spol"
+                label={t("akika.childGender")}
                 data-testid="select-childGender"
               >
-                <MenuItem value="muško">Muško</MenuItem>
-                <MenuItem value="žensko">Žensko</MenuItem>
+                <MenuItem value="muško">{t("akika.genderMale")}</MenuItem>
+                <MenuItem value="žensko">{t("akika.genderFemale")}</MenuItem>
               </Select>
             </FormControl>
           </Grid>
@@ -206,7 +206,7 @@ function AkikaApplicationForm() {
               fullWidth
               required
               type="date"
-              label="Datum rođenja djeteta"
+              label={t("akika.childDateOfBirth")}
               value={formData.childDateOfBirth}
               onChange={handleChange('childDateOfBirth')}
               InputLabelProps={{ shrink: true }}
@@ -217,7 +217,7 @@ function AkikaApplicationForm() {
             <TextField
               fullWidth
               required
-              label="Mjesto rođenja djeteta"
+              label={t("akika.childPlaceOfBirth")}
               value={formData.childPlaceOfBirth}
               onChange={handleChange('childPlaceOfBirth')}
               data-testid="input-childPlaceOfBirth"
@@ -228,21 +228,21 @@ function AkikaApplicationForm() {
 
       <Card sx={{ p: 3, mb: 3 }}>
         <Typography variant="h6" gutterBottom>
-          Podaci o mjestu i terminu akike
+          {t("akika.locationData")}
         </Typography>
         
         <Grid container spacing={2}>
           <Grid size={{ xs: 12 }}>
             <FormControl fullWidth required>
-              <InputLabel>Gdje bi se akika obavila?</InputLabel>
+              <InputLabel>{t("akika.location")}</InputLabel>
               <Select
                 value={formData.location}
                 onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
-                label="Gdje bi se akika obavila?"
+                label={t("akika.location")}
                 data-testid="select-location"
               >
-                <MenuItem value="Islamski centar GAM">Islamski centar GAM</MenuItem>
-                <MenuItem value="Druga adresa">Druga adresa</MenuItem>
+                <MenuItem value="Islamski centar GAM">{t("akika.locationGAM")}</MenuItem>
+                <MenuItem value="Druga adresa">{t("akika.locationOther")}</MenuItem>
               </Select>
             </FormControl>
           </Grid>
@@ -253,7 +253,7 @@ function AkikaApplicationForm() {
                 <TextField
                   fullWidth
                   required
-                  label="Ulica i broj"
+                  label={t("akika.customAddress")}
                   value={formData.customAddress}
                   onChange={handleChange('customAddress')}
                   data-testid="input-customAddress"
@@ -263,7 +263,7 @@ function AkikaApplicationForm() {
                 <TextField
                   fullWidth
                   required
-                  label="Poštanski broj"
+                  label={t("akika.customPostalCode")}
                   value={formData.customPostalCode}
                   onChange={handleChange('customPostalCode')}
                   data-testid="input-customPostalCode"
@@ -273,7 +273,7 @@ function AkikaApplicationForm() {
                 <TextField
                   fullWidth
                   required
-                  label="Grad"
+                  label={t("akika.customCity")}
                   value={formData.customCity}
                   onChange={handleChange('customCity')}
                   data-testid="input-customCity"
@@ -283,7 +283,7 @@ function AkikaApplicationForm() {
                 <TextField
                   fullWidth
                   required
-                  label="Kanton"
+                  label={t("akika.customCanton")}
                   value={formData.customCanton}
                   onChange={handleChange('customCanton')}
                   data-testid="input-customCanton"
@@ -296,7 +296,7 @@ function AkikaApplicationForm() {
             <TextField
               fullWidth
               required
-              label="Telefon za kontakt"
+              label={t("akika.phone")}
               value={formData.phone}
               onChange={handleChange('phone')}
               data-testid="input-phone"
@@ -307,7 +307,8 @@ function AkikaApplicationForm() {
               fullWidth
               multiline
               rows={3}
-              label="Napomena (opciono)"
+              label={t("akika.notes")}
+              placeholder={t("akika.notesPlaceholder")}
               value={formData.notes}
               onChange={handleChange('notes')}
               data-testid="input-notes"
@@ -324,7 +325,7 @@ function AkikaApplicationForm() {
           disabled={submitApplicationMutation.isPending}
           data-testid="button-submit-akika-application"
         >
-          {submitApplicationMutation.isPending ? 'Slanje...' : 'Pošalji zahtjev'}
+          {submitApplicationMutation.isPending ? t("akika.submitting") : t("akika.submit")}
         </Button>
       </Stack>
     </Box>

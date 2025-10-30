@@ -24,6 +24,7 @@
     "customCanton": "Kanton",
     "phone": "Telefon za kontakt",
     "notes": "Napomena (opciono)",
+    "notesPlaceholder": "Predložite datum, vrijeme i mjesto za akiku.",
     "submit": "Pošalji zahtjev",
     "submitting": "Slanje...",
     "successTitle": "Zahtjev uspješno poslan!",
