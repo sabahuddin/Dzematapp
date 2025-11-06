@@ -349,9 +349,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const workbook = XLSX.utils.book_new();
       
       const templateData = [
-        ["Ime", "Prezime", "Email", "Telefon", "Zanimanje", "Adresa", "Član od", "Kategorije", "Status članstva", "Razlog pasivnosti"],
-        ["Marko", "Marković", "marko@example.com", "+387 61 123 456", "Inženjer", "Sarajevo, BiH", "2024-01-15", "Muškarci", "aktivan", ""],
-        ["Ana", "Anić", "ana@example.com", "+387 62 234 567", "Nastavnica", "Zenica, BiH", "2023-06-20", "Žene,Roditelji", "aktivan", ""]
+        ["Ime", "Prezime", "Email", "Telefon", "Zanimanje", "Ulica i broj", "Broj pošte", "Naziv mjesta", "Član od", "Kategorije", "Status članstva"],
+        ["Marko", "Marković", "marko@example.com", "+387 61 123 456", "Inženjer", "Ulica Maršala Tita 15", "71000", "Sarajevo", "2024-01-15", "Muškarci", "aktivan"],
+        ["Ana", "Anić", "ana@example.com", "+387 62 234 567", "Nastavnica", "Kralja Tvrtka 22", "72000", "Zenica", "2023-06-20", "Žene,Roditelji", "aktivan"]
       ];
 
       const worksheet = XLSX.utils.aoa_to_sheet(templateData);
@@ -363,10 +363,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         { wch: 18 },
         { wch: 20 },
         { wch: 25 },
+        { wch: 12 },
+        { wch: 18 },
         { wch: 15 },
         { wch: 20 },
-        { wch: 18 },
-        { wch: 20 }
+        { wch: 18 }
       ];
 
       XLSX.utils.book_append_sheet(workbook, worksheet, "Korisnici");
@@ -420,10 +421,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const phone = row[3]?.toString().trim() || '';
         const occupation = row[4]?.toString().trim() || '';
         const address = row[5]?.toString().trim() || '';
-        const membershipDateStr = row[6]?.toString().trim() || '';
-        const categoriesStr = row[7]?.toString().trim() || '';
-        const status = row[8]?.toString().trim() || 'aktivan';
-        const inactiveReason = row[9]?.toString().trim() || '';
+        const postalCode = row[6]?.toString().trim() || '';
+        const city = row[7]?.toString().trim() || '';
+        const membershipDateStr = row[8]?.toString().trim() || '';
+        const categoriesStr = row[9]?.toString().trim() || '';
+        const status = row[10]?.toString().trim() || 'aktivan';
 
         if (!firstName) {
           errors.push("Ime je obavezno polje");
@@ -494,11 +496,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
             address: address || undefined,
             categories,
             status: status.toLowerCase() as any,
-            inactiveReason: inactiveReason || undefined,
+            inactiveReason: undefined,
             isAdmin: false,
             photo: undefined,
-            city: undefined,
-            postalCode: undefined,
+            city: city || undefined,
+            postalCode: postalCode || undefined,
             dateOfBirth: undefined
           });
           

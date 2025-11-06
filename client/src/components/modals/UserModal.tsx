@@ -76,7 +76,6 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
     occupation: '',
     membershipDate: '',
     status: 'aktivan',
-    inactiveReason: null as string | null,
     categories: [] as string[],
     roles: [] as string[],
     skills: [] as string[],
@@ -143,7 +142,6 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
         occupation: user.occupation || '',
         membershipDate: user.membershipDate ? new Date(user.membershipDate).toISOString().split('T')[0] : '',
         status: user.status || 'aktivan',
-        inactiveReason: user.inactiveReason || null,
         categories: user.categories || [],
         roles: user.roles || [],
         skills: user.skills || [],
@@ -167,7 +165,6 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
         occupation: '',
         membershipDate: '1900-01-01',
         status: 'aktivan',
-        inactiveReason: null,
         categories: [],
         roles: ['clan'],
         skills: [],
@@ -198,28 +195,12 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
     { value: 'clan_porodice', label: t('roles.clan_porodice') }
   ];
 
-  const inactiveReasonOptions = [
-    { value: 'Smrt', label: t('inactivityReasons.smrt') },
-    { value: 'Drugi džemat', label: t('inactivityReasons.drugi_dzemat') },
-    { value: 'Isključen', label: t('inactivityReasons.iskljucen') },
-    { value: 'Nepoznato', label: t('inactivityReasons.nepoznato') }
-  ];
-
   const handleChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement | { value: unknown }>) => {
     const value = event.target.value;
-    setFormData(prev => {
-      const updated = {
-        ...prev,
-        [field]: value
-      };
-      
-      // If status changes and it's not "pasivan", reset inactiveReason
-      if (field === 'status' && value !== 'pasivan') {
-        updated.inactiveReason = null;
-      }
-      
-      return updated;
-    });
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
   };
 
   const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -303,11 +284,6 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
     }
     if (!finalFormData.photo || finalFormData.photo === '') {
       finalFormData.photo = null;
-    }
-    
-    // Ensure inactiveReason is null if status is not "pasivan"
-    if (finalFormData.status !== 'pasivan') {
-      finalFormData.inactiveReason = null;
     }
     
     // Ensure categories is an empty array if not set
@@ -560,27 +536,6 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                 </Select>
               </FormControl>
             </Grid>
-            
-            {/* Razlog pasivnosti - Only shown when status is "pasivan" */}
-            {formData.status === 'pasivan' && (
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <FormControl fullWidth>
-                  <InputLabel>{t('inactivityReason')}</InputLabel>
-                  <Select
-                    value={formData.inactiveReason || ''}
-                    label={t('inactivityReason')}
-                    onChange={(e) => setFormData(prev => ({ ...prev, inactiveReason: e.target.value as string }))}
-                    data-testid="select-inactive-reason"
-                  >
-                    {inactiveReasonOptions.map(option => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-            )}
             
             {/* Row 7a: Skills (Full width or 50%) */}
             <Grid size={{ xs: 12, sm: isMemberEditingSelf ? 12 : 6 }}>
