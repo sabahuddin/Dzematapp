@@ -21,23 +21,38 @@ The application uses a PostgreSQL database (Neon serverless) with Drizzle ORM fo
 The system employs a simple session-based authentication using username/password. It supports guest access for public content. Role-based access control is implemented with four roles: Admin, Član IO (Executive Board Member), Član (Member - default for new users), and Član porodice (Family Member). Admins can also assign work group moderators.
 
 ## Key Features and Modules
-- **User Management**: CRUD operations for user accounts and profile management.
+- **User Management**: CRUD operations for user accounts and profile management. Bulk upload functionality with Excel template supporting 11 columns (Ime, Prezime, Korisničko ime, Šifra, Email, Telefon, Ulica i broj, Broj pošte, Naziv mjesta, Član od, Status članstva).
 - **Announcements**: Content management for community announcements, viewable by guests.
 - **Events & Important Dates**: Tab-based interface with event calendar, event list, RSVP functionality, and important dates management. Events viewable by guests.
-- **Task Manager**: Management of work groups ("Sekcije") with multi-user task assignments and variable point values (10, 20, 30, or 50 points).
-- **Moderator Proposal System**: Moderators can submit detailed proposals for work group activities, which IO board members and admins can review, approve, or reject.
+- **Task Manager with Role-Based Interfaces**: 
+  - **Admin**: Full access to all sections, task management, member management, and proposals. Can archive/delete sections. Access to global task archive.
+  - **Član IO (Executive Board)**: Two main tabs - "Moje sekcije" with three sub-tabs (Moje sekcije, Ostale sekcije, Prijedlozi read-only) and "Zatraži pristup" for public sections. Can view proposals but cannot approve/reject.
+  - **Član (Regular Member)**: Two tabs - "Moje sekcije" (sections where member) and "Zatraži pristup" (public sections with confirmation dialog).
+  - Work groups ("Sekcije") with multi-user task assignments and variable point values (10, 20, 30, or 50 points).
+  - Section archive functionality: Admins can archive or delete sections. Archived sections are hidden from non-admin users.
+  - Access request confirmation: Two-step process requiring user confirmation before sending join requests.
+- **Task Archive System**: 
+  - Completed tasks automatically become read-only and cannot be edited by anyone (including moderators).
+  - Tasks with status "završeno" or "arhiva" are locked at the backend level (403 error on edit attempts).
+  - Each section has separate "Aktivni" and "Arhiva" tabs for managing active and archived tasks.
+  - Admin-only "Arhiva svih zadataka" tab shows all archived tasks across all sections with filtering by section, user, and date period.
+  - Completed tasks display completion timestamp (completedAt field).
+- **Moderator Proposal System**: Moderators can submit detailed proposals for work group activities. Admins can review, approve, or reject. Član IO can view proposals (read-only).
 - **Expense Tracking with Receipt Uploads**: Members can upload receipts (images/PDFs) for completed tasks that have estimated costs.
 - **Dashboard Analytics**: Overview and activity tracking with customizable quick access shortcuts.
-- **Guest Access**: Public interface for viewing announcements, events, prayer times, and submitting membership applications.
+- **Guest Access**: Public interface for viewing announcements, events, prayer times, and submitting membership applications (Pristupnica, Akika, Marriage).
 - **Notification System**: Displays unread content counts for various modules.
-- **Section Visibility**: Public/private settings for work groups with access control.
-- **Access Request System**: Users can request membership to private sections, with admin approval.
+- **Section Visibility**: Public/private settings for work groups with access control. Private sections require access requests with admin approval.
+- **Access Request System**: Users can request membership to private sections with two-step confirmation ("Jeste li sigurni da želite biti član ove sekcije?" - DA/OTKAŽI).
 - **Imam Q&A**: System for submitting and archiving questions for the Imam.
 - **Shop Module**: Marketplace for items with photo uploads, image viewer, edit functionality, and contact form.
 - **Prayer Times (Vaktija)**: Full prayer times calendar with CSV upload capability and accordion view for monthly times. Dashboard displays today's prayer times.
-- **Internationalization (i18n)**: Multi-language support using react-i18next (Bosnian, German) with a language selector.
+- **Internationalization (i18n)**: Multi-language support using react-i18next (Bosnian, German, English, Albanian) with a language selector.
 - **Projekti + Finansije Integration**: Financial contributions can optionally link to projects, automatically updating project amounts.
 - **Points Settings Explanation**: Detailed explanation section on how points are awarded for various activities.
+- **Zahvale (Certificates)**: Certificate template management and issuance system with user notification.
+- **Media/Livestream**: Livestream settings and media management.
+- **Documents**: Document upload and management system for community resources.
 
 # External Dependencies
 
