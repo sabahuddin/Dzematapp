@@ -244,7 +244,6 @@ export const productPurchaseRequests = pgTable("product_purchase_requests", {
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
-  membershipDate: true,
 });
 
 export const insertAnnouncementSchema = createInsertSchema(announcements).omit({

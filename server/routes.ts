@@ -349,9 +349,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const workbook = XLSX.utils.book_new();
       
       const templateData = [
-        ["Ime", "Prezime", "Email", "Telefon", "Zanimanje", "Ulica i broj", "Broj pošte", "Naziv mjesta", "Član od", "Kategorije", "Status članstva"],
-        ["Marko", "Marković", "marko@example.com", "+387 61 123 456", "Inženjer", "Ulica Maršala Tita 15", "71000", "Sarajevo", "2024-01-15", "Muškarci", "aktivan"],
-        ["Ana", "Anić", "ana@example.com", "+387 62 234 567", "Nastavnica", "Kralja Tvrtka 22", "72000", "Zenica", "2023-06-20", "Žene,Roditelji", "aktivan"]
+        ["Ime", "Prezime", "Korisničko ime", "Šifra", "Email", "Telefon", "Ulica i broj", "Broj pošte", "Naziv mjesta", "Član od", "Status članstva"],
+        ["Marko", "Marković", "marko.markovic", "password123", "marko@example.com", "+387 61 123 456", "Ulica Maršala Tita 15", "71000", "Sarajevo", "2024-01-15", "aktivan"],
+        ["Ana", "Anić", "ana.anic", "password123", "ana@example.com", "+387 62 234 567", "Kralja Tvrtka 22", "72000", "Zenica", "2023-06-20", "aktivan"]
       ];
 
       const worksheet = XLSX.utils.aoa_to_sheet(templateData);
@@ -359,14 +359,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       worksheet['!cols'] = [
         { wch: 15 },
         { wch: 15 },
+        { wch: 18 },
+        { wch: 15 },
         { wch: 25 },
         { wch: 18 },
-        { wch: 20 },
         { wch: 25 },
         { wch: 12 },
         { wch: 18 },
         { wch: 15 },
-        { wch: 20 },
         { wch: 18 }
       ];
 
@@ -417,14 +417,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         const firstName = row[0]?.toString().trim() || '';
         const lastName = row[1]?.toString().trim() || '';
-        const email = row[2]?.toString().trim() || '';
-        const phone = row[3]?.toString().trim() || '';
-        const occupation = row[4]?.toString().trim() || '';
-        const address = row[5]?.toString().trim() || '';
-        const postalCode = row[6]?.toString().trim() || '';
-        const city = row[7]?.toString().trim() || '';
-        const membershipDateStr = row[8]?.toString().trim() || '';
-        const categoriesStr = row[9]?.toString().trim() || '';
+        const username = row[2]?.toString().trim() || '';
+        const password = row[3]?.toString().trim() || '';
+        const email = row[4]?.toString().trim() || '';
+        const phone = row[5]?.toString().trim() || '';
+        const address = row[6]?.toString().trim() || '';
+        const postalCode = row[7]?.toString().trim() || '';
+        const city = row[8]?.toString().trim() || '';
+        const membershipDateStr = row[9]?.toString().trim() || '';
         const status = row[10]?.toString().trim() || 'aktivan';
 
         if (!firstName) {
@@ -432,6 +432,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
         if (!lastName) {
           errors.push("Prezime je obavezno polje");
+        }
+        if (!username) {
+          errors.push("Korisničko ime je obavezno polje");
+        }
+        if (!password) {
+          errors.push("Šifra je obavezno polje");
         }
         
         if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -460,20 +466,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
 
-        const categories = categoriesStr ? categoriesStr.split(',').map((c: string) => c.trim()).filter((c: string) => c) : [];
-
         if (errors.length > 0) {
           results.errors.push({ row: rowNumber, errors });
           continue;
         }
 
-        const username = `${firstName.toLowerCase()}.${lastName.toLowerCase()}`.replace(/\s+/g, '');
-        let finalUsername = username;
-        let counter = 1;
-        
-        while (await storage.getUserByUsername(finalUsername)) {
-          finalUsername = `${username}${counter}`;
-          counter++;
+        // Check if username already exists
+        if (await storage.getUserByUsername(username)) {
+          results.errors.push({ 
+            row: rowNumber, 
+            errors: [`Korisničko ime '${username}' već postoji u sistemu`] 
+          });
+          continue;
         }
 
         if (email && await storage.getUserByEmail(email)) {
@@ -488,13 +492,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const newUser = await storage.createUser({
             firstName,
             lastName,
-            username: finalUsername,
+            username,
             email: email || undefined,
-            password: 'password123',
+            password,
             phone: phone || undefined,
-            occupation: occupation || undefined,
+            occupation: undefined,
             address: address || undefined,
-            categories,
+            categories: [],
+            membershipDate: membershipDate || undefined,
             status: status.toLowerCase() as any,
             inactiveReason: undefined,
             isAdmin: false,
