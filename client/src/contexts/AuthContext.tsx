@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from "react";
 
 interface User {
   id: string;
@@ -26,9 +26,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Check current session status
   const checkSession = async () => {
     try {
-      const response = await fetch('/api/auth/session', {
-        method: 'GET',
-        credentials: 'include', // Include cookies in requests
+      const response = await fetch("/api/auth/session", {
+        method: "GET",
+        credentials: "include", // Include cookies in requests
       });
 
       if (response.ok) {
@@ -38,7 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(null);
       }
     } catch (error) {
-      console.error('Session check error:', error);
+      console.error("Session check error:", error);
       setUser(null);
     }
   };
@@ -48,14 +48,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     checkSession().finally(() => setIsLoading(false));
   }, []);
 
-  const login = async (username: string, password: string): Promise<boolean> => {
+  const login = async (
+    username: string,
+    password: string,
+  ): Promise<boolean> => {
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        credentials: 'include', // Include cookies in requests
+        credentials: "include", // Include cookies in requests
         body: JSON.stringify({ username, password }),
       });
 
@@ -66,26 +69,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       return false;
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
       return false;
     }
   };
 
   const logout = async () => {
     try {
-      await fetch('/api/auth/logout', {
-        method: 'POST',
-        credentials: 'include', // Include cookies in requests
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include", // Include cookies in requests
       });
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     } finally {
       setUser(null);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isLoading, checkSession }}>
+    <AuthContext.Provider
+      value={{ user, login, logout, isLoading, checkSession }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -94,7 +99,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }
