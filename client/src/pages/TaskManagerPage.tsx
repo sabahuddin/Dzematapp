@@ -215,6 +215,245 @@ function WorkGroupCard({ workGroup, onManageMembers, onManageTasks, onJoinReques
   );
 }
 
+interface AdminTasksArchiveProps {
+  workGroups: WorkGroup[];
+  users: User[];
+  currentUser: any;
+}
+
+function AdminTasksArchive({ workGroups, users, currentUser }: AdminTasksArchiveProps) {
+  const { t } = useTranslation(['tasks', 'common']);
+  const queryClient = useQueryClient();
+  const [selectedWorkGroupId, setSelectedWorkGroupId] = useState<string>('all');
+  const [selectedUserId, setSelectedUserId] = useState<string>('all');
+  const [dateFilter, setDateFilter] = useState<'all' | 'last7days' | 'last30days' | 'last90days'>('all');
+  const [selectedTask, setSelectedTask] = useState<any>(null);
+  const [taskDetailOpen, setTaskDetailOpen] = useState(false);
+
+  const allTasksQuery = useQuery({
+    queryKey: ['/api/tasks/admin-archive'],
+    retry: 1,
+  });
+
+  const archivedTasks = React.useMemo(() => {
+    if (!allTasksQuery.data || !Array.isArray(allTasksQuery.data)) {
+      return [];
+    }
+
+    let filtered = allTasksQuery.data.filter((task: any) => 
+      task.status === 'završeno' || task.status === 'arhiva'
+    );
+
+    if (selectedWorkGroupId !== 'all') {
+      filtered = filtered.filter((task: any) => task.workGroupId === selectedWorkGroupId);
+    }
+
+    if (selectedUserId !== 'all') {
+      filtered = filtered.filter((task: any) => 
+        task.assignedUserIds?.includes(selectedUserId)
+      );
+    }
+
+    if (dateFilter !== 'all' && filtered.length > 0) {
+      const now = new Date();
+      const daysAgo = dateFilter === 'last7days' ? 7 : dateFilter === 'last30days' ? 30 : 90;
+      const cutoffDate = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+      
+      filtered = filtered.filter((task: any) => {
+        if (!task.completedAt) return false;
+        return new Date(task.completedAt) >= cutoffDate;
+      });
+    }
+
+    return filtered.sort((a: any, b: any) => {
+      const dateA = a.completedAt ? new Date(a.completedAt).getTime() : 0;
+      const dateB = b.completedAt ? new Date(b.completedAt).getTime() : 0;
+      return dateB - dateA;
+    });
+  }, [allTasksQuery.data, selectedWorkGroupId, selectedUserId, dateFilter]);
+
+  const getWorkGroupName = (workGroupId: string) => {
+    const workGroup = workGroups.find(wg => wg.id === workGroupId);
+    return workGroup?.name || 'Nepoznata sekcija';
+  };
+
+  const getUserName = (userId: string) => {
+    const user = users.find(u => u.id === userId);
+    return user ? `${user.firstName} ${user.lastName}` : 'Nepoznat korisnik';
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'završeno':
+        return 'success';
+      case 'arhiva':
+        return 'default';
+      default:
+        return 'default';
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'završeno':
+        return 'Završeno';
+      case 'arhiva':
+        return 'Arhivirano';
+      default:
+        return status;
+    }
+  };
+
+  if (allTasksQuery.isLoading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  return (
+    <Box>
+      <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
+        Arhiva svih zadataka
+      </Typography>
+
+      <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
+        <TextField
+          select
+          label="Sekcija"
+          value={selectedWorkGroupId}
+          onChange={(e) => setSelectedWorkGroupId(e.target.value)}
+          sx={{ minWidth: 200 }}
+          size="small"
+          data-testid="select-archive-workgroup"
+        >
+          <MenuItem value="all">Sve sekcije</MenuItem>
+          {workGroups.map((wg) => (
+            <MenuItem key={wg.id} value={wg.id}>{wg.name}</MenuItem>
+          ))}
+        </TextField>
+
+        <TextField
+          select
+          label="Korisnik"
+          value={selectedUserId}
+          onChange={(e) => setSelectedUserId(e.target.value)}
+          sx={{ minWidth: 200 }}
+          size="small"
+          data-testid="select-archive-user"
+        >
+          <MenuItem value="all">Svi korisnici</MenuItem>
+          {users.map((u) => (
+            <MenuItem key={u.id} value={u.id}>{u.firstName} {u.lastName}</MenuItem>
+          ))}
+        </TextField>
+
+        <TextField
+          select
+          label="Period"
+          value={dateFilter}
+          onChange={(e) => setDateFilter(e.target.value as any)}
+          sx={{ minWidth: 200 }}
+          size="small"
+          data-testid="select-archive-date"
+        >
+          <MenuItem value="all">Svi periodi</MenuItem>
+          <MenuItem value="last7days">Zadnjih 7 dana</MenuItem>
+          <MenuItem value="last30days">Zadnjih 30 dana</MenuItem>
+          <MenuItem value="last90days">Zadnjih 90 dana</MenuItem>
+        </TextField>
+      </Box>
+
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        Ukupno arhiviranih zadataka: {archivedTasks.length}
+      </Typography>
+
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        {archivedTasks.length > 0 ? (
+          archivedTasks.map((task: any) => (
+            <Card 
+              key={task.id}
+              sx={{ 
+                cursor: 'pointer',
+                '&:hover': { boxShadow: 3 }
+              }}
+              onClick={() => {
+                setSelectedTask(task);
+                setTaskDetailOpen(true);
+              }}
+              data-testid={`archived-task-card-${task.id}`}
+            >
+              <CardContent>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <Box sx={{ flex: 1 }}>
+                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+                      {task.title}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                      {task.description}
+                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+                      <Chip
+                        label={getStatusLabel(task.status)}
+                        color={getStatusColor(task.status) as any}
+                        size="small"
+                      />
+                      <Typography variant="caption" color="text.secondary">
+                        Sekcija: {getWorkGroupName(task.workGroupId)}
+                      </Typography>
+                      {task.assignedUserIds && task.assignedUserIds.length > 0 && (
+                        <Typography variant="caption" color="text.secondary">
+                          Dodijeljeno: {task.assignedUserIds.map((uid: string) => getUserName(uid)).join(', ')}
+                        </Typography>
+                      )}
+                      {task.completedAt && (
+                        <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                          Završeno: {new Date(task.completedAt).toLocaleDateString('hr-HR', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          })}
+                        </Typography>
+                      )}
+                    </Box>
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
+          ))
+        ) : (
+          <Card>
+            <CardContent sx={{ textAlign: 'center', py: 6 }}>
+              <Typography color="text.secondary">
+                Nema arhiviranih zadataka koji zadovoljavaju izabrane filtere.
+              </Typography>
+            </CardContent>
+          </Card>
+        )}
+      </Box>
+
+      {selectedTask && (
+        <TaskDetailDialog
+          open={taskDetailOpen}
+          onClose={() => {
+            setTaskDetailOpen(false);
+            setSelectedTask(null);
+          }}
+          task={selectedTask}
+          workGroup={workGroups.find(wg => wg.id === selectedTask.workGroupId) || null}
+          currentUser={currentUser}
+          isModeratorOrAdmin={true}
+          members={[]}
+          onTaskUpdated={() => {
+            queryClient.invalidateQueries({ queryKey: ['/api/tasks/admin-archive'] });
+          }}
+        />
+      )}
+    </Box>
+  );
+}
+
 export default function TaskManagerPage() {
   const { t } = useTranslation(['tasks', 'common']);
   const { user } = useAuth();
@@ -222,6 +461,7 @@ export default function TaskManagerPage() {
   const queryClient = useQueryClient();
   
   const [tabValue, setTabValue] = useState(0);
+  const [subTabValue, setSubTabValue] = useState(0);
   const [workGroupModalOpen, setWorkGroupModalOpen] = useState(false);
   const [editWorkGroupModalOpen, setEditWorkGroupModalOpen] = useState(false);
   const [memberManagementDialogOpen, setMemberManagementDialogOpen] = useState(false);
@@ -229,6 +469,8 @@ export default function TaskManagerPage() {
   const [proposalModalOpen, setProposalModalOpen] = useState(false);
   const [selectedWorkGroup, setSelectedWorkGroup] = useState<WorkGroup | null>(null);
   const [editFormData, setEditFormData] = useState({ name: '', description: '' });
+  const [confirmJoinDialogOpen, setConfirmJoinDialogOpen] = useState(false);
+  const [workGroupToJoin, setWorkGroupToJoin] = useState<WorkGroup | null>(null);
 
   const workGroupsQuery = useQuery<WorkGroup[]>({
     queryKey: ['/api/work-groups'],
@@ -244,13 +486,13 @@ export default function TaskManagerPage() {
     enabled: !!user?.isAdmin,
   });
 
+  const isIOOrAdminCheck = user?.isAdmin || user?.roles?.includes('clan_io');
+
   const usersQuery = useQuery<User[]>({
     queryKey: ['/api/users'],
     retry: 1,
-    enabled: !!user?.isAdmin,
+    enabled: isIOOrAdminCheck,
   });
-
-  const isIOOrAdminCheck = user?.isAdmin || user?.roles?.includes('clan_io');
   
   const proposalsQuery = useQuery<any[]>({
     queryKey: ['/api/proposals'],
@@ -258,11 +500,12 @@ export default function TaskManagerPage() {
     enabled: isIOOrAdminCheck,
   });
 
-  const { memberWorkGroups, otherWorkGroups } = React.useMemo(() => {
-    if (!workGroupsQuery.data || !user) return { memberWorkGroups: [], otherWorkGroups: [] };
+  const { memberWorkGroups, otherWorkGroups, publicWorkGroups } = React.useMemo(() => {
+    if (!workGroupsQuery.data || !user) return { memberWorkGroups: [], otherWorkGroups: [], publicWorkGroups: [] };
     
     const member: (WorkGroup & { members?: WorkGroupMember[] })[] = [];
     const other: (WorkGroup & { members?: WorkGroupMember[] })[] = [];
+    const publicSections: (WorkGroup & { members?: WorkGroupMember[] })[] = [];
     
     workGroupsQuery.data.forEach((workGroup: WorkGroup & { members?: WorkGroupMember[] }) => {
       const isMember = workGroup.members?.some((m: WorkGroupMember) => 
@@ -274,10 +517,14 @@ export default function TaskManagerPage() {
         member.push(workGroup);
       } else {
         other.push(workGroup);
+        // Za običnog korisnika (clan), u publicWorkGroups idu samo javne sekcije
+        if (workGroup.visibility === 'javna') {
+          publicSections.push(workGroup);
+        }
       }
     });
     
-    return { memberWorkGroups: member, otherWorkGroups: other };
+    return { memberWorkGroups: member, otherWorkGroups: other, publicWorkGroups: publicSections };
   }, [workGroupsQuery.data, user]);
 
   const createWorkGroupMutation = useMutation({
@@ -382,6 +629,10 @@ export default function TaskManagerPage() {
     setTabValue(newValue);
   };
 
+  const handleSubTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setSubTabValue(newValue);
+  };
+
   const handleCreateWorkGroup = () => {
     setSelectedWorkGroup(null);
     setWorkGroupModalOpen(true);
@@ -421,13 +672,26 @@ export default function TaskManagerPage() {
   };
 
   const handleJoinRequest = (workGroup: WorkGroup) => {
-    if (!user?.id) return;
+    setWorkGroupToJoin(workGroup);
+    setConfirmJoinDialogOpen(true);
+  };
+
+  const handleConfirmJoinRequest = () => {
+    if (!user?.id || !workGroupToJoin) return;
     
     createAccessRequestMutation.mutate({
       userId: user.id,
-      workGroupId: workGroup.id,
+      workGroupId: workGroupToJoin.id,
       status: 'pending'
     });
+    
+    setConfirmJoinDialogOpen(false);
+    setWorkGroupToJoin(null);
+  };
+
+  const handleCancelJoinRequest = () => {
+    setConfirmJoinDialogOpen(false);
+    setWorkGroupToJoin(null);
   };
 
   const handleApproveRequest = (requestId: string) => {
@@ -445,7 +709,9 @@ export default function TaskManagerPage() {
 
   const isLoading = user?.isAdmin 
     ? (workGroupsQuery.isLoading || accessRequestsQuery.isLoading || usersQuery.isLoading)
-    : workGroupsQuery.isLoading;
+    : isIOOrAdminCheck 
+      ? (workGroupsQuery.isLoading || usersQuery.isLoading)
+      : workGroupsQuery.isLoading;
 
   if (isLoading) {
     return (
@@ -457,7 +723,9 @@ export default function TaskManagerPage() {
 
   const hasError = user?.isAdmin
     ? (workGroupsQuery.error || accessRequestsQuery.error || usersQuery.error)
-    : workGroupsQuery.error;
+    : isIOOrAdminCheck
+      ? (workGroupsQuery.error || usersQuery.error)
+      : workGroupsQuery.error;
 
   if (hasError) {
     return (
@@ -467,7 +735,9 @@ export default function TaskManagerPage() {
     );
   }
 
-  const isIOOrAdmin = user?.isAdmin || user?.roles?.includes('clan_io');
+  const isAdmin = user?.isAdmin || false;
+  const isClanIO = !isAdmin && (user?.roles?.includes('clan_io') || false);
+  const isRegularClan = !isAdmin && !isClanIO;
 
   return (
     <Box>
@@ -475,74 +745,200 @@ export default function TaskManagerPage() {
         {t('title')}
       </Typography>
 
-      {isIOOrAdmin && (
+      {isAdmin && (
         <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-          <Tabs value={tabValue} onChange={handleTabChange} aria-label="task manager tabs">
+          <Tabs value={tabValue} onChange={handleTabChange} aria-label="admin tabs">
             <Tab label={t('tabs.sections')} data-testid="tab-work-groups" />
-            {user?.isAdmin && <Tab label={t('tabs.accessRequests')} data-testid="tab-access-requests" />}
+            <Tab label={t('tabs.accessRequests')} data-testid="tab-access-requests" />
             <Tab label="Prijedlozi" data-testid="tab-proposals" />
+            <Tab label="Arhiva svih zadataka" data-testid="tab-all-tasks-archive" />
+          </Tabs>
+        </Box>
+      )}
+
+      {isClanIO && (
+        <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+          <Tabs value={tabValue} onChange={handleTabChange} aria-label="clan io tabs">
+            <Tab label="Moje sekcije" data-testid="tab-my-sections-io" />
+            <Tab label="Zatraži pristup" data-testid="tab-request-access-io" />
+          </Tabs>
+        </Box>
+      )}
+
+      {isRegularClan && (
+        <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+          <Tabs value={tabValue} onChange={handleTabChange} aria-label="clan user tabs">
+            <Tab label="Moje sekcije" data-testid="tab-my-sections" />
+            <Tab label="Zatraži pristup" data-testid="tab-request-access" />
           </Tabs>
         </Box>
       )}
 
       <TabPanel value={tabValue} index={0}>
-        {user?.isAdmin && (
-          <Box sx={{ mb: 3 }}>
-            <Button
-              variant="contained"
-              startIcon={<GroupAdd />}
-              onClick={handleCreateWorkGroup}
-              data-testid="button-create-work-group"
-            >
-              {t('createSection')}
-            </Button>
-          </Box>
-        )}
+        {isAdmin ? (
+          <>
+            <Box sx={{ mb: 3 }}>
+              <Button
+                variant="contained"
+                startIcon={<GroupAdd />}
+                onClick={handleCreateWorkGroup}
+                data-testid="button-create-work-group"
+              >
+                {t('createSection')}
+              </Button>
+            </Box>
 
-        {memberWorkGroups.length > 0 ? (
-          <Box sx={{ mb: 4 }}>
-            <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-              {t('mySections')}
-            </Typography>
-            <Grid container spacing={3}>
-              {memberWorkGroups.map((workGroup: WorkGroup) => (
-                <WorkGroupCard 
-                  key={workGroup.id}
-                  workGroup={workGroup}
-                  onManageMembers={handleManageMembers}
-                  onManageTasks={handleManageGroupTasks}
-                  onJoinRequest={handleJoinRequest}
-                  onCreateProposal={handleCreateProposal}
-                  onEditWorkGroup={handleEditWorkGroup}
-                  currentUser={user}
-                />
-              ))}
-            </Grid>
-          </Box>
+            {memberWorkGroups.length > 0 ? (
+              <Box sx={{ mb: 4 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+                  {t('mySections')}
+                </Typography>
+                <Grid container spacing={3}>
+                  {memberWorkGroups.map((workGroup: WorkGroup) => (
+                    <WorkGroupCard 
+                      key={workGroup.id}
+                      workGroup={workGroup}
+                      onManageMembers={handleManageMembers}
+                      onManageTasks={handleManageGroupTasks}
+                      onJoinRequest={handleJoinRequest}
+                      onCreateProposal={handleCreateProposal}
+                      onEditWorkGroup={handleEditWorkGroup}
+                      currentUser={user}
+                    />
+                  ))}
+                </Grid>
+              </Box>
+            ) : (
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+                  {t('notMemberOfAnySection')}
+                </Typography>
+              </Box>
+            )}
+
+            {otherWorkGroups.length > 0 && (
+              <Accordion defaultExpanded={false}>
+                <AccordionSummary 
+                  expandIcon={<ExpandMore />}
+                  sx={{ 
+                    bgcolor: '#f8f9fa',
+                    '&:hover': { bgcolor: '#e9ecef' }
+                  }}
+                >
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    {t('otherSections')} ({otherWorkGroups.length})
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails sx={{ pt: 3 }}>
+                  <Grid container spacing={3}>
+                    {otherWorkGroups.map((workGroup: WorkGroup) => (
+                      <WorkGroupCard 
+                        key={workGroup.id}
+                        workGroup={workGroup}
+                        onManageMembers={handleManageMembers}
+                        onManageTasks={handleManageGroupTasks}
+                        onJoinRequest={handleJoinRequest}
+                        onCreateProposal={handleCreateProposal}
+                        onEditWorkGroup={handleEditWorkGroup}
+                        currentUser={user}
+                      />
+                    ))}
+                  </Grid>
+                </AccordionDetails>
+              </Accordion>
+            )}
+            
+            {memberWorkGroups.length === 0 && otherWorkGroups.length === 0 && (
+              <Card>
+                <CardContent sx={{ textAlign: 'center', py: 6 }}>
+                  <Typography color="text.secondary">
+                    {t('noSectionsAvailable')}
+                  </Typography>
+                </CardContent>
+              </Card>
+            )}
+          </>
+        ) : isClanIO ? (
+          <>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+              <Tabs value={subTabValue} onChange={handleSubTabChange} aria-label="clan io sub tabs">
+                <Tab label="Moje sekcije" data-testid="subtab-my-sections" />
+                <Tab label="Ostale sekcije" data-testid="subtab-other-sections" />
+                <Tab label="Prijedlozi" data-testid="subtab-proposals" />
+              </Tabs>
+            </Box>
+
+            <TabPanel value={subTabValue} index={0}>
+              {memberWorkGroups.length > 0 ? (
+                <Grid container spacing={3}>
+                  {memberWorkGroups.map((workGroup: WorkGroup) => (
+                    <WorkGroupCard 
+                      key={workGroup.id}
+                      workGroup={workGroup}
+                      onManageMembers={handleManageMembers}
+                      onManageTasks={handleManageGroupTasks}
+                      onJoinRequest={handleJoinRequest}
+                      onCreateProposal={handleCreateProposal}
+                      onEditWorkGroup={handleEditWorkGroup}
+                      currentUser={user}
+                    />
+                  ))}
+                </Grid>
+              ) : (
+                <Card>
+                  <CardContent sx={{ textAlign: 'center', py: 6 }}>
+                    <Typography color="text.secondary">
+                      {t('notMemberOfAnySection')}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              )}
+            </TabPanel>
+
+            <TabPanel value={subTabValue} index={1}>
+              {otherWorkGroups.length > 0 ? (
+                <Grid container spacing={3}>
+                  {otherWorkGroups.map((workGroup: WorkGroup) => (
+                    <WorkGroupCard 
+                      key={workGroup.id}
+                      workGroup={workGroup}
+                      onManageMembers={handleManageMembers}
+                      onManageTasks={handleManageGroupTasks}
+                      onJoinRequest={handleJoinRequest}
+                      onCreateProposal={handleCreateProposal}
+                      onEditWorkGroup={handleEditWorkGroup}
+                      currentUser={user}
+                    />
+                  ))}
+                </Grid>
+              ) : (
+                <Card>
+                  <CardContent sx={{ textAlign: 'center', py: 6 }}>
+                    <Typography color="text.secondary">
+                      Nema drugih sekcija
+                    </Typography>
+                  </CardContent>
+                </Card>
+              )}
+            </TabPanel>
+
+            <TabPanel value={subTabValue} index={2}>
+              <ProposalsReviewContent 
+                proposals={proposalsQuery.data || []}
+                workGroups={workGroupsQuery.data || []}
+                users={usersQuery.data || []}
+                onApprove={approveProposalMutation.mutate}
+                onReject={rejectProposalMutation.mutate}
+                isLoading={proposalsQuery.isLoading}
+                readOnly={true}
+              />
+            </TabPanel>
+          </>
         ) : (
-          <Box sx={{ mb: 3 }}>
-            <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-              {t('notMemberOfAnySection')}
-            </Typography>
-          </Box>
-        )}
-
-        {otherWorkGroups.length > 0 && (
-          <Accordion defaultExpanded={false}>
-            <AccordionSummary 
-              expandIcon={<ExpandMore />}
-              sx={{ 
-                bgcolor: '#f8f9fa',
-                '&:hover': { bgcolor: '#e9ecef' }
-              }}
-            >
-              <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                {t('otherSections')} ({otherWorkGroups.length})
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails sx={{ pt: 3 }}>
+          <>
+            {memberWorkGroups.length > 0 ? (
               <Grid container spacing={3}>
-                {otherWorkGroups.map((workGroup: WorkGroup) => (
+                {memberWorkGroups.map((workGroup: WorkGroup) => (
                   <WorkGroupCard 
                     key={workGroup.id}
                     workGroup={workGroup}
@@ -555,22 +951,78 @@ export default function TaskManagerPage() {
                   />
                 ))}
               </Grid>
-            </AccordionDetails>
-          </Accordion>
-        )}
-        
-        {memberWorkGroups.length === 0 && otherWorkGroups.length === 0 && (
-          <Card>
-            <CardContent sx={{ textAlign: 'center', py: 6 }}>
-              <Typography color="text.secondary">
-                {t('noSectionsAvailable')}
-              </Typography>
-            </CardContent>
-          </Card>
+            ) : (
+              <Card>
+                <CardContent sx={{ textAlign: 'center', py: 6 }}>
+                  <Typography color="text.secondary">
+                    {t('notMemberOfAnySection')}
+                  </Typography>
+                </CardContent>
+              </Card>
+            )}
+          </>
         )}
       </TabPanel>
 
-      {user?.isAdmin && (
+      {isClanIO && (
+        <TabPanel value={tabValue} index={1}>
+          {publicWorkGroups.length > 0 ? (
+            <Grid container spacing={3}>
+              {publicWorkGroups.map((workGroup: WorkGroup) => (
+                <WorkGroupCard 
+                  key={workGroup.id}
+                  workGroup={workGroup}
+                  onManageMembers={handleManageMembers}
+                  onManageTasks={handleManageGroupTasks}
+                  onJoinRequest={handleJoinRequest}
+                  onCreateProposal={handleCreateProposal}
+                  onEditWorkGroup={handleEditWorkGroup}
+                  currentUser={user}
+                />
+              ))}
+            </Grid>
+          ) : (
+            <Card>
+              <CardContent sx={{ textAlign: 'center', py: 6 }}>
+                <Typography color="text.secondary">
+                  Nema dostupnih javnih sekcija za pristup
+                </Typography>
+              </CardContent>
+            </Card>
+          )}
+        </TabPanel>
+      )}
+
+      {isRegularClan && (
+        <TabPanel value={tabValue} index={1}>
+          {publicWorkGroups.length > 0 ? (
+            <Grid container spacing={3}>
+              {publicWorkGroups.map((workGroup: WorkGroup) => (
+                <WorkGroupCard 
+                  key={workGroup.id}
+                  workGroup={workGroup}
+                  onManageMembers={handleManageMembers}
+                  onManageTasks={handleManageGroupTasks}
+                  onJoinRequest={handleJoinRequest}
+                  onCreateProposal={handleCreateProposal}
+                  onEditWorkGroup={handleEditWorkGroup}
+                  currentUser={user}
+                />
+              ))}
+            </Grid>
+          ) : (
+            <Card>
+              <CardContent sx={{ textAlign: 'center', py: 6 }}>
+                <Typography color="text.secondary">
+                  Nema dostupnih javnih sekcija za pristup
+                </Typography>
+              </CardContent>
+            </Card>
+          )}
+        </TabPanel>
+      )}
+
+      {isAdmin && (
         <TabPanel value={tabValue} index={1}>
           <Card>
             <TableContainer>
@@ -650,16 +1102,29 @@ export default function TaskManagerPage() {
         </TabPanel>
       )}
 
-      <TabPanel value={tabValue} index={user?.isAdmin ? 2 : 1}>
-        <ProposalsReviewContent 
-          proposals={proposalsQuery.data || []}
-          workGroups={workGroupsQuery.data || []}
-          users={usersQuery.data || []}
-          onApprove={approveProposalMutation.mutate}
-          onReject={rejectProposalMutation.mutate}
-          isLoading={proposalsQuery.isLoading}
-        />
-      </TabPanel>
+      {isAdmin && (
+        <>
+          <TabPanel value={tabValue} index={2}>
+            <ProposalsReviewContent 
+              proposals={proposalsQuery.data || []}
+              workGroups={workGroupsQuery.data || []}
+              users={usersQuery.data || []}
+              onApprove={approveProposalMutation.mutate}
+              onReject={rejectProposalMutation.mutate}
+              isLoading={proposalsQuery.isLoading}
+              readOnly={false}
+            />
+          </TabPanel>
+
+          <TabPanel value={tabValue} index={3}>
+            <AdminTasksArchive 
+              workGroups={workGroupsQuery.data || []}
+              users={usersQuery.data || []}
+              currentUser={user}
+            />
+          </TabPanel>
+        </>
+      )}
 
       <WorkGroupModal
         open={workGroupModalOpen}
@@ -754,6 +1219,49 @@ export default function TaskManagerPage() {
           />
         </DialogContent>
       </Dialog>
+
+      <Dialog
+        open={confirmJoinDialogOpen}
+        onClose={handleCancelJoinRequest}
+        maxWidth="sm"
+        fullWidth
+        data-testid="dialog-confirm-join"
+      >
+        <DialogTitle>Potvrda pristupa</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Jeste li sigurni da želite biti član ove sekcije?
+          </Typography>
+          {workGroupToJoin && (
+            <Box sx={{ mt: 2, p: 2, bgcolor: '#f8f9fa', borderRadius: 1 }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                {workGroupToJoin.name}
+              </Typography>
+              {workGroupToJoin.description && (
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                  {workGroupToJoin.description}
+                </Typography>
+              )}
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button 
+            onClick={handleCancelJoinRequest} 
+            data-testid="button-cancel-join-request"
+          >
+            OTKAŽI
+          </Button>
+          <Button 
+            onClick={handleConfirmJoinRequest} 
+            variant="contained"
+            disabled={createAccessRequestMutation.isPending}
+            data-testid="button-confirm-join-request"
+          >
+            {createAccessRequestMutation.isPending ? 'Slanje...' : 'DA'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
@@ -765,9 +1273,10 @@ interface ProposalsReviewContentProps {
   onApprove: (data: { id: string; comment?: string }) => void;
   onReject: (data: { id: string; comment: string }) => void;
   isLoading: boolean;
+  readOnly?: boolean;
 }
 
-function ProposalsReviewContent({ proposals, workGroups, users, onApprove, onReject, isLoading }: ProposalsReviewContentProps) {
+function ProposalsReviewContent({ proposals, workGroups, users, onApprove, onReject, isLoading, readOnly = false }: ProposalsReviewContentProps) {
   const [selectedProposal, setSelectedProposal] = useState<any | null>(null);
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
   const [reviewAction, setReviewAction] = useState<'approve' | 'reject'>('approve');
@@ -821,8 +1330,14 @@ function ProposalsReviewContent({ proposals, workGroups, users, onApprove, onRej
       <Card>
         <CardContent>
           <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-            Prijedlozi za Odobrenje
+            {readOnly ? 'Prijedlozi (Read-Only)' : 'Prijedlozi za Odobrenje'}
           </Typography>
+          
+          {readOnly && (
+            <Alert severity="info" sx={{ mb: 2 }}>
+              Vi možete vidjeti prijedloge, ali ne možete ih odobriti ili odbiti.
+            </Alert>
+          )}
           
           {pendingProposals.length === 0 ? (
             <Typography color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
@@ -880,26 +1395,28 @@ function ProposalsReviewContent({ proposals, workGroups, users, onApprove, onRej
                       )}
                     </Grid>
 
-                    <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
-                      <Button
-                        variant="contained"
-                        color="success"
-                        startIcon={<Check />}
-                        onClick={() => handleOpenReview(proposal, 'approve')}
-                        data-testid={`button-approve-proposal-${proposal.id}`}
-                      >
-                        Odobri
-                      </Button>
-                      <Button
-                        variant="outlined"
-                        color="error"
-                        startIcon={<Close />}
-                        onClick={() => handleOpenReview(proposal, 'reject')}
-                        data-testid={`button-reject-proposal-${proposal.id}`}
-                      >
-                        Odbij
-                      </Button>
-                    </Box>
+                    {!readOnly && (
+                      <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
+                        <Button
+                          variant="contained"
+                          color="success"
+                          startIcon={<Check />}
+                          onClick={() => handleOpenReview(proposal, 'approve')}
+                          data-testid={`button-approve-proposal-${proposal.id}`}
+                        >
+                          Odobri
+                        </Button>
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          startIcon={<Close />}
+                          onClick={() => handleOpenReview(proposal, 'reject')}
+                          data-testid={`button-reject-proposal-${proposal.id}`}
+                        >
+                          Odbij
+                        </Button>
+                      </Box>
+                    )}
                   </CardContent>
                 </Card>
               ))}
@@ -1611,6 +2128,7 @@ function TaskDetailDialog({
   const isAssignedUser = task?.assignedUserIds?.includes(currentUser?.id);
   const isMemberOfWorkGroup = members.some((m: any) => m.userId === currentUser?.id);
   const canComment = isMemberOfWorkGroup || currentUser?.isAdmin;
+  const isTaskCompleted = task?.status === 'završeno';
 
   if (!task) return null;
 
@@ -1631,7 +2149,7 @@ function TaskDetailDialog({
           {task.title}
         </Typography>
         <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-          {isModeratorOrAdmin && !isEditing && (
+          {isModeratorOrAdmin && !isEditing && !isTaskCompleted && (
             <>
               <Button
                 variant="outlined"
@@ -1667,6 +2185,25 @@ function TaskDetailDialog({
       </DialogTitle>
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          {isTaskCompleted && (
+            <Alert severity="info" sx={{ mb: 1 }}>
+              <strong>Zadatak je završen i zaključan.</strong>
+              {task.completedAt && (
+                <Typography variant="body2" sx={{ mt: 0.5 }}>
+                  Završen: {new Date(task.completedAt).toLocaleDateString('hr-HR', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
+                </Typography>
+              )}
+              <Typography variant="body2" sx={{ mt: 0.5 }}>
+                Završeni zadaci ne mogu biti mijenjani.
+              </Typography>
+            </Alert>
+          )}
           {isEditing ? (
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               <TextField
@@ -2206,7 +2743,7 @@ function MoveTaskModal({ open, onClose, task, currentWorkGroup, onMoveSuccess }:
     onSuccess: (data) => {
       const newWorkGroup = workGroupsQuery.data?.find(wg => wg.id === selectedWorkGroupId);
       queryClient.invalidateQueries({ queryKey: ['/api/work-groups'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/tasks'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/tasks/admin-archive'] });
       toast({ 
         title: t('common:success'), 
         description: newWorkGroup ? t('toasts.taskMoved', { name: newWorkGroup.name }) : t('toasts.taskMovedGeneric')
@@ -2310,6 +2847,7 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
   const [selectedTask, setSelectedTask] = useState<any>(null);
   const [createTaskOpen, setCreateTaskOpen] = useState(false);
   const [taskDetailOpen, setTaskDetailOpen] = useState(false);
+  const [archiveTab, setArchiveTab] = useState(0);
 
   const tasksQuery = useQuery({
     queryKey: ['/api/work-groups', workGroup?.id, 'tasks'],
@@ -2322,6 +2860,21 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
     enabled: !!workGroup?.id,
     retry: 1,
   });
+
+  const { activeTasks, archivedTasks } = React.useMemo(() => {
+    if (!tasksQuery.data || !Array.isArray(tasksQuery.data)) {
+      return { activeTasks: [], archivedTasks: [] };
+    }
+    
+    const active = tasksQuery.data.filter((task: any) => 
+      task.status !== 'završeno' && task.status !== 'arhiva'
+    );
+    const archived = tasksQuery.data.filter((task: any) => 
+      task.status === 'završeno' || task.status === 'arhiva'
+    );
+    
+    return { activeTasks: active, archivedTasks: archived };
+  }, [tasksQuery.data]);
 
   const isModeratorOrAdmin = () => {
     if (!currentUser || !membersQuery.data) return false;
@@ -2406,26 +2959,10 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
     );
   }
 
-  return (
-    <Box sx={{ p: 3 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h6" sx={{ fontWeight: 600 }}>
-          {t('taskDialog.taskCount', { count: Array.isArray(tasksQuery.data) ? tasksQuery.data.length : 0 })}
-        </Typography>
-        {isModeratorOrAdmin() && (
-          <Button
-            variant="contained"
-            onClick={handleCreateTask}
-            data-testid="button-create-task"
-          >
-            {t('taskDialog.createNew')}
-          </Button>
-        )}
-      </Box>
-
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {Array.isArray(tasksQuery.data) && tasksQuery.data.length > 0 ? (
-          tasksQuery.data.map((task: any) => (
+  const renderTaskList = (tasks: any[], isArchive: boolean = false) => (
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      {tasks.length > 0 ? (
+        tasks.map((task: any) => (
             <Card 
               key={task.id}
               sx={{ 
@@ -2443,7 +2980,7 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                       {task.description}
                     </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
                       <Chip
                         label={getStatusLabel(task.status)}
                         color={getStatusColor(task.status) as any}
@@ -2459,10 +2996,15 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
                           {t('taskDialog.deadline')}: {new Date(task.dueDate).toLocaleDateString('hr-HR')}
                         </Typography>
                       )}
+                      {isArchive && task.completedAt && (
+                        <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                          Završeno: {new Date(task.completedAt).toLocaleDateString('hr-HR')}
+                        </Typography>
+                      )}
                     </Box>
                   </Box>
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                    {task.status !== 'završeno' && task.status !== 'na_cekanju' && task.assignedUserIds?.includes(currentUser?.id) && (
+                    {!isArchive && task.status !== 'završeno' && task.status !== 'na_cekanju' && task.assignedUserIds?.includes(currentUser?.id) && (
                       <Button
                         size="small"
                         variant="outlined"
@@ -2485,9 +3027,9 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
           <Card>
             <CardContent sx={{ textAlign: 'center', py: 6 }}>
               <Typography color="text.secondary">
-                {t('taskDialog.noTasksForSection')}
+                {isArchive ? 'Nema arhiviranih zadataka' : t('taskDialog.noTasksForSection')}
               </Typography>
-              {isModeratorOrAdmin() && (
+              {!isArchive && isModeratorOrAdmin() && (
                 <Button
                   variant="contained"
                   onClick={handleCreateTask}
@@ -2501,6 +3043,39 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
           </Card>
         )}
       </Box>
+  );
+
+  return (
+    <Box sx={{ p: 3 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Typography variant="h6" sx={{ fontWeight: 600 }}>
+          Zadaci: {workGroup?.name}
+        </Typography>
+        {isModeratorOrAdmin() && (
+          <Button
+            variant="contained"
+            onClick={handleCreateTask}
+            data-testid="button-create-task"
+          >
+            {t('taskDialog.createNew')}
+          </Button>
+        )}
+      </Box>
+
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+        <Tabs value={archiveTab} onChange={(_, newValue) => setArchiveTab(newValue)} aria-label="task archive tabs">
+          <Tab label={`Aktivni (${activeTasks.length})`} data-testid="tab-active-tasks" />
+          <Tab label={`Arhiva (${archivedTasks.length})`} data-testid="tab-archived-tasks" />
+        </Tabs>
+      </Box>
+
+      <TabPanel value={archiveTab} index={0}>
+        {renderTaskList(activeTasks, false)}
+      </TabPanel>
+
+      <TabPanel value={archiveTab} index={1}>
+        {renderTaskList(archivedTasks, true)}
+      </TabPanel>
 
       <TaskCreateDialog
         open={createTaskOpen}

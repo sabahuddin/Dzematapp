@@ -81,6 +81,7 @@ export const workGroups = pgTable("work_groups", {
   name: text("name").notNull(),
   description: text("description"),
   visibility: text("visibility").notNull().default("javna"), // javna, privatna
+  archived: boolean("archived").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -104,6 +105,7 @@ export const tasks = pgTable("tasks", {
   estimatedCost: text("estimated_cost"), // Estimated budget/cost in CHF
   pointsValue: integer("points_value").default(50), // Variable points: 10, 20, 30, or custom
   createdAt: timestamp("created_at").defaultNow(),
+  completedAt: timestamp("completed_at"), // Timestamp when task was completed
 });
 
 export const accessRequests = pgTable("access_requests", {

@@ -783,9 +783,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const workGroups = await storage.getAllWorkGroups(userId, canSeeAll);
       
+      // FILTER ARCHIVED SECTIONS FOR NON-ADMIN USERS
+      const filteredWorkGroups = isAdmin 
+        ? workGroups 
+        : workGroups.filter(wg => !wg.archived);
+      
       // Add members to each work group
       const workGroupsWithMembers = await Promise.all(
-        workGroups.map(async (wg) => {
+        filteredWorkGroups.map(async (wg) => {
           const members = await storage.getWorkGroupMembers(wg.id);
           return {
             ...wg,
@@ -838,6 +843,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(updatedWorkGroup);
     } catch (error) {
       res.status(400).json({ message: "Invalid work group data" });
+    }
+  });
+
+  app.post("/api/work-groups/:id/archive", requireAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      // Check if work group exists
+      const workGroup = await storage.getWorkGroup(id);
+      if (!workGroup) {
+        return res.status(404).json({ message: "Work group not found" });
+      }
+
+      // Toggle archive status
+      const updatedWorkGroup = await storage.updateWorkGroup(id, { archived: !workGroup.archived });
+      
+      res.json(updatedWorkGroup);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to archive work group" });
+    }
+  });
+
+  app.delete("/api/work-groups/:id", requireAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      // Check if work group exists
+      const workGroup = await storage.getWorkGroup(id);
+      if (!workGroup) {
+        return res.status(404).json({ message: "Work group not found" });
+      }
+
+      // Delete work group
+      const deleted = await storage.deleteWorkGroup(id);
+      
+      if (deleted) {
+        res.json({ message: "Work group deleted successfully" });
+      } else {
+        res.status(500).json({ message: "Failed to delete work group" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete work group" });
     }
   });
 
@@ -1051,6 +1098,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/tasks/admin-archive", requireAdmin, async (req, res) => {
+    try {
+      const userId = req.user!.id;
+      const isAdmin = true;
+      
+      const tasks = await storage.getAllTasksWithWorkGroup(userId, isAdmin);
+      res.json(tasks);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch admin archive tasks" });
+    }
+  });
+
   app.post("/api/tasks", requireAuth, async (req, res) => {
     try {
       const taskData = insertTaskSchema.parse(req.body);
@@ -1087,6 +1146,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Task not found" });
       }
 
+      // PREVENT EDITING COMPLETED OR ARCHIVED TASKS
+      if (existingTask.status === 'završeno' || existingTask.status === 'arhiva') {
+        return res.status(403).json({ message: "Završeni i arhivirani zadaci ne mogu biti mijenjani. Zadatak je zaključan." });
+      }
+
       // Authorization check: Only admins or group moderators can update tasks
       // OR assigned users can update status to na_cekanju
       const isAdmin = req.user!.isAdmin;
@@ -1098,6 +1162,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (!isAssignedUser || Object.keys(taskData).length !== 1 || !taskData.status || taskData.status !== 'na_cekanju') {
           return res.status(403).json({ message: "Forbidden: Only admins or group moderators can update tasks" });
         }
+      }
+
+      // Set completedAt timestamp when task is marked as completed
+      if (taskData.status === 'završeno' && existingTask.status !== 'završeno') {
+        taskData.completedAt = new Date();
       }
 
       const task = await storage.updateTask(id, taskData);
@@ -1154,6 +1223,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const existingTask = await storage.getTask(id);
       if (!existingTask) {
         return res.status(404).json({ message: "Task not found" });
+      }
+
+      // PREVENT DELETING COMPLETED OR ARCHIVED TASKS
+      if (existingTask.status === 'završeno' || existingTask.status === 'arhiva') {
+        return res.status(403).json({ message: "Završeni i arhivirani zadaci ne mogu biti obrisani. Zadatak je zaključan." });
       }
 
       // Authorization check: Only admins or group moderators can delete tasks
