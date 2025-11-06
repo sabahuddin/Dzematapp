@@ -282,7 +282,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Regular users can only update certain fields on their own profile
       if (isOwnProfile && !isAdmin) {
         // Remove sensitive fields that only admins can update
-        const allowedFields = ['firstName', 'lastName', 'email', 'phone', 'occupation', 'address', 'username', 'password'];
+        const allowedFields = ['firstName', 'lastName', 'email', 'phone', 'address', 'city', 'postalCode', 'username', 'password'];
         const filteredData: any = {};
         for (const key of allowedFields) {
           if (key in userData) {
@@ -496,12 +496,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
             email: email || undefined,
             password,
             phone: phone || undefined,
-            occupation: undefined,
             address: address || undefined,
             categories: [],
             membershipDate: membershipDate || undefined,
             status: status.toLowerCase() as any,
-            inactiveReason: undefined,
             isAdmin: false,
             photo: undefined,
             city: city || undefined,

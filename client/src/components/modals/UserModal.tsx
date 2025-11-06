@@ -73,7 +73,6 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
     city: '',
     postalCode: '',
     dateOfBirth: '',
-    occupation: '',
     membershipDate: '',
     status: 'aktivan',
     categories: [] as string[],
@@ -139,7 +138,6 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
         city: user.city || '',
         postalCode: user.postalCode || '',
         dateOfBirth: convertDateToISO(user.dateOfBirth),
-        occupation: user.occupation || '',
         membershipDate: user.membershipDate ? new Date(user.membershipDate).toISOString().split('T')[0] : '',
         status: user.status || 'aktivan',
         categories: user.categories || [],
@@ -162,7 +160,6 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
         city: '',
         postalCode: '',
         dateOfBirth: '1900-01-01',
-        occupation: '',
         membershipDate: '1900-01-01',
         status: 'aktivan',
         categories: [],
@@ -279,9 +276,6 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
     if (!finalFormData.postalCode || finalFormData.postalCode === '') {
       finalFormData.postalCode = null;
     }
-    if (!finalFormData.occupation || finalFormData.occupation === '') {
-      finalFormData.occupation = null;
-    }
     if (!finalFormData.photo || finalFormData.photo === '') {
       finalFormData.photo = null;
     }
@@ -386,8 +380,8 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
               />
             </Grid>
 
-            {/* Row 2: Datum rođenja i Zanimanje (50-50) */}
-            <Grid size={{ xs: 12, sm: 6 }}>
+            {/* Row 2: Datum rođenja (full width) */}
+            <Grid size={{ xs: 12 }}>
               <TextField
                 fullWidth
                 variant="outlined"
@@ -398,17 +392,6 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                 InputLabelProps={{ shrink: true }}
                 inputProps={{ step: 1 }}
                 data-testid="input-dateOfBirth"
-              />
-            </Grid>
-            
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                fullWidth
-                variant="outlined"
-                label={t('occupation')}
-                value={formData.occupation}
-                onChange={handleChange('occupation')}
-                data-testid="input-occupation"
               />
             </Grid>
 
