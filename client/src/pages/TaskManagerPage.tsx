@@ -162,7 +162,7 @@ function WorkGroupCard({ workGroup, onManageMembers, onManageTasks, onJoinReques
                   onClick={() => onCreateProposal(workGroup)}
                   data-testid={`button-create-proposal-${workGroup.id}`}
                 >
-                  Kreiraj Prijedlog
+                  Kreiraj prijedlog
                 </Button>
               </>
             ) : isModerator ? (
@@ -180,7 +180,7 @@ function WorkGroupCard({ workGroup, onManageMembers, onManageTasks, onJoinReques
                   onClick={() => onCreateProposal(workGroup)}
                   data-testid={`button-create-proposal-${workGroup.id}`}
                 >
-                  Kreiraj Prijedlog
+                  Kreiraj prijedlog
                 </Button>
               </>
             ) : isMember ? (
@@ -698,17 +698,17 @@ export default function TaskManagerPage() {
   };
 
   const handleArchiveWorkGroup = () => {
-    if (!selectedWorkGroup) return;
+    if (!user?.isAdmin || !selectedWorkGroup) return;
     archiveWorkGroupMutation.mutate(selectedWorkGroup.id);
   };
 
   const handleDeleteWorkGroup = () => {
-    if (!selectedWorkGroup) return;
+    if (!user?.isAdmin || !selectedWorkGroup) return;
     setConfirmDeleteDialogOpen(true);
   };
 
   const confirmDeleteWorkGroup = () => {
-    if (!selectedWorkGroup) return;
+    if (!user?.isAdmin || !selectedWorkGroup) return;
     deleteWorkGroupMutation.mutate(selectedWorkGroup.id);
     setConfirmDeleteDialogOpen(false);
   };
@@ -1214,26 +1214,28 @@ export default function TaskManagerPage() {
           </Box>
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'space-between', px: 3, pb: 2 }}>
-          <Box>
-            <Button 
-              onClick={handleArchiveWorkGroup}
-              color="warning"
-              disabled={archiveWorkGroupMutation.isPending}
-              data-testid="button-archive-section"
-              sx={{ mr: 1 }}
-            >
-              {selectedWorkGroup?.archived ? 'Vrati iz arhive' : 'Arhiviraj'}
-            </Button>
-            <Button 
-              onClick={handleDeleteWorkGroup}
-              color="error"
-              disabled={deleteWorkGroupMutation.isPending}
-              data-testid="button-delete-section"
-            >
-              Obriši
-            </Button>
-          </Box>
-          <Box>
+          {user?.isAdmin && (
+            <Box>
+              <Button 
+                onClick={handleArchiveWorkGroup}
+                color="warning"
+                disabled={archiveWorkGroupMutation.isPending}
+                data-testid="button-archive-section"
+                sx={{ mr: 1 }}
+              >
+                {selectedWorkGroup?.archived ? 'Vrati iz arhive' : 'Arhiviraj'}
+              </Button>
+              <Button 
+                onClick={handleDeleteWorkGroup}
+                color="error"
+                disabled={deleteWorkGroupMutation.isPending}
+                data-testid="button-delete-section"
+              >
+                Obriši
+              </Button>
+            </Box>
+          )}
+          <Box sx={{ ml: user?.isAdmin ? 0 : 'auto' }}>
             <Button onClick={() => setEditWorkGroupModalOpen(false)} data-testid="button-cancel-edit" sx={{ mr: 1 }}>
               {t('common:cancel')}
             </Button>
@@ -1637,7 +1639,7 @@ function ProposalModal({ open, onClose, workGroup, currentUserId }: ProposalModa
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-      <DialogTitle>Kreiraj Prijedlog za {workGroup?.name}</DialogTitle>
+      <DialogTitle>Kreiraj prijedlog za {workGroup?.name}</DialogTitle>
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
           <TextField
