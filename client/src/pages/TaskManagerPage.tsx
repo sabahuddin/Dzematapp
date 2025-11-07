@@ -471,6 +471,7 @@ export default function TaskManagerPage() {
   const [editFormData, setEditFormData] = useState({ name: '', description: '' });
   const [confirmJoinDialogOpen, setConfirmJoinDialogOpen] = useState(false);
   const [workGroupToJoin, setWorkGroupToJoin] = useState<WorkGroup | null>(null);
+  const [confirmDeleteDialogOpen, setConfirmDeleteDialogOpen] = useState(false);
 
   const workGroupsQuery = useQuery<WorkGroup[]>({
     queryKey: ['/api/work-groups'],
@@ -553,6 +554,36 @@ export default function TaskManagerPage() {
     },
     onError: () => {
       toast({ title: t('common:error'), description: t('toasts.sectionUpdateError'), variant: 'destructive' });
+    }
+  });
+
+  const archiveWorkGroupMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const response = await apiRequest(`/api/work-groups/${id}/archive`, 'POST');
+      return response.json();
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/work-groups'] });
+      setEditWorkGroupModalOpen(false);
+      const message = data.archived ? 'Sekcija je arhivirana.' : 'Sekcija je vraćena iz arhive.';
+      toast({ title: t('common:success'), description: message });
+    },
+    onError: () => {
+      toast({ title: t('common:error'), description: 'Greška prilikom arhiviranja sekcije.', variant: 'destructive' });
+    }
+  });
+
+  const deleteWorkGroupMutation = useMutation({
+    mutationFn: async (id: string) => {
+      await apiRequest(`/api/work-groups/${id}`, 'DELETE');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/work-groups'] });
+      setEditWorkGroupModalOpen(false);
+      toast({ title: t('common:success'), description: 'Sekcija je obrisana.' });
+    },
+    onError: () => {
+      toast({ title: t('common:error'), description: 'Greška prilikom brisanja sekcije.', variant: 'destructive' });
     }
   });
 
@@ -664,6 +695,22 @@ export default function TaskManagerPage() {
       id: selectedWorkGroup.id,
       data: editFormData
     });
+  };
+
+  const handleArchiveWorkGroup = () => {
+    if (!selectedWorkGroup) return;
+    archiveWorkGroupMutation.mutate(selectedWorkGroup.id);
+  };
+
+  const handleDeleteWorkGroup = () => {
+    if (!selectedWorkGroup) return;
+    setConfirmDeleteDialogOpen(true);
+  };
+
+  const confirmDeleteWorkGroup = () => {
+    if (!selectedWorkGroup) return;
+    deleteWorkGroupMutation.mutate(selectedWorkGroup.id);
+    setConfirmDeleteDialogOpen(false);
   };
 
   const handleCreateProposal = (workGroup: WorkGroup) => {
@@ -1136,7 +1183,7 @@ export default function TaskManagerPage() {
       <MemberManagementDialog
         open={memberManagementDialogOpen && selectedWorkGroup !== null}
         onClose={() => setMemberManagementDialogOpen(false)}
-        workGroup={selectedWorkGroup || { id: '', name: '', description: '', createdAt: new Date(), visibility: 'public' }}
+        workGroup={selectedWorkGroup || { id: '', name: '', description: '', createdAt: new Date(), visibility: 'public', archived: false }}
       />
 
       <Dialog 
@@ -1166,17 +1213,66 @@ export default function TaskManagerPage() {
             />
           </Box>
         </DialogContent>
+        <DialogActions sx={{ justifyContent: 'space-between', px: 3, pb: 2 }}>
+          <Box>
+            <Button 
+              onClick={handleArchiveWorkGroup}
+              color="warning"
+              disabled={archiveWorkGroupMutation.isPending}
+              data-testid="button-archive-section"
+              sx={{ mr: 1 }}
+            >
+              {selectedWorkGroup?.archived ? 'Vrati iz arhive' : 'Arhiviraj'}
+            </Button>
+            <Button 
+              onClick={handleDeleteWorkGroup}
+              color="error"
+              disabled={deleteWorkGroupMutation.isPending}
+              data-testid="button-delete-section"
+            >
+              Obriši
+            </Button>
+          </Box>
+          <Box>
+            <Button onClick={() => setEditWorkGroupModalOpen(false)} data-testid="button-cancel-edit" sx={{ mr: 1 }}>
+              {t('common:cancel')}
+            </Button>
+            <Button 
+              onClick={handleUpdateWorkGroup} 
+              variant="contained"
+              disabled={!editFormData.name || updateWorkGroupMutation.isPending}
+              data-testid="button-save-edit"
+            >
+              {updateWorkGroupMutation.isPending ? t('common:saving') : t('common:save')}
+            </Button>
+          </Box>
+        </DialogActions>
+      </Dialog>
+      
+      <Dialog
+        open={confirmDeleteDialogOpen}
+        onClose={() => setConfirmDeleteDialogOpen(false)}
+        maxWidth="sm"
+      >
+        <DialogTitle>Potvrdite brisanje</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Jeste li sigurni da želite obrisati sekciju "{selectedWorkGroup?.name}"? 
+            Ova akcija je trajna i ne može se poništiti.
+          </Typography>
+        </DialogContent>
         <DialogActions>
-          <Button onClick={() => setEditWorkGroupModalOpen(false)} data-testid="button-cancel-edit">
-            {t('common:cancel')}
+          <Button onClick={() => setConfirmDeleteDialogOpen(false)} data-testid="button-cancel-delete">
+            Otkaži
           </Button>
           <Button 
-            onClick={handleUpdateWorkGroup} 
+            onClick={confirmDeleteWorkGroup} 
+            color="error"
             variant="contained"
-            disabled={!editFormData.name || updateWorkGroupMutation.isPending}
-            data-testid="button-save-edit"
+            disabled={deleteWorkGroupMutation.isPending}
+            data-testid="button-confirm-delete"
           >
-            {updateWorkGroupMutation.isPending ? t('common:saving') : t('common:save')}
+            {deleteWorkGroupMutation.isPending ? 'Brišem...' : 'Obriši'}
           </Button>
         </DialogActions>
       </Dialog>
