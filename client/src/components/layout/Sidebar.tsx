@@ -69,7 +69,15 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
   const [zahvaleOpen, setZahvaleOpen] = useState(false);
   const [mediaOpen, setMediaOpen] = useState(false);
 
-  const menuItems = [
+  const menuItems: Array<{
+    path: string;
+    label: string;
+    labelForMember?: string;
+    pathForMember?: string;
+    icon: any;
+    adminOnly?: boolean;
+    showBadge?: boolean;
+  }> = [
     { path: '/dashboard', label: t('navigation:menu.dashboard'), icon: Dashboard },
     { path: '/users', label: t('navigation:menu.users'), labelForMember: t('navigation:menu.profile'), icon: People },
     { path: '/finances', label: t('navigation:menu.finances'), labelForMember: t('navigation:menu.myPayments'), icon: AttachMoney },
@@ -79,7 +87,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     { path: '/projects', label: t('navigation:menu.projects'), icon: Work },
     { path: '/announcements', label: t('navigation:menu.announcements'), icon: Campaign, showBadge: true },
     { path: '/events', label: t('navigation:menu.events'), icon: Event, showBadge: true },
-    { path: '/tasks', label: t('navigation:menu.tasks'), labelForMember: t('navigation:menu.sections'), pathForMember: '/sections', icon: Task, showBadge: true },
+    { path: '/tasks', label: t('navigation:menu.tasks'), labelForMember: t('navigation:menu.sections'), icon: Task, showBadge: true },
     { path: '/messages', label: t('navigation:menu.messages'), icon: Mail, showBadge: true },
     { path: '/ask-imam', label: t('navigation:menu.askImam'), icon: QuestionAnswer, showBadge: true },
     { path: '/documents', label: t('navigation:menu.documents'), icon: Description },

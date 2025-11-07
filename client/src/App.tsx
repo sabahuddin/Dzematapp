@@ -17,7 +17,6 @@ import DashboardHome from "@/pages/DashboardHome";
 import UsersPage from "@/pages/UsersPage";
 import AnnouncementsPage from "@/pages/AnnouncementsPage";
 import EventsPage from "@/pages/EventsPage";
-import AllSectionsPage from "@/pages/AllSectionsPage";
 import TaskManagerPage from "@/pages/TaskManagerPage";
 import MessagesPage from "@/pages/MessagesPage";
 import AskImamPage from "@/pages/AskImamPage";
@@ -276,12 +275,6 @@ function Router() {
       <Route path="/events">
         <ProtectedRoute>
           <EventsPage />
-        </ProtectedRoute>
-      </Route>
-      
-      <Route path="/sections">
-        <ProtectedRoute>
-          <AllSectionsPage />
         </ProtectedRoute>
       </Route>
       
