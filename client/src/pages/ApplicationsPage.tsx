@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { Container, Typography, Box, Card, CardContent, Tabs, Tab, TextField, Button, FormControl, InputLabel, Select, MenuItem, Alert, Stack, Grid } from "@mui/material";
-import { ChildCare, Favorite, CheckCircle } from "@mui/icons-material";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Container, Typography, Box, Card, CardContent, Tabs, Tab, TextField, Button, FormControl, InputLabel, Select, MenuItem, Alert, Stack, Grid, Chip, CardHeader, IconButton } from "@mui/material";
+import { ChildCare, Favorite, CheckCircle, List as ListIcon, Print } from "@mui/icons-material";
 import { format } from "date-fns";
 import { apiRequest } from "@/lib/queryClient";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
+import type { Request } from "@shared/schema";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -347,6 +348,201 @@ function MarriageApplicationForm() {
   );
 }
 
+function MyApplicationsList() {
+  const { t } = useTranslation("applications");
+  const [archiveTab, setArchiveTab] = useState<'active' | 'archived'>('active');
+  
+  const { data: requests = [], isLoading } = useQuery<Request[]>({
+    queryKey: ["/api/requests/my"]
+  });
+  
+  // Filter requests based on archive tab
+  const filteredRequests = requests.filter(request => {
+    if (archiveTab === 'active') {
+      return request.status === 'pending' || request.status === 'approved';
+    } else {
+      return request.status === 'rejected' || request.status === 'archived';
+    }
+  });
+  
+  const requestTypes: Record<string, string> = {
+    "wedding": t("requestTypes.wedding"),
+    "mekteb": t("requestTypes.mekteb"),
+    "facility": t("requestTypes.facility"),
+    "akika": t("requestTypes.akika"),
+    "marriage": t("requestTypes.marriage"),
+    "pristupnica": t("requestTypes.pristupnica")
+  };
+  
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case "pending":
+        return t("status.pending");
+      case "approved":
+        return t("status.approved");
+      case "rejected":
+        return t("status.rejected");
+      case "archived":
+        return t("status.archived");
+      default:
+        return status;
+    }
+  };
+  
+  const getStatusColor = (status: string): 'warning' | 'success' | 'error' | 'default' => {
+    switch (status) {
+      case "pending":
+        return "warning";
+      case "approved":
+        return "success";
+      case "rejected":
+      case "archived":
+        return "error";
+      default:
+        return "default";
+    }
+  };
+  
+  const formatDate = (date: string | Date) => {
+    return new Date(date).toLocaleDateString("bs-BA", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  };
+  
+  const getTypeLabel = (type: string) => {
+    return requestTypes[type] || type;
+  };
+  
+  const handlePrint = (request: Request) => {
+    const printWindow = window.open('', '', 'height=600,width=800');
+    if (printWindow) {
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>${t("print.title")} - ${getTypeLabel(request.requestType)}</title>
+            <style>
+              body { font-family: Arial, sans-serif; padding: 20px; }
+              h1 { color: #1976d2; }
+              .section { margin: 20px 0; }
+              .label { font-weight: bold; }
+              .value { margin-left: 10px; }
+            </style>
+          </head>
+          <body>
+            <h1>${getTypeLabel(request.requestType)}</h1>
+            <div class="section">
+              <span class="label">${t("print.submittedAt")}:</span>
+              <span class="value">${formatDate(request.createdAt)}</span>
+            </div>
+            <div class="section">
+              <span class="label">${t("print.status")}:</span>
+              <span class="value">${getStatusLabel(request.status)}</span>
+            </div>
+            ${request.adminNotes ? `
+              <div class="section">
+                <span class="label">${t("print.adminNotes")}:</span>
+                <div class="value">${request.adminNotes}</div>
+              </div>
+            ` : ''}
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+      printWindow.print();
+    }
+  };
+  
+  return (
+    <Box sx={{ maxWidth: 1200, mx: 'auto' }}>
+      <Typography variant="h5" gutterBottom>
+        {t("myApplications.title")}
+      </Typography>
+      <Typography variant="body2" color="text.secondary" paragraph>
+        {t("myApplications.description")}
+      </Typography>
+      
+      {/* Archive Tabs */}
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+        <Tabs 
+          value={archiveTab} 
+          onChange={(_, newValue) => setArchiveTab(newValue)}
+          data-testid="tabs-archive"
+        >
+          <Tab 
+            label={t("myApplications.tabs.active")} 
+            value="active" 
+            data-testid="tab-active-requests"
+          />
+          <Tab 
+            label={t("myApplications.tabs.archived")} 
+            value="archived" 
+            data-testid="tab-archived-requests"
+          />
+        </Tabs>
+      </Box>
+      
+      {isLoading ? (
+        <Typography>{t("myApplications.loading")}</Typography>
+      ) : filteredRequests.length === 0 ? (
+        <Card>
+          <CardContent>
+            <Box sx={{ textAlign: "center", py: 4 }}>
+              <Typography variant="body1" color="text.secondary">
+                {archiveTab === 'active' ? t("myApplications.noActiveRequests") : t("myApplications.noArchivedRequests")}
+              </Typography>
+            </Box>
+          </CardContent>
+        </Card>
+      ) : (
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          {filteredRequests.map((request) => (
+            <Card key={request.id} data-testid={`card-request-${request.id}`}>
+              <CardHeader
+                title={getTypeLabel(request.requestType)}
+                subheader={`${t("myApplications.submittedLabel")}: ${formatDate(request.createdAt)}`}
+                action={
+                  <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                    <Chip
+                      label={getStatusLabel(request.status)}
+                      color={getStatusColor(request.status)}
+                      size="small"
+                      data-testid={`status-${request.id}`}
+                    />
+                    <IconButton
+                      size="small"
+                      onClick={() => handlePrint(request)}
+                      data-testid={`button-print-${request.id}`}
+                      title={t("myApplications.print")}
+                    >
+                      <Print fontSize="small" />
+                    </IconButton>
+                  </Box>
+                }
+              />
+              <CardContent>
+                {request.adminNotes && (
+                  <Box sx={{ mt: 2, p: 2, bgcolor: "action.hover", borderRadius: 1 }}>
+                    <Typography variant="caption" color="text.secondary">
+                      {t("myApplications.adminNotesLabel")}
+                    </Typography>
+                    <Typography variant="body2">
+                      {request.adminNotes}
+                    </Typography>
+                  </Box>
+                )}
+              </CardContent>
+            </Card>
+          ))}
+        </Box>
+      )}
+    </Box>
+  );
+}
+
 export default function ApplicationsPage() {
   const { t } = useTranslation("applications");
   const [tabValue, setTabValue] = useState(0);
@@ -385,6 +581,12 @@ export default function ApplicationsPage() {
                 iconPosition="start"
                 data-testid="tab-marriage"
               />
+              <Tab 
+                icon={<ListIcon />} 
+                label={t("myApplications.title")} 
+                iconPosition="start"
+                data-testid="tab-my-applications"
+              />
             </Tabs>
 
             <TabPanel value={tabValue} index={0}>
@@ -393,6 +595,10 @@ export default function ApplicationsPage() {
 
             <TabPanel value={tabValue} index={1}>
               <MarriageApplicationForm />
+            </TabPanel>
+
+            <TabPanel value={tabValue} index={2}>
+              <MyApplicationsList />
             </TabPanel>
           </CardContent>
         </Card>

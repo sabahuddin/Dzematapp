@@ -25,6 +25,12 @@
   "contributors": "Contributors",
   "noProjects": "No projects defined.",
   "noProjectsAdmin": "Add a new project using the \"Add Project\" button.",
+  "noActiveProjects": "No active projects.",
+  "noArchivedProjects": "No archived projects.",
+  "tabs": {
+    "active": "Active",
+    "archived": "Archive"
+  },
   "viewDetails": "Project details",
   "contribute": "Donate",
   "amountRaised": "Collected: {{current}} of {{goal}} CHF",

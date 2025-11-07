@@ -18,7 +18,8 @@ import {
   CircularProgress,
   Avatar,
   Autocomplete,
-  Grid
+  Grid,
+  Divider
 } from '@mui/material';
 import {
   PersonAdd,
@@ -302,7 +303,7 @@ export default function UsersPage() {
 
           {/* Profile Details */}
           <Box sx={{ p: 4 }}>
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
               {/* Personal Information */}
               <Grid size={{ xs: 12 }}>
                 <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
@@ -311,154 +312,185 @@ export default function UsersPage() {
               </Grid>
               
               <Grid size={{ xs: 12, md: 6 }}>
-                <Typography variant="caption" color="text.secondary">
-                  {t('users:firstName')}
-                </Typography>
-                <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                  {myProfile.firstName}
-                </Typography>
+                <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('users:firstName')}
+                  </Typography>
+                  <Typography variant="body1" sx={{ fontWeight: 500, mt: 0.5 }}>
+                    {myProfile.firstName}
+                  </Typography>
+                </Box>
               </Grid>
 
               <Grid size={{ xs: 12, md: 6 }}>
-                <Typography variant="caption" color="text.secondary">
-                  {t('users:lastName')}
-                </Typography>
-                <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                  {myProfile.lastName}
-                </Typography>
+                <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('users:lastName')}
+                  </Typography>
+                  <Typography variant="body1" sx={{ fontWeight: 500, mt: 0.5 }}>
+                    {myProfile.lastName}
+                  </Typography>
+                </Box>
               </Grid>
 
               <Grid size={{ xs: 12, md: 6 }}>
-                <Typography variant="caption" color="text.secondary">
-                  {t('users:username')}
-                </Typography>
-                <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                  {myProfile.username}
-                </Typography>
+                <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('users:username')}
+                  </Typography>
+                  <Typography variant="body1" sx={{ fontWeight: 500, mt: 0.5 }}>
+                    {myProfile.username}
+                  </Typography>
+                </Box>
               </Grid>
 
               <Grid size={{ xs: 12, md: 6 }}>
-                <Typography variant="caption" color="text.secondary">
-                  {t('users:email')}
-                </Typography>
-                <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                  {myProfile.email || '-'}
-                </Typography>
+                <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('users:email')}
+                  </Typography>
+                  <Typography variant="body1" sx={{ fontWeight: 500, mt: 0.5 }}>
+                    {myProfile.email || '-'}
+                  </Typography>
+                </Box>
               </Grid>
 
               <Grid size={{ xs: 12, md: 6 }}>
-                <Typography variant="caption" color="text.secondary">
-                  {t('users:phone')}
-                </Typography>
-                <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                  {myProfile.phone || '-'}
-                </Typography>
+                <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('users:phone')}
+                  </Typography>
+                  <Typography variant="body1" sx={{ fontWeight: 500, mt: 0.5 }}>
+                    {myProfile.phone || '-'}
+                  </Typography>
+                </Box>
               </Grid>
 
               <Grid size={{ xs: 12, md: 6 }}>
-                <Typography variant="caption" color="text.secondary">
-                  {t('users:address')}
-                </Typography>
-                <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                  {myProfile.address || '-'}
-                </Typography>
+                <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('users:address')}
+                  </Typography>
+                  <Typography variant="body1" sx={{ fontWeight: 500, mt: 0.5 }}>
+                    {myProfile.address || '-'}
+                  </Typography>
+                </Box>
               </Grid>
 
               <Grid size={{ xs: 12, md: 6 }}>
-                <Typography variant="caption" color="text.secondary">
-                  {t('users:postalCode')}
-                </Typography>
-                <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                  {myProfile.postalCode || '-'}
-                </Typography>
+                <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('users:postalCode')}
+                  </Typography>
+                  <Typography variant="body1" sx={{ fontWeight: 500, mt: 0.5 }}>
+                    {myProfile.postalCode || '-'}
+                  </Typography>
+                </Box>
               </Grid>
 
               <Grid size={{ xs: 12, md: 6 }}>
-                <Typography variant="caption" color="text.secondary">
-                  {t('users:city')}
-                </Typography>
-                <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                  {myProfile.city || '-'}
-                </Typography>
+                <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('users:city')}
+                  </Typography>
+                  <Typography variant="body1" sx={{ fontWeight: 500, mt: 0.5 }}>
+                    {myProfile.city || '-'}
+                  </Typography>
+                </Box>
               </Grid>
 
               <Grid size={{ xs: 12, md: 6 }}>
-                <Typography variant="caption" color="text.secondary">
-                  {t('users:occupation')}
-                </Typography>
-                <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                  {myProfile.occupation || '-'}
-                </Typography>
+                <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('users:occupation')}
+                  </Typography>
+                  <Typography variant="body1" sx={{ fontWeight: 500, mt: 0.5 }}>
+                    {myProfile.occupation || '-'}
+                  </Typography>
+                </Box>
               </Grid>
 
               <Grid size={{ xs: 12 }}>
-                <Typography variant="caption" color="text.secondary">
-                  {t('users:skills')}
-                </Typography>
-                <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mt: 0.5 }}>
-                  {myProfile.skills && myProfile.skills.length > 0 ? (
-                    myProfile.skills.map((skill, index) => (
-                      <Chip
-                        key={index}
-                        label={skill}
-                        size="small"
-                        color="primary"
-                        variant="outlined"
-                        data-testid={`profile-skill-${index}`}
-                      />
-                    ))
-                  ) : (
-                    <Typography variant="body1" sx={{ fontWeight: 500 }}>-</Typography>
-                  )}
+                <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('users:skills')}
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mt: 1 }}>
+                    {myProfile.skills && myProfile.skills.length > 0 ? (
+                      myProfile.skills.map((skill, index) => (
+                        <Chip
+                          key={index}
+                          label={skill}
+                          size="small"
+                          color="primary"
+                          variant="outlined"
+                          data-testid={`profile-skill-${index}`}
+                        />
+                      ))
+                    ) : (
+                      <Typography variant="body1" sx={{ fontWeight: 500 }}>-</Typography>
+                    )}
+                  </Box>
                 </Box>
+              </Grid>
+
+              {/* Divider between sections */}
+              <Grid size={{ xs: 12 }}>
+                <Divider sx={{ my: 2 }} />
               </Grid>
 
               {/* Membership Information */}
               <Grid size={{ xs: 12 }}>
-                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, mt: 2 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
                   {t('users:membershipStatus')}
                 </Typography>
               </Grid>
 
               <Grid size={{ xs: 12, md: 6 }}>
-                <Typography variant="caption" color="text.secondary">
-                  {t('users:memberSince')}
-                </Typography>
-                <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                  {myProfile.membershipDate ? new Date(myProfile.membershipDate).toLocaleDateString('hr-HR') : '-'}
-                </Typography>
-              </Grid>
-
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Typography variant="caption" color="text.secondary">
-                  {t('users:membershipStatus')}
-                </Typography>
-                <Box sx={{ mt: 0.5 }}>
-                  <Chip
-                    label={getStatusLabel(myProfile.status)}
-                    color={getStatusColor(myProfile.status)}
-                    size="small"
-                  />
+                <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('users:memberSince')}
+                  </Typography>
+                  <Typography variant="body1" sx={{ fontWeight: 500, mt: 0.5 }}>
+                    {myProfile.membershipDate ? new Date(myProfile.membershipDate).toLocaleDateString('hr-HR') : '-'}
+                  </Typography>
                 </Box>
               </Grid>
 
               <Grid size={{ xs: 12, md: 6 }}>
-                <Typography variant="caption" color="text.secondary">
-                  {t('users:roles.label')}
-                </Typography>
-                <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mt: 0.5 }}>
-                  {myProfile.roles && myProfile.roles.length > 0 ? (
-                    myProfile.roles.map((role, index) => (
-                      <Chip
-                        key={index}
-                        label={getRoleLabel(role)}
-                        size="small"
-                        color={getRoleColor(role)}
-                      />
-                    ))
-                  ) : (
-                    <Typography variant="body1" sx={{ fontWeight: 500 }}>-</Typography>
-                  )}
+                <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('users:membershipStatus')}
+                  </Typography>
+                  <Box sx={{ mt: 0.5 }}>
+                    <Chip
+                      label={getStatusLabel(myProfile.status)}
+                      color={getStatusColor(myProfile.status)}
+                      size="small"
+                    />
+                  </Box>
+                </Box>
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('users:roles.label')}
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mt: 0.5 }}>
+                    {myProfile.roles && myProfile.roles.length > 0 ? (
+                      myProfile.roles.map((role, index) => (
+                        <Chip
+                          key={index}
+                          label={getRoleLabel(role)}
+                          size="small"
+                          color={getRoleColor(role)}
+                        />
+                      ))
+                    ) : (
+                      <Typography variant="body1" sx={{ fontWeight: 500 }}>-</Typography>
+                    )}
+                  </Box>
                 </Box>
               </Grid>
             </Grid>

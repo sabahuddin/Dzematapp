@@ -22,6 +22,8 @@ import {
   Alert,
   LinearProgress,
   Chip,
+  Tabs,
+  Tab,
 } from '@mui/material';
 import { Add, Edit, Delete } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
@@ -39,6 +41,7 @@ export default function ProjectsPage() {
   const { toast } = useToast();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [activeTab, setActiveTab] = useState<'active' | 'archived'>('active');
 
   // Only admins can manage projects
   const isAdmin = user?.isAdmin || false;
@@ -182,6 +185,15 @@ export default function ProjectsPage() {
   }
 
   const projects = projectsQuery.data || [];
+  
+  // Filter projects based on active tab
+  const filteredProjects = projects.filter(project => {
+    if (activeTab === 'active') {
+      return project.status === 'active';
+    } else {
+      return project.status === 'closed';
+    }
+  });
 
   return (
     <Box>
@@ -201,15 +213,35 @@ export default function ProjectsPage() {
         )}
       </Box>
 
-      {projects.length === 0 ? (
+      {/* Tabs for Active and Archived projects */}
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+        <Tabs 
+          value={activeTab} 
+          onChange={(_, newValue) => setActiveTab(newValue)}
+          data-testid="tabs-projects"
+        >
+          <Tab 
+            label={t('tabs.active')} 
+            value="active" 
+            data-testid="tab-active"
+          />
+          <Tab 
+            label={t('tabs.archived')} 
+            value="archived" 
+            data-testid="tab-archived"
+          />
+        </Tabs>
+      </Box>
+
+      {filteredProjects.length === 0 ? (
         <Card sx={{ p: 4, textAlign: 'center' }}>
           <Typography color="text.secondary">
-            {t('noProjects')} {isAdmin && t('noProjectsAdmin')}
+            {activeTab === 'active' ? t('noActiveProjects') : t('noArchivedProjects')}
           </Typography>
         </Card>
       ) : (
         <Stack spacing={2}>
-          {projects.map((project) => {
+          {filteredProjects.map((project) => {
             const progress = calculateProgress(project.currentAmount, project.goalAmount);
             const progressColor = getProgressColor(progress);
             

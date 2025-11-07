@@ -36,5 +36,39 @@
   "marriage": {
     "title": "Aplikimi i Martesës Fetare",
     "description": "Formulari për aplikimin e martesës fetare do të jetë i disponueshëm së shpejti."
+  },
+  "myApplications": {
+    "title": "Aplikimet e Mia",
+    "description": "Këtu mund të rishikoni të gjitha kërkesat dhe aplikimet tuaja të paraqitura.",
+    "loading": "Duke ngarkuar...",
+    "submittedLabel": "Paraqitur",
+    "adminNotesLabel": "Shënime të Administratorit",
+    "print": "Printo",
+    "noActiveRequests": "Nuk keni aplikime aktive.",
+    "noArchivedRequests": "Nuk keni aplikime të arkivuara.",
+    "tabs": {
+      "active": "Aktive",
+      "archived": "Arkivuar"
+    }
+  },
+  "requestTypes": {
+    "wedding": "Martesë",
+    "mekteb": "Mekteb",
+    "facility": "Përdorimi i Hapësirës",
+    "akika": "Akika",
+    "marriage": "Martesë Fetare",
+    "pristupnica": "Aplikimi i Anëtarësisë"
+  },
+  "status": {
+    "pending": "Në pritje",
+    "approved": "Aprovuar",
+    "rejected": "Refuzuar",
+    "archived": "Arkivuar"
+  },
+  "print": {
+    "title": "Kërkesë",
+    "submittedAt": "Paraqitur më",
+    "status": "Statusi",
+    "adminNotes": "Shënime të Administratorit"
   }
 }

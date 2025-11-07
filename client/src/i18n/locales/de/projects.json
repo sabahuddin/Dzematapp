@@ -25,6 +25,12 @@
   "contributors": "Spender",
   "noProjects": "Keine Projekte definiert.",
   "noProjectsAdmin": "Fügen Sie ein neues Projekt über die Schaltfläche \"Projekt hinzufügen\" hinzu.",
+  "noActiveProjects": "Keine aktiven Projekte.",
+  "noArchivedProjects": "Keine archivierten Projekte.",
+  "tabs": {
+    "active": "Aktiv",
+    "archived": "Archiv"
+  },
   "viewDetails": "Projektdetails",
   "contribute": "Spenden",
   "amountRaised": "Gesammelt: {{current}} von {{goal}} CHF",

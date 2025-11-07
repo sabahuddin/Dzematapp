@@ -36,5 +36,39 @@
   "marriage": {
     "title": "Prijava šerijatskog vjenčanja",
     "description": "Forma za prijavu šerijatskog vjenčanja će uskoro biti dostupna."
+  },
+  "myApplications": {
+    "title": "Moje prijave",
+    "description": "Ovdje možete pregledati sve vaše podnesene zahtjeve i prijave.",
+    "loading": "Učitavanje...",
+    "submittedLabel": "Podneseno",
+    "adminNotesLabel": "Napomena administratora",
+    "print": "Štampaj",
+    "noActiveRequests": "Nemate aktivnih prijava.",
+    "noArchivedRequests": "Nemate arhiviranih prijava.",
+    "tabs": {
+      "active": "Aktivne",
+      "archived": "Arhivirane"
+    }
+  },
+  "requestTypes": {
+    "wedding": "Vjenčanje",
+    "mekteb": "Mekteb",
+    "facility": "Korištenje prostora",
+    "akika": "Akika",
+    "marriage": "Šerijatsko vjenčanje",
+    "pristupnica": "Pristupnica"
+  },
+  "status": {
+    "pending": "Na čekanju",
+    "approved": "Odobreno",
+    "rejected": "Odbijeno",
+    "archived": "Arhivirano"
+  },
+  "print": {
+    "title": "Zahtjev",
+    "submittedAt": "Podneseno",
+    "status": "Status",
+    "adminNotes": "Napomena administratora"
   }
 }

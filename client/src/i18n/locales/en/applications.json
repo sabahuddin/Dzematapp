@@ -36,5 +36,39 @@
   "marriage": {
     "title": "Religious Marriage Application",
     "description": "The form for religious marriage application will be available soon."
+  },
+  "myApplications": {
+    "title": "My Applications",
+    "description": "Here you can review all your submitted requests and applications.",
+    "loading": "Loading...",
+    "submittedLabel": "Submitted",
+    "adminNotesLabel": "Admin Notes",
+    "print": "Print",
+    "noActiveRequests": "You have no active applications.",
+    "noArchivedRequests": "You have no archived applications.",
+    "tabs": {
+      "active": "Active",
+      "archived": "Archived"
+    }
+  },
+  "requestTypes": {
+    "wedding": "Wedding",
+    "mekteb": "Mekteb",
+    "facility": "Facility Use",
+    "akika": "Akika",
+    "marriage": "Religious Marriage",
+    "pristupnica": "Membership Application"
+  },
+  "status": {
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "archived": "Archived"
+  },
+  "print": {
+    "title": "Request",
+    "submittedAt": "Submitted on",
+    "status": "Status",
+    "adminNotes": "Admin Notes"
   }
 }

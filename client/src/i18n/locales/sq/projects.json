@@ -25,6 +25,12 @@
   "contributors": "Donatorët",
   "noProjects": "Nuk ka projekte të përcaktuara.",
   "noProjectsAdmin": "Shtoni një projekt të ri duke përdorur butonin \"Shto Projekt\".",
+  "noActiveProjects": "Nuk ka projekte aktive.",
+  "noArchivedProjects": "Nuk ka projekte të arkivuara.",
+  "tabs": {
+    "active": "Aktiv",
+    "archived": "Arkiv"
+  },
   "viewDetails": "Detajet e projektit",
   "contribute": "Dono",
   "amountRaised": "E mbledhur: {{current}} nga {{goal}} CHF",

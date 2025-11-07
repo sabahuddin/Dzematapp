@@ -25,6 +25,12 @@
   "contributors": "Donatori",
   "noProjects": "Nema definisanih projekata.",
   "noProjectsAdmin": "Dodajte novi projekat koristeći dugme \"Dodaj Projekat\".",
+  "noActiveProjects": "Nema aktivnih projekata.",
+  "noArchivedProjects": "Nema arhiviranih projekata.",
+  "tabs": {
+    "active": "Aktivni",
+    "archived": "Arhiva"
+  },
   "viewDetails": "Detalji projekta",
   "contribute": "Doniraj",
   "amountRaised": "Prikupljeno: {{current}} od {{goal}} CHF",

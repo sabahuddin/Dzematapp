@@ -22,7 +22,6 @@ import MessagesPage from "@/pages/MessagesPage";
 import AskImamPage from "@/pages/AskImamPage";
 import DocumentsPage from "@/pages/DocumentsPage";
 import ShopPage from "@/pages/ShopPage";
-import RequestsPage from "@/pages/RequestsPage";
 import LivestreamPage from "@/pages/LivestreamPage";
 import LivestreamSettingsPage from "@/pages/LivestreamSettingsPage";
 import OrganizationSettingsPage from "@/pages/OrganizationSettingsPage";
@@ -305,12 +304,6 @@ function Router() {
       <Route path="/shop">
         <ProtectedRoute>
           <ShopPage />
-        </ProtectedRoute>
-      </Route>
-      
-      <Route path="/requests">
-        <ProtectedRoute>
-          <RequestsPage />
         </ProtectedRoute>
       </Route>
       

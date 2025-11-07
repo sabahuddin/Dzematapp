@@ -36,5 +36,39 @@
   "marriage": {
     "title": "Anmeldung einer religiösen Eheschließung",
     "description": "Das Formular für die Anmeldung einer religiösen Eheschließung wird bald verfügbar sein."
+  },
+  "myApplications": {
+    "title": "Meine Anträge",
+    "description": "Hier können Sie alle Ihre eingereichten Anfragen und Anträge einsehen.",
+    "loading": "Laden...",
+    "submittedLabel": "Eingereicht",
+    "adminNotesLabel": "Anmerkung des Administrators",
+    "print": "Drucken",
+    "noActiveRequests": "Sie haben keine aktiven Anträge.",
+    "noArchivedRequests": "Sie haben keine archivierten Anträge.",
+    "tabs": {
+      "active": "Aktiv",
+      "archived": "Archiviert"
+    }
+  },
+  "requestTypes": {
+    "wedding": "Hochzeit",
+    "mekteb": "Mekteb",
+    "facility": "Raumnutzung",
+    "akika": "Akika",
+    "marriage": "Religiöse Eheschließung",
+    "pristupnica": "Mitgliedschaftsantrag"
+  },
+  "status": {
+    "pending": "Ausstehend",
+    "approved": "Genehmigt",
+    "rejected": "Abgelehnt",
+    "archived": "Archiviert"
+  },
+  "print": {
+    "title": "Anfrage",
+    "submittedAt": "Eingereicht am",
+    "status": "Status",
+    "adminNotes": "Anmerkung des Administrators"
   }
 }
