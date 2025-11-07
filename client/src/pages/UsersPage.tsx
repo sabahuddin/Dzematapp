@@ -303,7 +303,7 @@ export default function UsersPage() {
 
           {/* Profile Details */}
           <Box sx={{ p: 4 }}>
-            <Grid container spacing={2}>
+            <Grid container spacing={3}>
               {/* Personal Information */}
               <Grid size={{ xs: 12 }}>
                 <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
@@ -312,124 +312,144 @@ export default function UsersPage() {
               </Grid>
               
               <Grid size={{ xs: 12, md: 6 }}>
-                <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
-                  <Typography variant="caption" color="text.secondary">
+                <Box>
+                  <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                     {t('users:firstName')}
                   </Typography>
-                  <Typography variant="body1" sx={{ fontWeight: 500, mt: 0.5 }}>
-                    {myProfile.firstName}
-                  </Typography>
+                  <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 2, p: 1.5, bgcolor: '#fafafa', minHeight: 42, display: 'flex', alignItems: 'center' }}>
+                    <Typography variant="body1">
+                      {myProfile.firstName}
+                    </Typography>
+                  </Box>
                 </Box>
               </Grid>
 
               <Grid size={{ xs: 12, md: 6 }}>
-                <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
-                  <Typography variant="caption" color="text.secondary">
+                <Box>
+                  <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                     {t('users:lastName')}
                   </Typography>
-                  <Typography variant="body1" sx={{ fontWeight: 500, mt: 0.5 }}>
-                    {myProfile.lastName}
-                  </Typography>
+                  <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 2, p: 1.5, bgcolor: '#fafafa', minHeight: 42, display: 'flex', alignItems: 'center' }}>
+                    <Typography variant="body1">
+                      {myProfile.lastName}
+                    </Typography>
+                  </Box>
                 </Box>
               </Grid>
 
               <Grid size={{ xs: 12, md: 6 }}>
-                <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
-                  <Typography variant="caption" color="text.secondary">
+                <Box>
+                  <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                     {t('users:username')}
                   </Typography>
-                  <Typography variant="body1" sx={{ fontWeight: 500, mt: 0.5 }}>
-                    {myProfile.username}
-                  </Typography>
+                  <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 2, p: 1.5, bgcolor: '#fafafa', minHeight: 42, display: 'flex', alignItems: 'center' }}>
+                    <Typography variant="body1">
+                      {myProfile.username}
+                    </Typography>
+                  </Box>
                 </Box>
               </Grid>
 
               <Grid size={{ xs: 12, md: 6 }}>
-                <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
-                  <Typography variant="caption" color="text.secondary">
+                <Box>
+                  <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                     {t('users:email')}
                   </Typography>
-                  <Typography variant="body1" sx={{ fontWeight: 500, mt: 0.5 }}>
-                    {myProfile.email || '-'}
-                  </Typography>
+                  <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 2, p: 1.5, bgcolor: '#fafafa', minHeight: 42, display: 'flex', alignItems: 'center' }}>
+                    <Typography variant="body1">
+                      {myProfile.email || '-'}
+                    </Typography>
+                  </Box>
                 </Box>
               </Grid>
 
               <Grid size={{ xs: 12, md: 6 }}>
-                <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
-                  <Typography variant="caption" color="text.secondary">
+                <Box>
+                  <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                     {t('users:phone')}
                   </Typography>
-                  <Typography variant="body1" sx={{ fontWeight: 500, mt: 0.5 }}>
-                    {myProfile.phone || '-'}
-                  </Typography>
+                  <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 2, p: 1.5, bgcolor: '#fafafa', minHeight: 42, display: 'flex', alignItems: 'center' }}>
+                    <Typography variant="body1">
+                      {myProfile.phone || '-'}
+                    </Typography>
+                  </Box>
                 </Box>
               </Grid>
 
               <Grid size={{ xs: 12, md: 6 }}>
-                <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
-                  <Typography variant="caption" color="text.secondary">
+                <Box>
+                  <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                     {t('users:address')}
                   </Typography>
-                  <Typography variant="body1" sx={{ fontWeight: 500, mt: 0.5 }}>
-                    {myProfile.address || '-'}
-                  </Typography>
+                  <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 2, p: 1.5, bgcolor: '#fafafa', minHeight: 42, display: 'flex', alignItems: 'center' }}>
+                    <Typography variant="body1">
+                      {myProfile.address || '-'}
+                    </Typography>
+                  </Box>
                 </Box>
               </Grid>
 
               <Grid size={{ xs: 12, md: 6 }}>
-                <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
-                  <Typography variant="caption" color="text.secondary">
+                <Box>
+                  <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                     {t('users:postalCode')}
                   </Typography>
-                  <Typography variant="body1" sx={{ fontWeight: 500, mt: 0.5 }}>
-                    {myProfile.postalCode || '-'}
-                  </Typography>
+                  <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 2, p: 1.5, bgcolor: '#fafafa', minHeight: 42, display: 'flex', alignItems: 'center' }}>
+                    <Typography variant="body1">
+                      {myProfile.postalCode || '-'}
+                    </Typography>
+                  </Box>
                 </Box>
               </Grid>
 
               <Grid size={{ xs: 12, md: 6 }}>
-                <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
-                  <Typography variant="caption" color="text.secondary">
+                <Box>
+                  <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                     {t('users:city')}
                   </Typography>
-                  <Typography variant="body1" sx={{ fontWeight: 500, mt: 0.5 }}>
-                    {myProfile.city || '-'}
-                  </Typography>
+                  <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 2, p: 1.5, bgcolor: '#fafafa', minHeight: 42, display: 'flex', alignItems: 'center' }}>
+                    <Typography variant="body1">
+                      {myProfile.city || '-'}
+                    </Typography>
+                  </Box>
                 </Box>
               </Grid>
 
               <Grid size={{ xs: 12, md: 6 }}>
-                <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
-                  <Typography variant="caption" color="text.secondary">
+                <Box>
+                  <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                     {t('users:occupation')}
                   </Typography>
-                  <Typography variant="body1" sx={{ fontWeight: 500, mt: 0.5 }}>
-                    {myProfile.occupation || '-'}
-                  </Typography>
+                  <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 2, p: 1.5, bgcolor: '#fafafa', minHeight: 42, display: 'flex', alignItems: 'center' }}>
+                    <Typography variant="body1">
+                      {myProfile.occupation || '-'}
+                    </Typography>
+                  </Box>
                 </Box>
               </Grid>
 
               <Grid size={{ xs: 12 }}>
-                <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
-                  <Typography variant="caption" color="text.secondary">
+                <Box>
+                  <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                     {t('users:skills')}
                   </Typography>
-                  <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mt: 1 }}>
-                    {myProfile.skills && myProfile.skills.length > 0 ? (
-                      myProfile.skills.map((skill, index) => (
-                        <Chip
-                          key={index}
-                          label={skill}
-                          size="small"
-                          color="primary"
-                          variant="outlined"
-                          data-testid={`profile-skill-${index}`}
-                        />
-                      ))
-                    ) : (
-                      <Typography variant="body1" sx={{ fontWeight: 500 }}>-</Typography>
-                    )}
+                  <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 2, p: 1.5, bgcolor: '#fafafa', minHeight: 42, display: 'flex', alignItems: 'center' }}>
+                    <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+                      {myProfile.skills && myProfile.skills.length > 0 ? (
+                        myProfile.skills.map((skill, index) => (
+                          <Chip
+                            key={index}
+                            label={skill}
+                            size="small"
+                            color="primary"
+                            variant="outlined"
+                            data-testid={`profile-skill-${index}`}
+                          />
+                        ))
+                      ) : (
+                        <Typography variant="body1">-</Typography>
+                      )}
+                    </Box>
                   </Box>
                 </Box>
               </Grid>
@@ -447,22 +467,24 @@ export default function UsersPage() {
               </Grid>
 
               <Grid size={{ xs: 12, md: 6 }}>
-                <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
-                  <Typography variant="caption" color="text.secondary">
+                <Box>
+                  <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                     {t('users:memberSince')}
                   </Typography>
-                  <Typography variant="body1" sx={{ fontWeight: 500, mt: 0.5 }}>
-                    {myProfile.membershipDate ? new Date(myProfile.membershipDate).toLocaleDateString('hr-HR') : '-'}
-                  </Typography>
+                  <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 2, p: 1.5, bgcolor: '#fafafa', minHeight: 42, display: 'flex', alignItems: 'center' }}>
+                    <Typography variant="body1">
+                      {myProfile.membershipDate ? new Date(myProfile.membershipDate).toLocaleDateString('hr-HR') : '-'}
+                    </Typography>
+                  </Box>
                 </Box>
               </Grid>
 
               <Grid size={{ xs: 12, md: 6 }}>
-                <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
-                  <Typography variant="caption" color="text.secondary">
+                <Box>
+                  <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                     {t('users:membershipStatus')}
                   </Typography>
-                  <Box sx={{ mt: 0.5 }}>
+                  <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 2, p: 1.5, bgcolor: '#fafafa', minHeight: 42, display: 'flex', alignItems: 'center' }}>
                     <Chip
                       label={getStatusLabel(myProfile.status)}
                       color={getStatusColor(myProfile.status)}
@@ -473,23 +495,25 @@ export default function UsersPage() {
               </Grid>
 
               <Grid size={{ xs: 12, md: 6 }}>
-                <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
-                  <Typography variant="caption" color="text.secondary">
+                <Box>
+                  <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                     {t('users:roles.label')}
                   </Typography>
-                  <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mt: 0.5 }}>
-                    {myProfile.roles && myProfile.roles.length > 0 ? (
-                      myProfile.roles.map((role, index) => (
-                        <Chip
-                          key={index}
-                          label={getRoleLabel(role)}
-                          size="small"
-                          color={getRoleColor(role)}
-                        />
+                  <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 2, p: 1.5, bgcolor: '#fafafa', minHeight: 42, display: 'flex', alignItems: 'center' }}>
+                    <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+                      {myProfile.roles && myProfile.roles.length > 0 ? (
+                        myProfile.roles.map((role, index) => (
+                          <Chip
+                            key={index}
+                            label={getRoleLabel(role)}
+                            size="small"
+                            color={getRoleColor(role)}
+                          />
                       ))
                     ) : (
-                      <Typography variant="body1" sx={{ fontWeight: 500 }}>-</Typography>
+                      <Typography variant="body1">-</Typography>
                     )}
+                    </Box>
                   </Box>
                 </Box>
               </Grid>

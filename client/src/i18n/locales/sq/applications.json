@@ -51,6 +51,16 @@
       "archived": "Arkivuar"
     }
   },
+  "incomingApplications": {
+    "title": "Aplikimet e Ardhura",
+    "description": "Këtu mund të rishikoni të gjitha aplikimet e akikës të paraqitura.",
+    "loading": "Duke ngarkuar...",
+    "print": "Printo",
+    "archive": "Arkivo",
+    "noApplications": "Nuk ka aplikime të ardhura.",
+    "archiveSuccess": "Aplikimi u arkivua me sukses.",
+    "archiveError": "Gabim në arkivimin e aplikimit."
+  },
   "requestTypes": {
     "wedding": "Martesë",
     "mekteb": "Mekteb",

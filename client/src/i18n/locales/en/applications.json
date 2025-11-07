@@ -51,6 +51,16 @@
       "archived": "Archived"
     }
   },
+  "incomingApplications": {
+    "title": "Incoming Applications",
+    "description": "Here you can review all submitted akika applications.",
+    "loading": "Loading...",
+    "print": "Print",
+    "archive": "Archive",
+    "noApplications": "No incoming applications.",
+    "archiveSuccess": "Application archived successfully.",
+    "archiveError": "Error archiving application."
+  },
   "requestTypes": {
     "wedding": "Wedding",
     "mekteb": "Mekteb",

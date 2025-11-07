@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Container, Typography, Box, Card, CardContent, Tabs, Tab, TextField, Button, FormControl, InputLabel, Select, MenuItem, Alert, Stack, Grid, Chip, CardHeader, IconButton } from "@mui/material";
-import { ChildCare, Favorite, CheckCircle, List as ListIcon, Print } from "@mui/icons-material";
+import { Container, Typography, Box, Card, CardContent, Tabs, Tab, TextField, Button, FormControl, InputLabel, Select, MenuItem, Alert, Stack, Grid, Chip, CardHeader, IconButton, CircularProgress } from "@mui/material";
+import { ChildCare, Favorite, CheckCircle, List as ListIcon, Print, Archive as ArchiveIcon, Inbox } from "@mui/icons-material";
 import { format } from "date-fns";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
-import type { Request } from "@shared/schema";
+import { useToast } from "@/hooks/use-toast";
+import type { Request, AkikaApplication } from "@shared/schema";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -543,7 +544,197 @@ function MyApplicationsList() {
   );
 }
 
+function IncomingAkikaApplications() {
+  const { t } = useTranslation("applications");
+  const { toast } = useToast();
+  
+  const { data: applications, isLoading } = useQuery<AkikaApplication[]>({
+    queryKey: ['/api/akika-applications'],
+  });
+
+  const archiveMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const response = await apiRequest(`/api/akika-applications/${id}/review`, 'PATCH', {
+        status: 'archived',
+        reviewNotes: null,
+      });
+      return await response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/akika-applications'] });
+      toast({
+        title: t("incomingApplications.archiveSuccess"),
+      });
+    },
+    onError: () => {
+      toast({
+        title: t("incomingApplications.archiveError"),
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handlePrint = (application: AkikaApplication) => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+    
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>${t("incomingApplications.print")} - ${application.childName}</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; }
+            h2 { color: #333; border-bottom: 2px solid #333; padding-bottom: 10px; }
+            .field { margin: 15px 0; }
+            .label { font-weight: bold; color: #555; }
+            .value { margin-left: 10px; }
+          </style>
+        </head>
+        <body>
+          <h2>${t("requestTypes.akika")}</h2>
+          <div class="field"><span class="label">${t("akika.fatherName")}:</span><span class="value">${application.fatherName}</span></div>
+          <div class="field"><span class="label">${t("akika.motherName")}:</span><span class="value">${application.motherName}</span></div>
+          <div class="field"><span class="label">${t("akika.childName")}:</span><span class="value">${application.childName}</span></div>
+          <div class="field"><span class="label">${t("akika.childGender")}:</span><span class="value">${application.childGender}</span></div>
+          <div class="field"><span class="label">${t("akika.childDateOfBirth")}:</span><span class="value">${application.childDateOfBirth}</span></div>
+          <div class="field"><span class="label">${t("akika.childPlaceOfBirth")}:</span><span class="value">${application.childPlaceOfBirth}</span></div>
+          <div class="field"><span class="label">${t("akika.location")}:</span><span class="value">${application.location}</span></div>
+          <div class="field"><span class="label">${t("akika.phone")}:</span><span class="value">${application.phone}</span></div>
+          ${application.notes ? `<div class="field"><span class="label">${t("akika.notes")}:</span><span class="value">${application.notes}</span></div>` : ''}
+          <div class="field"><span class="label">${t("print.submittedAt")}:</span><span class="value">${application.createdAt ? new Date(application.createdAt).toLocaleString('hr-HR') : '-'}</span></div>
+          <div class="field"><span class="label">${t("print.status")}:</span><span class="value">${t(`status.${application.status}`)}</span></div>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+  };
+
+  if (isLoading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  const activeApplications = applications?.filter(app => app.status !== 'archived') || [];
+
+  return (
+    <Box>
+      <Typography variant="body2" color="text.secondary" paragraph>
+        {t("incomingApplications.description")}
+      </Typography>
+
+      {activeApplications.length === 0 ? (
+        <Alert severity="info">{t("incomingApplications.noApplications")}</Alert>
+      ) : (
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          {activeApplications.map((application) => (
+            <Card key={application.id} variant="outlined">
+              <CardHeader
+                title={`${application.childName} - ${application.fatherName}`}
+                subheader={`${t("print.submittedAt")}: ${application.createdAt ? new Date(application.createdAt).toLocaleString('hr-HR') : '-'}`}
+                action={
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    <IconButton 
+                      onClick={() => handlePrint(application)}
+                      data-testid={`button-print-application-${application.id}`}
+                    >
+                      <Print />
+                    </IconButton>
+                    <IconButton 
+                      onClick={() => archiveMutation.mutate(application.id)}
+                      disabled={archiveMutation.isPending}
+                      data-testid={`button-archive-application-${application.id}`}
+                    >
+                      <ArchiveIcon />
+                    </IconButton>
+                  </Box>
+                }
+              />
+              <CardContent>
+                <Grid container spacing={2}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Typography variant="caption" color="text.secondary">
+                      {t("akika.fatherName")}
+                    </Typography>
+                    <Typography variant="body2">{application.fatherName}</Typography>
+                  </Grid>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Typography variant="caption" color="text.secondary">
+                      {t("akika.motherName")}
+                    </Typography>
+                    <Typography variant="body2">{application.motherName}</Typography>
+                  </Grid>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Typography variant="caption" color="text.secondary">
+                      {t("akika.childName")}
+                    </Typography>
+                    <Typography variant="body2">{application.childName}</Typography>
+                  </Grid>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Typography variant="caption" color="text.secondary">
+                      {t("akika.childGender")}
+                    </Typography>
+                    <Typography variant="body2">{application.childGender}</Typography>
+                  </Grid>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Typography variant="caption" color="text.secondary">
+                      {t("akika.childDateOfBirth")}
+                    </Typography>
+                    <Typography variant="body2">{application.childDateOfBirth}</Typography>
+                  </Grid>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Typography variant="caption" color="text.secondary">
+                      {t("akika.childPlaceOfBirth")}
+                    </Typography>
+                    <Typography variant="body2">{application.childPlaceOfBirth}</Typography>
+                  </Grid>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Typography variant="caption" color="text.secondary">
+                      {t("akika.location")}
+                    </Typography>
+                    <Typography variant="body2">{application.location}</Typography>
+                  </Grid>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Typography variant="caption" color="text.secondary">
+                      {t("akika.phone")}
+                    </Typography>
+                    <Typography variant="body2">{application.phone}</Typography>
+                  </Grid>
+                  {application.notes && (
+                    <Grid size={{ xs: 12 }}>
+                      <Typography variant="caption" color="text.secondary">
+                        {t("akika.notes")}
+                      </Typography>
+                      <Typography variant="body2">{application.notes}</Typography>
+                    </Grid>
+                  )}
+                  <Grid size={{ xs: 12 }}>
+                    <Typography variant="caption" color="text.secondary">
+                      {t("print.status")}
+                    </Typography>
+                    <Box sx={{ mt: 0.5 }}>
+                      <Chip
+                        label={t(`status.${application.status}`)}
+                        color={application.status === 'approved' ? 'success' : application.status === 'rejected' ? 'error' : 'default'}
+                        size="small"
+                      />
+                    </Box>
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+          ))}
+        </Box>
+      )}
+    </Box>
+  );
+}
+
 export default function ApplicationsPage() {
+  const { user } = useAuth();
   const { t } = useTranslation("applications");
   const [tabValue, setTabValue] = useState(0);
 
@@ -587,6 +778,14 @@ export default function ApplicationsPage() {
                 iconPosition="start"
                 data-testid="tab-my-applications"
               />
+              {user?.isAdmin && (
+                <Tab 
+                  icon={<Inbox />} 
+                  label={t("incomingApplications.title")} 
+                  iconPosition="start"
+                  data-testid="tab-incoming-applications"
+                />
+              )}
             </Tabs>
 
             <TabPanel value={tabValue} index={0}>
@@ -600,6 +799,12 @@ export default function ApplicationsPage() {
             <TabPanel value={tabValue} index={2}>
               <MyApplicationsList />
             </TabPanel>
+
+            {user?.isAdmin && (
+              <TabPanel value={tabValue} index={3}>
+                <IncomingAkikaApplications />
+              </TabPanel>
+            )}
           </CardContent>
         </Card>
       </Container>

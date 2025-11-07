@@ -51,6 +51,16 @@
       "archived": "Archiviert"
     }
   },
+  "incomingApplications": {
+    "title": "Eingegangene Anträge",
+    "description": "Hier können Sie alle eingereichten Akika-Anträge einsehen.",
+    "loading": "Laden...",
+    "print": "Drucken",
+    "archive": "Archivieren",
+    "noApplications": "Keine eingegangenen Anträge.",
+    "archiveSuccess": "Antrag erfolgreich archiviert.",
+    "archiveError": "Fehler beim Archivieren des Antrags."
+  },
   "requestTypes": {
     "wedding": "Hochzeit",
     "mekteb": "Mekteb",

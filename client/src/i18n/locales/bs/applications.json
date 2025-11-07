@@ -51,6 +51,16 @@
       "archived": "Arhivirane"
     }
   },
+  "incomingApplications": {
+    "title": "Pristigle prijave",
+    "description": "Ovdje možete pregledati sve podnesene akika prijave.",
+    "loading": "Učitavanje...",
+    "print": "Štampaj",
+    "archive": "Arhiviraj",
+    "noApplications": "Nema pristinglih prijava.",
+    "archiveSuccess": "Prijava uspješno arhivirana.",
+    "archiveError": "Greška pri arhiviranju prijave."
+  },
   "requestTypes": {
     "wedding": "Vjenčanje",
     "mekteb": "Mekteb",
