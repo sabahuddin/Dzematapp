@@ -3698,6 +3698,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Activity Feed
+  app.get("/api/activity-feed", async (req, res) => {
+    try {
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 50;
+      const activities = await storage.getActivityFeed(limit);
+      res.json(activities);
+    } catch (error) {
+      console.error('Error getting activity feed:', error);
+      res.status(500).json({ message: "Failed to get activity feed" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
