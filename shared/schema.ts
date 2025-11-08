@@ -847,7 +847,8 @@ export const akikaApplications = pgTable("akika_applications", {
   notes: text("notes"),
   
   // Status i metadata
-  status: text("status").notNull().default("pending"), // pending, approved, rejected
+  status: text("status").notNull().default("pending"), // pending, approved, rejected, archived
+  submittedBy: varchar("submitted_by").references(() => users.id), // null for guest applications
   reviewedById: varchar("reviewed_by_id").references(() => users.id),
   reviewedAt: timestamp("reviewed_at"),
   reviewNotes: text("review_notes"),

@@ -390,6 +390,7 @@ export interface IStorage {
   getAllAkikaApplications(): Promise<AkikaApplication[]>;
   updateAkikaApplication(id: string, updates: Partial<InsertAkikaApplication>): Promise<AkikaApplication | undefined>;
   reviewAkikaApplication(id: string, status: string, reviewedById: string, reviewNotes?: string): Promise<AkikaApplication | undefined>;
+  getUserAkikaApplications(userId: string): Promise<AkikaApplication[]>;
   deleteAkikaApplication(id: string): Promise<boolean>;
 
   // Marriage Applications (Prijave šerijatskog vjenčanja)

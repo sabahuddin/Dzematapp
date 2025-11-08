@@ -3525,11 +3525,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/akika-applications", async (req, res) => {
     try {
       const validated = insertAkikaApplicationSchema.parse(req.body);
-      const application = await storage.createAkikaApplication(validated);
+      // Add submittedBy if user is logged in
+      const applicationData = {
+        ...validated,
+        submittedBy: req.user?.id || null
+      };
+      const application = await storage.createAkikaApplication(applicationData);
       res.status(201).json(application);
     } catch (error) {
       console.error('Error creating akika application:', error);
       res.status(500).json({ message: "Failed to create akika application" });
+    }
+  });
+
+  app.get("/api/akika-applications/my", requireAuth, async (req, res) => {
+    try {
+      const applications = await storage.getUserAkikaApplications(req.user!.id);
+      res.json(applications);
+    } catch (error) {
+      console.error('Error getting user akika applications:', error);
+      res.status(500).json({ message: "Failed to get user akika applications" });
     }
   });
 
