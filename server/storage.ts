@@ -435,6 +435,16 @@ export class DatabaseStorage implements IStorage {
       userId: user.id
     });
     
+    // Add to activity feed
+    await this.createActivityFeedItem({
+      type: "new_member",
+      title: "Novi član džemata",
+      description: `${user.firstName} ${user.lastName}`,
+      relatedEntityId: user.id,
+      relatedEntityType: "user",
+      isClickable: false
+    });
+    
     return user;
   }
 
@@ -459,6 +469,16 @@ export class DatabaseStorage implements IStorage {
       type: "announcement",
       description: `Nova obavijest objavljena: ${announcement.title}`,
       userId: announcement.authorId
+    });
+    
+    // Add to activity feed
+    await this.createActivityFeedItem({
+      type: "announcement",
+      title: "Nova obavijest",
+      description: announcement.title,
+      relatedEntityId: announcement.id,
+      relatedEntityType: "announcement",
+      isClickable: true
     });
     
     return announcement;
@@ -490,6 +510,16 @@ export class DatabaseStorage implements IStorage {
       type: "event",
       description: `Događaj kreiran: ${event.name}`,
       userId: event.createdById
+    });
+    
+    // Add to activity feed
+    await this.createActivityFeedItem({
+      type: "event",
+      title: "Novi događaj",
+      description: event.name,
+      relatedEntityId: event.id,
+      relatedEntityType: "event",
+      isClickable: true
     });
     
     return event;
@@ -1202,6 +1232,18 @@ export class DatabaseStorage implements IStorage {
 
   async createMarketplaceItem(item: InsertMarketplaceItem): Promise<MarketplaceItem> {
     const [marketItem] = await db.insert(marketplaceItems).values(item).returning();
+    
+    // Add to activity feed
+    const typeText = marketItem.type === 'prodajem' ? 'Prodaje se' : 'Poklanja se';
+    await this.createActivityFeedItem({
+      type: "shop_item",
+      title: typeText,
+      description: marketItem.name,
+      relatedEntityId: marketItem.id,
+      relatedEntityType: "shop_item",
+      isClickable: false
+    });
+    
     return marketItem;
   }
 
@@ -1614,6 +1656,22 @@ export class DatabaseStorage implements IStorage {
     }
     
     const [ub] = await db.insert(userBadges).values({ userId, badgeId }).returning();
+    
+    // Add to activity feed
+    const badge = await this.getBadge(badgeId);
+    const user = await this.getUser(userId);
+    if (badge && user) {
+      const initials = `${user.firstName[0]}. ${user.lastName[0]}.`;
+      await this.createActivityFeedItem({
+        type: "badge_awarded",
+        title: "Dodjeljena značka",
+        description: `${badge.name} - ${initials}`,
+        relatedEntityId: badgeId,
+        relatedEntityType: "badge",
+        isClickable: false
+      });
+    }
+    
     return ub;
   }
 
@@ -1680,7 +1738,21 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateProject(id: string, updates: Partial<InsertProject>): Promise<Project | undefined> {
+    const oldProject = await this.getProject(id);
     const [project] = await db.update(projects).set(updates).where(eq(projects.id, id)).returning();
+    
+    // Add to activity feed when project is completed
+    if (oldProject && oldProject.status !== 'završen' && project.status === 'završen') {
+      await this.createActivityFeedItem({
+        type: "project_completed",
+        title: "Završen projekat",
+        description: project.name,
+        relatedEntityId: project.id,
+        relatedEntityType: "project",
+        isClickable: true
+      });
+    }
+    
     return project;
   }
 
@@ -1920,6 +1992,21 @@ export class DatabaseStorage implements IStorage {
   // User Certificates (Izdati Certifikati)
   async createUserCertificate(certificate: InsertUserCertificate): Promise<UserCertificate> {
     const [c] = await db.insert(userCertificates).values(certificate).returning();
+    
+    // Add to activity feed
+    const user = await this.getUser(certificate.userId);
+    if (user) {
+      const initials = `${user.firstName[0]}. ${user.lastName[0]}.`;
+      await this.createActivityFeedItem({
+        type: "certificate_issued",
+        title: "Dodjeljena zahvalnica",
+        description: initials,
+        relatedEntityId: c.id,
+        relatedEntityType: "certificate",
+        isClickable: false
+      });
+    }
+    
     return c;
   }
 
