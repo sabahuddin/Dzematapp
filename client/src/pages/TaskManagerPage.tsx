@@ -2213,7 +2213,7 @@ function TaskDetailDialog({
   const isAssignedUser = task?.assignedUserIds?.includes(currentUser?.id);
   const isMemberOfWorkGroup = members.some((m: any) => m.userId === currentUser?.id);
   const canComment = isMemberOfWorkGroup || currentUser?.isAdmin;
-  const isTaskCompleted = task?.status === 'završeno';
+  const isTaskCompleted = task?.status === 'završeno' || task?.status === 'arhiva';
 
   if (!task) return null;
 
@@ -2504,7 +2504,7 @@ function TaskDetailDialog({
               </Box>
               
               <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                {isAssignedUser && task.status !== 'na_cekanju' && task.status !== 'završeno' && (
+                {isAssignedUser && task.status !== 'na_cekanju' && task.status !== 'završeno' && task.status !== 'arhiva' && (
                   <Button
                     variant="contained"
                     color="warning"
