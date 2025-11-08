@@ -38,6 +38,7 @@ import MyCertificatesPage from "@/pages/MyCertificatesPage";
 import AllCertificatesPage from "@/pages/AllCertificatesPage";
 import MembershipApplicationsPage from "@/pages/MembershipApplicationsPage";
 import ApplicationsPage from "@/pages/ApplicationsPage";
+import FeedPage from "@/pages/FeedPage";
 import NotFound from "@/pages/not-found";
 
 // Layout
@@ -184,6 +185,12 @@ function Router() {
       <Route path="/dashboard">
         <ProtectedRoute>
           <DashboardHome />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path="/feed">
+        <ProtectedRoute>
+          <FeedPage />
         </ProtectedRoute>
       </Route>
       

@@ -44,7 +44,8 @@ import {
   CardGiftcard,
   ExpandLess,
   ExpandMore,
-  OndemandVideo
+  OndemandVideo,
+  DynamicFeed
 } from '@mui/icons-material';
 import { SiFacebook, SiInstagram, SiYoutube, SiX } from 'react-icons/si';
 import { useAuth } from '@/contexts/AuthContext';
@@ -79,6 +80,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     showBadge?: boolean;
   }> = [
     { path: '/dashboard', label: t('navigation:menu.dashboard'), icon: Dashboard },
+    { path: '/feed', label: 'Feed', icon: DynamicFeed },
     { path: '/users', label: t('navigation:menu.users'), labelForMember: t('navigation:menu.profile'), icon: People },
     { path: '/finances', label: t('navigation:menu.finances'), labelForMember: t('navigation:menu.myPayments'), icon: AttachMoney },
     { path: '/activity-log', label: t('navigation:menu.activityLog'), labelForMember: t('navigation:menu.myActivities'), icon: Timeline },
