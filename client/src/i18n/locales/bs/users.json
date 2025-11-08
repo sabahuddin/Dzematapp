@@ -21,6 +21,7 @@
   "memberSince": "Član od",
   "membershipStatus": "Status članstva",
   "inactivityReason": "Razlog pasivnosti",
+  "inactiveReasonLabel": "Razlog pasivnosti",
   "skills": "Vještine",
   "photo": "Fotografija",
   "uploadPhoto": "Učitaj Fotografiju",
@@ -43,6 +44,12 @@
     "drugi_dzemat": "Drugi džemat",
     "iskljucen": "Isključen",
     "nepoznato": "Nepoznato"
+  },
+  "inactiveReasons": {
+    "death": "Smrt",
+    "otherMosque": "Drugi džemat",
+    "excluded": "Isključen",
+    "unknown": "Nepoznato"
   },
   "modal": {
     "addTitle": "Dodaj Novog Korisnika",

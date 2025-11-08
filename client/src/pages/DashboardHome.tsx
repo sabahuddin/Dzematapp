@@ -52,13 +52,9 @@ import {
   formatTimeAgo 
 } from '../data/mockData';
 import TasksDashboard from '../components/TasksDashboard';
-import QuickAccessWidget from '../components/QuickAccessWidget';
-import QuickAccessSettingsModal from '../components/QuickAccessSettingsModal';
 import { useAuth } from '../hooks/useAuth';
-import type { Announcement, Event as EventType, WorkGroup, PrayerTime, UserPreferences } from '@shared/schema';
+import type { Announcement, Event as EventType, WorkGroup, PrayerTime } from '@shared/schema';
 import { format, isSameDay, isWeekend } from 'date-fns';
-import { useMutation } from '@tanstack/react-query';
-import { queryClient, apiRequest } from '../lib/queryClient';
 import { useTranslation } from 'react-i18next';
 
 interface Statistics {
@@ -188,7 +184,6 @@ export default function DashboardHome() {
   const { t } = useTranslation(['dashboard', 'common', 'navigation', 'vaktija']);
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [dateEventsModalOpen, setDateEventsModalOpen] = useState(false);
-  const [settingsModalOpen, setSettingsModalOpen] = useState(false);
   
   // Fetch real statistics from API
   const statisticsQuery = useQuery<Statistics>({
@@ -242,22 +237,6 @@ export default function DashboardHome() {
   const todayPrayerTimeQuery = useQuery<PrayerTime>({
     queryKey: ['/api/prayer-times/today'],
     retry: false,
-  });
-
-  // Fetch user preferences for quick access
-  const preferencesQuery = useQuery<UserPreferences>({
-    queryKey: ['/api/user-preferences'],
-  });
-
-  // Update preferences mutation
-  const updatePreferencesMutation = useMutation({
-    mutationFn: async (shortcuts: string[]) => {
-      return await apiRequest('/api/user-preferences', 'PUT', { quickAccessShortcuts: shortcuts });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/user-preferences'] });
-      setSettingsModalOpen(false);
-    },
   });
 
   if (user?.isAdmin) {
@@ -374,16 +353,6 @@ export default function DashboardHome() {
               </Box>
             </CardContent>
           </Card>
-        )}
-
-        {/* Quick Access Widget */}
-        {preferencesQuery.data && (
-          <Box sx={{ mb: 3 }}>
-            <QuickAccessWidget
-              shortcuts={preferencesQuery.data.quickAccessShortcuts || []}
-              onSettingsClick={() => setSettingsModalOpen(true)}
-            />
-          </Box>
         )}
 
         <Grid container spacing={3}>
@@ -922,16 +891,6 @@ export default function DashboardHome() {
         </Card>
       )}
 
-      {/* Quick Access Widget */}
-      {preferencesQuery.data && (
-        <Box sx={{ mb: 3 }}>
-          <QuickAccessWidget
-            shortcuts={preferencesQuery.data.quickAccessShortcuts || []}
-            onSettingsClick={() => setSettingsModalOpen(true)}
-          />
-        </Box>
-      )}
-
       {/* Statistics Cards */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
@@ -1184,15 +1143,6 @@ export default function DashboardHome() {
           </Table>
         </TableContainer>
       </Card>
-
-      {/* Quick Access Settings Modal */}
-      <QuickAccessSettingsModal
-        open={settingsModalOpen}
-        onClose={() => setSettingsModalOpen(false)}
-        currentShortcuts={preferencesQuery.data?.quickAccessShortcuts || []}
-        onSave={(shortcuts) => updatePreferencesMutation.mutate(shortcuts)}
-        isSaving={updatePreferencesMutation.isPending}
-      />
     </Box>
   );
 }

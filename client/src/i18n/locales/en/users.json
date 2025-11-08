@@ -21,6 +21,7 @@
   "memberSince": "Member Since",
   "membershipStatus": "Membership Status",
   "inactivityReason": "Inactivity Reason",
+  "inactiveReasonLabel": "Inactivity Reason",
   "skills": "Skills",
   "photo": "Photo",
   "uploadPhoto": "Upload Photo",
@@ -43,6 +44,12 @@
     "drugi_dzemat": "Different congregation",
     "iskljucen": "Excluded",
     "nepoznato": "Unknown"
+  },
+  "inactiveReasons": {
+    "death": "Death",
+    "otherMosque": "Different congregation",
+    "excluded": "Excluded",
+    "unknown": "Unknown"
   },
   "modal": {
     "addTitle": "Add New User",

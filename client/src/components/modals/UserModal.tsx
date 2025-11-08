@@ -75,6 +75,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
     dateOfBirth: '',
     membershipDate: '',
     status: 'aktivan',
+    inactiveReason: '',
     categories: [] as string[],
     roles: [] as string[],
     skills: [] as string[],
@@ -140,6 +141,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
         dateOfBirth: convertDateToISO(user.dateOfBirth),
         membershipDate: user.membershipDate ? new Date(user.membershipDate).toISOString().split('T')[0] : '',
         status: user.status || 'aktivan',
+        inactiveReason: user.inactiveReason || '',
         categories: user.categories || [],
         roles: user.roles || [],
         skills: user.skills || [],
@@ -162,6 +164,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
         dateOfBirth: '1900-01-01',
         membershipDate: '1900-01-01',
         status: 'aktivan',
+        inactiveReason: '',
         categories: [],
         roles: ['clan'],
         skills: [],
@@ -278,6 +281,9 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
     }
     if (!finalFormData.photo || finalFormData.photo === '') {
       finalFormData.photo = null;
+    }
+    if (!finalFormData.inactiveReason || finalFormData.inactiveReason === '') {
+      finalFormData.inactiveReason = null;
     }
     
     // Ensure categories is an empty array if not set
@@ -519,6 +525,26 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                 </Select>
               </FormControl>
             </Grid>
+
+            {/* Row 6b: Razlog pasivnosti - shows only when status is "pasivan" */}
+            {formData.status === 'pasivan' && !isMemberEditingSelf && (
+              <Grid size={{ xs: 12 }}>
+                <FormControl fullWidth>
+                  <InputLabel>{t('inactiveReasonLabel')}</InputLabel>
+                  <Select
+                    value={formData.inactiveReason}
+                    label={t('inactiveReasonLabel')}
+                    onChange={(e) => handleChange('inactiveReason')(e as any)}
+                    data-testid="select-inactiveReason"
+                  >
+                    <MenuItem value="Smrt">{t('inactiveReasons.death')}</MenuItem>
+                    <MenuItem value="Drugi džemat">{t('inactiveReasons.otherMosque')}</MenuItem>
+                    <MenuItem value="Isključen">{t('inactiveReasons.excluded')}</MenuItem>
+                    <MenuItem value="Nepoznato">{t('inactiveReasons.unknown')}</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+            )}
             
             {/* Row 7a: Skills (Full width or 50%) */}
             <Grid size={{ xs: 12, sm: isMemberEditingSelf ? 12 : 6 }}>

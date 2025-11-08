@@ -21,6 +21,7 @@
   "memberSince": "Anëtar nga",
   "membershipStatus": "Statusi i anëtarësisë",
   "inactivityReason": "Arsyeja e pasivitetit",
+  "inactiveReasonLabel": "Arsyeja e pasivitetit",
   "skills": "Aftësitë",
   "photo": "Fotografia",
   "uploadPhoto": "Ngarko Fotografi",
@@ -43,6 +44,12 @@
     "drugi_dzemat": "Xhemati tjetër",
     "iskljucen": "I përjashtuar",
     "nepoznato": "E panjohur"
+  },
+  "inactiveReasons": {
+    "death": "Vdekje",
+    "otherMosque": "Xhemati tjetër",
+    "excluded": "I përjashtuar",
+    "unknown": "E panjohur"
   },
   "modal": {
     "addTitle": "Shto Përdorues të Ri",
