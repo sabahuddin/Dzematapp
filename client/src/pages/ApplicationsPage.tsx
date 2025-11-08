@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Container, Typography, Box, Card, CardContent, Tabs, Tab, TextField, Button, FormControl, InputLabel, Select, MenuItem, Alert, Stack, Grid, Chip, CardHeader, IconButton, CircularProgress } from "@mui/material";
-import { ChildCare, Favorite, CheckCircle, List as ListIcon, Print, Archive as ArchiveIcon, Inbox } from "@mui/icons-material";
+import { Container, Typography, Box, Card, CardContent, Tabs, Tab, TextField, Button, FormControl, InputLabel, Select, MenuItem, Alert, Stack, Grid, Chip, CardHeader, IconButton, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
+import { ChildCare, Favorite, CheckCircle, List as ListIcon, Print, Archive as ArchiveIcon, Inbox, Check, Close } from "@mui/icons-material";
 import { format } from "date-fns";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/contexts/AuthContext";
@@ -547,9 +547,38 @@ function MyApplicationsList() {
 function IncomingAkikaApplications() {
   const { t } = useTranslation("applications");
   const { toast } = useToast();
+  const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
+  const [selectedApplication, setSelectedApplication] = useState<AkikaApplication | null>(null);
+  const [reviewNotes, setReviewNotes] = useState('');
   
   const { data: applications, isLoading } = useQuery<AkikaApplication[]>({
     queryKey: ['/api/akika-applications'],
+  });
+
+  const reviewMutation = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+      const response = await apiRequest(`/api/akika-applications/${id}/review`, 'PATCH', {
+        status,
+        reviewNotes: reviewNotes.trim() || null,
+      });
+      return await response.json();
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/akika-applications'] });
+      const statusText = variables.status === 'approved' ? 'odobrena' : 'odbijena';
+      toast({
+        title: `Akika prijava ${statusText}`,
+      });
+      setReviewDialogOpen(false);
+      setSelectedApplication(null);
+      setReviewNotes('');
+    },
+    onError: () => {
+      toast({
+        title: "Greška pri obradi prijave",
+        variant: "destructive",
+      });
+    },
   });
 
   const archiveMutation = useMutation({
@@ -573,6 +602,24 @@ function IncomingAkikaApplications() {
       });
     },
   });
+
+  const handleOpenReview = (application: AkikaApplication) => {
+    setSelectedApplication(application);
+    setReviewNotes('');
+    setReviewDialogOpen(true);
+  };
+
+  const handleApprove = () => {
+    if (selectedApplication) {
+      reviewMutation.mutate({ id: selectedApplication.id, status: 'approved' });
+    }
+  };
+
+  const handleReject = () => {
+    if (selectedApplication) {
+      reviewMutation.mutate({ id: selectedApplication.id, status: 'rejected' });
+    }
+  };
 
   const handlePrint = (application: AkikaApplication) => {
     const printWindow = window.open('', '_blank');
@@ -723,12 +770,99 @@ function IncomingAkikaApplications() {
                       />
                     </Box>
                   </Grid>
+                  {application.status === 'pending' && (
+                    <Grid size={{ xs: 12 }}>
+                      <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+                        <Button
+                          variant="contained"
+                          color="success"
+                          startIcon={<Check />}
+                          onClick={() => handleOpenReview(application)}
+                          data-testid={`button-review-approve-${application.id}`}
+                        >
+                          Odobri
+                        </Button>
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          startIcon={<Close />}
+                          onClick={() => handleOpenReview(application)}
+                          data-testid={`button-review-reject-${application.id}`}
+                        >
+                          Odbij
+                        </Button>
+                      </Box>
+                    </Grid>
+                  )}
                 </Grid>
               </CardContent>
             </Card>
           ))}
         </Box>
       )}
+
+      <Dialog 
+        open={reviewDialogOpen} 
+        onClose={() => setReviewDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>
+          Pregled Akika prijave
+        </DialogTitle>
+        <DialogContent>
+          {selectedApplication && (
+            <Box sx={{ pt: 2 }}>
+              <Typography variant="body2" gutterBottom>
+                <strong>Dijete:</strong> {selectedApplication.childName}
+              </Typography>
+              <Typography variant="body2" gutterBottom>
+                <strong>Otac:</strong> {selectedApplication.fatherName}
+              </Typography>
+              <Typography variant="body2" gutterBottom sx={{ mb: 3 }}>
+                <strong>Majka:</strong> {selectedApplication.motherName}
+              </Typography>
+
+              <TextField
+                fullWidth
+                label="Odgovor / Napomena (opciono)"
+                multiline
+                rows={4}
+                value={reviewNotes}
+                onChange={(e) => setReviewNotes(e.target.value)}
+                placeholder="Unesite odgovor ili napomenu koja će biti poslana podnosiocu prijave..."
+                data-testid="input-review-notes"
+              />
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button 
+            onClick={() => setReviewDialogOpen(false)}
+            data-testid="button-cancel-review"
+          >
+            Otkaži
+          </Button>
+          <Button
+            onClick={handleReject}
+            variant="outlined"
+            color="error"
+            disabled={reviewMutation.isPending}
+            data-testid="button-confirm-reject"
+          >
+            Odbij
+          </Button>
+          <Button
+            onClick={handleApprove}
+            variant="contained"
+            color="success"
+            disabled={reviewMutation.isPending}
+            data-testid="button-confirm-approve"
+          >
+            Odobri
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
