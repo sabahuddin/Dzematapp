@@ -558,13 +558,13 @@ export const proposals = pgTable("proposals", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   workGroupId: varchar("work_group_id").notNull().references(() => workGroups.id),
   createdById: varchar("created_by_id").notNull().references(() => users.id), // Moderator
-  who: text("who").notNull(), // Who will do it
-  what: text("what").notNull(), // What will be done
-  where: text("where"), // Where it will happen
-  when: text("when"), // When it will happen
-  how: text("how"), // How it will be done
-  why: text("why").notNull(), // Why it's needed (justification)
-  budget: text("budget"), // Estimated budget in CHF
+  who: text("who"), // Who will do it (optional)
+  what: text("what").notNull(), // What will be done (required)
+  where: text("where"), // Where it will happen (optional)
+  when: text("when"), // When it will happen (optional)
+  how: text("how"), // How it will be done (optional)
+  why: text("why"), // Why it's needed (optional)
+  budget: text("budget"), // Estimated budget in CHF (optional)
   status: text("status").notNull().default("pending"), // pending, approved, rejected
   reviewedById: varchar("reviewed_by_id").references(() => users.id), // IO member who reviewed
   reviewComment: text("review_comment"), // Comment from reviewer
@@ -843,6 +843,7 @@ export const akikaApplications = pgTable("akika_applications", {
   customPostalCode: text("custom_postal_code"),
   
   phone: text("phone").notNull(),
+  email: text("email").notNull(),
   notes: text("notes"),
   
   // Status i metadata

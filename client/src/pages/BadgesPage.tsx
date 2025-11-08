@@ -230,7 +230,7 @@ export default function BadgesPage() {
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2" color="text.secondary" data-testid={`badge-type-${badge.id}`}>
-                      {badge.criteriaType}
+                      {t(`badges:criteriaTypes.${badge.criteriaType}`)}
                     </Typography>
                   </TableCell>
                   <TableCell>

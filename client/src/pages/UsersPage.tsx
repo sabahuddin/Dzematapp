@@ -19,7 +19,8 @@ import {
   Avatar,
   Autocomplete,
   Grid,
-  Divider
+  Divider,
+  TableSortLabel
 } from '@mui/material';
 import {
   PersonAdd,
@@ -56,6 +57,8 @@ export default function UsersPage() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [familyMembersDialogOpen, setFamilyMembersDialogOpen] = useState(false);
   const [selectedUserForFamily, setSelectedUserForFamily] = useState<User | null>(null);
+  const [sortField, setSortField] = useState<string | null>(null);
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
   const predefinedCategories = [
     t('users:categories.all'),
@@ -70,6 +73,24 @@ export default function UsersPage() {
     queryKey: ['/api/users'],
     retry: 1,
   });
+
+  // Get all unique categories from all users (including custom ones)
+  const allCategories = React.useMemo(() => {
+    if (!usersQuery.data) return predefinedCategories;
+    
+    const customCategories = new Set<string>();
+    (usersQuery.data as User[]).forEach(user => {
+      if (user.categories) {
+        user.categories.forEach(cat => {
+          if (cat && !predefinedCategories.includes(cat)) {
+            customCategories.add(cat);
+          }
+        });
+      }
+    });
+    
+    return [...predefinedCategories, ...Array.from(customCategories).sort()];
+  }, [usersQuery.data, predefinedCategories]);
 
   // Create user mutation
   const createUserMutation = useMutation({
@@ -209,6 +230,16 @@ export default function UsersPage() {
     });
   };
 
+  // Handle sorting
+  const handleSort = (field: string) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
   // Collect all unique skills from all users for filter options
   const allSkills = Array.from(
     new Set(
@@ -242,6 +273,48 @@ export default function UsersPage() {
     
     return matchesSearch && matchesCategory && matchesSkills;
   });
+
+  // Sort users
+  const sortedUsers = React.useMemo(() => {
+    if (!sortField) return filteredUsers;
+
+    return [...filteredUsers].sort((a, b) => {
+      let aValue: any, bValue: any;
+
+      switch (sortField) {
+        case 'firstName':
+          aValue = a.firstName?.toLowerCase() || '';
+          bValue = b.firstName?.toLowerCase() || '';
+          break;
+        case 'lastName':
+          aValue = a.lastName?.toLowerCase() || '';
+          bValue = b.lastName?.toLowerCase() || '';
+          break;
+        case 'email':
+          aValue = a.email?.toLowerCase() || '';
+          bValue = b.email?.toLowerCase() || '';
+          break;
+        case 'phone':
+          aValue = a.phone || '';
+          bValue = b.phone || '';
+          break;
+        case 'membershipDate':
+          aValue = a.membershipDate ? new Date(a.membershipDate).getTime() : 0;
+          bValue = b.membershipDate ? new Date(b.membershipDate).getTime() : 0;
+          break;
+        case 'status':
+          aValue = a.status || '';
+          bValue = b.status || '';
+          break;
+        default:
+          return 0;
+      }
+
+      if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [filteredUsers, sortField, sortDirection]);
 
   if (usersQuery.isLoading) {
     return (
@@ -582,7 +655,7 @@ export default function UsersPage() {
           />
           <Autocomplete
             multiple
-            options={predefinedCategories}
+            options={allCategories}
             value={selectedCategories}
             onChange={(event, newValue) => setSelectedCategories(newValue)}
             renderInput={(params) => (
@@ -618,21 +691,67 @@ export default function UsersPage() {
           <Table>
             <TableHead>
               <TableRow sx={{ bgcolor: '#f8f9fa' }}>
-                <TableCell sx={{ fontWeight: 600 }}>{t('users:firstName')} {t('users:lastName')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('users:username')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('users:email')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('users:phone')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('users:memberSince')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('users:membershipStatus')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Kategorije</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('users:skills')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>
+                  <TableSortLabel
+                    active={sortField === 'firstName'}
+                    direction={sortField === 'firstName' ? sortDirection : 'asc'}
+                    onClick={() => handleSort('firstName')}
+                  >
+                    {t('users:firstName')}
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>
+                  <TableSortLabel
+                    active={sortField === 'lastName'}
+                    direction={sortField === 'lastName' ? sortDirection : 'asc'}
+                    onClick={() => handleSort('lastName')}
+                  >
+                    {t('users:lastName')}
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>
+                  <TableSortLabel
+                    active={sortField === 'email'}
+                    direction={sortField === 'email' ? sortDirection : 'asc'}
+                    onClick={() => handleSort('email')}
+                  >
+                    {t('users:email')}
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>
+                  <TableSortLabel
+                    active={sortField === 'phone'}
+                    direction={sortField === 'phone' ? sortDirection : 'asc'}
+                    onClick={() => handleSort('phone')}
+                  >
+                    {t('users:phone')}
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>
+                  <TableSortLabel
+                    active={sortField === 'membershipDate'}
+                    direction={sortField === 'membershipDate' ? sortDirection : 'asc'}
+                    onClick={() => handleSort('membershipDate')}
+                  >
+                    {t('users:memberSince')}
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>
+                  <TableSortLabel
+                    active={sortField === 'status'}
+                    direction={sortField === 'status' ? sortDirection : 'asc'}
+                    onClick={() => handleSort('status')}
+                  >
+                    {t('users:membershipStatus')}
+                  </TableSortLabel>
+                </TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>{t('users:roles.label')}</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>{t('users:family.title')}</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>{t('users:table.actions')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredUsers.map((user: User) => (
+              {sortedUsers.map((user: User) => (
                 <TableRow key={user.id}>
                   <TableCell>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -643,17 +762,16 @@ export default function UsersPage() {
                       >
                         <Person />
                       </Avatar>
-                      <Box>
-                        <Typography variant="body2" fontWeight={500}>
-                          {user.firstName} {user.lastName}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {user.isAdmin ? t('users:roles.admin') : t('users:viewUser')}
-                        </Typography>
-                      </Box>
+                      <Typography variant="body2" fontWeight={500}>
+                        {user.firstName}
+                      </Typography>
                     </Box>
                   </TableCell>
-                  <TableCell>{user.username}</TableCell>
+                  <TableCell>
+                    <Typography variant="body2" fontWeight={500}>
+                      {user.lastName}
+                    </Typography>
+                  </TableCell>
                   <TableCell>{user.email || '-'}</TableCell>
                   <TableCell>
                     {user.phone ? (
@@ -681,41 +799,6 @@ export default function UsersPage() {
                         <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }} data-testid={`inactive-reason-${user.id}`}>
                           {user.inactiveReason}
                         </Typography>
-                      )}
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-                      {user.categories && user.categories.length > 0 ? (
-                        user.categories.map((category, index) => (
-                          <Chip
-                            key={index}
-                            label={category}
-                            size="small"
-                            variant="outlined"
-                            data-testid={`category-${user.id}-${index}`}
-                          />
-                        ))
-                      ) : (
-                        <Typography variant="body2" color="text.secondary">-</Typography>
-                      )}
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-                      {user.skills && user.skills.length > 0 ? (
-                        user.skills.map((skill, index) => (
-                          <Chip
-                            key={index}
-                            label={skill}
-                            size="small"
-                            color="primary"
-                            variant="outlined"
-                            data-testid={`skill-${user.id}-${index}`}
-                          />
-                        ))
-                      ) : (
-                        <Typography variant="body2" color="text.secondary">-</Typography>
                       )}
                     </Box>
                   </TableCell>

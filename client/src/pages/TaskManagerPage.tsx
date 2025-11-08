@@ -1459,26 +1459,28 @@ function ProposalsReviewContent({ proposals, workGroups, users, onApprove, onRej
                     </Box>
 
                     <Grid container spacing={2}>
-                      <Grid size={{ xs: 12, sm: 6 }}>
-                        <Typography variant="body2" color="text.secondary">Ko izvodi:</Typography>
-                        <Typography variant="body1">{proposal.who}</Typography>
-                      </Grid>
-                      <Grid size={{ xs: 12, sm: 6 }}>
-                        <Typography variant="body2" color="text.secondary">Gdje:</Typography>
-                        <Typography variant="body1">{proposal.where}</Typography>
-                      </Grid>
-                      <Grid size={{ xs: 12, sm: 6 }}>
-                        <Typography variant="body2" color="text.secondary">Kada:</Typography>
-                        <Typography variant="body1">{proposal.when}</Typography>
-                      </Grid>
-                      <Grid size={{ xs: 12, sm: 6 }}>
-                        <Typography variant="body2" color="text.secondary">Budžet:</Typography>
-                        <Typography variant="body1" sx={{ fontWeight: 600 }}>{proposal.budget} CHF</Typography>
-                      </Grid>
                       <Grid size={{ xs: 12 }}>
                         <Typography variant="body2" color="text.secondary">Šta:</Typography>
-                        <Typography variant="body1">{proposal.what}</Typography>
+                        <Typography variant="body1" sx={{ fontWeight: 600 }}>{proposal.what}</Typography>
                       </Grid>
+                      {proposal.where && (
+                        <Grid size={{ xs: 12, sm: 6 }}>
+                          <Typography variant="body2" color="text.secondary">Gdje:</Typography>
+                          <Typography variant="body1">{proposal.where}</Typography>
+                        </Grid>
+                      )}
+                      {proposal.when && (
+                        <Grid size={{ xs: 12, sm: 6 }}>
+                          <Typography variant="body2" color="text.secondary">Kada:</Typography>
+                          <Typography variant="body1">{proposal.when}</Typography>
+                        </Grid>
+                      )}
+                      {proposal.budget && (
+                        <Grid size={{ xs: 12, sm: 6 }}>
+                          <Typography variant="body2" color="text.secondary">Budžet:</Typography>
+                          <Typography variant="body1" sx={{ fontWeight: 600 }}>{proposal.budget} CHF</Typography>
+                        </Grid>
+                      )}
                       {proposal.how && (
                         <Grid size={{ xs: 12 }}>
                           <Typography variant="body2" color="text.secondary">Kako:</Typography>
@@ -1571,7 +1573,6 @@ function ProposalModal({ open, onClose, workGroup, currentUserId }: ProposalModa
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
-  const [who, setWho] = useState('');
   const [what, setWhat] = useState('');
   const [where, setWhere] = useState('');
   const [when, setWhen] = useState('');
@@ -1601,7 +1602,6 @@ function ProposalModal({ open, onClose, workGroup, currentUserId }: ProposalModa
   });
 
   const handleClose = () => {
-    setWho('');
     setWhat('');
     setWhere('');
     setWhen('');
@@ -1612,10 +1612,10 @@ function ProposalModal({ open, onClose, workGroup, currentUserId }: ProposalModa
   };
 
   const handleSubmit = () => {
-    if (!who || !what || !where || !when || !budget || !workGroup) {
+    if (!what || !workGroup) {
       toast({
         title: 'Greška',
-        description: 'Molimo popunite sva obavezna polja.',
+        description: 'Molimo popunite polje "Šta" (obavezno).',
         variant: 'destructive',
       });
       return;
@@ -1623,13 +1623,12 @@ function ProposalModal({ open, onClose, workGroup, currentUserId }: ProposalModa
 
     const proposalData = {
       workGroupId: workGroup.id,
-      who,
       what,
-      where,
-      when,
+      where: where || null,
+      when: when || null,
       how: how || null,
       why: why || null,
-      budget,
+      budget: budget || null,
       status: 'pending',
       createdBy: currentUserId,
     };
@@ -1643,40 +1642,29 @@ function ProposalModal({ open, onClose, workGroup, currentUserId }: ProposalModa
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
           <TextField
-            label="Ko izvodi (Who)"
-            value={who}
-            onChange={(e) => setWho(e.target.value)}
-            fullWidth
-            required
-            placeholder="Ko će izvršiti ovaj zadatak?"
-            data-testid="input-proposal-who"
-          />
-          <TextField
-            label="Šta je to (What)"
+            label="Šta je to (What) *"
             value={what}
             onChange={(e) => setWhat(e.target.value)}
             fullWidth
             required
             multiline
             rows={3}
-            placeholder="Šta treba uraditi?"
+            placeholder="Šta treba uraditi? (obavezno)"
             data-testid="input-proposal-what"
           />
           <TextField
-            label="Gdje (Where)"
+            label="Gdje (Where - Opciono)"
             value={where}
             onChange={(e) => setWhere(e.target.value)}
             fullWidth
-            required
             placeholder="Gdje će se izvršiti?"
             data-testid="input-proposal-where"
           />
           <TextField
-            label="Kada (When)"
+            label="Kada (When - Opciono)"
             value={when}
             onChange={(e) => setWhen(e.target.value)}
             fullWidth
-            required
             placeholder="Kada će se izvršiti?"
             data-testid="input-proposal-when"
           />
@@ -1687,7 +1675,7 @@ function ProposalModal({ open, onClose, workGroup, currentUserId }: ProposalModa
             fullWidth
             multiline
             rows={3}
-            placeholder="Kako će se izvršiti? (Opciono)"
+            placeholder="Kako će se izvršiti?"
             data-testid="input-proposal-how"
           />
           <TextField
@@ -1697,15 +1685,14 @@ function ProposalModal({ open, onClose, workGroup, currentUserId }: ProposalModa
             fullWidth
             multiline
             rows={3}
-            placeholder="Zašto je ovo potrebno? (Opciono)"
+            placeholder="Zašto je ovo potrebno?"
             data-testid="input-proposal-why"
           />
           <TextField
-            label="Budžet (CHF)"
+            label="Budžet (CHF - Opciono)"
             value={budget}
             onChange={(e) => setBudget(e.target.value)}
             fullWidth
-            required
             type="number"
             placeholder="Procijenjeni budžet u CHF"
             data-testid="input-proposal-budget"

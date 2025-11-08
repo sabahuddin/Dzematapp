@@ -2039,6 +2039,27 @@ export class DatabaseStorage implements IStorage {
       })
       .where(eq(akikaApplications.id, id))
       .returning();
+    
+    // Send notification message after approval
+    if (status === 'approved' && app) {
+      // Find all IO members and admins to notify
+      const allUsers = await db.select().from(users);
+      const ioMembersAndAdmins = allUsers.filter(u => 
+        u.isAdmin || (u.roles && u.roles.includes('clan_io'))
+      );
+      
+      // Send message to each IO member and admin
+      for (const user of ioMembersAndAdmins) {
+        await this.createMessage({
+          senderId: reviewedById,
+          recipientId: user.id,
+          subject: `Akika aplikacija odobrena: ${app.childName}`,
+          content: `Akika aplikacija za dijete ${app.childName} (roditelji: ${app.fatherName} i ${app.motherName}) je odobrena.\n\nEmail: ${app.email}\nTelefon: ${app.phone}\n\n${reviewNotes ? `Napomena: ${reviewNotes}` : ''}`,
+          category: null
+        });
+      }
+    }
+    
     return app;
   }
 
