@@ -23,6 +23,7 @@
     "customCity": "Stadt",
     "customCanton": "Kanton",
     "phone": "Kontakttelefon",
+    "email": "E-Mail-Adresse",
     "notes": "Anmerkung (optional)",
     "notesPlaceholder": "Schlagen Sie Datum, Uhrzeit und Ort für die Akika vor.",
     "submit": "Anfrage senden",

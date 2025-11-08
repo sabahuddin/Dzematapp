@@ -42,6 +42,7 @@ function AkikaApplicationForm() {
     customCanton: '',
     customPostalCode: '',
     phone: '',
+    email: '',
     notes: '',
   });
 
@@ -91,6 +92,7 @@ function AkikaApplicationForm() {
         customCanton: '',
         customPostalCode: '',
         phone: '',
+        email: '',
         notes: '',
       });
     } catch (error) {
@@ -294,7 +296,7 @@ function AkikaApplicationForm() {
             </>
           )}
 
-          <Grid size={{ xs: 12 }}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <TextField
               fullWidth
               required
@@ -302,6 +304,17 @@ function AkikaApplicationForm() {
               value={formData.phone}
               onChange={handleChange('phone')}
               data-testid="input-phone"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              type="email"
+              label={t("akika.email")}
+              value={formData.email}
+              onChange={handleChange('email')}
+              data-testid="input-email"
             />
           </Grid>
           <Grid size={{ xs: 12 }}>

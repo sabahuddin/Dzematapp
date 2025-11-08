@@ -23,6 +23,7 @@
     "customCity": "City",
     "customCanton": "Canton",
     "phone": "Contact Phone",
+    "email": "Email Address",
     "notes": "Notes (optional)",
     "notesPlaceholder": "Suggest date, time and place for the akika.",
     "submit": "Submit Request",

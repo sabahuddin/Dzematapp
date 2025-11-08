@@ -23,6 +23,7 @@
     "customCity": "Grad",
     "customCanton": "Kanton",
     "phone": "Telefon za kontakt",
+    "email": "Email adresa",
     "notes": "Napomena (opciono)",
     "notesPlaceholder": "Predložite datum, vrijeme i mjesto za akiku.",
     "submit": "Pošalji zahtjev",
