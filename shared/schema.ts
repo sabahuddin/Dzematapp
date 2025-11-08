@@ -935,3 +935,32 @@ export const insertMarriageApplicationSchema = createInsertSchema(marriageApplic
 
 export type MarriageApplication = typeof marriageApplications.$inferSelect;
 export type InsertMarriageApplication = z.infer<typeof insertMarriageApplicationSchema>;
+
+// Activity Feed - prikazuje sve što se dešava u džematu
+export const activityFeed = pgTable("activity_feed", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  
+  type: text("type").notNull(), // new_member, project_completed, shop_item, badge_awarded, certificate_issued, announcement, event, important_date_reminder
+  title: text("title").notNull(),
+  description: text("description"),
+  
+  // Povezani entitet (ako postoji)
+  relatedEntityId: varchar("related_entity_id"),
+  relatedEntityType: text("related_entity_type"), // announcement, event, project, user, shop_item, badge, certificate, media
+  
+  // Metadata (dodatne informacije u JSON formatu)
+  metadata: text("metadata"), // JSON string sa dodatnim podacima
+  
+  // Klikabilnost
+  isClickable: boolean("is_clickable").notNull().default(false),
+  
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertActivityFeedSchema = createInsertSchema(activityFeed).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type ActivityFeedItem = typeof activityFeed.$inferSelect;
+export type InsertActivityFeedItem = z.infer<typeof insertActivityFeedSchema>;
