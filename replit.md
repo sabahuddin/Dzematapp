@@ -17,6 +17,12 @@ DžematApp is a web-based admin dashboard application designed to manage mosque 
   - Applications automatically archived (isArchived=true) after admin approve/reject while preserving decision status
   - Notification messages sent to application submitter (not admins) when admin reviews application
 - Completed/archived tasks fully protected: Backend (403 errors) + Frontend (Edit/Move/Delete/Mark Pending buttons hidden for both završeno and arhiva statuses)
+- Activity Feed system implemented:
+  - New Feed page displays all community activities with visual distinction between clickable and non-clickable items
+  - Clickable items (announcements, events, completed projects) have shadow, hover effect, and "→" icon
+  - Non-clickable items (new members, shop listings, badges, certificates) have static gray tone
+  - Auto-refresh every 30 seconds
+  - Integrated with all major modules: user registration, announcements, events, shop, badges, certificates, projects
 
 # User Preferences
 
