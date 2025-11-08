@@ -74,6 +74,8 @@ import {
   type InsertAkikaApplication,
   type MarriageApplication,
   type InsertMarriageApplication,
+  type ActivityFeedItem,
+  type InsertActivityFeedItem,
   users,
   announcements,
   events,
@@ -110,7 +112,8 @@ import {
   userCertificates,
   membershipApplications,
   akikaApplications,
-  marriageApplications
+  marriageApplications,
+  activityFeed
 } from "@shared/schema";
 import { db } from './db';
 import { eq, and, or, desc, asc, gt, sql, inArray } from 'drizzle-orm';
@@ -400,6 +403,10 @@ export interface IStorage {
   updateMarriageApplication(id: string, updates: Partial<InsertMarriageApplication>): Promise<MarriageApplication | undefined>;
   reviewMarriageApplication(id: string, status: string, reviewedById: string, reviewNotes?: string): Promise<MarriageApplication | undefined>;
   deleteMarriageApplication(id: string): Promise<boolean>;
+
+  // Activity Feed
+  getActivityFeed(limit?: number): Promise<ActivityFeedItem[]>;
+  createActivityFeedItem(item: InsertActivityFeedItem): Promise<ActivityFeedItem>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -2123,6 +2130,19 @@ export class DatabaseStorage implements IStorage {
   async deleteMarriageApplication(id: string): Promise<boolean> {
     const result = await db.delete(marriageApplications).where(eq(marriageApplications.id, id)).returning();
     return result.length > 0;
+  }
+
+  // Activity Feed
+  async getActivityFeed(limit: number = 50): Promise<ActivityFeedItem[]> {
+    return await db.select()
+      .from(activityFeed)
+      .orderBy(desc(activityFeed.createdAt))
+      .limit(limit);
+  }
+
+  async createActivityFeedItem(item: InsertActivityFeedItem): Promise<ActivityFeedItem> {
+    const [feedItem] = await db.insert(activityFeed).values(item).returning();
+    return feedItem;
   }
 }
 
