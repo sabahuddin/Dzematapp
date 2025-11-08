@@ -10,9 +10,13 @@ DžematApp is a web-based admin dashboard application designed to manage mosque 
 - Badge criteria types display human-readable translations (e.g., "Tasks completed" instead of "tasks_completed")
 - Proposal creation simplified: "Ko izvodi" field removed, only "Šta" required, all other fields optional
 - Akika applications now require email field for notifications
-- Akika approval triggers automatic message notifications to IO members and admins
+- Akika workflow restructured:
+  - Admin view: "Prijave" with Aktivne/Arhivirane tabs showing all applications
+  - User view: "Moje prijave" with Aktivne/Arhivirane tabs showing only their applications
+  - Applications track submitter via submittedBy field (nullable for guest submissions)
+  - Applications automatically archived (isArchived=true) after admin approve/reject while preserving decision status
+  - Notification messages sent to application submitter (not admins) when admin reviews application
 - Completed/archived tasks fully protected: Backend (403 errors) + Frontend (Edit/Move/Delete/Mark Pending buttons hidden for both završeno and arhiva statuses)
-- Akika applications admin review: Added Approve/Reject buttons with review dialog for sending responses to applicants
 
 # User Preferences
 
