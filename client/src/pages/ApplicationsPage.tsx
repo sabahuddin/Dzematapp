@@ -366,27 +366,18 @@ function MyApplicationsList() {
   const { t } = useTranslation("applications");
   const [archiveTab, setArchiveTab] = useState<'active' | 'archived'>('active');
   
-  const { data: requests = [], isLoading } = useQuery<Request[]>({
-    queryKey: ["/api/requests/my"]
+  const { data: applications = [], isLoading } = useQuery<AkikaApplication[]>({
+    queryKey: ["/api/akika-applications/my"]
   });
   
-  // Filter requests based on archive tab
-  const filteredRequests = requests.filter(request => {
+  // Filter applications based on archive tab
+  const filteredApplications = applications.filter(app => {
     if (archiveTab === 'active') {
-      return request.status === 'pending' || request.status === 'approved';
+      return !app.isArchived;
     } else {
-      return request.status === 'rejected' || request.status === 'archived';
+      return app.isArchived;
     }
   });
-  
-  const requestTypes: Record<string, string> = {
-    "wedding": t("requestTypes.wedding"),
-    "mekteb": t("requestTypes.mekteb"),
-    "facility": t("requestTypes.facility"),
-    "akika": t("requestTypes.akika"),
-    "marriage": t("requestTypes.marriage"),
-    "pristupnica": t("requestTypes.pristupnica")
-  };
   
   const getStatusLabel = (status: string) => {
     switch (status) {
@@ -417,57 +408,66 @@ function MyApplicationsList() {
     }
   };
   
-  const formatDate = (date: string | Date) => {
-    return new Date(date).toLocaleDateString("bs-BA", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit"
-    });
-  };
-  
-  const getTypeLabel = (type: string) => {
-    return requestTypes[type] || type;
-  };
-  
-  const handlePrint = (request: Request) => {
-    const printWindow = window.open('', '', 'height=600,width=800');
-    if (printWindow) {
-      printWindow.document.write(`
-        <html>
-          <head>
-            <title>${t("print.title")} - ${getTypeLabel(request.requestType)}</title>
-            <style>
-              body { font-family: Arial, sans-serif; padding: 20px; }
-              h1 { color: #1976d2; }
-              .section { margin: 20px 0; }
-              .label { font-weight: bold; }
-              .value { margin-left: 10px; }
-            </style>
-          </head>
-          <body>
-            <h1>${getTypeLabel(request.requestType)}</h1>
+  const handlePrint = (application: AkikaApplication) => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+    
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Akika Prijava - ${application.childName}</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 40px; }
+            h1 { color: #1976d2; margin-bottom: 30px; }
+            .section { margin-bottom: 20px; }
+            .label { font-weight: bold; color: #555; }
+            .value { margin-left: 10px; }
+            .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+            @media print {
+              body { padding: 20px; }
+            }
+          </style>
+        </head>
+        <body>
+          <h1>Prijava Akike</h1>
+          
+          <div class="section">
+            <div class="label">Dijete:</div>
+            <div class="value">${application.childName}</div>
+          </div>
+          
+          <div class="grid">
             <div class="section">
-              <span class="label">${t("print.submittedAt")}:</span>
-              <span class="value">${formatDate(request.createdAt)}</span>
+              <div class="label">Otac:</div>
+              <div class="value">${application.fatherName}</div>
             </div>
             <div class="section">
-              <span class="label">${t("print.status")}:</span>
-              <span class="value">${getStatusLabel(request.status)}</span>
+              <div class="label">Majka:</div>
+              <div class="value">${application.motherName}</div>
             </div>
-            ${request.adminNotes ? `
-              <div class="section">
-                <span class="label">${t("print.adminNotes")}:</span>
-                <div class="value">${request.adminNotes}</div>
-              </div>
-            ` : ''}
-          </body>
-        </html>
-      `);
-      printWindow.document.close();
-      printWindow.print();
-    }
+          </div>
+          
+          <div class="section">
+            <div class="label">Status:</div>
+            <div class="value">${getStatusLabel(application.status)}</div>
+          </div>
+          
+          ${application.reviewNotes ? `
+            <div class="section">
+              <div class="label">Odgovor/Napomena:</div>
+              <div class="value">${application.reviewNotes}</div>
+            </div>
+          ` : ''}
+          
+          <div class="section">
+            <div class="label">Podneseno:</div>
+            <div class="value">${application.createdAt ? new Date(application.createdAt).toLocaleString('hr-HR') : '-'}</div>
+          </div>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
   };
   
   return (
@@ -500,8 +500,10 @@ function MyApplicationsList() {
       </Box>
       
       {isLoading ? (
-        <Typography>{t("myApplications.loading")}</Typography>
-      ) : filteredRequests.length === 0 ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+          <CircularProgress />
+        </Box>
+      ) : filteredApplications.length === 0 ? (
         <Card>
           <CardContent>
             <Box sx={{ textAlign: "center", py: 4 }}>
@@ -513,41 +515,64 @@ function MyApplicationsList() {
         </Card>
       ) : (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          {filteredRequests.map((request) => (
-            <Card key={request.id} data-testid={`card-request-${request.id}`}>
+          {filteredApplications.map((application) => (
+            <Card key={application.id} variant="outlined">
               <CardHeader
-                title={getTypeLabel(request.requestType)}
-                subheader={`${t("myApplications.submittedLabel")}: ${formatDate(request.createdAt)}`}
+                title={`${application.childName} - ${application.fatherName}`}
+                subheader={`${t("print.submittedAt")}: ${application.createdAt ? new Date(application.createdAt).toLocaleString('hr-HR') : '-'}`}
                 action={
                   <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
                     <Chip
-                      label={getStatusLabel(request.status)}
-                      color={getStatusColor(request.status)}
+                      label={getStatusLabel(application.status)}
+                      color={getStatusColor(application.status)}
                       size="small"
-                      data-testid={`status-${request.id}`}
                     />
-                    <IconButton
-                      size="small"
-                      onClick={() => handlePrint(request)}
-                      data-testid={`button-print-${request.id}`}
-                      title={t("myApplications.print")}
+                    <IconButton 
+                      onClick={() => handlePrint(application)}
+                      data-testid={`button-print-application-${application.id}`}
                     >
-                      <Print fontSize="small" />
+                      <Print />
                     </IconButton>
                   </Box>
                 }
               />
               <CardContent>
-                {request.adminNotes && (
-                  <Box sx={{ mt: 2, p: 2, bgcolor: "action.hover", borderRadius: 1 }}>
+                <Grid container spacing={2}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <Typography variant="caption" color="text.secondary">
-                      {t("myApplications.adminNotesLabel")}
+                      {t("akika.fatherName")}
                     </Typography>
-                    <Typography variant="body2">
-                      {request.adminNotes}
+                    <Typography variant="body2">{application.fatherName}</Typography>
+                  </Grid>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Typography variant="caption" color="text.secondary">
+                      {t("akika.motherName")}
                     </Typography>
-                  </Box>
-                )}
+                    <Typography variant="body2">{application.motherName}</Typography>
+                  </Grid>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Typography variant="caption" color="text.secondary">
+                      {t("akika.childName")}
+                    </Typography>
+                    <Typography variant="body2">{application.childName}</Typography>
+                  </Grid>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Typography variant="caption" color="text.secondary">
+                      {t("akika.childGender")}
+                    </Typography>
+                    <Typography variant="body2">{application.childGender}</Typography>
+                  </Grid>
+                  {application.reviewNotes && (
+                    <Grid size={{ xs: 12 }}>
+                      <Box sx={{ p: 2, bgcolor: "action.hover", borderRadius: 1 }}>
+                        <Typography variant="caption" color="text.secondary">
+                          Odgovor/Napomena
+                        </Typography>
+                        <Typography variant="body2">{application.reviewNotes}</Typography>
+                      </Box>
+                    </Grid>
+                  )}
+                </Grid>
               </CardContent>
             </Card>
           ))}
@@ -560,6 +585,7 @@ function MyApplicationsList() {
 function IncomingAkikaApplications() {
   const { t } = useTranslation("applications");
   const { toast } = useToast();
+  const [archiveTab, setArchiveTab] = useState<'active' | 'archived'>('active');
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState<AkikaApplication | null>(null);
   const [reviewNotes, setReviewNotes] = useState('');
@@ -567,6 +593,15 @@ function IncomingAkikaApplications() {
   const { data: applications, isLoading } = useQuery<AkikaApplication[]>({
     queryKey: ['/api/akika-applications'],
   });
+
+  // Filter applications based on archive tab
+  const filteredApplications = applications?.filter(app => {
+    if (archiveTab === 'active') {
+      return !app.isArchived;
+    } else {
+      return app.isArchived;
+    }
+  }) || [];
 
   const reviewMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
@@ -594,27 +629,6 @@ function IncomingAkikaApplications() {
     },
   });
 
-  const archiveMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const response = await apiRequest(`/api/akika-applications/${id}/review`, 'PATCH', {
-        status: 'archived',
-        reviewNotes: null,
-      });
-      return await response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/akika-applications'] });
-      toast({
-        title: t("incomingApplications.archiveSuccess"),
-      });
-    },
-    onError: () => {
-      toast({
-        title: t("incomingApplications.archiveError"),
-        variant: "destructive",
-      });
-    },
-  });
 
   const handleOpenReview = (application: AkikaApplication) => {
     setSelectedApplication(application);
@@ -678,39 +692,48 @@ function IncomingAkikaApplications() {
     );
   }
 
-  const activeApplications = applications?.filter(app => app.status !== 'archived') || [];
-
   return (
     <Box>
       <Typography variant="body2" color="text.secondary" paragraph>
         {t("incomingApplications.description")}
       </Typography>
 
-      {activeApplications.length === 0 ? (
+      {/* Archive Tabs */}
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+        <Tabs 
+          value={archiveTab} 
+          onChange={(_, newValue) => setArchiveTab(newValue)}
+          data-testid="tabs-admin-archive"
+        >
+          <Tab 
+            label="Aktivne" 
+            value="active" 
+            data-testid="tab-active-admin"
+          />
+          <Tab 
+            label="Arhivirane" 
+            value="archived" 
+            data-testid="tab-archived-admin"
+          />
+        </Tabs>
+      </Box>
+
+      {filteredApplications.length === 0 ? (
         <Alert severity="info">{t("incomingApplications.noApplications")}</Alert>
       ) : (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          {activeApplications.map((application) => (
+          {filteredApplications.map((application) => (
             <Card key={application.id} variant="outlined">
               <CardHeader
                 title={`${application.childName} - ${application.fatherName}`}
                 subheader={`${t("print.submittedAt")}: ${application.createdAt ? new Date(application.createdAt).toLocaleString('hr-HR') : '-'}`}
                 action={
-                  <Box sx={{ display: 'flex', gap: 1 }}>
-                    <IconButton 
-                      onClick={() => handlePrint(application)}
-                      data-testid={`button-print-application-${application.id}`}
-                    >
-                      <Print />
-                    </IconButton>
-                    <IconButton 
-                      onClick={() => archiveMutation.mutate(application.id)}
-                      disabled={archiveMutation.isPending}
-                      data-testid={`button-archive-application-${application.id}`}
-                    >
-                      <ArchiveIcon />
-                    </IconButton>
-                  </Box>
+                  <IconButton 
+                    onClick={() => handlePrint(application)}
+                    data-testid={`button-print-application-${application.id}`}
+                  >
+                    <Print />
+                  </IconButton>
                 }
               />
               <CardContent>
@@ -920,19 +943,11 @@ export default function ApplicationsPage() {
                 data-testid="tab-marriage"
               />
               <Tab 
-                icon={<ListIcon />} 
-                label={t("myApplications.title")} 
+                icon={user?.isAdmin ? <Inbox /> : <ListIcon />} 
+                label={user?.isAdmin ? "Prijave" : t("myApplications.title")} 
                 iconPosition="start"
-                data-testid="tab-my-applications"
+                data-testid={user?.isAdmin ? "tab-incoming-applications" : "tab-my-applications"}
               />
-              {user?.isAdmin && (
-                <Tab 
-                  icon={<Inbox />} 
-                  label={t("incomingApplications.title")} 
-                  iconPosition="start"
-                  data-testid="tab-incoming-applications"
-                />
-              )}
             </Tabs>
 
             <TabPanel value={tabValue} index={0}>
@@ -944,14 +959,8 @@ export default function ApplicationsPage() {
             </TabPanel>
 
             <TabPanel value={tabValue} index={2}>
-              <MyApplicationsList />
+              {user?.isAdmin ? <IncomingAkikaApplications /> : <MyApplicationsList />}
             </TabPanel>
-
-            {user?.isAdmin && (
-              <TabPanel value={tabValue} index={3}>
-                <IncomingAkikaApplications />
-              </TabPanel>
-            )}
           </CardContent>
         </Card>
       </Container>

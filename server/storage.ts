@@ -2034,6 +2034,7 @@ export class DatabaseStorage implements IStorage {
     const [app] = await db.update(akikaApplications)
       .set({ 
         status, 
+        isArchived: (status === 'approved' || status === 'rejected'), // Automatically archive after decision
         reviewedById, 
         reviewNotes: reviewNotes || null,
         reviewedAt: new Date() 
@@ -2041,27 +2042,35 @@ export class DatabaseStorage implements IStorage {
       .where(eq(akikaApplications.id, id))
       .returning();
     
-    // Send notification message after approval
-    if (status === 'approved' && app) {
-      // Find all IO members and admins to notify
-      const allUsers = await db.select().from(users);
-      const ioMembersAndAdmins = allUsers.filter(u => 
-        u.isAdmin || (u.roles && u.roles.includes('clan_io'))
-      );
+    // Send notification message to the user who submitted the application
+    if ((status === 'approved' || status === 'rejected') && app && app.submittedBy) {
+      const statusText = status === 'approved' ? 'odobrena' : 'odbijena';
+      const subject = `Akika prijava ${statusText}`;
+      let content = `Vaša prijava za akiku djeteta ${app.childName} je ${statusText}.\n\n`;
       
-      // Send message to each IO member and admin
-      for (const user of ioMembersAndAdmins) {
-        await this.createMessage({
-          senderId: reviewedById,
-          recipientId: user.id,
-          subject: `Akika aplikacija odobrena: ${app.childName}`,
-          content: `Akika aplikacija za dijete ${app.childName} (roditelji: ${app.fatherName} i ${app.motherName}) je odobrena.\n\nEmail: ${app.email}\nTelefon: ${app.phone}\n\n${reviewNotes ? `Napomena: ${reviewNotes}` : ''}`,
-          category: null
-        });
+      if (reviewNotes) {
+        content += `Odgovor/Napomena:\n${reviewNotes}\n\n`;
       }
+      
+      content += `Za dodatne informacije, molimo kontaktirajte nas.`;
+      
+      await this.createMessage({
+        senderId: reviewedById,
+        recipientId: app.submittedBy,
+        subject,
+        content,
+        category: null
+      });
     }
     
     return app;
+  }
+
+  async getUserAkikaApplications(userId: string): Promise<AkikaApplication[]> {
+    return await db.select()
+      .from(akikaApplications)
+      .where(eq(akikaApplications.submittedBy, userId))
+      .orderBy(desc(akikaApplications.createdAt));
   }
 
   async deleteAkikaApplication(id: string): Promise<boolean> {
