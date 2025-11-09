@@ -29,17 +29,27 @@
     "description": "Përshkrimi",
     "price": "Çmimi",
     "priceWithCurrency": "Çmimi (CHF)",
+    "category": "Kategoria",
+    "weight": "Pesha (kg)",
+    "volume": "Vëllimi (l)",
     "size": "Madhësia",
     "quantity": "Sasia",
     "color": "Ngjyra",
     "notes": "Shënim",
     "messageContent": "Përmbajtja e mesazhit"
   },
+  "categories": {
+    "hrana": "Ushqim",
+    "piće": "Pije",
+    "odjeća": "Veshje"
+  },
   "placeholders": {
     "enterMessage": "Shkruani mesazhin tuaj..."
   },
   "display": {
     "priceInCHF": "{{price}} CHF",
+    "weight": "Pesha: {{weight}} kg",
+    "volume": "Vëllimi: {{volume}} l",
     "size": "Madhësia: {{size}}",
     "color": "Ngjyra: {{color}}",
     "inStock": "Në stok: {{quantity}}",

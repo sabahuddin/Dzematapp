@@ -29,17 +29,27 @@
     "description": "Opis",
     "price": "Cijena",
     "priceWithCurrency": "Cijena (CHF)",
+    "category": "Kategorija",
+    "weight": "Težina (kg)",
+    "volume": "Zapremina (l)",
     "size": "Veličina",
     "quantity": "Količina",
     "color": "Boja",
     "notes": "Napomena",
     "messageContent": "Sadržaj poruke"
   },
+  "categories": {
+    "hrana": "Hrana",
+    "piće": "Piće",
+    "odjeća": "Odjeća"
+  },
   "placeholders": {
     "enterMessage": "Unesite vašu poruku..."
   },
   "display": {
     "priceInCHF": "{{price}} CHF",
+    "weight": "Težina: {{weight}} kg",
+    "volume": "Zapremina: {{volume}} l",
     "size": "Veličina: {{size}}",
     "color": "Boja: {{color}}",
     "inStock": "Na stanju: {{quantity}}",

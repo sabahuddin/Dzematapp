@@ -29,17 +29,27 @@
     "description": "Description",
     "price": "Price",
     "priceWithCurrency": "Price (CHF)",
+    "category": "Category",
+    "weight": "Weight (kg)",
+    "volume": "Volume (l)",
     "size": "Size",
     "quantity": "Quantity",
     "color": "Color",
     "notes": "Notes",
     "messageContent": "Message content"
   },
+  "categories": {
+    "hrana": "Food",
+    "piće": "Drinks",
+    "odjeća": "Clothing"
+  },
   "placeholders": {
     "enterMessage": "Enter your message..."
   },
   "display": {
     "priceInCHF": "{{price}} CHF",
+    "weight": "Weight: {{weight}} kg",
+    "volume": "Volume: {{volume}} l",
     "size": "Size: {{size}}",
     "color": "Color: {{color}}",
     "inStock": "In stock: {{quantity}}",
