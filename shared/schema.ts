@@ -213,6 +213,9 @@ export const shopProducts = pgTable("shop_products", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
   photos: text("photos").array(), // array of photo URLs (max 10)
+  category: text("category"), // hrana, piće, odjeća
+  weight: text("weight"), // For food: kilogram or KG
+  volume: text("volume"), // For drinks: litar
   size: text("size"),
   quantity: integer("quantity").default(0),
   color: text("color"),
@@ -229,15 +232,6 @@ export const marketplaceItems = pgTable("marketplace_items", {
   photos: text("photos").array(), // array of photo URLs (max 3)
   type: text("type").notNull(), // sell, gift
   price: text("price"), // price in CHF (only for sale items)
-  
-  // Product categories and specific fields
-  category: text("category"), // hrana, piće, odjeća
-  weight: text("weight"), // For food: kilogram or KG
-  volume: text("volume"), // For drinks: litar
-  size: text("size"), // For clothing: S, M, L, XL, 2XL, 3XL
-  quantity: text("quantity"), // For clothing: available quantity
-  color: text("color"), // For clothing: color
-  
   status: text("status").notNull().default("active"), // active, completed
   userId: varchar("user_id").notNull().references(() => users.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -359,11 +353,6 @@ export const insertRequestSchema = createInsertSchema(requests).omit({
 export const insertShopProductSchema = createInsertSchema(shopProducts).omit({
   id: true,
   createdAt: true,
-});
-
-export const insertMarketplaceItemSchema = createInsertSchema(marketplaceItems).omit({
-  id: true,
-  createdAt: true,
 }).superRefine((data, ctx) => {
   // Validate category-specific fields
   if (data.category === 'hrana') {
@@ -407,6 +396,11 @@ export const insertMarketplaceItemSchema = createInsertSchema(marketplaceItems).
       });
     }
   }
+});
+
+export const insertMarketplaceItemSchema = createInsertSchema(marketplaceItems).omit({
+  id: true,
+  createdAt: true,
 });
 
 export const insertProductPurchaseRequestSchema = createInsertSchema(productPurchaseRequests).omit({
