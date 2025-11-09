@@ -24,11 +24,12 @@ DžematApp is a web-based admin dashboard application designed to manage mosque 
   - Auto-refresh every 30 seconds
   - Integrated with all major modules: user registration, announcements, events, shop, badges, certificates, projects
 - Email field optional in all applications (Pristupnica, Akika, Šerijatsko vjenčanje)
-- Shop product categories implemented:
-  - Categories: Hrana (food), Piće (drinks), Odjeća (clothing)
+- Shop product categories moved from "Prodajem" marketplace to "DžematShop" tab:
+  - Categories now available only in DžematShop: Hrana (food), Piće (drinks), Odjeća (clothing)
   - Category-specific fields: weight (kg) for food, volume (l) for drinks, size/quantity/color for clothing
   - Conditional form inputs based on selected category
-  - Zod validation enforces required fields per category
+  - Zod validation enforces required fields per category in shop products
+  - Marketplace tabs ("Prodajem"/"Poklanjam") simplified without category fields
 - Application labels renamed: "Prijava akike" → "Akika", "Prijava šerijatskog vjenčanja" → "Šerijatsko vjenčanje"
 - Complete marriage application form implemented with groom/bride data, witnesses, mahr, civil marriage details
 
@@ -75,7 +76,7 @@ The system employs a simple session-based authentication using username/password
 - **Section Visibility**: Public/private settings for work groups with access control. Private sections require access requests with admin approval.
 - **Access Request System**: Users can request membership to private sections with two-step confirmation ("Jeste li sigurni da želite biti član ove sekcije?" - DA/OTKAŽI).
 - **Imam Q&A**: System for submitting and archiving questions for the Imam.
-- **Shop Module**: Marketplace for items with photo uploads, image viewer, edit functionality, and contact form.
+- **Shop Module**: Two-part system with DžematShop (categorized products with hrana/piće/odjeća) and marketplace ("Prodajem"/"Poklanjam" tabs for simple listings). Features photo uploads, image viewer, edit functionality, and contact form. Only DžematShop supports product categories with conditional fields.
 - **Prayer Times (Vaktija)**: Full prayer times calendar with CSV upload capability and accordion view for monthly times. Dashboard displays today's prayer times.
 - **Internationalization (i18n)**: Multi-language support using react-i18next (Bosnian, German, English, Albanian) with a language selector.
 - **Projekti + Finansije Integration**: Financial contributions can optionally link to projects, automatically updating project amounts.

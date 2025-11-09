@@ -44,6 +44,9 @@ export default function ShopPage() {
   const [productForm, setProductForm] = useState({
     name: "",
     photos: [] as string[],
+    category: "",
+    weight: "",
+    volume: "",
     size: "",
     quantity: 0,
     color: "",
@@ -57,13 +60,7 @@ export default function ShopPage() {
     photos: [] as string[],
     type: "sale" as "sale" | "gift",
     price: "",
-    status: "active",
-    category: "",
-    weight: "",
-    volume: "",
-    size: "",
-    quantity: "",
-    color: ""
+    status: "active"
   });
 
   const isAdmin = user?.isAdmin || user?.roles?.includes('admin') || user?.roles?.includes('imam');
@@ -164,6 +161,9 @@ export default function ShopPage() {
       setProductForm({
         name: "",
         photos: [],
+        category: "",
+        weight: "",
+        volume: "",
         size: "",
         quantity: 0,
         color: "",
@@ -203,6 +203,9 @@ export default function ShopPage() {
       setProductForm({
         name: "",
         photos: [],
+        category: "",
+        weight: "",
+        volume: "",
         size: "",
         quantity: 0,
         color: "",
@@ -235,6 +238,9 @@ export default function ShopPage() {
       return await apiRequest('/api/shop/products', 'POST', {
         name: product.name,
         photos: product.photos || [],
+        category: product.category,
+        weight: product.weight,
+        volume: product.volume,
         size: product.size,
         quantity: product.quantity,
         color: product.color,
@@ -271,13 +277,7 @@ export default function ShopPage() {
         photos: [],
         type: "sale",
         price: "",
-        status: "active",
-        category: "",
-        weight: "",
-        volume: "",
-        size: "",
-        quantity: "",
-        color: ""
+        status: "active"
       });
     },
     onError: () => {
@@ -301,13 +301,7 @@ export default function ShopPage() {
         photos: [],
         type: "sale",
         price: "",
-        status: "active",
-        category: "",
-        weight: "",
-        volume: "",
-        size: "",
-        quantity: "",
-        color: ""
+        status: "active"
       });
     },
     onError: () => {
@@ -404,6 +398,9 @@ export default function ShopPage() {
     setProductForm({
       name: product.name,
       photos: product.photos || [],
+      category: product.category || "",
+      weight: product.weight || "",
+      volume: product.volume || "",
       size: product.size || "",
       quantity: product.quantity || 0,
       color: product.color || "",
@@ -434,25 +431,19 @@ export default function ShopPage() {
       photos: item.photos || [],
       type: item.type as "sale" | "gift",
       price: item.price || "",
-      status: item.status || "active",
-      category: item.category || "",
-      weight: item.weight || "",
-      volume: item.volume || "",
-      size: item.size || "",
-      quantity: item.quantity || "",
-      color: item.color || ""
+      status: item.status || "active"
     });
     setMarketplaceModalOpen(true);
   };
 
-  const handleCategoryChange = (newCategory: string) => {
-    setMarketplaceForm({
-      ...marketplaceForm,
+  const handleProductCategoryChange = (newCategory: string) => {
+    setProductForm({
+      ...productForm,
       category: newCategory,
       weight: "",
       volume: "",
       size: "",
-      quantity: "",
+      quantity: 0,
       color: ""
     });
   };
@@ -564,6 +555,9 @@ export default function ShopPage() {
                 setProductForm({
                   name: "",
                   photos: [],
+                  category: "",
+                  weight: "",
+                  volume: "",
                   size: "",
                   quantity: 0,
                   color: "",
@@ -623,20 +617,34 @@ export default function ShopPage() {
                           {t('shop:display.priceInCHF', { price: product.price })}
                         </Typography>
                       )}
-                      {product.size && (
+                      {product.category === "hrana" && product.weight && (
                         <Typography variant="body2" color="text.secondary">
-                          {t('shop:display.size', { size: product.size })}
+                          {t('shop:display.weight', { weight: product.weight })}
                         </Typography>
                       )}
-                      {product.color && (
+                      {product.category === "piće" && product.volume && (
                         <Typography variant="body2" color="text.secondary">
-                          {t('shop:display.color', { color: product.color })}
+                          {t('shop:display.volume', { volume: product.volume })}
                         </Typography>
                       )}
-                      {product.quantity !== null && product.quantity !== undefined && (
-                        <Typography variant="body2" color="text.secondary">
-                          {t('shop:display.inStock', { quantity: product.quantity })}
-                        </Typography>
+                      {product.category === "odjeća" && (
+                        <>
+                          {product.size && (
+                            <Typography variant="body2" color="text.secondary">
+                              {t('shop:display.size', { size: product.size })}
+                            </Typography>
+                          )}
+                          {product.color && (
+                            <Typography variant="body2" color="text.secondary">
+                              {t('shop:display.color', { color: product.color })}
+                            </Typography>
+                          )}
+                          {product.quantity !== null && product.quantity !== undefined && (
+                            <Typography variant="body2" color="text.secondary">
+                              {t('shop:display.inStock', { quantity: product.quantity })}
+                            </Typography>
+                          )}
+                        </>
                       )}
                       {product.notes && (
                         <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
@@ -700,7 +708,7 @@ export default function ShopPage() {
             startIcon={<Add />}
             onClick={() => {
               setEditingMarketplaceItem(null);
-              setMarketplaceForm({ name: "", description: "", photos: [], type: "sale", price: "", status: "active", category: "", weight: "", volume: "", size: "", quantity: "", color: "" });
+              setMarketplaceForm({ name: "", description: "", photos: [], type: "sale", price: "", status: "active" });
               setMarketplaceModalOpen(true);
             }}
             sx={{ mb: 3 }}
@@ -761,35 +769,6 @@ export default function ShopPage() {
                             {t('shop:display.priceInCHF', { price: item.price })}
                           </Typography>
                         )}
-                        {item.category === "hrana" && item.weight && (
-                          <Typography variant="body2" color="text.secondary">
-                            Težina: {item.weight} kg
-                          </Typography>
-                        )}
-                        {item.category === "piće" && item.volume && (
-                          <Typography variant="body2" color="text.secondary">
-                            Zapremina: {item.volume} l
-                          </Typography>
-                        )}
-                        {item.category === "odjeća" && (
-                          <>
-                            {item.size && (
-                              <Typography variant="body2" color="text.secondary">
-                                Veličina: {item.size}
-                              </Typography>
-                            )}
-                            {item.quantity && (
-                              <Typography variant="body2" color="text.secondary">
-                                Količina: {item.quantity}
-                              </Typography>
-                            )}
-                            {item.color && (
-                              <Typography variant="body2" color="text.secondary">
-                                Boja: {item.color}
-                              </Typography>
-                            )}
-                          </>
-                        )}
                         <Chip label={t('shop:display.forSale')} color="primary" size="small" sx={{ mb: 1 }} />
                         <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                           {item.userId !== user?.id && (
@@ -848,7 +827,7 @@ export default function ShopPage() {
             startIcon={<Add />}
             onClick={() => {
               setEditingMarketplaceItem(null);
-              setMarketplaceForm({ name: "", description: "", photos: [], type: "gift", price: "", status: "active", category: "", weight: "", volume: "", size: "", quantity: "", color: "" });
+              setMarketplaceForm({ name: "", description: "", photos: [], type: "gift", price: "", status: "active" });
               setMarketplaceModalOpen(true);
             }}
             sx={{ mb: 3 }}
@@ -903,35 +882,6 @@ export default function ShopPage() {
                           <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                             {item.description}
                           </Typography>
-                        )}
-                        {item.category === "hrana" && item.weight && (
-                          <Typography variant="body2" color="text.secondary">
-                            Težina: {item.weight} kg
-                          </Typography>
-                        )}
-                        {item.category === "piće" && item.volume && (
-                          <Typography variant="body2" color="text.secondary">
-                            Zapremina: {item.volume} l
-                          </Typography>
-                        )}
-                        {item.category === "odjeća" && (
-                          <>
-                            {item.size && (
-                              <Typography variant="body2" color="text.secondary">
-                                Veličina: {item.size}
-                              </Typography>
-                            )}
-                            {item.quantity && (
-                              <Typography variant="body2" color="text.secondary">
-                                Količina: {item.quantity}
-                              </Typography>
-                            )}
-                            {item.color && (
-                              <Typography variant="body2" color="text.secondary">
-                                Boja: {item.color}
-                              </Typography>
-                            )}
-                          </>
                         )}
                         <Chip label={t('shop:display.giftLabel')} color="success" size="small" sx={{ mb: 1 }} />
                         <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
@@ -1041,35 +991,6 @@ export default function ShopPage() {
                             {t('shop:display.priceInCHF', { price: item.price })}
                           </Typography>
                         )}
-                        {item.category === "hrana" && item.weight && (
-                          <Typography variant="body2" color="text.secondary">
-                            Težina: {item.weight} kg
-                          </Typography>
-                        )}
-                        {item.category === "piće" && item.volume && (
-                          <Typography variant="body2" color="text.secondary">
-                            Zapremina: {item.volume} l
-                          </Typography>
-                        )}
-                        {item.category === "odjeća" && (
-                          <>
-                            {item.size && (
-                              <Typography variant="body2" color="text.secondary">
-                                Veličina: {item.size}
-                              </Typography>
-                            )}
-                            {item.quantity && (
-                              <Typography variant="body2" color="text.secondary">
-                                Količina: {item.quantity}
-                              </Typography>
-                            )}
-                            {item.color && (
-                              <Typography variant="body2" color="text.secondary">
-                                Boja: {item.color}
-                              </Typography>
-                            )}
-                          </>
-                        )}
                         <Chip 
                           label={item.type === "sale" ? t('shop:display.sold') : t('shop:display.gifted')} 
                           color="default" 
@@ -1113,6 +1034,72 @@ export default function ShopPage() {
             data-testid="input-product-name"
           />
           
+          <FormControl fullWidth margin="normal">
+            <InputLabel>{t('shop:labels.category')}</InputLabel>
+            <Select
+              value={productForm.category}
+              label={t('shop:labels.category')}
+              onChange={(e) => handleProductCategoryChange(e.target.value)}
+              data-testid="select-product-category"
+            >
+              <MenuItem value="hrana">{t('shop:categories.hrana')}</MenuItem>
+              <MenuItem value="piće">{t('shop:categories.piće')}</MenuItem>
+              <MenuItem value="odjeća">{t('shop:categories.odjeća')}</MenuItem>
+            </Select>
+          </FormControl>
+
+          {productForm.category === "hrana" && (
+            <TextField
+              fullWidth
+              label={t('shop:labels.weight')}
+              value={productForm.weight}
+              onChange={(e) => setProductForm({ ...productForm, weight: e.target.value })}
+              margin="normal"
+              data-testid="input-product-weight"
+            />
+          )}
+
+          {productForm.category === "piće" && (
+            <TextField
+              fullWidth
+              label={t('shop:labels.volume')}
+              value={productForm.volume}
+              onChange={(e) => setProductForm({ ...productForm, volume: e.target.value })}
+              margin="normal"
+              data-testid="input-product-volume"
+            />
+          )}
+
+          {productForm.category === "odjeća" && (
+            <>
+              <TextField
+                fullWidth
+                label={t('shop:labels.size')}
+                value={productForm.size}
+                onChange={(e) => setProductForm({ ...productForm, size: e.target.value })}
+                margin="normal"
+                data-testid="input-product-size"
+              />
+              <TextField
+                fullWidth
+                label={t('shop:labels.quantity')}
+                type="number"
+                value={productForm.quantity}
+                onChange={(e) => setProductForm({ ...productForm, quantity: parseInt(e.target.value) || 0 })}
+                margin="normal"
+                data-testid="input-product-quantity"
+              />
+              <TextField
+                fullWidth
+                label={t('shop:labels.color')}
+                value={productForm.color}
+                onChange={(e) => setProductForm({ ...productForm, color: e.target.value })}
+                margin="normal"
+                data-testid="input-product-color"
+              />
+            </>
+          )}
+          
           <Box sx={{ mt: 2, mb: 2 }}>
             <Button
               variant="outlined"
@@ -1149,31 +1136,6 @@ export default function ShopPage() {
             )}
           </Box>
 
-          <TextField
-            fullWidth
-            label={t('shop:labels.size')}
-            value={productForm.size}
-            onChange={(e) => setProductForm({ ...productForm, size: e.target.value })}
-            margin="normal"
-            data-testid="input-product-size"
-          />
-          <TextField
-            fullWidth
-            label={t('shop:labels.quantity')}
-            type="number"
-            value={productForm.quantity}
-            onChange={(e) => setProductForm({ ...productForm, quantity: parseInt(e.target.value) || 0 })}
-            margin="normal"
-            data-testid="input-product-quantity"
-          />
-          <TextField
-            fullWidth
-            label={t('shop:labels.color')}
-            value={productForm.color}
-            onChange={(e) => setProductForm({ ...productForm, color: e.target.value })}
-            margin="normal"
-            data-testid="input-product-color"
-          />
           <TextField
             fullWidth
             label={t('shop:labels.priceWithCurrency')}
@@ -1222,81 +1184,6 @@ export default function ShopPage() {
             rows={3}
             data-testid="input-marketplace-description"
           />
-
-          <FormControl fullWidth margin="normal">
-            <InputLabel>{t('shop:labels.category', 'Kategorija')}</InputLabel>
-            <Select
-              value={marketplaceForm.category}
-              label={t('shop:labels.category', 'Kategorija')}
-              onChange={(e) => handleCategoryChange(e.target.value)}
-              data-testid="select-marketplace-category"
-            >
-              <MenuItem value="hrana">Hrana</MenuItem>
-              <MenuItem value="piće">Piće</MenuItem>
-              <MenuItem value="odjeća">Odjeća</MenuItem>
-            </Select>
-          </FormControl>
-
-          {marketplaceForm.category === "hrana" && (
-            <TextField
-              fullWidth
-              label="Težina (kg)"
-              value={marketplaceForm.weight}
-              onChange={(e) => setMarketplaceForm({ ...marketplaceForm, weight: e.target.value })}
-              margin="normal"
-              data-testid="input-marketplace-weight"
-            />
-          )}
-
-          {marketplaceForm.category === "piće" && (
-            <TextField
-              fullWidth
-              label="Zapremina (l)"
-              value={marketplaceForm.volume}
-              onChange={(e) => setMarketplaceForm({ ...marketplaceForm, volume: e.target.value })}
-              margin="normal"
-              data-testid="input-marketplace-volume"
-            />
-          )}
-
-          {marketplaceForm.category === "odjeća" && (
-            <>
-              <FormControl fullWidth margin="normal">
-                <InputLabel>Veličina</InputLabel>
-                <Select
-                  value={marketplaceForm.size}
-                  label="Veličina"
-                  onChange={(e) => setMarketplaceForm({ ...marketplaceForm, size: e.target.value })}
-                  data-testid="select-marketplace-size"
-                >
-                  <MenuItem value="S">S</MenuItem>
-                  <MenuItem value="M">M</MenuItem>
-                  <MenuItem value="L">L</MenuItem>
-                  <MenuItem value="XL">XL</MenuItem>
-                  <MenuItem value="2XL">2XL</MenuItem>
-                  <MenuItem value="3XL">3XL</MenuItem>
-                </Select>
-              </FormControl>
-
-              <TextField
-                fullWidth
-                label="Količina"
-                value={marketplaceForm.quantity}
-                onChange={(e) => setMarketplaceForm({ ...marketplaceForm, quantity: e.target.value })}
-                margin="normal"
-                data-testid="input-marketplace-quantity"
-              />
-
-              <TextField
-                fullWidth
-                label="Boja"
-                value={marketplaceForm.color}
-                onChange={(e) => setMarketplaceForm({ ...marketplaceForm, color: e.target.value })}
-                margin="normal"
-                data-testid="input-marketplace-color"
-              />
-            </>
-          )}
 
           {marketplaceForm.type === "sale" && (
             <TextField
