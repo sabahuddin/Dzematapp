@@ -779,7 +779,7 @@ export const membershipApplications = pgTable("membership_applications", {
   dateOfBirth: text("date_of_birth").notNull(),
   placeOfBirth: text("place_of_birth").notNull(),
   country: text("country").notNull(),
-  email: text("email").notNull(),
+  email: text("email"),
   phone: text("phone").notNull(),
   streetAddress: text("street_address").notNull(),
   postalCode: text("postal_code").notNull(),
@@ -843,7 +843,7 @@ export const akikaApplications = pgTable("akika_applications", {
   customPostalCode: text("custom_postal_code"),
   
   phone: text("phone").notNull(),
-  email: text("email").notNull(),
+  email: text("email"),
   notes: text("notes"),
   
   // Status i metadata
