@@ -349,15 +349,574 @@ function AkikaApplicationForm() {
 
 function MarriageApplicationForm() {
   const { t } = useTranslation("applications");
-  
+  const [formData, setFormData] = useState({
+    groomLastName: '',
+    groomFirstName: '',
+    groomDateOfBirth: '',
+    groomPlaceOfBirth: '',
+    groomNationality: '',
+    groomStreetAddress: '',
+    groomPostalCode: '',
+    groomCity: '',
+    groomFatherName: '',
+    groomMotherName: '',
+    brideLastName: '',
+    brideFirstName: '',
+    brideDateOfBirth: '',
+    bridePlaceOfBirth: '',
+    brideNationality: '',
+    brideStreetAddress: '',
+    bridePostalCode: '',
+    brideCity: '',
+    brideFatherName: '',
+    brideMotherName: '',
+    selectedLastName: '',
+    mahr: '',
+    civilMarriageDate: '',
+    civilMarriageLocation: '',
+    witness1Name: '',
+    witness2Name: '',
+    witness3Name: '',
+    witness4Name: '',
+    proposedDateTime: '',
+    location: 'Islamski centar GAM',
+    customAddress: '',
+    customCity: '',
+    customCanton: '',
+    customPostalCode: '',
+    phone: '',
+    notes: '',
+  });
+
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const submitApplicationMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await apiRequest('/api/marriage-applications', 'POST', data);
+      return await response.json();
+    },
+  });
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setSubmitError(null);
+
+    try {
+      let finalData: any = { ...formData };
+
+      if (!finalData.witness3Name) finalData.witness3Name = null;
+      if (!finalData.witness4Name) finalData.witness4Name = null;
+      if (!finalData.customAddress) finalData.customAddress = null;
+      if (!finalData.customCity) finalData.customCity = null;
+      if (!finalData.customCanton) finalData.customCanton = null;
+      if (!finalData.customPostalCode) finalData.customPostalCode = null;
+      if (!finalData.notes) finalData.notes = null;
+
+      await submitApplicationMutation.mutateAsync(finalData);
+      
+      setSubmitSuccess(true);
+      setFormData({
+        groomLastName: '',
+        groomFirstName: '',
+        groomDateOfBirth: '',
+        groomPlaceOfBirth: '',
+        groomNationality: '',
+        groomStreetAddress: '',
+        groomPostalCode: '',
+        groomCity: '',
+        groomFatherName: '',
+        groomMotherName: '',
+        brideLastName: '',
+        brideFirstName: '',
+        brideDateOfBirth: '',
+        bridePlaceOfBirth: '',
+        brideNationality: '',
+        brideStreetAddress: '',
+        bridePostalCode: '',
+        brideCity: '',
+        brideFatherName: '',
+        brideMotherName: '',
+        selectedLastName: '',
+        mahr: '',
+        civilMarriageDate: '',
+        civilMarriageLocation: '',
+        witness1Name: '',
+        witness2Name: '',
+        witness3Name: '',
+        witness4Name: '',
+        proposedDateTime: '',
+        location: 'Islamski centar GAM',
+        customAddress: '',
+        customCity: '',
+        customCanton: '',
+        customPostalCode: '',
+        phone: '',
+        notes: '',
+      });
+    } catch (error) {
+      console.error('Marriage application submission failed:', error);
+      setSubmitError(t("marriage.error"));
+    }
+  };
+
+  const handleChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | { value: unknown }>) => {
+    const value = event.target.value;
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  if (submitSuccess) {
+    return (
+      <Box sx={{ maxWidth: 600, mx: 'auto', textAlign: 'center', py: 4 }}>
+        <CheckCircle sx={{ fontSize: 80, color: 'success.main', mb: 2 }} />
+        <Typography variant="h5" gutterBottom color="success.main">
+          {t("marriage.successTitle")}
+        </Typography>
+        <Typography variant="body1" color="text.secondary" paragraph>
+          {t("marriage.successMessage")}
+        </Typography>
+        <Typography variant="body2" color="text.secondary" paragraph>
+          {t("marriage.successDescription")}
+        </Typography>
+        <Button 
+          variant="contained" 
+          onClick={() => setSubmitSuccess(false)}
+          sx={{ mt: 2 }}
+          data-testid="button-submit-another-marriage"
+        >
+          {t("marriage.submitAnother")}
+        </Button>
+      </Box>
+    );
+  }
+
   return (
-    <Box sx={{ maxWidth: 800, mx: 'auto' }}>
+    <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 800, mx: 'auto' }}>
       <Typography variant="h5" gutterBottom>
         {t("marriage.title")}
       </Typography>
       <Typography variant="body2" color="text.secondary" paragraph>
         {t("marriage.description")}
       </Typography>
+
+      {submitError && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {submitError}
+        </Alert>
+      )}
+
+      <Card sx={{ p: 3, mb: 3 }}>
+        <Typography variant="h6" gutterBottom>
+          {t("marriage.groomData")}
+        </Typography>
+        
+        <Grid container spacing={2}>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label={t("marriage.groomLastName")}
+              value={formData.groomLastName}
+              onChange={handleChange('groomLastName')}
+              data-testid="input-groomLastName"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label={t("marriage.groomFirstName")}
+              value={formData.groomFirstName}
+              onChange={handleChange('groomFirstName')}
+              data-testid="input-groomFirstName"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              type="date"
+              label={t("marriage.groomDateOfBirth")}
+              value={formData.groomDateOfBirth}
+              onChange={handleChange('groomDateOfBirth')}
+              InputLabelProps={{ shrink: true }}
+              data-testid="input-groomDateOfBirth"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label={t("marriage.groomPlaceOfBirth")}
+              value={formData.groomPlaceOfBirth}
+              onChange={handleChange('groomPlaceOfBirth')}
+              data-testid="input-groomPlaceOfBirth"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label={t("marriage.groomNationality")}
+              value={formData.groomNationality}
+              onChange={handleChange('groomNationality')}
+              data-testid="input-groomNationality"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label={t("marriage.groomStreetAddress")}
+              value={formData.groomStreetAddress}
+              onChange={handleChange('groomStreetAddress')}
+              data-testid="input-groomStreetAddress"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label={t("marriage.groomPostalCode")}
+              value={formData.groomPostalCode}
+              onChange={handleChange('groomPostalCode')}
+              data-testid="input-groomPostalCode"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label={t("marriage.groomCity")}
+              value={formData.groomCity}
+              onChange={handleChange('groomCity')}
+              data-testid="input-groomCity"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label={t("marriage.groomFatherName")}
+              value={formData.groomFatherName}
+              onChange={handleChange('groomFatherName')}
+              data-testid="input-groomFatherName"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label={t("marriage.groomMotherName")}
+              value={formData.groomMotherName}
+              onChange={handleChange('groomMotherName')}
+              data-testid="input-groomMotherName"
+            />
+          </Grid>
+        </Grid>
+      </Card>
+
+      <Card sx={{ p: 3, mb: 3 }}>
+        <Typography variant="h6" gutterBottom>
+          {t("marriage.brideData")}
+        </Typography>
+        
+        <Grid container spacing={2}>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label={t("marriage.brideLastName")}
+              value={formData.brideLastName}
+              onChange={handleChange('brideLastName')}
+              data-testid="input-brideLastName"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label={t("marriage.brideFirstName")}
+              value={formData.brideFirstName}
+              onChange={handleChange('brideFirstName')}
+              data-testid="input-brideFirstName"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              type="date"
+              label={t("marriage.brideDateOfBirth")}
+              value={formData.brideDateOfBirth}
+              onChange={handleChange('brideDateOfBirth')}
+              InputLabelProps={{ shrink: true }}
+              data-testid="input-brideDateOfBirth"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label={t("marriage.bridePlaceOfBirth")}
+              value={formData.bridePlaceOfBirth}
+              onChange={handleChange('bridePlaceOfBirth')}
+              data-testid="input-bridePlaceOfBirth"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label={t("marriage.brideNationality")}
+              value={formData.brideNationality}
+              onChange={handleChange('brideNationality')}
+              data-testid="input-brideNationality"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label={t("marriage.brideStreetAddress")}
+              value={formData.brideStreetAddress}
+              onChange={handleChange('brideStreetAddress')}
+              data-testid="input-brideStreetAddress"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label={t("marriage.bridePostalCode")}
+              value={formData.bridePostalCode}
+              onChange={handleChange('bridePostalCode')}
+              data-testid="input-bridePostalCode"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label={t("marriage.brideCity")}
+              value={formData.brideCity}
+              onChange={handleChange('brideCity')}
+              data-testid="input-brideCity"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label={t("marriage.brideFatherName")}
+              value={formData.brideFatherName}
+              onChange={handleChange('brideFatherName')}
+              data-testid="input-brideFatherName"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label={t("marriage.brideMotherName")}
+              value={formData.brideMotherName}
+              onChange={handleChange('brideMotherName')}
+              data-testid="input-brideMotherName"
+            />
+          </Grid>
+        </Grid>
+      </Card>
+
+      <Card sx={{ p: 3, mb: 3 }}>
+        <Typography variant="h6" gutterBottom>
+          {t("marriage.marriageDetails")}
+        </Typography>
+        
+        <Grid container spacing={2}>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label={t("marriage.selectedLastName")}
+              value={formData.selectedLastName}
+              onChange={handleChange('selectedLastName')}
+              data-testid="input-selectedLastName"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label={t("marriage.mahr")}
+              value={formData.mahr}
+              onChange={handleChange('mahr')}
+              data-testid="input-mahr"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              type="date"
+              label={t("marriage.civilMarriageDate")}
+              value={formData.civilMarriageDate}
+              onChange={handleChange('civilMarriageDate')}
+              InputLabelProps={{ shrink: true }}
+              data-testid="input-civilMarriageDate"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label={t("marriage.civilMarriageLocation")}
+              value={formData.civilMarriageLocation}
+              onChange={handleChange('civilMarriageLocation')}
+              data-testid="input-civilMarriageLocation"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label={t("marriage.witness1Name")}
+              value={formData.witness1Name}
+              onChange={handleChange('witness1Name')}
+              data-testid="input-witness1Name"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label={t("marriage.witness2Name")}
+              value={formData.witness2Name}
+              onChange={handleChange('witness2Name')}
+              data-testid="input-witness2Name"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              label={t("marriage.witness3Name")}
+              value={formData.witness3Name}
+              onChange={handleChange('witness3Name')}
+              data-testid="input-witness3Name"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              label={t("marriage.witness4Name")}
+              value={formData.witness4Name}
+              onChange={handleChange('witness4Name')}
+              data-testid="input-witness4Name"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <TextField
+              fullWidth
+              required
+              type="datetime-local"
+              label={t("marriage.proposedDateTime")}
+              value={formData.proposedDateTime}
+              onChange={handleChange('proposedDateTime')}
+              InputLabelProps={{ shrink: true }}
+              data-testid="input-proposedDateTime"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <FormControl fullWidth required>
+              <InputLabel>{t("marriage.location")}</InputLabel>
+              <Select
+                value={formData.location}
+                onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
+                label={t("marriage.location")}
+                data-testid="select-location"
+              >
+                <MenuItem value="Islamski centar GAM">{t("marriage.locationGAM")}</MenuItem>
+                <MenuItem value="Drugo mjesto">{t("marriage.locationOther")}</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+
+          {formData.location === 'Drugo mjesto' && (
+            <>
+              <Grid size={{ xs: 12 }}>
+                <TextField
+                  fullWidth
+                  label={t("marriage.customAddress")}
+                  value={formData.customAddress}
+                  onChange={handleChange('customAddress')}
+                  data-testid="input-customAddress"
+                />
+              </Grid>
+              <Grid size={{ xs: 12, sm: 4 }}>
+                <TextField
+                  fullWidth
+                  label={t("marriage.customPostalCode")}
+                  value={formData.customPostalCode}
+                  onChange={handleChange('customPostalCode')}
+                  data-testid="input-customPostalCode"
+                />
+              </Grid>
+              <Grid size={{ xs: 12, sm: 4 }}>
+                <TextField
+                  fullWidth
+                  label={t("marriage.customCity")}
+                  value={formData.customCity}
+                  onChange={handleChange('customCity')}
+                  data-testid="input-customCity"
+                />
+              </Grid>
+              <Grid size={{ xs: 12, sm: 4 }}>
+                <TextField
+                  fullWidth
+                  label={t("marriage.customCanton")}
+                  value={formData.customCanton}
+                  onChange={handleChange('customCanton')}
+                  data-testid="input-customCanton"
+                />
+              </Grid>
+            </>
+          )}
+
+          <Grid size={{ xs: 12 }}>
+            <TextField
+              fullWidth
+              required
+              label={t("marriage.phone")}
+              value={formData.phone}
+              onChange={handleChange('phone')}
+              data-testid="input-phone"
+            />
+          </Grid>
+          <Grid size={{ xs: 12 }}>
+            <TextField
+              fullWidth
+              multiline
+              rows={3}
+              label={t("marriage.notes")}
+              placeholder={t("marriage.notesPlaceholder")}
+              value={formData.notes}
+              onChange={handleChange('notes')}
+              data-testid="input-notes"
+            />
+          </Grid>
+        </Grid>
+      </Card>
+
+      <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 3 }}>
+        <Button
+          type="submit"
+          variant="contained"
+          size="large"
+          disabled={submitApplicationMutation.isPending}
+          data-testid="button-submit-marriage-application"
+        >
+          {submitApplicationMutation.isPending ? t("marriage.submitting") : t("marriage.submit")}
+        </Button>
+      </Stack>
     </Box>
   );
 }
@@ -429,7 +988,7 @@ function MyApplicationsList() {
           </style>
         </head>
         <body>
-          <h1>Prijava Akike</h1>
+          <h1>Akika</h1>
           
           <div class="section">
             <div class="label">Dijete:</div>

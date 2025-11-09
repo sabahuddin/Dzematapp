@@ -57,7 +57,13 @@ export default function ShopPage() {
     photos: [] as string[],
     type: "sale" as "sale" | "gift",
     price: "",
-    status: "active"
+    status: "active",
+    category: "",
+    weight: "",
+    volume: "",
+    size: "",
+    quantity: "",
+    color: ""
   });
 
   const isAdmin = user?.isAdmin || user?.roles?.includes('admin') || user?.roles?.includes('imam');
@@ -265,7 +271,13 @@ export default function ShopPage() {
         photos: [],
         type: "sale",
         price: "",
-        status: "active"
+        status: "active",
+        category: "",
+        weight: "",
+        volume: "",
+        size: "",
+        quantity: "",
+        color: ""
       });
     },
     onError: () => {
@@ -289,7 +301,13 @@ export default function ShopPage() {
         photos: [],
         type: "sale",
         price: "",
-        status: "active"
+        status: "active",
+        category: "",
+        weight: "",
+        volume: "",
+        size: "",
+        quantity: "",
+        color: ""
       });
     },
     onError: () => {
@@ -416,9 +434,27 @@ export default function ShopPage() {
       photos: item.photos || [],
       type: item.type as "sale" | "gift",
       price: item.price || "",
-      status: item.status || "active"
+      status: item.status || "active",
+      category: item.category || "",
+      weight: item.weight || "",
+      volume: item.volume || "",
+      size: item.size || "",
+      quantity: item.quantity || "",
+      color: item.color || ""
     });
     setMarketplaceModalOpen(true);
+  };
+
+  const handleCategoryChange = (newCategory: string) => {
+    setMarketplaceForm({
+      ...marketplaceForm,
+      category: newCategory,
+      weight: "",
+      volume: "",
+      size: "",
+      quantity: "",
+      color: ""
+    });
   };
 
   const handleOpenPurchaseModal = (product: ShopProductWithUser) => {
@@ -664,7 +700,7 @@ export default function ShopPage() {
             startIcon={<Add />}
             onClick={() => {
               setEditingMarketplaceItem(null);
-              setMarketplaceForm({ name: "", description: "", photos: [], type: "sale", price: "", status: "active" });
+              setMarketplaceForm({ name: "", description: "", photos: [], type: "sale", price: "", status: "active", category: "", weight: "", volume: "", size: "", quantity: "", color: "" });
               setMarketplaceModalOpen(true);
             }}
             sx={{ mb: 3 }}
@@ -725,6 +761,35 @@ export default function ShopPage() {
                             {t('shop:display.priceInCHF', { price: item.price })}
                           </Typography>
                         )}
+                        {item.category === "hrana" && item.weight && (
+                          <Typography variant="body2" color="text.secondary">
+                            Težina: {item.weight} kg
+                          </Typography>
+                        )}
+                        {item.category === "piće" && item.volume && (
+                          <Typography variant="body2" color="text.secondary">
+                            Zapremina: {item.volume} l
+                          </Typography>
+                        )}
+                        {item.category === "odjeća" && (
+                          <>
+                            {item.size && (
+                              <Typography variant="body2" color="text.secondary">
+                                Veličina: {item.size}
+                              </Typography>
+                            )}
+                            {item.quantity && (
+                              <Typography variant="body2" color="text.secondary">
+                                Količina: {item.quantity}
+                              </Typography>
+                            )}
+                            {item.color && (
+                              <Typography variant="body2" color="text.secondary">
+                                Boja: {item.color}
+                              </Typography>
+                            )}
+                          </>
+                        )}
                         <Chip label={t('shop:display.forSale')} color="primary" size="small" sx={{ mb: 1 }} />
                         <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                           {item.userId !== user?.id && (
@@ -783,7 +848,7 @@ export default function ShopPage() {
             startIcon={<Add />}
             onClick={() => {
               setEditingMarketplaceItem(null);
-              setMarketplaceForm({ name: "", description: "", photos: [], type: "gift", price: "", status: "active" });
+              setMarketplaceForm({ name: "", description: "", photos: [], type: "gift", price: "", status: "active", category: "", weight: "", volume: "", size: "", quantity: "", color: "" });
               setMarketplaceModalOpen(true);
             }}
             sx={{ mb: 3 }}
@@ -838,6 +903,35 @@ export default function ShopPage() {
                           <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                             {item.description}
                           </Typography>
+                        )}
+                        {item.category === "hrana" && item.weight && (
+                          <Typography variant="body2" color="text.secondary">
+                            Težina: {item.weight} kg
+                          </Typography>
+                        )}
+                        {item.category === "piće" && item.volume && (
+                          <Typography variant="body2" color="text.secondary">
+                            Zapremina: {item.volume} l
+                          </Typography>
+                        )}
+                        {item.category === "odjeća" && (
+                          <>
+                            {item.size && (
+                              <Typography variant="body2" color="text.secondary">
+                                Veličina: {item.size}
+                              </Typography>
+                            )}
+                            {item.quantity && (
+                              <Typography variant="body2" color="text.secondary">
+                                Količina: {item.quantity}
+                              </Typography>
+                            )}
+                            {item.color && (
+                              <Typography variant="body2" color="text.secondary">
+                                Boja: {item.color}
+                              </Typography>
+                            )}
+                          </>
                         )}
                         <Chip label={t('shop:display.giftLabel')} color="success" size="small" sx={{ mb: 1 }} />
                         <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
@@ -946,6 +1040,35 @@ export default function ShopPage() {
                           <Typography variant="h6" color="primary" sx={{ mb: 1 }} data-testid={`text-archived-price-${item.id}`}>
                             {t('shop:display.priceInCHF', { price: item.price })}
                           </Typography>
+                        )}
+                        {item.category === "hrana" && item.weight && (
+                          <Typography variant="body2" color="text.secondary">
+                            Težina: {item.weight} kg
+                          </Typography>
+                        )}
+                        {item.category === "piće" && item.volume && (
+                          <Typography variant="body2" color="text.secondary">
+                            Zapremina: {item.volume} l
+                          </Typography>
+                        )}
+                        {item.category === "odjeća" && (
+                          <>
+                            {item.size && (
+                              <Typography variant="body2" color="text.secondary">
+                                Veličina: {item.size}
+                              </Typography>
+                            )}
+                            {item.quantity && (
+                              <Typography variant="body2" color="text.secondary">
+                                Količina: {item.quantity}
+                              </Typography>
+                            )}
+                            {item.color && (
+                              <Typography variant="body2" color="text.secondary">
+                                Boja: {item.color}
+                              </Typography>
+                            )}
+                          </>
                         )}
                         <Chip 
                           label={item.type === "sale" ? t('shop:display.sold') : t('shop:display.gifted')} 
@@ -1099,6 +1222,81 @@ export default function ShopPage() {
             rows={3}
             data-testid="input-marketplace-description"
           />
+
+          <FormControl fullWidth margin="normal">
+            <InputLabel>{t('shop:labels.category', 'Kategorija')}</InputLabel>
+            <Select
+              value={marketplaceForm.category}
+              label={t('shop:labels.category', 'Kategorija')}
+              onChange={(e) => handleCategoryChange(e.target.value)}
+              data-testid="select-marketplace-category"
+            >
+              <MenuItem value="hrana">Hrana</MenuItem>
+              <MenuItem value="piće">Piće</MenuItem>
+              <MenuItem value="odjeća">Odjeća</MenuItem>
+            </Select>
+          </FormControl>
+
+          {marketplaceForm.category === "hrana" && (
+            <TextField
+              fullWidth
+              label="Težina (kg)"
+              value={marketplaceForm.weight}
+              onChange={(e) => setMarketplaceForm({ ...marketplaceForm, weight: e.target.value })}
+              margin="normal"
+              data-testid="input-marketplace-weight"
+            />
+          )}
+
+          {marketplaceForm.category === "piće" && (
+            <TextField
+              fullWidth
+              label="Zapremina (l)"
+              value={marketplaceForm.volume}
+              onChange={(e) => setMarketplaceForm({ ...marketplaceForm, volume: e.target.value })}
+              margin="normal"
+              data-testid="input-marketplace-volume"
+            />
+          )}
+
+          {marketplaceForm.category === "odjeća" && (
+            <>
+              <FormControl fullWidth margin="normal">
+                <InputLabel>Veličina</InputLabel>
+                <Select
+                  value={marketplaceForm.size}
+                  label="Veličina"
+                  onChange={(e) => setMarketplaceForm({ ...marketplaceForm, size: e.target.value })}
+                  data-testid="select-marketplace-size"
+                >
+                  <MenuItem value="S">S</MenuItem>
+                  <MenuItem value="M">M</MenuItem>
+                  <MenuItem value="L">L</MenuItem>
+                  <MenuItem value="XL">XL</MenuItem>
+                  <MenuItem value="2XL">2XL</MenuItem>
+                  <MenuItem value="3XL">3XL</MenuItem>
+                </Select>
+              </FormControl>
+
+              <TextField
+                fullWidth
+                label="Količina"
+                value={marketplaceForm.quantity}
+                onChange={(e) => setMarketplaceForm({ ...marketplaceForm, quantity: e.target.value })}
+                margin="normal"
+                data-testid="input-marketplace-quantity"
+              />
+
+              <TextField
+                fullWidth
+                label="Boja"
+                value={marketplaceForm.color}
+                onChange={(e) => setMarketplaceForm({ ...marketplaceForm, color: e.target.value })}
+                margin="normal"
+                data-testid="input-marketplace-color"
+              />
+            </>
+          )}
 
           {marketplaceForm.type === "sale" && (
             <TextField
