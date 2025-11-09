@@ -2,7 +2,7 @@
 
 DžematApp is a web-based admin dashboard application designed to manage mosque community operations. It provides a comprehensive system for administrators to handle users, announcements, events, work groups ("Sekcije"), and tasks. The application aims to streamline administrative tasks, improve communication within the community, and offer a modern, responsive user experience. It supports desktop and tablet usage with a consistent Material-UI and shadcn/ui design.
 
-# Recent Changes (November 8, 2025)
+# Recent Changes (November 9, 2025)
 
 - Removed quick access shortcuts widget from Dashboard (admin and member views)
 - Users table restructured: firstName/lastName in separate columns, username/categories/skills columns removed, column sorting added for all fields
@@ -23,6 +23,14 @@ DžematApp is a web-based admin dashboard application designed to manage mosque 
   - Non-clickable items (new members, shop listings, badges, certificates) have static gray tone
   - Auto-refresh every 30 seconds
   - Integrated with all major modules: user registration, announcements, events, shop, badges, certificates, projects
+- Email field optional in all applications (Pristupnica, Akika, Šerijatsko vjenčanje)
+- Shop product categories implemented:
+  - Categories: Hrana (food), Piće (drinks), Odjeća (clothing)
+  - Category-specific fields: weight (kg) for food, volume (l) for drinks, size/quantity/color for clothing
+  - Conditional form inputs based on selected category
+  - Zod validation enforces required fields per category
+- Application labels renamed: "Prijava akike" → "Akika", "Prijava šerijatskog vjenčanja" → "Šerijatsko vjenčanje"
+- Complete marriage application form implemented with groom/bride data, witnesses, mahr, civil marriage details
 
 # User Preferences
 
