@@ -227,7 +227,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           lastName: req.user.lastName, 
           email: req.user.email,
           roles: req.user.roles || [],
-          isAdmin: req.user.isAdmin 
+          isAdmin: req.user.isAdmin,
+          totalPoints: req.user.totalPoints || 0
         } 
       });
     } else {
