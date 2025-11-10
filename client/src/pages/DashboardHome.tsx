@@ -316,17 +316,27 @@ export default function DashboardHome() {
           const allBadges = (badgesQuery.data as any[]) || [];
           const userBadges = (userBadgesQuery.data as any[]) || [];
           
-          console.log('DEBUG Badges:', { 
-            allBadgesCount: allBadges.length, 
-            userBadgesCount: userBadges.length,
-            badgesLoading: badgesQuery.isLoading,
-            userBadgesLoading: userBadgesQuery.isLoading
-          });
-          
           const earnedBadges = userBadges.map((ub: any) => {
             const badge = allBadges.find((b: any) => b.id === ub.badgeId);
             return badge;
           }).filter(Boolean);
+
+          // Debug display
+          if (badgesQuery.isLoading || userBadgesQuery.isLoading) {
+            return (
+              <Alert severity="info" sx={{ mb: 3 }}>
+                Učitavanje značaka...
+              </Alert>
+            );
+          }
+
+          if (badgesQuery.error || userBadgesQuery.error) {
+            return (
+              <Alert severity="error" sx={{ mb: 3 }}>
+                Greška pri učitavanju značaka. (Badges: {allBadges.length}, User badges: {userBadges.length})
+              </Alert>
+            );
+          }
 
           if (earnedBadges.length > 0) {
             const getBadgeColor = (criteriaType: string) => {
