@@ -169,6 +169,25 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return <DashboardLayout>{children}</DashboardLayout>;
 }
 
+// Admin-Only Route Component
+function AdminRoute({ children }: { children: React.ReactNode }) {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!user) {
+    return <Redirect to="/login" />;
+  }
+
+  if (!user.isAdmin) {
+    return <Redirect to="/dashboard" />;
+  }
+
+  return <DashboardLayout>{children}</DashboardLayout>;
+}
+
 // Router Component
 function Router() {
   const { user } = useAuth();
@@ -226,15 +245,15 @@ function Router() {
       </Route>
       
       <Route path="/point-settings">
-        <ProtectedRoute>
+        <AdminRoute>
           <PointSettingsPage />
-        </ProtectedRoute>
+        </AdminRoute>
       </Route>
       
       <Route path="/badges">
-        <ProtectedRoute>
+        <AdminRoute>
           <BadgesPage />
-        </ProtectedRoute>
+        </AdminRoute>
       </Route>
       
       <Route path="/projects">
@@ -244,15 +263,15 @@ function Router() {
       </Route>
       
       <Route path="/certificate-templates">
-        <ProtectedRoute>
+        <AdminRoute>
           <CertificateTemplatesPage />
-        </ProtectedRoute>
+        </AdminRoute>
       </Route>
       
       <Route path="/issue-certificates">
-        <ProtectedRoute>
+        <AdminRoute>
           <IssueCertificatesPage />
-        </ProtectedRoute>
+        </AdminRoute>
       </Route>
       
       <Route path="/my-certificates">
@@ -262,9 +281,9 @@ function Router() {
       </Route>
       
       <Route path="/all-certificates">
-        <ProtectedRoute>
+        <AdminRoute>
           <AllCertificatesPage />
-        </ProtectedRoute>
+        </AdminRoute>
       </Route>
       
       <Route path="/membership-applications">
@@ -328,15 +347,15 @@ function Router() {
       </Route>
       
       <Route path="/livestream-settings">
-        <ProtectedRoute>
+        <AdminRoute>
           <LivestreamSettingsPage />
-        </ProtectedRoute>
+        </AdminRoute>
       </Route>
       
       <Route path="/organization-settings">
-        <ProtectedRoute>
+        <AdminRoute>
           <OrganizationSettingsPage />
-        </ProtectedRoute>
+        </AdminRoute>
       </Route>
       
       <Route path="/">
