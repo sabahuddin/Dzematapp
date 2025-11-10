@@ -197,7 +197,7 @@ export default function UsersPage() {
     const userData = filteredUsers.map((user: User) => [
       `${user.firstName} ${user.lastName}`,
       user.username || '-',
-      user.email || '-',
+      user.dateOfBirth ? new Date(user.dateOfBirth).toLocaleDateString('hr-HR') : '-',
       user.phone || '-',
       user.membershipDate ? new Date(user.membershipDate).toLocaleDateString('hr-HR') : '-',
       user.status || '-',
@@ -213,7 +213,7 @@ export default function UsersPage() {
       headers: [
         'Ime i prezime',
         'Username',
-        'Email',
+        'Datum rođenja',
         'Telefon',
         'Član od',
         'Status članstva',
@@ -290,9 +290,9 @@ export default function UsersPage() {
           aValue = a.lastName?.toLowerCase() || '';
           bValue = b.lastName?.toLowerCase() || '';
           break;
-        case 'email':
-          aValue = a.email?.toLowerCase() || '';
-          bValue = b.email?.toLowerCase() || '';
+        case 'dateOfBirth':
+          aValue = a.dateOfBirth ? new Date(a.dateOfBirth).getTime() : 0;
+          bValue = b.dateOfBirth ? new Date(b.dateOfBirth).getTime() : 0;
           break;
         case 'phone':
           aValue = a.phone || '';
@@ -711,11 +711,11 @@ export default function UsersPage() {
                 </TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>
                   <TableSortLabel
-                    active={sortField === 'email'}
-                    direction={sortField === 'email' ? sortDirection : 'asc'}
-                    onClick={() => handleSort('email')}
+                    active={sortField === 'dateOfBirth'}
+                    direction={sortField === 'dateOfBirth' ? sortDirection : 'asc'}
+                    onClick={() => handleSort('dateOfBirth')}
                   >
-                    {t('users:email')}
+                    {t('users:dateOfBirth')}
                   </TableSortLabel>
                 </TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>
@@ -772,7 +772,9 @@ export default function UsersPage() {
                       {user.lastName}
                     </Typography>
                   </TableCell>
-                  <TableCell>{user.email || '-'}</TableCell>
+                  <TableCell>
+                    {user.dateOfBirth ? new Date(user.dateOfBirth).toLocaleDateString('hr-HR') : '-'}
+                  </TableCell>
                   <TableCell>
                     {user.phone ? (
                       <a 
