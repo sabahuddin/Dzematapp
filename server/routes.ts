@@ -2579,6 +2579,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
+      // Recalculate user's total points
+      await storage.recalculateUserPoints(validated.userId);
+
       res.status(201).json(contribution);
     } catch (error) {
       console.error('Error creating financial contribution:', error);
