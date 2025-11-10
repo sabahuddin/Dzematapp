@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Box, Tabs, Tab, Typography, Card, CardContent, CardMedia, Button, Chip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField, MenuItem, ImageList, ImageListItem, Select, FormControl, InputLabel } from "@mui/material";
-import { Add, Delete, ShoppingCart, Store, CardGiftcard, CloudUpload, Edit, Close, ContentCopy, Archive, Check } from "@mui/icons-material";
+import { Add, Delete, ShoppingCart, Store, CardGiftcard, CloudUpload, Edit, Close, ContentCopy, Archive, Check, Build } from "@mui/icons-material";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { useToast } from "@/hooks/use-toast";
 import { useMarkAsViewed } from "@/hooks/useMarkAsViewed";
 import { useTranslation } from "react-i18next";
-import type { ShopProduct, MarketplaceItem, User } from "@shared/schema";
+import type { ShopProduct, MarketplaceItem, User, Service } from "@shared/schema";
 
 interface ShopProductWithUser extends ShopProduct {
   creator?: User;
@@ -42,6 +42,16 @@ export default function ShopPage() {
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
   const [contactUserId, setContactUserId] = useState<string | null>(null);
   const [contactMessage, setContactMessage] = useState("");
+  const [serviceModalOpen, setServiceModalOpen] = useState(false);
+  const [editingService, setEditingService] = useState<Service | null>(null);
+  
+  const [serviceForm, setServiceForm] = useState({
+    name: "",
+    description: "",
+    price: "",
+    duration: "",
+    category: ""
+  });
   
   const [productForm, setProductForm] = useState({
     name: "",
@@ -80,6 +90,11 @@ export default function ShopPage() {
   // Fetch users for displaying names
   const { data: users } = useQuery<User[]>({
     queryKey: ['/api/users'],
+  });
+
+  // Fetch services
+  const { data: services, isLoading: loadingServices } = useQuery<Service[]>({
+    queryKey: ['/api/services'],
   });
 
   // Photo upload handler
@@ -339,6 +354,51 @@ export default function ShopPage() {
     }
   });
 
+  // Service mutations
+  const createServiceMutation = useMutation({
+    mutationFn: async (data: typeof serviceForm) => {
+      return await apiRequest('/api/services', 'POST', data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/services'] });
+      toast({ title: "Usluga dodana" });
+      setServiceModalOpen(false);
+      setServiceForm({ name: "", description: "", price: "", duration: "", category: "" });
+    },
+    onError: () => {
+      toast({ title: "Greška pri dodavanju usluge", variant: "destructive" });
+    }
+  });
+
+  const updateServiceMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: typeof serviceForm }) => {
+      return await apiRequest(`/api/services/${id}`, 'PUT', data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/services'] });
+      toast({ title: "Usluga ažurirana" });
+      setServiceModalOpen(false);
+      setEditingService(null);
+      setServiceForm({ name: "", description: "", price: "", duration: "", category: "" });
+    },
+    onError: () => {
+      toast({ title: "Greška pri ažuriranju usluge", variant: "destructive" });
+    }
+  });
+
+  const deleteServiceMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return await apiRequest(`/api/services/${id}`, 'DELETE');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/services'] });
+      toast({ title: "Usluga obrisana" });
+    },
+    onError: () => {
+      toast({ title: "Greška pri brisanju usluge", variant: "destructive" });
+    }
+  });
+
   // Create purchase request mutation
   const createPurchaseRequestMutation = useMutation({
     mutationFn: async ({ productId, quantity, size, color }: { productId: string; quantity: number; size?: string; color?: string }) => {
@@ -542,6 +602,7 @@ export default function ShopPage() {
         <Tab label={t('shop:tabs.dzematShop')} icon={<Store />} iconPosition="start" data-testid="tab-buy" />
         <Tab label={t('shop:tabs.sell')} icon={<ShoppingCart />} iconPosition="start" data-testid="tab-sell" />
         <Tab label={t('shop:tabs.gift')} icon={<CardGiftcard />} iconPosition="start" data-testid="tab-gift" />
+        <Tab label={t('shop:tabs.services')} icon={<Build />} iconPosition="start" data-testid="tab-services" />
         {isAdmin && <Tab label={t('shop:tabs.archive')} icon={<Archive />} iconPosition="start" data-testid="tab-archive" />}
       </Tabs>
 
@@ -935,8 +996,91 @@ export default function ShopPage() {
         </Box>
       )}
 
+      {/* Services Tab */}
+      {activeTab === 3 && (
+        <Box>
+          {isAdmin && (
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3 }}>
+              <Button
+                variant="contained"
+                startIcon={<Add />}
+                onClick={() => {
+                  setEditingService(null);
+                  setServiceForm({ name: "", description: "", price: "", duration: "", category: "" });
+                  setServiceModalOpen(true);
+                }}
+                data-testid="button-add-service"
+              >
+                {t('shop:buttons.addService')}
+              </Button>
+            </Box>
+          )}
+
+          {loadingServices ? (
+            <Typography>{t('shop:display.loading')}</Typography>
+          ) : services && services.length > 0 ? (
+            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 3 }}>
+              {services.map((service) => (
+                <Card key={service.id} sx={{ display: 'flex', flexDirection: 'column' }}>
+                  <CardContent sx={{ flex: 1 }}>
+                    <Typography variant="h6" gutterBottom>
+                      {service.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" paragraph>
+                      {service.description}
+                    </Typography>
+                    {service.price && (
+                      <Typography variant="body1" sx={{ fontWeight: 600, mb: 1 }}>
+                        {formatPrice(service.price)}
+                      </Typography>
+                    )}
+                    {service.duration && (
+                      <Chip label={service.duration} size="small" sx={{ mr: 1 }} />
+                    )}
+                    {service.category && (
+                      <Chip label={service.category} size="small" variant="outlined" />
+                    )}
+                  </CardContent>
+                  {isAdmin && (
+                    <Box sx={{ p: 2, display: 'flex', gap: 1, borderTop: '1px solid #e0e0e0' }}>
+                      <Button
+                        size="small"
+                        startIcon={<Edit />}
+                        onClick={() => {
+                          setEditingService(service);
+                          setServiceForm({
+                            name: service.name,
+                            description: service.description,
+                            price: service.price || "",
+                            duration: service.duration || "",
+                            category: service.category || ""
+                          });
+                          setServiceModalOpen(true);
+                        }}
+                      >
+                        {t('shop:buttons.edit')}
+                      </Button>
+                      <Button
+                        size="small"
+                        color="error"
+                        startIcon={<Delete />}
+                        onClick={() => deleteServiceMutation.mutate(service.id)}
+                      >
+                        {t('shop:buttons.delete')}
+                      </Button>
+                    </Box>
+                  )}
+                </Card>
+              ))}
+            </Box>
+          ) : (
+            <Typography color="text.secondary">Nema dostupnih usluga</Typography>
+          )}
+        </Box>
+      )}
+
       {/* Arhiva Tab (Admin only) */}
-      {activeTab === 3 && isAdmin && (
+      {activeTab === 4 && isAdmin && (
         <Box>
           {loadingMarketplace ? (
             <Typography>{t('shop:display.loading')}</Typography>
@@ -1376,6 +1520,71 @@ export default function ShopPage() {
             data-testid="button-send-contact"
           >
             {sendContactMessageMutation.isPending ? t('shop:buttons.sending') : t('shop:buttons.send')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Service Dialog */}
+      <Dialog open={serviceModalOpen} onClose={() => setServiceModalOpen(false)} maxWidth="md" fullWidth>
+        <DialogTitle>{editingService ? t('shop:dialogs.editService') : t('shop:dialogs.addService')}</DialogTitle>
+        <DialogContent>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+            <TextField
+              label={t('shop:labels.serviceName')}
+              value={serviceForm.name}
+              onChange={(e) => setServiceForm({ ...serviceForm, name: e.target.value })}
+              required
+              fullWidth
+            />
+            <TextField
+              label={t('shop:labels.serviceDescription')}
+              value={serviceForm.description}
+              onChange={(e) => setServiceForm({ ...serviceForm, description: e.target.value })}
+              required
+              multiline
+              rows={3}
+              fullWidth
+            />
+            <TextField
+              label={t('shop:labels.servicePrice')}
+              value={serviceForm.price}
+              onChange={(e) => setServiceForm({ ...serviceForm, price: e.target.value })}
+              fullWidth
+            />
+            <TextField
+              label={t('shop:labels.serviceDuration')}
+              value={serviceForm.duration}
+              onChange={(e) => setServiceForm({ ...serviceForm, duration: e.target.value })}
+              fullWidth
+            />
+            <TextField
+              label={t('shop:labels.serviceCategory')}
+              value={serviceForm.category}
+              onChange={(e) => setServiceForm({ ...serviceForm, category: e.target.value })}
+              fullWidth
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setServiceModalOpen(false)}>
+            {t('shop:buttons.cancel')}
+          </Button>
+          <Button
+            onClick={() => {
+              if (!serviceForm.name || !serviceForm.description) {
+                toast({ title: "Naziv i opis su obavezni", variant: "destructive" });
+                return;
+              }
+              if (editingService) {
+                updateServiceMutation.mutate({ id: editingService.id, data: serviceForm });
+              } else {
+                createServiceMutation.mutate(serviceForm);
+              }
+            }}
+            variant="contained"
+            disabled={createServiceMutation.isPending || updateServiceMutation.isPending}
+          >
+            {editingService ? t('shop:buttons.update') : t('shop:buttons.save')}
           </Button>
         </DialogActions>
       </Dialog>

@@ -4,12 +4,14 @@
     "dzematShop": "Džemat Trgovina",
     "sell": "Prodajem",
     "gift": "Poklanjam",
+    "services": "Usluge",
     "archive": "Arhiva"
   },
   "buttons": {
     "addProduct": "Dodaj artikal",
     "addListing": "Dodaj oglas",
     "addGift": "Dodaj poklon",
+    "addService": "Dodaj uslugu",
     "buy": "Kupi",
     "edit": "Uredi",
     "delete": "Obriši",
@@ -36,7 +38,13 @@
     "quantity": "Količina",
     "color": "Boja",
     "notes": "Napomena",
-    "messageContent": "Sadržaj poruke"
+    "messageContent": "Sadržaj poruke",
+    "duration": "Trajanje",
+    "serviceName": "Naziv usluge",
+    "serviceDescription": "Opis usluge",
+    "servicePrice": "Cijena (opcionalno)",
+    "serviceDuration": "Trajanje (npr. 1 sat, 30 min)",
+    "serviceCategory": "Kategorija (opcionalno)"
   },
   "categories": {
     "hrana": "Hrana",
@@ -70,6 +78,8 @@
     "editListing": "Uredi oglas",
     "addSaleListing": "Dodaj oglas za Prodaju",
     "addGiftListing": "Dodaj poklon",
+    "addService": "Dodaj uslugu",
+    "editService": "Uredi uslugu",
     "order": "Naruči {{product}}",
     "sendMessage": "Pošalji poruku"
   },
