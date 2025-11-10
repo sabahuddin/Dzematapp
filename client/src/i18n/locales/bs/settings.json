@@ -16,15 +16,15 @@
       "phonePlaceholder": "+41 XX XXX XX XX",
       "email": "Email",
       "emailPlaceholder": "info@dzemat.ch",
-      "facebookUrl": "Facebook uRL",
+      "facebookUrl": "Facebook URL",
       "facebookPlaceholder": "https://facebook.com/vasadzemat",
-      "instagramUrl": "Instagram uRL",
+      "instagramUrl": "Instagram URL",
       "instagramPlaceholder": "https://instagram.com/vasadzemat",
       "youtubeUrl": "YouTube URL",
       "youtubePlaceholder": "https://youtube.com/@vasadzemat",
-      "twitterUrl": "Twitter uRL",
+      "twitterUrl": "Twitter URL",
       "twitterPlaceholder": "https://twitter.com/vasadzemat",
-      "livestreamUrl": "Livestream uRL",
+      "livestreamUrl": "Livestream URL",
       "livestreamUrlPlaceholder": "YouTube link ili embed kod",
       "livestreamEnabled": "Omogući livestream",
       "livestreamTitle": "Naslov livestream-a",
@@ -100,12 +100,12 @@
         "description": "Kreirajte livestream event i pokrenite prenos"
       },
       "step3": {
-        "title": "Kopirajte uRL ili embed kod",
+        "title": "Kopirajte URL ili embed kod",
         "description": "Kopirajte link sa YouTube/Facebook ili embed iframe kod"
       },
       "step4": {
         "title": "Zalijepite u polje ispod",
-        "description": "Unesite uRL ili embed kod i omogućite livestream"
+        "description": "Unesite URL ili embed kod i omogućite livestream"
       },
       "step5": {
         "title": "Sačuvajte postavke",
@@ -117,7 +117,7 @@
       "youtube": "YouTube URL (https://youtube.com/watch?v=...)",
       "youtubeLive": "YouTube Live URL (https://youtube.com/live/...)",
       "iframe": "iFrame embed kod (<iframe src=\"...\"></iframe>)",
-      "otherUrls": "Drugi uRL-ovi će biti prikazani kao vanjski linkovi"
+      "otherUrls": "Drugi URL-ovi će biti prikazani kao vanjski linkovi"
     },
     "examples": {
       "title": "Primjeri embed kodova",
@@ -128,7 +128,7 @@
       "youtubeDescription": "Zamijenite vIDEO_ID sa ID-jem vašeg YouTube Live video zapisa",
       "facebookAccordion": "Facebook live",
       "facebookDescription": "Zamijenite vIDEO_URL sa linkom do vašeg Facebook Live događaja",
-      "directAccordion": "Direktan uRL",
+      "directAccordion": "Direktan URL",
       "directDescription": "Možete koristiti i direktan link do video zapisa"
     },
     "tips": {
@@ -143,7 +143,7 @@
       "livestreamEnabledHelper": "Kada je omogućeno, korisnici će vidjeti livestream",
       "livestreamTitle": "Naslov livestream-a (opciono)",
       "livestreamTitleHelper": "Prikazuje se iznad video playera (npr. 'Džuma hutba uživo')",
-      "livestreamUrl": "Livestream uRL ili Embed kod",
+      "livestreamUrl": "Livestream URL ili Embed kod",
       "livestreamUrlHelper": "YouTube link, Facebook link, ili iframe embed kod"
     },
     "preview": {

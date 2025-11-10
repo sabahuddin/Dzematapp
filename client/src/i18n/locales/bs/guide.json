@@ -2,7 +2,7 @@
   "pageHeader": {
     "title": "Vodič kroz DžematApp",
     "subtitle": "Kompletno uputstvo za korištenje aplikacije",
-    "downloadPdf": "Preuzmi pDF"
+    "downloadPdf": "Preuzmi PDF"
   },
   "introduction": {
     "title": "O aplikaciji",
@@ -307,7 +307,7 @@
       "shortDesc": "Centralna biblioteka važnih dokumenata",
       "description": "Centralizovana biblioteka za čuvanje i dijeljenje važnih dokumenata džemata. Administratori mogu uploadovati PDF dokumente (statuti, pravilnici, zapisnici, izvještaji) i učiniti ih dostupnim članovima sa kontrolom vidljivosti.",
       "features": [
-        "Upload pDF dokumenta sa opisom i kategorijom",
+        "Upload PDF dokumenta sa opisom i kategorijom",
         "Kontrola vidljivosti: Svi članovi ili Samo admini/IO",
         "Kategorije: Statut, Zapisnik, Izvještaj, Pravilnik, Ostalo",
         "Datum uploada i informacija ko je dodao dokument",
@@ -323,7 +323,7 @@
       "shortDesc": "YouTube livestream prijenosi programa",
       "description": "Modul za livestream prenose džumua, predavanja i drugih programa putem YouTube platforme. Administratori postavljaju YouTube link koji se prikazuje svim članovima i gostima u realnom vremenu.",
       "features": [
-        "Embedovani youTube video player",
+        "Embedovani YouTube video player",
         "Automatska detekcija live prenosa",
         "Dostupno svim korisnicima uključujući goste",
         "Postavke livestream linka od strane admina",
