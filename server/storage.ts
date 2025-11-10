@@ -1823,22 +1823,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async recalculateUserPoints(userId: string): Promise<number> {
-    const settings = await this.getPointsSettings();
-    if (!settings) return 0;
+    // Sum all points from activity_log (centralized points ledger)
+    const result = await db.select({ total: sql<number>`COALESCE(SUM(${activityLog.points}), 0)` })
+      .from(activityLog)
+      .where(eq(activityLog.userId, userId));
     
-    // Points from donations
-    const totalDonations = await this.getUserTotalDonations(userId);
-    const donationPoints = Math.floor(totalDonations * settings.pointsPerChf);
-    
-    // Points from tasks
-    const tasksCompleted = await this.getUserTasksCompleted(userId);
-    const taskPoints = tasksCompleted * settings.pointsPerTask;
-    
-    // Points from events
-    const eventsAttended = await this.getUserEventsAttended(userId);
-    const eventPoints = eventsAttended * settings.pointsPerEvent;
-    
-    const totalPoints = donationPoints + taskPoints + eventPoints;
+    const totalPoints = Number(result[0]?.total ?? 0);
     
     await this.updateUser(userId, { totalPoints });
     
