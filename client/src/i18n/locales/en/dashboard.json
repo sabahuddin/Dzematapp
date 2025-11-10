@@ -26,6 +26,9 @@
     "maghrib": "Maghrib",
     "isha": "Isha"
   },
+  "pointsProgress": "Points Progress",
+  "yourPoints": "Your Points",
+  "nextBadge": "Next Badge",
   "recentAnnouncements": "Recent announcements",
   "latestAnnouncement": "Latest announcement",
   "nextEvent": "Next Event",

@@ -23,7 +23,8 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  IconButton
+  IconButton,
+  LinearProgress
 } from '@mui/material';
 import {
   People,
@@ -43,7 +44,8 @@ import {
   Visibility,
   Edit,
   Delete,
-  Close
+  Close,
+  EmojiEvents
 } from '@mui/icons-material';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay';
@@ -239,6 +241,17 @@ export default function DashboardHome() {
     retry: false,
   });
 
+  // Fetch badges for points progress (members only)
+  const badgesQuery = useQuery({
+    queryKey: ['/api/badges'],
+    enabled: !user?.isAdmin && !!user,
+  });
+
+  const userBadgesQuery = useQuery({
+    queryKey: [`/api/user-badges/${user?.id}`],
+    enabled: !user?.isAdmin && !!user,
+  });
+
   if (user?.isAdmin) {
     if (statisticsQuery.isLoading || activitiesQuery.isLoading || eventsQuery.isLoading) {
       return (
@@ -300,6 +313,68 @@ export default function DashboardHome() {
         <Typography variant="h5" sx={{ fontWeight: 600, mb: 3 }}>
           {t('dashboard:welcome', { name: user?.firstName })}
         </Typography>
+
+        {/* Points Progress Card */}
+        {(() => {
+          const allBadges = (badgesQuery.data as any[]) || [];
+          const userBadges = (userBadgesQuery.data as any[]) || [];
+          const userBadgeIds = userBadges.map((ub: any) => ub.badgeId);
+          
+          // Find next badge based on points_total criteria
+          const nextPointsBadge = allBadges
+            .filter((badge: any) => 
+              badge.criteriaType === 'points_total' && 
+              !userBadgeIds.includes(badge.id) &&
+              ((user as any)?.totalPoints || 0) < badge.criteriaValue
+            )
+            .sort((a: any, b: any) => a.criteriaValue - b.criteriaValue)[0];
+          
+          const currentPoints = (user as any)?.totalPoints || 0;
+          const nextThreshold = nextPointsBadge?.criteriaValue || currentPoints;
+          const progress = nextThreshold > 0 ? Math.min((currentPoints / nextThreshold) * 100, 100) : 0;
+          
+          return (
+            <Card sx={{ mb: 3, bgcolor: '#fff3e0' }}>
+              <Box sx={{ p: 2, borderBottom: '1px solid #ffb74d', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <EmojiEvents sx={{ color: '#f57c00' }} />
+                  <Typography variant="h6" sx={{ fontWeight: 600, color: '#f57c00' }}>
+                    {t('dashboard:pointsProgress')}
+                  </Typography>
+                </Box>
+              </Box>
+              <CardContent>
+                <Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                    <Typography variant="h6" sx={{ fontWeight: 600, color: '#f57c00' }}>
+                      {currentPoints}/{nextThreshold}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {t('dashboard:yourPoints')}
+                    </Typography>
+                  </Box>
+                  <LinearProgress 
+                    variant="determinate" 
+                    value={progress} 
+                    sx={{ 
+                      height: 8, 
+                      borderRadius: 4,
+                      bgcolor: '#ffe0b2',
+                      '& .MuiLinearProgress-bar': {
+                        bgcolor: '#f57c00'
+                      }
+                    }} 
+                  />
+                  {nextPointsBadge && (
+                    <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
+                      {nextPointsBadge.name} - {nextPointsBadge.description}
+                    </Typography>
+                  )}
+                </Box>
+              </CardContent>
+            </Card>
+          );
+        })()}
 
         {/* Today's Prayer Times */}
         {todayPrayerTime && (
