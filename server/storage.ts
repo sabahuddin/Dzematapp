@@ -1493,11 +1493,8 @@ export class DatabaseStorage implements IStorage {
   async createFinancialContribution(contribution: InsertFinancialContribution): Promise<FinancialContribution> {
     const [contrib] = await db.insert(financialContributions).values(contribution).returning();
     
-    // Update project amount if linked
-    if (contrib.projectId && contrib.amount) {
-      await this.updateProjectAmount(contrib.projectId, parseFloat(contrib.amount));
-    }
-
+    // NOTE: Project amount is updated in routes.ts to avoid duplicate addition
+    
     // Recalculate user points
     await this.recalculateUserPoints(contrib.userId);
     await this.checkAndAwardBadges(contrib.userId);
