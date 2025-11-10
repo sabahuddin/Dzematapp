@@ -912,6 +912,35 @@ export default function DashboardHome() {
 
   return (
     <Box>
+      {/* Admin Points Header */}
+      <Link href="/badges">
+        <Card 
+          sx={{ 
+            mb: 3, 
+            bgcolor: '#fff3e0',
+            cursor: 'pointer',
+            transition: 'all 0.2s',
+            '&:hover': {
+              boxShadow: 3,
+              transform: 'translateY(-2px)'
+            }
+          }}
+        >
+          <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2, py: 2 }}>
+            <EmojiEvents sx={{ fontSize: 40, color: '#f57c00' }} />
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="h5" sx={{ fontWeight: 600, color: '#f57c00' }}>
+                {t('dashboard:yourPoints')}: {(user as any)?.totalPoints || 0}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {t('dashboard:viewBadges')}
+              </Typography>
+            </Box>
+            <ArrowForward sx={{ color: '#f57c00' }} />
+          </CardContent>
+        </Card>
+      </Link>
+
       {/* Today's Prayer Times */}
       {todayPrayerTime && (
         <Card sx={{ mb: 3, bgcolor: '#e3f2fd' }}>
