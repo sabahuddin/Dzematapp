@@ -54,8 +54,8 @@
   "save": "Sačuvaj",
   "saving": "Čuvam...",
   "toggleSidebar": "Zatvori/Otvori",
-  "fallbackOrgName": "Islamska Zajednica",
-  "fallbackAddress": "Ulica Džemata 123",
+  "fallbackOrgName": "Islamska zajednica",
+  "fallbackAddress": "Ulica džemata 123",
   "fallbackPhone": "+387 33 123 456",
   "fallbackEmail": "info@dzemat.ba"
 }

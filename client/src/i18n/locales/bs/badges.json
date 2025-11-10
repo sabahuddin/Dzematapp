@@ -1,9 +1,9 @@
 {
   "title": "Značke",
-  "addBadge": "Dodaj Značku",
-  "addNewBadge": "Dodaj Novu Značku",
-  "editBadge": "Uredi Značku",
-  "deleteBadge": "Obriši Značku",
+  "addBadge": "Dodaj značku",
+  "addNewBadge": "Dodaj novu značku",
+  "editBadge": "Uredi značku",
+  "deleteBadge": "Obriši značku",
   "badgeName": "Naziv značke",
   "description": "Opis",
   "points": "Bodova potrebno",
@@ -52,7 +52,7 @@
     "criteriaTypeRequired": "Tip kriterija je obavezan",
     "criteriaValuePositive": "Vrijednost mora biti pozitivna"
   },
-  "emptyState": "Nema definisanih znački. Dodajte novu značku koristeći dugme \"Dodaj Značku\".",
+  "emptyState": "Nema definisanih znački. Dodajte novu značku koristeći dugme \"Dodaj značku\".",
   "accessDenied": "Nemate dozvolu za pristup ovoj stranici.",
   "cancel": "Otkaži",
   "save": "Spremi",

@@ -14,8 +14,8 @@
     "currentImage": "Trenutna slika",
     "name": "Naziv",
     "description": "Opis (opcionalno)",
-    "positionX": "Pozicija X",
-    "positionY": "Pozicija Y",
+    "positionX": "Pozicija x",
+    "positionY": "Pozicija y",
     "fontSize": "Veličina fonta",
     "fontColor": "Boja fonta",
     "textAlign": "Poravnanje teksta",
@@ -40,14 +40,14 @@
     "imageRequired": "Template slika je obavezna"
   },
   "issue": {
-    "pageTitle": "Izdaj Zahvalnice",
-    "selectTemplate": "Izbor Template-a",
+    "pageTitle": "Izdaj zahvalnice",
+    "selectTemplate": "Izbor template-a",
     "selectTemplateDescription": "Izaberite template za zahvalnicu koju želite izdati",
     "template": "Template",
     "selectTemplatePlaceholder": "Izaberite template",
     "message": "Poruka (opcionalno)",
     "messagePlaceholder": "Unesite dodatnu poruku za sve primaoce...",
-    "selectMembers": "Izbor Članova",
+    "selectMembers": "Izbor članova",
     "selectMembersDescription": "Izaberite članove kojima želite izdati zahvalnicu",
     "selected": "Izabrano",
     "issuing": "Izdavanje...",
@@ -65,7 +65,7 @@
     "errorIssue": "Greška pri izdavanju zahvalnica"
   },
   "my": {
-    "pageTitle": "Moje Zahvale",
+    "pageTitle": "Moje zahvale",
     "pageDescription": "Pregled svih primljenih zahvalnica",
     "noCertificates": "Nema zahvalnica",
     "noCertificatesDescription": "Još niste primili nijednu zahvalnicu",

@@ -2,7 +2,7 @@
   "pageHeader": {
     "title": "Vodič kroz DžematApp",
     "subtitle": "Kompletno uputstvo za korištenje aplikacije",
-    "downloadPdf": "Preuzmi PDF"
+    "downloadPdf": "Preuzmi pDF"
   },
   "introduction": {
     "title": "O aplikaciji",
@@ -20,8 +20,8 @@
         "permissions": "Puna kontrola: korisnici, finansije, projekti, značke, bodovi, svi moduli"
       },
       "memberIO": {
-        "name": "Član IO (Izvršni odbor)",
-        "description": "Članovi Izvršnog odbora imaju viši nivo pristupa od regularnih članova. Mogu vidjeti sve članove džemata i pristupiti proširenim informacijama. Ova uloga je namijenjena članovima upravnog odbora džemata.",
+        "name": "Član iO (Izvršni odbor)",
+        "description": "Članovi izvršnog odbora imaju viši nivo pristupa od regularnih članova. Mogu vidjeti sve članove džemata i pristupiti proširenim informacijama. Ova uloga je namijenjena članovima upravnog odbora džemata.",
         "permissions": "Prošireni pregled: svi članovi, svi događaji, sve sekcije"
       },
       "member": {
@@ -271,7 +271,7 @@
       "member": "Članovi automatski dobijaju značke kada ispune postavljene uslove. Primaju notifikaciju kada osvoje novu značku i mogu vidjeti sve svoje značke na profilu. Značke služe kao motivacija za aktivno učešće u životu džemata i vidljivo su priznanje za njihov doprinos zajednici."
     },
     "points": {
-      "title": "Sistem Bodova",
+      "title": "Sistem bodova",
       "shortDesc": "Gamifikacija kroz sistem bodova",
       "description": "Gamifikacijski sistem koji nagrađuje aktivnost članova kroz dodjeljivanje bodova. Bodovi se dodjeljuju automatski za različite aktivnosti i mogu se koristiti za rangiranje članova ili dodjelu posebnih privilegija.",
       "features": [
@@ -307,7 +307,7 @@
       "shortDesc": "Centralna biblioteka važnih dokumenata",
       "description": "Centralizovana biblioteka za čuvanje i dijeljenje važnih dokumenata džemata. Administratori mogu uploadovati PDF dokumente (statuti, pravilnici, zapisnici, izvještaji) i učiniti ih dostupnim članovima sa kontrolom vidljivosti.",
       "features": [
-        "Upload PDF dokumenta sa opisom i kategorijom",
+        "Upload pDF dokumenta sa opisom i kategorijom",
         "Kontrola vidljivosti: Svi članovi ili Samo admini/IO",
         "Kategorije: Statut, Zapisnik, Izvještaj, Pravilnik, Ostalo",
         "Datum uploada i informacija ko je dodao dokument",
@@ -323,7 +323,7 @@
       "shortDesc": "YouTube livestream prijenosi programa",
       "description": "Modul za livestream prenose džumua, predavanja i drugih programa putem YouTube platforme. Administratori postavljaju YouTube link koji se prikazuje svim članovima i gostima u realnom vremenu.",
       "features": [
-        "Embedovani YouTube video player",
+        "Embedovani youTube video player",
         "Automatska detekcija live prenosa",
         "Dostupno svim korisnicima uključujući goste",
         "Postavke livestream linka od strane admina",

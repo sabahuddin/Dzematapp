@@ -7,9 +7,9 @@
     "archive": "Arhiva"
   },
   "buttons": {
-    "addProduct": "Dodaj Artikal",
-    "addListing": "Dodaj Oglas",
-    "addGift": "Dodaj Poklon",
+    "addProduct": "Dodaj artikal",
+    "addListing": "Dodaj oglas",
+    "addGift": "Dodaj poklon",
     "buy": "Kupi",
     "edit": "Uredi",
     "delete": "Obriši",
@@ -65,11 +65,11 @@
     "uploadLabel": "Upload {{number}}"
   },
   "dialogs": {
-    "addProduct": "Dodaj Artikal",
-    "editProduct": "Uredi Artikal",
-    "editListing": "Uredi Oglas",
-    "addSaleListing": "Dodaj Oglas za Prodaju",
-    "addGiftListing": "Dodaj Poklon",
+    "addProduct": "Dodaj artikal",
+    "editProduct": "Uredi artikal",
+    "editListing": "Uredi oglas",
+    "addSaleListing": "Dodaj oglas za Prodaju",
+    "addGiftListing": "Dodaj poklon",
     "order": "Naruči {{product}}",
     "sendMessage": "Pošalji poruku"
   },

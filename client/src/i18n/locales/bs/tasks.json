@@ -93,7 +93,7 @@
     "dueDate": "Rok izvršavanja",
     "taskCount": "Zadaci ({{count}})",
     "noTasksForSection": "Nema zadataka za ovu sekciju",
-    "createFirstTask": "Kreiraj Prvi Zadatak",
+    "createFirstTask": "Kreiraj prvi zadatak",
     "assigned": "Dodijeljeno",
     "deadline": "Rok",
     "markAsComplete": "Označiti kao završeno",
@@ -112,7 +112,7 @@
     "approveComplete": "Odobri kao završeno"
   },
   "moveTask": {
-    "title": "Premjesti Zadatak",
+    "title": "Premjesti zadatak",
     "description": "Premjesti zadatak \"{{title}}\" u drugu sekciju",
     "selectSection": "Odaberite sekciju",
     "loading": "Učitavanje...",
@@ -122,7 +122,7 @@
     "moving": "Premještanje..."
   },
   "dashboard": {
-    "title": "Pregled Zadataka",
+    "title": "Pregled zadataka",
     "adminView": "Admin pogled - Svi zadaci",
     "moderatorView": "Moderator pogled - Vaše sekcije",
     "all": "Svi",
@@ -139,11 +139,11 @@
     "deadlineLabel": "Rok:"
   },
   "task": {
-    "add": "Dodaj Zadatak",
-    "edit": "Uredi Zadatak",
-    "create": "Kreiraj Zadatak",
-    "delete": "Obriši Zadatak",
-    "title": "Naslov Zadatka",
+    "add": "Dodaj zadatak",
+    "edit": "Uredi zadatak",
+    "create": "Kreiraj zadatak",
+    "delete": "Obriši zadatak",
+    "title": "Naslov zadatka",
     "description": "Opis",
     "assignTo": "Dodjeli zadatak",
     "assignToOptions": {
@@ -167,8 +167,8 @@
     "markInProgress": "Označi kao u toku",
     "approve": "Odobri",
     "reject": "Odbij",
-    "myTasks": "Moji Zadaci",
-    "allTasks": "Svi Zadaci",
+    "myTasks": "Moji zadaci",
+    "allTasks": "Svi zadaci",
     "noTasks": "Nema zadataka",
     "assignedTo": "Dodijeljeno: {{members}}",
     "completedBy": "Završio/la: {{user}}"

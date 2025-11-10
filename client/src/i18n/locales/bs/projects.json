@@ -1,9 +1,9 @@
 {
   "title": "Projekti",
-  "addProject": "Dodaj Projekat",
-  "addNewProject": "Dodaj Novi Projekat",
-  "editProject": "Uredi Projekat",
-  "deleteProject": "Obriši Projekat",
+  "addProject": "Dodaj projekat",
+  "addNewProject": "Dodaj novi projekat",
+  "editProject": "Uredi projekat",
+  "deleteProject": "Obriši projekat",
   "projectName": "Naziv projekta",
   "description": "Opis",
   "goalAmount": "Ciljani iznos (CHF)",
@@ -24,7 +24,7 @@
   "collected": "Prikupljeno:",
   "contributors": "Donatori",
   "noProjects": "Nema definisanih projekata.",
-  "noProjectsAdmin": "Dodajte novi projekat koristeći dugme \"Dodaj Projekat\".",
+  "noProjectsAdmin": "Dodajte novi projekat koristeći dugme \"Dodaj projekat\".",
   "noActiveProjects": "Nema aktivnih projekata.",
   "noArchivedProjects": "Nema arhiviranih projekata.",
   "tabs": {

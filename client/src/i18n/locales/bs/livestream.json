@@ -1,6 +1,6 @@
 {
   "title": "Livestream",
-  "subtitle": "Pratite LIVE dešavanja iz džemata",
+  "subtitle": "Pratite lIVE dešavanja iz džemata",
   "loading": "Učitavanje...",
   "live": "UŽIVO",
   "noActiveStream": {
@@ -26,7 +26,7 @@
     "platformsLabel": "Podržane platforme:",
     "platforms": {
       "youtube": "YouTube Live",
-      "facebook": "Facebook Live",
+      "facebook": "Facebook live",
       "twitch": "Twitch",
       "embed": "Direktan embed kod",
       "other": "Ostale streaming platforme"
