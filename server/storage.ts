@@ -76,6 +76,8 @@ import {
   type InsertMarriageApplication,
   type ActivityFeedItem,
   type InsertActivityFeedItem,
+  type Service,
+  type InsertService,
   users,
   announcements,
   events,
@@ -113,7 +115,8 @@ import {
   membershipApplications,
   akikaApplications,
   marriageApplications,
-  activityFeed
+  activityFeed,
+  services
 } from "@shared/schema";
 import { db } from './db';
 import { eq, and, or, desc, asc, gt, sql, inArray } from 'drizzle-orm';
@@ -254,6 +257,13 @@ export interface IStorage {
   getUserMarketplaceItems(userId: string): Promise<MarketplaceItem[]>;
   updateMarketplaceItem(id: string, updates: Partial<InsertMarketplaceItem>): Promise<MarketplaceItem | undefined>;
   deleteMarketplaceItem(id: string): Promise<boolean>;
+
+  // Services (Usluge)
+  createService(service: InsertService): Promise<Service>;
+  getService(id: string): Promise<Service | undefined>;
+  getAllServices(): Promise<Service[]>;
+  updateService(id: string, updates: Partial<InsertService>): Promise<Service | undefined>;
+  deleteService(id: string): Promise<boolean>;
 
   // Product Purchase Requests
   createProductPurchaseRequest(request: InsertProductPurchaseRequest): Promise<ProductPurchaseRequest>;
@@ -1269,6 +1279,30 @@ export class DatabaseStorage implements IStorage {
 
   async deleteMarketplaceItem(id: string): Promise<boolean> {
     const result = await db.delete(marketplaceItems).where(eq(marketplaceItems.id, id)).returning();
+    return result.length > 0;
+  }
+
+  async createService(service: InsertService): Promise<Service> {
+    const [newService] = await db.insert(services).values(service).returning();
+    return newService;
+  }
+
+  async getService(id: string): Promise<Service | undefined> {
+    const result = await db.select().from(services).where(eq(services.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getAllServices(): Promise<Service[]> {
+    return await db.select().from(services).where(eq(services.isActive, true)).orderBy(desc(services.createdAt));
+  }
+
+  async updateService(id: string, updates: Partial<InsertService>): Promise<Service | undefined> {
+    const [service] = await db.update(services).set(updates).where(eq(services.id, id)).returning();
+    return service;
+  }
+
+  async deleteService(id: string): Promise<boolean> {
+    const result = await db.delete(services).where(eq(services.id, id)).returning();
     return result.length > 0;
   }
 

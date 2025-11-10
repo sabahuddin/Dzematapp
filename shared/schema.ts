@@ -1011,3 +1011,23 @@ export const insertActivityFeedSchema = createInsertSchema(activityFeed).omit({
 
 export type ActivityFeedItem = typeof activityFeed.$inferSelect;
 export type InsertActivityFeedItem = z.infer<typeof insertActivityFeedSchema>;
+
+// Services (Usluge) - dodatne usluge koje džemat nudi
+export const services = pgTable("services", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  description: text("description").notNull(),
+  price: text("price"), // Optional - može biti besplatno
+  duration: text("duration"), // "1 sat", "30 min", etc.
+  category: text("category"), // "Porodica", "Obrazovanje", "Zdravlje", etc.
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertServiceSchema = createInsertSchema(services).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type Service = typeof services.$inferSelect;
+export type InsertService = z.infer<typeof insertServiceSchema>;
