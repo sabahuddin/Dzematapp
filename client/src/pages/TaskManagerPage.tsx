@@ -44,6 +44,7 @@ import { WorkGroup, AccessRequest, Task, WorkGroupMember, User } from '@shared/s
 import WorkGroupModal from '../components/modals/WorkGroupModal';
 import MemberManagementDialog from '../components/MemberManagementDialog';
 import { useAuth } from '../hooks/useAuth';
+import { useCurrency } from '../contexts/CurrencyContext';
 import { useToast } from '../hooks/use-toast';
 import { apiRequest } from '../lib/queryClient';
 
@@ -457,6 +458,7 @@ function AdminTasksArchive({ workGroups, users, currentUser }: AdminTasksArchive
 export default function TaskManagerPage() {
   const { t } = useTranslation(['tasks', 'common']);
   const { user } = useAuth();
+  const { formatPrice, currency } = useCurrency();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
@@ -1375,6 +1377,7 @@ interface ProposalsReviewContentProps {
 }
 
 function ProposalsReviewContent({ proposals, workGroups, users, onApprove, onReject, isLoading, readOnly = false }: ProposalsReviewContentProps) {
+  const { formatPrice } = useCurrency();
   const [selectedProposal, setSelectedProposal] = useState<any | null>(null);
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
   const [reviewAction, setReviewAction] = useState<'approve' | 'reject'>('approve');
@@ -1478,7 +1481,7 @@ function ProposalsReviewContent({ proposals, workGroups, users, onApprove, onRej
                       {proposal.budget && (
                         <Grid size={{ xs: 12, sm: 6 }}>
                           <Typography variant="body2" color="text.secondary">Budžet:</Typography>
-                          <Typography variant="body1" sx={{ fontWeight: 600 }}>{proposal.budget} CHF</Typography>
+                          <Typography variant="body1" sx={{ fontWeight: 600 }}>{formatPrice(proposal.budget)}</Typography>
                         </Grid>
                       )}
                       {proposal.how && (
@@ -1570,6 +1573,7 @@ interface ProposalModalProps {
 
 function ProposalModal({ open, onClose, workGroup, currentUserId }: ProposalModalProps) {
   const { t } = useTranslation(['tasks', 'common']);
+  const { currency } = useCurrency();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
@@ -1689,12 +1693,12 @@ function ProposalModal({ open, onClose, workGroup, currentUserId }: ProposalModa
             data-testid="input-proposal-why"
           />
           <TextField
-            label="Budžet (CHF - Opciono)"
+            label={`Budžet (${currency} - Opciono)`}
             value={budget}
             onChange={(e) => setBudget(e.target.value)}
             fullWidth
             type="number"
-            placeholder="Procijenjeni budžet u CHF"
+            placeholder={`Procijenjeni budžet u ${currency}`}
             data-testid="input-proposal-budget"
           />
         </Box>

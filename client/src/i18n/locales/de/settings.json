@@ -16,6 +16,8 @@
       "phonePlaceholder": "+41 XX XXX XX XX",
       "email": "E-Mail",
       "emailPlaceholder": "info@gemeinde.ch",
+      "currency": "Währung",
+      "selectCurrency": "Währung auswählen",
       "facebookUrl": "Facebook URL",
       "facebookPlaceholder": "https://facebook.com/ihregemeinde",
       "instagramUrl": "Instagram URL",

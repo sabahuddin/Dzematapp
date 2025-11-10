@@ -36,12 +36,14 @@ import {
 } from '@mui/icons-material';
 import { FinancialContribution, User, Project, insertFinancialContributionSchema } from '@shared/schema';
 import { useAuth } from '../hooks/useAuth';
+import { useCurrency } from '../contexts/CurrencyContext';
 import { useToast } from '../hooks/use-toast';
 import { apiRequest, queryClient } from '../lib/queryClient';
 import { exportToExcel } from '../utils/excelExport';
 
 export default function FinancesPage() {
   const { user: currentUser } = useAuth();
+  const { formatPrice, currency } = useCurrency();
   const { toast } = useToast();
   const { t } = useTranslation(['finances', 'common']);
   
@@ -227,7 +229,7 @@ export default function FinancesPage() {
 
     const financeData = filteredContributions.map((contribution: FinancialContribution) => [
       currentUser?.isAdmin ? getUserName(contribution.userId) : '-',
-      `CHF ${contribution.amount}`,
+      formatPrice(contribution.amount),
       contribution.purpose,
       getProjectName(contribution.projectId) || '-',
       contribution.paymentDate ? new Date(contribution.paymentDate).toLocaleDateString('hr-HR') : '-',
@@ -237,7 +239,7 @@ export default function FinancesPage() {
 
     // Calculate total
     const total = filteredContributions.reduce((sum, c) => sum + Number(c.amount), 0);
-    const summaryRow = ['UKUPNO:', `CHF ${total.toFixed(2)}`, '', '', '', '', ''];
+    const summaryRow = ['UKUPNO:', formatPrice(total), '', '', '', '', ''];
 
     exportToExcel({
       title: 'Spisak finansijskih uplata',
@@ -364,7 +366,7 @@ export default function FinancesPage() {
                   <TableCell>
                     <Chip
                       icon={<AttachMoney />}
-                      label={t('finances:amountInCHF', { amount: contribution.amount })}
+                      label={formatPrice(contribution.amount)}
                       color="success"
                       size="small"
                       data-testid={`amount-${contribution.id}`}
@@ -465,7 +467,7 @@ export default function FinancesPage() {
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
-                  label={t('finances:amountLabel')}
+                  label={`${t('finances:amount')} (${currency})`}
                   type="number"
                   {...form.register('amount')}
                   error={!!form.formState.errors.amount}

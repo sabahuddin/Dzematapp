@@ -11,10 +11,13 @@ interface CurrencyContextType {
 const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
 
 export function CurrencyProvider({ children }: { children: ReactNode }) {
-  const { data: settings, isLoading } = useQuery({
+  const { data: settings, isLoading, error } = useQuery({
     queryKey: ['/api/organization-settings'],
-  }) as { data: OrganizationSettings | undefined; isLoading: boolean };
+    retry: 2,
+    staleTime: 5 * 60 * 1000, // 5 minutes - reduce re-fetching
+  }) as { data: OrganizationSettings | undefined; isLoading: boolean; error: Error | null };
 
+  // Always provide fallback currency to avoid undefined states
   const currency = settings?.currency || 'CHF';
 
   const formatPrice = (amount: number | string): string => {
@@ -30,6 +33,8 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
     })} ${currency}`;
   };
 
+  // Even during loading/error, provide stable currency context with fallback
+  // This prevents flickering and undefined states in downstream components
   return (
     <CurrencyContext.Provider value={{ currency, isLoading, formatPrice }}>
       {children}

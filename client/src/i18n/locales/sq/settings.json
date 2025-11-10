@@ -16,6 +16,8 @@
       "phonePlaceholder": "+41 XX XXX XX XX",
       "email": "Email",
       "emailPlaceholder": "info@xhemat.ch",
+      "currency": "Monedha",
+      "selectCurrency": "Zgjidhni monedhën",
       "facebookUrl": "Facebook URL",
       "facebookPlaceholder": "https://facebook.com/xhematiJuaj",
       "instagramUrl": "Instagram URL",

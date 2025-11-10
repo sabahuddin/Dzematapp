@@ -4,6 +4,7 @@ import { Box, Tabs, Tab, Typography, Card, CardContent, CardMedia, Button, Chip,
 import { Add, Delete, ShoppingCart, Store, CardGiftcard, CloudUpload, Edit, Close, ContentCopy, Archive, Check } from "@mui/icons-material";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 import { useToast } from "@/hooks/use-toast";
 import { useMarkAsViewed } from "@/hooks/useMarkAsViewed";
 import { useTranslation } from "react-i18next";
@@ -19,6 +20,7 @@ interface MarketplaceItemWithUser extends MarketplaceItem {
 
 export default function ShopPage() {
   const { user } = useAuth();
+  const { formatPrice, currency } = useCurrency();
   const { toast } = useToast();
   const { t } = useTranslation(['shop']);
   useMarkAsViewed('shop');
@@ -614,7 +616,7 @@ export default function ShopPage() {
                       </Typography>
                       {product.price && (
                         <Typography variant="h5" color="primary" gutterBottom>
-                          {t('shop:display.priceInCHF', { price: product.price })}
+                          {formatPrice(product.price)}
                         </Typography>
                       )}
                       {product.category === "hrana" && product.weight && (
@@ -766,7 +768,7 @@ export default function ShopPage() {
                         )}
                         {item.price && (
                           <Typography variant="h6" color="primary" sx={{ mb: 1 }} data-testid={`text-sale-price-${item.id}`}>
-                            {t('shop:display.priceInCHF', { price: item.price })}
+                            {formatPrice(item.price)}
                           </Typography>
                         )}
                         <Chip label={t('shop:display.forSale')} color="primary" size="small" sx={{ mb: 1 }} />
@@ -988,7 +990,7 @@ export default function ShopPage() {
                         )}
                         {item.price && (
                           <Typography variant="h6" color="primary" sx={{ mb: 1 }} data-testid={`text-archived-price-${item.id}`}>
-                            {t('shop:display.priceInCHF', { price: item.price })}
+                            {formatPrice(item.price)}
                           </Typography>
                         )}
                         <Chip 
@@ -1138,7 +1140,7 @@ export default function ShopPage() {
 
           <TextField
             fullWidth
-            label={t('shop:labels.priceWithCurrency')}
+            label={`${t('shop:labels.price')} (${currency})`}
             value={productForm.price}
             onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
             margin="normal"
@@ -1188,7 +1190,7 @@ export default function ShopPage() {
           {marketplaceForm.type === "sale" && (
             <TextField
               fullWidth
-              label={t('shop:labels.priceWithCurrency')}
+              label={`${t('shop:labels.price')} (${currency})`}
               value={marketplaceForm.price}
               onChange={(e) => setMarketplaceForm({ ...marketplaceForm, price: e.target.value })}
               margin="normal"

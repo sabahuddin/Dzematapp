@@ -7,6 +7,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { bs } from 'date-fns/locale';
 import { queryClient } from "./lib/queryClient";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { CurrencyProvider } from "./contexts/CurrencyContext";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
@@ -351,17 +352,19 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={bs}>
-          <AuthProvider>
-            <TooltipProvider>
-              <Toaster />
-              <Router />
-            </TooltipProvider>
-          </AuthProvider>
-        </LocalizationProvider>
-      </ThemeProvider>
+      <CurrencyProvider>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={bs}>
+            <AuthProvider>
+              <TooltipProvider>
+                <Toaster />
+                <Router />
+              </TooltipProvider>
+            </AuthProvider>
+          </LocalizationProvider>
+        </ThemeProvider>
+      </CurrencyProvider>
     </QueryClientProvider>
   );
 }

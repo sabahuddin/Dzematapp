@@ -16,6 +16,8 @@
       "phonePlaceholder": "+41 XX XXX XX XX",
       "email": "Email",
       "emailPlaceholder": "info@congregation.ch",
+      "currency": "Currency",
+      "selectCurrency": "Select currency",
       "facebookUrl": "Facebook URL",
       "facebookPlaceholder": "https://facebook.com/yourcongregation",
       "instagramUrl": "Instagram URL",
