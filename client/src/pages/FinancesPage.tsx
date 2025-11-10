@@ -79,6 +79,7 @@ export default function FinancesPage() {
       : z.string().optional(),
     paymentDate: z.string().min(1, t('finances:validation.dateRequired')),
     projectId: z.string().transform(val => val || null).nullable().optional(),
+    points: z.coerce.number().min(0).optional(), // Bonus points for contribution
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -90,6 +91,7 @@ export default function FinancesPage() {
       purpose: t('finances:purposes.membership'),
       paymentMethod: t('finances:paymentMethods.cash'),
       notes: '',
+      points: 0,
       createdById: currentUser?.id || ''
     }
   });
@@ -551,6 +553,20 @@ export default function FinancesPage() {
                   data-testid="input-notes"
                 />
               </Grid>
+              {currentUser?.isAdmin && (
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <TextField
+                    fullWidth
+                    label={t('finances:bonusPoints')}
+                    type="number"
+                    {...form.register('points')}
+                    error={!!form.formState.errors.points}
+                    helperText={form.formState.errors.points?.message}
+                    inputProps={{ min: 0 }}
+                    data-testid="input-points"
+                  />
+                </Grid>
+              )}
             </Grid>
           </DialogContent>
           <DialogActions>
