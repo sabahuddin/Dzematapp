@@ -1808,6 +1808,9 @@ export class DatabaseStorage implements IStorage {
     
     await this.updateUser(userId, { totalPoints });
     
+    // Automatically check and award badges after points update
+    await this.checkAndAwardBadges(userId);
+    
     return totalPoints;
   }
 
