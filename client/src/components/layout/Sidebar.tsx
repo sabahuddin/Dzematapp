@@ -67,7 +67,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { user } = useAuth();
   const { t } = useTranslation(['navigation']);
-  const [zahvaleOpen, setZahvaleOpen] = useState(false);
+  const [priznanjaOpen, setPriznanjaOpen] = useState(false);
   const [mediaOpen, setMediaOpen] = useState(false);
 
   const menuItems: Array<{
@@ -84,7 +84,6 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     { path: '/users', label: t('navigation:menu.users'), labelForMember: t('navigation:menu.profile'), icon: People },
     { path: '/finances', label: t('navigation:menu.finances'), labelForMember: t('navigation:menu.myPayments'), icon: AttachMoney },
     { path: '/activity-log', label: t('navigation:menu.activityLog'), labelForMember: t('navigation:menu.myActivities'), icon: Timeline },
-    { path: '/badges', label: t('navigation:menu.badges'), icon: EmojiEvents, adminOnly: true },
     { path: '/projects', label: t('navigation:menu.projects'), icon: Work },
     { path: '/announcements', label: t('navigation:menu.announcements'), icon: Campaign, showBadge: true },
     { path: '/events', label: t('navigation:menu.events'), icon: Event, showBadge: true },
@@ -99,8 +98,9 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     { path: '/organization-settings', label: t('navigation:menu.organizationSettings'), icon: Settings, adminOnly: true },
   ];
 
-  const zahvaleItems = [
+  const priznanjaItems = [
     { path: '/my-certificates', label: t('navigation:menu.myCertificates'), icon: CardGiftcard, showBadge: true },
+    { path: '/badges', label: t('navigation:menu.badges'), icon: EmojiEvents, adminOnly: true },
     { path: '/certificate-templates', label: t('navigation:menu.certificateTemplates'), icon: CardGiftcard, adminOnly: true },
     { path: '/issue-certificates', label: t('navigation:menu.issueCertificates'), icon: CardGiftcard, adminOnly: true },
     { path: '/all-certificates', label: t('navigation:menu.allCertificates'), icon: CardGiftcard, adminOnly: true },
@@ -291,10 +291,10 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
           );
         })}
 
-        {/* Zahvale Menu Group */}
+        {/* Priznanja Menu Group */}
         <ListItem disablePadding sx={{ width: '100%', maxWidth: '100%' }}>
           <ListItemButton
-            onClick={() => setZahvaleOpen(!zahvaleOpen)}
+            onClick={() => setPriznanjaOpen(!priznanjaOpen)}
             sx={{
               mx: 1,
               borderRadius: 1,
@@ -308,11 +308,11 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
                 color: '#1976d2'
               }
             }}
-            data-testid="nav-zahvale-group"
+            data-testid="nav-priznanja-group"
           >
             <ListItemIcon sx={{ color: 'inherit', minWidth: collapsed ? 'auto' : 40, justifyContent: 'center' }}>
               {unviewedCertificatesCount && unviewedCertificatesCount.count > 0 ? (
-                <Badge badgeContent={unviewedCertificatesCount.count} color="error" data-testid="badge-zahvale">
+                <Badge badgeContent={unviewedCertificatesCount.count} color="error" data-testid="badge-priznanja">
                   <CardGiftcard />
                 </Badge>
               ) : (
@@ -321,16 +321,16 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
             </ListItemIcon>
             {!collapsed && (
               <>
-                <ListItemText primary={t('navigation:menu.zahvaleGroup')} />
-                {zahvaleOpen ? <ExpandLess /> : <ExpandMore />}
+                <ListItemText primary="Priznanja" />
+                {priznanjaOpen ? <ExpandLess /> : <ExpandMore />}
               </>
             )}
           </ListItemButton>
         </ListItem>
         {!collapsed && (
-          <Collapse in={zahvaleOpen} timeout="auto" unmountOnExit>
+          <Collapse in={priznanjaOpen} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              {zahvaleItems.map((item) => {
+              {priznanjaItems.map((item) => {
                 if (item.adminOnly && !user?.isAdmin) return null;
                 
                 const Icon = item.icon;
