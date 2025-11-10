@@ -194,6 +194,12 @@ export default function BadgesPage() {
     }
   };
 
+  const handleCheckAllBadges = () => {
+    if (window.confirm('Ova akcija će provjeriti i dodijeliti značke za SVE korisnike. Može potrajati nekoliko sekundi. Nastaviti?')) {
+      checkAllBadgesMutation.mutate();
+    }
+  };
+
   if (badgesQuery.isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
@@ -222,7 +228,7 @@ export default function BadgesPage() {
           <Button
             variant="outlined"
             startIcon={<EmojiEvents />}
-            onClick={() => checkAllBadgesMutation.mutate()}
+            onClick={handleCheckAllBadges}
             disabled={checkAllBadgesMutation.isPending}
             data-testid="button-check-all-badges"
           >
