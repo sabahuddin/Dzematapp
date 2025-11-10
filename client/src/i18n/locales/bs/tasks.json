@@ -1,13 +1,13 @@
 {
   "title": "Sekcije",
-  "workGroups": "Radne Grupe",
+  "workGroups": "Radne grupe",
   "tasks": "Zadaci",
-  "addSection": "Dodaj Sekciju",
-  "editSection": "Uredi Sekciju",
-  "createSection": "Kreiraj Novu Sekciju",
-  "deleteSection": "Obriši Sekciju",
-  "sectionName": "Naziv Sekcije",
-  "sectionDescription": "Opis Sekcije",
+  "addSection": "Dodaj sekciju",
+  "editSection": "Uredi sekciju",
+  "createSection": "Kreiraj novu sekciju",
+  "deleteSection": "Obriši sekciju",
+  "sectionName": "Naziv sekcije",
+  "sectionDescription": "Opis sekcije",
   "description": "Opis",
   "visibility": {
     "label": "Vidljivost",
@@ -16,9 +16,9 @@
   },
   "members": {
     "title": "Članovi",
-    "add": "Dodaj Člana",
-    "remove": "Ukloni Člana",
-    "selectMembers": "Odaberi Članove",
+    "add": "Dodaj člana",
+    "remove": "Ukloni člana",
+    "selectMembers": "Odaberi članove",
     "noMembers": "Nema članova",
     "moderators": "Moderatori",
     "setAsModerator": "Postavi kao moderatora",
@@ -27,9 +27,9 @@
     "count_few": "{{count}} člana",
     "count_many": "{{count}} članova"
   },
-  "manageMembers": "Upravljaj Članovima",
-  "manageTasks": "Upravljaj Zadacima",
-  "viewTasks": "Pogledaj Zadatke",
+  "manageMembers": "Upravljaj članovima",
+  "manageTasks": "Upravljaj zadacima",
+  "viewTasks": "Pogledaj zadatke",
   "joinSection": "Pridruži se",
   "mySections": "Moje sekcije",
   "notMemberOfAnySection": "Niste član nijedne sekcije.",
@@ -40,13 +40,13 @@
   "loadingError": "Greška pri učitavanju podataka. Molimo pokušajte ponovo.",
   "tabs": {
     "sections": "Sekcije",
-    "accessRequests": "Zahtjevi za Pristup"
+    "accessRequests": "Zahtjevi za pristup"
   },
   "accessRequests": {
-    "title": "Zahtjevi za Pristup",
-    "userName": "Ime Korisnika",
-    "sectionName": "Naziv Sekcije",
-    "requestDate": "Datum Zahtjeva",
+    "title": "Zahtjevi za pristup",
+    "userName": "Ime korisnika",
+    "sectionName": "Naziv sekcije",
+    "requestDate": "Datum zahtjeva",
     "status": "Status",
     "actions": "Akcije",
     "noRequests": "Nema zahtjeva za pristup",
@@ -80,8 +80,8 @@
     "taskDeleteError": "Greška pri brisanju zadatka"
   },
   "taskDialog": {
-    "title": "Upravljanje Zadacima - {{name}}",
-    "createNew": "Kreiraj Novi Zadatak",
+    "title": "Upravljanje zadacima - {{name}}",
+    "createNew": "Kreiraj novi zadatak",
     "taskTitle": "Naziv zadatka",
     "taskDescription": "Opis zadatka",
     "image": "Slika (opciono)",

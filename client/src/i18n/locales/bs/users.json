@@ -24,8 +24,8 @@
   "inactiveReasonLabel": "Razlog pasivnosti",
   "skills": "Vještine",
   "photo": "Fotografija",
-  "uploadPhoto": "Učitaj Fotografiju",
-  "removePhoto": "Ukloni Fotografiju",
+  "uploadPhoto": "Učitaj fotografiju",
+  "removePhoto": "Ukloni fotografiju",
   "roles": {
     "label": "Uloge",
     "admin": "Admin",
@@ -52,8 +52,8 @@
     "unknown": "Nepoznato"
   },
   "modal": {
-    "addTitle": "Dodaj Novog Korisnika",
-    "editTitle": "Uredi Korisnika",
+    "addTitle": "Dodaj novog korisnika",
+    "editTitle": "Uredi korisnika",
     "photoLabel": "Fotografija korisnika",
     "changePhoto": "Promijeni sliku",
     "addPhoto": "Dodaj sliku",
@@ -71,7 +71,7 @@
   },
   "family": {
     "title": "Članovi porodice",
-    "addMember": "Dodaj Člana Porodice",
+    "addMember": "Dodaj člana porodice",
     "selectExisting": "Odaberi postojećeg korisnika",
     "createNew": "Dodaj novog korisnika",
     "relationshipType": "Tip odnosa",
