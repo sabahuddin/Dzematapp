@@ -315,6 +315,14 @@ export default function DashboardHome() {
         {(() => {
           const allBadges = (badgesQuery.data as any[]) || [];
           const userBadges = (userBadgesQuery.data as any[]) || [];
+          
+          console.log('DEBUG Badges:', { 
+            allBadgesCount: allBadges.length, 
+            userBadgesCount: userBadges.length,
+            badgesLoading: badgesQuery.isLoading,
+            userBadgesLoading: userBadgesQuery.isLoading
+          });
+          
           const earnedBadges = userBadges.map((ub: any) => {
             const badge = allBadges.find((b: any) => b.id === ub.badgeId);
             return badge;
@@ -335,9 +343,6 @@ export default function DashboardHome() {
               <Card sx={{ mb: 3, bgcolor: '#ffffff', boxShadow: 2 }}>
                 <CardContent sx={{ pb: 2, '&:last-child': { pb: 2 } }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
-                    <Typography variant="body2" sx={{ fontWeight: 600, color: '#424242' }}>
-                      Vaše značke:
-                    </Typography>
                     {earnedBadges.map((badge: any) => {
                       const colors = getBadgeColor(badge.criteriaType);
                       return (
