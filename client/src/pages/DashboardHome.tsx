@@ -410,13 +410,25 @@ export default function DashboardHome() {
               </Box>
               <CardContent>
                 <Box>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-                    <Typography variant="h6" sx={{ fontWeight: 600, color: '#f57c00' }}>
-                      {currentPoints}/{nextThreshold}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {t('dashboard:yourPoints')}
-                    </Typography>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', mb: 1 }}>
+                    <Box>
+                      <Typography variant="h4" sx={{ fontWeight: 700, color: '#f57c00' }}>
+                        {currentPoints.toLocaleString()}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        ukupno bodova
+                      </Typography>
+                    </Box>
+                    {nextPointsBadge && (
+                      <Box sx={{ textAlign: 'right' }}>
+                        <Typography variant="body2" sx={{ fontWeight: 600, color: '#f57c00' }}>
+                          {(nextThreshold - currentPoints).toLocaleString()} bodova
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          do sljedeće značke
+                        </Typography>
+                      </Box>
+                    )}
                   </Box>
                   <LinearProgress 
                     variant="determinate" 
@@ -432,7 +444,7 @@ export default function DashboardHome() {
                   />
                   {nextPointsBadge && (
                     <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
-                      {nextPointsBadge.name} - {nextPointsBadge.description}
+                      Sljedeća značka: {nextPointsBadge.icon} {nextPointsBadge.name} ({nextThreshold.toLocaleString()} bodova)
                     </Typography>
                   )}
                 </Box>

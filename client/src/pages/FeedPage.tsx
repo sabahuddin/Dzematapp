@@ -62,6 +62,25 @@ export default function FeedPage() {
     }
   };
 
+  const getTypeColor = (type: string, isClickable: boolean) => {
+    if (isClickable) {
+      return { bg: '#ffffff', iconColor: 'primary.main' };
+    }
+    
+    switch (type) {
+      case 'new_member':
+        return { bg: '#e3f2fd', iconColor: '#1976d2' }; // Blue
+      case 'badge_awarded':
+        return { bg: '#fff3e0', iconColor: '#f57c00' }; // Orange
+      case 'certificate_issued':
+        return { bg: '#f3e5f5', iconColor: '#7b1fa2' }; // Purple
+      case 'shop_item':
+        return { bg: '#e8f5e9', iconColor: '#388e3c' }; // Green
+      default:
+        return { bg: '#f5f5f5', iconColor: 'text.secondary' }; // Gray
+    }
+  };
+
   const handleItemClick = (item: ActivityFeedItem) => {
     if (!item.isClickable) return;
 
@@ -113,41 +132,43 @@ export default function FeedPage() {
         </Alert>
       ) : (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          {feedItems.map((item) => (
-            <Card
-              key={item.id}
-              data-testid={`feed-item-${item.id}`}
-              onClick={() => handleItemClick(item)}
-              sx={{
-                transition: 'all 0.3s ease',
-                cursor: item.isClickable ? 'pointer' : 'default',
-                position: 'relative',
-                
-                ...(item.isClickable ? {
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                  '&:hover': {
-                    boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
-                    transform: 'translateY(-2px)',
-                  },
-                } : {
-                  backgroundColor: '#f5f5f5',
-                  opacity: 0.85,
-                })
-              }}
-            >
-              <CardContent>
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
-                  <Box
-                    sx={{
-                      color: item.isClickable ? 'primary.main' : 'text.secondary',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      minWidth: 56,
-                    }}
-                  >
-                    {getIcon(item.type)}
-                  </Box>
+          {feedItems.map((item) => {
+            const colors = getTypeColor(item.type, item.isClickable);
+            return (
+              <Card
+                key={item.id}
+                data-testid={`feed-item-${item.id}`}
+                onClick={() => handleItemClick(item)}
+                sx={{
+                  transition: 'all 0.3s ease',
+                  cursor: item.isClickable ? 'pointer' : 'default',
+                  position: 'relative',
+                  backgroundColor: colors.bg,
+                  
+                  ...(item.isClickable ? {
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                    '&:hover': {
+                      boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+                      transform: 'translateY(-2px)',
+                    },
+                  } : {
+                    opacity: 0.95,
+                  })
+                }}
+              >
+                <CardContent>
+                  <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
+                    <Box
+                      sx={{
+                        color: colors.iconColor,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        minWidth: 56,
+                      }}
+                    >
+                      {getIcon(item.type)}
+                    </Box>
 
                   <Box sx={{ flex: 1 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
@@ -181,7 +202,8 @@ export default function FeedPage() {
                 </Box>
               </CardContent>
             </Card>
-          ))}
+            );
+          })}
         </Box>
       )}
     </Box>
