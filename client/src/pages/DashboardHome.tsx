@@ -311,6 +311,59 @@ export default function DashboardHome() {
 
     return (
       <Box>
+        {/* User Badges Section */}
+        {(() => {
+          const allBadges = (badgesQuery.data as any[]) || [];
+          const userBadges = (userBadgesQuery.data as any[]) || [];
+          const earnedBadges = userBadges.map((ub: any) => {
+            const badge = allBadges.find((b: any) => b.id === ub.badgeId);
+            return badge;
+          }).filter(Boolean);
+
+          if (earnedBadges.length > 0) {
+            const getBadgeColor = (criteriaType: string) => {
+              switch (criteriaType) {
+                case 'points_total': return { bg: '#fff3e0', text: '#e65100', border: '#ffb74d' };
+                case 'contributions_amount': return { bg: '#e8f5e9', text: '#2e7d32', border: '#81c784' };
+                case 'tasks_completed': return { bg: '#e3f2fd', text: '#1565c0', border: '#64b5f6' };
+                case 'events_attended': return { bg: '#f3e5f5', text: '#6a1b9a', border: '#ba68c8' };
+                default: return { bg: '#f5f5f5', text: '#616161', border: '#bdbdbd' };
+              }
+            };
+
+            return (
+              <Card sx={{ mb: 3, bgcolor: '#ffffff', boxShadow: 2 }}>
+                <CardContent sx={{ pb: 2, '&:last-child': { pb: 2 } }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+                    <Typography variant="body2" sx={{ fontWeight: 600, color: '#424242' }}>
+                      Vaše značke:
+                    </Typography>
+                    {earnedBadges.map((badge: any) => {
+                      const colors = getBadgeColor(badge.criteriaType);
+                      return (
+                        <Chip
+                          key={badge.id}
+                          label={`${badge.icon || '🏆'} ${badge.name}`}
+                          size="medium"
+                          sx={{ 
+                            fontWeight: 600,
+                            bgcolor: colors.bg,
+                            color: colors.text,
+                            border: `2px solid ${colors.border}`,
+                            fontSize: '0.9rem',
+                            px: 1
+                          }}
+                        />
+                      );
+                    })}
+                  </Box>
+                </CardContent>
+              </Card>
+            );
+          }
+          return null;
+        })()}
+
         {/* Points Progress Card */}
         {(() => {
           const allBadges = (badgesQuery.data as any[]) || [];

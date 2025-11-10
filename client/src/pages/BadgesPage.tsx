@@ -134,7 +134,13 @@ export default function BadgesPage() {
       return response.json();
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['/api/user-badges'] });
+      // Invalidate all badge-related queries using predicate for user-specific keys
+      queryClient.invalidateQueries({ 
+        predicate: (query) => {
+          const key = query.queryKey[0] as string;
+          return key?.startsWith('/api/user-badges') || key === '/api/badges' || key === '/api/auth/session';
+        }
+      });
       toast({ 
         title: t('common:common.success'), 
         description: data.message || 'Značke provjerene za sve korisnike'

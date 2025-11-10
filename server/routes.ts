@@ -2895,14 +2895,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/user-badges/check-all", requireAdmin, async (req, res) => {
     try {
       const users = await storage.getAllUsers();
-      let totalBadgesAwarded = 0;
       
       for (const user of users) {
         // recalculateUserPoints automatically calls checkAndAwardBadges
         await storage.recalculateUserPoints(user.id);
       }
       
-      res.json({ message: `Badges checked and awarded for ${users.length} users` });
+      res.json({ 
+        message: `Badges checked and awarded for ${users.length} users`
+      });
     } catch (error) {
       res.status(500).json({ message: "Failed to check badges for all users" });
     }
