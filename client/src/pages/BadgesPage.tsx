@@ -127,6 +127,28 @@ export default function BadgesPage() {
     }
   });
 
+  // Check all users badges mutation
+  const checkAllBadgesMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest('/api/user-badges/check-all', 'POST');
+      return response.json();
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/user-badges'] });
+      toast({ 
+        title: t('common:common.success'), 
+        description: data.message || 'Značke provjerene za sve korisnike'
+      });
+    },
+    onError: () => {
+      toast({ 
+        title: t('common:common.error'), 
+        description: 'Greška prilikom provjere znački', 
+        variant: 'destructive' 
+      });
+    }
+  });
+
   const handleOpenDialog = (badge?: Badge) => {
     if (badge) {
       setSelectedBadge(badge);
@@ -190,14 +212,25 @@ export default function BadgesPage() {
         <Typography variant="h5" sx={{ fontWeight: 600 }}>
           {t('badges:title')}
         </Typography>
-        <Button
-          variant="contained"
-          startIcon={<Add />}
-          onClick={() => handleOpenDialog()}
-          data-testid="button-add-badge"
-        >
-          {t('badges:addBadge')}
-        </Button>
+        <Stack direction="row" spacing={2}>
+          <Button
+            variant="outlined"
+            startIcon={<EmojiEvents />}
+            onClick={() => checkAllBadgesMutation.mutate()}
+            disabled={checkAllBadgesMutation.isPending}
+            data-testid="button-check-all-badges"
+          >
+            {checkAllBadgesMutation.isPending ? 'Provjeravam...' : 'Provjeri sve korisnike'}
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<Add />}
+            onClick={() => handleOpenDialog()}
+            data-testid="button-add-badge"
+          >
+            {t('badges:addBadge')}
+          </Button>
+        </Stack>
       </Box>
 
       <Card>

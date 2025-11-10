@@ -1712,13 +1712,20 @@ export class DatabaseStorage implements IStorage {
 
   async checkAndAwardBadges(userId: string): Promise<UserBadge[]> {
     const allBadges = await this.getAllBadges();
+    const existingBadges = await this.getUserBadges(userId);
+    const existingBadgeIds = existingBadges.map(ub => ub.badgeId);
     const awarded: UserBadge[] = [];
     
     for (const badge of allBadges) {
+      // Skip if user already has this badge
+      if (existingBadgeIds.includes(badge.id)) {
+        continue;
+      }
+      
       let qualifies = false;
       
       switch (badge.criteriaType) {
-        case 'donation_total': {
+        case 'contributions_amount': {
           const total = await this.getUserTotalDonations(userId);
           qualifies = total >= badge.criteriaValue;
           break;
