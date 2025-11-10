@@ -16,6 +16,8 @@
       "phonePlaceholder": "+41 XX XXX XX XX",
       "email": "Email",
       "emailPlaceholder": "info@dzemat.ch",
+      "currency": "Valuta",
+      "selectCurrency": "Odaberite valutu",
       "facebookUrl": "Facebook URL",
       "facebookPlaceholder": "https://facebook.com/vasadzemat",
       "instagramUrl": "Instagram URL",

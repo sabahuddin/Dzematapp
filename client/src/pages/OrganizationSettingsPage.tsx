@@ -5,12 +5,13 @@ import { Box, Container, Typography, Paper, Alert } from "@mui/material";
 import { Button } from "@/components/ui/button";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useTranslation } from "react-i18next";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import type { OrganizationSettings, InsertOrganizationSettings } from "@shared/schema";
 import { insertOrganizationSettingsSchema } from "@shared/schema";
-import { Settings, Building, Phone, Mail, Facebook, Instagram, Youtube, Twitter, Radio } from "lucide-react";
+import { Settings, Building, Phone, Mail, Facebook, Instagram, Youtube, Twitter, Radio, Coins } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -29,6 +30,7 @@ export default function OrganizationSettingsPage() {
       address: settings.address,
       phone: settings.phone,
       email: settings.email,
+      currency: settings.currency || "CHF",
       facebookUrl: settings.facebookUrl || "",
       instagramUrl: settings.instagramUrl || "",
       youtubeUrl: settings.youtubeUrl || "",
@@ -187,6 +189,36 @@ export default function OrganizationSettingsPage() {
                             placeholder={t("organization.fields.emailPlaceholder")} 
                             data-testid="input-org-email"
                           />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </Box>
+              </Box>
+              <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 2, mt: 2 }}>
+                <Box sx={{ flex: 1 }}>
+                  <FormField
+                    control={form.control}
+                    name="currency"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center gap-2">
+                          <Coins size={16} />
+                          {t("organization.fields.currency")}
+                        </FormLabel>
+                        <FormControl>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <SelectTrigger data-testid="select-currency">
+                              <SelectValue placeholder={t("organization.fields.selectCurrency")} />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="BAM">BAM (Bosanska marka)</SelectItem>
+                              <SelectItem value="CHF">CHF (Švicarski franak)</SelectItem>
+                              <SelectItem value="EUR">EUR (Euro)</SelectItem>
+                              <SelectItem value="USD">USD (Američki dolar)</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
