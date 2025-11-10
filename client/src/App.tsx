@@ -32,6 +32,7 @@ import FinancesPage from "@/pages/FinancesPage";
 import ActivityLogPage from "@/pages/ActivityLogPage";
 import UserPointsDetailsPage from "@/pages/UserPointsDetailsPage";
 import BadgesPage from "@/pages/BadgesPage";
+import MyBadgesPage from "@/pages/MyBadgesPage";
 import ProjectsPage from "@/pages/ProjectsPage";
 import CertificateTemplatesPage from "@/pages/CertificateTemplatesPage";
 import IssueCertificatesPage from "@/pages/IssueCertificatesPage";
@@ -247,6 +248,12 @@ function Router() {
       <Route path="/my-points">
         <ProtectedRoute>
           <UserPointsDetailsPage />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path="/my-badges">
+        <ProtectedRoute>
+          <MyBadgesPage />
         </ProtectedRoute>
       </Route>
       

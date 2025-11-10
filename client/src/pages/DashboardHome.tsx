@@ -352,23 +352,35 @@ export default function DashboardHome() {
             return (
               <Card sx={{ mb: 3, bgcolor: '#ffffff', boxShadow: 2 }}>
                 <CardContent sx={{ pb: 2, '&:last-child': { pb: 2 } }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
                     {earnedBadges.map((badge: any) => {
                       const colors = getBadgeColor(badge.criteriaType);
                       return (
-                        <Chip
+                        <Box
                           key={badge.id}
-                          label={`${badge.icon || '🏆'} ${badge.name}`}
-                          size="medium"
                           sx={{ 
-                            fontWeight: 600,
+                            fontSize: '2.5rem',
                             bgcolor: colors.bg,
-                            color: colors.text,
-                            border: `2px solid ${colors.border}`,
-                            fontSize: '0.9rem',
-                            px: 1
+                            border: `3px solid ${colors.border}`,
+                            borderRadius: '50%',
+                            width: 64,
+                            height: 64,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            boxShadow: 2,
+                            cursor: 'pointer',
+                            transition: 'transform 0.2s',
+                            '&:hover': {
+                              transform: 'scale(1.1)',
+                              boxShadow: 4
+                            }
                           }}
-                        />
+                          title={badge.name}
+                          onClick={() => setLocation('/my-badges')}
+                        >
+                          {badge.icon || '🏆'}
+                        </Box>
                       );
                     })}
                   </Box>

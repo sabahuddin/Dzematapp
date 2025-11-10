@@ -99,7 +99,9 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
   ];
 
   const priznanjaItems = [
-    { path: '/my-certificates', label: t('navigation:menu.myCertificates'), icon: CardGiftcard, showBadge: true },
+    { path: '/my-certificates', label: 'Moje zahvale', icon: CardGiftcard, showBadge: true },
+    { path: '/my-badges', label: 'Moje značke', icon: EmojiEvents },
+    { path: '/my-points', label: 'Moji bodovi', icon: Timeline },
     { path: '/badges', label: t('navigation:menu.badges'), icon: EmojiEvents, adminOnly: true },
     { path: '/certificate-templates', label: t('navigation:menu.certificateTemplates'), icon: CardGiftcard, adminOnly: true },
     { path: '/issue-certificates', label: t('navigation:menu.issueCertificates'), icon: CardGiftcard, adminOnly: true },
