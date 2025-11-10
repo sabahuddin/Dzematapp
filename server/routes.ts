@@ -2543,10 +2543,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
-      // Log activity
-      const pointsSettings = await storage.getPointsSettings();
-      const pointsPerChf = pointsSettings?.pointsPerChf || 1;
-      const points = Math.floor(parseFloat(validated.amount) * pointsPerChf);
+      // Log activity with 1:1 ratio (1 CHF = 1 point)
+      const points = Math.floor(parseFloat(validated.amount));
       
       await storage.createActivityLog({
         userId: validated.userId,

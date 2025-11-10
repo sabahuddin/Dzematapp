@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Link } from 'wouter';
+import { Link, useLocation } from 'wouter';
 import {
   Box,
   Grid,
@@ -183,6 +183,7 @@ function EventDay(props: PickersDayProps & { eventDates?: Date[]; selectedDate?:
 
 export default function DashboardHome() {
   const { user } = useAuth();
+  const [, setLocation] = useLocation();
   const { t } = useTranslation(['dashboard', 'common', 'navigation', 'vaktija']);
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [dateEventsModalOpen, setDateEventsModalOpen] = useState(false);
@@ -310,10 +311,6 @@ export default function DashboardHome() {
 
     return (
       <Box>
-        <Typography variant="h5" sx={{ fontWeight: 600, mb: 3 }}>
-          {t('dashboard:welcome', { name: user?.firstName })}
-        </Typography>
-
         {/* Points Progress Card */}
         {(() => {
           const allBadges = (badgesQuery.data as any[]) || [];
@@ -334,7 +331,7 @@ export default function DashboardHome() {
           const progress = nextThreshold > 0 ? Math.min((currentPoints / nextThreshold) * 100, 100) : 0;
           
           return (
-            <Card sx={{ mb: 3, bgcolor: '#fff3e0' }}>
+            <Card sx={{ mb: 3, bgcolor: '#fff3e0', cursor: 'pointer', '&:hover': { boxShadow: 4 } }} onClick={() => setLocation('/my-points')}>
               <Box sx={{ p: 2, borderBottom: '1px solid #ffb74d', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                   <EmojiEvents sx={{ color: '#f57c00' }} />

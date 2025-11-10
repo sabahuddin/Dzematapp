@@ -30,7 +30,7 @@ import VaktijaPage from "@/pages/VaktijaPage";
 import GuidePage from "@/pages/GuidePage";
 import FinancesPage from "@/pages/FinancesPage";
 import ActivityLogPage from "@/pages/ActivityLogPage";
-import PointSettingsPage from "@/pages/PointSettingsPage";
+import UserPointsDetailsPage from "@/pages/UserPointsDetailsPage";
 import BadgesPage from "@/pages/BadgesPage";
 import ProjectsPage from "@/pages/ProjectsPage";
 import CertificateTemplatesPage from "@/pages/CertificateTemplatesPage";
@@ -244,10 +244,10 @@ function Router() {
         </ProtectedRoute>
       </Route>
       
-      <Route path="/point-settings">
-        <AdminRoute>
-          <PointSettingsPage />
-        </AdminRoute>
+      <Route path="/my-points">
+        <ProtectedRoute>
+          <UserPointsDetailsPage />
+        </ProtectedRoute>
       </Route>
       
       <Route path="/badges">
