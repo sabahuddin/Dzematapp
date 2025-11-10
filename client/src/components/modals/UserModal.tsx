@@ -370,6 +370,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                 value={formData.firstName}
                 onChange={handleChange('firstName')}
                 required
+                autoFocus
                 data-testid="input-firstName"
               />
             </Grid>

@@ -42,6 +42,7 @@ import { useToast } from '../hooks/use-toast';
 import { apiRequest } from '../lib/queryClient';
 import { useTranslation } from 'react-i18next';
 import { exportToExcel } from '../utils/excelExport';
+import { formatDateForDisplay, getDateTimestamp } from '../utils/dateUtils';
 
 export default function UsersPage() {
   const { user: currentUser } = useAuth();
@@ -197,9 +198,9 @@ export default function UsersPage() {
     const userData = filteredUsers.map((user: User) => [
       `${user.firstName} ${user.lastName}`,
       user.username || '-',
-      user.dateOfBirth ? new Date(user.dateOfBirth).toLocaleDateString('hr-HR') : '-',
+      formatDateForDisplay(user.dateOfBirth),
       user.phone || '-',
-      user.membershipDate ? new Date(user.membershipDate).toLocaleDateString('hr-HR') : '-',
+      formatDateForDisplay(user.membershipDate),
       user.status || '-',
       user.categories && user.categories.length > 0 ? user.categories.join(', ') : '-',
       user.skills && user.skills.length > 0 ? user.skills.join(', ') : '-',
@@ -291,16 +292,16 @@ export default function UsersPage() {
           bValue = b.lastName?.toLowerCase() || '';
           break;
         case 'dateOfBirth':
-          aValue = a.dateOfBirth ? new Date(a.dateOfBirth).getTime() : 0;
-          bValue = b.dateOfBirth ? new Date(b.dateOfBirth).getTime() : 0;
+          aValue = getDateTimestamp(a.dateOfBirth);
+          bValue = getDateTimestamp(b.dateOfBirth);
           break;
         case 'phone':
           aValue = a.phone || '';
           bValue = b.phone || '';
           break;
         case 'membershipDate':
-          aValue = a.membershipDate ? new Date(a.membershipDate).getTime() : 0;
-          bValue = b.membershipDate ? new Date(b.membershipDate).getTime() : 0;
+          aValue = getDateTimestamp(a.membershipDate);
+          bValue = getDateTimestamp(b.membershipDate);
           break;
         case 'status':
           aValue = a.status || '';
@@ -546,7 +547,7 @@ export default function UsersPage() {
                   </Typography>
                   <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 2, p: 1.5, bgcolor: '#fafafa', minHeight: 42, display: 'flex', alignItems: 'center' }}>
                     <Typography variant="body1">
-                      {myProfile.membershipDate ? new Date(myProfile.membershipDate).toLocaleDateString('hr-HR') : '-'}
+                      {formatDateForDisplay(myProfile.membershipDate)}
                     </Typography>
                   </Box>
                 </Box>
@@ -773,7 +774,7 @@ export default function UsersPage() {
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    {user.dateOfBirth ? new Date(user.dateOfBirth).toLocaleDateString('hr-HR') : '-'}
+                    {formatDateForDisplay(user.dateOfBirth)}
                   </TableCell>
                   <TableCell>
                     {user.phone ? (
@@ -787,7 +788,7 @@ export default function UsersPage() {
                     ) : '-'}
                   </TableCell>
                   <TableCell>
-                    {user.membershipDate ? new Date(user.membershipDate).toLocaleDateString('hr-HR') : '-'}
+                    {formatDateForDisplay(user.membershipDate)}
                   </TableCell>
                   <TableCell>
                     <Box>
