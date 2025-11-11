@@ -332,6 +332,9 @@ export interface IStorage {
   awardBadgeToUser(userId: string, badgeId: string): Promise<UserBadge>;
   getUserBadges(userId: string): Promise<UserBadge[]>;
   checkAndAwardBadges(userId: string): Promise<UserBadge[]>;
+  removeUnqualifiedBadges(userId: string): Promise<string[]>;
+  deleteActivityLogByRelatedEntity(relatedEntityId: string): Promise<number>;
+  deleteActivityLogByUserAndType(userId: string, activityType: string, relatedEntityId: string): Promise<number>;
 
   // Projects (Feature 4)
   createProject(project: InsertProject & { createdById: string }): Promise<Project>;
@@ -1754,6 +1757,67 @@ export class DatabaseStorage implements IStorage {
     }
     
     return awarded;
+  }
+
+  async removeUnqualifiedBadges(userId: string): Promise<string[]> {
+    const allBadges = await this.getAllBadges();
+    const awardedBadges = await this.getUserBadges(userId);
+    const removedBadgeNames: string[] = [];
+
+    // Check each awarded badge to see if user still qualifies
+    for (const userBadge of awardedBadges) {
+      const badge = allBadges.find(b => b.id === userBadge.badgeId);
+      if (!badge) continue;
+
+      let stillQualifies = false;
+
+      switch (badge.criteriaType) {
+        case 'contributions_amount': {
+          const total = await this.getUserTotalDonations(userId);
+          stillQualifies = total >= badge.criteriaValue;
+          break;
+        }
+        case 'tasks_completed': {
+          const count = await this.getUserTasksCompleted(userId);
+          stillQualifies = count >= badge.criteriaValue;
+          break;
+        }
+        case 'events_attended': {
+          const count = await this.getUserEventsAttended(userId);
+          stillQualifies = count >= badge.criteriaValue;
+          break;
+        }
+        case 'points_total': {
+          const user = await this.getUser(userId);
+          stillQualifies = (user?.totalPoints || 0) >= badge.criteriaValue;
+          break;
+        }
+      }
+
+      // Remove badge if user no longer qualifies
+      if (!stillQualifies) {
+        await db.delete(userBadges).where(eq(userBadges.id, userBadge.id));
+        removedBadgeNames.push(badge.name);
+      }
+    }
+
+    return removedBadgeNames;
+  }
+
+  async deleteActivityLogByRelatedEntity(relatedEntityId: string): Promise<number> {
+    const result = await db.delete(activityLog).where(eq(activityLog.relatedEntityId, relatedEntityId));
+    return result.rowCount || 0;
+  }
+
+  async deleteActivityLogByUserAndType(userId: string, activityType: string, relatedEntityId: string): Promise<number> {
+    const result = await db.delete(activityLog).where(
+      and(
+        eq(activityLog.userId, userId),
+        eq(activityLog.activityType, activityType),
+        eq(activityLog.relatedEntityId, relatedEntityId)
+      )
+    );
+    return result.rowCount || 0;
   }
 
   // Projects (Feature 4)

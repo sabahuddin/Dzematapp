@@ -2575,7 +2575,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             activityType: 'project_contribution',
             description: `Doprinos projektu: ${project.name} (${validated.amount} CHF)`,
             points: 0, // Points already awarded in contribution_made log
-            relatedEntityId: validated.projectId,
+            relatedEntityId: contribution.id,
           });
         }
       }
@@ -2600,13 +2600,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Contribution not found" });
       }
 
+      const userId = existingContribution.userId;
+      const oldProjectId = existingContribution.projectId;
+
+      // Delete old activity log entries for this contribution
+      // Note: Both contribution_made and project_contribution logs use contributionId as relatedEntityId
+      await storage.deleteActivityLogByRelatedEntity(req.params.id);
+
       const contribution = await storage.updateFinancialContribution(req.params.id, validated);
       if (!contribution) {
         return res.status(404).json({ message: "Contribution not found" });
       }
 
       // Handle project currentAmount updates
-      const oldProjectId = existingContribution.projectId;
       const newProjectId = validated.projectId !== undefined ? validated.projectId : oldProjectId;
       const oldAmount = parseFloat(existingContribution.amount);
       const newAmount = validated.amount ? parseFloat(validated.amount) : oldAmount;
@@ -2640,6 +2646,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
           await storage.updateProject(newProjectId, { currentAmount: updatedAmount });
         }
       }
+
+      // Recreate activity log entry with updated amount
+      const pointsFromContribution = Math.floor(newAmount);
+      await storage.createActivityLog({
+        userId: userId,
+        activityType: 'contribution_made',
+        description: `Finansijski doprinos: ${newAmount} CHF`,
+        points: pointsFromContribution,
+        relatedEntityId: req.params.id,
+      });
+
+      // If contribution is for a project, create additional activity log
+      if (newProjectId) {
+        const project = await storage.getProject(newProjectId);
+        if (project) {
+          await storage.createActivityLog({
+            userId: userId,
+            activityType: 'project_contribution',
+            description: `Doprinos projektu: ${project.name} (${newAmount} CHF)`,
+            points: 0,
+            relatedEntityId: req.params.id,
+          });
+        }
+      }
+
+      // Recalculate user's total points and re-check badges
+      await storage.recalculateUserPoints(userId);
+      await storage.checkAndAwardBadges(userId);
+      await storage.removeUnqualifiedBadges(userId);
 
       res.json(contribution);
     } catch (error) {
@@ -2712,10 +2747,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Contribution not found" });
       }
 
+      const userId = existingContribution.userId;
+
       const success = await storage.deleteFinancialContribution(req.params.id);
       if (!success) {
         return res.status(404).json({ message: "Contribution not found" });
       }
+
+      // Delete related activity log entries
+      // Note: Both contribution_made and project_contribution logs use contributionId as relatedEntityId
+      await storage.deleteActivityLogByRelatedEntity(req.params.id);
 
       // If contribution was for a project, decrease project's currentAmount
       if (existingContribution.projectId) {
@@ -2730,6 +2771,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
         }
       }
+
+      // Recalculate user's total points and re-check badges
+      await storage.recalculateUserPoints(userId);
+      await storage.removeUnqualifiedBadges(userId);
 
       res.json({ message: "Contribution deleted successfully" });
     } catch (error) {
