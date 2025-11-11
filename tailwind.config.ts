@@ -9,6 +9,15 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        xs: "var(--radius-xs)",
+        'design-sm': "var(--radius-sm)",
+        'design-md': "var(--radius-md)",
+        'design-lg': "var(--radius-lg)",
+        pill: "var(--radius-pill)",
+      },
+      borderWidth: {
+        DEFAULT: "var(--border-width-default)",
+        focus: "var(--border-width-focus)",
       },
       colors: {
         background: "var(--background)",
@@ -60,6 +69,32 @@ export default {
           "accent-foreground": "var(--sidebar-accent-foreground)",
           border: "var(--sidebar-border)",
           ring: "var(--sidebar-ring)",
+        },
+        surface: {
+          base: "var(--surface-base)",
+          field: "var(--surface-field)",
+          subtle: "var(--surface-subtle)",
+          card: "var(--surface-card)",
+        },
+        'border-default': "var(--border-color-default)",
+        'border-hover': "var(--border-color-hover)",
+        'border-focus': "var(--border-color-focus)",
+        bubble: {
+          self: {
+            bg: "var(--bubble-self-bg)",
+            text: "var(--bubble-self-text)",
+          },
+          other: {
+            bg: "var(--bubble-other-bg)",
+            text: "var(--bubble-other-text)",
+            border: "var(--bubble-other-border)",
+          },
+        },
+        state: {
+          'hover-bg': "var(--state-hover-bg)",
+          'focus-ring': "var(--state-focus-ring)",
+          'disabled-bg': "var(--state-disabled-bg)",
+          'disabled-text': "var(--state-disabled-text)",
         },
       },
       fontFamily: {

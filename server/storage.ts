@@ -642,10 +642,20 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteWorkGroup(id: string): Promise<boolean> {
-    // First delete all access requests for this work group
+    // Delete all related records first (in correct order due to foreign keys)
+    // 1. Delete all access requests for this work group
     await db.delete(accessRequests).where(eq(accessRequests.workGroupId, id));
     
-    // Then delete the work group
+    // 2. Delete all proposals for this work group
+    await db.delete(proposals).where(eq(proposals.workGroupId, id));
+    
+    // 3. Delete all tasks for this work group
+    await db.delete(tasks).where(eq(tasks.workGroupId, id));
+    
+    // 4. Delete all work group members
+    await db.delete(workGroupMembers).where(eq(workGroupMembers.workGroupId, id));
+    
+    // 5. Finally delete the work group itself
     const result = await db.delete(workGroups).where(eq(workGroups.id, id)).returning();
     return result.length > 0;
   }

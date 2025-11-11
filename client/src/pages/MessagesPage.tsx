@@ -276,7 +276,7 @@ export default function MessagesPage() {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4" style={{ backgroundColor: 'var(--surface-subtle)' }}>
         {threadMessages.map((message) => {
           const isMine = message.senderId === user?.id;
           
@@ -287,11 +287,13 @@ export default function MessagesPage() {
             >
               <div className={`max-w-[70%] ${isMine ? 'order-2' : 'order-1'}`}>
                 <div
-                  className={`rounded-lg p-3 ${
-                    isMine
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-gray-200 text-gray-900'
-                  }`}
+                  style={{
+                    backgroundColor: isMine ? 'var(--bubble-self-bg)' : 'var(--bubble-other-bg)',
+                    color: isMine ? 'var(--bubble-self-text)' : 'var(--bubble-other-text)',
+                    borderRadius: 'var(--radius-md)',
+                    padding: '12px',
+                    border: isMine ? 'none' : '1px solid var(--bubble-other-border)'
+                  }}
                 >
                   <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                 </div>
