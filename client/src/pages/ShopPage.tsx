@@ -1050,7 +1050,7 @@ export default function ShopPage() {
       {/* Services Tab */}
       {activeTab === 3 && (
         <Box>
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3 }}>
+          <Box sx={{ mb: 3 }}>
             <Button
               variant="contained"
               startIcon={<Add />}
@@ -1069,76 +1069,85 @@ export default function ShopPage() {
             <Typography>{t('shop:display.loading')}</Typography>
           ) : services && services.length > 0 ? (
             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 3 }}>
-              {services.map((service) => (
-                <Card key={service.id} sx={{ display: 'flex', flexDirection: 'column' }}>
-                  {service.photos && service.photos.length > 0 && (
-                    <CardMedia
-                      component="img"
-                      height="200"
-                      image={service.photos[0]}
-                      alt={service.name}
-                      sx={{ cursor: 'pointer', objectFit: 'cover' }}
-                      onClick={() => openFullscreenImage(service.photos![0])}
-                    />
-                  )}
-                  <CardContent sx={{ flex: 1 }}>
-                    <Typography variant="h6" gutterBottom>
-                      {service.name}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" paragraph>
-                      {service.description}
-                    </Typography>
-                    {service.price && (
-                      <Typography variant="body1" sx={{ fontWeight: 600, mb: 1 }}>
-                        {formatPrice(service.price)}
+              {services.map((service) => {
+                const serviceUser = users?.find(u => u.id === service.userId);
+                
+                return (
+                  <Card key={service.id} sx={{ display: 'flex', flexDirection: 'column' }}>
+                    {service.photos && service.photos.length > 0 && (
+                      <CardMedia
+                        component="img"
+                        height="200"
+                        image={service.photos[0]}
+                        alt={service.name}
+                        sx={{ cursor: 'pointer', objectFit: 'cover' }}
+                        onClick={() => openFullscreenImage(service.photos![0])}
+                      />
+                    )}
+                    <CardContent sx={{ flex: 1 }}>
+                      <Typography variant="h6" gutterBottom>
+                        {service.name}
                       </Typography>
-                    )}
-                    {service.duration && (
-                      <Chip label={service.duration} size="small" sx={{ mr: 1 }} />
-                    )}
-                    {service.category && (
-                      <Chip label={service.category} size="small" variant="outlined" />
-                    )}
-                    {service.user && (
-                      <Typography variant="caption" color="text.secondary" sx={{ mt: 2, display: 'block' }}>
-                        Dodao/la: {service.user.firstName} {service.user.lastName}
+                      <Typography variant="body2" color="text.secondary" paragraph>
+                        {service.description}
                       </Typography>
-                    )}
-                  </CardContent>
-                  {(isAdmin || service.userId === user?.id) && (
-                    <Box sx={{ p: 2, display: 'flex', gap: 1, borderTop: '1px solid #e0e0e0' }}>
-                      <Button
-                        size="small"
-                        startIcon={<Edit />}
-                        onClick={() => {
-                          setEditingService(service);
-                          setServiceForm({
-                            name: service.name,
-                            description: service.description,
-                            photos: service.photos || [],
-                            price: service.price || "",
-                            duration: service.duration || "",
-                            category: service.category || ""
-                          });
-                          setServiceModalOpen(true);
-                        }}
-                        data-testid={`button-edit-service-${service.id}`}
-                      >
-                        {t('shop:buttons.edit')}
-                      </Button>
-                      <Button
-                        size="small"
-                        color="error"
-                        startIcon={<Delete />}
-                        onClick={() => deleteServiceMutation.mutate(service.id)}
-                        data-testid={`button-delete-service-${service.id}`}
-                      >
-                        {t('shop:buttons.delete')}
-                      </Button>
+                      {service.price && (
+                        <Typography variant="body1" sx={{ fontWeight: 600, mb: 1 }}>
+                          {formatPrice(service.price)}
+                        </Typography>
+                      )}
+                      {service.duration && (
+                        <Chip label={service.duration} size="small" sx={{ mr: 1 }} />
+                      )}
+                      {service.category && (
+                        <Chip label={service.category} size="small" variant="outlined" />
+                      )}
+                      
+                      <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                        {service.userId !== user?.id && (
+                          <Button
+                            variant="contained"
+                            size="small"
+                            onClick={() => handleContactUser(serviceUser)}
+                            data-testid={`button-contact-service-${service.id}`}
+                          >
+                            {t('shop:buttons.contactOwner')}
+                          </Button>
+                        )}
+                      {(isAdmin || service.userId === user?.id) && (
+                        <>
+                          <IconButton
+                            color="primary"
+                            onClick={() => {
+                              setEditingService(service);
+                              setServiceForm({
+                                name: service.name,
+                                description: service.description,
+                                photos: service.photos || [],
+                                price: service.price || "",
+                                duration: service.duration || "",
+                                category: service.category || ""
+                              });
+                              setServiceModalOpen(true);
+                            }}
+                            data-testid={`button-edit-service-${service.id}`}
+                          >
+                            <Edit />
+                          </IconButton>
+                          <IconButton
+                            color="error"
+                            onClick={() => deleteServiceMutation.mutate(service.id)}
+                            data-testid={`button-delete-service-${service.id}`}
+                          >
+                            <Delete />
+                          </IconButton>
+                        </>
+                      )}
                     </Box>
-                  )}
+                  </CardContent>
                 </Card>
-              ))}
+              );
+              })}
             </Box>
           ) : (
             <Typography color="text.secondary">Nema dostupnih usluga</Typography>
