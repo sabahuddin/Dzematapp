@@ -8,7 +8,7 @@ import { useCurrency } from "@/contexts/CurrencyContext";
 import { useToast } from "@/hooks/use-toast";
 import { useMarkAsViewed } from "@/hooks/useMarkAsViewed";
 import { useTranslation } from "react-i18next";
-import type { ShopProduct, MarketplaceItem, User, Service } from "@shared/schema";
+import type { ShopProduct, MarketplaceItem, User, Service, ServiceWithUser } from "@shared/schema";
 
 interface ShopProductWithUser extends ShopProduct {
   creator?: User;
@@ -48,6 +48,7 @@ export default function ShopPage() {
   const [serviceForm, setServiceForm] = useState({
     name: "",
     description: "",
+    photos: [] as string[],
     price: "",
     duration: "",
     category: ""
@@ -93,9 +94,54 @@ export default function ShopPage() {
   });
 
   // Fetch services
-  const { data: services, isLoading: loadingServices } = useQuery<Service[]>({
+  const { data: services, isLoading: loadingServices } = useQuery<ServiceWithUser[]>({
     queryKey: ['/api/services'],
   });
+
+  // Service photo upload handler
+  const handleServicePhotoUpload = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+
+    const maxFiles = 3;
+    const currentPhotos = serviceForm.photos;
+
+    if (currentPhotos.length + files.length > maxFiles) {
+      toast({ 
+        title: t('shop:toast.tooManyPhotos'), 
+        description: t('shop:toast.maxPhotosDescription', { max: maxFiles }),
+        variant: "destructive" 
+      });
+      return;
+    }
+
+    setUploadingPhotos(true);
+    const formData = new FormData();
+    
+    for (let i = 0; i < Math.min(files.length, maxFiles - currentPhotos.length); i++) {
+      formData.append('photos', files[i]);
+    }
+
+    try {
+      const response = await fetch('/api/upload/shop-photos', {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Upload failed');
+      }
+
+      const data = await response.json();
+      setServiceForm({ ...serviceForm, photos: [...currentPhotos, ...data.photoUrls] });
+      toast({ title: t('shop:toast.photosUploaded') });
+    } catch (error) {
+      console.error('Photo upload error:', error);
+      toast({ title: t('shop:toast.uploadError'), variant: "destructive" });
+    } finally {
+      setUploadingPhotos(false);
+    }
+  };
 
   // Photo upload handler
   const handlePhotoUpload = async (files: FileList | null, isProduct: boolean) => {
@@ -146,6 +192,11 @@ export default function ShopPage() {
     } finally {
       setUploadingPhotos(false);
     }
+  };
+
+  const removeServicePhoto = (index: number) => {
+    const newPhotos = serviceForm.photos.filter((_, i) => i !== index);
+    setServiceForm({ ...serviceForm, photos: newPhotos });
   };
 
   const removePhoto = (index: number, isProduct: boolean) => {
@@ -363,7 +414,7 @@ export default function ShopPage() {
       queryClient.invalidateQueries({ queryKey: ['/api/services'] });
       toast({ title: "Usluga dodana" });
       setServiceModalOpen(false);
-      setServiceForm({ name: "", description: "", price: "", duration: "", category: "" });
+      setServiceForm({ name: "", description: "", photos: [], price: "", duration: "", category: "" });
     },
     onError: () => {
       toast({ title: "Greška pri dodavanju usluge", variant: "destructive" });
@@ -379,7 +430,7 @@ export default function ShopPage() {
       toast({ title: "Usluga ažurirana" });
       setServiceModalOpen(false);
       setEditingService(null);
-      setServiceForm({ name: "", description: "", price: "", duration: "", category: "" });
+      setServiceForm({ name: "", description: "", photos: [], price: "", duration: "", category: "" });
     },
     onError: () => {
       toast({ title: "Greška pri ažuriranju usluge", variant: "destructive" });
@@ -999,22 +1050,20 @@ export default function ShopPage() {
       {/* Services Tab */}
       {activeTab === 3 && (
         <Box>
-          {isAdmin && (
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3 }}>
-              <Button
-                variant="contained"
-                startIcon={<Add />}
-                onClick={() => {
-                  setEditingService(null);
-                  setServiceForm({ name: "", description: "", price: "", duration: "", category: "" });
-                  setServiceModalOpen(true);
-                }}
-                data-testid="button-add-service"
-              >
-                {t('shop:buttons.addService')}
-              </Button>
-            </Box>
-          )}
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3 }}>
+            <Button
+              variant="contained"
+              startIcon={<Add />}
+              onClick={() => {
+                setEditingService(null);
+                setServiceForm({ name: "", description: "", photos: [], price: "", duration: "", category: "" });
+                setServiceModalOpen(true);
+              }}
+              data-testid="button-add-service"
+            >
+              {t('shop:buttons.addService')}
+            </Button>
+          </Box>
 
           {loadingServices ? (
             <Typography>{t('shop:display.loading')}</Typography>
@@ -1022,6 +1071,16 @@ export default function ShopPage() {
             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 3 }}>
               {services.map((service) => (
                 <Card key={service.id} sx={{ display: 'flex', flexDirection: 'column' }}>
+                  {service.photos && service.photos.length > 0 && (
+                    <CardMedia
+                      component="img"
+                      height="200"
+                      image={service.photos[0]}
+                      alt={service.name}
+                      sx={{ cursor: 'pointer', objectFit: 'cover' }}
+                      onClick={() => openFullscreenImage(service.photos![0])}
+                    />
+                  )}
                   <CardContent sx={{ flex: 1 }}>
                     <Typography variant="h6" gutterBottom>
                       {service.name}
@@ -1040,8 +1099,13 @@ export default function ShopPage() {
                     {service.category && (
                       <Chip label={service.category} size="small" variant="outlined" />
                     )}
+                    {service.user && (
+                      <Typography variant="caption" color="text.secondary" sx={{ mt: 2, display: 'block' }}>
+                        Dodao/la: {service.user.firstName} {service.user.lastName}
+                      </Typography>
+                    )}
                   </CardContent>
-                  {isAdmin && (
+                  {(isAdmin || service.userId === user?.id) && (
                     <Box sx={{ p: 2, display: 'flex', gap: 1, borderTop: '1px solid #e0e0e0' }}>
                       <Button
                         size="small"
@@ -1051,12 +1115,14 @@ export default function ShopPage() {
                           setServiceForm({
                             name: service.name,
                             description: service.description,
+                            photos: service.photos || [],
                             price: service.price || "",
                             duration: service.duration || "",
                             category: service.category || ""
                           });
                           setServiceModalOpen(true);
                         }}
+                        data-testid={`button-edit-service-${service.id}`}
                       >
                         {t('shop:buttons.edit')}
                       </Button>
@@ -1065,6 +1131,7 @@ export default function ShopPage() {
                         color="error"
                         startIcon={<Delete />}
                         onClick={() => deleteServiceMutation.mutate(service.id)}
+                        data-testid={`button-delete-service-${service.id}`}
                       >
                         {t('shop:buttons.delete')}
                       </Button>
@@ -1563,6 +1630,42 @@ export default function ShopPage() {
               onChange={(e) => setServiceForm({ ...serviceForm, category: e.target.value })}
               fullWidth
             />
+
+            <Box sx={{ mt: 2 }}>
+              <Button
+                variant="outlined"
+                component="label"
+                startIcon={<CloudUpload />}
+                fullWidth
+                disabled={uploadingPhotos || serviceForm.photos.length >= 3}
+                data-testid="button-upload-service-photos"
+              >
+                {uploadingPhotos ? t('shop:buttons.uploading') : t('shop:display.addPhotos', { current: serviceForm.photos.length, max: 3 })}
+                <input
+                  type="file"
+                  hidden
+                  multiple
+                  accept="image/*"
+                  onChange={(e) => handleServicePhotoUpload(e.target.files)}
+                />
+              </Button>
+              {serviceForm.photos.length > 0 && (
+                <ImageList sx={{ mt: 2, maxHeight: 200 }} cols={3} rowHeight={80}>
+                  {serviceForm.photos.map((photo, idx) => (
+                    <ImageListItem key={idx}>
+                      <img src={photo} alt={`Upload ${idx + 1}`} />
+                      <IconButton
+                        sx={{ position: 'absolute', top: 0, right: 0, bgcolor: 'rgba(255,255,255,0.7)' }}
+                        size="small"
+                        onClick={() => removeServicePhoto(idx)}
+                      >
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </ImageListItem>
+                  ))}
+                </ImageList>
+              )}
+            </Box>
           </Box>
         </DialogContent>
         <DialogActions>

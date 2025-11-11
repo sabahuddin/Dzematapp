@@ -1302,6 +1302,34 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(services).where(eq(services.status, 'active')).orderBy(desc(services.createdAt));
   }
 
+  async getAllServicesWithUsers(): Promise<ServiceWithUser[]> {
+    const servicesData = await db.select().from(services)
+      .where(eq(services.status, 'active'))
+      .orderBy(desc(services.createdAt));
+    
+    const servicesWithUsers = await Promise.all(
+      servicesData.map(async (service) => {
+        const user = await this.getUser(service.userId);
+        return {
+          ...service,
+          user: user ? {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+          } : null,
+        };
+      })
+    );
+    
+    return servicesWithUsers;
+  }
+
+  async getUserServices(userId: string): Promise<Service[]> {
+    return await db.select().from(services)
+      .where(eq(services.userId, userId))
+      .orderBy(desc(services.createdAt));
+  }
+
   async updateService(id: string, updates: Partial<InsertService>): Promise<Service | undefined> {
     const [service] = await db.update(services).set(updates).where(eq(services.id, id)).returning();
     return service;
