@@ -249,12 +249,12 @@ export default function BadgesPage() {
         <TableContainer sx={{ overflowX: 'auto' }}>
           <Table>
             <TableHead>
-              <TableRow sx={{ bgcolor: '#f8f9fa' }}>
-                <TableCell sx={{ fontWeight: 600 }}>{t('badges:tableHeaders.name')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('badges:tableHeaders.description')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('badges:tableHeaders.criteriaType')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('badges:tableHeaders.value')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('badges:tableHeaders.actions')}</TableCell>
+              <TableRow>
+                <TableCell>{t('badges:tableHeaders.name')}</TableCell>
+                <TableCell>{t('badges:tableHeaders.description')}</TableCell>
+                <TableCell>{t('badges:tableHeaders.criteriaType')}</TableCell>
+                <TableCell>{t('badges:tableHeaders.value')}</TableCell>
+                <TableCell>{t('badges:tableHeaders.actions')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

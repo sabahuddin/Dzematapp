@@ -48,6 +48,8 @@
   --surface-field: hsl(0 0% 100%);
   --surface-subtle: hsl(240 4% 96%);
   --surface-card: hsl(0 0% 100%);
+  --surface-table-header: hsl(210 17% 98%);
+  --surface-gray-50: hsl(0 0% 98%);
   
   /* Border tokens */
   --border-width-default: 1px;
@@ -146,6 +148,8 @@
   --surface-field: hsl(0 0% 12%);
   --surface-subtle: hsl(0 0% 10%);
   --surface-card: hsl(0 0% 12%);
+  --surface-table-header: hsl(0 0% 15%);
+  --surface-gray-50: hsl(0 0% 14%);
   
   /* Border tokens */
   --border-width-default: 1px;
@@ -281,14 +285,14 @@
   }
 
   .MuiTableHead-root .MuiTableCell-root {
-    background-color: #f8f9fa !important;
+    background-color: var(--surface-table-header) !important;
     font-weight: 600 !important;
     color: #1a1a1a !important;
   }
 
   .MuiTableCell-root {
     border: 0 !important;
-    border-bottom: 1px solid #e0e0e0 !important;
+    border-bottom: 1px solid var(--border-color-default) !important;
   }
 
   .MuiDrawer-paper {

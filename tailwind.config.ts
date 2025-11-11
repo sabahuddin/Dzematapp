@@ -75,6 +75,8 @@ export default {
           field: "var(--surface-field)",
           subtle: "var(--surface-subtle)",
           card: "var(--surface-card)",
+          'table-header': "var(--surface-table-header)",
+          'gray-50': "var(--surface-gray-50)",
         },
         'border-default': "var(--border-color-default)",
         'border-hover': "var(--border-color-hover)",
