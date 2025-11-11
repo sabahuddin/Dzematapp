@@ -41,6 +41,7 @@ export default function ShopPage() {
   });
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
   const [contactUserId, setContactUserId] = useState<string | null>(null);
+  const [contactItemName, setContactItemName] = useState<string>("");
   const [contactMessage, setContactMessage] = useState("");
   const [serviceModalOpen, setServiceModalOpen] = useState(false);
   const [editingService, setEditingService] = useState<Service | null>(null);
@@ -589,20 +590,25 @@ export default function ShopPage() {
     return (priceNumber * purchaseDetails.quantity).toFixed(2);
   };
 
-  const handleContactUser = (itemUser: User | undefined) => {
+  const handleContactUser = (itemUser: User | undefined, itemName?: string) => {
     if (itemUser) {
       setContactUserId(itemUser.id);
+      setContactItemName(itemName || "");
       setContactMessage("");
       setContactDialogOpen(true);
     }
   };
 
   const sendContactMessageMutation = useMutation({
-    mutationFn: async (data: { recipientId: string; message: string }) => {
+    mutationFn: async (data: { recipientId: string; message: string; itemName: string }) => {
+      const subject = data.itemName 
+        ? `${t('shop:messages.shopMessage')} - ${data.itemName}`
+        : t('shop:messages.shopMessage');
+      
       return apiRequest("/api/messages", "POST", {
         senderId: user!.id,
         recipientId: data.recipientId,
-        subject: t('shop:messages.shopMessage'),
+        subject: subject,
         content: data.message
       });
     },
@@ -631,7 +637,8 @@ export default function ShopPage() {
     }
     sendContactMessageMutation.mutate({ 
       recipientId: contactUserId, 
-      message: contactMessage
+      message: contactMessage,
+      itemName: contactItemName
     });
   };
 
@@ -889,7 +896,7 @@ export default function ShopPage() {
                             <Button
                               variant="contained"
                               size="small"
-                              onClick={() => handleContactUser(itemUser)}
+                              onClick={() => handleContactUser(itemUser, item.name)}
                               data-testid={`button-contact-${item.id}`}
                             >
                               {t('shop:buttons.contactOwner')}
@@ -1003,7 +1010,7 @@ export default function ShopPage() {
                             <Button
                               variant="contained"
                               size="small"
-                              onClick={() => handleContactUser(itemUser)}
+                              onClick={() => handleContactUser(itemUser, item.name)}
                               data-testid={`button-contact-gift-${item.id}`}
                             >
                               {t('shop:buttons.contactOwner')}
@@ -1103,17 +1110,7 @@ export default function ShopPage() {
                         <Chip label={service.category} size="small" variant="outlined" />
                       )}
                       
-                      <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                        {service.userId !== user?.id && (
-                          <Button
-                            variant="contained"
-                            size="small"
-                            onClick={() => handleContactUser(serviceUser)}
-                            data-testid={`button-contact-service-${service.id}`}
-                          >
-                            {t('shop:buttons.contactOwner')}
-                          </Button>
-                        )}
+                      )}
                       {(isAdmin || service.userId === user?.id) && (
                         <>
                           <IconButton
