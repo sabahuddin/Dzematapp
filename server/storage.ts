@@ -281,7 +281,7 @@ export interface IStorage {
   // Notifications
   updateLastViewed(userId: string, type: 'shop' | 'events' | 'announcements' | 'imamQuestions' | 'tasks'): Promise<User | undefined>;
   getNewItemsCount(userId: string, type: 'shop' | 'events' | 'announcements' | 'imamQuestions' | 'tasks'): Promise<number>;
-  getPendingAccessRequestsCount(): Promise<number>;
+  getPendingAccessRequestsCount(lastViewed?: Date | null): Promise<number>;
   getAllNewItemsCounts(userId: string): Promise<{ shop: number; events: number; announcements: number; imamQuestions: number; tasks: number; accessRequests: number }>;
 
   // Prayer Times
@@ -1464,22 +1464,35 @@ export class DatabaseStorage implements IStorage {
     return count;
   }
 
-  async getPendingAccessRequestsCount(): Promise<number> {
+  async getPendingAccessRequestsCount(lastViewed?: Date | null): Promise<number> {
+    if (!lastViewed) {
+      const result = await db.select({ count: sql<number>`count(*)` })
+        .from(accessRequests)
+        .where(eq(accessRequests.status, 'pending'));
+      return Number(result[0]?.count ?? 0);
+    }
+    
     const result = await db.select({ count: sql<number>`count(*)` })
       .from(accessRequests)
-      .where(eq(accessRequests.status, 'pending'));
+      .where(and(
+        eq(accessRequests.status, 'pending'),
+        gt(accessRequests.createdAt, lastViewed)
+      ));
     return Number(result[0]?.count ?? 0);
   }
 
   async getAllNewItemsCounts(userId: string): Promise<{ shop: number; events: number; announcements: number; imamQuestions: number; tasks: number; accessRequests: number }> {
     try {
+      const user = await this.getUser(userId);
+      const lastViewedTasks = user?.lastViewedTasks || null;
+      
       const [shop, events, announcements, imamQuestions, tasks, accessRequests] = await Promise.all([
         this.getNewItemsCount(userId, 'shop').catch(err => { console.error('Error getting shop count:', err); return 0; }),
         this.getNewItemsCount(userId, 'events').catch(err => { console.error('Error getting events count:', err); return 0; }),
         this.getNewItemsCount(userId, 'announcements').catch(err => { console.error('Error getting announcements count:', err); return 0; }),
         this.getNewItemsCount(userId, 'imamQuestions').catch(err => { console.error('Error getting imamQuestions count:', err); return 0; }),
         this.getNewItemsCount(userId, 'tasks').catch(err => { console.error('Error getting tasks count:', err); return 0; }),
-        this.getPendingAccessRequestsCount().catch(err => { console.error('Error getting accessRequests count:', err); return 0; })
+        this.getPendingAccessRequestsCount(lastViewedTasks).catch(err => { console.error('Error getting accessRequests count:', err); return 0; })
       ]);
 
       return { shop, events, announcements, imamQuestions, tasks, accessRequests };
