@@ -78,6 +78,7 @@ import {
   type InsertActivityFeedItem,
   type Service,
   type InsertService,
+  type ServiceWithUser,
   users,
   announcements,
   events,
