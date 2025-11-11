@@ -476,6 +476,14 @@ export type MarketplaceItemWithUser = MarketplaceItem & {
   } | null;
 };
 
+export type ServiceWithUser = Service & {
+  user: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  } | null;
+};
+
 export type ProductPurchaseRequestWithDetails = ProductPurchaseRequest & {
   product: ShopProduct | null;
   user: {
@@ -1012,16 +1020,18 @@ export const insertActivityFeedSchema = createInsertSchema(activityFeed).omit({
 export type ActivityFeedItem = typeof activityFeed.$inferSelect;
 export type InsertActivityFeedItem = z.infer<typeof insertActivityFeedSchema>;
 
-// Services (Usluge) - dodatne usluge koje džemat nudi
+// Services (Usluge) - dodatne usluge koje članovi nude
 export const services = pgTable("services", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
   description: text("description").notNull(),
+  photos: text("photos").array(), // array of photo URLs (max 3)
   price: text("price"), // Optional - može biti besplatno
   duration: text("duration"), // "1 sat", "30 min", etc.
   category: text("category"), // "Porodica", "Obrazovanje", "Zdravlje", etc.
-  isActive: boolean("is_active").notNull().default(true),
-  createdAt: timestamp("created_at").defaultNow(),
+  status: text("status").notNull().default("active"), // active, completed
+  userId: varchar("user_id").notNull().references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export const insertServiceSchema = createInsertSchema(services).omit({

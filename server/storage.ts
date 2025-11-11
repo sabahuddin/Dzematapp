@@ -262,6 +262,8 @@ export interface IStorage {
   createService(service: InsertService): Promise<Service>;
   getService(id: string): Promise<Service | undefined>;
   getAllServices(): Promise<Service[]>;
+  getAllServicesWithUsers(): Promise<ServiceWithUser[]>;
+  getUserServices(userId: string): Promise<Service[]>;
   updateService(id: string, updates: Partial<InsertService>): Promise<Service | undefined>;
   deleteService(id: string): Promise<boolean>;
 
@@ -1297,7 +1299,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllServices(): Promise<Service[]> {
-    return await db.select().from(services).where(eq(services.isActive, true)).orderBy(desc(services.createdAt));
+    return await db.select().from(services).where(eq(services.status, 'active')).orderBy(desc(services.createdAt));
   }
 
   async updateService(id: string, updates: Partial<InsertService>): Promise<Service | undefined> {
