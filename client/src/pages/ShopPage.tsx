@@ -1110,7 +1110,17 @@ export default function ShopPage() {
                         <Chip label={service.category} size="small" variant="outlined" />
                       )}
                       
-                      )}
+                      <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                        {service.userId !== user?.id && (
+                          <Button
+                            variant="contained"
+                            size="small"
+                            onClick={() => handleContactUser(serviceUser, service.name)}
+                            data-testid={`button-contact-service-${service.id}`}
+                          >
+                            {t('shop:buttons.contactOwner')}
+                          </Button>
+                        )}
                       {(isAdmin || service.userId === user?.id) && (
                         <>
                           <IconButton
