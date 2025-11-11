@@ -177,7 +177,7 @@ export default function MessagesPage() {
               <p>{t('noConversations')}</p>
             </div>
           ) : (
-            <div className="divide-y divide-gray-200">
+            <div className="flex flex-col gap-3 p-4">
               {filteredConversations.map((conversation) => {
                 const isUnread = conversation.unreadCount > 0;
                 const isSentByMe = conversation.lastMessage.senderId === user?.id;
@@ -186,9 +186,18 @@ export default function MessagesPage() {
                   <div
                     key={conversation.threadId}
                     onClick={() => handleConversationClick(conversation)}
-                    className={`p-4 cursor-pointer hover:bg-accent transition-colors border-b ${
-                      isUnread ? 'bg-blue-50' : 'bg-white'
-                    }`}
+                    className="p-4 cursor-pointer transition-all rounded-lg"
+                    style={{
+                      backgroundColor: isUnread ? '#e3f2fd' : 'var(--surface-card)',
+                      border: '1px solid var(--border-color-default)',
+                      borderRadius: 'var(--radius-md)'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isUnread) e.currentTarget.style.backgroundColor = 'var(--state-hover-bg)';
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isUnread) e.currentTarget.style.backgroundColor = 'var(--surface-card)';
+                    }}
                     data-testid={`conversation-${conversation.threadId}`}
                   >
                     <div className="flex items-start gap-3">

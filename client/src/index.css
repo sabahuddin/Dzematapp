@@ -398,20 +398,27 @@
   }
 
   .MuiInputBase-root {
-    border-radius: 6px !important;
-    background-color: #ffffff !important;
+    border-radius: var(--radius-sm) !important;
+    background-color: var(--surface-field) !important;
   }
   
   .MuiOutlinedInput-notchedOutline {
-    border: 1px solid #e0e0e0 !important;
+    border-width: var(--border-width-default) !important;
+    border-color: var(--border-color-default) !important;
   }
 
   .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-    border: 1px solid #bdbdbd !important;
+    border-color: var(--border-color-hover) !important;
   }
 
   .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border: 2px solid #1976d2 !important;
+    border-width: var(--border-width-focus) !important;
+    border-color: var(--border-color-focus) !important;
+    box-shadow: 0 0 0 3px var(--state-focus-ring) !important;
+  }
+  
+  .MuiSelect-select {
+    background-color: var(--surface-field) !important;
   }
 
   /* GLOBAL FIX: Force ALL labels to stay ABOVE the field (like shadcn forms) */
