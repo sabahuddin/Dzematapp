@@ -290,7 +290,7 @@ export default function MessagesPage() {
                   className={`rounded-lg p-3 ${
                     isMine
                       ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted'
+                      : 'bg-gray-200 text-gray-900'
                   }`}
                 >
                   <p className="text-sm whitespace-pre-wrap">{message.content}</p>

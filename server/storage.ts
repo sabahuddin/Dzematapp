@@ -642,6 +642,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteWorkGroup(id: string): Promise<boolean> {
+    // First delete all access requests for this work group
+    await db.delete(accessRequests).where(eq(accessRequests.workGroupId, id));
+    
+    // Then delete the work group
     const result = await db.delete(workGroups).where(eq(workGroups.id, id)).returning();
     return result.length > 0;
   }
