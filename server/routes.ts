@@ -2742,43 +2742,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/financial-contributions/:id", requireAdmin, async (req, res) => {
     try {
-      // Get existing contribution to handle project updates
-      const existingContribution = await storage.getFinancialContribution(req.params.id);
-      if (!existingContribution) {
-        return res.status(404).json({ message: "Contribution not found" });
-      }
-
-      const userId = existingContribution.userId;
-
-      const success = await storage.deleteFinancialContribution(req.params.id);
-      if (!success) {
-        return res.status(404).json({ message: "Contribution not found" });
-      }
-
-      // Delete related activity log entries
-      // Note: Both contribution_made and project_contribution logs use contributionId as relatedEntityId
-      await storage.deleteActivityLogByRelatedEntity(req.params.id);
-
-      // If contribution was for a project, decrease project's currentAmount
-      if (existingContribution.projectId) {
-        const project = await storage.getProject(existingContribution.projectId);
-        if (project) {
-          const currentAmount = parseFloat(project.currentAmount || '0');
-          const contributionAmount = parseFloat(existingContribution.amount);
-          const newAmount = Math.max(0, currentAmount - contributionAmount).toFixed(2);
-          
-          await storage.updateProject(existingContribution.projectId, {
-            currentAmount: newAmount
-          });
-        }
-      }
-
-      // Recalculate user's total points and re-check badges
+      // Delete contribution with all related logs in a transaction
+      const { userId, projectId } = await storage.deleteContributionWithLogs(req.params.id);
+      
+      // Recalculate points and badges outside transaction
       await storage.recalculateUserPoints(userId);
       await storage.removeUnqualifiedBadges(userId);
-
+      
       res.json({ message: "Contribution deleted successfully" });
     } catch (error) {
+      if (error instanceof Error && error.message === 'Contribution not found') {
+        return res.status(404).json({ message: "Contribution not found" });
+      }
       res.status(500).json({ message: "Failed to delete contribution" });
     }
   });

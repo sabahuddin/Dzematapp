@@ -304,6 +304,7 @@ export interface IStorage {
   getAllFinancialContributions(): Promise<FinancialContribution[]>;
   updateFinancialContribution(id: string, updates: Partial<InsertFinancialContribution>): Promise<FinancialContribution | undefined>;
   deleteFinancialContribution(id: string): Promise<boolean>;
+  deleteContributionWithLogs(contributionId: string): Promise<{ userId: string; projectId: string | null }>;
   getUserTotalDonations(userId: string): Promise<number>;
 
   // Activity Log (Feature 1)
@@ -1562,6 +1563,43 @@ export class DatabaseStorage implements IStorage {
   async deleteFinancialContribution(id: string): Promise<boolean> {
     const result = await db.delete(financialContributions).where(eq(financialContributions.id, id)).returning();
     return result.length > 0;
+  }
+
+  async deleteContributionWithLogs(contributionId: string): Promise<{ userId: string; projectId: string | null }> {
+    return await db.transaction(async (tx) => {
+      // Get contribution for userId and projectId
+      const [contribution] = await tx
+        .select()
+        .from(financialContributions)
+        .where(eq(financialContributions.id, contributionId))
+        .limit(1);
+      
+      if (!contribution) {
+        throw new Error('Contribution not found');
+      }
+      
+      // Delete contribution
+      await tx.delete(financialContributions).where(eq(financialContributions.id, contributionId));
+      
+      // Delete all related activity logs (contribution_made, bonus_points, project_contribution)
+      await tx.delete(activityLog).where(
+        and(
+          eq(activityLog.relatedEntityId, contributionId),
+          inArray(activityLog.activityType, ['contribution_made', 'bonus_points', 'project_contribution'])
+        )
+      );
+      
+      // Update project amount if needed (using SQL arithmetic to avoid floating-point drift and race conditions)
+      if (contribution.projectId) {
+        await tx.update(projects)
+          .set({ 
+            currentAmount: sql`greatest(0::numeric, coalesce(current_amount::numeric, 0) - ${contribution.amount}::numeric)::text`
+          })
+          .where(eq(projects.id, contribution.projectId));
+      }
+      
+      return { userId: contribution.userId, projectId: contribution.projectId };
+    });
   }
 
   async getUserTotalDonations(userId: string): Promise<number> {
