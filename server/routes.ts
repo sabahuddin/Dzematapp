@@ -198,7 +198,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           lastName: user.lastName, 
           email: user.email,
           roles: user.roles || [],
-          isAdmin: user.isAdmin || hasImamRole 
+          isAdmin: user.isAdmin || hasImamRole,
+          totalPoints: user.totalPoints || 0
         } 
       });
     } catch (error) {
