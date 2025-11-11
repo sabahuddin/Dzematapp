@@ -523,7 +523,7 @@ export default function DashboardHome() {
           {/* Latest Announcement */}
           <Grid size={{ xs: 12, lg: 8 }}>
             <Card sx={{ height: '100%' }}>
-              <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Box sx={{ p: 2, borderBottom: '1px solid var(--border-color-default)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                   <Campaign sx={{ color: '#2e7d32' }} />
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>
@@ -590,7 +590,7 @@ export default function DashboardHome() {
           {/* Next Event */}
           <Grid size={{ xs: 12, lg: 4 }}>
             <Card sx={{ height: '100%' }}>
-              <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Box sx={{ p: 2, borderBottom: '1px solid var(--border-color-default)', display: 'flex', alignItems: 'center', gap: 2 }}>
                 <Event sx={{ color: '#ed6c02' }} />
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
                   {t('dashboard:nextEvent')}
@@ -663,7 +663,7 @@ export default function DashboardHome() {
         >
           {/* Calendar */}
           <Card sx={{ height: '100%' }}>
-            <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Box sx={{ p: 2, borderBottom: '1px solid var(--border-color-default)', display: 'flex', alignItems: 'center', gap: 2 }}>
               <CalendarMonth sx={{ color: '#1976d2' }} />
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
                 {t('dashboard:eventCalendar')}
@@ -723,7 +723,7 @@ export default function DashboardHome() {
           
           {/* Today's Events */}
           <Card sx={{ height: '100%' }}>
-            <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Box sx={{ p: 2, borderBottom: '1px solid var(--border-color-default)', display: 'flex', alignItems: 'center', gap: 2 }}>
               <Event sx={{ color: '#ed6c02' }} />
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
                 {selectedDate ? (
@@ -800,7 +800,7 @@ export default function DashboardHome() {
         >
           {/* My Messages */}
           <Card sx={{ height: '100%' }}>
-            <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Box sx={{ p: 2, borderBottom: '1px solid var(--border-color-default)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 <Mail sx={{ color: '#1976d2' }} />
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
@@ -861,7 +861,7 @@ export default function DashboardHome() {
 
           {/* My Sections */}
           <Card sx={{ height: '100%' }}>
-            <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Box sx={{ p: 2, borderBottom: '1px solid var(--border-color-default)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 <Workspaces sx={{ color: '#9c27b0' }} />
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
@@ -1122,7 +1122,7 @@ export default function DashboardHome() {
 
       {/* Upcoming Events Section */}
       <Card sx={{ mb: 3 }}>
-        <Box sx={{ p: 3, borderBottom: '1px solid #e0e0e0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Box sx={{ p: 3, borderBottom: '1px solid var(--border-color-default)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography variant="h6" sx={{ fontWeight: 600 }}>
             {t('dashboard:upcomingEvents')}
           </Typography>
@@ -1279,7 +1279,7 @@ export default function DashboardHome() {
 
       {/* Recent Activities Table */}
       <Card>
-        <Box sx={{ p: 3, borderBottom: '1px solid #e0e0e0' }}>
+        <Box sx={{ p: 3, borderBottom: '1px solid var(--border-color-default)' }}>
           <Typography variant="h6" sx={{ fontWeight: 600 }}>
             {t('dashboard:recentActivities')}
           </Typography>
@@ -1287,11 +1287,11 @@ export default function DashboardHome() {
         <TableContainer>
           <Table>
             <TableHead>
-              <TableRow sx={{ bgcolor: '#f8f9fa' }}>
-                <TableCell sx={{ fontWeight: 600 }}>{t('dashboard:activityTable.type')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('dashboard:activityTable.description')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('dashboard:activityTable.user')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('dashboard:activityTable.time')}</TableCell>
+              <TableRow>
+                <TableCell>{t('dashboard:activityTable.type')}</TableCell>
+                <TableCell>{t('dashboard:activityTable.description')}</TableCell>
+                <TableCell>{t('dashboard:activityTable.user')}</TableCell>
+                <TableCell>{t('dashboard:activityTable.time')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

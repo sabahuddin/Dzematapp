@@ -500,7 +500,7 @@ export default function EventsPage() {
           >
             {/* Calendar */}
             <Card>
-              <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
+              <Box sx={{ p: 2, borderBottom: '1px solid var(--border-color-default)' }}>
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
                   {t('events:calendar.title')}
                 </Typography>
@@ -560,7 +560,7 @@ export default function EventsPage() {
             {/* Selected Date Events */}
             {selectedDate && (
               <Card>
-                <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', bgcolor: '#f8f9fa' }}>
+                <Box sx={{ p: 2, borderBottom: '1px solid var(--border-color-default)', bgcolor: 'var(--surface-gray-50)' }}>
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>
                     {t('events:eventsFor')} {format(selectedDate, 'dd.MM.yyyy.')}
                   </Typography>
@@ -674,7 +674,7 @@ export default function EventsPage() {
 
           {/* Top 3 Upcoming Events */}
           <Card sx={{ mb: 2 }}>
-            <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
+            <Box sx={{ p: 2, borderBottom: '1px solid var(--border-color-default)' }}>
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
                 {t('events:upcomingEvents')}
               </Typography>
@@ -682,12 +682,12 @@ export default function EventsPage() {
             <TableContainer>
               <Table>
                 <TableHead>
-                  <TableRow sx={{ bgcolor: '#f8f9fa' }}>
-                    <TableCell sx={{ fontWeight: 600 }}>{t('events:eventName')}</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>{t('events:dateTime')}</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>{t('events:location')}</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>{t('events:rsvp')}</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>{t('events:actions')}</TableCell>
+                  <TableRow>
+                    <TableCell>{t('events:eventName')}</TableCell>
+                    <TableCell>{t('events:dateTime')}</TableCell>
+                    <TableCell>{t('events:location')}</TableCell>
+                    <TableCell>{t('events:rsvp')}</TableCell>
+                    <TableCell>{t('events:actions')}</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -726,12 +726,12 @@ export default function EventsPage() {
                 <TableContainer>
                   <Table>
                     <TableHead>
-                      <TableRow sx={{ bgcolor: '#fafafa' }}>
-                        <TableCell sx={{ fontWeight: 600 }}>{t('events:eventName')}</TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>{t('events:dateTime')}</TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>{t('events:location')}</TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>{t('events:rsvp')}</TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>{t('events:actions')}</TableCell>
+                      <TableRow>
+                        <TableCell>{t('events:eventName')}</TableCell>
+                        <TableCell>{t('events:dateTime')}</TableCell>
+                        <TableCell>{t('events:location')}</TableCell>
+                        <TableCell>{t('events:rsvp')}</TableCell>
+                        <TableCell>{t('events:actions')}</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -763,12 +763,12 @@ export default function EventsPage() {
                 <TableContainer>
                   <Table>
                     <TableHead>
-                      <TableRow sx={{ bgcolor: '#fafafa' }}>
-                        <TableCell sx={{ fontWeight: 600 }}>{t('events:eventName')}</TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>{t('events:dateTime')}</TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>{t('events:location')}</TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>{t('events:rsvp')}</TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>{t('events:actions')}</TableCell>
+                      <TableRow>
+                        <TableCell>{t('events:eventName')}</TableCell>
+                        <TableCell>{t('events:dateTime')}</TableCell>
+                        <TableCell>{t('events:location')}</TableCell>
+                        <TableCell>{t('events:rsvp')}</TableCell>
+                        <TableCell>{t('events:actions')}</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -787,7 +787,7 @@ export default function EventsPage() {
         <Box>
           {user?.isAdmin && (
             <Card sx={{ mb: 3 }}>
-              <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
+              <Box sx={{ p: 2, borderBottom: '1px solid var(--border-color-default)' }}>
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
                   {editingImportantDate ? t('events:importantDate.edit') : t('events:importantDate.add')}
                 </Typography>
@@ -836,7 +836,7 @@ export default function EventsPage() {
           )}
 
           <Card>
-            <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
+            <Box sx={{ p: 2, borderBottom: '1px solid var(--border-color-default)' }}>
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
                 {t('events:importantDateList')}
               </Typography>
@@ -844,11 +844,11 @@ export default function EventsPage() {
             <TableContainer>
               <Table>
                 <TableHead>
-                  <TableRow sx={{ bgcolor: '#f8f9fa' }}>
-                    <TableCell sx={{ fontWeight: 600 }}>{t('events:importantDate.date')}</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>{t('events:importantDate.name')}</TableCell>
+                  <TableRow>
+                    <TableCell>{t('events:importantDate.date')}</TableCell>
+                    <TableCell>{t('events:importantDate.name')}</TableCell>
                     {user?.isAdmin && (
-                      <TableCell sx={{ fontWeight: 600 }}>{t('events:actions')}</TableCell>
+                      <TableCell>{t('events:actions')}</TableCell>
                     )}
                   </TableRow>
                 </TableHead>

@@ -870,8 +870,8 @@ export default function TaskManagerPage() {
                 <AccordionSummary 
                   expandIcon={<ExpandMore />}
                   sx={{ 
-                    bgcolor: '#f8f9fa',
-                    '&:hover': { bgcolor: '#e9ecef' }
+                    bgcolor: 'var(--surface-gray-50)',
+                    '&:hover': { bgcolor: 'var(--state-hover-bg)' }
                   }}
                 >
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>
@@ -1077,12 +1077,12 @@ export default function TaskManagerPage() {
             <TableContainer>
               <Table>
                 <TableHead>
-                  <TableRow sx={{ bgcolor: '#f8f9fa' }}>
-                    <TableCell sx={{ fontWeight: 600 }}>{t('accessRequests.userName')}</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>{t('accessRequests.sectionName')}</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>{t('accessRequests.requestDate')}</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>{t('accessRequests.status')}</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>{t('accessRequests.actions')}</TableCell>
+                  <TableRow>
+                    <TableCell>{t('accessRequests.userName')}</TableCell>
+                    <TableCell>{t('accessRequests.sectionName')}</TableCell>
+                    <TableCell>{t('accessRequests.requestDate')}</TableCell>
+                    <TableCell>{t('accessRequests.status')}</TableCell>
+                    <TableCell>{t('accessRequests.actions')}</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -1333,7 +1333,7 @@ export default function TaskManagerPage() {
             Jeste li sigurni da želite biti član ove sekcije?
           </Typography>
           {workGroupToJoin && (
-            <Box sx={{ mt: 2, p: 2, bgcolor: '#f8f9fa', borderRadius: 1 }}>
+            <Box sx={{ mt: 2, p: 2, bgcolor: 'var(--surface-gray-50)', borderRadius: 1 }}>
               <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
                 {workGroupToJoin.name}
               </Typography>

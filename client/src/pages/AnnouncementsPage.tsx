@@ -603,14 +603,14 @@ export default function AnnouncementsPage() {
         <TableContainer>
           <Table>
             <TableHead>
-              <TableRow sx={{ bgcolor: '#f8f9fa' }}>
-                <TableCell sx={{ fontWeight: 600 }}>{t('announcements:announcementTitle')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('announcements:categories.label')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('announcements:author')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('announcements:publishDate')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('announcements:status')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('announcements:attachments')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('announcements:actions')}</TableCell>
+              <TableRow>
+                <TableCell>{t('announcements:announcementTitle')}</TableCell>
+                <TableCell>{t('announcements:categories.label')}</TableCell>
+                <TableCell>{t('announcements:author')}</TableCell>
+                <TableCell>{t('announcements:publishDate')}</TableCell>
+                <TableCell>{t('announcements:status')}</TableCell>
+                <TableCell>{t('announcements:attachments')}</TableCell>
+                <TableCell>{t('announcements:actions')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

@@ -312,7 +312,7 @@ export default function FinancesPage() {
 
       <Card>
         {currentUser?.isAdmin && (
-          <Box sx={{ p: 3, borderBottom: '1px solid #e0e0e0' }}>
+          <Box sx={{ p: 3, borderBottom: '1px solid var(--border-color-default)' }}>
             <Box sx={{ display: 'flex', gap: 2 }}>
               <TextField
                 variant="outlined"
@@ -345,14 +345,14 @@ export default function FinancesPage() {
         <TableContainer sx={{ overflowX: 'auto' }}>
           <Table>
             <TableHead>
-              <TableRow sx={{ bgcolor: '#f8f9fa' }}>
-                {currentUser?.isAdmin && <TableCell sx={{ fontWeight: 600 }}>{t('finances:user')}</TableCell>}
-                <TableCell sx={{ fontWeight: 600 }}>{t('finances:amount')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('finances:purpose')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('finances:project')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('finances:paymentDate')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('finances:notes')}</TableCell>
-                {currentUser?.isAdmin && <TableCell sx={{ fontWeight: 600 }}>{t('common:common.actions')}</TableCell>}
+              <TableRow>
+                {currentUser?.isAdmin && <TableCell>{t('finances:user')}</TableCell>}
+                <TableCell>{t('finances:amount')}</TableCell>
+                <TableCell>{t('finances:purpose')}</TableCell>
+                <TableCell>{t('finances:project')}</TableCell>
+                <TableCell>{t('finances:paymentDate')}</TableCell>
+                <TableCell>{t('finances:notes')}</TableCell>
+                {currentUser?.isAdmin && <TableCell>{t('common:common.actions')}</TableCell>}
               </TableRow>
             </TableHead>
             <TableBody>

@@ -308,14 +308,14 @@ export default function VaktijaPage() {
                     <TableContainer>
                       <Table size="small">
                         <TableHead>
-                          <TableRow sx={{ bgcolor: '#fafafa' }}>
-                            <TableCell sx={{ fontWeight: 600 }}>{t('vaktija:date')}</TableCell>
-                            <TableCell sx={{ fontWeight: 600 }}>{t('vaktija:prayerNames.fajr')}</TableCell>
-                            <TableCell sx={{ fontWeight: 600 }}>{t('vaktija:prayerNames.sunrise')}</TableCell>
-                            <TableCell sx={{ fontWeight: 600 }}>{t('vaktija:prayerNames.dhuhr')}</TableCell>
-                            <TableCell sx={{ fontWeight: 600 }}>{t('vaktija:prayerNames.asr')}</TableCell>
-                            <TableCell sx={{ fontWeight: 600 }}>{t('vaktija:prayerNames.maghrib')}</TableCell>
-                            <TableCell sx={{ fontWeight: 600 }}>{t('vaktija:prayerNames.isha')}</TableCell>
+                          <TableRow>
+                            <TableCell>{t('vaktija:date')}</TableCell>
+                            <TableCell>{t('vaktija:prayerNames.fajr')}</TableCell>
+                            <TableCell>{t('vaktija:prayerNames.sunrise')}</TableCell>
+                            <TableCell>{t('vaktija:prayerNames.dhuhr')}</TableCell>
+                            <TableCell>{t('vaktija:prayerNames.asr')}</TableCell>
+                            <TableCell>{t('vaktija:prayerNames.maghrib')}</TableCell>
+                            <TableCell>{t('vaktija:prayerNames.isha')}</TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>

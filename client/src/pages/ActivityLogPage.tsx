@@ -214,7 +214,7 @@ export default function ActivityLogPage() {
       </Box>
 
       <Card>
-        <Box sx={{ p: 3, borderBottom: '1px solid #e0e0e0' }}>
+        <Box sx={{ p: 3, borderBottom: '1px solid var(--border-color-default)' }}>
           <Grid container spacing={2}>
             {currentUser?.isAdmin && (
               <Grid size={{ xs: 12, md: 6 }}>
@@ -254,12 +254,12 @@ export default function ActivityLogPage() {
         <TableContainer sx={{ overflowX: 'auto' }}>
           <Table>
             <TableHead>
-              <TableRow sx={{ bgcolor: '#f8f9fa' }}>
-                {currentUser?.isAdmin && <TableCell sx={{ fontWeight: 600 }}>{t('user')}</TableCell>}
-                <TableCell sx={{ fontWeight: 600 }}>{t('type')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('description')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('points')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('date')}</TableCell>
+              <TableRow>
+                {currentUser?.isAdmin && <TableCell>{t('user')}</TableCell>}
+                <TableCell>{t('type')}</TableCell>
+                <TableCell>{t('description')}</TableCell>
+                <TableCell>{t('points')}</TableCell>
+                <TableCell>{t('date')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
