@@ -177,7 +177,7 @@ export default function MessagesPage() {
               <p>{t('noConversations')}</p>
             </div>
           ) : (
-            <div className="divide-y">
+            <div className="divide-y divide-gray-200">
               {filteredConversations.map((conversation) => {
                 const isUnread = conversation.unreadCount > 0;
                 const isSentByMe = conversation.lastMessage.senderId === user?.id;
@@ -186,8 +186,8 @@ export default function MessagesPage() {
                   <div
                     key={conversation.threadId}
                     onClick={() => handleConversationClick(conversation)}
-                    className={`p-4 cursor-pointer hover:bg-accent transition-colors ${
-                      isUnread ? 'bg-blue-50' : ''
+                    className={`p-4 cursor-pointer hover:bg-accent transition-colors border-b ${
+                      isUnread ? 'bg-blue-50' : 'bg-white'
                     }`}
                     data-testid={`conversation-${conversation.threadId}`}
                   >

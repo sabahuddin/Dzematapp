@@ -1476,7 +1476,7 @@ export class DatabaseStorage implements IStorage {
       .from(accessRequests)
       .where(and(
         eq(accessRequests.status, 'pending'),
-        gt(accessRequests.createdAt, lastViewed)
+        gt(accessRequests.requestDate, lastViewed)
       ));
     return Number(result[0]?.count ?? 0);
   }

@@ -886,7 +886,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         res.status(500).json({ message: "Failed to delete work group" });
       }
     } catch (error) {
-      res.status(500).json({ message: "Failed to delete work group" });
+      console.error("Error deleting work group:", error);
+      res.status(500).json({ message: "Failed to delete work group", error: String(error) });
     }
   });
 
