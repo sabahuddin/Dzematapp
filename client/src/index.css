@@ -5,10 +5,10 @@
 @tailwind utilities;
 
 :root {
-  --background: hsl(0 0% 100%);
+  --background: hsl(240 4% 96%);
   --foreground: hsl(210 25% 7.8431%);
-  --card: hsl(180 6.6667% 97.0588%);
-  --card-foreground: hsl(210 25% 7.8431%);
+  --card: hsl(120 60% 95%);
+  --card-foreground: hsl(122 60% 29%);
   --popover: hsl(0 0% 100%);
   --popover-foreground: hsl(210 25% 7.8431%);
   --primary: hsl(203.8863 88.2845% 53.1373%);
@@ -21,9 +21,9 @@
   --accent-foreground: hsl(203.8863 88.2845% 53.1373%);
   --destructive: hsl(356.3033 90.5579% 54.3137%);
   --destructive-foreground: hsl(0 0% 100%);
-  --border: hsl(201.4286 30.4348% 90.9804%);
-  --input: hsl(200 23.0769% 97.4510%);
-  --ring: hsl(202.8169 89.1213% 53.1373%);
+  --border: hsl(123 46% 64%);
+  --input: hsl(0 0% 100%);
+  --ring: hsl(120 68% 42%);
   --chart-1: hsl(203.8863 88.2845% 53.1373%);
   --chart-2: hsl(159.7826 100% 36.0784%);
   --chart-3: hsl(42.0290 92.8251% 56.2745%);
