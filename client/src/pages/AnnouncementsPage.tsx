@@ -654,7 +654,7 @@ export default function AnnouncementsPage() {
                       <IconButton
                         size="small"
                         onClick={() => handleEditAnnouncement(announcement)}
-                        sx={{ color: '#ed6c02' }}
+                        sx={{ color: 'var(--semantic-award-text)' }}
                         data-testid={`button-edit-announcement-${announcement.id}`}
                         title={t('announcements:edit')}
                       >
@@ -663,7 +663,7 @@ export default function AnnouncementsPage() {
                       <IconButton
                         size="small"
                         onClick={() => handleDeleteClick(announcement)}
-                        sx={{ color: '#d32f2f' }}
+                        sx={{ color: 'var(--semantic-danger-text)' }}
                         data-testid={`button-delete-announcement-${announcement.id}`}
                         title={t('announcements:delete')}
                       >

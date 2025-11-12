@@ -411,7 +411,7 @@ export default function FinancesPage() {
                         <IconButton
                           size="small"
                           onClick={() => handleDelete(contribution.id)}
-                          sx={{ color: '#d32f2f' }}
+                          sx={{ color: 'var(--semantic-danger-text)' }}
                           data-testid={`button-delete-${contribution.id}`}
                         >
                           <Delete fontSize="small" />

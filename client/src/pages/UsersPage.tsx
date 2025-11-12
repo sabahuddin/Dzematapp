@@ -849,7 +849,7 @@ export default function UsersPage() {
                       <IconButton
                         size="small"
                         onClick={() => handleEditUser(user)}
-                        sx={{ color: '#ed6c02' }}
+                        sx={{ color: 'var(--semantic-award-text)' }}
                         data-testid={`button-edit-user-${user.id}`}
                         title={t('users:actions.edit')}
                       >

@@ -85,6 +85,23 @@
   --semantic-award-active: hsl(38 100% 52%);
   --semantic-award-active-hover: hsl(32 100% 51%);
   
+
+  /* Semantic Colors - Danger/Error (Red) */
+  --semantic-danger-bg: hsl(0 100% 97%);
+  --semantic-danger-bg-hover: hsl(0 100% 90%);
+  --semantic-danger-text: hsl(4 90% 58%);
+  --semantic-danger-border: hsl(4 90% 70%);
+  --semantic-danger-active: hsl(0 65% 51%);
+
+  /* Semantic Colors - Neutral/UI Chrome (Grey) */
+  --semantic-neutral-bg: hsl(210 11% 96%);
+  --semantic-neutral-bg-hover: hsl(210 11% 90%);
+  --semantic-neutral-text: hsl(210 9% 38%);
+  --semantic-neutral-border: hsl(210 11% 71%);
+
+  /* Semantic Typography */
+  --semantic-heading-text: hsl(231 48% 22%);
+
   /* Border tokens */
   --border-width-default: 1px;
   --border-width-card: 2px;

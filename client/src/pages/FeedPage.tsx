@@ -71,13 +71,13 @@ export default function FeedPage() {
       case 'new_member':
         return { bg: 'var(--semantic-info-bg)', iconColor: 'var(--semantic-info-gradient-start)' }; // Blue
       case 'badge_awarded':
-        return { bg: 'var(--semantic-award-bg)', iconColor: '#f57c00' }; // Orange
+        return { bg: 'var(--semantic-award-bg)', iconColor: 'var(--semantic-award-text)' }; // Orange
       case 'certificate_issued':
-        return { bg: 'var(--semantic-celebration-bg)', iconColor: '#7b1fa2' }; // Purple
+        return { bg: 'var(--semantic-celebration-bg)', iconColor: 'var(--semantic-celebration-text)' }; // Purple
       case 'shop_item':
-        return { bg: 'var(--semantic-success-bg)', iconColor: '#388e3c' }; // Green
+        return { bg: 'var(--semantic-success-bg)', iconColor: 'var(--semantic-success-text)' }; // Green
       default:
-        return { bg: '#f5f5f5', iconColor: 'text.secondary' }; // Gray
+        return { bg: 'var(--semantic-neutral-bg)', iconColor: 'text.secondary' }; // Gray
     }
   };
 

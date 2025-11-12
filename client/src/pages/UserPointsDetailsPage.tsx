@@ -59,7 +59,7 @@ export default function UserPointsDetailsPage() {
   return (
     <Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-        <EmojiEvents sx={{ fontSize: 40, color: '#f57c00' }} />
+        <EmojiEvents sx={{ fontSize: 40, color: 'var(--semantic-award-text)' }} />
         <Box>
           <Typography variant="h4" sx={{ fontWeight: 600 }}>
             Vaši Bodovi
@@ -71,11 +71,11 @@ export default function UserPointsDetailsPage() {
       </Box>
 
       {/* Total Points Card */}
-      <Card sx={{ mb: 3, p: 3, bgcolor: 'var(--semantic-award-bg)', borderLeft: '4px solid #f57c00' }}>
+      <Card sx={{ mb: 3, p: 3, bgcolor: 'var(--semantic-award-bg)', borderLeft: '4px solid var(--semantic-award-text)' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <TrendingUp sx={{ fontSize: 48, color: '#f57c00' }} />
+          <TrendingUp sx={{ fontSize: 48, color: 'var(--semantic-award-text)' }} />
           <Box>
-            <Typography variant="h3" sx={{ fontWeight: 700, color: '#f57c00' }}>
+            <Typography variant="h3" sx={{ fontWeight: 700, color: 'var(--semantic-award-text)' }}>
               {totalPoints}
             </Typography>
             <Typography variant="body1" color="text.secondary">

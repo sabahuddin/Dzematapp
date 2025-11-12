@@ -294,7 +294,7 @@ export default function BadgesPage() {
                       <IconButton
                         size="small"
                         onClick={() => handleDelete(badge.id)}
-                        sx={{ color: '#d32f2f' }}
+                        sx={{ color: 'var(--semantic-danger-text)' }}
                         data-testid={`button-delete-${badge.id}`}
                       >
                         <Delete fontSize="small" />

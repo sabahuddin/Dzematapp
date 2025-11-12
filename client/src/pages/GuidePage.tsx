@@ -56,47 +56,47 @@ export default function GuidePage() {
     {
       icon: <Campaign sx={{ fontSize: 28 }} />,
       key: 'announcements',
-      color: '#ed6c02',
+      color: 'var(--semantic-award-text)',
     },
     {
       icon: <Event sx={{ fontSize: 28 }} />,
       key: 'events',
-      color: '#9c27b0',
+      color: 'var(--semantic-celebration-text)',
     },
     {
       icon: <Workspaces sx={{ fontSize: 28 }} />,
       key: 'workgroups',
-      color: '#0097a7',
+      color: 'var(--semantic-info-text)',
     },
     {
       icon: <Mail sx={{ fontSize: 28 }} />,
       key: 'messages',
-      color: '#c2185b',
+      color: 'var(--semantic-celebration-text)',
     },
     {
       icon: <QuestionAnswer sx={{ fontSize: 28 }} />,
       key: 'askImam',
-      color: '#f57c00',
+      color: 'var(--semantic-award-text)',
     },
     {
       icon: <Assignment sx={{ fontSize: 28 }} />,
       key: 'requests',
-      color: '#5e35b1',
+      color: 'var(--semantic-celebration-text)',
     },
     {
       icon: <ShoppingBag sx={{ fontSize: 28 }} />,
       key: 'shop',
-      color: '#c62828',
+      color: 'var(--semantic-danger-text)',
     },
     {
       icon: <Schedule sx={{ fontSize: 28 }} />,
       key: 'vaktija',
-      color: '#00796b',
+      color: 'var(--semantic-success-text)',
     },
     {
       icon: <AccountBalance sx={{ fontSize: 28 }} />,
       key: 'finances',
-      color: '#558b2f',
+      color: 'var(--semantic-success-text)',
     },
     {
       icon: <FolderOpen sx={{ fontSize: 28 }} />,
@@ -106,52 +106,52 @@ export default function GuidePage() {
     {
       icon: <Timeline sx={{ fontSize: 28 }} />,
       key: 'activity',
-      color: '#455a64',
+      color: 'var(--semantic-neutral-text)',
     },
     {
       icon: <WorkspacePremium sx={{ fontSize: 28 }} />,
       key: 'badges',
-      color: '#f9a825',
+      color: 'var(--semantic-award-text)',
     },
     {
       icon: <EmojiEvents sx={{ fontSize: 28 }} />,
       key: 'points',
-      color: '#d84315',
+      color: 'var(--semantic-award-text)',
     },
     {
       icon: <CardGiftcard sx={{ fontSize: 28 }} />,
       key: 'certificates',
-      color: '#e91e63',
+      color: 'var(--semantic-celebration-text)',
     },
     {
       icon: <Description sx={{ fontSize: 28 }} />,
       key: 'documents',
-      color: '#3f51b5',
+      color: 'var(--semantic-info-text)',
     },
     {
       icon: <OndemandVideo sx={{ fontSize: 28 }} />,
       key: 'media',
-      color: '#ff5722',
+      color: 'var(--semantic-award-text)',
     },
     {
       icon: <Settings sx={{ fontSize: 28 }} />,
       key: 'settings',
-      color: '#616161',
+      color: 'var(--semantic-neutral-text)',
     },
   ];
 
   const roles = [
     {
       key: 'admin',
-      color: '#d32f2f',
+      color: 'var(--semantic-danger-text)',
     },
     {
       key: 'memberIO',
-      color: '#f57c00',
+      color: 'var(--semantic-award-text)',
     },
     {
       key: 'member',
-      color: '#388e3c',
+      color: 'var(--semantic-success-text)',
     },
     {
       key: 'familyMember',
@@ -214,7 +214,7 @@ export default function GuidePage() {
       <Box sx={{ mb: 4, textAlign: 'center' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, mb: 2 }}>
           <Info sx={{ fontSize: 48, color: 'var(--semantic-info-gradient-start)' }} />
-          <Typography variant="h3" sx={{ fontWeight: 700, color: '#1a237e' }}>
+          <Typography variant="h3" sx={{ fontWeight: 700, color: 'var(--semantic-heading-text)' }}>
             {t('guide:pageHeader.title')}
           </Typography>
         </Box>
@@ -239,7 +239,7 @@ export default function GuidePage() {
 
       {/* Introduction */}
       <Box sx={{ mb: 5 }}>
-        <Typography variant="h5" sx={{ fontWeight: 700, mb: 2, color: '#1a237e' }}>
+        <Typography variant="h5" sx={{ fontWeight: 700, mb: 2, color: 'var(--semantic-heading-text)' }}>
           {t('guide:introduction.title')}
         </Typography>
         <Typography variant="body1" sx={{ lineHeight: 1.8, mb: 2 }}>
@@ -252,7 +252,7 @@ export default function GuidePage() {
 
       {/* Roles */}
       <Box sx={{ mb: 5 }}>
-        <Typography variant="h5" sx={{ fontWeight: 700, mb: 2, color: '#1a237e' }}>
+        <Typography variant="h5" sx={{ fontWeight: 700, mb: 2, color: 'var(--semantic-heading-text)' }}>
           {t('guide:rolesSection.title')}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
@@ -288,7 +288,7 @@ export default function GuidePage() {
 
       {/* Table of Contents - Meni */}
       <Box sx={{ mb: 5 }} className="page-break">
-        <Typography variant="h5" sx={{ fontWeight: 700, mb: 3, color: '#1a237e' }}>
+        <Typography variant="h5" sx={{ fontWeight: 700, mb: 3, color: 'var(--semantic-heading-text)' }}>
           {t('guide:tableOfContents.title')}
         </Typography>
         <Divider sx={{ mb: 3 }} />
@@ -331,7 +331,7 @@ export default function GuidePage() {
       </Box>
 
       {/* Sections - Full Width */}
-      <Typography variant="h5" sx={{ fontWeight: 700, mb: 4, color: '#1a237e' }} className="page-break">
+      <Typography variant="h5" sx={{ fontWeight: 700, mb: 4, color: 'var(--semantic-heading-text)' }} className="page-break">
         {t('guide:detailedExplanation')}
       </Typography>
 
@@ -359,7 +359,7 @@ export default function GuidePage() {
               >
                 {section.icon}
               </Box>
-              <Typography variant="h5" sx={{ fontWeight: 700, color: '#1a237e' }}>
+              <Typography variant="h5" sx={{ fontWeight: 700, color: 'var(--semantic-heading-text)' }}>
                 {t(`guide:sections.${section.key}.title`)}
               </Typography>
             </Box>
@@ -391,7 +391,7 @@ export default function GuidePage() {
                 <Box>
                   <Box
                     sx={{
-                      bgcolor: '#d32f2f',
+                      bgcolor: 'var(--semantic-danger-text)',
                       color: 'white',
                       px: 1.5,
                       py: 0.5,
@@ -412,7 +412,7 @@ export default function GuidePage() {
                 <Box>
                   <Box
                     sx={{
-                      bgcolor: '#f57c00',
+                      bgcolor: 'var(--semantic-award-text)',
                       color: 'white',
                       px: 1.5,
                       py: 0.5,
@@ -433,7 +433,7 @@ export default function GuidePage() {
                 <Box>
                   <Box
                     sx={{
-                      bgcolor: '#388e3c',
+                      bgcolor: 'var(--semantic-success-text)',
                       color: 'white',
                       px: 1.5,
                       py: 0.5,

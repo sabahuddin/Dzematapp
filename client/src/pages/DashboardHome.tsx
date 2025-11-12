@@ -146,32 +146,32 @@ function EventDay(props: PickersDayProps & { eventDates?: Date[]; selectedDate?:
             : isToday 
             ? 'var(--semantic-award-active) !important'
             : isWeekendDay 
-            ? '#f3f4f6'
+            ? 'var(--semantic-neutral-bg)'
             : hasEvent
             ? 'var(--semantic-success-bg)'
             : 'transparent',
           color: outsideCurrentMonth
-            ? '#9ca3af'
+            ? 'var(--semantic-neutral-text)'
             : isSelected || isToday
             ? '#ffffff !important'
             : hasEvent
             ? 'var(--semantic-success-text)'
             : isWeekendDay
-            ? '#6b7280'
+            ? 'var(--semantic-neutral-text)'
             : 'inherit',
           fontWeight: isToday || isSelected || hasEvent ? 600 : 400,
           '&:hover': {
             backgroundColor: outsideCurrentMonth
-              ? '#f9fafb'
+              ? 'var(--semantic-neutral-bg)'
               : isSelected
               ? 'var(--semantic-info-active-hover) !important'
               : isToday
               ? 'var(--semantic-award-active-hover) !important'
               : isWeekendDay
-              ? '#e5e7eb'
+              ? 'var(--semantic-neutral-bg-hover)'
               : hasEvent
               ? 'var(--semantic-success-bg-hover)'
-              : '#f3f4f6',
+              : 'var(--semantic-neutral-bg)',
           },
           border: isToday ? '2px solid var(--semantic-award-border)' : 'none',
           borderRadius: '8px',
@@ -414,8 +414,8 @@ export default function DashboardHome() {
             <Card sx={{ mb: 3, bgcolor: 'var(--semantic-award-bg)', cursor: 'pointer', '&:hover': { boxShadow: 4 } }} onClick={() => setLocation('/my-points')}>
               <Box sx={{ p: 2, borderBottom: '1px solid var(--semantic-award-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <EmojiEvents sx={{ color: '#f57c00' }} />
-                  <Typography variant="h6" sx={{ fontWeight: 600, color: '#f57c00' }}>
+                  <EmojiEvents sx={{ color: 'var(--semantic-award-text)' }} />
+                  <Typography variant="h6" sx={{ fontWeight: 600, color: 'var(--semantic-award-text)' }}>
                     {t('dashboard:pointsProgress')}
                   </Typography>
                 </Box>
@@ -424,7 +424,7 @@ export default function DashboardHome() {
                 <Box>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', mb: 1 }}>
                     <Box>
-                      <Typography variant="h4" sx={{ fontWeight: 700, color: '#f57c00' }}>
+                      <Typography variant="h4" sx={{ fontWeight: 700, color: 'var(--semantic-award-text)' }}>
                         {currentPoints.toLocaleString()}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
@@ -433,7 +433,7 @@ export default function DashboardHome() {
                     </Box>
                     {nextPointsBadge && (
                       <Box sx={{ textAlign: 'right' }}>
-                        <Typography variant="body2" sx={{ fontWeight: 600, color: '#f57c00' }}>
+                        <Typography variant="body2" sx={{ fontWeight: 600, color: 'var(--semantic-award-text)' }}>
                           {(nextThreshold - currentPoints).toLocaleString()} bodova
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
@@ -448,9 +448,9 @@ export default function DashboardHome() {
                     sx={{ 
                       height: 8, 
                       borderRadius: 4,
-                      bgcolor: '#ffe0b2',
+                      bgcolor: 'var(--semantic-award-bg)',
                       '& .MuiLinearProgress-bar': {
-                        bgcolor: '#f57c00'
+                        bgcolor: 'var(--semantic-award-text)'
                       }
                     }} 
                   />
@@ -591,7 +591,7 @@ export default function DashboardHome() {
           <Grid size={{ xs: 12, lg: 4 }}>
             <Card sx={{ height: '100%' }}>
               <Box sx={{ p: 2, borderBottom: '1px solid var(--border-color-default)', display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Event sx={{ color: '#ed6c02' }} />
+                <Event sx={{ color: 'var(--semantic-award-text)' }} />
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
                   {t('dashboard:nextEvent')}
                 </Typography>
@@ -702,7 +702,7 @@ export default function DashboardHome() {
                   '& .MuiDayCalendar-weekDayLabel': {
                     fontWeight: 600,
                     fontSize: '0.875rem',
-                    color: '#374151',
+                    color: 'var(--semantic-neutral-text)',
                     width: '36px',
                     height: '36px',
                     margin: '0 2px',
@@ -724,7 +724,7 @@ export default function DashboardHome() {
           {/* Today's Events */}
           <Card sx={{ height: '100%' }}>
             <Box sx={{ p: 2, borderBottom: '1px solid var(--border-color-default)', display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Event sx={{ color: '#ed6c02' }} />
+              <Event sx={{ color: 'var(--semantic-award-text)' }} />
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
                 {selectedDate ? (
                   <>
@@ -835,7 +835,7 @@ export default function DashboardHome() {
                           cursor: 'pointer',
                           transition: 'all 0.2s',
                           '&:hover': {
-                            bgcolor: '#bbdefb',
+                            bgcolor: 'var(--semantic-info-bg)',
                             transform: 'translateX(4px)'
                           }
                         }}
@@ -863,7 +863,7 @@ export default function DashboardHome() {
           <Card sx={{ height: '100%' }}>
             <Box sx={{ p: 2, borderBottom: '1px solid var(--border-color-default)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Workspaces sx={{ color: '#9c27b0' }} />
+                <Workspaces sx={{ color: 'var(--semantic-celebration-text)' }} />
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
                   {t('dashboard:mySections')}
                 </Typography>
@@ -893,7 +893,7 @@ export default function DashboardHome() {
                           cursor: 'pointer',
                           transition: 'all 0.2s',
                           '&:hover': {
-                            bgcolor: '#e1bee7',
+                            bgcolor: 'var(--semantic-celebration-bg)',
                             transform: 'translateX(4px)'
                           }
                         }}
@@ -1016,16 +1016,16 @@ export default function DashboardHome() {
           }}
         >
           <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2, py: 2 }}>
-            <EmojiEvents sx={{ fontSize: 40, color: '#f57c00' }} />
+            <EmojiEvents sx={{ fontSize: 40, color: 'var(--semantic-award-text)' }} />
             <Box sx={{ flex: 1 }}>
-              <Typography variant="h5" sx={{ fontWeight: 600, color: '#f57c00' }}>
+              <Typography variant="h5" sx={{ fontWeight: 600, color: 'var(--semantic-award-text)' }}>
                 {t('dashboard:yourPoints')}: {(user as any)?.totalPoints || 0}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 {t('dashboard:viewBadges')}
               </Typography>
             </Box>
-            <ArrowForward sx={{ color: '#f57c00' }} />
+            <ArrowForward sx={{ color: 'var(--semantic-award-text)' }} />
           </CardContent>
         </Card>
       </Link>

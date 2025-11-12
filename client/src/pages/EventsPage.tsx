@@ -88,32 +88,32 @@ function EventDay(props: PickersDayProps & { eventDates?: Date[]; selectedDate?:
             : isToday 
             ? 'var(--semantic-award-active) !important'
             : isWeekendDay 
-            ? '#f3f4f6'
+            ? 'var(--semantic-neutral-bg)'
             : hasEvent
             ? 'var(--semantic-success-bg)'
             : 'transparent',
           color: outsideCurrentMonth
-            ? '#9ca3af'
+            ? 'var(--semantic-neutral-text)'
             : isSelected || isToday
             ? '#ffffff !important'
             : hasEvent
             ? 'var(--semantic-success-text)'
             : isWeekendDay
-            ? '#6b7280'
+            ? 'var(--semantic-neutral-text)'
             : 'inherit',
           fontWeight: isToday || isSelected || hasEvent ? 600 : 400,
           '&:hover': {
             backgroundColor: outsideCurrentMonth
-              ? '#f9fafb'
+              ? 'var(--semantic-neutral-bg)'
               : isSelected
               ? 'var(--semantic-info-active-hover) !important'
               : isToday
               ? 'var(--semantic-award-active-hover) !important'
               : isWeekendDay
-              ? '#e5e7eb'
+              ? 'var(--semantic-neutral-bg-hover)'
               : hasEvent
               ? 'var(--semantic-success-bg-hover)'
-              : '#f3f4f6',
+              : 'var(--semantic-neutral-bg)',
           },
           border: isToday ? '2px solid var(--semantic-award-border)' : 'none',
           borderRadius: '8px',
@@ -386,7 +386,7 @@ export default function EventsPage() {
                 <IconButton
                   size="small"
                   onClick={() => handleEditEvent(event)}
-                  sx={{ color: '#ed6c02' }}
+                  sx={{ color: 'var(--semantic-award-text)' }}
                   data-testid={`button-edit-event-${event.id}`}
                 >
                   <Edit fontSize="small" />
@@ -394,7 +394,7 @@ export default function EventsPage() {
                 <IconButton
                   size="small"
                   onClick={() => handleDeleteClick(event)}
-                  sx={{ color: '#d32f2f' }}
+                  sx={{ color: 'var(--semantic-danger-text)' }}
                   data-testid={`button-delete-event-${event.id}`}
                 >
                   <Delete fontSize="small" />
@@ -538,7 +538,7 @@ export default function EventsPage() {
                     '& .MuiDayCalendar-weekDayLabel': {
                       fontWeight: 600,
                       fontSize: '0.875rem',
-                      color: '#374151',
+                      color: 'var(--semantic-neutral-text)',
                       width: '36px',
                       height: '36px',
                       margin: '0 2px',
@@ -643,7 +643,7 @@ export default function EventsPage() {
                                           e.stopPropagation();
                                           handleEditEvent(event);
                                         }}
-                                        sx={{ color: '#ed6c02' }}
+                                        sx={{ color: 'var(--semantic-award-text)' }}
                                       >
                                         <Edit fontSize="small" />
                                       </IconButton>
@@ -653,7 +653,7 @@ export default function EventsPage() {
                                           e.stopPropagation();
                                           handleDeleteClick(event);
                                         }}
-                                        sx={{ color: '#d32f2f' }}
+                                        sx={{ color: 'var(--semantic-danger-text)' }}
                                       >
                                         <Delete fontSize="small" />
                                       </IconButton>
@@ -863,7 +863,7 @@ export default function EventsPage() {
                             <IconButton
                               size="small"
                               onClick={() => handleEditImportantDate(date)}
-                              sx={{ color: '#ed6c02' }}
+                              sx={{ color: 'var(--semantic-award-text)' }}
                               data-testid={`button-edit-important-date-${date.id}`}
                             >
                               <Edit fontSize="small" />
@@ -871,7 +871,7 @@ export default function EventsPage() {
                             <IconButton
                               size="small"
                               onClick={() => deleteImportantDateMutation.mutate(date.id)}
-                              sx={{ color: '#d32f2f' }}
+                              sx={{ color: 'var(--semantic-danger-text)' }}
                               data-testid={`button-delete-important-date-${date.id}`}
                             >
                               <Delete fontSize="small" />
