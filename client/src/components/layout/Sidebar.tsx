@@ -154,7 +154,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
       <Box 
         sx={{ 
           p: 2, 
-          borderBottom: '1px solid var(--border-color-default)',
+          borderBottom: '1px solid hsl(0 0% 88%)',
           display: 'flex',
           alignItems: 'center',
           gap: 1.5,
@@ -184,7 +184,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
             sx={{
               mx: 1,
               borderRadius: 1,
-              bgcolor: 'var(--surface-gray-96)',
+              bgcolor: 'hsl(0 0% 96%)',
               color: '#1976d2',
               justifyContent: collapsed ? 'center' : 'flex-start',
               px: collapsed ? 0 : 2,
@@ -261,7 +261,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
                 px: collapsed ? 0 : 2,
                 minWidth: 0,
                 '&:hover': {
-                  bgcolor: 'var(--surface-gray-96)',
+                  bgcolor: 'hsl(0 0% 96%)',
                   color: '#1976d2'
                 }
               }}
@@ -306,7 +306,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
               px: collapsed ? 0 : 2,
               minWidth: 0,
               '&:hover': {
-                bgcolor: 'var(--surface-gray-96)',
+                bgcolor: 'hsl(0 0% 96%)',
                 color: '#1976d2'
               }
             }}
@@ -358,7 +358,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
                         borderRight: isActive ? '3px solid #1976d2' : 'none',
                         px: 2,
                         '&:hover': {
-                          bgcolor: 'var(--surface-gray-96)',
+                          bgcolor: 'hsl(0 0% 96%)',
                           color: '#1976d2'
                         }
                       }}
@@ -395,7 +395,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
               px: collapsed ? 0 : 2,
               minWidth: 0,
               '&:hover': {
-                bgcolor: 'var(--surface-gray-96)',
+                bgcolor: 'hsl(0 0% 96%)',
                 color: '#1976d2'
               }
             }}
@@ -434,7 +434,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
                         borderRight: isActive ? '3px solid #1976d2' : 'none',
                         px: 2,
                         '&:hover': {
-                          bgcolor: 'var(--surface-gray-96)',
+                          bgcolor: 'hsl(0 0% 96%)',
                           color: '#1976d2'
                         }
                       }}
@@ -455,7 +455,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
 
       {/* Info Section and Social Media */}
       {!collapsed && (
-        <Box sx={{ borderTop: '1px solid var(--border-color-default)', p: 2 }}>
+        <Box sx={{ borderTop: '1px solid hsl(0 0% 88%)', p: 2 }}>
           {/* Džemat Info */}
           <Box sx={{ mb: 2 }}>
             <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1, color: '#1976d2' }}>
@@ -554,7 +554,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
                     size="small"
                     sx={{ 
                       color: '#000000',
-                      '&:hover': { bgcolor: 'var(--surface-gray-96)' }
+                      '&:hover': { bgcolor: 'hsl(0 0% 96%)' }
                     }}
                     data-testid="social-twitter"
                   >

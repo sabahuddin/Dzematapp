@@ -366,7 +366,7 @@ export default function EventModal({
                                 </TableCell>
                               </TableRow>
                             ))}
-                            <TableRow sx={{ backgroundColor: 'var(--surface-gray-96)' }}>
+                            <TableRow sx={{ backgroundColor: 'hsl(0 0% 96%)' }}>
                               <TableCell><strong>{t('common:common.total').toUpperCase()}:</strong></TableCell>
                               <TableCell align="center"><strong>{rsvpQuery.data.totalAdults}</strong></TableCell>
                               <TableCell align="center"><strong>{rsvpQuery.data.totalChildren}</strong></TableCell>

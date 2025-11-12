@@ -154,7 +154,7 @@ export default function RichTextEditor({
             borderRight: 'none',
             borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
             borderRadius: '4px 4px 0 0',
-            backgroundColor: 'var(--surface-gray-96)',
+            backgroundColor: 'hsl(0 0% 96%)',
           },
           '& .ql-container': {
             border: 'none',
@@ -226,7 +226,7 @@ export default function RichTextEditor({
               p: 2,
               border: '1px solid rgba(0, 0, 0, 0.12)',
               borderRadius: 1,
-              backgroundColor: 'var(--surface-gray-50)',
+              backgroundColor: 'hsl(0 0% 98%)',
               '& p': { marginBottom: '1em' },
               '& ul, & ol': { marginLeft: '1.5em', marginBottom: '1em' },
               '& a': { color: 'primary.main', textDecoration: 'underline' },

@@ -185,7 +185,7 @@ export default function EventViewModal({
                     border: '1px solid',
                     borderColor: 'divider',
                     borderRadius: 1,
-                    backgroundColor: 'var(--surface-gray-50)',
+                    backgroundColor: 'hsl(0 0% 98%)',
                     '& p': { marginBottom: '1em' },
                     '& ul, & ol': { marginLeft: '1.5em', marginBottom: '1em' },
                     '& a': { color: 'primary.main', textDecoration: 'underline' },
