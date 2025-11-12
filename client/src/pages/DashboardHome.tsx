@@ -341,10 +341,10 @@ export default function DashboardHome() {
           if (earnedBadges.length > 0) {
             const getBadgeColor = (criteriaType: string) => {
               switch (criteriaType) {
-                case 'points_total': return { bg: '#fff3e0', text: '#e65100', border: '#ffb74d' };
-                case 'contributions_amount': return { bg: '#e8f5e9', text: '#2e7d32', border: '#81c784' };
-                case 'tasks_completed': return { bg: '#e3f2fd', text: '#1565c0', border: '#64b5f6' };
-                case 'events_attended': return { bg: '#f3e5f5', text: '#6a1b9a', border: '#ba68c8' };
+                case 'points_total': return { bg: 'var(--semantic-award-bg)', text: 'var(--semantic-award-text)', border: 'var(--semantic-award-border)' };
+                case 'contributions_amount': return { bg: 'var(--semantic-success-bg)', text: 'var(--semantic-success-text)', border: 'var(--semantic-success-border)' };
+                case 'tasks_completed': return { bg: 'var(--semantic-info-bg)', text: 'var(--semantic-info-text)', border: 'var(--semantic-info-border)' };
+                case 'events_attended': return { bg: 'var(--semantic-celebration-bg)', text: 'var(--semantic-celebration-text)', border: 'var(--semantic-celebration-border)' };
                 default: return { bg: 'var(--surface-gray-96)', text: '#616161', border: 'var(--border-color-hover)' };
               }
             };
@@ -411,8 +411,8 @@ export default function DashboardHome() {
           const progress = nextThreshold > 0 ? Math.min((currentPoints / nextThreshold) * 100, 100) : 0;
           
           return (
-            <Card sx={{ mb: 3, bgcolor: '#fff3e0', cursor: 'pointer', '&:hover': { boxShadow: 4 } }} onClick={() => setLocation('/my-points')}>
-              <Box sx={{ p: 2, borderBottom: '1px solid #ffb74d', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Card sx={{ mb: 3, bgcolor: 'var(--semantic-award-bg)', cursor: 'pointer', '&:hover': { boxShadow: 4 } }} onClick={() => setLocation('/my-points')}>
+              <Box sx={{ p: 2, borderBottom: '1px solid var(--semantic-award-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                   <EmojiEvents sx={{ color: '#f57c00' }} />
                   <Typography variant="h6" sx={{ fontWeight: 600, color: '#f57c00' }}>
@@ -467,7 +467,7 @@ export default function DashboardHome() {
 
         {/* Today's Prayer Times */}
         {todayPrayerTime && (
-          <Card sx={{ mb: 3, bgcolor: '#e3f2fd' }}>
+          <Card sx={{ mb: 3, bgcolor: 'var(--semantic-info-bg)' }}>
             <Box sx={{ p: 2, borderBottom: '1px solid #90caf9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 <Schedule sx={{ color: '#1976d2' }} />
@@ -830,7 +830,7 @@ export default function DashboardHome() {
                         sx={{ 
                           p: 2, 
                           borderRadius: 1, 
-                          bgcolor: '#e3f2fd',
+                          bgcolor: 'var(--semantic-info-bg)',
                           borderLeft: '4px solid #1976d2',
                           cursor: 'pointer',
                           transition: 'all 0.2s',
@@ -888,7 +888,7 @@ export default function DashboardHome() {
                         sx={{ 
                           p: 2, 
                           borderRadius: 1, 
-                          bgcolor: '#f3e5f5',
+                          bgcolor: 'var(--semantic-celebration-bg)',
                           borderLeft: '4px solid #9c27b0',
                           cursor: 'pointer',
                           transition: 'all 0.2s',
@@ -1006,7 +1006,7 @@ export default function DashboardHome() {
         <Card 
           sx={{ 
             mb: 3, 
-            bgcolor: '#fff3e0',
+            bgcolor: 'var(--semantic-award-bg)',
             cursor: 'pointer',
             transition: 'all 0.2s',
             '&:hover': {
@@ -1032,7 +1032,7 @@ export default function DashboardHome() {
 
       {/* Today's Prayer Times */}
       {todayPrayerTime && (
-        <Card sx={{ mb: 3, bgcolor: '#e3f2fd' }}>
+        <Card sx={{ mb: 3, bgcolor: 'var(--semantic-info-bg)' }}>
           <Box sx={{ p: 2, borderBottom: '1px solid #90caf9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Schedule sx={{ color: '#1976d2' }} />

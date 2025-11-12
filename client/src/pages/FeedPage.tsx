@@ -69,13 +69,13 @@ export default function FeedPage() {
     
     switch (type) {
       case 'new_member':
-        return { bg: '#e3f2fd', iconColor: '#1976d2' }; // Blue
+        return { bg: 'var(--semantic-info-bg)', iconColor: '#1976d2' }; // Blue
       case 'badge_awarded':
-        return { bg: '#fff3e0', iconColor: '#f57c00' }; // Orange
+        return { bg: 'var(--semantic-award-bg)', iconColor: '#f57c00' }; // Orange
       case 'certificate_issued':
-        return { bg: '#f3e5f5', iconColor: '#7b1fa2' }; // Purple
+        return { bg: 'var(--semantic-celebration-bg)', iconColor: '#7b1fa2' }; // Purple
       case 'shop_item':
-        return { bg: '#e8f5e9', iconColor: '#388e3c' }; // Green
+        return { bg: 'var(--semantic-success-bg)', iconColor: '#388e3c' }; // Green
       default:
         return { bg: '#f5f5f5', iconColor: 'text.secondary' }; // Gray
     }

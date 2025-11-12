@@ -699,7 +699,7 @@ export default function GuestPage() {
                   <CircularProgress />
                 </Box>
               ) : todayPrayerTime ? (
-                <Paper sx={{ p: 3, mb: 4, bgcolor: '#e3f2fd' }}>
+                <Paper sx={{ p: 3, mb: 4, bgcolor: 'var(--semantic-info-bg)' }}>
                   <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: '#1976d2' }}>
                     Današnja vaktija - {todayPrayerTime.date}
                   </Typography>

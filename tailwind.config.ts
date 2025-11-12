@@ -79,6 +79,28 @@ export default {
           'gray-50': "var(--surface-gray-50)",
           'gray-96': "var(--surface-gray-96)",
         },
+        semantic: {
+          success: {
+            bg: "var(--semantic-success-bg)",
+            text: "var(--semantic-success-text)",
+            border: "var(--semantic-success-border)",
+          },
+          info: {
+            bg: "var(--semantic-info-bg)",
+            text: "var(--semantic-info-text)",
+            border: "var(--semantic-info-border)",
+          },
+          celebration: {
+            bg: "var(--semantic-celebration-bg)",
+            text: "var(--semantic-celebration-text)",
+            border: "var(--semantic-celebration-border)",
+          },
+          award: {
+            bg: "var(--semantic-award-bg)",
+            text: "var(--semantic-award-text)",
+            border: "var(--semantic-award-border)",
+          },
+        },
         'border-default': "var(--border-color-default)",
         'border-hover': "var(--border-color-hover)",
         'border-focus': "var(--border-color-focus)",

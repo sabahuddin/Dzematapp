@@ -121,7 +121,7 @@ export default function LivestreamSettingsPage() {
       </Box>
 
       {/* Information Card */}
-      <Card sx={{ mb: 3, bgcolor: "#e3f2fd", borderLeft: "4px solid #1976d2" }}>
+      <Card sx={{ mb: 3, bgcolor: 'var(--semantic-info-bg)', borderLeft: "4px solid #1976d2" }}>
         <CardContent>
           <Box sx={{ display: "flex", alignItems: "start", gap: 2 }}>
             <Info sx={{ color: "#1976d2", mt: 0.5 }} />

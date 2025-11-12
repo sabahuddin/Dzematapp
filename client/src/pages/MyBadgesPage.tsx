@@ -71,10 +71,10 @@ export default function MyBadgesPage() {
 
   const getBadgeColor = (criteriaType: string) => {
     switch (criteriaType) {
-      case 'points_total': return { bg: '#fff3e0', text: '#e65100', border: '#ffb74d' };
-      case 'contributions_amount': return { bg: '#e8f5e9', text: '#2e7d32', border: '#81c784' };
-      case 'tasks_completed': return { bg: '#e3f2fd', text: '#1565c0', border: '#64b5f6' };
-      case 'events_attended': return { bg: '#f3e5f5', text: '#6a1b9a', border: '#ba68c8' };
+      case 'points_total': return { bg: 'var(--semantic-award-bg)', text: 'var(--semantic-award-text)', border: 'var(--semantic-award-border)' };
+      case 'contributions_amount': return { bg: 'var(--semantic-success-bg)', text: 'var(--semantic-success-text)', border: 'var(--semantic-success-border)' };
+      case 'tasks_completed': return { bg: 'var(--semantic-info-bg)', text: 'var(--semantic-info-text)', border: 'var(--semantic-info-border)' };
+      case 'events_attended': return { bg: 'var(--semantic-celebration-bg)', text: 'var(--semantic-celebration-text)', border: 'var(--semantic-celebration-border)' };
       default: return { bg: 'var(--surface-gray-96)', text: '#616161', border: 'var(--border-color-hover)' };
     }
   };

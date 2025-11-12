@@ -42,7 +42,8 @@
   --font-mono: Menlo, monospace;
   --radius: 1.3rem;
   
-  /* Design System Tokens */
+  /* Design System Tokens - Based on "Moje značke" Page Design */
+  
   /* Surface/Background layers */
   --surface-base: hsl(0 0% 100%);
   --surface-field: hsl(0 0% 100%);
@@ -52,8 +53,29 @@
   --surface-gray-50: hsl(0 0% 98%);
   --surface-gray-96: hsl(0 0% 96%);
   
+  /* Semantic Colors - Success/Contributions (Green) */
+  --semantic-success-bg: hsl(120 60% 95%);
+  --semantic-success-text: hsl(122 60% 29%);
+  --semantic-success-border: hsl(123 46% 64%);
+  
+  /* Semantic Colors - Info/Tasks (Blue) */
+  --semantic-info-bg: hsl(207 90% 95%);
+  --semantic-info-text: hsl(207 84% 40%);
+  --semantic-info-border: hsl(207 73% 69%);
+  
+  /* Semantic Colors - Celebration/Events (Purple) */
+  --semantic-celebration-bg: hsl(291 47% 95%);
+  --semantic-celebration-text: hsl(291 64% 32%);
+  --semantic-celebration-border: hsl(291 47% 71%);
+  
+  /* Semantic Colors - Award/Points (Orange) */
+  --semantic-award-bg: hsl(36 100% 94%);
+  --semantic-award-text: hsl(14 100% 45%);
+  --semantic-award-border: hsl(35 100% 66%);
+  
   /* Border tokens */
   --border-width-default: 1px;
+  --border-width-card: 2px;
   --border-width-focus: 2px;
   --border-color-default: hsl(0 0% 88%);
   --border-color-hover: hsl(0 0% 74%);

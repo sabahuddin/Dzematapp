@@ -71,7 +71,7 @@ export default function UserPointsDetailsPage() {
       </Box>
 
       {/* Total Points Card */}
-      <Card sx={{ mb: 3, p: 3, bgcolor: '#fff3e0', borderLeft: '4px solid #f57c00' }}>
+      <Card sx={{ mb: 3, p: 3, bgcolor: 'var(--semantic-award-bg)', borderLeft: '4px solid #f57c00' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <TrendingUp sx={{ fontSize: 48, color: '#f57c00' }} />
           <Box>
