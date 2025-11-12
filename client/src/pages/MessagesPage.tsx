@@ -188,7 +188,7 @@ export default function MessagesPage() {
                     onClick={() => handleConversationClick(conversation)}
                     className="p-4 cursor-pointer transition-all rounded-lg"
                     style={{
-                      backgroundColor: isUnread ? 'var(--semantic-info-bg)' : 'var(--surface-card)',
+                      backgroundColor: isUnread ? 'var(--semantic-info-bg)' : '#ffffff',
                       border: '1px solid hsl(0 0% 88%)',
                       borderRadius: 'var(--radius-md)'
                     }}
@@ -196,7 +196,7 @@ export default function MessagesPage() {
                       if (!isUnread) e.currentTarget.style.backgroundColor = 'var(--state-hover-bg)';
                     }}
                     onMouseLeave={(e) => {
-                      if (!isUnread) e.currentTarget.style.backgroundColor = 'var(--surface-card)';
+                      if (!isUnread) e.currentTarget.style.backgroundColor = '#ffffff';
                     }}
                     data-testid={`conversation-${conversation.threadId}`}
                   >
@@ -285,7 +285,7 @@ export default function MessagesPage() {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4" style={{ backgroundColor: 'var(--surface-subtle)' }}>
+      <div className="flex-1 overflow-y-auto p-4 space-y-4" style={{ backgroundColor: 'hsl(240 4% 96%)' }}>
         {threadMessages.map((message) => {
           const isMine = message.senderId === user?.id;
           
