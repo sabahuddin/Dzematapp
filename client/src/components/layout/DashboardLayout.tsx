@@ -48,7 +48,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           sx={{ 
             flex: 1, 
             p: { xs: 2, sm: 3 },
-            bgcolor: '#eeeeee',
+            bgcolor: 'var(--surface-subtle)',
             overflowY: 'auto',
             width: '100%',
             maxWidth: '100%'

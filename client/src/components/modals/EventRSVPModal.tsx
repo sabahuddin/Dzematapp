@@ -227,7 +227,7 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
             </Box>
           ) : (
             <Box sx={{ pt: 2 }}>
-              <Box sx={{ mb: 3, p: 2, bgcolor: '#f5f5f5', borderRadius: 1 }}>
+              <Box sx={{ mb: 3, p: 2, bgcolor: 'var(--surface-gray-96)', borderRadius: 1 }}>
                 <Typography variant="body1" sx={{ fontWeight: 600 }}>
                   Ukupno prijavljenih: {totals.total} osoba
                 </Typography>
@@ -240,7 +240,7 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
                 <TableContainer component={Paper} variant="outlined">
                   <Table size="small">
                     <TableHead>
-                      <TableRow sx={{ bgcolor: '#fafafa' }}>
+                      <TableRow sx={{ bgcolor: 'var(--surface-gray-50)' }}>
                         <TableCell sx={{ fontWeight: 600 }}>Korisnik</TableCell>
                         <TableCell sx={{ fontWeight: 600 }}>Odrasli</TableCell>
                         <TableCell sx={{ fontWeight: 600 }}>Djeca</TableCell>

@@ -51,14 +51,14 @@ const theme = createTheme({
   palette: {
     primary: {
       main: '#1976d2',
-      contrastText: '#ffffff',
+      contrastText: 'var(--surface-base)',
     },
     secondary: {
       main: '#f50057',
     },
     background: {
-      default: '#eeeeee',
-      paper: '#ffffff',
+      default: 'var(--surface-subtle)',
+      paper: 'var(--surface-base)',
     },
   },
   typography: {
@@ -85,11 +85,11 @@ const theme = createTheme({
           '& .MuiOutlinedInput-root': {
             borderRadius: 8,
             '& fieldset': {
-              borderColor: '#e0e0e0',
+              borderColor: 'var(--border-color-default)',
               borderWidth: '1px',
             },
             '&:hover fieldset': {
-              borderColor: '#bdbdbd',
+              borderColor: 'var(--border-color-hover)',
             },
             '&.Mui-focused fieldset': {
               borderColor: '#1976d2',
@@ -115,11 +115,11 @@ const theme = createTheme({
           '& .MuiOutlinedInput-root': {
             borderRadius: 8,
             '& fieldset': {
-              borderColor: '#e0e0e0',
+              borderColor: 'var(--border-color-default)',
               borderWidth: '1px',
             },
             '&:hover fieldset': {
-              borderColor: '#bdbdbd',
+              borderColor: 'var(--border-color-hover)',
             },
             '&.Mui-focused fieldset': {
               borderColor: '#1976d2',

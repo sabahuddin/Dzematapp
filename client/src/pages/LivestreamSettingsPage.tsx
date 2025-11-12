@@ -224,7 +224,7 @@ export default function LivestreamSettingsPage() {
               <Typography sx={{ fontWeight: 600 }}>{t("livestreamSettings.examples.youtubeAccordion")}</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Box sx={{ bgcolor: "#f5f5f5", p: 2, borderRadius: 1, fontFamily: "monospace", fontSize: "0.875rem", overflow: "auto" }}>
+              <Box sx={{ bgcolor: 'var(--surface-gray-96)', p: 2, borderRadius: 1, fontFamily: "monospace", fontSize: "0.875rem", overflow: "auto" }}>
                 {`<iframe width="560" height="315" src="https://www.youtube.com/embed/VIDEO_ID" frameborder="0" allowfullscreen></iframe>`}
               </Box>
               <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 1 }}>
@@ -238,7 +238,7 @@ export default function LivestreamSettingsPage() {
               <Typography sx={{ fontWeight: 600 }}>{t("livestreamSettings.examples.facebookAccordion")}</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Box sx={{ bgcolor: "#f5f5f5", p: 2, borderRadius: 1, fontFamily: "monospace", fontSize: "0.875rem", overflow: "auto" }}>
+              <Box sx={{ bgcolor: 'var(--surface-gray-96)', p: 2, borderRadius: 1, fontFamily: "monospace", fontSize: "0.875rem", overflow: "auto" }}>
                 {`<iframe src="https://www.facebook.com/plugins/video.php?href=VIDEO_URL" width="560" height="315" frameborder="0" allowfullscreen></iframe>`}
               </Box>
               <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 1 }}>
@@ -252,7 +252,7 @@ export default function LivestreamSettingsPage() {
               <Typography sx={{ fontWeight: 600 }}>{t("livestreamSettings.examples.directAccordion")}</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Box sx={{ bgcolor: "#f5f5f5", p: 2, borderRadius: 1, fontFamily: "monospace", fontSize: "0.875rem", overflow: "auto" }}>
+              <Box sx={{ bgcolor: 'var(--surface-gray-96)', p: 2, borderRadius: 1, fontFamily: "monospace", fontSize: "0.875rem", overflow: "auto" }}>
                 {`https://www.youtube.com/watch?v=VIDEO_ID`}
               </Box>
               <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 1 }}>

@@ -479,7 +479,7 @@ export default function GuidePage() {
       })}
 
       {/* Footer Info */}
-      <Box sx={{ mt: 6, p: 3, bgcolor: '#f5f5f5', borderRadius: 2 }} className="page-break">
+      <Box sx={{ mt: 6, p: 3, bgcolor: 'var(--surface-gray-96)', borderRadius: 2 }} className="page-break">
         <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
           {t('guide:additionalInfo.title')}
         </Typography>

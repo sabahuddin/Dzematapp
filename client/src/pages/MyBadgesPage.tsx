@@ -75,7 +75,7 @@ export default function MyBadgesPage() {
       case 'contributions_amount': return { bg: '#e8f5e9', text: '#2e7d32', border: '#81c784' };
       case 'tasks_completed': return { bg: '#e3f2fd', text: '#1565c0', border: '#64b5f6' };
       case 'events_attended': return { bg: '#f3e5f5', text: '#6a1b9a', border: '#ba68c8' };
-      default: return { bg: '#f5f5f5', text: '#616161', border: '#bdbdbd' };
+      default: return { bg: 'var(--surface-gray-96)', text: '#616161', border: 'var(--border-color-hover)' };
     }
   };
 

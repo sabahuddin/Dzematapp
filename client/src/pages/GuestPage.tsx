@@ -558,8 +558,8 @@ export default function GuestPage() {
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: '#f5f5f5' }}>
-      <AppBar position="static" sx={{ bgcolor: 'white', boxShadow: 1 }}>
+    <Box sx={{ minHeight: '100vh', bgcolor: 'var(--surface-gray-96)' }}>
+      <AppBar position="static" sx={{ bgcolor: 'var(--surface-base)', boxShadow: 1 }}>
         <Toolbar>
           <img 
             src={mosqueLogoPath} 
@@ -803,7 +803,7 @@ export default function GuestPage() {
                         <TableContainer component={Paper} variant="outlined">
                           <Table size="small">
                             <TableHead>
-                              <TableRow sx={{ bgcolor: '#f5f5f5' }}>
+                              <TableRow sx={{ bgcolor: 'var(--surface-gray-96)' }}>
                                 <TableCell sx={{ fontWeight: 600 }}>Datum</TableCell>
                                 <TableCell sx={{ fontWeight: 600 }}>Zora</TableCell>
                                 <TableCell sx={{ fontWeight: 600 }}>Podne</TableCell>

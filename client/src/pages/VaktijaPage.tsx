@@ -298,7 +298,7 @@ export default function VaktijaPage() {
                 >
                   <AccordionSummary 
                     expandIcon={<ExpandMore />}
-                    sx={{ bgcolor: '#f5f5f5' }}
+                    sx={{ bgcolor: 'var(--surface-gray-96)' }}
                   >
                     <Typography variant="h6" sx={{ fontWeight: 600, color: '#1976d2' }}>
                       {monthName} {year}

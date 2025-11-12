@@ -50,6 +50,7 @@
   --surface-card: hsl(0 0% 100%);
   --surface-table-header: hsl(210 17% 98%);
   --surface-gray-50: hsl(0 0% 98%);
+  --surface-gray-96: hsl(0 0% 96%);
   
   /* Border tokens */
   --border-width-default: 1px;

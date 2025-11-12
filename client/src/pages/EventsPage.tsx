@@ -716,7 +716,7 @@ export default function EventsPage() {
             >
               <AccordionSummary 
                 expandIcon={<ExpandMore />}
-                sx={{ bgcolor: '#f5f5f5' }}
+                sx={{ bgcolor: 'var(--surface-gray-96)' }}
               >
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
                   {t('events:otherEvents')} ({otherUpcomingEvents.length})
@@ -753,7 +753,7 @@ export default function EventsPage() {
             >
               <AccordionSummary 
                 expandIcon={<ExpandMore />}
-                sx={{ bgcolor: '#f5f5f5' }}
+                sx={{ bgcolor: 'var(--surface-gray-96)' }}
               >
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
                   {t('events:pastEvents')} ({pastEvents.length})
