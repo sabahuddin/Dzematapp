@@ -566,13 +566,13 @@ export default function GuestPage() {
             alt="Mosque Logo" 
             style={{ width: 40, height: 40, objectFit: 'contain', marginRight: 16 }}
           />
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: '#1976d2' }}>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: 'var(--semantic-info-gradient-start)' }}>
             DžematApp - Gost pristup
           </Typography>
           <Button 
             onClick={handleBackToLogin} 
             data-testid="button-back-to-login"
-            sx={{ color: '#1976d2' }}
+            sx={{ color: 'var(--semantic-info-gradient-start)' }}
           >
             Nazad na prijavu
           </Button>
@@ -700,7 +700,7 @@ export default function GuestPage() {
                 </Box>
               ) : todayPrayerTime ? (
                 <Paper sx={{ p: 3, mb: 4, bgcolor: 'var(--semantic-info-bg)' }}>
-                  <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: '#1976d2' }}>
+                  <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: 'var(--semantic-info-gradient-start)' }}>
                     Današnja vaktija - {todayPrayerTime.date}
                   </Typography>
                   <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
@@ -797,7 +797,7 @@ export default function GuestPage() {
 
                     return (
                       <Box key={monthYear} sx={{ mb: 4 }}>
-                        <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 600, color: '#1976d2' }}>
+                        <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 600, color: 'var(--semantic-info-gradient-start)' }}>
                           {monthName} {year}
                         </Typography>
                         <TableContainer component={Paper} variant="outlined">

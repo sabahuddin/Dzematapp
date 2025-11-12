@@ -645,7 +645,7 @@ export default function AnnouncementsPage() {
                       <IconButton
                         size="small"
                         onClick={() => handleViewAnnouncement(announcement)}
-                        sx={{ color: '#1976d2' }}
+                        sx={{ color: 'var(--semantic-info-gradient-start)' }}
                         data-testid={`button-view-announcement-${announcement.id}`}
                         title={t('announcements:view')}
                       >

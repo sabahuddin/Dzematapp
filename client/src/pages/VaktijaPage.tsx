@@ -163,7 +163,7 @@ export default function VaktijaPage() {
         </Box>
       ) : todayPrayerTime ? (
         <Paper sx={{ p: 3, mb: 4, bgcolor: 'var(--semantic-info-bg)' }}>
-          <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: '#1976d2' }}>
+          <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: 'var(--semantic-info-gradient-start)' }}>
             {t('vaktija:todaysPrayerTimes')} - {todayPrayerTime.date}
           </Typography>
           <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
@@ -300,7 +300,7 @@ export default function VaktijaPage() {
                     expandIcon={<ExpandMore />}
                     sx={{ bgcolor: 'var(--surface-gray-96)' }}
                   >
-                    <Typography variant="h6" sx={{ fontWeight: 600, color: '#1976d2' }}>
+                    <Typography variant="h6" sx={{ fontWeight: 600, color: 'var(--semantic-info-gradient-start)' }}>
                       {monthName} {year}
                     </Typography>
                   </AccordionSummary>

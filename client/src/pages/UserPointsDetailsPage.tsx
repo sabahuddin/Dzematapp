@@ -112,7 +112,7 @@ export default function UserPointsDetailsPage() {
                       </TableCell>
                       <TableCell>{entry.description}</TableCell>
                       <TableCell align="center">
-                        <Typography sx={{ fontWeight: 600, color: entry.points > 0 ? '#2e7d32' : 'inherit' }}>
+                        <Typography sx={{ fontWeight: 600, color: entry.points > 0 ? 'var(--semantic-success-text)' : 'inherit' }}>
                           +{entry.points}
                         </Typography>
                       </TableCell>

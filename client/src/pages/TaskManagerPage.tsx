@@ -1837,7 +1837,7 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
                     aspectRatio: '4/3',
                     objectFit: 'cover',
                     borderRadius: 1,
-                    border: '2px solid #1976d2'
+                    border: '2px solid var(--semantic-info-gradient-start)'
                   }}
                 />
                 <IconButton
@@ -2345,7 +2345,7 @@ function TaskDetailDialog({
                         aspectRatio: '4/3',
                         objectFit: 'cover',
                         borderRadius: 1,
-                        border: '2px solid #1976d2'
+                        border: '2px solid var(--semantic-info-gradient-start)'
                       }}
                     />
                     <IconButton
@@ -2472,7 +2472,7 @@ function TaskDetailDialog({
                       maxHeight: 300,
                       objectFit: 'cover',
                       borderRadius: 1,
-                      border: '2px solid #1976d2',
+                      border: '2px solid var(--semantic-info-gradient-start)',
                       cursor: 'pointer'
                     }}
                     onClick={() => openFullscreenImage(task.descriptionImage)}
@@ -2606,7 +2606,7 @@ function TaskDetailDialog({
                         maxHeight: 150,
                         objectFit: 'contain',
                         borderRadius: 1,
-                        border: '2px solid #1976d2'
+                        border: '2px solid var(--semantic-info-gradient-start)'
                       }}
                     />
                   </Box>
@@ -2677,7 +2677,7 @@ function TaskDetailDialog({
                                   maxHeight: 200,
                                   objectFit: 'contain',
                                   borderRadius: 1,
-                                  border: '2px solid #1976d2',
+                                  border: '2px solid var(--semantic-info-gradient-start)',
                                   cursor: 'pointer'
                                 }}
                                 onClick={() => openFullscreenImage(comment.commentImage)}

@@ -188,7 +188,7 @@ export default function MessagesPage() {
                     onClick={() => handleConversationClick(conversation)}
                     className="p-4 cursor-pointer transition-all rounded-lg"
                     style={{
-                      backgroundColor: isUnread ? '#e3f2fd' : 'var(--surface-card)',
+                      backgroundColor: isUnread ? 'var(--semantic-info-bg)' : 'var(--surface-card)',
                       border: '1px solid var(--border-color-default)',
                       borderRadius: 'var(--radius-md)'
                     }}

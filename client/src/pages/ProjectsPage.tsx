@@ -288,7 +288,7 @@ export default function ProjectsPage() {
                       <IconButton
                         size="small"
                         onClick={() => handleOpenDialog(project)}
-                        sx={{ color: '#1976d2' }}
+                        sx={{ color: 'var(--semantic-info-gradient-start)' }}
                         data-testid={`button-edit-${project.id}`}
                       >
                         <Edit fontSize="small" />

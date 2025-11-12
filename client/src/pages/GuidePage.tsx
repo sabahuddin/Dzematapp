@@ -46,12 +46,12 @@ export default function GuidePage() {
     {
       icon: <Dashboard sx={{ fontSize: 28 }} />,
       key: 'dashboard',
-      color: '#1976d2',
+      color: 'var(--semantic-info-gradient-start)',
     },
     {
       icon: <People sx={{ fontSize: 28 }} />,
       key: 'users',
-      color: '#2e7d32',
+      color: 'var(--semantic-success-text)',
     },
     {
       icon: <Campaign sx={{ fontSize: 28 }} />,
@@ -101,7 +101,7 @@ export default function GuidePage() {
     {
       icon: <FolderOpen sx={{ fontSize: 28 }} />,
       key: 'projects',
-      color: '#6a1b9a',
+      color: 'var(--semantic-celebration-text)',
     },
     {
       icon: <Timeline sx={{ fontSize: 28 }} />,
@@ -155,7 +155,7 @@ export default function GuidePage() {
     },
     {
       key: 'familyMember',
-      color: '#1976d2',
+      color: 'var(--semantic-info-gradient-start)',
     },
   ];
 
@@ -213,7 +213,7 @@ export default function GuidePage() {
       {/* Header */}
       <Box sx={{ mb: 4, textAlign: 'center' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, mb: 2 }}>
-          <Info sx={{ fontSize: 48, color: '#1976d2' }} />
+          <Info sx={{ fontSize: 48, color: 'var(--semantic-info-gradient-start)' }} />
           <Typography variant="h3" sx={{ fontWeight: 700, color: '#1a237e' }}>
             {t('guide:pageHeader.title')}
           </Typography>
@@ -228,8 +228,8 @@ export default function GuidePage() {
           className="no-print"
           sx={{ 
             textTransform: 'none',
-            bgcolor: '#1976d2',
-            '&:hover': { bgcolor: '#1565c0' }
+            bgcolor: 'var(--semantic-info-gradient-start)',
+            '&:hover': { bgcolor: 'var(--semantic-info-text)' }
           }}
           data-testid="button-download-pdf"
         >
@@ -454,7 +454,7 @@ export default function GuidePage() {
                 <Box>
                   <Box
                     sx={{
-                      bgcolor: '#1976d2',
+                      bgcolor: 'var(--semantic-info-gradient-start)',
                       color: 'white',
                       px: 1.5,
                       py: 0.5,

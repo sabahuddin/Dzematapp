@@ -286,7 +286,7 @@ export default function BadgesPage() {
                       <IconButton
                         size="small"
                         onClick={() => handleOpenDialog(badge)}
-                        sx={{ color: '#1976d2' }}
+                        sx={{ color: 'var(--semantic-info-gradient-start)' }}
                         data-testid={`button-edit-${badge.id}`}
                       >
                         <Edit fontSize="small" />

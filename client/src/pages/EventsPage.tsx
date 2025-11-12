@@ -65,8 +65,8 @@ function EventDay(props: PickersDayProps & { eventDates?: Date[]; selectedDate?:
       badgeContent={hasEvent ? '•' : undefined}
       sx={{
         '& .MuiBadge-badge': {
-          backgroundColor: '#10b981',
-          color: '#10b981',
+          backgroundColor: 'var(--semantic-success-active)',
+          color: 'var(--semantic-success-active)',
           minWidth: 6,
           height: 6,
           borderRadius: '50%',
@@ -84,20 +84,20 @@ function EventDay(props: PickersDayProps & { eventDates?: Date[]; selectedDate?:
           backgroundColor: outsideCurrentMonth 
             ? 'transparent'
             : isSelected 
-            ? '#3b82f6 !important' 
+            ? 'var(--semantic-info-active) !important' 
             : isToday 
-            ? '#fbbf24 !important'
+            ? 'var(--semantic-award-active) !important'
             : isWeekendDay 
             ? '#f3f4f6'
             : hasEvent
-            ? '#d1fae5'
+            ? 'var(--semantic-success-bg)'
             : 'transparent',
           color: outsideCurrentMonth
             ? '#9ca3af'
             : isSelected || isToday
             ? '#ffffff !important'
             : hasEvent
-            ? '#065f46'
+            ? 'var(--semantic-success-text)'
             : isWeekendDay
             ? '#6b7280'
             : 'inherit',
@@ -106,16 +106,16 @@ function EventDay(props: PickersDayProps & { eventDates?: Date[]; selectedDate?:
             backgroundColor: outsideCurrentMonth
               ? '#f9fafb'
               : isSelected
-              ? '#2563eb !important'
+              ? 'var(--semantic-info-active-hover) !important'
               : isToday
-              ? '#f59e0b !important'
+              ? 'var(--semantic-award-active-hover) !important'
               : isWeekendDay
               ? '#e5e7eb'
               : hasEvent
-              ? '#a7f3d0'
+              ? 'var(--semantic-success-bg-hover)'
               : '#f3f4f6',
           },
-          border: isToday ? '2px solid #f59e0b' : 'none',
+          border: isToday ? '2px solid var(--semantic-award-border)' : 'none',
           borderRadius: '8px',
         }}
       />
@@ -376,7 +376,7 @@ export default function EventsPage() {
             <IconButton
               size="small"
               onClick={() => handleEventClick(event)}
-              sx={{ color: '#1976d2' }}
+              sx={{ color: 'var(--semantic-info-gradient-start)' }}
               data-testid={`button-view-event-${event.id}`}
             >
               <Visibility fontSize="small" />

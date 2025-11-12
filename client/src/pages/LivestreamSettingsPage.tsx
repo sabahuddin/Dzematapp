@@ -112,7 +112,7 @@ export default function LivestreamSettingsPage() {
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" component="h1" sx={{ mb: 1, display: "flex", alignItems: "center", gap: 2 }}>
-          <Tv sx={{ fontSize: 40, color: "#1976d2" }} />
+          <Tv sx={{ fontSize: 40, color: 'var(--semantic-info-gradient-start)' }} />
           {t("livestreamSettings.title")}
         </Typography>
         <Typography variant="body1" color="text.secondary">
@@ -121,12 +121,12 @@ export default function LivestreamSettingsPage() {
       </Box>
 
       {/* Information Card */}
-      <Card sx={{ mb: 3, bgcolor: 'var(--semantic-info-bg)', borderLeft: "4px solid #1976d2" }}>
+      <Card sx={{ mb: 3, bgcolor: 'var(--semantic-info-bg)', borderLeft: '4px solid var(--semantic-info-gradient-start)' }}>
         <CardContent>
           <Box sx={{ display: "flex", alignItems: "start", gap: 2 }}>
-            <Info sx={{ color: "#1976d2", mt: 0.5 }} />
+            <Info sx={{ color: 'var(--semantic-info-gradient-start)', mt: 0.5 }} />
             <Box>
-              <Typography variant="h6" sx={{ mb: 1, color: "#1976d2" }}>
+              <Typography variant="h6" sx={{ mb: 1, color: 'var(--semantic-info-gradient-start)' }}>
                 {t("livestreamSettings.whatIsLivestream.title")}
               </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
@@ -144,14 +144,14 @@ export default function LivestreamSettingsPage() {
       <Card sx={{ mb: 3 }}>
         <CardContent>
           <Typography variant="h6" sx={{ mb: 2, display: "flex", alignItems: "center", gap: 1 }}>
-            <CheckCircle sx={{ color: "#2e7d32" }} />
+            <CheckCircle sx={{ color: 'var(--semantic-success-text)' }} />
             {t("livestreamSettings.howToUse.title")}
           </Typography>
           
           <List>
             <ListItem>
               <ListItemIcon>
-                <Typography sx={{ bgcolor: "#1976d2", color: "white", width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 600 }}>
+                <Typography sx={{ bgcolor: 'var(--semantic-info-gradient-start)', color: "white", width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 600 }}>
                   1
                 </Typography>
               </ListItemIcon>
@@ -163,7 +163,7 @@ export default function LivestreamSettingsPage() {
             
             <ListItem>
               <ListItemIcon>
-                <Typography sx={{ bgcolor: "#1976d2", color: "white", width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 600 }}>
+                <Typography sx={{ bgcolor: 'var(--semantic-info-gradient-start)', color: "white", width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 600 }}>
                   2
                 </Typography>
               </ListItemIcon>
@@ -175,7 +175,7 @@ export default function LivestreamSettingsPage() {
             
             <ListItem>
               <ListItemIcon>
-                <Typography sx={{ bgcolor: "#1976d2", color: "white", width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 600 }}>
+                <Typography sx={{ bgcolor: 'var(--semantic-info-gradient-start)', color: "white", width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 600 }}>
                   3
                 </Typography>
               </ListItemIcon>
@@ -187,7 +187,7 @@ export default function LivestreamSettingsPage() {
             
             <ListItem>
               <ListItemIcon>
-                <Typography sx={{ bgcolor: "#1976d2", color: "white", width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 600 }}>
+                <Typography sx={{ bgcolor: 'var(--semantic-info-gradient-start)', color: "white", width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 600 }}>
                   4
                 </Typography>
               </ListItemIcon>
@@ -199,7 +199,7 @@ export default function LivestreamSettingsPage() {
             
             <ListItem>
               <ListItemIcon>
-                <Typography sx={{ bgcolor: "#1976d2", color: "white", width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 600 }}>
+                <Typography sx={{ bgcolor: 'var(--semantic-info-gradient-start)', color: "white", width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 600 }}>
                   5
                 </Typography>
               </ListItemIcon>

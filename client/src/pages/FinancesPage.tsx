@@ -403,7 +403,7 @@ export default function FinancesPage() {
                         <IconButton
                           size="small"
                           onClick={() => handleOpenDialog(contribution)}
-                          sx={{ color: '#1976d2' }}
+                          sx={{ color: 'var(--semantic-info-gradient-start)' }}
                           data-testid={`button-edit-${contribution.id}`}
                         >
                           <Edit fontSize="small" />

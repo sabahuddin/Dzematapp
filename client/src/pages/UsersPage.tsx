@@ -780,7 +780,7 @@ export default function UsersPage() {
                     {user.phone ? (
                       <a 
                         href={`tel:${user.phone}`} 
-                        style={{ textDecoration: 'none', color: '#1976d2' }}
+                        style={{ textDecoration: 'none', color: 'var(--semantic-info-gradient-start)' }}
                         data-testid={`phone-link-${user.id}`}
                       >
                         {user.phone}
@@ -840,7 +840,7 @@ export default function UsersPage() {
                       <IconButton
                         size="small"
                         onClick={() => handleEditUser(user)}
-                        sx={{ color: '#1976d2' }}
+                        sx={{ color: 'var(--semantic-info-gradient-start)' }}
                         data-testid={`button-view-user-${user.id}`}
                         title={t('users:viewUser')}
                       >

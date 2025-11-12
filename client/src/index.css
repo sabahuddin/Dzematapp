@@ -55,23 +55,35 @@
   
   /* Semantic Colors - Success/Contributions (Green) */
   --semantic-success-bg: hsl(120 60% 95%);
+  --semantic-success-bg-hover: hsl(120 70% 85%);
   --semantic-success-text: hsl(122 60% 29%);
   --semantic-success-border: hsl(123 46% 64%);
+  --semantic-success-active: hsl(120 68% 42%);
   
   /* Semantic Colors - Info/Tasks (Blue) */
   --semantic-info-bg: hsl(207 90% 95%);
+  --semantic-info-bg-hover: hsl(207 90% 85%);
   --semantic-info-text: hsl(207 84% 40%);
   --semantic-info-border: hsl(207 73% 69%);
+  --semantic-info-active: hsl(217 91% 60%);
+  --semantic-info-active-hover: hsl(217 91% 45%);
+  --semantic-info-gradient-start: hsl(207 88% 55%);
+  --semantic-info-gradient-end: hsl(207 84% 40%);
   
   /* Semantic Colors - Celebration/Events (Purple) */
   --semantic-celebration-bg: hsl(291 47% 95%);
+  --semantic-celebration-bg-hover: hsl(291 60% 85%);
   --semantic-celebration-text: hsl(291 64% 32%);
   --semantic-celebration-border: hsl(291 47% 71%);
+  --semantic-celebration-active: hsl(291 64% 42%);
   
   /* Semantic Colors - Award/Points (Orange) */
   --semantic-award-bg: hsl(36 100% 94%);
+  --semantic-award-bg-hover: hsl(36 100% 85%);
   --semantic-award-text: hsl(14 100% 45%);
   --semantic-award-border: hsl(35 100% 66%);
+  --semantic-award-active: hsl(38 100% 52%);
+  --semantic-award-active-hover: hsl(32 100% 51%);
   
   /* Border tokens */
   --border-width-default: 1px;

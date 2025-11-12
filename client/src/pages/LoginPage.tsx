@@ -66,7 +66,7 @@ export default function LoginPage() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'linear-gradient(135deg, #1976d2 0%, #0d47a1 100%)',
+        background: 'linear-gradient(135deg, var(--semantic-info-gradient-start) 0%, var(--semantic-info-gradient-end) 100%)',
         p: 2
       }}
     >
@@ -123,7 +123,7 @@ export default function LoginPage() {
                   alt="Mosque Logo" 
                   style={{ width: 60, height: 60, objectFit: 'contain' }}
                 />
-                <Typography variant="h3" sx={{ fontWeight: 600, color: '#1976d2', fontFamily: 'Aladin, cursive' }}>
+                <Typography variant="h3" sx={{ fontWeight: 600, color: 'var(--semantic-info-gradient-start)', fontFamily: 'Aladin, cursive' }}>
                   {t('login:title')}
                 </Typography>
               </Box>

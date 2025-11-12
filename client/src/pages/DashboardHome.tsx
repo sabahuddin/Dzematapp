@@ -123,8 +123,8 @@ function EventDay(props: PickersDayProps & { eventDates?: Date[]; selectedDate?:
       badgeContent={hasEvent ? '•' : undefined}
       sx={{
         '& .MuiBadge-badge': {
-          backgroundColor: '#10b981',
-          color: '#10b981',
+          backgroundColor: 'var(--semantic-success-active)',
+          color: 'var(--semantic-success-active)',
           minWidth: 6,
           height: 6,
           borderRadius: '50%',
@@ -142,20 +142,20 @@ function EventDay(props: PickersDayProps & { eventDates?: Date[]; selectedDate?:
           backgroundColor: outsideCurrentMonth 
             ? 'transparent'
             : isSelected 
-            ? '#3b82f6 !important' 
+            ? 'var(--semantic-info-active) !important' 
             : isToday 
-            ? '#fbbf24 !important'
+            ? 'var(--semantic-award-active) !important'
             : isWeekendDay 
             ? '#f3f4f6'
             : hasEvent
-            ? '#d1fae5'
+            ? 'var(--semantic-success-bg)'
             : 'transparent',
           color: outsideCurrentMonth
             ? '#9ca3af'
             : isSelected || isToday
             ? '#ffffff !important'
             : hasEvent
-            ? '#065f46'
+            ? 'var(--semantic-success-text)'
             : isWeekendDay
             ? '#6b7280'
             : 'inherit',
@@ -164,16 +164,16 @@ function EventDay(props: PickersDayProps & { eventDates?: Date[]; selectedDate?:
             backgroundColor: outsideCurrentMonth
               ? '#f9fafb'
               : isSelected
-              ? '#2563eb !important'
+              ? 'var(--semantic-info-active-hover) !important'
               : isToday
-              ? '#f59e0b !important'
+              ? 'var(--semantic-award-active-hover) !important'
               : isWeekendDay
               ? '#e5e7eb'
               : hasEvent
-              ? '#a7f3d0'
+              ? 'var(--semantic-success-bg-hover)'
               : '#f3f4f6',
           },
-          border: isToday ? '2px solid #f59e0b' : 'none',
+          border: isToday ? '2px solid var(--semantic-award-border)' : 'none',
           borderRadius: '8px',
         }}
       />
@@ -470,8 +470,8 @@ export default function DashboardHome() {
           <Card sx={{ mb: 3, bgcolor: 'var(--semantic-info-bg)' }}>
             <Box sx={{ p: 2, borderBottom: '1px solid #90caf9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Schedule sx={{ color: '#1976d2' }} />
-                <Typography variant="h6" sx={{ fontWeight: 600, color: '#1976d2' }}>
+                <Schedule sx={{ color: 'var(--semantic-info-gradient-start)' }} />
+                <Typography variant="h6" sx={{ fontWeight: 600, color: 'var(--semantic-info-gradient-start)' }}>
                   {t('dashboard:todaysPrayerTimes')} - {todayPrayerTime.date}
                 </Typography>
               </Box>
@@ -525,7 +525,7 @@ export default function DashboardHome() {
             <Card sx={{ height: '100%' }}>
               <Box sx={{ p: 2, borderBottom: '1px solid var(--border-color-default)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <Campaign sx={{ color: '#2e7d32' }} />
+                  <Campaign sx={{ color: 'var(--semantic-success-text)' }} />
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>
                     {t('dashboard:latestAnnouncement')}
                   </Typography>
@@ -664,7 +664,7 @@ export default function DashboardHome() {
           {/* Calendar */}
           <Card sx={{ height: '100%' }}>
             <Box sx={{ p: 2, borderBottom: '1px solid var(--border-color-default)', display: 'flex', alignItems: 'center', gap: 2 }}>
-              <CalendarMonth sx={{ color: '#1976d2' }} />
+              <CalendarMonth sx={{ color: 'var(--semantic-info-gradient-start)' }} />
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
                 {t('dashboard:eventCalendar')}
               </Typography>
@@ -802,7 +802,7 @@ export default function DashboardHome() {
           <Card sx={{ height: '100%' }}>
             <Box sx={{ p: 2, borderBottom: '1px solid var(--border-color-default)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Mail sx={{ color: '#1976d2' }} />
+                <Mail sx={{ color: 'var(--semantic-info-gradient-start)' }} />
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
                   {t('dashboard:myMessages')}
                 </Typography>
@@ -831,7 +831,7 @@ export default function DashboardHome() {
                           p: 2, 
                           borderRadius: 1, 
                           bgcolor: 'var(--semantic-info-bg)',
-                          borderLeft: '4px solid #1976d2',
+                          borderLeft: '4px solid var(--semantic-info-gradient-start)',
                           cursor: 'pointer',
                           transition: 'all 0.2s',
                           '&:hover': {
@@ -1035,8 +1035,8 @@ export default function DashboardHome() {
         <Card sx={{ mb: 3, bgcolor: 'var(--semantic-info-bg)' }}>
           <Box sx={{ p: 2, borderBottom: '1px solid #90caf9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Schedule sx={{ color: '#1976d2' }} />
-              <Typography variant="h6" sx={{ fontWeight: 600, color: '#1976d2' }}>
+              <Schedule sx={{ color: 'var(--semantic-info-gradient-start)' }} />
+              <Typography variant="h6" sx={{ fontWeight: 600, color: 'var(--semantic-info-gradient-start)' }}>
                 {t('dashboard:todaysPrayerTimes')} - {todayPrayerTime.date}
               </Typography>
             </Box>
@@ -1091,7 +1091,7 @@ export default function DashboardHome() {
             icon={<People />}
             title={t('dashboard:statistics.totalUsers')}
             value={statistics?.userCount || 0}
-            color="#1976d2"
+            color="var(--semantic-info-gradient-start)"
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
@@ -1099,7 +1099,7 @@ export default function DashboardHome() {
             icon={<Campaign />}
             title={t('dashboard:statistics.newAnnouncements')}
             value={statistics?.newAnnouncementsCount || 0}
-            color="#2e7d32"
+            color="var(--semantic-success-text)"
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
@@ -1161,8 +1161,8 @@ export default function DashboardHome() {
                       <Box
                         sx={{
                           height: 180,
-                          bgcolor: '#1976d2',
-                          backgroundImage: 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)',
+                          bgcolor: 'var(--semantic-info-gradient-start)',
+                          backgroundImage: 'linear-gradient(135deg, var(--semantic-info-gradient-start) 0%, var(--semantic-info-gradient-end) 100%)',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
@@ -1199,7 +1199,7 @@ export default function DashboardHome() {
                           <Link href="/events">
                             <IconButton
                               size="small"
-                              sx={{ color: '#1976d2' }}
+                              sx={{ color: 'var(--semantic-info-gradient-start)' }}
                               data-testid={`button-view-event-${event.id}`}
                             >
                               <Visibility fontSize="small" />

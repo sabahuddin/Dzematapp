@@ -69,7 +69,7 @@ export default function FeedPage() {
     
     switch (type) {
       case 'new_member':
-        return { bg: 'var(--semantic-info-bg)', iconColor: '#1976d2' }; // Blue
+        return { bg: 'var(--semantic-info-bg)', iconColor: 'var(--semantic-info-gradient-start)' }; // Blue
       case 'badge_awarded':
         return { bg: 'var(--semantic-award-bg)', iconColor: '#f57c00' }; // Orange
       case 'certificate_issued':
