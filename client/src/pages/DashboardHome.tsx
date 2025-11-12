@@ -1091,7 +1091,7 @@ export default function DashboardHome() {
             icon={<People />}
             title={t('dashboard:statistics.totalUsers')}
             value={statistics?.userCount || 0}
-            color="var(--semantic-info-gradient-start)"
+            color="hsl(207 88% 55%)"
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
@@ -1099,7 +1099,7 @@ export default function DashboardHome() {
             icon={<Campaign />}
             title={t('dashboard:statistics.newAnnouncements')}
             value={statistics?.newAnnouncementsCount || 0}
-            color="var(--semantic-success-text)"
+            color="hsl(122 60% 29%)"
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
