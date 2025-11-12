@@ -269,18 +269,7 @@
     background-color: #eeeeee !important;
   }
 
-  /* Material-UI component customizations */
-  .MuiCard-root {
-    background-color: #ffffff !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
-    border-radius: 8px !important;
-    border: 0 !important;
-  }
-  
-  .MuiPaper-root:not([role="presentation"]):not(.MuiPopover-paper):not(.MuiMenu-paper) {
-    background-color: #ffffff !important;
-    border: 0 !important;
-  }
+  /* Material-UI component customizations - Card/Paper styling removed to allow theme overrides */
 
   .MuiButton-contained {
     background-color: var(--mui-primary) !important;
@@ -347,30 +336,13 @@
     border-bottom: 1px solid var(--border-color-default) !important;
   }
 
-  .MuiDrawer-paper {
-    background-color: #ffffff !important;
-    border: 0 !important;
-  }
+  /* Drawer/Menu/Popover/Select styling removed to allow theme overrides */
 
   .MuiAppBar-root {
     background-color: #ffffff !important;
     color: var(--mui-text-primary) !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
     border: 0 !important;
-  }
-  
-  .MuiMenu-paper {
-    background-color: #ffffff !important;
-    border: 0 !important;
-  }
-  
-  .MuiPopover-paper {
-    background-color: #ffffff !important;
-    border: 0 !important;
-  }
-  
-  .MuiSelect-select {
-    background-color: #ffffff !important;
   }
 
   /* Login page specific styles */
@@ -411,12 +383,7 @@
     background-color: rgba(25, 118, 210, 0.04) !important;
   }
 
-  /* Modal and dialog customizations */
-  .MuiDialog-paper {
-    border-radius: 8px !important;
-    background-color: #ffffff !important;
-    border: 0 !important;
-  }
+  /* Modal and dialog customizations - styling removed to allow theme overrides */
 
   /* Prevent horizontal overflow on mobile */
   .MuiContainer-root {
@@ -453,29 +420,7 @@
     margin-bottom: 0 !important;
   }
 
-  .MuiInputBase-root {
-    border-radius: var(--radius-sm) !important;
-    background-color: var(--surface-field) !important;
-  }
-  
-  .MuiOutlinedInput-notchedOutline {
-    border-width: var(--border-width-default) !important;
-    border-color: var(--border-color-default) !important;
-  }
-
-  .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-    border-color: var(--border-color-hover) !important;
-  }
-
-  .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-width: var(--border-width-focus) !important;
-    border-color: var(--border-color-focus) !important;
-    box-shadow: 0 0 0 3px var(--state-focus-ring) !important;
-  }
-  
-  .MuiSelect-select {
-    background-color: var(--surface-field) !important;
-  }
+  /* Input field styling removed to allow theme overrides with semantic-success tokens */
 
   /* GLOBAL FIX: Force ALL labels to stay ABOVE the field (like shadcn forms) */
   .MuiTextField-root label.MuiInputLabel-outlined,
@@ -675,8 +620,8 @@ select:focus {
   
   .MuiCard-root {
     page-break-inside: avoid;
-    box-shadow: none !important;
-    border: 1px solid #e0e0e0 !important;
+    box-shadow: none;
+    border: 1px solid hsl(123 46% 64%);
   }
   
   /* Ensure background colors print */

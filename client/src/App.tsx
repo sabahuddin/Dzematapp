@@ -74,6 +74,35 @@ const theme = createTheme({
     },
   },
   components: {
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          backgroundColor: 'var(--semantic-success-bg)',
+          border: '2px solid var(--semantic-success-border)',
+          borderRadius: 'var(--radius-lg)',
+          boxShadow: '0 12px 24px rgba(18, 94, 48, 0.12)',
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: ({ ownerState }) => {
+          // Exclude high-elevation overlays (dialogs, menus, popovers) from green styling
+          // Overlays typically use elevation 8+ (Menu=8, Popover=8, Dialog=24, Drawer=16)
+          const isOverlay = ownerState.elevation !== undefined && ownerState.elevation > 3;
+          
+          return {
+            borderRadius: 'var(--radius-lg)',
+            // Apply green styling to all Papers EXCEPT high-elevation overlays
+            ...(!isOverlay && {
+              backgroundColor: 'var(--semantic-success-bg)',
+              border: '2px solid var(--semantic-success-border)',
+              boxShadow: '0 8px 16px rgba(18, 94, 48, 0.10)',
+            }),
+          };
+        },
+      },
+    },
     MuiTextField: {
       defaultProps: {
         InputLabelProps: {
@@ -83,19 +112,35 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           '& .MuiOutlinedInput-root': {
-            borderRadius: 8,
-            '& fieldset': {
-              borderColor: 'hsl(0 0% 88%)',
-              borderWidth: '1px',
-            },
-            '&:hover fieldset': {
-              borderColor: 'hsl(0 0% 74%)',
-            },
-            '&.Mui-focused fieldset': {
-              borderColor: '#1976d2',
-              borderWidth: '2px',
-            },
+            backgroundColor: 'var(--surface-field)',
+            borderRadius: 'var(--radius-lg)',
+            transition: 'box-shadow 0.2s ease, border-color 0.2s ease',
           },
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          backgroundColor: 'var(--surface-field)',
+          borderRadius: 'var(--radius-lg)',
+          '& fieldset': {
+            borderColor: 'var(--semantic-success-border)',
+            borderWidth: '2px',
+          },
+          '&:hover fieldset': {
+            borderColor: 'var(--semantic-success-active)',
+          },
+          '&.Mui-focused fieldset': {
+            borderColor: 'var(--semantic-success-active)',
+          },
+          '&.Mui-focused': {
+            boxShadow: '0 0 0 4px hsla(120, 68%, 42%, 0.20)',
+          },
+        },
+        input: {
+          backgroundColor: 'var(--surface-field)',
+          borderRadius: 'var(--radius-lg)',
         },
       },
     },
@@ -112,28 +157,7 @@ const theme = createTheme({
     MuiFormControl: {
       styleOverrides: {
         root: {
-          '& .MuiOutlinedInput-root': {
-            borderRadius: 8,
-            '& fieldset': {
-              borderColor: 'hsl(0 0% 88%)',
-              borderWidth: '1px',
-            },
-            '&:hover fieldset': {
-              borderColor: 'hsl(0 0% 74%)',
-            },
-            '&.Mui-focused fieldset': {
-              borderColor: '#1976d2',
-              borderWidth: '2px',
-            },
-          },
-        },
-      },
-    },
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-          borderRadius: 8,
+          borderRadius: '12px',
         },
       },
     },
