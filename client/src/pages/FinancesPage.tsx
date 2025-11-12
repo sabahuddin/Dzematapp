@@ -312,7 +312,7 @@ export default function FinancesPage() {
 
       <Card>
         {currentUser?.isAdmin && (
-          <Box sx={{ p: 3, borderBottom: '1px solid var(--border-color-default)' }}>
+          <Box sx={{ p: 3, borderBottom: '1px solid hsl(0 0% 88%)' }}>
             <Box sx={{ display: 'flex', gap: 2 }}>
               <TextField
                 variant="outlined"
@@ -403,7 +403,7 @@ export default function FinancesPage() {
                         <IconButton
                           size="small"
                           onClick={() => handleOpenDialog(contribution)}
-                          sx={{ color: 'var(--semantic-info-gradient-start)' }}
+                          sx={{ color: 'hsl(207 88% 55%)' }}
                           data-testid={`button-edit-${contribution.id}`}
                         >
                           <Edit fontSize="small" />
@@ -411,7 +411,7 @@ export default function FinancesPage() {
                         <IconButton
                           size="small"
                           onClick={() => handleDelete(contribution.id)}
-                          sx={{ color: 'var(--semantic-danger-text)' }}
+                          sx={{ color: 'hsl(4 90% 58%)' }}
                           data-testid={`button-delete-${contribution.id}`}
                         >
                           <Delete fontSize="small" />

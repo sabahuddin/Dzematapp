@@ -112,7 +112,7 @@ export default function LivestreamSettingsPage() {
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" component="h1" sx={{ mb: 1, display: "flex", alignItems: "center", gap: 2 }}>
-          <Tv sx={{ fontSize: 40, color: 'var(--semantic-info-gradient-start)' }} />
+          <Tv sx={{ fontSize: 40, color: 'hsl(207 88% 55%)' }} />
           {t("livestreamSettings.title")}
         </Typography>
         <Typography variant="body1" color="text.secondary">
@@ -121,12 +121,12 @@ export default function LivestreamSettingsPage() {
       </Box>
 
       {/* Information Card */}
-      <Card sx={{ mb: 3, bgcolor: 'var(--semantic-info-bg)', borderLeft: '4px solid var(--semantic-info-gradient-start)' }}>
+      <Card sx={{ mb: 3, bgcolor: 'hsl(207 90% 95%)', borderLeft: '4px solid hsl(207 88% 55%)' }}>
         <CardContent>
           <Box sx={{ display: "flex", alignItems: "start", gap: 2 }}>
-            <Info sx={{ color: 'var(--semantic-info-gradient-start)', mt: 0.5 }} />
+            <Info sx={{ color: 'hsl(207 88% 55%)', mt: 0.5 }} />
             <Box>
-              <Typography variant="h6" sx={{ mb: 1, color: 'var(--semantic-info-gradient-start)' }}>
+              <Typography variant="h6" sx={{ mb: 1, color: 'hsl(207 88% 55%)' }}>
                 {t("livestreamSettings.whatIsLivestream.title")}
               </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
@@ -144,14 +144,14 @@ export default function LivestreamSettingsPage() {
       <Card sx={{ mb: 3 }}>
         <CardContent>
           <Typography variant="h6" sx={{ mb: 2, display: "flex", alignItems: "center", gap: 1 }}>
-            <CheckCircle sx={{ color: 'var(--semantic-success-text)' }} />
+            <CheckCircle sx={{ color: 'hsl(122 60% 29%)' }} />
             {t("livestreamSettings.howToUse.title")}
           </Typography>
           
           <List>
             <ListItem>
               <ListItemIcon>
-                <Typography sx={{ bgcolor: 'var(--semantic-info-gradient-start)', color: "white", width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 600 }}>
+                <Typography sx={{ bgcolor: 'hsl(207 88% 55%)', color: "white", width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 600 }}>
                   1
                 </Typography>
               </ListItemIcon>
@@ -163,7 +163,7 @@ export default function LivestreamSettingsPage() {
             
             <ListItem>
               <ListItemIcon>
-                <Typography sx={{ bgcolor: 'var(--semantic-info-gradient-start)', color: "white", width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 600 }}>
+                <Typography sx={{ bgcolor: 'hsl(207 88% 55%)', color: "white", width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 600 }}>
                   2
                 </Typography>
               </ListItemIcon>
@@ -175,7 +175,7 @@ export default function LivestreamSettingsPage() {
             
             <ListItem>
               <ListItemIcon>
-                <Typography sx={{ bgcolor: 'var(--semantic-info-gradient-start)', color: "white", width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 600 }}>
+                <Typography sx={{ bgcolor: 'hsl(207 88% 55%)', color: "white", width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 600 }}>
                   3
                 </Typography>
               </ListItemIcon>
@@ -187,7 +187,7 @@ export default function LivestreamSettingsPage() {
             
             <ListItem>
               <ListItemIcon>
-                <Typography sx={{ bgcolor: 'var(--semantic-info-gradient-start)', color: "white", width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 600 }}>
+                <Typography sx={{ bgcolor: 'hsl(207 88% 55%)', color: "white", width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 600 }}>
                   4
                 </Typography>
               </ListItemIcon>
@@ -199,7 +199,7 @@ export default function LivestreamSettingsPage() {
             
             <ListItem>
               <ListItemIcon>
-                <Typography sx={{ bgcolor: 'var(--semantic-info-gradient-start)', color: "white", width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 600 }}>
+                <Typography sx={{ bgcolor: 'hsl(207 88% 55%)', color: "white", width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 600 }}>
                   5
                 </Typography>
               </ListItemIcon>
@@ -224,7 +224,7 @@ export default function LivestreamSettingsPage() {
               <Typography sx={{ fontWeight: 600 }}>{t("livestreamSettings.examples.youtubeAccordion")}</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Box sx={{ bgcolor: 'var(--surface-gray-96)', p: 2, borderRadius: 1, fontFamily: "monospace", fontSize: "0.875rem", overflow: "auto" }}>
+              <Box sx={{ bgcolor: 'hsl(0 0% 96%)', p: 2, borderRadius: 1, fontFamily: "monospace", fontSize: "0.875rem", overflow: "auto" }}>
                 {`<iframe width="560" height="315" src="https://www.youtube.com/embed/VIDEO_ID" frameborder="0" allowfullscreen></iframe>`}
               </Box>
               <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 1 }}>
@@ -238,7 +238,7 @@ export default function LivestreamSettingsPage() {
               <Typography sx={{ fontWeight: 600 }}>{t("livestreamSettings.examples.facebookAccordion")}</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Box sx={{ bgcolor: 'var(--surface-gray-96)', p: 2, borderRadius: 1, fontFamily: "monospace", fontSize: "0.875rem", overflow: "auto" }}>
+              <Box sx={{ bgcolor: 'hsl(0 0% 96%)', p: 2, borderRadius: 1, fontFamily: "monospace", fontSize: "0.875rem", overflow: "auto" }}>
                 {`<iframe src="https://www.facebook.com/plugins/video.php?href=VIDEO_URL" width="560" height="315" frameborder="0" allowfullscreen></iframe>`}
               </Box>
               <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 1 }}>
@@ -252,7 +252,7 @@ export default function LivestreamSettingsPage() {
               <Typography sx={{ fontWeight: 600 }}>{t("livestreamSettings.examples.directAccordion")}</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Box sx={{ bgcolor: 'var(--surface-gray-96)', p: 2, borderRadius: 1, fontFamily: "monospace", fontSize: "0.875rem", overflow: "auto" }}>
+              <Box sx={{ bgcolor: 'hsl(0 0% 96%)', p: 2, borderRadius: 1, fontFamily: "monospace", fontSize: "0.875rem", overflow: "auto" }}>
                 {`https://www.youtube.com/watch?v=VIDEO_ID`}
               </Box>
               <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 1 }}>

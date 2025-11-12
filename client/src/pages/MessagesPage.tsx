@@ -189,7 +189,7 @@ export default function MessagesPage() {
                     className="p-4 cursor-pointer transition-all rounded-lg"
                     style={{
                       backgroundColor: isUnread ? 'var(--semantic-info-bg)' : 'var(--surface-card)',
-                      border: '1px solid var(--border-color-default)',
+                      border: '1px solid hsl(0 0% 88%)',
                       borderRadius: 'var(--radius-md)'
                     }}
                     onMouseEnter={(e) => {

@@ -115,7 +115,7 @@ function EventDay(props: PickersDayProps & { eventDates?: Date[]; selectedDate?:
               ? 'var(--semantic-success-bg-hover)'
               : 'var(--semantic-neutral-bg)',
           },
-          border: isToday ? '2px solid var(--semantic-award-border)' : 'none',
+          border: isToday ? '2px solid hsl(35 100% 66%)' : 'none',
           borderRadius: '8px',
         }}
       />
@@ -376,7 +376,7 @@ export default function EventsPage() {
             <IconButton
               size="small"
               onClick={() => handleEventClick(event)}
-              sx={{ color: 'var(--semantic-info-gradient-start)' }}
+              sx={{ color: 'hsl(207 88% 55%)' }}
               data-testid={`button-view-event-${event.id}`}
             >
               <Visibility fontSize="small" />
@@ -386,7 +386,7 @@ export default function EventsPage() {
                 <IconButton
                   size="small"
                   onClick={() => handleEditEvent(event)}
-                  sx={{ color: 'var(--semantic-award-text)' }}
+                  sx={{ color: 'hsl(14 100% 45%)' }}
                   data-testid={`button-edit-event-${event.id}`}
                 >
                   <Edit fontSize="small" />
@@ -394,7 +394,7 @@ export default function EventsPage() {
                 <IconButton
                   size="small"
                   onClick={() => handleDeleteClick(event)}
-                  sx={{ color: 'var(--semantic-danger-text)' }}
+                  sx={{ color: 'hsl(4 90% 58%)' }}
                   data-testid={`button-delete-event-${event.id}`}
                 >
                   <Delete fontSize="small" />
@@ -500,7 +500,7 @@ export default function EventsPage() {
           >
             {/* Calendar */}
             <Card>
-              <Box sx={{ p: 2, borderBottom: '1px solid var(--border-color-default)' }}>
+              <Box sx={{ p: 2, borderBottom: '1px solid hsl(0 0% 88%)' }}>
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
                   {t('events:calendar.title')}
                 </Typography>
@@ -560,7 +560,7 @@ export default function EventsPage() {
             {/* Selected Date Events */}
             {selectedDate && (
               <Card>
-                <Box sx={{ p: 2, borderBottom: '1px solid var(--border-color-default)', bgcolor: 'var(--surface-gray-50)' }}>
+                <Box sx={{ p: 2, borderBottom: '1px solid hsl(0 0% 88%)', bgcolor: 'hsl(0 0% 98%)' }}>
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>
                     {t('events:eventsFor')} {format(selectedDate, 'dd.MM.yyyy.')}
                   </Typography>
@@ -643,7 +643,7 @@ export default function EventsPage() {
                                           e.stopPropagation();
                                           handleEditEvent(event);
                                         }}
-                                        sx={{ color: 'var(--semantic-award-text)' }}
+                                        sx={{ color: 'hsl(14 100% 45%)' }}
                                       >
                                         <Edit fontSize="small" />
                                       </IconButton>
@@ -653,7 +653,7 @@ export default function EventsPage() {
                                           e.stopPropagation();
                                           handleDeleteClick(event);
                                         }}
-                                        sx={{ color: 'var(--semantic-danger-text)' }}
+                                        sx={{ color: 'hsl(4 90% 58%)' }}
                                       >
                                         <Delete fontSize="small" />
                                       </IconButton>
@@ -674,7 +674,7 @@ export default function EventsPage() {
 
           {/* Top 3 Upcoming Events */}
           <Card sx={{ mb: 2 }}>
-            <Box sx={{ p: 2, borderBottom: '1px solid var(--border-color-default)' }}>
+            <Box sx={{ p: 2, borderBottom: '1px solid hsl(0 0% 88%)' }}>
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
                 {t('events:upcomingEvents')}
               </Typography>
@@ -716,7 +716,7 @@ export default function EventsPage() {
             >
               <AccordionSummary 
                 expandIcon={<ExpandMore />}
-                sx={{ bgcolor: 'var(--surface-gray-96)' }}
+                sx={{ bgcolor: 'hsl(0 0% 96%)' }}
               >
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
                   {t('events:otherEvents')} ({otherUpcomingEvents.length})
@@ -753,7 +753,7 @@ export default function EventsPage() {
             >
               <AccordionSummary 
                 expandIcon={<ExpandMore />}
-                sx={{ bgcolor: 'var(--surface-gray-96)' }}
+                sx={{ bgcolor: 'hsl(0 0% 96%)' }}
               >
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
                   {t('events:pastEvents')} ({pastEvents.length})
@@ -787,7 +787,7 @@ export default function EventsPage() {
         <Box>
           {user?.isAdmin && (
             <Card sx={{ mb: 3 }}>
-              <Box sx={{ p: 2, borderBottom: '1px solid var(--border-color-default)' }}>
+              <Box sx={{ p: 2, borderBottom: '1px solid hsl(0 0% 88%)' }}>
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
                   {editingImportantDate ? t('events:importantDate.edit') : t('events:importantDate.add')}
                 </Typography>
@@ -836,7 +836,7 @@ export default function EventsPage() {
           )}
 
           <Card>
-            <Box sx={{ p: 2, borderBottom: '1px solid var(--border-color-default)' }}>
+            <Box sx={{ p: 2, borderBottom: '1px solid hsl(0 0% 88%)' }}>
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
                 {t('events:importantDateList')}
               </Typography>
@@ -863,7 +863,7 @@ export default function EventsPage() {
                             <IconButton
                               size="small"
                               onClick={() => handleEditImportantDate(date)}
-                              sx={{ color: 'var(--semantic-award-text)' }}
+                              sx={{ color: 'hsl(14 100% 45%)' }}
                               data-testid={`button-edit-important-date-${date.id}`}
                             >
                               <Edit fontSize="small" />
@@ -871,7 +871,7 @@ export default function EventsPage() {
                             <IconButton
                               size="small"
                               onClick={() => deleteImportantDateMutation.mutate(date.id)}
-                              sx={{ color: 'var(--semantic-danger-text)' }}
+                              sx={{ color: 'hsl(4 90% 58%)' }}
                               data-testid={`button-delete-important-date-${date.id}`}
                             >
                               <Delete fontSize="small" />

@@ -46,22 +46,22 @@ export default function GuidePage() {
     {
       icon: <Dashboard sx={{ fontSize: 28 }} />,
       key: 'dashboard',
-      color: 'var(--semantic-info-gradient-start)',
+      color: 'hsl(207 88% 55%)',
     },
     {
       icon: <People sx={{ fontSize: 28 }} />,
       key: 'users',
-      color: 'var(--semantic-success-text)',
+      color: 'hsl(122 60% 29%)',
     },
     {
       icon: <Campaign sx={{ fontSize: 28 }} />,
       key: 'announcements',
-      color: 'var(--semantic-award-text)',
+      color: 'hsl(14 100% 45%)',
     },
     {
       icon: <Event sx={{ fontSize: 28 }} />,
       key: 'events',
-      color: 'var(--semantic-celebration-text)',
+      color: 'hsl(291 64% 32%)',
     },
     {
       icon: <Workspaces sx={{ fontSize: 28 }} />,
@@ -71,37 +71,37 @@ export default function GuidePage() {
     {
       icon: <Mail sx={{ fontSize: 28 }} />,
       key: 'messages',
-      color: 'var(--semantic-celebration-text)',
+      color: 'hsl(291 64% 32%)',
     },
     {
       icon: <QuestionAnswer sx={{ fontSize: 28 }} />,
       key: 'askImam',
-      color: 'var(--semantic-award-text)',
+      color: 'hsl(14 100% 45%)',
     },
     {
       icon: <Assignment sx={{ fontSize: 28 }} />,
       key: 'requests',
-      color: 'var(--semantic-celebration-text)',
+      color: 'hsl(291 64% 32%)',
     },
     {
       icon: <ShoppingBag sx={{ fontSize: 28 }} />,
       key: 'shop',
-      color: 'var(--semantic-danger-text)',
+      color: 'hsl(4 90% 58%)',
     },
     {
       icon: <Schedule sx={{ fontSize: 28 }} />,
       key: 'vaktija',
-      color: 'var(--semantic-success-text)',
+      color: 'hsl(122 60% 29%)',
     },
     {
       icon: <AccountBalance sx={{ fontSize: 28 }} />,
       key: 'finances',
-      color: 'var(--semantic-success-text)',
+      color: 'hsl(122 60% 29%)',
     },
     {
       icon: <FolderOpen sx={{ fontSize: 28 }} />,
       key: 'projects',
-      color: 'var(--semantic-celebration-text)',
+      color: 'hsl(291 64% 32%)',
     },
     {
       icon: <Timeline sx={{ fontSize: 28 }} />,
@@ -111,17 +111,17 @@ export default function GuidePage() {
     {
       icon: <WorkspacePremium sx={{ fontSize: 28 }} />,
       key: 'badges',
-      color: 'var(--semantic-award-text)',
+      color: 'hsl(14 100% 45%)',
     },
     {
       icon: <EmojiEvents sx={{ fontSize: 28 }} />,
       key: 'points',
-      color: 'var(--semantic-award-text)',
+      color: 'hsl(14 100% 45%)',
     },
     {
       icon: <CardGiftcard sx={{ fontSize: 28 }} />,
       key: 'certificates',
-      color: 'var(--semantic-celebration-text)',
+      color: 'hsl(291 64% 32%)',
     },
     {
       icon: <Description sx={{ fontSize: 28 }} />,
@@ -131,7 +131,7 @@ export default function GuidePage() {
     {
       icon: <OndemandVideo sx={{ fontSize: 28 }} />,
       key: 'media',
-      color: 'var(--semantic-award-text)',
+      color: 'hsl(14 100% 45%)',
     },
     {
       icon: <Settings sx={{ fontSize: 28 }} />,
@@ -143,19 +143,19 @@ export default function GuidePage() {
   const roles = [
     {
       key: 'admin',
-      color: 'var(--semantic-danger-text)',
+      color: 'hsl(4 90% 58%)',
     },
     {
       key: 'memberIO',
-      color: 'var(--semantic-award-text)',
+      color: 'hsl(14 100% 45%)',
     },
     {
       key: 'member',
-      color: 'var(--semantic-success-text)',
+      color: 'hsl(122 60% 29%)',
     },
     {
       key: 'familyMember',
-      color: 'var(--semantic-info-gradient-start)',
+      color: 'hsl(207 88% 55%)',
     },
   ];
 
@@ -213,8 +213,8 @@ export default function GuidePage() {
       {/* Header */}
       <Box sx={{ mb: 4, textAlign: 'center' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, mb: 2 }}>
-          <Info sx={{ fontSize: 48, color: 'var(--semantic-info-gradient-start)' }} />
-          <Typography variant="h3" sx={{ fontWeight: 700, color: 'var(--semantic-heading-text)' }}>
+          <Info sx={{ fontSize: 48, color: 'hsl(207 88% 55%)' }} />
+          <Typography variant="h3" sx={{ fontWeight: 700, color: 'hsl(231 48% 22%)' }}>
             {t('guide:pageHeader.title')}
           </Typography>
         </Box>
@@ -228,7 +228,7 @@ export default function GuidePage() {
           className="no-print"
           sx={{ 
             textTransform: 'none',
-            bgcolor: 'var(--semantic-info-gradient-start)',
+            bgcolor: 'hsl(207 88% 55%)',
             '&:hover': { bgcolor: 'var(--semantic-info-text)' }
           }}
           data-testid="button-download-pdf"
@@ -239,7 +239,7 @@ export default function GuidePage() {
 
       {/* Introduction */}
       <Box sx={{ mb: 5 }}>
-        <Typography variant="h5" sx={{ fontWeight: 700, mb: 2, color: 'var(--semantic-heading-text)' }}>
+        <Typography variant="h5" sx={{ fontWeight: 700, mb: 2, color: 'hsl(231 48% 22%)' }}>
           {t('guide:introduction.title')}
         </Typography>
         <Typography variant="body1" sx={{ lineHeight: 1.8, mb: 2 }}>
@@ -252,7 +252,7 @@ export default function GuidePage() {
 
       {/* Roles */}
       <Box sx={{ mb: 5 }}>
-        <Typography variant="h5" sx={{ fontWeight: 700, mb: 2, color: 'var(--semantic-heading-text)' }}>
+        <Typography variant="h5" sx={{ fontWeight: 700, mb: 2, color: 'hsl(231 48% 22%)' }}>
           {t('guide:rolesSection.title')}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
@@ -288,7 +288,7 @@ export default function GuidePage() {
 
       {/* Table of Contents - Meni */}
       <Box sx={{ mb: 5 }} className="page-break">
-        <Typography variant="h5" sx={{ fontWeight: 700, mb: 3, color: 'var(--semantic-heading-text)' }}>
+        <Typography variant="h5" sx={{ fontWeight: 700, mb: 3, color: 'hsl(231 48% 22%)' }}>
           {t('guide:tableOfContents.title')}
         </Typography>
         <Divider sx={{ mb: 3 }} />
@@ -331,7 +331,7 @@ export default function GuidePage() {
       </Box>
 
       {/* Sections - Full Width */}
-      <Typography variant="h5" sx={{ fontWeight: 700, mb: 4, color: 'var(--semantic-heading-text)' }} className="page-break">
+      <Typography variant="h5" sx={{ fontWeight: 700, mb: 4, color: 'hsl(231 48% 22%)' }} className="page-break">
         {t('guide:detailedExplanation')}
       </Typography>
 
@@ -359,7 +359,7 @@ export default function GuidePage() {
               >
                 {section.icon}
               </Box>
-              <Typography variant="h5" sx={{ fontWeight: 700, color: 'var(--semantic-heading-text)' }}>
+              <Typography variant="h5" sx={{ fontWeight: 700, color: 'hsl(231 48% 22%)' }}>
                 {t(`guide:sections.${section.key}.title`)}
               </Typography>
             </Box>
@@ -391,7 +391,7 @@ export default function GuidePage() {
                 <Box>
                   <Box
                     sx={{
-                      bgcolor: 'var(--semantic-danger-text)',
+                      bgcolor: 'hsl(4 90% 58%)',
                       color: 'white',
                       px: 1.5,
                       py: 0.5,
@@ -412,7 +412,7 @@ export default function GuidePage() {
                 <Box>
                   <Box
                     sx={{
-                      bgcolor: 'var(--semantic-award-text)',
+                      bgcolor: 'hsl(14 100% 45%)',
                       color: 'white',
                       px: 1.5,
                       py: 0.5,
@@ -433,7 +433,7 @@ export default function GuidePage() {
                 <Box>
                   <Box
                     sx={{
-                      bgcolor: 'var(--semantic-success-text)',
+                      bgcolor: 'hsl(122 60% 29%)',
                       color: 'white',
                       px: 1.5,
                       py: 0.5,
@@ -454,7 +454,7 @@ export default function GuidePage() {
                 <Box>
                   <Box
                     sx={{
-                      bgcolor: 'var(--semantic-info-gradient-start)',
+                      bgcolor: 'hsl(207 88% 55%)',
                       color: 'white',
                       px: 1.5,
                       py: 0.5,
@@ -479,7 +479,7 @@ export default function GuidePage() {
       })}
 
       {/* Footer Info */}
-      <Box sx={{ mt: 6, p: 3, bgcolor: 'var(--surface-gray-96)', borderRadius: 2 }} className="page-break">
+      <Box sx={{ mt: 6, p: 3, bgcolor: 'hsl(0 0% 96%)', borderRadius: 2 }} className="page-break">
         <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
           {t('guide:additionalInfo.title')}
         </Typography>

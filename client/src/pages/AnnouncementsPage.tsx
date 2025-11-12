@@ -645,7 +645,7 @@ export default function AnnouncementsPage() {
                       <IconButton
                         size="small"
                         onClick={() => handleViewAnnouncement(announcement)}
-                        sx={{ color: 'var(--semantic-info-gradient-start)' }}
+                        sx={{ color: 'hsl(207 88% 55%)' }}
                         data-testid={`button-view-announcement-${announcement.id}`}
                         title={t('announcements:view')}
                       >
@@ -654,7 +654,7 @@ export default function AnnouncementsPage() {
                       <IconButton
                         size="small"
                         onClick={() => handleEditAnnouncement(announcement)}
-                        sx={{ color: 'var(--semantic-award-text)' }}
+                        sx={{ color: 'hsl(14 100% 45%)' }}
                         data-testid={`button-edit-announcement-${announcement.id}`}
                         title={t('announcements:edit')}
                       >
@@ -663,7 +663,7 @@ export default function AnnouncementsPage() {
                       <IconButton
                         size="small"
                         onClick={() => handleDeleteClick(announcement)}
-                        sx={{ color: 'var(--semantic-danger-text)' }}
+                        sx={{ color: 'hsl(4 90% 58%)' }}
                         data-testid={`button-delete-announcement-${announcement.id}`}
                         title={t('announcements:delete')}
                       >

@@ -347,7 +347,7 @@ export default function UsersPage() {
 
         <Card>
           {/* Profile Header with Photo and Edit Button */}
-          <Box sx={{ p: 4, borderBottom: '1px solid var(--border-color-default)' }}>
+          <Box sx={{ p: 4, borderBottom: '1px solid hsl(0 0% 88%)' }}>
             <Box sx={{ display: 'flex', gap: 3, alignItems: 'flex-start' }}>
               <Avatar 
                 src={myProfile.photo || undefined} 
@@ -390,7 +390,7 @@ export default function UsersPage() {
                   <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                     {t('users:firstName')}
                   </Typography>
-                  <Box sx={{ border: '1px solid var(--border-color-default)', borderRadius: 2, p: 1.5, bgcolor: 'var(--surface-gray-50)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
+                  <Box sx={{ border: '1px solid hsl(0 0% 88%)', borderRadius: 2, p: 1.5, bgcolor: 'hsl(0 0% 98%)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
                     <Typography variant="body1">
                       {myProfile.firstName}
                     </Typography>
@@ -403,7 +403,7 @@ export default function UsersPage() {
                   <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                     {t('users:lastName')}
                   </Typography>
-                  <Box sx={{ border: '1px solid var(--border-color-default)', borderRadius: 2, p: 1.5, bgcolor: 'var(--surface-gray-50)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
+                  <Box sx={{ border: '1px solid hsl(0 0% 88%)', borderRadius: 2, p: 1.5, bgcolor: 'hsl(0 0% 98%)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
                     <Typography variant="body1">
                       {myProfile.lastName}
                     </Typography>
@@ -416,7 +416,7 @@ export default function UsersPage() {
                   <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                     {t('users:username')}
                   </Typography>
-                  <Box sx={{ border: '1px solid var(--border-color-default)', borderRadius: 2, p: 1.5, bgcolor: 'var(--surface-gray-50)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
+                  <Box sx={{ border: '1px solid hsl(0 0% 88%)', borderRadius: 2, p: 1.5, bgcolor: 'hsl(0 0% 98%)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
                     <Typography variant="body1">
                       {myProfile.username}
                     </Typography>
@@ -429,7 +429,7 @@ export default function UsersPage() {
                   <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                     {t('users:email')}
                   </Typography>
-                  <Box sx={{ border: '1px solid var(--border-color-default)', borderRadius: 2, p: 1.5, bgcolor: 'var(--surface-gray-50)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
+                  <Box sx={{ border: '1px solid hsl(0 0% 88%)', borderRadius: 2, p: 1.5, bgcolor: 'hsl(0 0% 98%)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
                     <Typography variant="body1">
                       {myProfile.email || '-'}
                     </Typography>
@@ -442,7 +442,7 @@ export default function UsersPage() {
                   <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                     {t('users:phone')}
                   </Typography>
-                  <Box sx={{ border: '1px solid var(--border-color-default)', borderRadius: 2, p: 1.5, bgcolor: 'var(--surface-gray-50)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
+                  <Box sx={{ border: '1px solid hsl(0 0% 88%)', borderRadius: 2, p: 1.5, bgcolor: 'hsl(0 0% 98%)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
                     <Typography variant="body1">
                       {myProfile.phone || '-'}
                     </Typography>
@@ -455,7 +455,7 @@ export default function UsersPage() {
                   <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                     {t('users:address')}
                   </Typography>
-                  <Box sx={{ border: '1px solid var(--border-color-default)', borderRadius: 2, p: 1.5, bgcolor: 'var(--surface-gray-50)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
+                  <Box sx={{ border: '1px solid hsl(0 0% 88%)', borderRadius: 2, p: 1.5, bgcolor: 'hsl(0 0% 98%)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
                     <Typography variant="body1">
                       {myProfile.address || '-'}
                     </Typography>
@@ -468,7 +468,7 @@ export default function UsersPage() {
                   <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                     {t('users:postalCode')}
                   </Typography>
-                  <Box sx={{ border: '1px solid var(--border-color-default)', borderRadius: 2, p: 1.5, bgcolor: 'var(--surface-gray-50)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
+                  <Box sx={{ border: '1px solid hsl(0 0% 88%)', borderRadius: 2, p: 1.5, bgcolor: 'hsl(0 0% 98%)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
                     <Typography variant="body1">
                       {myProfile.postalCode || '-'}
                     </Typography>
@@ -481,7 +481,7 @@ export default function UsersPage() {
                   <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                     {t('users:city')}
                   </Typography>
-                  <Box sx={{ border: '1px solid var(--border-color-default)', borderRadius: 2, p: 1.5, bgcolor: 'var(--surface-gray-50)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
+                  <Box sx={{ border: '1px solid hsl(0 0% 88%)', borderRadius: 2, p: 1.5, bgcolor: 'hsl(0 0% 98%)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
                     <Typography variant="body1">
                       {myProfile.city || '-'}
                     </Typography>
@@ -494,7 +494,7 @@ export default function UsersPage() {
                   <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                     {t('users:occupation')}
                   </Typography>
-                  <Box sx={{ border: '1px solid var(--border-color-default)', borderRadius: 2, p: 1.5, bgcolor: 'var(--surface-gray-50)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
+                  <Box sx={{ border: '1px solid hsl(0 0% 88%)', borderRadius: 2, p: 1.5, bgcolor: 'hsl(0 0% 98%)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
                     <Typography variant="body1">
                       {myProfile.occupation || '-'}
                     </Typography>
@@ -507,7 +507,7 @@ export default function UsersPage() {
                   <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                     {t('users:skills')}
                   </Typography>
-                  <Box sx={{ border: '1px solid var(--border-color-default)', borderRadius: 2, p: 1.5, bgcolor: 'var(--surface-gray-50)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
+                  <Box sx={{ border: '1px solid hsl(0 0% 88%)', borderRadius: 2, p: 1.5, bgcolor: 'hsl(0 0% 98%)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
                     <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
                       {myProfile.skills && myProfile.skills.length > 0 ? (
                         myProfile.skills.map((skill, index) => (
@@ -545,7 +545,7 @@ export default function UsersPage() {
                   <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                     {t('users:memberSince')}
                   </Typography>
-                  <Box sx={{ border: '1px solid var(--border-color-default)', borderRadius: 2, p: 1.5, bgcolor: 'var(--surface-gray-50)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
+                  <Box sx={{ border: '1px solid hsl(0 0% 88%)', borderRadius: 2, p: 1.5, bgcolor: 'hsl(0 0% 98%)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
                     <Typography variant="body1">
                       {formatDateForDisplay(myProfile.membershipDate)}
                     </Typography>
@@ -558,7 +558,7 @@ export default function UsersPage() {
                   <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                     {t('users:membershipStatus')}
                   </Typography>
-                  <Box sx={{ border: '1px solid var(--border-color-default)', borderRadius: 2, p: 1.5, bgcolor: 'var(--surface-gray-50)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
+                  <Box sx={{ border: '1px solid hsl(0 0% 88%)', borderRadius: 2, p: 1.5, bgcolor: 'hsl(0 0% 98%)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
                     <Chip
                       label={getStatusLabel(myProfile.status)}
                       color={getStatusColor(myProfile.status)}
@@ -573,7 +573,7 @@ export default function UsersPage() {
                   <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                     {t('users:roles.label')}
                   </Typography>
-                  <Box sx={{ border: '1px solid var(--border-color-default)', borderRadius: 2, p: 1.5, bgcolor: 'var(--surface-gray-50)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
+                  <Box sx={{ border: '1px solid hsl(0 0% 88%)', borderRadius: 2, p: 1.5, bgcolor: 'hsl(0 0% 98%)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
                     <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
                       {myProfile.roles && myProfile.roles.length > 0 ? (
                         myProfile.roles.map((role, index) => (
@@ -645,7 +645,7 @@ export default function UsersPage() {
       </Box>
 
       <Card>
-        <Box sx={{ p: 3, borderBottom: '1px solid var(--border-color-default)', display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+        <Box sx={{ p: 3, borderBottom: '1px solid hsl(0 0% 88%)', display: 'flex', gap: 2, flexWrap: 'wrap' }}>
           <TextField
             variant="outlined"
             placeholder={t('users:search')}
@@ -780,7 +780,7 @@ export default function UsersPage() {
                     {user.phone ? (
                       <a 
                         href={`tel:${user.phone}`} 
-                        style={{ textDecoration: 'none', color: 'var(--semantic-info-gradient-start)' }}
+                        style={{ textDecoration: 'none', color: 'hsl(207 88% 55%)' }}
                         data-testid={`phone-link-${user.id}`}
                       >
                         {user.phone}
@@ -840,7 +840,7 @@ export default function UsersPage() {
                       <IconButton
                         size="small"
                         onClick={() => handleEditUser(user)}
-                        sx={{ color: 'var(--semantic-info-gradient-start)' }}
+                        sx={{ color: 'hsl(207 88% 55%)' }}
                         data-testid={`button-view-user-${user.id}`}
                         title={t('users:viewUser')}
                       >
@@ -849,7 +849,7 @@ export default function UsersPage() {
                       <IconButton
                         size="small"
                         onClick={() => handleEditUser(user)}
-                        sx={{ color: 'var(--semantic-award-text)' }}
+                        sx={{ color: 'hsl(14 100% 45%)' }}
                         data-testid={`button-edit-user-${user.id}`}
                         title={t('users:actions.edit')}
                       >

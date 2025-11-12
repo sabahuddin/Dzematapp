@@ -870,7 +870,7 @@ export default function TaskManagerPage() {
                 <AccordionSummary 
                   expandIcon={<ExpandMore />}
                   sx={{ 
-                    bgcolor: 'var(--surface-gray-50)',
+                    bgcolor: 'hsl(0 0% 98%)',
                     '&:hover': { bgcolor: 'var(--state-hover-bg)' }
                   }}
                 >
@@ -1333,7 +1333,7 @@ export default function TaskManagerPage() {
             Jeste li sigurni da želite biti član ove sekcije?
           </Typography>
           {workGroupToJoin && (
-            <Box sx={{ mt: 2, p: 2, bgcolor: 'var(--surface-gray-50)', borderRadius: 1 }}>
+            <Box sx={{ mt: 2, p: 2, bgcolor: 'hsl(0 0% 98%)', borderRadius: 1 }}>
               <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
                 {workGroupToJoin.name}
               </Typography>

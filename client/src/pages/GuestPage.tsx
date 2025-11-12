@@ -558,21 +558,21 @@ export default function GuestPage() {
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: 'var(--surface-gray-96)' }}>
-      <AppBar position="static" sx={{ bgcolor: 'var(--surface-base)', boxShadow: 1 }}>
+    <Box sx={{ minHeight: '100vh', bgcolor: 'hsl(0 0% 96%)' }}>
+      <AppBar position="static" sx={{ bgcolor: '#ffffff', boxShadow: 1 }}>
         <Toolbar>
           <img 
             src={mosqueLogoPath} 
             alt="Mosque Logo" 
             style={{ width: 40, height: 40, objectFit: 'contain', marginRight: 16 }}
           />
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: 'var(--semantic-info-gradient-start)' }}>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: 'hsl(207 88% 55%)' }}>
             DžematApp - Gost pristup
           </Typography>
           <Button 
             onClick={handleBackToLogin} 
             data-testid="button-back-to-login"
-            sx={{ color: 'var(--semantic-info-gradient-start)' }}
+            sx={{ color: 'hsl(207 88% 55%)' }}
           >
             Nazad na prijavu
           </Button>
@@ -699,8 +699,8 @@ export default function GuestPage() {
                   <CircularProgress />
                 </Box>
               ) : todayPrayerTime ? (
-                <Paper sx={{ p: 3, mb: 4, bgcolor: 'var(--semantic-info-bg)' }}>
-                  <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: 'var(--semantic-info-gradient-start)' }}>
+                <Paper sx={{ p: 3, mb: 4, bgcolor: 'hsl(207 90% 95%)' }}>
+                  <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: 'hsl(207 88% 55%)' }}>
                     Današnja vaktija - {todayPrayerTime.date}
                   </Typography>
                   <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
@@ -797,13 +797,13 @@ export default function GuestPage() {
 
                     return (
                       <Box key={monthYear} sx={{ mb: 4 }}>
-                        <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 600, color: 'var(--semantic-info-gradient-start)' }}>
+                        <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 600, color: 'hsl(207 88% 55%)' }}>
                           {monthName} {year}
                         </Typography>
                         <TableContainer component={Paper} variant="outlined">
                           <Table size="small">
                             <TableHead>
-                              <TableRow sx={{ bgcolor: 'var(--surface-gray-96)' }}>
+                              <TableRow sx={{ bgcolor: 'hsl(0 0% 96%)' }}>
                                 <TableCell sx={{ fontWeight: 600 }}>Datum</TableCell>
                                 <TableCell sx={{ fontWeight: 600 }}>Zora</TableCell>
                                 <TableCell sx={{ fontWeight: 600 }}>Podne</TableCell>

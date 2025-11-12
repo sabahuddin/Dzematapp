@@ -214,7 +214,7 @@ export default function ActivityLogPage() {
       </Box>
 
       <Card>
-        <Box sx={{ p: 3, borderBottom: '1px solid var(--border-color-default)' }}>
+        <Box sx={{ p: 3, borderBottom: '1px solid hsl(0 0% 88%)' }}>
           <Grid container spacing={2}>
             {currentUser?.isAdmin && (
               <Grid size={{ xs: 12, md: 6 }}>

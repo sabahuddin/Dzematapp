@@ -288,7 +288,7 @@ export default function ProjectsPage() {
                       <IconButton
                         size="small"
                         onClick={() => handleOpenDialog(project)}
-                        sx={{ color: 'var(--semantic-info-gradient-start)' }}
+                        sx={{ color: 'hsl(207 88% 55%)' }}
                         data-testid={`button-edit-${project.id}`}
                       >
                         <Edit fontSize="small" />
@@ -296,7 +296,7 @@ export default function ProjectsPage() {
                       <IconButton
                         size="small"
                         onClick={() => handleDelete(project.id)}
-                        sx={{ color: 'var(--semantic-danger-text)' }}
+                        sx={{ color: 'hsl(4 90% 58%)' }}
                         data-testid={`button-delete-${project.id}`}
                       >
                         <Delete fontSize="small" />

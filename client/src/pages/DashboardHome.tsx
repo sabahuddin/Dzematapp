@@ -173,7 +173,7 @@ function EventDay(props: PickersDayProps & { eventDates?: Date[]; selectedDate?:
               ? 'var(--semantic-success-bg-hover)'
               : 'var(--semantic-neutral-bg)',
           },
-          border: isToday ? '2px solid var(--semantic-award-border)' : 'none',
+          border: isToday ? '2px solid hsl(35 100% 66%)' : 'none',
           borderRadius: '8px',
         }}
       />
@@ -350,7 +350,7 @@ export default function DashboardHome() {
             };
 
             return (
-              <Card sx={{ mb: 3, bgcolor: 'var(--surface-base)', boxShadow: 2 }}>
+              <Card sx={{ mb: 3, bgcolor: '#ffffff', boxShadow: 2 }}>
                 <CardContent sx={{ pb: 2, '&:last-child': { pb: 2 } }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
                     {earnedBadges.map((badge: any) => {
@@ -411,11 +411,11 @@ export default function DashboardHome() {
           const progress = nextThreshold > 0 ? Math.min((currentPoints / nextThreshold) * 100, 100) : 0;
           
           return (
-            <Card sx={{ mb: 3, bgcolor: 'var(--semantic-award-bg)', cursor: 'pointer', '&:hover': { boxShadow: 4 } }} onClick={() => setLocation('/my-points')}>
-              <Box sx={{ p: 2, borderBottom: '1px solid var(--semantic-award-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Card sx={{ mb: 3, bgcolor: 'hsl(36 100% 94%)', cursor: 'pointer', '&:hover': { boxShadow: 4 } }} onClick={() => setLocation('/my-points')}>
+              <Box sx={{ p: 2, borderBottom: '1px solid hsl(35 100% 66%)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <EmojiEvents sx={{ color: 'var(--semantic-award-text)' }} />
-                  <Typography variant="h6" sx={{ fontWeight: 600, color: 'var(--semantic-award-text)' }}>
+                  <EmojiEvents sx={{ color: 'hsl(14 100% 45%)' }} />
+                  <Typography variant="h6" sx={{ fontWeight: 600, color: 'hsl(14 100% 45%)' }}>
                     {t('dashboard:pointsProgress')}
                   </Typography>
                 </Box>
@@ -424,7 +424,7 @@ export default function DashboardHome() {
                 <Box>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', mb: 1 }}>
                     <Box>
-                      <Typography variant="h4" sx={{ fontWeight: 700, color: 'var(--semantic-award-text)' }}>
+                      <Typography variant="h4" sx={{ fontWeight: 700, color: 'hsl(14 100% 45%)' }}>
                         {currentPoints.toLocaleString()}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
@@ -433,7 +433,7 @@ export default function DashboardHome() {
                     </Box>
                     {nextPointsBadge && (
                       <Box sx={{ textAlign: 'right' }}>
-                        <Typography variant="body2" sx={{ fontWeight: 600, color: 'var(--semantic-award-text)' }}>
+                        <Typography variant="body2" sx={{ fontWeight: 600, color: 'hsl(14 100% 45%)' }}>
                           {(nextThreshold - currentPoints).toLocaleString()} bodova
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
@@ -448,9 +448,9 @@ export default function DashboardHome() {
                     sx={{ 
                       height: 8, 
                       borderRadius: 4,
-                      bgcolor: 'var(--semantic-award-bg)',
+                      bgcolor: 'hsl(36 100% 94%)',
                       '& .MuiLinearProgress-bar': {
-                        bgcolor: 'var(--semantic-award-text)'
+                        bgcolor: 'hsl(14 100% 45%)'
                       }
                     }} 
                   />
@@ -467,11 +467,11 @@ export default function DashboardHome() {
 
         {/* Today's Prayer Times */}
         {todayPrayerTime && (
-          <Card sx={{ mb: 3, bgcolor: 'var(--semantic-info-bg)' }}>
+          <Card sx={{ mb: 3, bgcolor: 'hsl(207 90% 95%)' }}>
             <Box sx={{ p: 2, borderBottom: '1px solid #90caf9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Schedule sx={{ color: 'var(--semantic-info-gradient-start)' }} />
-                <Typography variant="h6" sx={{ fontWeight: 600, color: 'var(--semantic-info-gradient-start)' }}>
+                <Schedule sx={{ color: 'hsl(207 88% 55%)' }} />
+                <Typography variant="h6" sx={{ fontWeight: 600, color: 'hsl(207 88% 55%)' }}>
                   {t('dashboard:todaysPrayerTimes')} - {todayPrayerTime.date}
                 </Typography>
               </Box>
@@ -523,9 +523,9 @@ export default function DashboardHome() {
           {/* Latest Announcement */}
           <Grid size={{ xs: 12, lg: 8 }}>
             <Card sx={{ height: '100%' }}>
-              <Box sx={{ p: 2, borderBottom: '1px solid var(--border-color-default)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Box sx={{ p: 2, borderBottom: '1px solid hsl(0 0% 88%)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <Campaign sx={{ color: 'var(--semantic-success-text)' }} />
+                  <Campaign sx={{ color: 'hsl(122 60% 29%)' }} />
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>
                     {t('dashboard:latestAnnouncement')}
                   </Typography>
@@ -590,8 +590,8 @@ export default function DashboardHome() {
           {/* Next Event */}
           <Grid size={{ xs: 12, lg: 4 }}>
             <Card sx={{ height: '100%' }}>
-              <Box sx={{ p: 2, borderBottom: '1px solid var(--border-color-default)', display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Event sx={{ color: 'var(--semantic-award-text)' }} />
+              <Box sx={{ p: 2, borderBottom: '1px solid hsl(0 0% 88%)', display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Event sx={{ color: 'hsl(14 100% 45%)' }} />
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
                   {t('dashboard:nextEvent')}
                 </Typography>
@@ -663,8 +663,8 @@ export default function DashboardHome() {
         >
           {/* Calendar */}
           <Card sx={{ height: '100%' }}>
-            <Box sx={{ p: 2, borderBottom: '1px solid var(--border-color-default)', display: 'flex', alignItems: 'center', gap: 2 }}>
-              <CalendarMonth sx={{ color: 'var(--semantic-info-gradient-start)' }} />
+            <Box sx={{ p: 2, borderBottom: '1px solid hsl(0 0% 88%)', display: 'flex', alignItems: 'center', gap: 2 }}>
+              <CalendarMonth sx={{ color: 'hsl(207 88% 55%)' }} />
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
                 {t('dashboard:eventCalendar')}
               </Typography>
@@ -723,8 +723,8 @@ export default function DashboardHome() {
           
           {/* Today's Events */}
           <Card sx={{ height: '100%' }}>
-            <Box sx={{ p: 2, borderBottom: '1px solid var(--border-color-default)', display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Event sx={{ color: 'var(--semantic-award-text)' }} />
+            <Box sx={{ p: 2, borderBottom: '1px solid hsl(0 0% 88%)', display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Event sx={{ color: 'hsl(14 100% 45%)' }} />
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
                 {selectedDate ? (
                   <>
@@ -800,9 +800,9 @@ export default function DashboardHome() {
         >
           {/* My Messages */}
           <Card sx={{ height: '100%' }}>
-            <Box sx={{ p: 2, borderBottom: '1px solid var(--border-color-default)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Box sx={{ p: 2, borderBottom: '1px solid hsl(0 0% 88%)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Mail sx={{ color: 'var(--semantic-info-gradient-start)' }} />
+                <Mail sx={{ color: 'hsl(207 88% 55%)' }} />
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
                   {t('dashboard:myMessages')}
                 </Typography>
@@ -830,12 +830,12 @@ export default function DashboardHome() {
                         sx={{ 
                           p: 2, 
                           borderRadius: 1, 
-                          bgcolor: 'var(--semantic-info-bg)',
+                          bgcolor: 'hsl(207 90% 95%)',
                           borderLeft: '4px solid var(--semantic-info-gradient-start)',
                           cursor: 'pointer',
                           transition: 'all 0.2s',
                           '&:hover': {
-                            bgcolor: 'var(--semantic-info-bg)',
+                            bgcolor: 'hsl(207 90% 95%)',
                             transform: 'translateX(4px)'
                           }
                         }}
@@ -861,9 +861,9 @@ export default function DashboardHome() {
 
           {/* My Sections */}
           <Card sx={{ height: '100%' }}>
-            <Box sx={{ p: 2, borderBottom: '1px solid var(--border-color-default)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Box sx={{ p: 2, borderBottom: '1px solid hsl(0 0% 88%)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Workspaces sx={{ color: 'var(--semantic-celebration-text)' }} />
+                <Workspaces sx={{ color: 'hsl(291 64% 32%)' }} />
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
                   {t('dashboard:mySections')}
                 </Typography>
@@ -959,7 +959,7 @@ export default function DashboardHome() {
                       <Card 
                         sx={{ 
                           cursor: 'pointer',
-                          '&:hover': { bgcolor: 'var(--surface-gray-96)' }
+                          '&:hover': { bgcolor: 'hsl(0 0% 96%)' }
                         }}
                       >
                         <CardContent>
@@ -1006,7 +1006,7 @@ export default function DashboardHome() {
         <Card 
           sx={{ 
             mb: 3, 
-            bgcolor: 'var(--semantic-award-bg)',
+            bgcolor: 'hsl(36 100% 94%)',
             cursor: 'pointer',
             transition: 'all 0.2s',
             '&:hover': {
@@ -1016,27 +1016,27 @@ export default function DashboardHome() {
           }}
         >
           <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2, py: 2 }}>
-            <EmojiEvents sx={{ fontSize: 40, color: 'var(--semantic-award-text)' }} />
+            <EmojiEvents sx={{ fontSize: 40, color: 'hsl(14 100% 45%)' }} />
             <Box sx={{ flex: 1 }}>
-              <Typography variant="h5" sx={{ fontWeight: 600, color: 'var(--semantic-award-text)' }}>
+              <Typography variant="h5" sx={{ fontWeight: 600, color: 'hsl(14 100% 45%)' }}>
                 {t('dashboard:yourPoints')}: {(user as any)?.totalPoints || 0}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 {t('dashboard:viewBadges')}
               </Typography>
             </Box>
-            <ArrowForward sx={{ color: 'var(--semantic-award-text)' }} />
+            <ArrowForward sx={{ color: 'hsl(14 100% 45%)' }} />
           </CardContent>
         </Card>
       </Link>
 
       {/* Today's Prayer Times */}
       {todayPrayerTime && (
-        <Card sx={{ mb: 3, bgcolor: 'var(--semantic-info-bg)' }}>
+        <Card sx={{ mb: 3, bgcolor: 'hsl(207 90% 95%)' }}>
           <Box sx={{ p: 2, borderBottom: '1px solid #90caf9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Schedule sx={{ color: 'var(--semantic-info-gradient-start)' }} />
-              <Typography variant="h6" sx={{ fontWeight: 600, color: 'var(--semantic-info-gradient-start)' }}>
+              <Schedule sx={{ color: 'hsl(207 88% 55%)' }} />
+              <Typography variant="h6" sx={{ fontWeight: 600, color: 'hsl(207 88% 55%)' }}>
                 {t('dashboard:todaysPrayerTimes')} - {todayPrayerTime.date}
               </Typography>
             </Box>
@@ -1122,7 +1122,7 @@ export default function DashboardHome() {
 
       {/* Upcoming Events Section */}
       <Card sx={{ mb: 3 }}>
-        <Box sx={{ p: 3, borderBottom: '1px solid var(--border-color-default)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Box sx={{ p: 3, borderBottom: '1px solid hsl(0 0% 88%)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography variant="h6" sx={{ fontWeight: 600 }}>
             {t('dashboard:upcomingEvents')}
           </Typography>
@@ -1161,7 +1161,7 @@ export default function DashboardHome() {
                       <Box
                         sx={{
                           height: 180,
-                          bgcolor: 'var(--semantic-info-gradient-start)',
+                          bgcolor: 'hsl(207 88% 55%)',
                           backgroundImage: 'linear-gradient(135deg, var(--semantic-info-gradient-start) 0%, var(--semantic-info-gradient-end) 100%)',
                           display: 'flex',
                           alignItems: 'center',
@@ -1199,7 +1199,7 @@ export default function DashboardHome() {
                           <Link href="/events">
                             <IconButton
                               size="small"
-                              sx={{ color: 'var(--semantic-info-gradient-start)' }}
+                              sx={{ color: 'hsl(207 88% 55%)' }}
                               data-testid={`button-view-event-${event.id}`}
                             >
                               <Visibility fontSize="small" />
@@ -1279,7 +1279,7 @@ export default function DashboardHome() {
 
       {/* Recent Activities Table */}
       <Card>
-        <Box sx={{ p: 3, borderBottom: '1px solid var(--border-color-default)' }}>
+        <Box sx={{ p: 3, borderBottom: '1px solid hsl(0 0% 88%)' }}>
           <Typography variant="h6" sx={{ fontWeight: 600 }}>
             {t('dashboard:recentActivities')}
           </Typography>

@@ -59,7 +59,7 @@ export default function UserPointsDetailsPage() {
   return (
     <Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-        <EmojiEvents sx={{ fontSize: 40, color: 'var(--semantic-award-text)' }} />
+        <EmojiEvents sx={{ fontSize: 40, color: 'hsl(14 100% 45%)' }} />
         <Box>
           <Typography variant="h4" sx={{ fontWeight: 600 }}>
             Vaši Bodovi
@@ -71,11 +71,11 @@ export default function UserPointsDetailsPage() {
       </Box>
 
       {/* Total Points Card */}
-      <Card sx={{ mb: 3, p: 3, bgcolor: 'var(--semantic-award-bg)', borderLeft: '4px solid var(--semantic-award-text)' }}>
+      <Card sx={{ mb: 3, p: 3, bgcolor: 'hsl(36 100% 94%)', borderLeft: '4px solid hsl(14 100% 45%)' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <TrendingUp sx={{ fontSize: 48, color: 'var(--semantic-award-text)' }} />
+          <TrendingUp sx={{ fontSize: 48, color: 'hsl(14 100% 45%)' }} />
           <Box>
-            <Typography variant="h3" sx={{ fontWeight: 700, color: 'var(--semantic-award-text)' }}>
+            <Typography variant="h3" sx={{ fontWeight: 700, color: 'hsl(14 100% 45%)' }}>
               {totalPoints}
             </Typography>
             <Typography variant="body1" color="text.secondary">
@@ -112,7 +112,7 @@ export default function UserPointsDetailsPage() {
                       </TableCell>
                       <TableCell>{entry.description}</TableCell>
                       <TableCell align="center">
-                        <Typography sx={{ fontWeight: 600, color: entry.points > 0 ? 'var(--semantic-success-text)' : 'inherit' }}>
+                        <Typography sx={{ fontWeight: 600, color: entry.points > 0 ? 'hsl(122 60% 29%)' : 'inherit' }}>
                           +{entry.points}
                         </Typography>
                       </TableCell>

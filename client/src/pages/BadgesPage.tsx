@@ -286,7 +286,7 @@ export default function BadgesPage() {
                       <IconButton
                         size="small"
                         onClick={() => handleOpenDialog(badge)}
-                        sx={{ color: 'var(--semantic-info-gradient-start)' }}
+                        sx={{ color: 'hsl(207 88% 55%)' }}
                         data-testid={`button-edit-${badge.id}`}
                       >
                         <Edit fontSize="small" />
@@ -294,7 +294,7 @@ export default function BadgesPage() {
                       <IconButton
                         size="small"
                         onClick={() => handleDelete(badge.id)}
-                        sx={{ color: 'var(--semantic-danger-text)' }}
+                        sx={{ color: 'hsl(4 90% 58%)' }}
                         data-testid={`button-delete-${badge.id}`}
                       >
                         <Delete fontSize="small" />

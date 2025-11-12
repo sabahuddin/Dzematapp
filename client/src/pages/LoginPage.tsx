@@ -123,7 +123,7 @@ export default function LoginPage() {
                   alt="Mosque Logo" 
                   style={{ width: 60, height: 60, objectFit: 'contain' }}
                 />
-                <Typography variant="h3" sx={{ fontWeight: 600, color: 'var(--semantic-info-gradient-start)', fontFamily: 'Aladin, cursive' }}>
+                <Typography variant="h3" sx={{ fontWeight: 600, color: 'hsl(207 88% 55%)', fontFamily: 'Aladin, cursive' }}>
                   {t('login:title')}
                 </Typography>
               </Box>
