@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,21 +30,41 @@ export default function OrganizationSettingsPage({ hideHeader = false }: Organiz
 
   const form = useForm<InsertOrganizationSettings>({
     resolver: zodResolver(insertOrganizationSettingsSchema),
-    values: settings ? {
-      name: settings.name,
-      address: settings.address,
-      phone: settings.phone,
-      email: settings.email,
-      currency: settings.currency || "CHF",
-      facebookUrl: settings.facebookUrl || "",
-      instagramUrl: settings.instagramUrl || "",
-      youtubeUrl: settings.youtubeUrl || "",
-      twitterUrl: settings.twitterUrl || "",
-      livestreamUrl: settings.livestreamUrl || "",
-      livestreamEnabled: settings.livestreamEnabled || false,
-      livestreamTitle: settings.livestreamTitle || ""
-    } : undefined
+    defaultValues: {
+      name: "",
+      address: "",
+      phone: "",
+      email: "",
+      currency: "CHF",
+      facebookUrl: "",
+      instagramUrl: "",
+      youtubeUrl: "",
+      twitterUrl: "",
+      livestreamUrl: "",
+      livestreamEnabled: false,
+      livestreamTitle: ""
+    }
   });
+
+  // Reset form when settings data is loaded
+  useEffect(() => {
+    if (settings) {
+      form.reset({
+        name: settings.name,
+        address: settings.address,
+        phone: settings.phone,
+        email: settings.email,
+        currency: settings.currency || "CHF",
+        facebookUrl: settings.facebookUrl || "",
+        instagramUrl: settings.instagramUrl || "",
+        youtubeUrl: settings.youtubeUrl || "",
+        twitterUrl: settings.twitterUrl || "",
+        livestreamUrl: settings.livestreamUrl || "",
+        livestreamEnabled: settings.livestreamEnabled || false,
+        livestreamTitle: settings.livestreamTitle || ""
+      });
+    }
+  }, [settings, form]);
 
   const updateMutation = useMutation({
     mutationFn: async (data: InsertOrganizationSettings) => {

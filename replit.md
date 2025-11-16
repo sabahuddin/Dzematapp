@@ -4,6 +4,12 @@ DžematApp is a web-based admin dashboard application designed to manage mosque 
 
 # Recent Changes (November 16, 2025)
 
+- **Settings Menu Reorganization**:
+  - New "Podešavanja" (Settings) menu as last element in sidebar (admin-only)
+  - Settings page with 2 tabs: "Kontakt informacije" (read-only contact info display) and "Organizacijski podaci" (editable organization settings)
+  - OrganizationSettingsPage refactored: uses defaultValues + useEffect reset pattern for proper form initialization when embedded in tabs
+  - Legacy route /organization-settings preserved, redirects to new /settings page
+  - Info section at bottom of sidebar retained for all users to view contact information
 - **Admin Menu Reorganization - Priznanja Section**:
   - Admin Priznanja menu now shows only "Zahvalnice" and "Značke" (previously showed 4 separate certificate/badge pages)
   - "Zahvalnice" opens unified page with 3 tabs: Template, Izdaj zahvalnice, Sve zahvalnice
