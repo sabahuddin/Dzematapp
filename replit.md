@@ -4,6 +4,17 @@ DžematApp is a web-based admin dashboard application designed to manage mosque 
 
 # Recent Changes (November 16, 2025)
 
+- **PWA (Progressive Web App) Implementation**:
+  - Complete PWA setup with manifest.json, service worker, and app icons (72x72 to 512x512)
+  - Offline support: app functions offline with cached app shell and intelligent navigation handling
+  - Service worker strategies: navigation requests serve cached shell, API requests cache-first with network fallback, static assets cache-first
+  - Offline fallback page displayed when app shell unavailable
+  - Install prompt support for "Add to Home Screen" on mobile devices
+  - Theme color: #81c784 (light green matching app design)
+  - Accessibility: viewport allows user zoom
+  - Auto-update notification when new version available
+  - Icons generated from mosque stock image, favicon included
+  - All PWA files located in client/public/ (manifest.json, service-worker.js, icons/)
 - **Settings Menu Reorganization**:
   - New "Podešavanja" (Settings) menu as last element in sidebar (after Priznanja and Media menus, admin-only)
   - Settings page with 2 tabs: "Kontakt informacije" (read-only contact info display) and "Organizacijski podaci" (editable organization settings)
