@@ -761,7 +761,7 @@ export default function TaskManagerPage() {
   };
 
   useEffect(() => {
-    const params = new URLSearchParams(location.split('?')[1] || '');
+    const params = new URLSearchParams(window.location.search);
     const taskId = params.get('taskId');
     const workGroupId = params.get('workGroupId');
 
@@ -776,16 +776,16 @@ export default function TaskManagerPage() {
             if (task) {
               setSelectedTask(task);
               setTaskDetailOpen(true);
-              setLocation('/tasks');
+              setLocation('/tasks', { replace: true });
             }
           })
           .catch(err => {
             console.error('Error loading task:', err);
-            setLocation('/tasks');
+            setLocation('/tasks', { replace: true });
           });
       }
     }
-  }, [location, workGroupsQuery.data, setLocation]);
+  }, [workGroupsQuery.data, setLocation]);
 
   const isLoading = user?.isAdmin 
     ? (workGroupsQuery.isLoading || accessRequestsQuery.isLoading || usersQuery.isLoading)
