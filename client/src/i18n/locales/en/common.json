@@ -85,5 +85,14 @@
     "thisWeek": "This week",
     "thisMonth": "This month",
     "lastMonth": "Last month"
+  },
+  "entityTypes": {
+    "announcement": "Announcement",
+    "event": "Event",
+    "shop_item": "Shop",
+    "task": "Task",
+    "message": "Message",
+    "media": "Media",
+    "important_date_reminder": "Important Date"
   }
 }

@@ -26,6 +26,9 @@
     "maghrib": "Akšam",
     "isha": "Jacija"
   },
+  "nextPrayer": "Sljedeći namaz",
+  "communityActivities": "Aktivnosti zajednice",
+  "myActivities": "Moje aktivnosti",
   "pointsProgress": "Napredak bodova",
   "yourPoints": "Vaši bodovi",
   "nextBadge": "Sljedeća značka",
@@ -67,5 +70,12 @@
     "time": "Vrijeme",
     "userLabel": "Korisnik",
     "systemLabel": "System"
+  },
+  "errors": {
+    "prayerTimesFailed": "Nije moguće učitati vaktiju",
+    "feedFailed": "Nije moguće učitati aktivnosti"
+  },
+  "feed": {
+    "empty": "Nema aktivnosti"
   }
 }

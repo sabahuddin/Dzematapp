@@ -85,5 +85,14 @@
     "thisWeek": "Diese Woche",
     "thisMonth": "Dieser Monat",
     "lastMonth": "Letzter Monat"
+  },
+  "entityTypes": {
+    "announcement": "Ankündigung",
+    "event": "Veranstaltung",
+    "shop_item": "Shop",
+    "task": "Aufgabe",
+    "message": "Nachricht",
+    "media": "Medien",
+    "important_date_reminder": "Wichtiges Datum"
   }
 }

@@ -26,6 +26,9 @@
     "maghrib": "Akshami",
     "isha": "Jacia"
   },
+  "nextPrayer": "Namazi i Ardhshëm",
+  "communityActivities": "Aktivitetet e Komunitetit",
+  "myActivities": "Aktivitetet e Mia",
   "pointsProgress": "Përparimi i Pikëve",
   "yourPoints": "Pikët tuaja",
   "nextBadge": "Shenja e Ardhshme",
@@ -67,5 +70,12 @@
     "time": "Koha",
     "userLabel": "Përdoruesi",
     "systemLabel": "Sistemi"
+  },
+  "errors": {
+    "prayerTimesFailed": "Dështoi ngarkimi i vaktisë",
+    "feedFailed": "Dështoi ngarkimi i aktiviteteve"
+  },
+  "feed": {
+    "empty": "Nuk ka aktivitete"
   }
 }

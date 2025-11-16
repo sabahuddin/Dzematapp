@@ -26,6 +26,9 @@
     "maghrib": "Maghrib",
     "isha": "Isha"
   },
+  "nextPrayer": "Nächstes Gebet",
+  "communityActivities": "Gemeinschaftsaktivitäten",
+  "myActivities": "Meine Aktivitäten",
   "pointsProgress": "Punktefortschritt",
   "yourPoints": "Ihre Punkte",
   "nextBadge": "Nächstes Abzeichen",
@@ -67,5 +70,12 @@
     "time": "Zeit",
     "userLabel": "Benutzer",
     "systemLabel": "System"
+  },
+  "errors": {
+    "prayerTimesFailed": "Gebetszeiten konnten nicht geladen werden",
+    "feedFailed": "Aktivitäten konnten nicht geladen werden"
+  },
+  "feed": {
+    "empty": "Keine Aktivitäten"
   }
 }

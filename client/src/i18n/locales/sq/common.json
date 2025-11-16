@@ -106,5 +106,14 @@
     "thisWeek": "Kjo javë",
     "thisMonth": "Këtë muaj",
     "lastMonth": "Muajin e kaluar"
+  },
+  "entityTypes": {
+    "announcement": "Njoftim",
+    "event": "Ngjarje",
+    "shop_item": "Dyqan",
+    "task": "Detyrë",
+    "message": "Mesazh",
+    "media": "Media",
+    "important_date_reminder": "Datë e Rëndësishme"
   }
 }

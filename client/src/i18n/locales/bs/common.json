@@ -85,5 +85,14 @@
     "thisWeek": "Ova sedmica",
     "thisMonth": "Ovaj mjesec",
     "lastMonth": "Prošli mjesec"
+  },
+  "entityTypes": {
+    "announcement": "Obavijest",
+    "event": "Događaj",
+    "shop_item": "Trgovina",
+    "task": "Zadatak",
+    "message": "Poruka",
+    "media": "Medija",
+    "important_date_reminder": "Važan datum"
   }
 }
