@@ -45,6 +45,7 @@ import MembershipApplicationsPage from "@/pages/MembershipApplicationsPage";
 import ApplicationsPage from "@/pages/ApplicationsPage";
 import FeedPage from "@/pages/FeedPage";
 import ModulesPage from "@/pages/ModulesPage";
+import MobileDashboard from "@/pages/MobileDashboard";
 import NotFound from "@/pages/not-found";
 
 // Layout

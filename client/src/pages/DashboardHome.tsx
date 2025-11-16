@@ -24,7 +24,9 @@ import {
   DialogTitle,
   DialogContent,
   IconButton,
-  LinearProgress
+  LinearProgress,
+  useTheme,
+  useMediaQuery
 } from '@mui/material';
 import {
   People,
@@ -54,6 +56,7 @@ import {
   formatTimeAgo 
 } from '../data/mockData';
 import TasksDashboard from '../components/TasksDashboard';
+import MobileDashboard from './MobileDashboard';
 import { useAuth } from '../hooks/useAuth';
 import type { Announcement, Event as EventType, WorkGroup, PrayerTime } from '@shared/schema';
 import { format, isSameDay, isWeekend } from 'date-fns';
@@ -187,6 +190,13 @@ export default function DashboardHome() {
   const { t } = useTranslation(['dashboard', 'common', 'navigation', 'vaktija']);
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [dateEventsModalOpen, setDateEventsModalOpen] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  
+  // Mobile users get simplified dashboard
+  if (isMobile) {
+    return <MobileDashboard />;
+  }
   
   // Fetch real statistics from API
   const statisticsQuery = useQuery<Statistics>({

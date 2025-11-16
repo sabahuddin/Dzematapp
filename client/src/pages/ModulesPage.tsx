@@ -64,6 +64,8 @@ export default function ModulesPage() {
             key={module.route}
             onClick={() => setLocation(module.route)}
             data-testid={module.testId}
+            title={module.label}
+            aria-label={module.label}
             sx={{
               p: 3,
               display: 'flex',
@@ -82,18 +84,6 @@ export default function ModulesPage() {
             <Box sx={{ color: 'hsl(123 46% 54%)' }}>
               {module.icon}
             </Box>
-            <Typography
-              variant="caption"
-              sx={{
-                mt: 1,
-                textAlign: 'center',
-                fontSize: '0.7rem',
-                color: 'hsl(123 46% 34%)',
-                fontWeight: 500,
-              }}
-            >
-              {module.label}
-            </Typography>
           </Paper>
         ))}
       </Box>
