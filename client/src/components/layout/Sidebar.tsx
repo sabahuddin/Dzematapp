@@ -95,7 +95,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     { path: '/applications', label: t('navigation:menu.applications'), icon: Assignment },
     { path: '/vaktija', label: t('navigation:menu.vaktija'), icon: Schedule },
     { path: '/vodic', label: t('navigation:menu.guide'), icon: Info },
-    { path: '/organization-settings', label: t('navigation:menu.organizationSettings'), icon: Settings, adminOnly: true },
+    { path: '/settings', label: 'Podešavanja', icon: Settings, adminOnly: true },
   ];
 
   const priznanjaItems = [

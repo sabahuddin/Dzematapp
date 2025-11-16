@@ -26,6 +26,7 @@ import ShopPage from "@/pages/ShopPage";
 import LivestreamPage from "@/pages/LivestreamPage";
 import LivestreamSettingsPage from "@/pages/LivestreamSettingsPage";
 import OrganizationSettingsPage from "@/pages/OrganizationSettingsPage";
+import SettingsPage from "@/pages/SettingsPage";
 import VaktijaPage from "@/pages/VaktijaPage";
 import GuidePage from "@/pages/GuidePage";
 import FinancesPage from "@/pages/FinancesPage";
@@ -397,9 +398,16 @@ function Router() {
         </AdminRoute>
       </Route>
       
+      <Route path="/settings">
+        <AdminRoute>
+          <SettingsPage />
+        </AdminRoute>
+      </Route>
+      
+      {/* Legacy route - redirect to /settings */}
       <Route path="/organization-settings">
         <AdminRoute>
-          <OrganizationSettingsPage />
+          <SettingsPage />
         </AdminRoute>
       </Route>
       
