@@ -15,7 +15,11 @@ import { Settings, Building, Phone, Mail, Facebook, Instagram, Youtube, Twitter,
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 
-export default function OrganizationSettingsPage() {
+interface OrganizationSettingsPageProps {
+  hideHeader?: boolean;
+}
+
+export default function OrganizationSettingsPage({ hideHeader = false }: OrganizationSettingsPageProps) {
   const { t } = useTranslation("settings");
   const { toast } = useToast();
 
@@ -90,17 +94,21 @@ export default function OrganizationSettingsPage() {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Box sx={{ display: "flex", alignItems: "center", mb: 3, gap: 2 }}>
-        <Settings size={32} />
-        <Typography variant="h4" component="h1">
-          {t("organization.title")}
-        </Typography>
-      </Box>
+    <Container maxWidth="lg" sx={{ mt: hideHeader ? 0 : 4, mb: 4 }}>
+      {!hideHeader && (
+        <>
+          <Box sx={{ display: "flex", alignItems: "center", mb: 3, gap: 2 }}>
+            <Settings size={32} />
+            <Typography variant="h4" component="h1">
+              {t("organization.title")}
+            </Typography>
+          </Box>
 
-      <Alert severity="info" sx={{ mb: 3 }}>
-        {t("organization.subtitle")}
-      </Alert>
+          <Alert severity="info" sx={{ mb: 3 }}>
+            {t("organization.subtitle")}
+          </Alert>
+        </>
+      )}
 
       <Paper sx={{ p: 3 }}>
         <Form {...form}>
