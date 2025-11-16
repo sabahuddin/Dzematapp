@@ -95,7 +95,6 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     { path: '/applications', label: t('navigation:menu.applications'), icon: Assignment },
     { path: '/vaktija', label: t('navigation:menu.vaktija'), icon: Schedule },
     { path: '/vodic', label: t('navigation:menu.guide'), icon: Info },
-    { path: '/settings', label: 'Podešavanja', icon: Settings, adminOnly: true },
   ];
 
   const priznanjaItems = [
@@ -451,6 +450,35 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
               })}
             </List>
           </Collapse>
+        )}
+
+        {/* Settings Menu (Admin Only) - Last Item */}
+        {user?.isAdmin && (
+          <ListItem disablePadding sx={{ width: '100%', maxWidth: '100%' }}>
+            <ListItemButton
+              onClick={() => handleNavigation('/settings')}
+              sx={{
+                mx: 1,
+                borderRadius: 1,
+                bgcolor: location === '/settings' ? '#e3f2fd' : 'transparent',
+                color: location === '/settings' ? '#1976d2' : '#666',
+                borderRight: location === '/settings' ? '3px solid #1976d2' : 'none',
+                justifyContent: collapsed ? 'center' : 'flex-start',
+                px: collapsed ? 0 : 2,
+                minWidth: 0,
+                '&:hover': {
+                  bgcolor: 'hsl(0 0% 96%)',
+                  color: '#1976d2'
+                }
+              }}
+              data-testid="nav-settings"
+            >
+              <ListItemIcon sx={{ color: 'inherit', minWidth: collapsed ? 'auto' : 40, justifyContent: 'center' }}>
+                <Settings />
+              </ListItemIcon>
+              {!collapsed && <ListItemText primary="Podešavanja" />}
+            </ListItemButton>
+          </ListItem>
         )}
       </List>
     </Box>
