@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, useTheme, useMediaQuery } from '@mui/material';
 import Sidebar from './Sidebar';
 import AppBar from './AppBar';
+import BottomNavigation from './BottomNavigation';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -25,13 +26,16 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-      <Sidebar
-        open={sidebarOpen}
-        collapsed={sidebarCollapsed}
-        onToggle={handleSidebarToggle}
-        onClose={() => setSidebarOpen(false)}
-        width={sidebarWidth}
-      />
+      {/* Desktop: Show Sidebar */}
+      {!isMobile && (
+        <Sidebar
+          open={sidebarOpen}
+          collapsed={sidebarCollapsed}
+          onToggle={handleSidebarToggle}
+          onClose={() => setSidebarOpen(false)}
+          width={sidebarWidth}
+        />
+      )}
       
       <Box 
         sx={{ 
@@ -41,13 +45,15 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           width: '100%',
         }}
       >
-        <AppBar onMenuClick={handleSidebarToggle} />
+        {/* Desktop: Show AppBar */}
+        {!isMobile && <AppBar onMenuClick={handleSidebarToggle} />}
         
         <Box 
           component="main" 
           sx={{ 
             flex: 1, 
             p: { xs: 2, sm: 3 },
+            pb: isMobile ? 10 : 3,
             bgcolor: 'hsl(240 4% 96%)',
             overflowY: 'auto',
             width: '100%',
@@ -61,6 +67,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             {children}
           </Box>
         </Box>
+        
+        {/* Mobile: Show Bottom Navigation */}
+        {isMobile && <BottomNavigation />}
       </Box>
     </Box>
   );

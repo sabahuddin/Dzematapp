@@ -44,6 +44,7 @@ import CertificatesPage from "@/pages/CertificatesPage";
 import MembershipApplicationsPage from "@/pages/MembershipApplicationsPage";
 import ApplicationsPage from "@/pages/ApplicationsPage";
 import FeedPage from "@/pages/FeedPage";
+import ModulesPage from "@/pages/ModulesPage";
 import NotFound from "@/pages/not-found";
 
 // Layout
@@ -409,6 +410,12 @@ function Router() {
         <AdminRoute>
           <SettingsPage />
         </AdminRoute>
+      </Route>
+      
+      <Route path="/modules">
+        <ProtectedRoute>
+          <ModulesPage />
+        </ProtectedRoute>
       </Route>
       
       <Route path="/">
