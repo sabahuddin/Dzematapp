@@ -132,6 +132,7 @@
     "cancelled": "Otkazano",
     "archived": "Arhiva",
     "noTasksWithStatus": "Nema zadataka sa statusom \"{{status}}\"",
+    "taskCount": "{{count}} zadataka",
     "taskCount_one": "{{count}} zadatak",
     "taskCount_few": "{{count}} zadatka",
     "taskCount_many": "{{count}} zadataka",

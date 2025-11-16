@@ -132,6 +132,7 @@
     "cancelled": "Anuluar",
     "archived": "Arkivuar",
     "noTasksWithStatus": "Nuk ka detyra me statusin \"{{status}}\"",
+    "taskCount": "{{count}} detyra",
     "taskCount_one": "{{count}} detyrë",
     "taskCount_few": "{{count}} detyra",
     "taskCount_many": "{{count}} detyra",

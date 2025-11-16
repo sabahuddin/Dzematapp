@@ -132,6 +132,7 @@
     "cancelled": "Cancelled",
     "archived": "Archive",
     "noTasksWithStatus": "No tasks with status \"{{status}}\"",
+    "taskCount": "{{count}} tasks",
     "taskCount_one": "{{count}} task",
     "taskCount_few": "{{count}} tasks",
     "taskCount_many": "{{count}} tasks",
