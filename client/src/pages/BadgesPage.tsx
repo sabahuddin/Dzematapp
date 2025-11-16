@@ -37,7 +37,11 @@ import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/use-toast';
 import { apiRequest, queryClient } from '../lib/queryClient';
 
-export default function BadgesPage() {
+interface BadgesPageProps {
+  hideHeader?: boolean;
+}
+
+export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {}) {
   const { user: currentUser } = useAuth();
   const { toast } = useToast();
   const { t } = useTranslation(['badges', 'common']);
@@ -220,30 +224,56 @@ export default function BadgesPage() {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h5" sx={{ fontWeight: 600 }}>
-          {t('badges:title')}
-        </Typography>
-        <Stack direction="row" spacing={2}>
-          <Button
-            variant="outlined"
-            startIcon={<EmojiEvents />}
-            onClick={handleCheckAllBadges}
-            disabled={checkAllBadgesMutation.isPending}
-            data-testid="button-check-all-badges"
-          >
-            {checkAllBadgesMutation.isPending ? 'Provjeravam...' : 'Provjeri sve korisnike'}
-          </Button>
-          <Button
-            variant="contained"
-            startIcon={<Add />}
-            onClick={() => handleOpenDialog()}
-            data-testid="button-add-badge"
-          >
-            {t('badges:addBadge')}
-          </Button>
-        </Stack>
-      </Box>
+      {!hideHeader && (
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Typography variant="h5" sx={{ fontWeight: 600 }}>
+            {t('badges:title')}
+          </Typography>
+          <Stack direction="row" spacing={2}>
+            <Button
+              variant="outlined"
+              startIcon={<EmojiEvents />}
+              onClick={handleCheckAllBadges}
+              disabled={checkAllBadgesMutation.isPending}
+              data-testid="button-check-all-badges"
+            >
+              {checkAllBadgesMutation.isPending ? 'Provjeravam...' : 'Provjeri sve korisnike'}
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<Add />}
+              onClick={() => handleOpenDialog()}
+              data-testid="button-add-badge"
+            >
+              {t('badges:addBadge')}
+            </Button>
+          </Stack>
+        </Box>
+      )}
+      
+      {hideHeader && (
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3 }}>
+          <Stack direction="row" spacing={2}>
+            <Button
+              variant="outlined"
+              startIcon={<EmojiEvents />}
+              onClick={handleCheckAllBadges}
+              disabled={checkAllBadgesMutation.isPending}
+              data-testid="button-check-all-badges"
+            >
+              {checkAllBadgesMutation.isPending ? 'Provjeravam...' : 'Provjeri sve korisnike'}
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<Add />}
+              onClick={() => handleOpenDialog()}
+              data-testid="button-add-badge"
+            >
+              {t('badges:addBadge')}
+            </Button>
+          </Stack>
+        </Box>
+      )}
 
       <Card>
         <TableContainer sx={{ overflowX: 'auto' }}>

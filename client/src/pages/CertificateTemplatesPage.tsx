@@ -76,7 +76,11 @@ interface CertificateTemplate {
   createdAt: Date | null;
 }
 
-export default function CertificateTemplatesPage() {
+interface CertificateTemplatesPageProps {
+  hideHeader?: boolean;
+}
+
+export default function CertificateTemplatesPage({ hideHeader = false }: CertificateTemplatesPageProps = {}) {
   const { t } = useTranslation(['certificates']);
   const { toast } = useToast();
   const [modalOpen, setModalOpen] = useState(false);
@@ -263,24 +267,37 @@ export default function CertificateTemplatesPage() {
   }
 
   return (
-    <div className="container mx-auto p-6">
+    <div className={hideHeader ? "" : "container mx-auto p-6"}>
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <div>
-            <CardTitle data-testid="text-page-title">Zahvalnice - Templatei</CardTitle>
-            <CardDescription>
-              Upravljajte template-ima za zahvalnice
-            </CardDescription>
-          </div>
-          <Button
-            onClick={() => handleOpenModal()}
-            className="ml-auto"
-            data-testid="button-add-template"
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            Dodaj novi template
-          </Button>
-        </CardHeader>
+        {!hideHeader && (
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle data-testid="text-page-title">Zahvalnice - Templatei</CardTitle>
+              <CardDescription>
+                Upravljajte template-ima za zahvalnice
+              </CardDescription>
+            </div>
+            <Button
+              onClick={() => handleOpenModal()}
+              className="ml-auto"
+              data-testid="button-add-template"
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Dodaj novi template
+            </Button>
+          </CardHeader>
+        )}
+        {hideHeader && (
+          <CardHeader className="flex flex-row items-center justify-end">
+            <Button
+              onClick={() => handleOpenModal()}
+              data-testid="button-add-template"
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Dodaj novi template
+            </Button>
+          </CardHeader>
+        )}
         <CardContent>
           {templates.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground" data-testid="text-no-templates">

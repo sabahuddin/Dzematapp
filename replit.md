@@ -2,8 +2,17 @@
 
 DžematApp is a web-based admin dashboard application designed to manage mosque community operations. It provides a comprehensive system for administrators to handle users, announcements, events, work groups ("Sekcije"), and tasks. The application aims to streamline administrative tasks, improve communication within the community, and offer a modern, responsive user experience. It supports desktop and tablet usage with a consistent Material-UI and shadcn/ui design.
 
-# Recent Changes (November 9, 2025)
+# Recent Changes (November 16, 2025)
 
+- **Admin Menu Reorganization - Priznanja Section**:
+  - Admin Priznanja menu now shows only "Zahvalnice" and "Značke" (previously showed 4 separate certificate/badge pages)
+  - "Zahvalnice" opens unified page with 3 tabs: Template, Izdaj zahvalnice, Sve zahvalnice
+  - "Značke" opens unified page with 3 tabs: Značke, Svi bodovi, Izdate značke
+  - New "Svi bodovi" tab displays ranked leaderboard of all user points (replaces full activity log in badge context)
+  - New "Izdate značke" tab shows all awarded badges with user details, badge criteria, and award dates
+  - Member users continue to see "Moje zahvale", "Moje značke", "Moji bodovi" in Priznanja menu
+  - Backend: Added GET /api/user-badges/all endpoint for admin overview of all issued badges
+  - Legacy routes preserved for backward compatibility
 - Removed quick access shortcuts widget from Dashboard (admin and member views)
 - Users table restructured: firstName/lastName in separate columns, username/categories/skills columns removed, column sorting added for all fields
 - Category filtering now dynamically includes custom categories from database

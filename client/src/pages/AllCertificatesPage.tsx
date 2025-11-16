@@ -42,7 +42,11 @@ interface UserCertificate {
   viewed: boolean | null;
 }
 
-export default function AllCertificatesPage() {
+interface AllCertificatesPageProps {
+  hideHeader?: boolean;
+}
+
+export default function AllCertificatesPage({ hideHeader = false }: AllCertificatesPageProps = {}) {
   const { t } = useTranslation();
   const { toast } = useToast();
   const [selectedCertificate, setSelectedCertificate] = useState<UserCertificate | null>(null);
@@ -97,14 +101,16 @@ export default function AllCertificatesPage() {
   }
 
   return (
-    <div className="container mx-auto p-6">
+    <div className={hideHeader ? "" : "container mx-auto p-6"}>
       <Card>
-        <CardHeader>
-          <CardTitle data-testid="text-page-title">Sve Zahvale</CardTitle>
-          <CardDescription>
-            Pregled svih izdanih zahvalnica
-          </CardDescription>
-        </CardHeader>
+        {!hideHeader && (
+          <CardHeader>
+            <CardTitle data-testid="text-page-title">Sve Zahvale</CardTitle>
+            <CardDescription>
+              Pregled svih izdanih zahvalnica
+            </CardDescription>
+          </CardHeader>
+        )}
         <CardContent>
           {certificates.length === 0 ? (
             <div className="text-center py-12" data-testid="text-no-certificates">

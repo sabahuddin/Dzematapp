@@ -33,11 +33,13 @@ import ActivityLogPage from "@/pages/ActivityLogPage";
 import UserPointsDetailsPage from "@/pages/UserPointsDetailsPage";
 import BadgesPage from "@/pages/BadgesPage";
 import MyBadgesPage from "@/pages/MyBadgesPage";
+import BadgesAdminPage from "@/pages/BadgesAdminPage";
 import ProjectsPage from "@/pages/ProjectsPage";
 import CertificateTemplatesPage from "@/pages/CertificateTemplatesPage";
 import IssueCertificatesPage from "@/pages/IssueCertificatesPage";
 import MyCertificatesPage from "@/pages/MyCertificatesPage";
 import AllCertificatesPage from "@/pages/AllCertificatesPage";
+import CertificatesPage from "@/pages/CertificatesPage";
 import MembershipApplicationsPage from "@/pages/MembershipApplicationsPage";
 import ApplicationsPage from "@/pages/ApplicationsPage";
 import FeedPage from "@/pages/FeedPage";
@@ -287,6 +289,12 @@ function Router() {
         </AdminRoute>
       </Route>
       
+      <Route path="/badges-admin">
+        <AdminRoute>
+          <BadgesAdminPage />
+        </AdminRoute>
+      </Route>
+      
       <Route path="/projects">
         <ProtectedRoute>
           <ProjectsPage />
@@ -314,6 +322,12 @@ function Router() {
       <Route path="/all-certificates">
         <AdminRoute>
           <AllCertificatesPage />
+        </AdminRoute>
+      </Route>
+      
+      <Route path="/certificates">
+        <AdminRoute>
+          <CertificatesPage />
         </AdminRoute>
       </Route>
       

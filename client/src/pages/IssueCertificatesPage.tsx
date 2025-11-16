@@ -48,7 +48,11 @@ interface CertificateTemplate {
   templateImagePath: string;
 }
 
-export default function IssueCertificatesPage() {
+interface IssueCertificatesPageProps {
+  hideHeader?: boolean;
+}
+
+export default function IssueCertificatesPage({ hideHeader = false }: IssueCertificatesPageProps = {}) {
   const { t } = useTranslation();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
@@ -133,7 +137,7 @@ export default function IssueCertificatesPage() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className={hideHeader ? "space-y-6" : "container mx-auto p-6 space-y-6"}>
       {/* Template Selection */}
       <Card>
         <CardHeader>

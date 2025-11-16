@@ -99,13 +99,11 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
   ];
 
   const priznanjaItems = [
-    { path: '/my-certificates', label: 'Moje zahvale', icon: CardGiftcard, showBadge: true },
-    { path: '/my-badges', label: 'Moje značke', icon: EmojiEvents },
-    { path: '/my-points', label: 'Moji bodovi', icon: Timeline },
-    { path: '/badges', label: t('navigation:menu.badges'), icon: EmojiEvents, adminOnly: true },
-    { path: '/certificate-templates', label: t('navigation:menu.certificateTemplates'), icon: CardGiftcard, adminOnly: true },
-    { path: '/issue-certificates', label: t('navigation:menu.issueCertificates'), icon: CardGiftcard, adminOnly: true },
-    { path: '/all-certificates', label: t('navigation:menu.allCertificates'), icon: CardGiftcard, adminOnly: true },
+    { path: '/my-certificates', label: 'Moje zahvale', icon: CardGiftcard, showBadge: true, memberOnly: true },
+    { path: '/my-badges', label: 'Moje značke', icon: EmojiEvents, memberOnly: true },
+    { path: '/my-points', label: 'Moji bodovi', icon: Timeline, memberOnly: true },
+    { path: '/certificates', label: 'Zahvalnice', icon: CardGiftcard, adminOnly: true },
+    { path: '/badges-admin', label: 'Značke', icon: EmojiEvents, adminOnly: true },
   ];
 
   const mediaItems = [
@@ -332,8 +330,11 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
         {!collapsed && (
           <Collapse in={priznanjaOpen} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              {priznanjaItems.map((item) => {
-                if (item.adminOnly && !user?.isAdmin) return null;
+              {priznanjaItems.map((item: any) => {
+                // Don't render until user is loaded
+                if (!user) return null;
+                if (item.adminOnly && !user.isAdmin) return null;
+                if (item.memberOnly && user.isAdmin) return null;
                 
                 const Icon = item.icon;
                 const isActive = location === item.path;

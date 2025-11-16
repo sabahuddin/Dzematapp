@@ -2957,6 +2957,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/user-badges/all", requireAdmin, async (req, res) => {
+    try {
+      const allUserBadges = await storage.getAllUserBadges();
+      res.json(allUserBadges);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get all user badges" });
+    }
+  });
+
   // Projects Routes (Feature 4)
   app.get("/api/projects", requireAuth, async (req, res) => {
     try {

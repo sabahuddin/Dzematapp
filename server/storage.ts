@@ -335,6 +335,7 @@ export interface IStorage {
   // User Badges (Feature 2)
   awardBadgeToUser(userId: string, badgeId: string): Promise<UserBadge>;
   getUserBadges(userId: string): Promise<UserBadge[]>;
+  getAllUserBadges(): Promise<Array<UserBadge & { user: User; badge: Badge }>>;
   checkAndAwardBadges(userId: string): Promise<UserBadge[]>;
   removeUnqualifiedBadges(userId: string): Promise<string[]>;
   deleteActivityLogByRelatedEntity(relatedEntityId: string): Promise<number>;
@@ -1807,6 +1808,24 @@ export class DatabaseStorage implements IStorage {
 
   async getUserBadges(userId: string): Promise<UserBadge[]> {
     return await db.select().from(userBadges).where(eq(userBadges.userId, userId));
+  }
+
+  async getAllUserBadges(): Promise<Array<UserBadge & { user: User; badge: Badge }>> {
+    const result = await db.select({
+      userBadge: userBadges,
+      user: users,
+      badge: badges
+    })
+    .from(userBadges)
+    .innerJoin(users, eq(userBadges.userId, users.id))
+    .innerJoin(badges, eq(userBadges.badgeId, badges.id))
+    .orderBy(desc(userBadges.earnedAt));
+    
+    return result.map(row => ({
+      ...row.userBadge,
+      user: row.user,
+      badge: row.badge
+    }));
   }
 
   async checkAndAwardBadges(userId: string): Promise<UserBadge[]> {
