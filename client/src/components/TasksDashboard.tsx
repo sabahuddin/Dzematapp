@@ -116,7 +116,7 @@ function TaskCard({ task }: TaskCardProps) {
   const [, setLocation] = useLocation();
 
   const handleClick = () => {
-    setLocation('/tasks');
+    setLocation(`/tasks?taskId=${task.id}&workGroupId=${task.workGroup.id}`);
   };
 
   return (

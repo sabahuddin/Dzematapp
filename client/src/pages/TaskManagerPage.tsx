@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useLocation } from 'wouter';
 import {
   Box,
   Button,
@@ -461,6 +462,7 @@ export default function TaskManagerPage() {
   const { formatPrice, currency } = useCurrency();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [location, setLocation] = useLocation();
   
   const [tabValue, setTabValue] = useState(0);
   const [subTabValue, setSubTabValue] = useState(0);
@@ -474,6 +476,8 @@ export default function TaskManagerPage() {
   const [confirmJoinDialogOpen, setConfirmJoinDialogOpen] = useState(false);
   const [workGroupToJoin, setWorkGroupToJoin] = useState<WorkGroup | null>(null);
   const [confirmDeleteDialogOpen, setConfirmDeleteDialogOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<any>(null);
+  const [taskDetailOpen, setTaskDetailOpen] = useState(false);
 
   const workGroupsQuery = useQuery<WorkGroup[]>({
     queryKey: ['/api/work-groups'],
@@ -755,6 +759,33 @@ export default function TaskManagerPage() {
     const user = usersQuery.data?.find((u: any) => u.id === userId);
     return user ? `${user.firstName} ${user.lastName}` : t('unknownUser');
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.split('?')[1] || '');
+    const taskId = params.get('taskId');
+    const workGroupId = params.get('workGroupId');
+
+    if (taskId && workGroupId && workGroupsQuery.data) {
+      const workGroup = workGroupsQuery.data.find((wg: WorkGroup) => wg.id === workGroupId);
+      
+      if (workGroup) {
+        fetch(`/api/work-groups/${workGroupId}/tasks`)
+          .then(res => res.json())
+          .then((tasks: any[]) => {
+            const task = tasks.find((t: any) => t.id === taskId);
+            if (task) {
+              setSelectedTask(task);
+              setTaskDetailOpen(true);
+              setLocation('/tasks');
+            }
+          })
+          .catch(err => {
+            console.error('Error loading task:', err);
+            setLocation('/tasks');
+          });
+      }
+    }
+  }, [location, workGroupsQuery.data, setLocation]);
 
   const isLoading = user?.isAdmin 
     ? (workGroupsQuery.isLoading || accessRequestsQuery.isLoading || usersQuery.isLoading)
@@ -1362,6 +1393,24 @@ export default function TaskManagerPage() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {selectedTask && (
+        <TaskDetailDialog
+          open={taskDetailOpen}
+          onClose={() => {
+            setTaskDetailOpen(false);
+            setSelectedTask(null);
+          }}
+          task={selectedTask}
+          workGroup={workGroupsQuery.data?.find((wg: WorkGroup) => wg.id === selectedTask.workGroupId) || null}
+          currentUser={user}
+          isModeratorOrAdmin={user?.isAdmin || false}
+          members={[]}
+          onTaskUpdated={() => {
+            queryClient.invalidateQueries({ queryKey: ['/api/work-groups', selectedTask.workGroupId, 'tasks'] });
+          }}
+        />
+      )}
     </Box>
   );
 }
