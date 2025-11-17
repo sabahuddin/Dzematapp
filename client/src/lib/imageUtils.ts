@@ -6,10 +6,10 @@ export function normalizeImageUrl(url: string | null | undefined): string | null
     return url;
   }
   
-  // For relative URLs starting with /uploads, use API URL or current origin
+  // For relative URLs starting with /uploads, prepend current origin
+  // In dev mode (Vite middleware), both frontend and backend are on same origin
   if (url.startsWith('/uploads')) {
-    const apiUrl = import.meta.env.VITE_API_URL || window.location.origin;
-    return `${apiUrl}${url}`;
+    return url; // Return verbatim - Express serves /uploads before Vite middleware
   }
   
   return url;
