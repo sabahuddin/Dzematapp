@@ -219,7 +219,7 @@ export default function LivestreamSettingsPage() {
             {t("livestreamSettings.examples.title")}
           </Typography>
           
-          <Accordion>
+          <Accordion TransitionProps={{ unmountOnExit: false }}>
             <AccordionSummary expandIcon={<ExpandMore />}>
               <Typography sx={{ fontWeight: 600 }}>{t("livestreamSettings.examples.youtubeAccordion")}</Typography>
             </AccordionSummary>
@@ -233,7 +233,7 @@ export default function LivestreamSettingsPage() {
             </AccordionDetails>
           </Accordion>
 
-          <Accordion>
+          <Accordion TransitionProps={{ unmountOnExit: false }}>
             <AccordionSummary expandIcon={<ExpandMore />}>
               <Typography sx={{ fontWeight: 600 }}>{t("livestreamSettings.examples.facebookAccordion")}</Typography>
             </AccordionSummary>
@@ -247,7 +247,7 @@ export default function LivestreamSettingsPage() {
             </AccordionDetails>
           </Accordion>
 
-          <Accordion>
+          <Accordion TransitionProps={{ unmountOnExit: false }}>
             <AccordionSummary expandIcon={<ExpandMore />}>
               <Typography sx={{ fontWeight: 600 }}>{t("livestreamSettings.examples.directAccordion")}</Typography>
             </AccordionSummary>
