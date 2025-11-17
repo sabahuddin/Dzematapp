@@ -1,4 +1,4 @@
-import { useState, type SyntheticEvent } from 'react';
+import { useState, useEffect, type SyntheticEvent } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import {
@@ -151,6 +151,26 @@ export default function EventsPage() {
     queryKey: ['/api/events'],
     retry: 1,
   });
+
+  // Handle deep linking via query params (e.g., ?id=xxx)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const eventId = params.get('id');
+    
+    if (eventId && eventsQuery.data) {
+      const event = eventsQuery.data.find(e => e.id === eventId);
+      if (event) {
+        setSelectedEvent(event);
+        if (user?.isAdmin) {
+          setModalOpen(true);
+        } else {
+          setViewModalOpen(true);
+        }
+        // Clear the query param after opening
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+    }
+  }, [eventsQuery.data, user]);
 
   const importantDatesQuery = useQuery<ImportantDate[]>({
     queryKey: ['/api/important-dates'],

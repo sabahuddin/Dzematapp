@@ -69,6 +69,22 @@ export default function AnnouncementsPage() {
     retry: 1,
   });
 
+  // Handle deep linking via query params (e.g., ?id=xxx)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const announcementId = params.get('id');
+    
+    if (announcementId && announcementsQuery.data) {
+      const announcement = announcementsQuery.data.find(a => a.id === announcementId);
+      if (announcement) {
+        setSelectedAnnouncement(announcement);
+        setModalOpen(true);
+        // Clear the query param after opening
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+    }
+  }, [announcementsQuery.data]);
+
   // Create announcement mutation
   const createAnnouncementMutation = useMutation({
     mutationFn: async (announcementData: any) => {
