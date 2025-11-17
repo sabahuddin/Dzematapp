@@ -187,14 +187,13 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
       mb: 3,
       position: 'relative',
       overflow: 'hidden',
-      WebkitOverflowScrolling: 'auto',
     }}>
       <Box
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         sx={{
-          touchAction: 'pan-y',
+          touchAction: 'none',
           userSelect: 'none',
         }}
       >

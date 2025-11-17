@@ -13,18 +13,13 @@ export function MobilePageLayout({ children, title = 'DžematApp', showBack }: M
   return (
     <Box sx={{ 
       bgcolor: 'var(--background)', 
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      width: '100vw',
       height: '100vh',
+      width: '100vw',
       display: 'flex',
       flexDirection: 'column',
       overflow: 'hidden',
     }}>
-      {/* Top AppBar - Fixed */}
+      {/* Top AppBar */}
       <Box sx={{ flexShrink: 0 }}>
         <MobileAppBar title={title} showBack={showBack} />
       </Box>
@@ -42,7 +37,7 @@ export function MobilePageLayout({ children, title = 'DžematApp', showBack }: M
         {children}
       </Box>
 
-      {/* Bottom Navigation - Fixed */}
+      {/* Bottom Navigation */}
       <Box sx={{ flexShrink: 0 }}>
         <BottomNavigation />
       </Box>

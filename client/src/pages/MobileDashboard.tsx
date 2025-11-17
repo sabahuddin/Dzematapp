@@ -2,11 +2,10 @@ import { Box, Typography, Card, CardContent, CircularProgress, Alert, Chip, Avat
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
 import { type ActivityFeedItem, type PrayerTime } from '@shared/schema';
-import { MobileAppBar } from '../components/MobileAppBar';
+import { MobilePageLayout } from '../components/layout/MobilePageLayout';
 import { HeroPrayerCard } from '../components/HeroPrayerCard';
 import { SectionCard } from '../components/SectionCard';
 import FeedSlideshow from '../components/FeedSlideshow';
-import BottomNavigation from '../components/layout/BottomNavigation';
 import { ArrowForward, Article } from '@mui/icons-material';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
@@ -58,8 +57,9 @@ export default function MobileDashboard() {
     if (!item.isClickable) return;
 
     const id = item.relatedEntityId;
+    const type = item.relatedEntityType?.toLowerCase();
     
-    switch (item.relatedEntityType) {
+    switch (type) {
       case 'announcement': 
         setLocation(id ? `/announcements?id=${id}` : '/announcements'); 
         break;
@@ -139,34 +139,7 @@ export default function MobileDashboard() {
   };
 
   return (
-    <Box sx={{ 
-      bgcolor: 'var(--background)', 
-      minHeight: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-    }}>
-      {/* Top AppBar - Fixed */}
-      <Box sx={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1100 }}>
-        <MobileAppBar title="DžematApp" />
-      </Box>
-
-      {/* Main Content - Scrollable area */}
-      <Box sx={{ 
-        flex: 1,
-        overflowY: 'auto',
-        overflowX: 'hidden',
-        WebkitOverflowScrolling: 'touch',
-        px: 2,
-        pt: 'calc(64px + env(safe-area-inset-top) + 16px)',
-        pb: 'calc(56px + env(safe-area-inset-bottom) + 16px)',
-        scrollPaddingTop: 'calc(64px + env(safe-area-inset-top))',
-        scrollPaddingBottom: 'calc(56px + env(safe-area-inset-bottom))',
-      }}>
+    <MobilePageLayout title="DžematApp">
         {/* Hero Prayer Times */}
         {prayerLoading && (
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
@@ -343,12 +316,6 @@ export default function MobileDashboard() {
             </Box>
           )}
         </SectionCard>
-      </Box>
-
-      {/* Bottom Navigation - Fixed */}
-      <Box sx={{ flexShrink: 0 }}>
-        <BottomNavigation />
-      </Box>
-    </Box>
+    </MobilePageLayout>
   );
 }

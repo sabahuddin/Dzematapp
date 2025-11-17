@@ -1,5 +1,5 @@
 import { BottomNavigation as MuiBottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
-import { Home, CalendarMonth, Assignment, Store, Apps } from '@mui/icons-material';
+import { Home, CalendarMonth, Campaign, Store, Apps } from '@mui/icons-material';
 import { useLocation } from 'wouter';
 
 export default function BottomNavigation() {
@@ -8,14 +8,14 @@ export default function BottomNavigation() {
   const getActiveTab = () => {
     if (location === '/' || location === '/dashboard') return 0;
     if (location.startsWith('/events')) return 1;
-    if (location.startsWith('/tasks')) return 2;
+    if (location.startsWith('/announcements')) return 2;
     if (location.startsWith('/shop')) return 3;
     if (location.startsWith('/modules')) return 4;
     return 0;
   };
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
-    const routes = ['/', '/events', '/tasks', '/shop', '/modules'];
+    const routes = ['/', '/events', '/announcements', '/shop', '/modules'];
     setLocation(routes[newValue]);
   };
 
@@ -24,11 +24,6 @@ export default function BottomNavigation() {
       sx={{
         borderTop: '1px solid var(--semantic-success-border)',
         backgroundColor: 'var(--semantic-success-bg)',
-        position: 'fixed',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        zIndex: 1100,
         pb: 'env(safe-area-inset-bottom)',
       }}
       elevation={8}
@@ -59,8 +54,8 @@ export default function BottomNavigation() {
           data-testid="bottom-nav-events"
         />
         <BottomNavigationAction
-          icon={<Assignment />}
-          data-testid="bottom-nav-tasks"
+          icon={<Campaign />}
+          data-testid="bottom-nav-announcements"
         />
         <BottomNavigationAction
           icon={<Store />}

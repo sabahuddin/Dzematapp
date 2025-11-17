@@ -88,18 +88,13 @@ export function MobileAppBar({ title = 'DžematApp', showBack }: MobileAppBarPro
 
   return (
     <AppBar 
-      position="fixed" 
+      position="static" 
       elevation={0}
       sx={{
         bgcolor: 'var(--card)',
         borderBottom: '1px solid var(--border)',
         color: 'var(--card-foreground)',
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 1100,
         paddingTop: 'env(safe-area-inset-top)',
-        height: 'calc(64px + env(safe-area-inset-top))',
       }}
     >
       <Toolbar sx={{ justifyContent: 'space-between', minHeight: '64px !important', px: 2 }}>
