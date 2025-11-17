@@ -1,5 +1,5 @@
 import { AppBar, Toolbar, IconButton, Badge, Avatar, Box, Typography, Menu, MenuItem } from '@mui/material';
-import { Notifications, Menu as MenuIcon, Logout, Settings } from '@mui/icons-material';
+import { Notifications, Menu as MenuIcon, Logout, Settings, ArrowBack } from '@mui/icons-material';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
@@ -8,13 +8,22 @@ import { useTranslation } from 'react-i18next';
 
 interface MobileAppBarProps {
   title?: string;
+  showBack?: boolean;
 }
 
-export function MobileAppBar({ title = 'DžematApp' }: MobileAppBarProps) {
+export function MobileAppBar({ title = 'DžematApp', showBack }: MobileAppBarProps) {
   const { user, logout } = useAuth();
   const { t } = useTranslation();
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  
+  // Auto-detect if back button should show based on current route
+  const isDashboard = location === '/' || location === '/dashboard';
+  const shouldShowBack = showBack !== undefined ? showBack : !isDashboard;
+  
+  const handleBack = () => {
+    window.history.back();
+  };
 
   const { data: notificationCounts } = useQuery<{ 
     shop: number; 
@@ -92,8 +101,17 @@ export function MobileAppBar({ title = 'DžematApp' }: MobileAppBarProps) {
       }}
     >
       <Toolbar sx={{ justifyContent: 'space-between', minHeight: '56px !important' }}>
-        {/* Logo/Naziv */}
+        {/* Lijeva strana - Back ili Logo */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          {shouldShowBack && (
+            <IconButton 
+              onClick={handleBack}
+              sx={{ color: 'var(--card-foreground)', mr: 0.5 }}
+              data-testid="button-back"
+            >
+              <ArrowBack />
+            </IconButton>
+          )}
           <Typography 
             variant="h6" 
             sx={{ 

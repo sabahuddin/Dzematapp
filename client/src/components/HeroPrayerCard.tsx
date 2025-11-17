@@ -71,16 +71,19 @@ export function HeroPrayerCard({ prayerTime }: HeroPrayerCardProps) {
       linkTo="/vaktija"
       variant="hero"
     >
-      {/* Next Prayer Highlight */}
+      {/* Next Prayer Highlight - Kompaktniji */}
       {nextPrayer && (
         <Box 
           sx={{ 
-            bgcolor: 'hsl(123 46% 95%)',
-            border: '2px solid hsl(123 46% 70%)',
+            bgcolor: 'hsl(123 46% 97%)',
+            border: '1px solid hsl(123 46% 80%)',
             borderRadius: 'var(--radius)',
-            p: 2,
-            mb: 2.5,
-            textAlign: 'center',
+            p: 1,
+            mb: 1.5,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 1,
           }}
           data-testid="box-next-prayer"
         >
@@ -88,77 +91,55 @@ export function HeroPrayerCard({ prayerTime }: HeroPrayerCardProps) {
             variant="caption" 
             sx={{ 
               color: 'hsl(123 46% 54%)',
-              fontWeight: 600,
-              textTransform: 'uppercase',
-              letterSpacing: '0.5px',
-              fontSize: '0.7rem'
+              fontSize: '0.65rem'
             }}
           >
-            {t('dashboard:nextPrayer', 'Sljedeći namaz')}
+            {t('dashboard:nextPrayer', 'Sljedeći')}:
           </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, mt: 0.5 }}>
-            <Box sx={{ color: 'hsl(123 46% 34%)' }}>{nextPrayer.icon}</Box>
-            <Typography 
-              variant="h5" 
-              sx={{ 
-                fontWeight: 700,
-                color: 'hsl(123 46% 24%)',
-              }}
-              data-testid="text-next-prayer-time"
-            >
-              {nextPrayer.time}
-            </Typography>
-          </Box>
           <Typography 
             variant="body2" 
             sx={{ 
-              color: 'hsl(123 46% 34%)',
               fontWeight: 600,
-              mt: 0.5
+              color: 'hsl(123 46% 24%)',
             }}
             data-testid="text-next-prayer-name"
           >
             {nextPrayer.name}
           </Typography>
+          <Typography 
+            variant="body1" 
+            sx={{ 
+              fontWeight: 700,
+              color: 'hsl(123 46% 24%)',
+            }}
+            data-testid="text-next-prayer-time"
+          >
+            {nextPrayer.time}
+          </Typography>
         </Box>
       )}
 
-      {/* 2-Column Grid */}
-      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 1.5 }}>
+      {/* 3-Column Grid (2 reda po 3) */}
+      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1 }}>
         {prayerItems.map((prayer) => (
-          <Box key={prayer.name}>
-            <Chip
-              icon={prayer.icon}
-              label={
-                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', py: 0.5 }}>
-                  <Typography variant="caption" sx={{ fontSize: '0.65rem', color: 'hsl(123 46% 44%)' }}>
-                    {prayer.name}
-                  </Typography>
-                  <Typography variant="body2" sx={{ fontWeight: 600, color: 'hsl(123 46% 24%)' }}>
-                    {prayer.time}
-                  </Typography>
-                </Box>
-              }
-              sx={{
-                width: '100%',
-                height: 'auto',
-                justifyContent: 'flex-start',
-                bgcolor: 'white',
-                border: '1px solid hsl(123 46% 85%)',
-                borderRadius: 'var(--radius)',
-                px: 1.5,
-                py: 1,
-                '& .MuiChip-icon': {
-                  color: 'hsl(123 46% 54%)',
-                  marginLeft: 0,
-                },
-                '& .MuiChip-label': {
-                  padding: 0,
-                  marginLeft: 1,
-                }
-              }}
-              data-testid={`chip-prayer-${prayer.name.toLowerCase()}`}
-            />
+          <Box 
+            key={prayer.name}
+            sx={{
+              bgcolor: 'white',
+              border: '1px solid hsl(123 46% 85%)',
+              borderRadius: 'var(--radius)',
+              p: 0.75,
+              textAlign: 'center',
+            }}
+            data-testid={`chip-prayer-${prayer.name.toLowerCase()}`}
+          >
+            <Box sx={{ color: 'hsl(123 46% 54%)', mb: 0.25 }}>{prayer.icon}</Box>
+            <Typography variant="caption" sx={{ fontSize: '0.6rem', color: 'hsl(123 46% 44%)', display: 'block' }}>
+              {prayer.name}
+            </Typography>
+            <Typography variant="body2" sx={{ fontWeight: 600, color: 'hsl(123 46% 24%)', fontSize: '0.85rem' }}>
+              {prayer.time}
+            </Typography>
           </Box>
         ))}
       </Box>
