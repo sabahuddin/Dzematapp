@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Box, Tabs, Tab, Typography, Card, CardContent, CardMedia, Button, Chip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField, MenuItem, ImageList, ImageListItem, Select, FormControl, InputLabel } from "@mui/material";
+import { Box, Tabs, Tab, Typography, Card, CardContent, CardMedia, Button, Chip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField, MenuItem, ImageList, ImageListItem, Select, FormControl, InputLabel, Paper } from "@mui/material";
 import { Add, Delete, ShoppingCart, Store, CardGiftcard, CloudUpload, Edit, Close, ContentCopy, Archive, Check, Build } from "@mui/icons-material";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/contexts/AuthContext";
@@ -685,53 +685,46 @@ export default function ShopPage() {
         {t('shop:title')}
       </Typography>
 
-      <Tabs 
-        value={activeTab} 
-        onChange={(_, newValue) => setActiveTab(newValue)} 
-        sx={{ 
-          mb: 3, 
-          borderBottom: 1, 
-          borderColor: 'divider',
-          '& .MuiTab-root': {
-            minWidth: { xs: 60, sm: 120 },
-            '& .MuiTab-iconWrapper': { 
-              marginRight: { xs: 0, sm: 1 }, 
-              marginBottom: { xs: 0.5, sm: 0 } 
-            }
-          },
-          '& .MuiTab-root .MuiTab-wrapper': { 
-            flexDirection: { xs: 'column', sm: 'row' } 
-          }
-        }}
-      >
-        <Tab 
-          label={<Box sx={{ display: { xs: 'none', sm: 'block' } }}>{t('shop:tabs.dzematShop')}</Box>} 
-          icon={<Store />} 
-          data-testid="tab-buy" 
-        />
-        <Tab 
-          label={<Box sx={{ display: { xs: 'none', sm: 'block' } }}>{t('shop:tabs.sell')}</Box>} 
-          icon={<ShoppingCart />} 
-          data-testid="tab-sell" 
-        />
-        <Tab 
-          label={<Box sx={{ display: { xs: 'none', sm: 'block' } }}>{t('shop:tabs.gift')}</Box>} 
-          icon={<CardGiftcard />} 
-          data-testid="tab-gift" 
-        />
-        <Tab 
-          label={<Box sx={{ display: { xs: 'none', sm: 'block' } }}>{t('shop:tabs.services')}</Box>} 
-          icon={<Build />} 
-          data-testid="tab-services" 
-        />
-        {isAdmin && (
+      <Paper sx={{ mb: 3 }}>
+        <Tabs 
+          value={activeTab} 
+          onChange={(_, newValue) => setActiveTab(newValue)} 
+          sx={{ borderBottom: 1, borderColor: 'divider' }}
+        >
           <Tab 
-            label={<Box sx={{ display: { xs: 'none', sm: 'block' } }}>{t('shop:tabs.archive')}</Box>} 
-            icon={<Archive />} 
-            data-testid="tab-archive" 
+            icon={<Store />}
+            iconPosition="start"
+            label={t('shop:tabs.dzematShop')}
+            data-testid="tab-buy" 
           />
-        )}
-      </Tabs>
+          <Tab 
+            icon={<ShoppingCart />}
+            iconPosition="start"
+            label={t('shop:tabs.sell')}
+            data-testid="tab-sell" 
+          />
+          <Tab 
+            icon={<CardGiftcard />}
+            iconPosition="start"
+            label={t('shop:tabs.gift')}
+            data-testid="tab-gift" 
+          />
+          <Tab 
+            icon={<Build />}
+            iconPosition="start"
+            label={t('shop:tabs.services')}
+            data-testid="tab-services" 
+          />
+          {isAdmin && (
+            <Tab 
+              icon={<Archive />}
+              iconPosition="start"
+              label={t('shop:tabs.archive')}
+              data-testid="tab-archive" 
+            />
+          )}
+        </Tabs>
+      </Paper>
 
       {/* DžematShop Tab */}
       {activeTab === 0 && (
