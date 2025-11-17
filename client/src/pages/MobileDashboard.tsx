@@ -158,7 +158,7 @@ export default function MobileDashboard() {
         overflowX: 'hidden',
         WebkitOverflowScrolling: 'touch',
         px: 2,
-        pt: 1,
+        pt: 3,
         pb: 'calc(56px + env(safe-area-inset-bottom) + 8px)',
       }}>
         {/* Hero Prayer Times */}

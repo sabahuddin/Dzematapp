@@ -163,10 +163,16 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
   return (
     <Box sx={{ 
       mb: 3,
-      '& .MuiMobileStepper-root': { display: 'none' },
-      '& [role="tablist"]': { display: 'none' },
+      '& .MuiMobileStepper-root': { display: 'none !important' },
+      '& [role="tablist"]': { display: 'none !important' },
       '& .swiper-pagination': { display: 'none !important' },
+      '& .swiper-pagination-bullets': { display: 'none !important' },
       '& .carousel-indicators': { display: 'none !important' },
+      '& .slick-dots': { display: 'none !important' },
+      '& .pagination': { display: 'none !important' },
+      '& .dots': { display: 'none !important' },
+      '& button[class*="dot"]': { display: 'none !important' },
+      '& div[class*="indicator"]': { display: 'none !important' },
     }}>
       <Card
         onClick={() => handleItemClick(currentItem)}

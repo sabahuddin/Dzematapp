@@ -517,7 +517,8 @@ export class DatabaseStorage implements IStorage {
       // Update existing feed item
       await db.update(activityFeed)
         .set({
-          description: announcement.title,
+          title: announcement.title,
+          description: "",
           metadata: JSON.stringify({ imageUrl })
         })
         .where(eq(activityFeed.id, existingFeedItems[0].id));
@@ -525,8 +526,8 @@ export class DatabaseStorage implements IStorage {
       // Create new feed item
       await this.createActivityFeedItem({
         type: "announcement",
-        title: "Nova obavijest",
-        description: announcement.title,
+        title: announcement.title,
+        description: "",
         relatedEntityId: announcementId,
         relatedEntityType: "announcement",
         isClickable: true,
@@ -566,8 +567,8 @@ export class DatabaseStorage implements IStorage {
     // Add to activity feed with photoUrl from event
     await this.createActivityFeedItem({
       type: "event",
-      title: "Novi događaj",
-      description: event.name,
+      title: event.name,
+      description: event.location || "",
       relatedEntityId: event.id,
       relatedEntityType: "event",
       isClickable: true,
