@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { Box, Card, CardContent, Typography, IconButton } from '@mui/material';
-import { ChevronLeft, ChevronRight, ArrowForward } from '@mui/icons-material';
+import { useState, useEffect, useRef } from 'react';
+import { Box, Card, CardContent, Typography } from '@mui/material';
+import { ArrowForward } from '@mui/icons-material';
 import {
   PersonAdd,
   CheckCircle,
@@ -14,7 +14,6 @@ import {
   Videocam
 } from '@mui/icons-material';
 import { type ActivityFeedItem } from '@shared/schema';
-import { format } from 'date-fns';
 import { useLocation } from 'wouter';
 
 interface FeedSlideshowProps {
@@ -24,30 +23,53 @@ interface FeedSlideshowProps {
 export default function FeedSlideshow({ items }: FeedSlideshowProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [, setLocation] = useLocation();
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
+
+  // Limit to 10 items
+  const limitedItems = items.slice(0, 10);
 
   // Reset index when items change
   useEffect(() => {
-    if (items.length > 0 && currentIndex >= items.length) {
+    if (limitedItems.length > 0 && currentIndex >= limitedItems.length) {
       setCurrentIndex(0);
     }
-  }, [items, currentIndex]);
+  }, [limitedItems, currentIndex]);
 
   useEffect(() => {
-    if (items.length === 0) return;
+    if (limitedItems.length === 0) return;
 
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % items.length);
+      setCurrentIndex((prev) => (prev + 1) % limitedItems.length);
     }, 5000); // 5 seconds
 
     return () => clearInterval(interval);
-  }, [items.length]);
+  }, [limitedItems.length]);
 
-  const handlePrev = () => {
-    setCurrentIndex((prev) => (prev - 1 + items.length) % items.length);
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
   };
 
-  const handleNext = () => {
-    setCurrentIndex((prev) => (prev + 1) % items.length);
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    const swipeThreshold = 50;
+    const diff = touchStartX.current - touchEndX.current;
+
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        // Swipe left - next
+        setCurrentIndex((prev) => (prev + 1) % limitedItems.length);
+      } else {
+        // Swipe right - prev
+        setCurrentIndex((prev) => (prev - 1 + limitedItems.length) % limitedItems.length);
+      }
+    }
+
+    touchStartX.current = 0;
+    touchEndX.current = 0;
   };
 
   const getIcon = (type: string) => {
@@ -76,10 +98,6 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
     }
   };
 
-  const formatDate = (dateString: Date | null) => {
-    if (!dateString) return '';
-    return format(new Date(dateString), 'dd.MM.yyyy HH:mm');
-  };
 
   const handleItemClick = (item: ActivityFeedItem) => {
     if (!item.isClickable) return;
@@ -100,30 +118,33 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
     }
   };
 
-  if (items.length === 0) {
+  if (limitedItems.length === 0) {
     return null;
   }
 
   // Clamp index to valid range to prevent undefined access during state updates
-  const safeIndex = Math.min(currentIndex, items.length - 1);
-  const currentItem = items[safeIndex];
+  const safeIndex = Math.min(currentIndex, limitedItems.length - 1);
+  const currentItem = limitedItems[safeIndex];
   const colors = getTypeColor(currentItem.type);
 
   return (
-    <Box sx={{ position: 'relative', mb: 3 }}>
+    <Box sx={{ mb: 3 }}>
       <Card
         onClick={() => handleItemClick(currentItem)}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         data-testid={`feed-slideshow-item-${currentItem.id}`}
         sx={{
           backgroundColor: colors.bg,
           transition: 'all 0.3s ease',
           cursor: currentItem.isClickable ? 'pointer' : 'default',
+          userSelect: 'none',
           
           ...(currentItem.isClickable ? {
             boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-            '&:hover': {
-              boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
-              transform: 'translateY(-2px)',
+            '&:active': {
+              transform: 'scale(0.98)',
             },
           } : {
             opacity: 0.95,
@@ -145,7 +166,7 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
             </Box>
 
             <Box sx={{ flex: 1 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <Typography variant="h6" component="h3" sx={{ fontWeight: 600 }}>
                   {currentItem.title}
                 </Typography>
@@ -162,83 +183,15 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
               {currentItem.description && (
                 <Typography 
                   variant="body2" 
-                  color="text.secondary" 
-                  sx={{ mb: 1 }}
+                  color="text.secondary"
                 >
                   {currentItem.description}
                 </Typography>
               )}
-
-              <Typography variant="caption" color="text.secondary">
-                {formatDate(currentItem.createdAt)}
-              </Typography>
             </Box>
           </Box>
         </CardContent>
       </Card>
-
-      {/* Navigation arrows */}
-      <Box
-        sx={{
-          position: 'absolute',
-          top: '50%',
-          left: 0,
-          right: 0,
-          transform: 'translateY(-50%)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          pointerEvents: 'none',
-          px: 1,
-        }}
-      >
-        <IconButton
-          onClick={handlePrev}
-          size="small"
-          sx={{
-            pointerEvents: 'auto',
-            bgcolor: 'rgba(255, 255, 255, 0.9)',
-            '&:hover': { bgcolor: 'rgba(255, 255, 255, 1)' },
-          }}
-          data-testid="slideshow-prev"
-        >
-          <ChevronLeft />
-        </IconButton>
-        <IconButton
-          onClick={handleNext}
-          size="small"
-          sx={{
-            pointerEvents: 'auto',
-            bgcolor: 'rgba(255, 255, 255, 0.9)',
-            '&:hover': { bgcolor: 'rgba(255, 255, 255, 1)' },
-          }}
-          data-testid="slideshow-next"
-        >
-          <ChevronRight />
-        </IconButton>
-      </Box>
-
-      {/* Dots indicator */}
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: 1,
-          mt: 1,
-        }}
-      >
-        {items.map((_, index) => (
-          <Box
-            key={index}
-            sx={{
-              width: 8,
-              height: 8,
-              borderRadius: '50%',
-              bgcolor: index === safeIndex ? 'primary.main' : 'rgba(0, 0, 0, 0.2)',
-              transition: 'all 0.3s ease',
-            }}
-          />
-        ))}
-      </Box>
     </Box>
   );
 }
