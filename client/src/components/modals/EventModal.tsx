@@ -63,6 +63,10 @@ export default function EventModal({
     categories: [] as string[],
     pointsValue: 50
   });
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const predefinedCategories = [
     'Iftar',
@@ -100,6 +104,9 @@ export default function EventModal({
         categories: event.categories || [],
         pointsValue: event.pointsValue || 50
       });
+      setPhotoUrl(event.photoUrl || null);
+      setPhotoPreview(event.photoUrl || null);
+      setPhotoFile(null);
     } else {
       // Set default datetime to now + 1 hour (rounded to next hour) for Safari compatibility
       const now = new Date();
@@ -117,6 +124,9 @@ export default function EventModal({
         categories: [],
         pointsValue: 50
       });
+      setPhotoUrl(null);
+      setPhotoPreview(null);
+      setPhotoFile(null);
     }
   }, [event, open]);
 
@@ -127,14 +137,60 @@ export default function EventModal({
     }));
   };
 
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setPhotoFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhotoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemovePhoto = () => {
+    setPhotoFile(null);
+    setPhotoPreview(null);
+    setPhotoUrl(null);
+  };
+
   const isReadOnly = !!(event && !isAdmin);
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     
     if (isReadOnly) {
       onClose();
       return;
+    }
+
+    let finalPhotoUrl = photoUrl;
+
+    // Upload photo if a new file is selected
+    if (photoFile) {
+      setUploading(true);
+      try {
+        const formData = new FormData();
+        formData.append('photo', photoFile);
+
+        const response = await fetch('/api/upload/event-photo', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to upload photo');
+        }
+
+        const data = await response.json();
+        finalPhotoUrl = data.photoUrl;
+      } catch (error) {
+        console.error('Photo upload failed:', error);
+        setUploading(false);
+        return;
+      }
+      setUploading(false);
     }
     
     onSave({
@@ -143,7 +199,8 @@ export default function EventModal({
       dateTime: new Date(formData.dateTime).toISOString(),
       maxAttendees: formData.maxAttendees ? parseInt(formData.maxAttendees, 10) : null,
       categories: formData.categories.length > 0 ? formData.categories : null,
-      pointsValue: formData.pointsValue
+      pointsValue: formData.pointsValue,
+      photoUrl: finalPhotoUrl
     });
     onClose();
   };
@@ -199,6 +256,57 @@ export default function EventModal({
               readOnly={isReadOnly}
               data-testid="input-description"
             />
+
+            {!isReadOnly && (
+              <Box>
+                <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+                  Fotografija događaja
+                </Typography>
+                {photoPreview ? (
+                  <Box sx={{ position: 'relative', display: 'inline-block' }}>
+                    <Box
+                      component="img"
+                      src={photoPreview}
+                      alt="Preview"
+                      sx={{
+                        maxWidth: '100%',
+                        maxHeight: 200,
+                        borderRadius: 1,
+                        border: '1px solid',
+                        borderColor: 'divider'
+                      }}
+                    />
+                    <IconButton
+                      onClick={handleRemovePhoto}
+                      sx={{
+                        position: 'absolute',
+                        top: 8,
+                        right: 8,
+                        bgcolor: 'background.paper',
+                        '&:hover': { bgcolor: 'background.paper' }
+                      }}
+                      size="small"
+                    >
+                      <Close />
+                    </IconButton>
+                  </Box>
+                ) : (
+                  <Button
+                    variant="outlined"
+                    component="label"
+                    startIcon={<CalendarMonth />}
+                  >
+                    Odaberi fotografiju
+                    <input
+                      type="file"
+                      hidden
+                      accept="image/*"
+                      onChange={handlePhotoChange}
+                    />
+                  </Button>
+                )}
+              </Box>
+            )}
 
             <Autocomplete
               multiple
