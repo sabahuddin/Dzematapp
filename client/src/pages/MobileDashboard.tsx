@@ -115,28 +115,24 @@ export default function MobileDashboard() {
   return (
     <Box sx={{ 
       bgcolor: 'var(--background)', 
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      width: '100vw',
-      height: '100vh',
+      minHeight: '100vh',
       display: 'flex',
       flexDirection: 'column',
-      overflow: 'hidden',
     }}>
       {/* Top AppBar - Fixed */}
-      <MobileAppBar title="DžematApp" />
+      <Box sx={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1100 }}>
+        <MobileAppBar title="DžematApp" />
+      </Box>
 
       {/* Main Content - Scrollable area */}
       <Box sx={{ 
         flex: 1,
+        mt: 'calc(56px + env(safe-area-inset-top))',
         overflowY: 'auto',
         overflowX: 'hidden',
         WebkitOverflowScrolling: 'touch',
         px: 2,
-        pt: 'calc(56px + env(safe-area-inset-top) + 8px)',
+        pt: 1,
         pb: 'calc(56px + env(safe-area-inset-bottom) + 8px)',
       }}>
         {/* Hero Prayer Times */}
