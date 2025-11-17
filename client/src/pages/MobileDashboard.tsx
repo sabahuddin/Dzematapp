@@ -82,12 +82,28 @@ export default function MobileDashboard() {
   };
 
   return (
-    <Box sx={{ bgcolor: 'var(--background)', minHeight: '100vh' }}>
+    <Box sx={{ 
+      bgcolor: 'var(--background)', 
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      display: 'flex',
+      flexDirection: 'column',
+      overflow: 'hidden'
+    }}>
       {/* Top AppBar */}
       <MobileAppBar title="DžematApp" />
 
-      {/* Main Content */}
-      <Box sx={{ p: 2, pt: 9, pb: 10 }}>
+      {/* Main Content - Scrollable */}
+      <Box sx={{ 
+        flex: 1,
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        p: 2, 
+        pb: 10 
+      }}>
         {/* Hero Prayer Times */}
         {prayerLoading && (
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
