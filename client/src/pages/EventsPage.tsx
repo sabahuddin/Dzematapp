@@ -711,7 +711,7 @@ export default function EventsPage() {
             <Accordion
               expanded={expandedAccordion === 'other'}
               onChange={handleAccordionChange('other')}
-              TransitionProps={{ unmountOnExit: false }}
+              TransitionProps={{ unmountOnExit: false, timeout: 0 }}
               sx={{ mb: 2 }}
               data-testid="accordion-other-events"
             >
@@ -749,7 +749,7 @@ export default function EventsPage() {
             <Accordion
               expanded={expandedAccordion === 'past'}
               onChange={handleAccordionChange('past')}
-              TransitionProps={{ unmountOnExit: false }}
+              TransitionProps={{ unmountOnExit: false, timeout: 0 }}
               sx={{ mb: 2 }}
               data-testid="accordion-past-events"
             >

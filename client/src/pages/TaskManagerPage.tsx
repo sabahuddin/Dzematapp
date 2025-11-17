@@ -899,7 +899,7 @@ export default function TaskManagerPage() {
             {otherWorkGroups.length > 0 && (
               <Accordion 
                 defaultExpanded={false}
-                TransitionProps={{ unmountOnExit: false }}
+                TransitionProps={{ unmountOnExit: false, timeout: 0 }}
               >
                 <AccordionSummary 
                   expandIcon={<ExpandMore />}

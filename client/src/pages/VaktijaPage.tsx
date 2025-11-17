@@ -293,7 +293,7 @@ export default function VaktijaPage() {
                   key={monthYear}
                   expanded={expandedMonth === monthYear}
                   onChange={handleAccordionChange(monthYear)}
-                  TransitionProps={{ unmountOnExit: false }}
+                  TransitionProps={{ unmountOnExit: false, timeout: 0 }}
                   sx={{ mb: 1 }}
                   data-testid={`accordion-month-${monthYear}`}
                 >
