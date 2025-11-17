@@ -63,27 +63,35 @@ export default function AnnouncementsPage() {
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [selectedImageSrc, setSelectedImageSrc] = useState<string>('');
 
+  // Store deep link ID immediately on mount
+  const [deepLinkAnnouncementId, setDeepLinkAnnouncementId] = useState<string | null>(() => {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    if (id) {
+      // Clear URL immediately to avoid confusion
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+    return id;
+  });
+
   // Fetch announcements
   const announcementsQuery = useQuery<Announcement[]>({
     queryKey: ['/api/announcements'],
     retry: 1,
   });
 
-  // Handle deep linking via query params (e.g., ?id=xxx)
+  // Handle deep linking - open announcement when data loads
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const announcementId = params.get('id');
-    
-    if (announcementId && announcementsQuery.data) {
-      const announcement = announcementsQuery.data.find(a => a.id === announcementId);
+    if (deepLinkAnnouncementId && announcementsQuery.data && !modalOpen) {
+      const announcement = announcementsQuery.data.find(a => a.id === deepLinkAnnouncementId);
       if (announcement) {
         setSelectedAnnouncement(announcement);
         setModalOpen(true);
-        // Clear the query param after opening
-        window.history.replaceState({}, '', window.location.pathname);
+        // Clear the stored ID so we don't reopen
+        setDeepLinkAnnouncementId(null);
       }
     }
-  }, [announcementsQuery.data]);
+  }, [deepLinkAnnouncementId, announcementsQuery.data, modalOpen]);
 
   // Create announcement mutation
   const createAnnouncementMutation = useMutation({

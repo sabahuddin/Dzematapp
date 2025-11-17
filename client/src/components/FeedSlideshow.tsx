@@ -164,30 +164,7 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
     <Box sx={{ 
       mb: 3,
       position: 'relative',
-      WebkitOverflowScrolling: 'auto',
-      '&::after': {
-        content: '""',
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        height: '30px',
-        pointerEvents: 'none',
-      },
-      '& .MuiMobileStepper-root': { display: 'none !important' },
-      '& .MuiMobileStepper-dot': { display: 'none !important' },
-      '& .MuiMobileStepper-dots': { display: 'none !important' },
-      '& .MuiMobileStepper-progress': { display: 'none !important' },
-      '& [role="tablist"]': { display: 'none !important' },
-      '& .swiper-pagination': { display: 'none !important' },
-      '& .swiper-pagination-bullets': { display: 'none !important' },
-      '& .carousel-indicators': { display: 'none !important' },
-      '& .slick-dots': { display: 'none !important' },
-      '& .pagination': { display: 'none !important' },
-      '& .dots': { display: 'none !important' },
-      '& button[class*="dot"]': { display: 'none !important' },
-      '& div[class*="indicator"]': { display: 'none !important' },
-      '& *::-webkit-scrollbar': { display: 'none !important' },
+      overflow: 'hidden',
     }}>
       <Card
         onClick={() => handleItemClick(currentItem)}

@@ -99,9 +99,10 @@ export function MobileAppBar({ title = 'DžematApp', showBack }: MobileAppBarPro
         right: 0,
         zIndex: 1100,
         paddingTop: 'env(safe-area-inset-top)',
+        height: 'calc(64px + env(safe-area-inset-top))',
       }}
     >
-      <Toolbar sx={{ justifyContent: 'space-between', minHeight: '56px !important', px: 2 }}>
+      <Toolbar sx={{ justifyContent: 'space-between', minHeight: '64px !important', px: 2 }}>
         {/* Lijeva strana - Back ili Logo */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           {shouldShowBack && (
