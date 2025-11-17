@@ -164,6 +164,9 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
     <Box sx={{ 
       mb: 3,
       '& .MuiMobileStepper-root': { display: 'none !important' },
+      '& .MuiMobileStepper-dot': { display: 'none !important' },
+      '& .MuiMobileStepper-dots': { display: 'none !important' },
+      '& .MuiMobileStepper-progress': { display: 'none !important' },
       '& [role="tablist"]': { display: 'none !important' },
       '& .swiper-pagination': { display: 'none !important' },
       '& .swiper-pagination-bullets': { display: 'none !important' },

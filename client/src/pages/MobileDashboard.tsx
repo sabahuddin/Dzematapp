@@ -153,12 +153,12 @@ export default function MobileDashboard() {
       {/* Main Content - Scrollable area */}
       <Box sx={{ 
         flex: 1,
-        mt: 'calc(56px + env(safe-area-inset-top))',
+        mt: 'calc(72px + env(safe-area-inset-top))',
         overflowY: 'auto',
         overflowX: 'hidden',
         WebkitOverflowScrolling: 'touch',
         px: 2,
-        pt: 3,
+        pt: 2,
         pb: 'calc(56px + env(safe-area-inset-bottom) + 8px)',
       }}>
         {/* Hero Prayer Times */}
