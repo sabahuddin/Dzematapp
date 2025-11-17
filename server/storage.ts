@@ -2539,6 +2539,24 @@ export class DatabaseStorage implements IStorage {
       }
     }
 
+    // Batched lookup for event images (photoUrl)
+    const eventIds = items
+      .filter(item => item.relatedEntityType === 'event' && item.relatedEntityId)
+      .map(item => item.relatedEntityId!);
+
+    const eventImages = new Map<string, string>();
+    if (eventIds.length > 0) {
+      const eventRecords = await db.select()
+        .from(events)
+        .where(inArray(events.id, eventIds));
+
+      for (const event of eventRecords) {
+        if (event.photoUrl) {
+          eventImages.set(event.id, event.photoUrl);
+        }
+      }
+    }
+
     // Enrich items with real image URLs
     return items.map(item => {
       let imageUrl: string | null = null;
@@ -2546,6 +2564,8 @@ export class DatabaseStorage implements IStorage {
       // Get real image based on entity type
       if (item.relatedEntityType === 'announcement' && item.relatedEntityId) {
         imageUrl = announcementImages.get(item.relatedEntityId) || null;
+      } else if (item.relatedEntityType === 'event' && item.relatedEntityId) {
+        imageUrl = eventImages.get(item.relatedEntityId) || null;
       } else if (item.relatedEntityType === 'shop_item' && item.relatedEntityId) {
         imageUrl = marketplaceImages.get(item.relatedEntityId) || shopImages.get(item.relatedEntityId) || null;
       }

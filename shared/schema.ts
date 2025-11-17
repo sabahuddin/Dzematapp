@@ -57,6 +57,7 @@ export const events = pgTable("events", {
   description: text("description"),
   location: text("location").notNull(),
   dateTime: timestamp("date_time").notNull(),
+  photoUrl: text("photo_url"),
   rsvpEnabled: boolean("rsvp_enabled").default(true),
   requireAdultsChildren: boolean("require_adults_children").default(false),
   maxAttendees: integer("max_attendees"),
