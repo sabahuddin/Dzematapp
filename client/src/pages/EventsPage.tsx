@@ -141,16 +141,11 @@ export default function EventsPage() {
   const [rsvpEvent, setRsvpEvent] = useState<Event | null>(null);
   const [expandedAccordion, setExpandedAccordion] = useState<string | false>(false);
   
-  // Store deep link ID immediately on mount
-  const [deepLinkEventId, setDeepLinkEventId] = useState<string | null>(() => {
+  // Store deep link ID - read from URL on every render
+  const getDeepLinkEventId = () => {
     const params = new URLSearchParams(window.location.search);
-    const id = params.get('id');
-    if (id) {
-      // Clear URL immediately to avoid confusion
-      window.history.replaceState({}, '', window.location.pathname);
-    }
-    return id;
-  });
+    return params.get('id');
+  };
   
   const [importantDateForm, setImportantDateForm] = useState({
     name: '',
@@ -165,6 +160,7 @@ export default function EventsPage() {
 
   // Handle deep linking - open event when data loads
   useEffect(() => {
+    const deepLinkEventId = getDeepLinkEventId();
     if (deepLinkEventId && eventsQuery.data && !modalOpen && !viewModalOpen) {
       const event = eventsQuery.data.find(e => e.id === deepLinkEventId);
       if (event) {
@@ -174,11 +170,11 @@ export default function EventsPage() {
         } else {
           setViewModalOpen(true);
         }
-        // Clear the stored ID so we don't reopen
-        setDeepLinkEventId(null);
+        // Clear URL only AFTER modal opens
+        window.history.replaceState({}, '', window.location.pathname);
       }
     }
-  }, [deepLinkEventId, eventsQuery.data, user, modalOpen, viewModalOpen]);
+  }, [eventsQuery.data, user, modalOpen, viewModalOpen]);
 
   const importantDatesQuery = useQuery<ImportantDate[]>({
     queryKey: ['/api/important-dates'],

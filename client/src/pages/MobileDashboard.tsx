@@ -144,6 +144,11 @@ export default function MobileDashboard() {
       minHeight: '100vh',
       display: 'flex',
       flexDirection: 'column',
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
     }}>
       {/* Top AppBar - Fixed */}
       <Box sx={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1100 }}>
@@ -153,13 +158,14 @@ export default function MobileDashboard() {
       {/* Main Content - Scrollable area */}
       <Box sx={{ 
         flex: 1,
-        mt: 'calc(64px + env(safe-area-inset-top))',
         overflowY: 'auto',
         overflowX: 'hidden',
         WebkitOverflowScrolling: 'touch',
         px: 2,
-        pt: 2,
-        pb: 'calc(56px + env(safe-area-inset-bottom) + 8px)',
+        pt: 'calc(64px + env(safe-area-inset-top) + 16px)',
+        pb: 'calc(64px + env(safe-area-inset-bottom) + 16px)',
+        scrollPaddingTop: 'calc(64px + env(safe-area-inset-top))',
+        scrollPaddingBottom: 'calc(64px + env(safe-area-inset-bottom))',
       }}>
         {/* Hero Prayer Times */}
         {prayerLoading && (

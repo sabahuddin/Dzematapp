@@ -63,16 +63,11 @@ export default function AnnouncementsPage() {
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [selectedImageSrc, setSelectedImageSrc] = useState<string>('');
 
-  // Store deep link ID immediately on mount
-  const [deepLinkAnnouncementId, setDeepLinkAnnouncementId] = useState<string | null>(() => {
+  // Read deep link ID from URL
+  const getDeepLinkAnnouncementId = () => {
     const params = new URLSearchParams(window.location.search);
-    const id = params.get('id');
-    if (id) {
-      // Clear URL immediately to avoid confusion
-      window.history.replaceState({}, '', window.location.pathname);
-    }
-    return id;
-  });
+    return params.get('id');
+  };
 
   // Fetch announcements
   const announcementsQuery = useQuery<Announcement[]>({
@@ -82,16 +77,17 @@ export default function AnnouncementsPage() {
 
   // Handle deep linking - open announcement when data loads
   useEffect(() => {
+    const deepLinkAnnouncementId = getDeepLinkAnnouncementId();
     if (deepLinkAnnouncementId && announcementsQuery.data && !modalOpen) {
       const announcement = announcementsQuery.data.find(a => a.id === deepLinkAnnouncementId);
       if (announcement) {
         setSelectedAnnouncement(announcement);
         setModalOpen(true);
-        // Clear the stored ID so we don't reopen
-        setDeepLinkAnnouncementId(null);
+        // Clear URL only AFTER modal opens
+        window.history.replaceState({}, '', window.location.pathname);
       }
     }
-  }, [deepLinkAnnouncementId, announcementsQuery.data, modalOpen]);
+  }, [announcementsQuery.data, modalOpen]);
 
   // Create announcement mutation
   const createAnnouncementMutation = useMutation({

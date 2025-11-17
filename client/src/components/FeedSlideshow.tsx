@@ -165,31 +165,37 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
       mb: 3,
       position: 'relative',
       overflow: 'hidden',
+      WebkitOverflowScrolling: 'auto',
     }}>
-      <Card
-        onClick={() => handleItemClick(currentItem)}
+      <Box
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        data-testid={`feed-slideshow-item-${currentItem.id}`}
         sx={{
-          cursor: currentItem.isClickable ? 'pointer' : 'default',
-          bgcolor: 'var(--card)',
-          border: '1px solid var(--border)',
-          borderRadius: 'var(--radius)',
-          transition: 'all 0.2s ease',
-          boxShadow: 'none',
+          touchAction: 'pan-y',
           userSelect: 'none',
-          
-          ...(currentItem.isClickable && {
-            '&:hover': {
-              borderColor: 'var(--primary)',
-              transform: 'translateY(-1px)',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-            },
-          })
         }}
       >
+        <Card
+          onClick={() => handleItemClick(currentItem)}
+          data-testid={`feed-slideshow-item-${currentItem.id}`}
+          sx={{
+            cursor: currentItem.isClickable ? 'pointer' : 'default',
+            bgcolor: 'var(--card)',
+            border: '1px solid var(--border)',
+            borderRadius: 'var(--radius)',
+            transition: 'all 0.2s ease',
+            boxShadow: 'none',
+            
+            ...(currentItem.isClickable && {
+              '&:hover': {
+                borderColor: 'var(--primary)',
+                transform: 'translateY(-1px)',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+              },
+            })
+          }}
+        >
         <CardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
           <Box sx={{ display: 'flex', alignItems: 'stretch', gap: 0 }}>
             {/* Image on Left - 4:3 aspect ratio, 40% of card width */}
@@ -267,7 +273,8 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
             </Box>
           </Box>
         </CardContent>
-      </Card>
+        </Card>
+      </Box>
     </Box>
   );
 }
