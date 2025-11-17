@@ -2,7 +2,6 @@ import { Box, Typography, Card, CardContent, CircularProgress, Alert, Chip, Avat
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
 import { type ActivityFeedItem, type PrayerTime } from '@shared/schema';
-import { MobilePageLayout } from '../components/layout/MobilePageLayout';
 import { HeroPrayerCard } from '../components/HeroPrayerCard';
 import { SectionCard } from '../components/SectionCard';
 import FeedSlideshow from '../components/FeedSlideshow';
@@ -139,8 +138,8 @@ export default function MobileDashboard() {
   };
 
   return (
-    <MobilePageLayout title="DžematApp">
-        {/* Hero Prayer Times */}
+    <>
+      {/* Hero Prayer Times */}
         {prayerLoading && (
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
             <CircularProgress />
@@ -316,6 +315,6 @@ export default function MobileDashboard() {
             </Box>
           )}
         </SectionCard>
-    </MobilePageLayout>
+    </>
   );
 }
