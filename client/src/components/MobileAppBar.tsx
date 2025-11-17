@@ -1,5 +1,5 @@
 import { AppBar, Toolbar, IconButton, Badge, Avatar, Box, Typography, Menu, MenuItem } from '@mui/material';
-import { Notifications, Menu as MenuIcon, Logout, Settings, ArrowBack } from '@mui/icons-material';
+import { Notifications, Menu as MenuIcon, Logout, Settings, ArrowBack, Person } from '@mui/icons-material';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
@@ -74,6 +74,15 @@ export function MobileAppBar({ title = 'DžematApp', showBack }: MobileAppBarPro
 
   const handleSettings = () => {
     setLocation('/settings');
+    handleMenuClose();
+  };
+
+  const handleProfile = () => {
+    if (user?.isAdmin) {
+      setLocation('/users');
+    } else {
+      setLocation(`/user/${user?.id}`);
+    }
     handleMenuClose();
   };
 
@@ -174,6 +183,10 @@ export function MobileAppBar({ title = 'DžematApp', showBack }: MobileAppBarPro
                 }}
                 data-testid="menu-user"
               >
+                <MenuItem onClick={handleProfile} data-testid="menuitem-profile">
+                  <Person sx={{ mr: 1 }} />
+                  {t('common.profile', 'Profil')}
+                </MenuItem>
                 {user?.isAdmin && (
                   <MenuItem onClick={handleSettings} data-testid="menuitem-settings">
                     <Settings sx={{ mr: 1 }} />
