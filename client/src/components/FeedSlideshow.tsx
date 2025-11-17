@@ -161,7 +161,13 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
   const imageUrl = getImageUrl(currentItem);
 
   return (
-    <Box sx={{ mb: 3 }}>
+    <Box sx={{ 
+      mb: 3,
+      '& .MuiMobileStepper-root': { display: 'none' },
+      '& [role="tablist"]': { display: 'none' },
+      '& .swiper-pagination': { display: 'none !important' },
+      '& .carousel-indicators': { display: 'none !important' },
+    }}>
       <Card
         onClick={() => handleItemClick(currentItem)}
         onTouchStart={handleTouchStart}
