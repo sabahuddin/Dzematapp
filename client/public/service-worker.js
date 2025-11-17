@@ -1,5 +1,5 @@
-const CACHE_NAME = 'dzematapp-v2-fixed-layout';
-const RUNTIME_CACHE = 'dzematapp-runtime-v2';
+const CACHE_NAME = 'dzematapp-v3-all-pages-fixed';
+const RUNTIME_CACHE = 'dzematapp-runtime-v3';
 
 // Resources to cache on install
 const PRECACHE_URLS = [

@@ -30,11 +30,13 @@ export default function BottomNavigation() {
       <MuiBottomNavigation
         value={getActiveTab()}
         onChange={handleChange}
-        showLabels
+        showLabels={false}
         sx={{
           backgroundColor: 'transparent',
+          px: 2,
           '& .MuiBottomNavigationAction-root': {
             color: 'hsl(123 46% 34%)',
+            minWidth: '60px',
             '&.Mui-selected': {
               color: 'hsl(123 46% 54%)',
             },
@@ -42,27 +44,22 @@ export default function BottomNavigation() {
         }}
       >
         <BottomNavigationAction
-          label="Home"
           icon={<Home />}
           data-testid="bottom-nav-home"
         />
         <BottomNavigationAction
-          label="Događaji"
           icon={<CalendarMonth />}
           data-testid="bottom-nav-events"
         />
         <BottomNavigationAction
-          label="Sekcije"
           icon={<Assignment />}
           data-testid="bottom-nav-tasks"
         />
         <BottomNavigationAction
-          label="Trgovina"
           icon={<Store />}
           data-testid="bottom-nav-shop"
         />
         <BottomNavigationAction
-          label="Moduli"
           icon={<Apps />}
           data-testid="bottom-nav-modules"
         />
