@@ -38,6 +38,18 @@ export default function MobileDashboard() {
     refetchInterval: 30000,
   });
 
+  // Get user-specific activities (events, shop, tasks, messages, etc.)
+  const userActivities = feedItems
+    .filter(item => 
+      item.type === 'event' || 
+      item.type === 'shop_item' ||
+      item.type === 'important_date_reminder' ||
+      item.type === 'media' ||
+      item.type === 'task' ||
+      item.type === 'message'
+    )
+    .slice(0, 5);
+
   const handleItemClick = (item: ActivityFeedItem) => {
     if (!item.isClickable) return;
 
@@ -278,6 +290,141 @@ export default function MobileDashboard() {
                           }} 
                         />
                       </Box>
+                    </Box>
+                  </Box>
+                );
+              })}
+            </Box>
+          )}
+        </SectionCard>
+
+        {/* User Activities Section - Events, Shop, Tasks, etc. */}
+        <SectionCard 
+          title={t('dashboard:myActivities', 'Moje aktivnosti')}
+          icon={<Article />}
+        >
+          {feedLoading && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+              <CircularProgress />
+            </Box>
+          )}
+
+          {!feedLoading && userActivities.length === 0 && (
+            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
+              {t('dashboard:feed.empty', 'Nema aktivnosti')}
+            </Typography>
+          )}
+
+          {!feedLoading && userActivities.length > 0 && (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+              {userActivities.map((item, index) => {
+                const imageUrl = getImageUrl(item);
+                const isLast = index === userActivities.length - 1;
+                return (
+                  <Box
+                    key={item.id}
+                    onClick={() => handleItemClick(item)}
+                    data-testid={`user-activity-${item.id}`}
+                    sx={{
+                      cursor: item.isClickable ? 'pointer' : 'default',
+                      bgcolor: 'var(--card)',
+                      borderBottom: isLast ? 'none' : '1px solid var(--border)',
+                      transition: 'all 0.2s ease',
+                      
+                      ...(item.isClickable && {
+                        '&:hover': {
+                          bgcolor: 'var(--accent)',
+                        },
+                      })
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'stretch', gap: 0 }}>
+                      {/* Image on Left - 4:3 aspect ratio, 1/3 of card width */}
+                      <Box
+                        component="img"
+                        src={imageUrl}
+                        alt=""
+                        sx={{
+                          width: '33.33%',
+                          aspectRatio: '4 / 3',
+                          objectFit: 'cover',
+                          flexShrink: 0,
+                        }}
+                      />
+
+                      {/* Content on Right */}
+                      <Box sx={{ flex: 1, minWidth: 0, p: 1.5, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                        {/* Entity Type Badge */}
+                        <Chip
+                          label={getEntityTypeBadgeLabel(item.type)}
+                          size="small"
+                          sx={{
+                            height: '18px',
+                            fontSize: '0.65rem',
+                            fontWeight: 600,
+                            bgcolor: 'var(--accent)',
+                            color: 'var(--accent-foreground)',
+                            mb: 0.5,
+                            width: 'fit-content',
+                          }}
+                        />
+                        
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            fontWeight: 600,
+                            fontSize: '0.95rem',
+                            color: 'var(--card-foreground)',
+                            mb: 0.25,
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {item.title}
+                        </Typography>
+                        
+                        {item.description && (
+                          <Typography 
+                            variant="body2" 
+                            sx={{ 
+                              color: 'var(--muted-foreground)',
+                              fontSize: '0.8rem',
+                              mb: 0.25,
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              display: '-webkit-box',
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: 'vertical',
+                            }}
+                          >
+                            {item.description}
+                          </Typography>
+                        )}
+                        
+                        <Typography 
+                          variant="caption" 
+                          sx={{ 
+                            color: 'var(--muted-foreground)',
+                            fontSize: '0.7rem',
+                            display: 'block'
+                          }}
+                        >
+                          {formatDate(item.createdAt)}
+                        </Typography>
+                      </Box>
+                      
+                      {item.isClickable && (
+                        <Box sx={{ display: 'flex', alignItems: 'center', pr: 1.5 }}>
+                          <ArrowForward 
+                            sx={{ 
+                              color: 'var(--primary)',
+                              fontSize: '20px',
+                              flexShrink: 0,
+                            }} 
+                          />
+                        </Box>
+                      )}
                     </Box>
                   </Box>
                 );
