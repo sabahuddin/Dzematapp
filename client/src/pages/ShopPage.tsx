@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Box, Tabs, Tab, Typography, Card, CardContent, CardMedia, Button, Chip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField, MenuItem, ImageList, ImageListItem, Select, FormControl, InputLabel } from "@mui/material";
 import { Add, Delete, ShoppingCart, Store, CardGiftcard, CloudUpload, Edit, Close, ContentCopy, Archive, Check, Build } from "@mui/icons-material";
@@ -79,6 +79,12 @@ export default function ShopPage() {
 
   const isAdmin = user?.isAdmin || user?.roles?.includes('admin') || user?.roles?.includes('imam');
 
+  // Deep linking helper - get itemId from URL query parameter
+  const getDeepLinkItemId = () => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('itemId');
+  };
+
   // Fetch shop products
   const { data: shopProducts, isLoading: loadingProducts } = useQuery<ShopProductWithUser[]>({
     queryKey: ['/api/shop/products'],
@@ -98,6 +104,29 @@ export default function ShopPage() {
   const { data: services, isLoading: loadingServices } = useQuery<ServiceWithUser[]>({
     queryKey: ['/api/services'],
   });
+
+  // Deep linking - open specific product modal when itemId is in URL
+  useEffect(() => {
+    const deepLinkItemId = getDeepLinkItemId();
+    if (deepLinkItemId && shopProducts && !purchaseModalOpen) {
+      // Search in both shop products and marketplace items
+      const shopProduct = shopProducts.find(p => p.id === deepLinkItemId);
+      
+      if (shopProduct) {
+        handleOpenPurchaseModal(shopProduct);
+        // Clear URL after opening modal
+        window.history.replaceState({}, '', window.location.pathname);
+      } else if (marketplaceItems) {
+        // If not found in shop products, check marketplace items
+        const marketplaceItem = marketplaceItems.find(m => m.id === deepLinkItemId);
+        if (marketplaceItem) {
+          // For marketplace items, just navigate to marketplace tab
+          setActiveTab(1);
+          window.history.replaceState({}, '', window.location.pathname);
+        }
+      }
+    }
+  }, [shopProducts, marketplaceItems, purchaseModalOpen]);
 
   // Service photo upload handler
   const handleServicePhotoUpload = async (files: FileList | null) => {
