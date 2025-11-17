@@ -1,11 +1,11 @@
 import { Box, Typography, Card, CardContent, CircularProgress, Alert, Chip, Avatar } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
-import { type ActivityFeedItem, type PrayerTime, type Message } from '@shared/schema';
+import { type ActivityFeedItem, type PrayerTime, type Announcement } from '@shared/schema';
 import { HeroPrayerCard } from '../components/HeroPrayerCard';
 import { SectionCard } from '../components/SectionCard';
 import FeedSlideshow from '../components/FeedSlideshow';
-import { ArrowForward, Article, Mail } from '@mui/icons-material';
+import { ArrowForward, Article, Campaign } from '@mui/icons-material';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { normalizeImageUrl } from '@/lib/imageUtils';
@@ -32,24 +32,9 @@ export default function MobileDashboard() {
     refetchInterval: 30000,
   });
 
-  // Fetch messages/conversations
-  interface Conversation {
-    threadId: string;
-    lastMessage: {
-      subject: string;
-      content: string;
-      createdAt: Date;
-      senderId: string;
-    };
-    unreadCount: number;
-    otherUser?: {
-      firstName: string;
-      lastName: string;
-    };
-  }
-
-  const { data: conversations = [], isLoading: messagesLoading } = useQuery<Conversation[]>({
-    queryKey: ['/api/messages/conversations'],
+  // Fetch announcements
+  const { data: announcements = [], isLoading: announcementsLoading } = useQuery<Announcement[]>({
+    queryKey: ['/api/announcements'],
     refetchInterval: 30000,
   });
 
@@ -203,114 +188,90 @@ export default function MobileDashboard() {
           )}
         </SectionCard>
 
-        {/* Messages Section */}
+        {/* Announcements Section */}
         <SectionCard 
-          title={t('dashboard:messages', 'Obavještenja')}
-          icon={<Mail />}
-          linkTo="/messages"
+          title={t('dashboard:announcements', 'Obavijesti')}
+          icon={<Campaign />}
+          linkTo="/announcements"
           linkText={t('common.viewAll', 'Vidi sve')}
         >
-          {messagesLoading && (
+          {announcementsLoading && (
             <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
               <CircularProgress />
             </Box>
           )}
 
-          {!messagesLoading && conversations.length === 0 && (
+          {!announcementsLoading && announcements.length === 0 && (
             <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
-              {t('dashboard:messages.empty', 'Nema poruka')}
+              {t('dashboard:announcements.empty', 'Nema obavijesti')}
             </Typography>
           )}
 
-          {!messagesLoading && conversations.length > 0 && (
+          {!announcementsLoading && announcements.length > 0 && (
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-              {conversations.slice(0, 3).map((conversation, index) => {
-                const isLast = index === conversations.length - 1 || index === 2;
-                const isUnread = conversation.unreadCount > 0;
+              {announcements.slice(0, 3).map((announcement, index) => {
+                const isLast = index === announcements.length - 1 || index === 2;
                 return (
                   <Box
-                    key={conversation.threadId}
-                    onClick={() => setLocation('/messages')}
-                    data-testid={`conversation-${conversation.threadId}`}
+                    key={announcement.id}
+                    onClick={() => setLocation(`/announcements?id=${announcement.id}`)}
+                    data-testid={`announcement-${announcement.id}`}
                     sx={{
                       cursor: 'pointer',
-                      bgcolor: isUnread ? 'var(--semantic-info-bg)' : 'var(--card)',
+                      bgcolor: 'var(--card)',
                       borderBottom: isLast ? 'none' : '1px solid var(--border)',
                       transition: 'all 0.2s ease',
                       p: 2,
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 2,
                       '&:hover': {
                         bgcolor: 'var(--accent)',
                       },
                     }}
                   >
-                    <Avatar sx={{ bgcolor: 'var(--primary)', width: 40, height: 40 }}>
-                      {conversation.otherUser 
-                        ? `${conversation.otherUser.firstName[0]}${conversation.otherUser.lastName[0]}`
-                        : '?'}
-                    </Avatar>
+                    <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 2 }}>
+                      <Box sx={{ flex: 1, minWidth: 0 }}>
+                        <Typography 
+                          variant="subtitle2" 
+                          sx={{ 
+                            fontWeight: 600,
+                            fontSize: '0.9rem',
+                            mb: 0.5,
+                          }}
+                        >
+                          {announcement.title}
+                        </Typography>
+                        
+                        {announcement.category && (
+                          <Chip
+                            label={announcement.category}
+                            size="small"
+                            sx={{
+                              height: '18px',
+                              fontSize: '0.7rem',
+                              mb: 0.5,
+                            }}
+                          />
+                        )}
 
-                    <Box sx={{ flex: 1, minWidth: 0 }}>
-                      <Typography 
-                        variant="subtitle2" 
-                        sx={{ 
-                          fontWeight: isUnread ? 700 : 500,
-                          fontSize: '0.9rem',
-                          mb: 0.25,
-                        }}
-                      >
-                        {conversation.otherUser 
-                          ? `${conversation.otherUser.firstName} ${conversation.otherUser.lastName}`
-                          : t('dashboard:messages.unknown', 'Nepoznato')}
-                      </Typography>
-                      <Typography 
-                        variant="body2" 
-                        sx={{ 
-                          color: 'var(--muted-foreground)',
-                          fontSize: '0.8rem',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        {conversation.lastMessage.subject}
-                      </Typography>
-                      <Typography 
-                        variant="caption" 
-                        sx={{ 
-                          color: 'var(--muted-foreground)',
-                          fontSize: '0.7rem',
-                          display: 'block',
-                          mt: 0.25,
-                        }}
-                      >
-                        {formatDate(conversation.lastMessage.createdAt)}
-                      </Typography>
-                    </Box>
+                        <Typography 
+                          variant="caption" 
+                          sx={{ 
+                            color: 'var(--muted-foreground)',
+                            fontSize: '0.7rem',
+                            display: 'block',
+                          }}
+                        >
+                          {formatDate(announcement.createdAt)}
+                        </Typography>
+                      </Box>
 
-                    {isUnread && (
-                      <Chip
-                        label={conversation.unreadCount}
-                        size="small"
-                        sx={{
-                          bgcolor: 'var(--primary)',
-                          color: '#fff',
-                          height: '20px',
-                          fontSize: '0.7rem',
-                          fontWeight: 600,
-                        }}
+                      <ArrowForward 
+                        sx={{ 
+                          color: 'var(--primary)',
+                          fontSize: '20px',
+                          flexShrink: 0,
+                        }} 
                       />
-                    )}
-
-                    <ArrowForward 
-                      sx={{ 
-                        color: 'var(--primary)',
-                        fontSize: '20px',
-                        flexShrink: 0,
-                      }} 
-                    />
+                    </Box>
                   </Box>
                 );
               })}
