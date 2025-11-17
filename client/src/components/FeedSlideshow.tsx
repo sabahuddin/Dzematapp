@@ -3,12 +3,12 @@ import { Box, Card, CardContent, Typography, Chip } from '@mui/material';
 import { ArrowForward } from '@mui/icons-material';
 import { type ActivityFeedItem } from '@shared/schema';
 import { useLocation } from 'wouter';
-import announcementImg from '@assets/stock_images/landscape_a6df4c9a-7ea0-45ce-8002-a75e2dfd7cc3.jpg';
-import eventImg from '@assets/stock_images/landscape_da0e8bcb-c25e-4c54-92c5-ad89b2da6f96.jpg';
-import taskImg from '@assets/stock_images/landscape_a2a0ad41-12a5-46e8-b3f8-74b17b4cb651.jpg';
-import messageImg from '@assets/stock_images/landscape_c9e91c95-1dd6-46f1-a85f-05fe71f025db.jpg';
-import mediaImg from '@assets/stock_images/landscape_d02d4a94-4aae-4ea7-8e44-2bbe0b8b26f6.jpg';
-import dateImg from '@assets/stock_images/landscape_3bce5afc-d2b2-49cb-b4e7-6a2b5c1b18fd.jpg';
+import announcementImg from '@assets/stock_images/mosque_announcement__5fa54614.jpg';
+import eventImg from '@assets/stock_images/islamic_community_ev_6ebc00b7.jpg';
+import taskImg from '@assets/stock_images/mosque_task_work_vol_d0885b38.jpg';
+import messageImg from '@assets/stock_images/message_envelope_let_edf65931.jpg';
+import mediaImg from '@assets/stock_images/video_camera_media_l_00904efa.jpg';
+import dateImg from '@assets/stock_images/important_date_calen_8295ac6d.jpg';
 
 interface FeedSlideshowProps {
   items: ActivityFeedItem[];

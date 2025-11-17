@@ -30,7 +30,7 @@ export function SectionCard({
         } : {
           bgcolor: 'var(--card)',
         }),
-        border: `2px solid ${isHero ? 'var(--semantic-success-border)' : 'var(--border)'}`,
+        border: `1px solid ${isHero ? 'var(--semantic-success-border)' : 'var(--border)'}`,
         borderRadius: 'var(--radius-lg)',
         p: isHero ? 3 : 2,
         mb: 2,

@@ -202,121 +202,116 @@ export default function MobileDashboard() {
           )}
 
           {!userActivitiesLoading && userActivities.length > 0 && (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-              {userActivities.map((item) => {
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+              {userActivities.map((item, index) => {
                 const imageUrl = getImageUrl(item);
+                const isLast = index === userActivities.length - 1;
                 return (
-                  <Card
+                  <Box
                     key={item.id}
                     onClick={() => handleItemClick(item)}
                     data-testid={`user-activity-${item.id}`}
                     sx={{
                       cursor: item.isClickable ? 'pointer' : 'default',
                       bgcolor: 'var(--card)',
-                      border: '2px solid var(--border)',
-                      borderRadius: 'var(--radius)',
+                      borderBottom: isLast ? 'none' : '1px solid var(--border)',
                       transition: 'all 0.2s ease',
-                      boxShadow: 'none',
                       
                       ...(item.isClickable && {
                         '&:hover': {
-                          borderColor: 'var(--primary)',
-                          transform: 'translateY(-1px)',
-                          boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                          bgcolor: 'var(--accent)',
                         },
                       })
                     }}
                   >
-                    <CardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
-                      <Box sx={{ display: 'flex', alignItems: 'stretch', gap: 0 }}>
-                        {/* Image on Left - 4:3 aspect ratio, 1/3 of card width */}
-                        <Box
-                          component="img"
-                          src={imageUrl}
-                          alt=""
+                    <Box sx={{ display: 'flex', alignItems: 'stretch', gap: 0 }}>
+                      {/* Image on Left - 4:3 aspect ratio, 1/3 of card width */}
+                      <Box
+                        component="img"
+                        src={imageUrl}
+                        alt=""
+                        sx={{
+                          width: '33.33%',
+                          aspectRatio: '4 / 3',
+                          objectFit: 'cover',
+                          flexShrink: 0,
+                        }}
+                      />
+
+                      {/* Content on Right */}
+                      <Box sx={{ flex: 1, minWidth: 0, p: 1.5, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                        {/* Entity Type Badge */}
+                        <Chip
+                          label={getEntityTypeBadgeLabel(item.type)}
+                          size="small"
                           sx={{
-                            width: '33.33%',
-                            aspectRatio: '4 / 3',
-                            objectFit: 'cover',
-                            flexShrink: 0,
+                            height: '18px',
+                            fontSize: '0.65rem',
+                            fontWeight: 600,
+                            bgcolor: 'var(--accent)',
+                            color: 'var(--accent-foreground)',
+                            mb: 0.5,
                           }}
                         />
-
-                        {/* Content on Right */}
-                        <Box sx={{ flex: 1, minWidth: 0, p: 1.5, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                          {/* Entity Type Badge */}
-                          <Chip
-                            label={getEntityTypeBadgeLabel(item.type)}
-                            size="small"
-                            sx={{
-                              height: '18px',
-                              fontSize: '0.65rem',
-                              fontWeight: 600,
-                              bgcolor: 'var(--accent)',
-                              color: 'var(--accent-foreground)',
-                              mb: 0.5,
-                            }}
-                          />
-                          
+                        
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            fontWeight: 600,
+                            fontSize: '0.95rem',
+                            color: 'var(--card-foreground)',
+                            mb: 0.25,
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {item.title}
+                        </Typography>
+                        
+                        {item.description && (
                           <Typography 
                             variant="body2" 
                             sx={{ 
-                              fontWeight: 600,
-                              fontSize: '0.95rem',
-                              color: 'var(--card-foreground)',
+                              color: 'var(--muted-foreground)',
+                              fontSize: '0.8rem',
                               mb: 0.25,
                               overflow: 'hidden',
                               textOverflow: 'ellipsis',
-                              whiteSpace: 'nowrap',
+                              display: '-webkit-box',
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: 'vertical',
                             }}
                           >
-                            {item.title}
+                            {item.description}
                           </Typography>
-                          
-                          {item.description && (
-                            <Typography 
-                              variant="body2" 
-                              sx={{ 
-                                color: 'var(--muted-foreground)',
-                                fontSize: '0.8rem',
-                                mb: 0.25,
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                display: '-webkit-box',
-                                WebkitLineClamp: 2,
-                                WebkitBoxOrient: 'vertical',
-                              }}
-                            >
-                              {item.description}
-                            </Typography>
-                          )}
-                          
-                          <Typography 
-                            variant="caption" 
-                            sx={{ 
-                              color: 'var(--muted-foreground)',
-                              fontSize: '0.7rem',
-                              display: 'block'
-                            }}
-                          >
-                            {formatDate(item.createdAt)}
-                          </Typography>
-                        </Box>
-                        
-                        {item.isClickable && (
-                          <Box sx={{ display: 'flex', alignItems: 'center', pr: 1.5 }}>
-                            <ArrowForward 
-                              sx={{ 
-                                color: 'var(--primary)',
-                                fontSize: '20px',
-                                flexShrink: 0,
-                              }} 
-                            />
-                          </Box>
                         )}
+                        
+                        <Typography 
+                          variant="caption" 
+                          sx={{ 
+                            color: 'var(--muted-foreground)',
+                            fontSize: '0.7rem',
+                            display: 'block'
+                          }}
+                        >
+                          {formatDate(item.createdAt)}
+                        </Typography>
                       </Box>
-                    </CardContent>
-                  </Card>
+                      
+                      {item.isClickable && (
+                        <Box sx={{ display: 'flex', alignItems: 'center', pr: 1.5 }}>
+                          <ArrowForward 
+                            sx={{ 
+                              color: 'var(--primary)',
+                              fontSize: '20px',
+                              flexShrink: 0,
+                            }} 
+                          />
+                        </Box>
+                      )}
+                    </Box>
+                  </Box>
                 );
               })}
             </Box>
