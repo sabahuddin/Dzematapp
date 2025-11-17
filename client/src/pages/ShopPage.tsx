@@ -691,36 +691,50 @@ export default function ShopPage() {
         <Tabs 
           value={activeTab} 
           onChange={(_, newValue) => setActiveTab(newValue)} 
-          sx={{ borderBottom: 1, borderColor: 'divider' }}
+          sx={{ 
+            borderBottom: 1, 
+            borderColor: 'divider',
+            '& .MuiTab-root': {
+              minWidth: { xs: 60, md: 120 },
+              fontSize: { xs: '0.7rem', md: '0.875rem' },
+              padding: { xs: '6px 8px', md: '12px 16px' },
+              flexDirection: { xs: 'column', md: 'row' },
+              gap: { xs: 0.5, md: 1 },
+              '& .MuiTab-iconWrapper': {
+                marginBottom: { xs: 0, md: 0 },
+                marginRight: { xs: 0, md: 1 }
+              }
+            }
+          }}
         >
           <Tab 
             icon={<Store />}
-            iconPosition="start"
+            iconPosition="top"
             label={t('shop:tabs.dzematShop')}
             data-testid="tab-buy" 
           />
           <Tab 
             icon={<ShoppingCart />}
-            iconPosition="start"
+            iconPosition="top"
             label={t('shop:tabs.sell')}
             data-testid="tab-sell" 
           />
           <Tab 
             icon={<CardGiftcard />}
-            iconPosition="start"
+            iconPosition="top"
             label={t('shop:tabs.gift')}
             data-testid="tab-gift" 
           />
           <Tab 
             icon={<Build />}
-            iconPosition="start"
+            iconPosition="top"
             label={t('shop:tabs.services')}
             data-testid="tab-services" 
           />
           {isAdmin && (
             <Tab 
               icon={<Archive />}
-              iconPosition="start"
+              iconPosition="top"
               label={t('shop:tabs.archive')}
               data-testid="tab-archive" 
             />
