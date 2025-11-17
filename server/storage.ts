@@ -563,7 +563,7 @@ export class DatabaseStorage implements IStorage {
       userId: event.createdById
     });
     
-    // Add to activity feed (events don't have photos, use null)
+    // Add to activity feed with photoUrl from event
     await this.createActivityFeedItem({
       type: "event",
       title: "Novi događaj",
@@ -571,7 +571,7 @@ export class DatabaseStorage implements IStorage {
       relatedEntityId: event.id,
       relatedEntityType: "event",
       isClickable: true,
-      metadata: JSON.stringify({ imageUrl: null })
+      metadata: JSON.stringify({ imageUrl: event.photoUrl || null })
     });
     
     return event;
