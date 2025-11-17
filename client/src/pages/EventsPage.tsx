@@ -82,41 +82,45 @@ function EventDay(props: PickersDayProps & { eventDates?: Date[]; selectedDate?:
         outsideCurrentMonth={outsideCurrentMonth}
         sx={{
           backgroundColor: outsideCurrentMonth 
-            ? 'transparent'
+            ? 'hsl(0 0% 97%)'
             : isSelected 
             ? 'var(--semantic-info-active) !important' 
             : isToday 
             ? 'var(--semantic-award-active) !important'
             : isWeekendDay 
-            ? 'var(--semantic-neutral-bg)'
+            ? 'hsl(207 60% 92%)'
             : hasEvent
             ? 'var(--semantic-success-bg)'
-            : 'transparent',
+            : 'hsl(0 0% 98%)',
           color: outsideCurrentMonth
-            ? 'var(--semantic-neutral-text)'
+            ? 'hsl(0 0% 70%)'
             : isSelected || isToday
             ? '#ffffff !important'
             : hasEvent
             ? 'var(--semantic-success-text)'
             : isWeekendDay
-            ? 'var(--semantic-neutral-text)'
+            ? 'hsl(207 70% 35%)'
             : 'inherit',
           fontWeight: isToday || isSelected || hasEvent ? 600 : 400,
+          border: outsideCurrentMonth
+            ? '1px solid hsl(0 0% 92%)'
+            : isToday 
+            ? '2px solid hsl(35 100% 66%)' 
+            : '1px solid hsl(0 0% 90%)',
+          borderRadius: '8px',
           '&:hover': {
             backgroundColor: outsideCurrentMonth
-              ? 'var(--semantic-neutral-bg)'
+              ? 'hsl(0 0% 94%)'
               : isSelected
               ? 'var(--semantic-info-active-hover) !important'
               : isToday
               ? 'var(--semantic-award-active-hover) !important'
               : isWeekendDay
-              ? 'var(--semantic-neutral-bg-hover)'
+              ? 'hsl(207 70% 85%)'
               : hasEvent
               ? 'var(--semantic-success-bg-hover)'
-              : 'var(--semantic-neutral-bg)',
+              : 'hsl(0 0% 94%)',
           },
-          border: isToday ? '2px solid hsl(35 100% 66%)' : 'none',
-          borderRadius: '8px',
         }}
       />
     </Badge>
