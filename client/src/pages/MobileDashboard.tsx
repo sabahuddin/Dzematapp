@@ -7,19 +7,17 @@ import { HeroPrayerCard } from '../components/HeroPrayerCard';
 import { SectionCard } from '../components/SectionCard';
 import FeedSlideshow from '../components/FeedSlideshow';
 import BottomNavigation from '../components/layout/BottomNavigation';
-import { 
-  ArrowForward, 
-  Article, 
-  Announcement, 
-  CalendarMonth, 
-  Store, 
-  Assignment, 
-  Email, 
-  NotificationsActive,
-  Videocam 
-} from '@mui/icons-material';
+import { ArrowForward, Article } from '@mui/icons-material';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
+
+// Import default placeholder images
+import announcementImg from '@assets/stock_images/mosque_announcement__5fa54614.jpg';
+import eventImg from '@assets/stock_images/islamic_community_ev_6ebc00b7.jpg';
+import taskImg from '@assets/stock_images/mosque_task_work_vol_d0885b38.jpg';
+import messageImg from '@assets/stock_images/message_envelope_let_edf65931.jpg';
+import dateImg from '@assets/stock_images/important_date_calen_8295ac6d.jpg';
+import mediaImg from '@assets/stock_images/video_camera_media_l_00904efa.jpg';
 
 export default function MobileDashboard() {
   const [, setLocation] = useLocation();
@@ -92,26 +90,25 @@ export default function MobileDashboard() {
     return labels[type] || type;
   };
 
-  const getEntityTypeIcon = (type: string) => {
-    const iconProps = { sx: { fontSize: 40 } };
+  const getDefaultImageForType = (type: string): string => {
     switch (type) {
-      case 'announcement': return <Announcement {...iconProps} />;
-      case 'event': return <CalendarMonth {...iconProps} />;
-      case 'shop_item': return <Store {...iconProps} />;
-      case 'task': return <Assignment {...iconProps} />;
-      case 'message': return <Email {...iconProps} />;
-      case 'media': return <Videocam {...iconProps} />;
-      case 'important_date_reminder': return <NotificationsActive {...iconProps} />;
-      default: return <Article {...iconProps} />;
+      case 'announcement': return announcementImg;
+      case 'event': return eventImg;
+      case 'task': return taskImg;
+      case 'message': return messageImg;
+      case 'media': return mediaImg;
+      case 'important_date_reminder': return dateImg;
+      case 'shop_item': return eventImg; // Fallback for shop without photo
+      default: return announcementImg;
     }
   };
 
-  const getImageUrl = (item: ActivityFeedItem): string | null => {
+  const getImageUrl = (item: ActivityFeedItem): string => {
     try {
       const metadata = item.metadata ? JSON.parse(item.metadata) : null;
-      return metadata?.imageUrl || null;
+      return metadata?.imageUrl || getDefaultImageForType(item.type);
     } catch {
-      return null;
+      return getDefaultImageForType(item.type);
     }
   };
 
@@ -230,39 +227,20 @@ export default function MobileDashboard() {
                       })
                     }}
                   >
-                    <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
-                      <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
-                        {/* Image or Icon on Left */}
-                        <Box sx={{ flexShrink: 0 }}>
-                          {imageUrl ? (
-                            <Avatar
-                              src={imageUrl}
-                              variant="rounded"
-                              sx={{
-                                width: 72,
-                                height: 72,
-                                borderRadius: 'var(--radius)',
-                                border: '2px solid var(--border)',
-                              }}
-                            />
-                          ) : (
-                            <Box
-                              sx={{
-                                width: 72,
-                                height: 72,
-                                borderRadius: 'var(--radius)',
-                                bgcolor: 'var(--semantic-success-bg)',
-                                border: '2px solid var(--semantic-success-border)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                color: 'hsl(123 46% 54%)',
-                              }}
-                            >
-                              {getEntityTypeIcon(item.type)}
-                            </Box>
-                          )}
-                        </Box>
+                    <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                        {/* Image on Left - Vertically Centered */}
+                        <Avatar
+                          src={imageUrl}
+                          variant="rounded"
+                          sx={{
+                            width: 72,
+                            height: 72,
+                            borderRadius: 'var(--radius)',
+                            border: '2px solid var(--border)',
+                            flexShrink: 0,
+                          }}
+                        />
 
                         {/* Content on Right */}
                         <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -276,7 +254,7 @@ export default function MobileDashboard() {
                               fontWeight: 600,
                               bgcolor: 'var(--accent)',
                               color: 'var(--accent-foreground)',
-                              mb: 0.75,
+                              mb: 0.5,
                             }}
                           />
                           
@@ -286,7 +264,7 @@ export default function MobileDashboard() {
                               fontWeight: 600,
                               fontSize: '0.95rem',
                               color: 'var(--card-foreground)',
-                              mb: 0.5,
+                              mb: 0.25,
                               overflow: 'hidden',
                               textOverflow: 'ellipsis',
                               whiteSpace: 'nowrap',
@@ -301,7 +279,7 @@ export default function MobileDashboard() {
                               sx={{ 
                                 color: 'var(--muted-foreground)',
                                 fontSize: '0.85rem',
-                                mb: 0.5,
+                                mb: 0.25,
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
                                 display: '-webkit-box',
@@ -330,7 +308,6 @@ export default function MobileDashboard() {
                             sx={{ 
                               color: 'var(--primary)',
                               fontSize: '20px',
-                              mt: 0.5,
                               flexShrink: 0,
                             }} 
                           />
