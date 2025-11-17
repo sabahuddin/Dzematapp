@@ -1,20 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
-import { Box, Card, CardContent, Typography } from '@mui/material';
+import { Box, Card, CardContent, Typography, Chip } from '@mui/material';
 import { ArrowForward } from '@mui/icons-material';
-import {
-  PersonAdd,
-  CheckCircle,
-  Store,
-  EmojiEvents,
-  Article,
-  Event,
-  CalendarMonth,
-  CardGiftcard,
-  NotificationsActive,
-  Videocam
-} from '@mui/icons-material';
 import { type ActivityFeedItem } from '@shared/schema';
 import { useLocation } from 'wouter';
+import announcementImg from '@assets/stock_images/landscape_a6df4c9a-7ea0-45ce-8002-a75e2dfd7cc3.jpg';
+import eventImg from '@assets/stock_images/landscape_da0e8bcb-c25e-4c54-92c5-ad89b2da6f96.jpg';
+import taskImg from '@assets/stock_images/landscape_a2a0ad41-12a5-46e8-b3f8-74b17b4cb651.jpg';
+import messageImg from '@assets/stock_images/landscape_c9e91c95-1dd6-46f1-a85f-05fe71f025db.jpg';
+import mediaImg from '@assets/stock_images/landscape_d02d4a94-4aae-4ea7-8e44-2bbe0b8b26f6.jpg';
+import dateImg from '@assets/stock_images/landscape_3bce5afc-d2b2-49cb-b4e7-6a2b5c1b18fd.jpg';
 
 interface FeedSlideshowProps {
   items: ActivityFeedItem[];
@@ -72,29 +66,42 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
     touchEndX.current = 0;
   };
 
-  const getIcon = (type: string) => {
-    const iconProps = { fontSize: 'large' as const };
+  const getDefaultImageForType = (type: string): string => {
     switch (type) {
-      case 'new_member': return <PersonAdd {...iconProps} />;
-      case 'project_completed': return <CheckCircle {...iconProps} />;
-      case 'shop_item': return <Store {...iconProps} />;
-      case 'badge_awarded': return <EmojiEvents {...iconProps} />;
-      case 'certificate_issued': return <CardGiftcard {...iconProps} />;
-      case 'announcement': return <Article {...iconProps} />;
-      case 'event': return <Event {...iconProps} />;
-      case 'important_date_reminder': return <NotificationsActive {...iconProps} />;
-      case 'media': return <Videocam {...iconProps} />;
-      default: return <CalendarMonth {...iconProps} />;
+      case 'announcement': return announcementImg;
+      case 'event': return eventImg;
+      case 'task': return taskImg;
+      case 'message': return messageImg;
+      case 'media': return mediaImg;
+      case 'important_date_reminder': return dateImg;
+      case 'shop_item': return eventImg;
+      default: return announcementImg;
     }
   };
 
-  const getTypeColor = (type: string) => {
+  const getImageUrl = (item: ActivityFeedItem): string => {
+    try {
+      const metadata = item.metadata ? JSON.parse(item.metadata) : null;
+      return metadata?.imageUrl || getDefaultImageForType(item.type);
+    } catch {
+      return getDefaultImageForType(item.type);
+    }
+  };
+
+  const getEntityTypeBadgeLabel = (type: string): string => {
     switch (type) {
-      case 'new_member': return { bg: 'var(--semantic-info-bg)', iconColor: 'var(--semantic-info-gradient-start)' };
-      case 'badge_awarded': return { bg: 'var(--semantic-award-bg)', iconColor: 'var(--semantic-award-text)' };
-      case 'certificate_issued': return { bg: 'var(--semantic-celebration-bg)', iconColor: 'var(--semantic-celebration-text)' };
-      case 'shop_item': return { bg: 'var(--semantic-success-bg)', iconColor: 'var(--semantic-success-text)' };
-      default: return { bg: 'var(--semantic-neutral-bg)', iconColor: 'text.secondary' };
+      case 'announcement': return 'Obavještenje';
+      case 'event': return 'Događaj';
+      case 'shop_item': return 'Shop';
+      case 'new_member': return 'Novi član';
+      case 'badge_awarded': return 'Značka';
+      case 'certificate_issued': return 'Zahvalnica';
+      case 'task': return 'Zadatak';
+      case 'message': return 'Poruka';
+      case 'media': return 'Media';
+      case 'important_date_reminder': return 'Važan datum';
+      case 'project_completed': return 'Projekat';
+      default: return 'Aktivnost';
     }
   };
 
@@ -125,7 +132,7 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
   // Clamp index to valid range to prevent undefined access during state updates
   const safeIndex = Math.min(currentIndex, limitedItems.length - 1);
   const currentItem = limitedItems[safeIndex];
-  const colors = getTypeColor(currentItem.type);
+  const imageUrl = getImageUrl(currentItem);
 
   return (
     <Box sx={{ mb: 3 }}>
@@ -136,62 +143,119 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
         onTouchEnd={handleTouchEnd}
         data-testid={`feed-slideshow-item-${currentItem.id}`}
         sx={{
-          backgroundColor: colors.bg,
-          transition: 'all 0.3s ease',
           cursor: currentItem.isClickable ? 'pointer' : 'default',
+          bgcolor: 'var(--card)',
+          border: '1px solid var(--border)',
+          borderRadius: 'var(--radius)',
+          transition: 'all 0.2s ease',
+          boxShadow: 'none',
           userSelect: 'none',
           
-          ...(currentItem.isClickable ? {
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-            '&:active': {
-              transform: 'scale(0.98)',
+          ...(currentItem.isClickable && {
+            '&:hover': {
+              borderColor: 'var(--primary)',
+              transform: 'translateY(-1px)',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
             },
-          } : {
-            opacity: 0.95,
           })
         }}
       >
-        <CardContent>
-          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
+        <CardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
+          <Box sx={{ display: 'flex', alignItems: 'stretch', gap: 0 }}>
+            {/* Image on Left - 4:3 aspect ratio, 40% of card width */}
             <Box
+              component="img"
+              src={imageUrl}
+              alt=""
               sx={{
-                color: colors.iconColor,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minWidth: 56,
+                width: '40%',
+                aspectRatio: '4 / 3',
+                objectFit: 'cover',
+                flexShrink: 0,
               }}
-            >
-              {getIcon(currentItem.type)}
-            </Box>
+            />
 
-            <Box sx={{ flex: 1 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <Typography variant="h6" component="h3" sx={{ fontWeight: 600 }}>
-                  {currentItem.title}
-                </Typography>
-                {currentItem.isClickable && (
-                  <ArrowForward 
-                    sx={{ 
-                      color: 'primary.main',
-                      ml: 1
-                    }} 
-                  />
-                )}
-              </Box>
-
+            {/* Content on Right */}
+            <Box sx={{ flex: 1, minWidth: 0, p: 2, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              {/* Entity Type Badge */}
+              <Chip
+                label={getEntityTypeBadgeLabel(currentItem.type)}
+                size="small"
+                sx={{
+                  height: '20px',
+                  fontSize: '0.7rem',
+                  fontWeight: 600,
+                  bgcolor: 'var(--accent)',
+                  color: 'var(--accent-foreground)',
+                  mb: 0.5,
+                  width: 'fit-content',
+                }}
+              />
+              
+              <Typography 
+                variant="body1" 
+                sx={{ 
+                  fontWeight: 600,
+                  fontSize: '1rem',
+                  color: 'var(--card-foreground)',
+                  mb: 0.5,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {currentItem.title}
+              </Typography>
+              
               {currentItem.description && (
                 <Typography 
                   variant="body2" 
-                  color="text.secondary"
+                  sx={{ 
+                    color: 'var(--muted-foreground)',
+                    fontSize: '0.85rem',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical',
+                  }}
                 >
                   {currentItem.description}
                 </Typography>
+              )}
+
+              {currentItem.isClickable && (
+                <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+                  <ArrowForward 
+                    sx={{ 
+                      color: 'var(--primary)',
+                      fontSize: '18px',
+                    }} 
+                  />
+                </Box>
               )}
             </Box>
           </Box>
         </CardContent>
       </Card>
+
+      {/* Slideshow indicators */}
+      {limitedItems.length > 1 && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 0.5, mt: 1.5 }}>
+          {limitedItems.map((_, index) => (
+            <Box
+              key={index}
+              sx={{
+                width: 8,
+                height: 8,
+                borderRadius: '50%',
+                bgcolor: index === safeIndex ? 'var(--primary)' : 'var(--muted)',
+                transition: 'all 0.3s ease',
+              }}
+            />
+          ))}
+        </Box>
+      )}
     </Box>
   );
 }
