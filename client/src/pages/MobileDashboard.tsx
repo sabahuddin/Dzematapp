@@ -1,4 +1,4 @@
-import { Box, Typography, Card, CardContent, CircularProgress, Alert, Chip } from '@mui/material';
+import { Box, Typography, Card, CardContent, CircularProgress, Alert, Chip, Avatar } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
 import { type ActivityFeedItem, type PrayerTime } from '@shared/schema';
@@ -7,7 +7,17 @@ import { HeroPrayerCard } from '../components/HeroPrayerCard';
 import { SectionCard } from '../components/SectionCard';
 import FeedSlideshow from '../components/FeedSlideshow';
 import BottomNavigation from '../components/layout/BottomNavigation';
-import { ArrowForward, Article } from '@mui/icons-material';
+import { 
+  ArrowForward, 
+  Article, 
+  Announcement, 
+  CalendarMonth, 
+  Store, 
+  Assignment, 
+  Email, 
+  NotificationsActive,
+  Videocam 
+} from '@mui/icons-material';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
@@ -80,6 +90,29 @@ export default function MobileDashboard() {
       'important_date_reminder': t('common:entityTypes.important_date_reminder', 'Važan datum'),
     };
     return labels[type] || type;
+  };
+
+  const getEntityTypeIcon = (type: string) => {
+    const iconProps = { sx: { fontSize: 40 } };
+    switch (type) {
+      case 'announcement': return <Announcement {...iconProps} />;
+      case 'event': return <CalendarMonth {...iconProps} />;
+      case 'shop_item': return <Store {...iconProps} />;
+      case 'task': return <Assignment {...iconProps} />;
+      case 'message': return <Email {...iconProps} />;
+      case 'media': return <Videocam {...iconProps} />;
+      case 'important_date_reminder': return <NotificationsActive {...iconProps} />;
+      default: return <Article {...iconProps} />;
+    }
+  };
+
+  const getImageUrl = (item: ActivityFeedItem): string | null => {
+    try {
+      const metadata = item.metadata ? JSON.parse(item.metadata) : null;
+      return metadata?.imageUrl || null;
+    } catch {
+      return null;
+    }
   };
 
   return (
@@ -173,95 +206,140 @@ export default function MobileDashboard() {
 
           {!userActivitiesLoading && userActivities.length > 0 && (
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-              {userActivities.map((item) => (
-                <Card
-                  key={item.id}
-                  onClick={() => handleItemClick(item)}
-                  data-testid={`user-activity-${item.id}`}
-                  sx={{
-                    cursor: item.isClickable ? 'pointer' : 'default',
-                    bgcolor: 'var(--card)',
-                    border: '2px solid var(--border)',
-                    borderRadius: 'var(--radius)',
-                    transition: 'all 0.2s ease',
-                    boxShadow: 'none',
-                    
-                    ...(item.isClickable && {
-                      '&:hover': {
-                        borderColor: 'var(--primary)',
-                        transform: 'translateY(-1px)',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                      },
-                    })
-                  }}
-                >
-                  <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
-                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
-                      <Box sx={{ flex: 1 }}>
-                        {/* Entity Type Badge */}
-                        <Chip
-                          label={getEntityTypeBadgeLabel(item.type)}
-                          size="small"
-                          sx={{
-                            height: '20px',
-                            fontSize: '0.7rem',
-                            fontWeight: 600,
-                            bgcolor: 'var(--accent)',
-                            color: 'var(--accent-foreground)',
-                            mb: 0.75,
-                          }}
-                        />
-                        
-                        <Typography 
-                          variant="body2" 
-                          sx={{ 
-                            fontWeight: 600,
-                            fontSize: '0.95rem',
-                            color: 'var(--card-foreground)',
-                            mb: 0.5
-                          }}
-                        >
-                          {item.title}
-                        </Typography>
-                        
-                        {item.description && (
+              {userActivities.map((item) => {
+                const imageUrl = getImageUrl(item);
+                return (
+                  <Card
+                    key={item.id}
+                    onClick={() => handleItemClick(item)}
+                    data-testid={`user-activity-${item.id}`}
+                    sx={{
+                      cursor: item.isClickable ? 'pointer' : 'default',
+                      bgcolor: 'var(--card)',
+                      border: '2px solid var(--border)',
+                      borderRadius: 'var(--radius)',
+                      transition: 'all 0.2s ease',
+                      boxShadow: 'none',
+                      
+                      ...(item.isClickable && {
+                        '&:hover': {
+                          borderColor: 'var(--primary)',
+                          transform: 'translateY(-1px)',
+                          boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                        },
+                      })
+                    }}
+                  >
+                    <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+                      <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
+                        {/* Image or Icon on Left */}
+                        <Box sx={{ flexShrink: 0 }}>
+                          {imageUrl ? (
+                            <Avatar
+                              src={imageUrl}
+                              variant="rounded"
+                              sx={{
+                                width: 72,
+                                height: 72,
+                                borderRadius: 'var(--radius)',
+                                border: '2px solid var(--border)',
+                              }}
+                            />
+                          ) : (
+                            <Box
+                              sx={{
+                                width: 72,
+                                height: 72,
+                                borderRadius: 'var(--radius)',
+                                bgcolor: 'var(--semantic-success-bg)',
+                                border: '2px solid var(--semantic-success-border)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: 'hsl(123 46% 54%)',
+                              }}
+                            >
+                              {getEntityTypeIcon(item.type)}
+                            </Box>
+                          )}
+                        </Box>
+
+                        {/* Content on Right */}
+                        <Box sx={{ flex: 1, minWidth: 0 }}>
+                          {/* Entity Type Badge */}
+                          <Chip
+                            label={getEntityTypeBadgeLabel(item.type)}
+                            size="small"
+                            sx={{
+                              height: '20px',
+                              fontSize: '0.7rem',
+                              fontWeight: 600,
+                              bgcolor: 'var(--accent)',
+                              color: 'var(--accent-foreground)',
+                              mb: 0.75,
+                            }}
+                          />
+                          
                           <Typography 
                             variant="body2" 
                             sx={{ 
-                              color: 'var(--muted-foreground)',
-                              fontSize: '0.85rem',
-                              mb: 0.5
+                              fontWeight: 600,
+                              fontSize: '0.95rem',
+                              color: 'var(--card-foreground)',
+                              mb: 0.5,
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
                             }}
                           >
-                            {item.description}
+                            {item.title}
                           </Typography>
-                        )}
+                          
+                          {item.description && (
+                            <Typography 
+                              variant="body2" 
+                              sx={{ 
+                                color: 'var(--muted-foreground)',
+                                fontSize: '0.85rem',
+                                mb: 0.5,
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                display: '-webkit-box',
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: 'vertical',
+                              }}
+                            >
+                              {item.description}
+                            </Typography>
+                          )}
+                          
+                          <Typography 
+                            variant="caption" 
+                            sx={{ 
+                              color: 'var(--muted-foreground)',
+                              fontSize: '0.75rem',
+                              display: 'block'
+                            }}
+                          >
+                            {formatDate(item.createdAt)}
+                          </Typography>
+                        </Box>
                         
-                        <Typography 
-                          variant="caption" 
-                          sx={{ 
-                            color: 'var(--muted-foreground)',
-                            fontSize: '0.75rem',
-                            display: 'block'
-                          }}
-                        >
-                          {formatDate(item.createdAt)}
-                        </Typography>
+                        {item.isClickable && (
+                          <ArrowForward 
+                            sx={{ 
+                              color: 'var(--primary)',
+                              fontSize: '20px',
+                              mt: 0.5,
+                              flexShrink: 0,
+                            }} 
+                          />
+                        )}
                       </Box>
-                      
-                      {item.isClickable && (
-                        <ArrowForward 
-                          sx={{ 
-                            color: 'var(--primary)',
-                            fontSize: '20px',
-                            mt: 0.5
-                          }} 
-                        />
-                      )}
-                    </Box>
-                  </CardContent>
-                </Card>
-              ))}
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </Box>
           )}
         </SectionCard>

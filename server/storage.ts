@@ -496,7 +496,8 @@ export class DatabaseStorage implements IStorage {
       description: announcement.title,
       relatedEntityId: announcement.id,
       relatedEntityType: "announcement",
-      isClickable: true
+      isClickable: true,
+      metadata: JSON.stringify({ imageUrl: null })
     });
     
     return announcement;
@@ -537,7 +538,8 @@ export class DatabaseStorage implements IStorage {
       description: event.name,
       relatedEntityId: event.id,
       relatedEntityType: "event",
-      isClickable: true
+      isClickable: true,
+      metadata: JSON.stringify({ imageUrl: null })
     });
     
     return event;
@@ -1273,7 +1275,8 @@ export class DatabaseStorage implements IStorage {
       description: marketItem.name,
       relatedEntityId: marketItem.id,
       relatedEntityType: "shop_item",
-      isClickable: false
+      isClickable: false,
+      metadata: JSON.stringify({ imageUrl: marketItem.photos?.[0] || null })
     });
     
     return marketItem;
