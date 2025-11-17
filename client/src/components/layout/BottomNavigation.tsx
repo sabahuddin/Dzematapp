@@ -22,11 +22,6 @@ export default function BottomNavigation() {
   return (
     <Paper
       sx={{
-        position: 'fixed',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        zIndex: 1200,
         borderTop: '2px solid var(--semantic-success-border)',
         backgroundColor: 'var(--semantic-success-bg)',
       }}

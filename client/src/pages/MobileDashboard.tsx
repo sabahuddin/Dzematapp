@@ -6,6 +6,7 @@ import { MobileAppBar } from '../components/MobileAppBar';
 import { HeroPrayerCard } from '../components/HeroPrayerCard';
 import { SectionCard } from '../components/SectionCard';
 import FeedSlideshow from '../components/FeedSlideshow';
+import BottomNavigation from '../components/layout/BottomNavigation';
 import { ArrowForward, Article } from '@mui/icons-material';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
@@ -89,20 +90,26 @@ export default function MobileDashboard() {
       left: 0,
       right: 0,
       bottom: 0,
+      width: '100vw',
+      height: '100vh',
       display: 'flex',
       flexDirection: 'column',
-      overflow: 'hidden'
+      overflow: 'hidden',
     }}>
-      {/* Top AppBar */}
-      <MobileAppBar title="DžematApp" />
+      {/* Top AppBar - Fixed */}
+      <Box sx={{ flexShrink: 0 }}>
+        <MobileAppBar title="DžematApp" />
+      </Box>
 
-      {/* Main Content - Scrollable */}
+      {/* Main Content - Scrollable area */}
       <Box sx={{ 
         flex: 1,
         overflowY: 'auto',
         overflowX: 'hidden',
-        p: 2, 
-        pb: 10 
+        WebkitOverflowScrolling: 'touch',
+        p: 2,
+        pt: 1,
+        pb: 10,
       }}>
         {/* Hero Prayer Times */}
         {prayerLoading && (
@@ -258,6 +265,11 @@ export default function MobileDashboard() {
             </Box>
           )}
         </SectionCard>
+      </Box>
+
+      {/* Bottom Navigation - Fixed */}
+      <Box sx={{ flexShrink: 0 }}>
+        <BottomNavigation />
       </Box>
     </Box>
   );
