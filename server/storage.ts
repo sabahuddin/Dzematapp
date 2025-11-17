@@ -2539,7 +2539,7 @@ export class DatabaseStorage implements IStorage {
       }
     }
 
-    // Batched lookup for event images (photoUrl)
+    // Batched lookup for event images (photoUrl or first image from description HTML)
     const eventIds = items
       .filter(item => item.relatedEntityType === 'event' && item.relatedEntityId)
       .map(item => item.relatedEntityId!);
@@ -2551,8 +2551,18 @@ export class DatabaseStorage implements IStorage {
         .where(inArray(events.id, eventIds));
 
       for (const event of eventRecords) {
-        if (event.photoUrl) {
-          eventImages.set(event.id, event.photoUrl);
+        let imageUrl = event.photoUrl;
+        
+        // If no photoUrl, try to extract first image from HTML description
+        if (!imageUrl && event.description) {
+          const imgMatch = event.description.match(/<img[^>]+src=["']([^"']+)["']/i);
+          if (imgMatch && imgMatch[1]) {
+            imageUrl = imgMatch[1];
+          }
+        }
+        
+        if (imageUrl) {
+          eventImages.set(event.id, imageUrl);
         }
       }
     }
