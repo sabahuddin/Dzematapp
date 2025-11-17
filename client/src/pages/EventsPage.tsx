@@ -82,44 +82,45 @@ function EventDay(props: PickersDayProps & { eventDates?: Date[]; selectedDate?:
         outsideCurrentMonth={outsideCurrentMonth}
         sx={{
           backgroundColor: outsideCurrentMonth 
-            ? 'hsl(0 0% 97%)'
+            ? 'var(--semantic-neutral-bg)'
             : isSelected 
             ? 'var(--semantic-info-active) !important' 
             : isToday 
             ? 'var(--semantic-award-active) !important'
             : isWeekendDay 
-            ? 'hsl(207 60% 92%)'
+            ? 'var(--semantic-info-bg)'
             : hasEvent
             ? 'var(--semantic-success-bg)'
-            : 'hsl(0 0% 98%)',
+            : 'white',
           color: outsideCurrentMonth
-            ? 'hsl(0 0% 70%)'
+            ? 'var(--semantic-neutral-text)'
             : isSelected || isToday
             ? '#ffffff !important'
             : hasEvent
             ? 'var(--semantic-success-text)'
             : isWeekendDay
-            ? 'hsl(207 70% 35%)'
+            ? 'var(--semantic-info-text)'
             : 'inherit',
           fontWeight: isToday || isSelected || hasEvent ? 600 : 400,
           border: outsideCurrentMonth
-            ? '1px solid hsl(0 0% 92%)'
+            ? '1px solid var(--semantic-neutral-border)'
             : isToday 
-            ? '2px solid hsl(35 100% 66%)' 
-            : '1px solid hsl(0 0% 90%)',
+            ? '2px solid var(--semantic-award-border)' 
+            : '1px solid hsl(0 0% 85%)',
           borderRadius: '8px',
+          margin: '2px',
           '&:hover': {
             backgroundColor: outsideCurrentMonth
-              ? 'hsl(0 0% 94%)'
+              ? 'var(--semantic-neutral-bg-hover)'
               : isSelected
               ? 'var(--semantic-info-active-hover) !important'
               : isToday
               ? 'var(--semantic-award-active-hover) !important'
               : isWeekendDay
-              ? 'hsl(207 70% 85%)'
+              ? 'var(--semantic-info-bg-hover)'
               : hasEvent
               ? 'var(--semantic-success-bg-hover)'
-              : 'hsl(0 0% 94%)',
+              : 'var(--semantic-neutral-bg)',
           },
         }}
       />
