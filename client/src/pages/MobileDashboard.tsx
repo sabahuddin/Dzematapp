@@ -127,9 +127,7 @@ export default function MobileDashboard() {
       overflow: 'hidden',
     }}>
       {/* Top AppBar - Fixed */}
-      <Box sx={{ flexShrink: 0 }}>
-        <MobileAppBar title="DžematApp" />
-      </Box>
+      <MobileAppBar title="DžematApp" />
 
       {/* Main Content - Scrollable area */}
       <Box sx={{ 
@@ -137,9 +135,9 @@ export default function MobileDashboard() {
         overflowY: 'auto',
         overflowX: 'hidden',
         WebkitOverflowScrolling: 'touch',
-        p: 2,
-        pt: 1,
-        pb: 10,
+        px: 2,
+        pt: 'calc(56px + env(safe-area-inset-top) + 8px)',
+        pb: 'calc(56px + env(safe-area-inset-bottom) + 8px)',
       }}>
         {/* Hero Prayer Times */}
         {prayerLoading && (

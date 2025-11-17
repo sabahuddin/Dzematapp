@@ -238,24 +238,6 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
           </Box>
         </CardContent>
       </Card>
-
-      {/* Slideshow indicators */}
-      {limitedItems.length > 1 && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 0.5, mt: 1.5 }}>
-          {limitedItems.map((_, index) => (
-            <Box
-              key={index}
-              sx={{
-                width: 8,
-                height: 8,
-                borderRadius: '50%',
-                bgcolor: index === safeIndex ? 'var(--primary)' : 'var(--muted)',
-                transition: 'all 0.3s ease',
-              }}
-            />
-          ))}
-        </Box>
-      )}
     </Box>
   );
 }
