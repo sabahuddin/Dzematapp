@@ -94,7 +94,6 @@ export function MobileAppBar({ title = 'DžematApp', showBack }: MobileAppBarPro
         bgcolor: 'var(--card)',
         borderBottom: '1px solid var(--border)',
         color: 'var(--card-foreground)',
-        paddingTop: 'env(safe-area-inset-top)',
       }}
     >
       <Toolbar sx={{ justifyContent: 'space-between', minHeight: '64px !important', px: 2 }}>

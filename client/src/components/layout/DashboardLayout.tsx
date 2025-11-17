@@ -32,19 +32,16 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     return (
       <Box sx={{ 
         bgcolor: 'var(--background)', 
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        width: '100vw',
         height: '100vh',
+        width: '100vw',
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
       }}>
-        {/* Top AppBar - Fixed */}
-        <MobileAppBar title="DžematApp" />
+        {/* Top AppBar */}
+        <Box sx={{ flexShrink: 0 }}>
+          <MobileAppBar title="DžematApp" />
+        </Box>
 
         {/* Main Content - Scrollable area */}
         <Box sx={{ 
@@ -52,15 +49,15 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           overflowY: 'auto',
           overflowX: 'hidden',
           WebkitOverflowScrolling: 'touch',
-          mt: 'calc(56px + env(safe-area-inset-top))',
-          mb: 'calc(56px + env(safe-area-inset-bottom))',
           p: 2,
         }}>
           {children}
         </Box>
 
-        {/* Bottom Navigation - Fixed */}
-        <BottomNavigation />
+        {/* Bottom Navigation */}
+        <Box sx={{ flexShrink: 0 }}>
+          <BottomNavigation />
+        </Box>
       </Box>
     );
   }

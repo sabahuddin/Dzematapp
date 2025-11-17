@@ -24,7 +24,6 @@ export default function BottomNavigation() {
       sx={{
         borderTop: '1px solid var(--semantic-success-border)',
         backgroundColor: 'var(--semantic-success-bg)',
-        pb: 'env(safe-area-inset-bottom)',
       }}
       elevation={8}
     >
