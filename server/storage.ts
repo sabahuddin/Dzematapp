@@ -2471,10 +2471,103 @@ export class DatabaseStorage implements IStorage {
 
   // Activity Feed
   async getActivityFeed(limit: number = 50): Promise<ActivityFeedItem[]> {
-    return await db.select()
+    // Get base activity feed items
+    const items = await db.select()
       .from(activityFeed)
       .orderBy(desc(activityFeed.createdAt))
       .limit(limit);
+
+    if (items.length === 0) return items;
+
+    // Group items by entity type for batched lookups
+    const announcementIds = items
+      .filter(item => item.relatedEntityType === 'announcement' && item.relatedEntityId)
+      .map(item => item.relatedEntityId!);
+
+    const marketplaceIds = items
+      .filter(item => item.relatedEntityType === 'shop_item' && item.relatedEntityId)
+      .map(item => item.relatedEntityId!);
+
+    // Batched lookup for announcement images (first image per announcement)
+    const announcementImages = new Map<string, string>();
+    if (announcementIds.length > 0) {
+      const files = await db.select()
+        .from(announcementFiles)
+        .where(and(
+          inArray(announcementFiles.announcementId, announcementIds),
+          eq(announcementFiles.fileType, 'image')
+        ))
+        .orderBy(asc(announcementFiles.uploadedAt));
+
+      // Get first image per announcement
+      for (const file of files) {
+        if (!announcementImages.has(file.announcementId)) {
+          announcementImages.set(file.announcementId, file.filePath);
+        }
+      }
+    }
+
+    // Batched lookup for marketplace item images (first photo)
+    const marketplaceImages = new Map<string, string>();
+    if (marketplaceIds.length > 0) {
+      const marketItems = await db.select()
+        .from(marketplaceItems)
+        .where(inArray(marketplaceItems.id, marketplaceIds));
+
+      for (const item of marketItems) {
+        if (item.photos && item.photos.length > 0) {
+          marketplaceImages.set(item.id, item.photos[0]);
+        }
+      }
+    }
+
+    // Batched lookup for shop product images (first photo)
+    const shopProductIds = items
+      .filter(item => item.type === 'shop_item' && item.relatedEntityId && item.relatedEntityType !== 'shop_item')
+      .map(item => item.relatedEntityId!);
+
+    const shopImages = new Map<string, string>();
+    if (shopProductIds.length > 0) {
+      const products = await db.select()
+        .from(shopProducts)
+        .where(inArray(shopProducts.id, shopProductIds));
+
+      for (const product of products) {
+        if (product.photos && product.photos.length > 0) {
+          shopImages.set(product.id, product.photos[0]);
+        }
+      }
+    }
+
+    // Enrich items with real image URLs
+    return items.map(item => {
+      let imageUrl: string | null = null;
+
+      // Get real image based on entity type
+      if (item.relatedEntityType === 'announcement' && item.relatedEntityId) {
+        imageUrl = announcementImages.get(item.relatedEntityId) || null;
+      } else if (item.relatedEntityType === 'shop_item' && item.relatedEntityId) {
+        imageUrl = marketplaceImages.get(item.relatedEntityId) || shopImages.get(item.relatedEntityId) || null;
+      }
+
+      // Parse existing metadata and merge with imageUrl
+      let metadata: any = {};
+      try {
+        if (item.metadata) {
+          metadata = JSON.parse(item.metadata);
+        }
+      } catch {
+        // Ignore parse errors
+      }
+
+      // Update metadata with real or null imageUrl
+      metadata.imageUrl = imageUrl;
+
+      return {
+        ...item,
+        metadata: JSON.stringify(metadata)
+      };
+    });
   }
 
   async createActivityFeedItem(item: InsertActivityFeedItem): Promise<ActivityFeedItem> {
