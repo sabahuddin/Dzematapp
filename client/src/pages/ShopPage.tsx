@@ -680,10 +680,12 @@ export default function ShopPage() {
   const archivedItems = marketplaceItems?.filter(item => item.status === "completed") || [];
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom sx={{ mb: 3 }}>
-        {t('shop:title')}
-      </Typography>
+    <Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Typography variant="h5" sx={{ fontWeight: 600 }}>
+          {t('shop:title')}
+        </Typography>
+      </Box>
 
       <Paper sx={{ mb: 3 }}>
         <Tabs 
