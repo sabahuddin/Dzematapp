@@ -163,6 +163,17 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
   return (
     <Box sx={{ 
       mb: 3,
+      position: 'relative',
+      WebkitOverflowScrolling: 'auto',
+      '&::after': {
+        content: '""',
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: '30px',
+        pointerEvents: 'none',
+      },
       '& .MuiMobileStepper-root': { display: 'none !important' },
       '& .MuiMobileStepper-dot': { display: 'none !important' },
       '& .MuiMobileStepper-dots': { display: 'none !important' },
@@ -176,6 +187,7 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
       '& .dots': { display: 'none !important' },
       '& button[class*="dot"]': { display: 'none !important' },
       '& div[class*="indicator"]': { display: 'none !important' },
+      '& *::-webkit-scrollbar': { display: 'none !important' },
     }}>
       <Card
         onClick={() => handleItemClick(currentItem)}
