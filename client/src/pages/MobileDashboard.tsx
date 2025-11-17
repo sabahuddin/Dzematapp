@@ -10,6 +10,7 @@ import BottomNavigation from '../components/layout/BottomNavigation';
 import { ArrowForward, Article } from '@mui/icons-material';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
+import { normalizeImageUrl } from '@/lib/imageUtils';
 
 // Import default placeholder images
 import announcementImg from '@assets/stock_images/mosque_announcement__5fa54614.jpg';
@@ -56,18 +57,42 @@ export default function MobileDashboard() {
   const handleItemClick = (item: ActivityFeedItem) => {
     if (!item.isClickable) return;
 
+    const id = item.relatedEntityId;
+    
     switch (item.relatedEntityType) {
-      case 'announcement': setLocation('/announcements'); break;
-      case 'event': setLocation('/events'); break;
-      case 'project': setLocation('/projects'); break;
-      case 'media': setLocation('/media'); break;
-      case 'shop_item': setLocation('/shop'); break;
-      case 'badge': setLocation('/badges'); break;
-      case 'certificate': setLocation('/certificates'); break;
-      case 'user': setLocation('/users'); break;
-      case 'task': setLocation('/tasks'); break;
-      case 'message': setLocation('/messages'); break;
-      case 'important_date_reminder': setLocation('/events'); break; // Important dates shown in events
+      case 'announcement': 
+        setLocation(id ? `/announcements?id=${id}` : '/announcements'); 
+        break;
+      case 'event': 
+        setLocation(id ? `/events?id=${id}` : '/events'); 
+        break;
+      case 'project': 
+        setLocation(id ? `/projects?id=${id}` : '/projects'); 
+        break;
+      case 'media': 
+        setLocation('/media'); 
+        break;
+      case 'shop_item': 
+        setLocation(id ? `/shop?id=${id}` : '/shop'); 
+        break;
+      case 'badge': 
+        setLocation('/badges'); 
+        break;
+      case 'certificate': 
+        setLocation('/certificates'); 
+        break;
+      case 'user': 
+        setLocation('/users'); 
+        break;
+      case 'task': 
+        setLocation('/tasks'); 
+        break;
+      case 'message': 
+        setLocation('/messages'); 
+        break;
+      case 'important_date_reminder': 
+        setLocation('/events'); 
+        break;
       default: break;
     }
   };
@@ -106,7 +131,8 @@ export default function MobileDashboard() {
   const getImageUrl = (item: ActivityFeedItem): string => {
     try {
       const metadata = item.metadata ? JSON.parse(item.metadata) : null;
-      return metadata?.imageUrl || getDefaultImageForType(item.type);
+      const imageUrl = normalizeImageUrl(metadata?.imageUrl);
+      return imageUrl || getDefaultImageForType(item.type);
     } catch {
       return getDefaultImageForType(item.type);
     }
