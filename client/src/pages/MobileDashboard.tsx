@@ -163,9 +163,9 @@ export default function MobileDashboard() {
         WebkitOverflowScrolling: 'touch',
         px: 2,
         pt: 'calc(64px + env(safe-area-inset-top) + 16px)',
-        pb: 'calc(64px + env(safe-area-inset-bottom) + 16px)',
+        pb: 'calc(56px + env(safe-area-inset-bottom) + 16px)',
         scrollPaddingTop: 'calc(64px + env(safe-area-inset-top))',
-        scrollPaddingBottom: 'calc(64px + env(safe-area-inset-bottom))',
+        scrollPaddingBottom: 'calc(56px + env(safe-area-inset-bottom))',
       }}>
         {/* Hero Prayer Times */}
         {prayerLoading && (

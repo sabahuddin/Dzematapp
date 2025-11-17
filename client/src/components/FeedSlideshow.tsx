@@ -19,7 +19,9 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [, setLocation] = useLocation();
   const touchStartX = useRef<number>(0);
+  const touchStartY = useRef<number>(0);
   const touchEndX = useRef<number>(0);
+  const horizontalSwipeActive = useRef<boolean>(false);
 
   // Limit to 10 items
   const limitedItems = items.slice(0, 10);
@@ -43,28 +45,47 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+    horizontalSwipeActive.current = false;
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    touchEndX.current = e.touches[0].clientX;
+    if (!horizontalSwipeActive.current) {
+      const deltaX = Math.abs(e.touches[0].clientX - touchStartX.current);
+      const deltaY = Math.abs(e.touches[0].clientY - touchStartY.current);
+      
+      // If horizontal movement is dominant, block Safari pagination
+      if (deltaX > deltaY + 5) {
+        horizontalSwipeActive.current = true;
+      }
+    }
+    
+    if (horizontalSwipeActive.current) {
+      e.preventDefault();
+      touchEndX.current = e.touches[0].clientX;
+    }
   };
 
   const handleTouchEnd = () => {
-    const swipeThreshold = 50;
-    const diff = touchStartX.current - touchEndX.current;
+    if (horizontalSwipeActive.current) {
+      const swipeThreshold = 50;
+      const diff = touchStartX.current - touchEndX.current;
 
-    if (Math.abs(diff) > swipeThreshold) {
-      if (diff > 0) {
-        // Swipe left - next
-        setCurrentIndex((prev) => (prev + 1) % limitedItems.length);
-      } else {
-        // Swipe right - prev
-        setCurrentIndex((prev) => (prev - 1 + limitedItems.length) % limitedItems.length);
+      if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0) {
+          // Swipe left - next
+          setCurrentIndex((prev) => (prev + 1) % limitedItems.length);
+        } else {
+          // Swipe right - prev
+          setCurrentIndex((prev) => (prev - 1 + limitedItems.length) % limitedItems.length);
+        }
       }
     }
 
     touchStartX.current = 0;
+    touchStartY.current = 0;
     touchEndX.current = 0;
+    horizontalSwipeActive.current = false;
   };
 
   const getDefaultImageForType = (type: string): string => {
@@ -112,8 +133,9 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
     if (!item.isClickable) return;
 
     const id = item.relatedEntityId;
+    const type = item.relatedEntityType?.toLowerCase();
     
-    switch (item.relatedEntityType) {
+    switch (type) {
       case 'announcement': 
         setLocation(id ? `/announcements?id=${id}` : '/announcements'); 
         break;
