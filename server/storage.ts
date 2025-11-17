@@ -196,6 +196,7 @@ export interface IStorage {
   getAnnouncementFile(id: string): Promise<AnnouncementFile | undefined>;
   getAnnouncementFiles(announcementId: string): Promise<AnnouncementFile[]>;
   deleteAnnouncementFile(id: string): Promise<boolean>;
+  updateAnnouncementFeed(announcementId: string): Promise<void>;
   
   // Activities
   createActivity(activity: { type: string; description: string; userId?: string }): Promise<Activity>;
@@ -489,18 +490,49 @@ export class DatabaseStorage implements IStorage {
       userId: announcement.authorId
     });
     
-    // Add to activity feed
-    await this.createActivityFeedItem({
-      type: "announcement",
-      title: "Nova obavijest",
-      description: announcement.title,
-      relatedEntityId: announcement.id,
-      relatedEntityType: "announcement",
-      isClickable: true,
-      metadata: JSON.stringify({ imageUrl: null })
-    });
-    
     return announcement;
+  }
+
+  async updateAnnouncementFeed(announcementId: string) {
+    // Get first image from announcement files
+    const files = await db.select().from(announcementFiles)
+      .where(eq(announcementFiles.announcementId, announcementId))
+      .orderBy(asc(announcementFiles.uploadedAt))
+      .limit(1);
+    
+    const imageUrl = files[0]?.fileType === 'image' ? files[0].filePath : null;
+    
+    // Check if feed item already exists
+    const existingFeedItems = await db.select().from(activityFeed)
+      .where(and(
+        eq(activityFeed.relatedEntityId, announcementId),
+        eq(activityFeed.relatedEntityType, 'announcement')
+      ))
+      .limit(1);
+
+    const announcement = await this.getAnnouncement(announcementId);
+    if (!announcement) return;
+
+    if (existingFeedItems.length > 0) {
+      // Update existing feed item
+      await db.update(activityFeed)
+        .set({
+          description: announcement.title,
+          metadata: JSON.stringify({ imageUrl })
+        })
+        .where(eq(activityFeed.id, existingFeedItems[0].id));
+    } else {
+      // Create new feed item
+      await this.createActivityFeedItem({
+        type: "announcement",
+        title: "Nova obavijest",
+        description: announcement.title,
+        relatedEntityId: announcementId,
+        relatedEntityType: "announcement",
+        isClickable: true,
+        metadata: JSON.stringify({ imageUrl })
+      });
+    }
   }
 
   async updateAnnouncement(id: string, updateData: Partial<InsertAnnouncement>): Promise<Announcement | undefined> {
@@ -531,7 +563,7 @@ export class DatabaseStorage implements IStorage {
       userId: event.createdById
     });
     
-    // Add to activity feed
+    // Add to activity feed (events don't have photos, use null)
     await this.createActivityFeedItem({
       type: "event",
       title: "Novi događaj",
@@ -940,6 +972,11 @@ export class DatabaseStorage implements IStorage {
       description: `Fajl dodao u obavijest: ${file.fileName}`,
       userId: file.uploadedById
     });
+    
+    // Update activity feed with new image if it's an image file
+    if (file.fileType === 'image') {
+      await this.updateAnnouncementFeed(file.announcementId);
+    }
     
     return file;
   }

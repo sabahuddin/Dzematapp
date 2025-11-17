@@ -1,5 +1,5 @@
-const CACHE_NAME = 'dzematapp-v5-homescreen-images';
-const RUNTIME_CACHE = 'dzematapp-runtime-v5';
+const CACHE_NAME = 'dzematapp-v6-real-photos';
+const RUNTIME_CACHE = 'dzematapp-runtime-v6';
 
 // Resources to cache on install
 const PRECACHE_URLS = [

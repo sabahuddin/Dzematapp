@@ -227,30 +227,30 @@ export default function MobileDashboard() {
                       })
                     }}
                   >
-                    <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                        {/* Image on Left - Vertically Centered */}
-                        <Avatar
+                    <CardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
+                      <Box sx={{ display: 'flex', alignItems: 'stretch', gap: 0 }}>
+                        {/* Image on Left - 4:3 aspect ratio, 1/3 of card width */}
+                        <Box
+                          component="img"
                           src={imageUrl}
-                          variant="rounded"
+                          alt=""
                           sx={{
-                            width: 72,
-                            height: 72,
-                            borderRadius: 'var(--radius)',
-                            border: '2px solid var(--border)',
+                            width: '33.33%',
+                            aspectRatio: '4 / 3',
+                            objectFit: 'cover',
                             flexShrink: 0,
                           }}
                         />
 
                         {/* Content on Right */}
-                        <Box sx={{ flex: 1, minWidth: 0 }}>
+                        <Box sx={{ flex: 1, minWidth: 0, p: 1.5, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                           {/* Entity Type Badge */}
                           <Chip
                             label={getEntityTypeBadgeLabel(item.type)}
                             size="small"
                             sx={{
-                              height: '20px',
-                              fontSize: '0.7rem',
+                              height: '18px',
+                              fontSize: '0.65rem',
                               fontWeight: 600,
                               bgcolor: 'var(--accent)',
                               color: 'var(--accent-foreground)',
@@ -278,7 +278,7 @@ export default function MobileDashboard() {
                               variant="body2" 
                               sx={{ 
                                 color: 'var(--muted-foreground)',
-                                fontSize: '0.85rem',
+                                fontSize: '0.8rem',
                                 mb: 0.25,
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
@@ -295,7 +295,7 @@ export default function MobileDashboard() {
                             variant="caption" 
                             sx={{ 
                               color: 'var(--muted-foreground)',
-                              fontSize: '0.75rem',
+                              fontSize: '0.7rem',
                               display: 'block'
                             }}
                           >
@@ -304,13 +304,15 @@ export default function MobileDashboard() {
                         </Box>
                         
                         {item.isClickable && (
-                          <ArrowForward 
-                            sx={{ 
-                              color: 'var(--primary)',
-                              fontSize: '20px',
-                              flexShrink: 0,
-                            }} 
-                          />
+                          <Box sx={{ display: 'flex', alignItems: 'center', pr: 1.5 }}>
+                            <ArrowForward 
+                              sx={{ 
+                                color: 'var(--primary)',
+                                fontSize: '20px',
+                                flexShrink: 0,
+                              }} 
+                            />
+                          </Box>
                         )}
                       </Box>
                     </CardContent>
