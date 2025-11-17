@@ -75,6 +75,39 @@ const shopUpload = multer({
   }
 });
 
+// Configure multer for event photos
+const eventUploadDir = path.join(process.cwd(), 'public', 'uploads', 'events');
+
+const eventUpload = multer({
+  storage: multer.diskStorage({
+    destination: async (req, file, cb) => {
+      try {
+        await fs.mkdir(eventUploadDir, { recursive: true });
+        cb(null, eventUploadDir);
+      } catch (error) {
+        cb(error as Error, '');
+      }
+    },
+    filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      const extension = path.extname(file.originalname);
+      cb(null, `event-${uniqueSuffix}${extension}`);
+    }
+  }),
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+    files: 1
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (allowedMimes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files (JPEG, PNG, GIF, WebP) are allowed'));
+    }
+  }
+});
+
 // Configure multer for CSV uploads
 const csvUpload = multer({
   storage: multer.memoryStorage(),
@@ -133,6 +166,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const uploadsPath = path.join(process.cwd(), 'public', 'uploads');
   app.use('/uploads', express.static(uploadsPath));
   
+  // Event photo upload route
+  app.post("/api/upload/event-photo", requireAuth, eventUpload.single('photo'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
+
+      const photoUrl = `/uploads/events/${req.file.filename}`;
+      
+      res.json({ 
+        message: "Photo uploaded successfully",
+        photoUrl: photoUrl 
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to upload photo" });
+    }
+  });
+
   // Shop photos upload route (multiple files)
   app.post("/api/upload/shop-photos", requireAuth, shopUpload.array('photos', 10), async (req, res) => {
     try {
