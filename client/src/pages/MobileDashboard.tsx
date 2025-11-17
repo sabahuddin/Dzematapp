@@ -153,7 +153,7 @@ export default function MobileDashboard() {
       {/* Main Content - Scrollable area */}
       <Box sx={{ 
         flex: 1,
-        mt: 'calc(72px + env(safe-area-inset-top))',
+        mt: 'calc(88px + env(safe-area-inset-top))',
         overflowY: 'auto',
         overflowX: 'hidden',
         WebkitOverflowScrolling: 'touch',
@@ -175,34 +175,41 @@ export default function MobileDashboard() {
         {prayerTime && <HeroPrayerCard prayerTime={prayerTime} />}
 
         {/* Feed Section */}
-        <SectionCard 
-          title={t('dashboard:communityActivities', 'Aktivnosti zajednice')}
-          icon={<Article />}
-          linkTo="/feed"
-          linkText={t('common.viewAll', 'Vidi sve')}
-        >
-          {feedLoading && (
-            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-              <CircularProgress />
-            </Box>
-          )}
-          
-          {feedError && (
-            <Alert severity="error">
-              {t('dashboard:errors.feedFailed', 'Nije moguće učitati aktivnosti')}
-            </Alert>
-          )}
+        <Box sx={{
+          '& .carousel-indicators': { display: 'none !important' },
+          '& [data-testid="carousel-indicators"]': { display: 'none !important' },
+          '& .swiper-pagination': { display: 'none !important' },
+          '& .slick-dots': { display: 'none !important' },
+        }}>
+          <SectionCard 
+            title={t('dashboard:communityActivities', 'Aktivnosti zajednice')}
+            icon={<Article />}
+            linkTo="/feed"
+            linkText={t('common.viewAll', 'Vidi sve')}
+          >
+            {feedLoading && (
+              <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+                <CircularProgress />
+              </Box>
+            )}
+            
+            {feedError && (
+              <Alert severity="error">
+                {t('dashboard:errors.feedFailed', 'Nije moguće učitati aktivnosti')}
+              </Alert>
+            )}
 
-          {!feedLoading && !feedError && feedItems.length > 0 && (
-            <FeedSlideshow items={feedItems} />
-          )}
+            {!feedLoading && !feedError && feedItems.length > 0 && (
+              <FeedSlideshow items={feedItems} />
+            )}
 
-          {!feedLoading && !feedError && feedItems.length === 0 && (
-            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
-              {t('dashboard:feed.empty', 'Nema aktivnosti')}
-            </Typography>
-          )}
-        </SectionCard>
+            {!feedLoading && !feedError && feedItems.length === 0 && (
+              <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
+                {t('dashboard:feed.empty', 'Nema aktivnosti')}
+              </Typography>
+            )}
+          </SectionCard>
+        </Box>
 
         {/* User Activities Section */}
         <SectionCard 
