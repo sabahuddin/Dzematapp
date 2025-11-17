@@ -1312,7 +1312,7 @@ export class DatabaseStorage implements IStorage {
       description: marketItem.name,
       relatedEntityId: marketItem.id,
       relatedEntityType: "shop_item",
-      isClickable: false,
+      isClickable: true,
       metadata: JSON.stringify({ imageUrl: marketItem.photos?.[0] || null })
     });
     
