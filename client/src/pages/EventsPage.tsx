@@ -367,8 +367,8 @@ export default function EventsPage() {
           </Typography>
         </TableCell>
         <TableCell>{formatDateTime(event.dateTime.toString())}</TableCell>
-        <TableCell>{event.location}</TableCell>
-        <TableCell>
+        <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{event.location}</TableCell>
+        <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
           {event.rsvpEnabled ? `${rsvpCount}/${maxAttendees}` : t('events:no')}
         </TableCell>
         <TableCell>
@@ -685,8 +685,8 @@ export default function EventsPage() {
                   <TableRow>
                     <TableCell>{t('events:eventName')}</TableCell>
                     <TableCell>{t('events:dateTime')}</TableCell>
-                    <TableCell>{t('events:location')}</TableCell>
-                    <TableCell>{t('events:rsvp')}</TableCell>
+                    <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{t('events:location')}</TableCell>
+                    <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{t('events:rsvp')}</TableCell>
                     <TableCell>{t('events:actions')}</TableCell>
                   </TableRow>
                 </TableHead>
@@ -729,8 +729,8 @@ export default function EventsPage() {
                       <TableRow>
                         <TableCell>{t('events:eventName')}</TableCell>
                         <TableCell>{t('events:dateTime')}</TableCell>
-                        <TableCell>{t('events:location')}</TableCell>
-                        <TableCell>{t('events:rsvp')}</TableCell>
+                        <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{t('events:location')}</TableCell>
+                        <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{t('events:rsvp')}</TableCell>
                         <TableCell>{t('events:actions')}</TableCell>
                       </TableRow>
                     </TableHead>
@@ -766,8 +766,8 @@ export default function EventsPage() {
                       <TableRow>
                         <TableCell>{t('events:eventName')}</TableCell>
                         <TableCell>{t('events:dateTime')}</TableCell>
-                        <TableCell>{t('events:location')}</TableCell>
-                        <TableCell>{t('events:rsvp')}</TableCell>
+                        <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{t('events:location')}</TableCell>
+                        <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{t('events:rsvp')}</TableCell>
                         <TableCell>{t('events:actions')}</TableCell>
                       </TableRow>
                     </TableHead>

@@ -1,5 +1,5 @@
 import { AppBar, Toolbar, IconButton, Badge, Avatar, Box, Typography, Menu, MenuItem } from '@mui/material';
-import { Notifications, Menu as MenuIcon, Logout, Person, Settings } from '@mui/icons-material';
+import { Notifications, Menu as MenuIcon, Logout, Settings } from '@mui/icons-material';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
@@ -63,11 +63,6 @@ export function MobileAppBar({ title = 'DžematApp' }: MobileAppBarProps) {
     handleMenuClose();
   };
 
-  const handleProfile = () => {
-    setLocation('/profile');
-    handleMenuClose();
-  };
-
   const handleSettings = () => {
     setLocation('/settings');
     handleMenuClose();
@@ -84,12 +79,16 @@ export function MobileAppBar({ title = 'DžematApp' }: MobileAppBarProps) {
 
   return (
     <AppBar 
-      position="sticky" 
+      position="fixed" 
       elevation={0}
       sx={{
         bgcolor: 'var(--card)',
         borderBottom: '2px solid var(--border)',
         color: 'var(--card-foreground)',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1100,
       }}
     >
       <Toolbar sx={{ justifyContent: 'space-between', minHeight: '56px !important' }}>
@@ -161,14 +160,12 @@ export function MobileAppBar({ title = 'DžematApp' }: MobileAppBarProps) {
                 }}
                 data-testid="menu-user"
               >
-                <MenuItem onClick={handleProfile} data-testid="menuitem-profile">
-                  <Person sx={{ mr: 1 }} />
-                  {t('common.profile', 'Profil')}
-                </MenuItem>
-                <MenuItem onClick={handleSettings} data-testid="menuitem-settings">
-                  <Settings sx={{ mr: 1 }} />
-                  {t('common.settings', 'Podešavanja')}
-                </MenuItem>
+                {user?.isAdmin && (
+                  <MenuItem onClick={handleSettings} data-testid="menuitem-settings">
+                    <Settings sx={{ mr: 1 }} />
+                    {t('common.settings', 'Podešavanja')}
+                  </MenuItem>
+                )}
                 <MenuItem onClick={handleLogout} data-testid="menuitem-logout">
                   <Logout sx={{ mr: 1 }} />
                   {t('common.logout', 'Odjavi se')}

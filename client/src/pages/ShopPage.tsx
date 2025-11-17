@@ -656,12 +656,52 @@ export default function ShopPage() {
         {t('shop:title')}
       </Typography>
 
-      <Tabs value={activeTab} onChange={(_, newValue) => setActiveTab(newValue)} sx={{ mb: 3, borderBottom: 1, borderColor: 'divider' }}>
-        <Tab label={t('shop:tabs.dzematShop')} icon={<Store />} iconPosition="start" data-testid="tab-buy" />
-        <Tab label={t('shop:tabs.sell')} icon={<ShoppingCart />} iconPosition="start" data-testid="tab-sell" />
-        <Tab label={t('shop:tabs.gift')} icon={<CardGiftcard />} iconPosition="start" data-testid="tab-gift" />
-        <Tab label={t('shop:tabs.services')} icon={<Build />} iconPosition="start" data-testid="tab-services" />
-        {isAdmin && <Tab label={t('shop:tabs.archive')} icon={<Archive />} iconPosition="start" data-testid="tab-archive" />}
+      <Tabs 
+        value={activeTab} 
+        onChange={(_, newValue) => setActiveTab(newValue)} 
+        sx={{ 
+          mb: 3, 
+          borderBottom: 1, 
+          borderColor: 'divider',
+          '& .MuiTab-root': {
+            minWidth: { xs: 60, sm: 120 },
+            '& .MuiTab-iconWrapper': { 
+              marginRight: { xs: 0, sm: 1 }, 
+              marginBottom: { xs: 0.5, sm: 0 } 
+            }
+          },
+          '& .MuiTab-root .MuiTab-wrapper': { 
+            flexDirection: { xs: 'column', sm: 'row' } 
+          }
+        }}
+      >
+        <Tab 
+          label={<Box sx={{ display: { xs: 'none', sm: 'block' } }}>{t('shop:tabs.dzematShop')}</Box>} 
+          icon={<Store />} 
+          data-testid="tab-buy" 
+        />
+        <Tab 
+          label={<Box sx={{ display: { xs: 'none', sm: 'block' } }}>{t('shop:tabs.sell')}</Box>} 
+          icon={<ShoppingCart />} 
+          data-testid="tab-sell" 
+        />
+        <Tab 
+          label={<Box sx={{ display: { xs: 'none', sm: 'block' } }}>{t('shop:tabs.gift')}</Box>} 
+          icon={<CardGiftcard />} 
+          data-testid="tab-gift" 
+        />
+        <Tab 
+          label={<Box sx={{ display: { xs: 'none', sm: 'block' } }}>{t('shop:tabs.services')}</Box>} 
+          icon={<Build />} 
+          data-testid="tab-services" 
+        />
+        {isAdmin && (
+          <Tab 
+            label={<Box sx={{ display: { xs: 'none', sm: 'block' } }}>{t('shop:tabs.archive')}</Box>} 
+            icon={<Archive />} 
+            data-testid="tab-archive" 
+          />
+        )}
       </Tabs>
 
       {/* DžematShop Tab */}

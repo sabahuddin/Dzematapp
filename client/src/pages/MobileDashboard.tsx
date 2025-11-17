@@ -87,7 +87,7 @@ export default function MobileDashboard() {
       <MobileAppBar title="DžematApp" />
 
       {/* Main Content */}
-      <Box sx={{ p: 2, pb: 10 }}>
+      <Box sx={{ p: 2, pt: 9, pb: 10 }}>
         {/* Hero Prayer Times */}
         {prayerLoading && (
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
