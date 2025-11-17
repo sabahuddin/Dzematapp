@@ -38,26 +38,6 @@ export default function MobileDashboard() {
     refetchInterval: 30000,
   });
 
-  // Get user-specific activities
-  const { data: userActivities = [], isLoading: userActivitiesLoading } = useQuery<ActivityFeedItem[]>({
-    queryKey: ['/api/activity-feed'],
-    refetchInterval: 30000,
-    select: (data) => {
-      // Filter for user-relevant items (announcements, events, shop, tasks, messages, important dates, media)
-      return data
-        .filter(item => 
-          item.type === 'announcement' || 
-          item.type === 'event' || 
-          item.type === 'shop_item' ||
-          item.type === 'important_date_reminder' ||
-          item.type === 'media' ||
-          item.type === 'task' ||
-          item.type === 'message'
-        )
-        .slice(0, 5);
-    },
-  });
-
   const handleItemClick = (item: ActivityFeedItem) => {
     if (!item.isClickable) return;
 
@@ -78,7 +58,12 @@ export default function MobileDashboard() {
         setLocation('/media'); 
         break;
       case 'shop_item': 
-        setLocation(id ? `/shop?id=${id}` : '/shop'); 
+        if (id) {
+          // Open shop page with query param to show specific item
+          setLocation(`/shop?itemId=${id}`);
+        } else {
+          setLocation('/shop');
+        }
         break;
       case 'badge': 
         setLocation('/badges'); 
@@ -211,6 +196,7 @@ export default function MobileDashboard() {
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
               {announcements.slice(0, 3).map((announcement, index) => {
                 const isLast = index === announcements.length - 1 || index === 2;
+                const imageUrl = announcementImg;
                 return (
                   <Box
                     key={announcement.id}
@@ -221,102 +207,9 @@ export default function MobileDashboard() {
                       bgcolor: 'var(--card)',
                       borderBottom: isLast ? 'none' : '1px solid var(--border)',
                       transition: 'all 0.2s ease',
-                      p: 2,
                       '&:hover': {
                         bgcolor: 'var(--accent)',
                       },
-                    }}
-                  >
-                    <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 2 }}>
-                      <Box sx={{ flex: 1, minWidth: 0 }}>
-                        <Typography 
-                          variant="subtitle2" 
-                          sx={{ 
-                            fontWeight: 600,
-                            fontSize: '0.9rem',
-                            mb: 0.5,
-                          }}
-                        >
-                          {announcement.title}
-                        </Typography>
-                        
-                        {announcement.category && (
-                          <Chip
-                            label={announcement.category}
-                            size="small"
-                            sx={{
-                              height: '18px',
-                              fontSize: '0.7rem',
-                              mb: 0.5,
-                            }}
-                          />
-                        )}
-
-                        <Typography 
-                          variant="caption" 
-                          sx={{ 
-                            color: 'var(--muted-foreground)',
-                            fontSize: '0.7rem',
-                            display: 'block',
-                          }}
-                        >
-                          {formatDate(announcement.createdAt)}
-                        </Typography>
-                      </Box>
-
-                      <ArrowForward 
-                        sx={{ 
-                          color: 'var(--primary)',
-                          fontSize: '20px',
-                          flexShrink: 0,
-                        }} 
-                      />
-                    </Box>
-                  </Box>
-                );
-              })}
-            </Box>
-          )}
-        </SectionCard>
-
-        {/* User Activities Section */}
-        <SectionCard 
-          title={t('dashboard:myActivities', 'Moje aktivnosti')}
-          icon={<Article />}
-        >
-          {userActivitiesLoading && (
-            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-              <CircularProgress />
-            </Box>
-          )}
-
-          {!userActivitiesLoading && userActivities.length === 0 && (
-            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
-              {t('dashboard:feed.empty', 'Nema aktivnosti')}
-            </Typography>
-          )}
-
-          {!userActivitiesLoading && userActivities.length > 0 && (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-              {userActivities.map((item, index) => {
-                const imageUrl = getImageUrl(item);
-                const isLast = index === userActivities.length - 1;
-                return (
-                  <Box
-                    key={item.id}
-                    onClick={() => handleItemClick(item)}
-                    data-testid={`user-activity-${item.id}`}
-                    sx={{
-                      cursor: item.isClickable ? 'pointer' : 'default',
-                      bgcolor: 'var(--card)',
-                      borderBottom: isLast ? 'none' : '1px solid var(--border)',
-                      transition: 'all 0.2s ease',
-                      
-                      ...(item.isClickable && {
-                        '&:hover': {
-                          bgcolor: 'var(--accent)',
-                        },
-                      })
                     }}
                   >
                     <Box sx={{ display: 'flex', alignItems: 'stretch', gap: 0 }}>
@@ -335,76 +228,56 @@ export default function MobileDashboard() {
 
                       {/* Content on Right */}
                       <Box sx={{ flex: 1, minWidth: 0, p: 1.5, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                        {/* Entity Type Badge */}
-                        <Chip
-                          label={getEntityTypeBadgeLabel(item.type)}
-                          size="small"
-                          sx={{
-                            height: '18px',
-                            fontSize: '0.65rem',
-                            fontWeight: 600,
-                            bgcolor: 'var(--accent)',
-                            color: 'var(--accent-foreground)',
-                            mb: 0.5,
-                          }}
-                        />
-                        
+                        {announcement.categories && announcement.categories.length > 0 && (
+                          <Chip
+                            label={announcement.categories[0]}
+                            size="small"
+                            sx={{
+                              height: '18px',
+                              fontSize: '0.7rem',
+                              mb: 0.5,
+                              width: 'fit-content',
+                            }}
+                          />
+                        )}
+
                         <Typography 
-                          variant="body2" 
+                          variant="subtitle2" 
                           sx={{ 
                             fontWeight: 600,
-                            fontSize: '0.95rem',
-                            color: 'var(--card-foreground)',
+                            fontSize: '0.9rem',
                             mb: 0.25,
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
                           }}
                         >
-                          {item.title}
+                          {announcement.title}
                         </Typography>
-                        
-                        {item.description && (
-                          <Typography 
-                            variant="body2" 
-                            sx={{ 
-                              color: 'var(--muted-foreground)',
-                              fontSize: '0.8rem',
-                              mb: 0.25,
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis',
-                              display: '-webkit-box',
-                              WebkitLineClamp: 2,
-                              WebkitBoxOrient: 'vertical',
-                            }}
-                          >
-                            {item.description}
-                          </Typography>
-                        )}
-                        
+
                         <Typography 
                           variant="caption" 
                           sx={{ 
                             color: 'var(--muted-foreground)',
                             fontSize: '0.7rem',
-                            display: 'block'
+                            display: 'block',
                           }}
                         >
-                          {formatDate(item.createdAt)}
+                          {formatDate(announcement.publishDate)}
                         </Typography>
                       </Box>
                       
-                      {item.isClickable && (
-                        <Box sx={{ display: 'flex', alignItems: 'center', pr: 1.5 }}>
-                          <ArrowForward 
-                            sx={{ 
-                              color: 'var(--primary)',
-                              fontSize: '20px',
-                              flexShrink: 0,
-                            }} 
-                          />
-                        </Box>
-                      )}
+                      <Box sx={{ display: 'flex', alignItems: 'center', pr: 1.5 }}>
+                        <ArrowForward 
+                          sx={{ 
+                            color: 'var(--primary)',
+                            fontSize: '20px',
+                            flexShrink: 0,
+                          }} 
+                        />
+                      </Box>
                     </Box>
                   </Box>
                 );
