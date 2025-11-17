@@ -547,7 +547,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllAnnouncements(): Promise<Announcement[]> {
-    return await db.select().from(announcements);
+    return await db.select().from(announcements).orderBy(desc(announcements.publishDate));
   }
 
   async getEvent(id: string): Promise<Event | undefined> {
