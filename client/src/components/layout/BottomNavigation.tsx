@@ -2,6 +2,8 @@ import { BottomNavigation as MuiBottomNavigation, BottomNavigationAction, Paper 
 import { Home, CalendarMonth, Campaign, Store, Apps } from '@mui/icons-material';
 import { useLocation } from 'wouter';
 
+export const BOTTOM_NAV_HEIGHT = 72;
+
 export default function BottomNavigation() {
   const [location, setLocation] = useLocation();
 

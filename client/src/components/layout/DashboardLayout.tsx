@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Box, useTheme, useMediaQuery } from '@mui/material';
 import Sidebar from './Sidebar';
 import AppBar from './AppBar';
-import BottomNavigation from './BottomNavigation';
+import BottomNavigation, { BOTTOM_NAV_HEIGHT } from './BottomNavigation';
 import { MobileAppBar } from '../MobileAppBar';
 import { useLocation } from 'wouter';
+import { useEdgeLockScroll } from '@/hooks/useEdgeLockScroll';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -26,6 +27,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   };
 
   const sidebarWidth = sidebarCollapsed ? 64 : 280;
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Apply edge lock scroll for mobile
+  useEdgeLockScroll(scrollRef);
 
   // Mobile Layout - Fixed container
   if (isMobile) {
@@ -51,17 +56,19 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         </Box>
 
         {/* Main Content - Scrollable with padding for fixed elements */}
-        <Box sx={{ 
-          flex: 1,
-          overflowY: 'auto',
-          overflowX: 'hidden',
-          WebkitOverflowScrolling: 'touch',
-          overscrollBehaviorY: 'contain',
-          pt: '64px',
-          pb: '56px',
-          px: 2,
-          bgcolor: 'var(--background)',
-        }}>
+        <Box 
+          ref={scrollRef}
+          sx={{ 
+            flex: 1,
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            WebkitOverflowScrolling: 'touch',
+            pt: '64px',
+            pb: `${BOTTOM_NAV_HEIGHT + 16}px`,
+            px: 2,
+            bgcolor: 'var(--background)',
+          }}
+        >
           {children}
         </Box>
 
