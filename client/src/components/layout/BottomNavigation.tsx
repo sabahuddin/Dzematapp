@@ -35,13 +35,11 @@ export default function BottomNavigation() {
         showLabels={false}
         sx={{
           backgroundColor: 'transparent',
-          px: 0.5,
+          px: 2,
           pb: 'calc(env(safe-area-inset-bottom, 0px) + 4px)',
           '& .MuiBottomNavigationAction-root': {
             color: 'hsl(123 46% 34%)',
-            minWidth: '50px',
-            maxWidth: '80px',
-            padding: '6px 8px',
+            minWidth: '60px',
             '&.Mui-selected': {
               color: 'hsl(123 46% 54%)',
             },
