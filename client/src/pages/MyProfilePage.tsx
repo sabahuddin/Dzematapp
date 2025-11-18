@@ -17,6 +17,11 @@ export default function MyProfilePage() {
 
   const { data: user, isLoading } = useQuery<User>({
     queryKey: ['/api/users', currentUser?.id],
+    queryFn: async () => {
+      const response = await fetch(`/api/users/${currentUser?.id}`);
+      if (!response.ok) throw new Error('Failed to fetch user');
+      return response.json();
+    },
     enabled: !!currentUser?.id,
   });
 
