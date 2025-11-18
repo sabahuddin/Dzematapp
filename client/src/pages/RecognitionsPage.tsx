@@ -162,7 +162,7 @@ export default function RecognitionsPage() {
       new Date(log.createdAt) <= earnedDate
     );
     const pointsAtEarning = logsBeforeEarning.reduce((sum: number, log: any) => 
-      sum + (log.pointsEarned || 0), 0
+      sum + (log.points || 0), 0
     );
     
     return {
@@ -182,7 +182,7 @@ export default function RecognitionsPage() {
     }
   };
 
-  const totalPoints = activityLogs?.reduce((sum: number, entry: any) => sum + (entry.pointsEarned || 0), 0) || 0;
+  const totalPoints = activityLogs?.reduce((sum: number, entry: any) => sum + (entry.points || 0), 0) || 0;
 
   const getActivityTypeLabel = (type: string) => {
     const labels: Record<string, string> = {
@@ -502,8 +502,8 @@ export default function RecognitionsPage() {
                           </TableCell>
                           <TableCell data-testid={`text-activity-description-${entry.id}`}>{entry.description}</TableCell>
                           <TableCell align="center">
-                            <Typography sx={{ fontWeight: 600, color: (entry.pointsEarned || 0) > 0 ? 'hsl(122 60% 20%)' : 'inherit' }} data-testid={`text-activity-points-${entry.id}`}>
-                              +{entry.pointsEarned || 0}
+                            <Typography sx={{ fontWeight: 600, color: (entry.points || 0) > 0 ? 'hsl(122 60% 20%)' : 'inherit' }} data-testid={`text-activity-points-${entry.id}`}>
+                              +{entry.points || 0}
                             </Typography>
                           </TableCell>
                           <TableCell data-testid={`text-activity-date-${entry.id}`}>

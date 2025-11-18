@@ -56,7 +56,7 @@ export function MobileAppBar({ title = 'DžematApp', showBack }: MobileAppBarPro
     enabled: !!user?.id,
   });
 
-  const totalPoints = activityLog?.reduce((sum: number, entry: any) => sum + (entry.pointsEarned || 0), 0) || 0;
+  const totalPoints = activityLog?.reduce((sum: number, entry: any) => sum + (entry.points || 0), 0) || 0;
 
   const totalNotifications = (notificationCounts?.shop || 0) +
     (notificationCounts?.events || 0) +
