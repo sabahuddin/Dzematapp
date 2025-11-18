@@ -15,10 +15,15 @@ export default function MyProfilePage() {
   const queryClient = useQueryClient();
   const [modalOpen, setModalOpen] = useState(false);
 
-  const { data: user, isLoading } = useQuery<User>({
+  const { data: user, isLoading, error } = useQuery<User>({
     queryKey: [`/api/users/${currentUser?.id}`],
     enabled: !!currentUser?.id,
   });
+
+  console.log('MyProfilePage - currentUser:', currentUser);
+  console.log('MyProfilePage - user data:', user);
+  console.log('MyProfilePage - isLoading:', isLoading);
+  console.log('MyProfilePage - error:', error);
 
   const updateUserMutation = useMutation({
     mutationFn: async (userData: any) => {

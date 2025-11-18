@@ -32,18 +32,24 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     return (
       <Box sx={{ 
         bgcolor: 'var(--background)', 
+        height: '100vh',
+        width: '100vw',
         position: 'fixed',
         top: 0,
         left: 0,
-        right: 0,
-        bottom: 0,
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
-        overscrollBehavior: 'none',
       }}>
         {/* Top AppBar - Fixed */}
-        <Box sx={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1100 }}>
+        <Box sx={{ 
+          position: 'sticky', 
+          top: 0, 
+          left: 0, 
+          right: 0, 
+          zIndex: 1100,
+          flexShrink: 0,
+        }}>
           <MobileAppBar title="DžematApp" />
         </Box>
 
@@ -53,16 +59,21 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           overflowY: 'auto',
           overflowX: 'hidden',
           WebkitOverflowScrolling: 'touch',
-          overscrollBehavior: 'contain',
-          pt: '64px',
-          pb: '56px',
           px: 2,
+          position: 'relative',
         }}>
           {children}
         </Box>
 
         {/* Bottom Navigation - Fixed */}
-        <Box sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1100 }}>
+        <Box sx={{ 
+          position: 'sticky', 
+          bottom: 0, 
+          left: 0, 
+          right: 0, 
+          zIndex: 1100,
+          flexShrink: 0,
+        }}>
           <BottomNavigation />
         </Box>
       </Box>
