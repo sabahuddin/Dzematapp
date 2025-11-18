@@ -16,12 +16,7 @@ export default function MyProfilePage() {
   const [modalOpen, setModalOpen] = useState(false);
 
   const { data: user, isLoading } = useQuery<User>({
-    queryKey: ['/api/users', currentUser?.id],
-    queryFn: async () => {
-      const response = await fetch(`/api/users/${currentUser?.id}`);
-      if (!response.ok) throw new Error('Failed to fetch user');
-      return response.json();
-    },
+    queryKey: [`/api/users/${currentUser?.id}`],
     enabled: !!currentUser?.id,
   });
 
@@ -31,7 +26,7 @@ export default function MyProfilePage() {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/users', currentUser?.id] });
+      queryClient.invalidateQueries({ queryKey: [`/api/users/${currentUser?.id}`] });
       queryClient.invalidateQueries({ queryKey: ['/api/auth/session'] });
       toast({ title: 'Uspješno', description: 'Profil je uspješno ažuriran' });
       setModalOpen(false);
