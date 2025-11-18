@@ -40,6 +40,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
+        overscrollBehavior: 'none',
       }}>
         {/* Top AppBar - Fixed */}
         <Box sx={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1100 }}>
@@ -52,6 +53,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           overflowY: 'auto',
           overflowX: 'hidden',
           WebkitOverflowScrolling: 'touch',
+          overscrollBehavior: 'contain',
           pt: '64px',
           pb: '56px',
           px: 2,
