@@ -1,11 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { Box, useTheme, useMediaQuery } from '@mui/material';
 import Sidebar from './Sidebar';
 import AppBar from './AppBar';
 import BottomNavigation, { BOTTOM_NAV_HEIGHT } from './BottomNavigation';
 import { MobileAppBar } from '../MobileAppBar';
 import { useLocation } from 'wouter';
-import { useEdgeLockScroll } from '@/hooks/useEdgeLockScroll';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -27,58 +26,44 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   };
 
   const sidebarWidth = sidebarCollapsed ? 64 : 280;
-  const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Apply edge lock scroll for mobile
-  useEdgeLockScroll(scrollRef);
-
-  // Mobile Layout - Fixed container
+  // Mobile Layout - Sticky container with natural scroll
   if (isMobile) {
     return (
       <Box sx={{ 
-        height: '100vh',
-        width: '100vw',
+        minHeight: '100dvh',
         display: 'flex',
         flexDirection: 'column',
-        overflow: 'hidden',
-        position: 'relative',
+        bgcolor: 'var(--background)',
       }}>
-        {/* Top AppBar - Fixed at top */}
+        {/* Top AppBar - Sticky at top */}
         <Box sx={{ 
-          position: 'fixed',
+          position: 'sticky',
           top: 0,
-          left: 0,
-          right: 0,
           zIndex: 1100,
           bgcolor: 'var(--card)',
         }}>
           <MobileAppBar title="DžematApp" />
         </Box>
 
-        {/* Main Content - Scrollable with padding for fixed elements */}
+        {/* Main Content - Scrollable with proper padding */}
         <Box 
-          ref={scrollRef}
           sx={{ 
             flex: 1,
-            overflowY: 'auto',
-            overflowX: 'hidden',
-            WebkitOverflowScrolling: 'touch',
-            pt: '80px',
-            pb: `${BOTTOM_NAV_HEIGHT + 24}px`,
             px: 2,
-            bgcolor: 'var(--background)',
+            pt: 2,
+            pb: `calc(${BOTTOM_NAV_HEIGHT}px + env(safe-area-inset-bottom, 0px) + 16px)`,
           }}
         >
           {children}
         </Box>
 
-        {/* Bottom Navigation - Fixed at bottom */}
+        {/* Bottom Navigation - Sticky at bottom */}
         <Box sx={{ 
-          position: 'fixed',
+          position: 'sticky',
           bottom: 0,
-          left: 0,
-          right: 0,
           zIndex: 1100,
+          marginTop: 'auto',
         }}>
           <BottomNavigation />
         </Box>
