@@ -15,8 +15,11 @@ export default function MyProfilePage() {
   const queryClient = useQueryClient();
   const [modalOpen, setModalOpen] = useState(false);
 
-  // Use currentUser directly instead of fetching again
-  const user = currentUser as any;
+  // Fetch full user data from API
+  const { data: user, isLoading } = useQuery<any>({
+    queryKey: ['/api/users', currentUser?.id],
+    enabled: !!currentUser?.id,
+  });
 
   const updateUserMutation = useMutation({
     mutationFn: async (userData: any) => {
@@ -24,11 +27,10 @@ export default function MyProfilePage() {
       return response.json();
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/users', currentUser?.id] });
       queryClient.invalidateQueries({ queryKey: ['/api/auth/session'] });
       toast({ title: 'Uspješno', description: 'Profil je uspješno ažuriran' });
       setModalOpen(false);
-      // Refresh the page to get updated user data
-      window.location.reload();
     },
     onError: () => {
       toast({ title: 'Greška', description: 'Greška pri ažuriranju profila', variant: 'destructive' });
@@ -59,10 +61,18 @@ export default function MyProfilePage() {
     return colorMap[role] || 'default';
   };
 
-  if (!user) {
+  if (isLoading) {
     return (
       <Box sx={{ p: 3 }}>
         <Typography>Učitavanje...</Typography>
+      </Box>
+    );
+  }
+
+  if (!user) {
+    return (
+      <Box sx={{ p: 3 }}>
+        <Typography>Korisnik nije pronađen</Typography>
       </Box>
     );
   }
@@ -105,7 +115,7 @@ export default function MyProfilePage() {
               </Typography>
               <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                 {user.roles && user.roles.length > 0 ? (
-                  user.roles.map((role, index) => (
+                  user.roles.map((role: string, index: number) => (
                     <Chip
                       key={index}
                       label={getRoleLabel(role)}
@@ -197,7 +207,7 @@ export default function MyProfilePage() {
                   Vještine
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 1 }}>
-                  {user.skills.map((skill, index) => (
+                  {user.skills.map((skill: string, index: number) => (
                     <Chip key={index} label={skill} size="small" />
                   ))}
                 </Box>
@@ -210,7 +220,7 @@ export default function MyProfilePage() {
                   Kategorije
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 1 }}>
-                  {user.categories.map((category, index) => (
+                  {user.categories.map((category: string, index: number) => (
                     <Chip key={index} label={category} size="small" color="primary" />
                   ))}
                 </Box>

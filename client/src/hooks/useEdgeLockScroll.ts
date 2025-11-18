@@ -5,40 +5,63 @@ export function useEdgeLockScroll(scrollRef: RefObject<HTMLElement>) {
     const scrollElement = scrollRef.current;
     if (!scrollElement) return;
 
-    let lastTouchY = 0;
+    let startY = 0;
+    let startScrollTop = 0;
 
     const handleTouchStart = (e: TouchEvent) => {
-      lastTouchY = e.touches[0].clientY;
+      startY = e.touches[0].pageY;
+      startScrollTop = scrollElement.scrollTop;
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      const touchY = e.touches[0].clientY;
-      const deltaY = lastTouchY - touchY;
+      const currentY = e.touches[0].pageY;
+      const deltaY = startY - currentY;
       
       const scrollTop = scrollElement.scrollTop;
       const scrollHeight = scrollElement.scrollHeight;
       const clientHeight = scrollElement.clientHeight;
       const maxScroll = scrollHeight - clientHeight;
-
-      // Scrolling down and at bottom
-      if (deltaY > 0 && scrollTop >= maxScroll) {
+      
+      const isAtTop = scrollTop <= 0;
+      const isAtBottom = scrollTop >= maxScroll;
+      
+      // Block pull-to-refresh (scrolling up when already at top)
+      if (isAtTop && deltaY < 0) {
         e.preventDefault();
+        scrollElement.scrollTop = 0;
+        return;
       }
       
-      // Scrolling up and at top
-      if (deltaY < 0 && scrollTop <= 0) {
+      // Block over-scroll at bottom
+      if (isAtBottom && deltaY > 0) {
         e.preventDefault();
+        scrollElement.scrollTop = maxScroll;
+        return;
       }
+    };
 
-      lastTouchY = touchY;
+    const handleTouchEnd = () => {
+      // Ensure scroll position is locked at boundaries
+      const scrollTop = scrollElement.scrollTop;
+      const scrollHeight = scrollElement.scrollHeight;
+      const clientHeight = scrollElement.clientHeight;
+      const maxScroll = scrollHeight - clientHeight;
+      
+      if (scrollTop < 0) {
+        scrollElement.scrollTop = 0;
+      } else if (scrollTop > maxScroll) {
+        scrollElement.scrollTop = maxScroll;
+      }
     };
 
     scrollElement.addEventListener('touchstart', handleTouchStart, { passive: true });
     scrollElement.addEventListener('touchmove', handleTouchMove, { passive: false });
+    scrollElement.addEventListener('touchend', handleTouchEnd, { passive: true });
 
     return () => {
       scrollElement.removeEventListener('touchstart', handleTouchStart);
       scrollElement.removeEventListener('touchmove', handleTouchMove);
+      scrollElement.removeEventListener('touchend', handleTouchEnd);
     };
   }, [scrollRef]);
 }

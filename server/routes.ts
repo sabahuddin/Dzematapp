@@ -298,6 +298,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/users/:id", requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const currentUser = req.user!;
+      
+      // Check if user is viewing their own profile or if they're an admin
+      const isOwnProfile = currentUser.id === id;
+      const isAdmin = currentUser.isAdmin || false;
+      
+      if (!isOwnProfile && !isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const user = await storage.getUser(id);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      res.json({ ...user, password: undefined });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
   app.post("/api/users", requireAdmin, async (req, res) => {
     try {
       const userData = insertUserSchema.parse(req.body);
