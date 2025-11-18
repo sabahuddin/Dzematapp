@@ -36,7 +36,7 @@ export default function BottomNavigation() {
         sx={{
           backgroundColor: 'transparent',
           px: 2,
-          pb: 0.5,
+          pb: 'calc(env(safe-area-inset-bottom, 0px) + 4px)',
           '& .MuiBottomNavigationAction-root': {
             color: 'hsl(123 46% 34%)',
             minWidth: '60px',

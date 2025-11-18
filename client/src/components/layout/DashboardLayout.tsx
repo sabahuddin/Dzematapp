@@ -80,8 +80,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             overflowY: 'auto',
             overflowX: 'hidden',
             WebkitOverflowScrolling: 'touch',
-            pt: `${MOBILE_APP_BAR_HEIGHT}px`,
-            pb: `calc(env(safe-area-inset-bottom, 0px) + ${BOTTOM_NAV_HEIGHT}px)`,
+            pt: `calc(${MOBILE_APP_BAR_HEIGHT}px + 16px)`,
+            pb: `${BOTTOM_NAV_HEIGHT}px`,
             px: 2,
             bgcolor: 'var(--background)',
           }}
