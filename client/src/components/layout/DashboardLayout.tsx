@@ -47,6 +47,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     };
   }, [isMobile]);
 
+  // Reset scroll to top when route changes
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = 0;
+    }
+  }, [location]);
+
   // Mobile Layout - Fixed headers/footers with locked scroll
   if (isMobile) {
     return (
