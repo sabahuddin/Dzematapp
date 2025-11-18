@@ -477,7 +477,7 @@ export default function EventsPage() {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 3, mb: 3 }}>
         <Typography variant="h5" sx={{ fontWeight: 600 }}>
           {t('events:pageTitle')}
         </Typography>
