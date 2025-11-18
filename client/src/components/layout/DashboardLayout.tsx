@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Box, useTheme, useMediaQuery } from '@mui/material';
 import Sidebar from './Sidebar';
 import AppBar from './AppBar';
 import BottomNavigation, { BOTTOM_NAV_HEIGHT } from './BottomNavigation';
-import { MobileAppBar } from '../MobileAppBar';
+import { MobileAppBar, MOBILE_APP_BAR_HEIGHT } from '../MobileAppBar';
 import { useLocation } from 'wouter';
+import { useEdgeLockScroll } from '@/hooks/useEdgeLockScroll';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -26,44 +27,75 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   };
 
   const sidebarWidth = sidebarCollapsed ? 64 : 280;
+  const scrollRef = useRef<HTMLDivElement>(null);
+  
+  useEdgeLockScroll(scrollRef);
 
-  // Mobile Layout - Sticky container with natural scroll
+  // Lock body scroll on mobile
+  useEffect(() => {
+    if (isMobile) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.height = '100%';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.height = '';
+    };
+  }, [isMobile]);
+
+  // Mobile Layout - Fixed headers/footers with locked scroll
   if (isMobile) {
     return (
       <Box sx={{ 
-        minHeight: '100dvh',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
         display: 'flex',
         flexDirection: 'column',
-        bgcolor: 'var(--background)',
+        overflow: 'hidden',
       }}>
-        {/* Top AppBar - Sticky at top */}
+        {/* Top AppBar - Fixed at top */}
         <Box sx={{ 
-          position: 'sticky',
+          position: 'fixed',
           top: 0,
+          left: 0,
+          right: 0,
           zIndex: 1100,
           bgcolor: 'var(--card)',
         }}>
           <MobileAppBar title="DžematApp" />
         </Box>
 
-        {/* Main Content - Scrollable with proper padding */}
+        {/* Main Content - Scrollable area */}
         <Box 
+          ref={scrollRef}
           sx={{ 
             flex: 1,
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            WebkitOverflowScrolling: 'touch',
+            pt: `${MOBILE_APP_BAR_HEIGHT}px`,
+            pb: `calc(env(safe-area-inset-bottom, 0px) + ${BOTTOM_NAV_HEIGHT}px)`,
             px: 2,
-            pt: 2,
-            pb: `calc(${BOTTOM_NAV_HEIGHT}px + env(safe-area-inset-bottom, 0px) + 16px)`,
+            bgcolor: 'var(--background)',
           }}
         >
           {children}
         </Box>
 
-        {/* Bottom Navigation - Sticky at bottom */}
+        {/* Bottom Navigation - Fixed at bottom */}
         <Box sx={{ 
-          position: 'sticky',
+          position: 'fixed',
           bottom: 0,
+          left: 0,
+          right: 0,
           zIndex: 1100,
-          marginTop: 'auto',
         }}>
           <BottomNavigation />
         </Box>

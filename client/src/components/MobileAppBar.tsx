@@ -6,6 +6,8 @@ import { useLocation } from 'wouter';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+export const MOBILE_APP_BAR_HEIGHT = 64;
+
 interface MobileAppBarProps {
   title?: string;
   showBack?: boolean;
