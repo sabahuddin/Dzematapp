@@ -83,7 +83,7 @@ export function MobileAppBar({ title = 'DžematApp', showBack }: MobileAppBarPro
   };
 
   const handleNotificationsClick = () => {
-    setLocation('/messages');
+    setLocation('/notifications');
   };
 
   const getInitials = () => {
