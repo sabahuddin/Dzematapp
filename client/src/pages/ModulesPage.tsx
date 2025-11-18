@@ -66,8 +66,8 @@ export default function ModulesPage() {
       
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
           gap: 2,
         }}
       >
@@ -79,27 +79,25 @@ export default function ModulesPage() {
             sx={{
               p: 2,
               display: 'flex',
+              flexDirection: 'column',
               alignItems: 'center',
-              gap: 2,
+              justifyContent: 'center',
+              textAlign: 'center',
               cursor: 'pointer',
               transition: 'all 0.2s ease',
+              minHeight: '120px',
               '&:hover': {
-                transform: 'translateX(4px)',
+                transform: 'scale(1.05)',
                 boxShadow: '0 8px 16px rgba(18, 94, 48, 0.18)',
               },
             }}
           >
-            <Box sx={{ color: 'hsl(123 46% 54%)', display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: 48 }}>
+            <Box sx={{ color: 'hsl(123 46% 54%)', mb: 1 }}>
               {module.icon}
             </Box>
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="body1" sx={{ fontWeight: 600, mb: 0.5 }}>
-                {module.label}
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                {module.description}
-              </Typography>
-            </Box>
+            <Typography variant="body2" sx={{ fontWeight: 600, fontSize: '0.85rem' }}>
+              {module.label}
+            </Typography>
           </Paper>
         ))}
       </Box>
