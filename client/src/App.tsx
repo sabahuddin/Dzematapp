@@ -46,6 +46,7 @@ import ApplicationsPage from "@/pages/ApplicationsPage";
 import FeedPage from "@/pages/FeedPage";
 import ModulesPage from "@/pages/ModulesPage";
 import MobileDashboard from "@/pages/MobileDashboard";
+import MyProfilePage from "@/pages/MyProfilePage";
 import NotFound from "@/pages/not-found";
 
 // Layout
@@ -416,6 +417,12 @@ function Router() {
       <Route path="/modules">
         <ProtectedRoute>
           <ModulesPage />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path="/my-profile">
+        <ProtectedRoute>
+          <MyProfilePage />
         </ProtectedRoute>
       </Route>
       

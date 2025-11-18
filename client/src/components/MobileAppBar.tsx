@@ -78,11 +78,7 @@ export function MobileAppBar({ title = 'DžematApp', showBack }: MobileAppBarPro
   };
 
   const handleProfile = () => {
-    if (user?.isAdmin) {
-      setLocation('/users');
-    } else {
-      setLocation('/activity-log');
-    }
+    setLocation('/my-profile');
     handleMenuClose();
   };
 
