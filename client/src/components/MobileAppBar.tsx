@@ -1,5 +1,5 @@
-import { AppBar, Toolbar, IconButton, Badge, Avatar, Box, Typography, Menu, MenuItem } from '@mui/material';
-import { Notifications, Menu as MenuIcon, Logout, Settings, ArrowBack, Person } from '@mui/icons-material';
+import { AppBar, Toolbar, IconButton, Badge, Avatar, Box, Typography, Menu, MenuItem, Chip } from '@mui/material';
+import { Notifications, Menu as MenuIcon, Logout, Settings, ArrowBack, Person, EmojiEvents } from '@mui/icons-material';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
@@ -49,6 +49,14 @@ export function MobileAppBar({ title = 'DžematApp', showBack }: MobileAppBarPro
     refetchInterval: 30000,
     enabled: !!user,
   });
+
+  const { data: activityLog } = useQuery<any[]>({
+    queryKey: ['/api/activity-logs/user', user?.id],
+    refetchInterval: 60000,
+    enabled: !!user?.id,
+  });
+
+  const totalPoints = activityLog?.reduce((sum: number, entry: any) => sum + (entry.pointsEarned || 0), 0) || 0;
 
   const totalNotifications = (notificationCounts?.shop || 0) +
     (notificationCounts?.events || 0) +
@@ -127,8 +135,29 @@ export function MobileAppBar({ title = 'DžematApp', showBack }: MobileAppBarPro
           </Typography>
         </Box>
 
-        {/* Desna strana - Notifikacije i Avatar */}
+        {/* Desna strana - Bodovi, Notifikacije i Avatar */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          {/* Bodovi */}
+          {user && (
+            <Chip
+              icon={<EmojiEvents sx={{ fontSize: '16px !important' }} />}
+              label={totalPoints}
+              size="small"
+              sx={{
+                bgcolor: 'hsl(36 100% 94%)',
+                color: 'hsl(14 100% 45%)',
+                fontWeight: 700,
+                fontSize: '13px',
+                height: '28px',
+                '& .MuiChip-icon': {
+                  color: 'hsl(14 100% 45%)',
+                  marginLeft: '6px'
+                }
+              }}
+              data-testid="chip-total-points"
+            />
+          )}
+          
           {/* Notifikacije */}
           <IconButton 
             onClick={handleNotificationsClick}
