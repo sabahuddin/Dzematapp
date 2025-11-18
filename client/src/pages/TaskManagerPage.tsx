@@ -49,6 +49,20 @@ import { useCurrency } from '../contexts/CurrencyContext';
 import { useToast } from '../hooks/use-toast';
 import { apiRequest } from '../lib/queryClient';
 
+// Mark tasks as viewed when page loads
+const useMarkTasksAsViewed = () => {
+  useEffect(() => {
+    const markViewed = async () => {
+      try {
+        await apiRequest('/api/notifications/mark-viewed/tasks', 'PUT');
+      } catch (error) {
+        console.error('Failed to mark tasks as viewed:', error);
+      }
+    };
+    markViewed();
+  }, []);
+};
+
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -463,6 +477,9 @@ export default function TaskManagerPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [location, setLocation] = useLocation();
+  
+  // Mark tasks as viewed when page loads
+  useMarkTasksAsViewed();
   
   const [tabValue, setTabValue] = useState(0);
   const [subTabValue, setSubTabValue] = useState(0);
