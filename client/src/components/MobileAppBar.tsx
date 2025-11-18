@@ -81,7 +81,7 @@ export function MobileAppBar({ title = 'DžematApp', showBack }: MobileAppBarPro
     if (user?.isAdmin) {
       setLocation('/users');
     } else {
-      setLocation(`/user/${user?.id}`);
+      setLocation('/activity-log');
     }
     handleMenuClose();
   };

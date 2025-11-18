@@ -39,9 +39,9 @@ export default function ModulesPage() {
   // Ordered same as webapp sidebar menu
   const modules: ModuleItem[] = [
     { icon: <Feed sx={{ fontSize: 48 }} />, label: 'Feed', description: 'Aktivnosti zajednice', route: '/feed', testId: 'module-feed' },
-    { icon: <People sx={{ fontSize: 48 }} />, label: user?.isAdmin ? 'Korisnici' : 'Profil', description: user?.isAdmin ? 'Članovi džemata' : 'Moj profil', route: user?.isAdmin ? '/users' : `/user/${user?.id}`, testId: 'module-users' },
+    { icon: <People sx={{ fontSize: 48 }} />, label: user?.isAdmin ? 'Korisnici' : 'Moj profil', description: user?.isAdmin ? 'Članovi džemata' : 'Moje aktivnosti', route: user?.isAdmin ? '/users' : '/activity-log', testId: 'module-users' },
     { icon: <BarChart sx={{ fontSize: 48 }} />, label: user?.isAdmin ? 'Finansije' : 'Moje uplate', description: user?.isAdmin ? 'Finansijski pregled' : 'Moje donacije', route: '/finances', testId: 'module-finances' },
-    { icon: <BarChart sx={{ fontSize: 48 }} />, label: user?.isAdmin ? 'Izvještaj aktivnosti' : 'Moje aktivnosti', description: 'Pregled aktivnosti', route: '/activity-log', testId: 'module-activity' },
+    { icon: <BarChart sx={{ fontSize: 48 }} />, label: user?.isAdmin ? 'Izvještaj aktivnosti' : 'Moje aktivnosti', description: 'Pregled aktivnosti', route: '/activity-log', testId: 'module-activity', adminOnly: true },
     { icon: <AccountBalance sx={{ fontSize: 48 }} />, label: 'Projekti', description: 'Projekti džemata', route: '/projects', testId: 'module-projects' },
     { icon: <Announcement sx={{ fontSize: 48 }} />, label: 'Obavještenja', description: 'Obavještenja džemata', route: '/announcements', testId: 'module-announcements' },
     { icon: <CalendarMonth sx={{ fontSize: 48 }} />, label: 'Događaji', description: 'Događaji i aktivnosti', route: '/events', testId: 'module-events' },
