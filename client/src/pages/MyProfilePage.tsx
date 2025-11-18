@@ -15,15 +15,8 @@ export default function MyProfilePage() {
   const queryClient = useQueryClient();
   const [modalOpen, setModalOpen] = useState(false);
 
-  const { data: user, isLoading, error } = useQuery<User>({
-    queryKey: [`/api/users/${currentUser?.id}`],
-    enabled: !!currentUser?.id,
-  });
-
-  console.log('MyProfilePage - currentUser:', currentUser);
-  console.log('MyProfilePage - user data:', user);
-  console.log('MyProfilePage - isLoading:', isLoading);
-  console.log('MyProfilePage - error:', error);
+  // Use currentUser directly instead of fetching again
+  const user = currentUser;
 
   const updateUserMutation = useMutation({
     mutationFn: async (userData: any) => {
@@ -31,10 +24,11 @@ export default function MyProfilePage() {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/users/${currentUser?.id}`] });
       queryClient.invalidateQueries({ queryKey: ['/api/auth/session'] });
       toast({ title: 'Uspješno', description: 'Profil je uspješno ažuriran' });
       setModalOpen(false);
+      // Refresh the page to get updated user data
+      window.location.reload();
     },
     onError: () => {
       toast({ title: 'Greška', description: 'Greška pri ažuriranju profila', variant: 'destructive' });
@@ -65,18 +59,10 @@ export default function MyProfilePage() {
     return colorMap[role] || 'default';
   };
 
-  if (isLoading) {
-    return (
-      <Box sx={{ p: 3 }}>
-        <Typography>Učitavanje...</Typography>
-      </Box>
-    );
-  }
-
   if (!user) {
     return (
       <Box sx={{ p: 3 }}>
-        <Typography>Korisnik nije pronađen</Typography>
+        <Typography>Učitavanje...</Typography>
       </Box>
     );
   }
