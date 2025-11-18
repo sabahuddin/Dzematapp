@@ -7,6 +7,8 @@ import { MobileAppBar, MOBILE_APP_BAR_HEIGHT } from '../MobileAppBar';
 import { useLocation } from 'wouter';
 import { useEdgeLockScroll } from '@/hooks/useEdgeLockScroll';
 
+const MOBILE_CONTENT_PADDING = 16;
+
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
@@ -87,8 +89,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             overflowY: 'auto',
             overflowX: 'hidden',
             WebkitOverflowScrolling: 'touch',
-            pt: `calc(${MOBILE_APP_BAR_HEIGHT}px + 16px)`,
-            pb: `${BOTTOM_NAV_HEIGHT}px`,
+            pt: `calc(${MOBILE_APP_BAR_HEIGHT}px + ${MOBILE_CONTENT_PADDING}px)`,
+            pb: `calc(${BOTTOM_NAV_HEIGHT}px + ${MOBILE_CONTENT_PADDING}px)`,
             px: 2,
             bgcolor: 'var(--background)',
           }}
