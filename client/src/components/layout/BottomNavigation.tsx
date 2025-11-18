@@ -1,11 +1,9 @@
 import { BottomNavigation as MuiBottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
 import { Home, CalendarMonth, Campaign, Store, Apps } from '@mui/icons-material';
 import { useLocation } from 'wouter';
-import { useTranslation } from 'react-i18next';
 
 export default function BottomNavigation() {
   const [location, setLocation] = useLocation();
-  const { t } = useTranslation(['navigation']);
 
   const getActiveTab = () => {
     if (location === '/' || location === '/dashboard') return 0;
@@ -32,49 +30,37 @@ export default function BottomNavigation() {
       <MuiBottomNavigation
         value={getActiveTab()}
         onChange={handleChange}
-        showLabels={true}
+        showLabels={false}
         sx={{
           backgroundColor: 'transparent',
-          px: 1,
+          px: 2,
           pb: 0.5,
           '& .MuiBottomNavigationAction-root': {
             color: 'hsl(123 46% 34%)',
             minWidth: '60px',
-            fontSize: '0.65rem',
             '&.Mui-selected': {
               color: 'hsl(123 46% 54%)',
             },
-            '& .MuiBottomNavigationAction-label': {
-              fontSize: '0.65rem',
-              '&.Mui-selected': {
-                fontSize: '0.7rem',
-              }
-            }
           },
         }}
       >
         <BottomNavigationAction
-          label={t('navigation:menu.dashboard')}
           icon={<Home />}
           data-testid="bottom-nav-home"
         />
         <BottomNavigationAction
-          label={t('navigation:menu.announcements')}
           icon={<Campaign />}
           data-testid="bottom-nav-announcements"
         />
         <BottomNavigationAction
-          label={t('navigation:menu.events')}
           icon={<CalendarMonth />}
           data-testid="bottom-nav-events"
         />
         <BottomNavigationAction
-          label={t('navigation:menu.shop')}
           icon={<Store />}
           data-testid="bottom-nav-shop"
         />
         <BottomNavigationAction
-          label="Moduli"
           icon={<Apps />}
           data-testid="bottom-nav-modules"
         />
