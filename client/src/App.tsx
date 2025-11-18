@@ -41,6 +41,7 @@ import IssueCertificatesPage from "@/pages/IssueCertificatesPage";
 import MyCertificatesPage from "@/pages/MyCertificatesPage";
 import AllCertificatesPage from "@/pages/AllCertificatesPage";
 import CertificatesPage from "@/pages/CertificatesPage";
+import RecognitionsPage from "@/pages/RecognitionsPage";
 import MembershipApplicationsPage from "@/pages/MembershipApplicationsPage";
 import ApplicationsPage from "@/pages/ApplicationsPage";
 import FeedPage from "@/pages/FeedPage";
@@ -320,7 +321,7 @@ function Router() {
       
       <Route path="/my-certificates">
         <ProtectedRoute>
-          <MyCertificatesPage />
+          <RecognitionsPage />
         </ProtectedRoute>
       </Route>
       
