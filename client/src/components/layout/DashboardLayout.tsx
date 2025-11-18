@@ -63,8 +63,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             overflowY: 'auto',
             overflowX: 'hidden',
             WebkitOverflowScrolling: 'touch',
-            pt: '64px',
-            pb: `${BOTTOM_NAV_HEIGHT + 16}px`,
+            pt: '80px',
+            pb: `${BOTTOM_NAV_HEIGHT + 24}px`,
             px: 2,
             bgcolor: 'var(--background)',
           }}
