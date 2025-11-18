@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import logoPath from '@assets/logo_app_1763504035974.png';
 
 export const MOBILE_APP_BAR_HEIGHT = 64;
 
@@ -123,6 +124,16 @@ export function MobileAppBar({ title = 'DžematApp', showBack }: MobileAppBarPro
               <ArrowBack />
             </IconButton>
           )}
+          <Box
+            component="img"
+            src={logoPath}
+            alt="DžematApp Logo"
+            sx={{
+              width: 32,
+              height: 32,
+              objectFit: 'contain'
+            }}
+          />
           <Typography 
             variant="h6" 
             sx={{ 
