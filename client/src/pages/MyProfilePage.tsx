@@ -16,7 +16,7 @@ export default function MyProfilePage() {
   const [modalOpen, setModalOpen] = useState(false);
 
   // Use currentUser directly instead of fetching again
-  const user = currentUser;
+  const user = currentUser as any;
 
   const updateUserMutation = useMutation({
     mutationFn: async (userData: any) => {

@@ -31,48 +31,47 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   if (isMobile) {
     return (
       <Box sx={{ 
-        bgcolor: 'var(--background)', 
         height: '100vh',
         width: '100vw',
-        position: 'fixed',
-        top: 0,
-        left: 0,
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
+        position: 'relative',
       }}>
-        {/* Top AppBar - Fixed */}
+        {/* Top AppBar - Fixed at top */}
         <Box sx={{ 
-          position: 'sticky', 
-          top: 0, 
-          left: 0, 
-          right: 0, 
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
           zIndex: 1100,
-          flexShrink: 0,
+          bgcolor: 'var(--card)',
         }}>
           <MobileAppBar title="DžematApp" />
         </Box>
 
-        {/* Main Content - Scrollable area */}
+        {/* Main Content - Scrollable with padding for fixed elements */}
         <Box sx={{ 
           flex: 1,
           overflowY: 'auto',
           overflowX: 'hidden',
           WebkitOverflowScrolling: 'touch',
+          overscrollBehaviorY: 'contain',
+          pt: '64px',
+          pb: '56px',
           px: 2,
-          position: 'relative',
+          bgcolor: 'var(--background)',
         }}>
           {children}
         </Box>
 
-        {/* Bottom Navigation - Fixed */}
+        {/* Bottom Navigation - Fixed at bottom */}
         <Box sx={{ 
-          position: 'sticky', 
-          bottom: 0, 
-          left: 0, 
-          right: 0, 
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          right: 0,
           zIndex: 1100,
-          flexShrink: 0,
         }}>
           <BottomNavigation />
         </Box>

@@ -255,26 +255,20 @@
     box-sizing: border-box;
   }
 
-  html {
-    overflow: hidden;
-    height: 100vh;
-    position: fixed;
-    width: 100vw;
-    overscroll-behavior: none;
-  }
-  
-  body {
-    @apply font-sans antialiased text-foreground;
+  html, body {
     margin: 0;
     padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: fixed;
+    overscroll-behavior-y: none;
+  }
+
+  body {
+    @apply font-sans antialiased text-foreground;
     font-family: var(--font-sans);
     background-color: #eeeeee !important;
-    overflow: hidden;
-    height: 100vh;
-    width: 100vw;
-    position: fixed;
-    overscroll-behavior: none;
-    -webkit-overflow-scrolling: touch;
   }
 
   /* Material-UI component customizations - Card/Paper styling removed to allow theme overrides */
