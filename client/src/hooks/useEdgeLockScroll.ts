@@ -5,63 +5,57 @@ export function useEdgeLockScroll(scrollRef: RefObject<HTMLElement>) {
     const scrollElement = scrollRef.current;
     if (!scrollElement) return;
 
-    let startY = 0;
-    let startScrollTop = 0;
-
-    const handleTouchStart = (e: TouchEvent) => {
-      startY = e.touches[0].pageY;
-      startScrollTop = scrollElement.scrollTop;
-    };
-
-    const handleTouchMove = (e: TouchEvent) => {
-      const currentY = e.touches[0].pageY;
-      const deltaY = startY - currentY;
-      
+    // Clamp scroll position to stay 1px inside boundaries
+    const clampScrollPosition = () => {
       const scrollTop = scrollElement.scrollTop;
       const scrollHeight = scrollElement.scrollHeight;
       const clientHeight = scrollElement.clientHeight;
       const maxScroll = scrollHeight - clientHeight;
-      
-      const isAtTop = scrollTop <= 0;
-      const isAtBottom = scrollTop >= maxScroll;
-      
-      // Block pull-to-refresh (scrolling up when already at top)
-      if (isAtTop && deltaY < 0) {
-        e.preventDefault();
-        scrollElement.scrollTop = 0;
+
+      // If content is too short to scroll, add a filler
+      if (maxScroll <= 0) {
+        if (!scrollElement.querySelector('.scroll-filler')) {
+          const filler = document.createElement('div');
+          filler.className = 'scroll-filler';
+          filler.style.height = '1px';
+          filler.style.width = '1px';
+          filler.style.visibility = 'hidden';
+          scrollElement.appendChild(filler);
+        }
         return;
       }
-      
-      // Block over-scroll at bottom
-      if (isAtBottom && deltaY > 0) {
-        e.preventDefault();
-        scrollElement.scrollTop = maxScroll;
-        return;
+
+      // Clamp to [1, maxScroll - 1] to prevent hitting boundaries
+      if (scrollTop <= 0) {
+        scrollElement.scrollTop = 1;
+      } else if (scrollTop >= maxScroll) {
+        scrollElement.scrollTop = maxScroll - 1;
       }
     };
 
-    const handleTouchEnd = () => {
-      // Ensure scroll position is locked at boundaries
-      const scrollTop = scrollElement.scrollTop;
-      const scrollHeight = scrollElement.scrollHeight;
-      const clientHeight = scrollElement.clientHeight;
-      const maxScroll = scrollHeight - clientHeight;
-      
-      if (scrollTop < 0) {
-        scrollElement.scrollTop = 0;
-      } else if (scrollTop > maxScroll) {
-        scrollElement.scrollTop = maxScroll;
-      }
+    const handleTouchStart = () => {
+      clampScrollPosition();
     };
+
+    const handleScroll = () => {
+      clampScrollPosition();
+    };
+
+    // Initial clamp
+    clampScrollPosition();
 
     scrollElement.addEventListener('touchstart', handleTouchStart, { passive: true });
-    scrollElement.addEventListener('touchmove', handleTouchMove, { passive: false });
-    scrollElement.addEventListener('touchend', handleTouchEnd, { passive: true });
+    scrollElement.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {
       scrollElement.removeEventListener('touchstart', handleTouchStart);
-      scrollElement.removeEventListener('touchmove', handleTouchMove);
-      scrollElement.removeEventListener('touchend', handleTouchEnd);
+      scrollElement.removeEventListener('scroll', handleScroll);
+      
+      // Clean up filler
+      const filler = scrollElement.querySelector('.scroll-filler');
+      if (filler) {
+        filler.remove();
+      }
     };
   }, [scrollRef]);
 }
