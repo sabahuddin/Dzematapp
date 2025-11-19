@@ -17,7 +17,7 @@
 
 ## Pregled Projekta
 
-**DžematApp** je sveobuhvatna web aplikacija za upravljanje džematom (islamskom zajednicom) koja omogućava administratorima i članovima efikasnu komunikaciju, organizaciju i praćenje aktivnosti.
+**DžematApp** je Progressive Web App (PWA) za upravljanje džematom (islamskom zajednicom) sa mobile-first pristupom. Aplikacija omogućava administratorima i članovima efikasnu komunikaciju, organizaciju i praćenje aktivnosti. Dizajnirana je da pruža native-app-like iskustvo sa smooth scrolling-om, fixed navigacijom i offline podrškom.
 
 ### Glavne Karakteristike
 
@@ -46,7 +46,9 @@
 - Tailwind CSS za stilizovanje
 - Wouter za routing
 - TanStack Query (React Query) za server state
-- i18next za višejezičnost (BS/DE/EN)
+- i18next za višejezičnost (BS/DE/EN/AL)
+- Progressive Web App (PWA) konfiguracija
+- Custom hooks za iOS bounce prevention
 
 **Backend:**
 - Node.js sa Express
@@ -92,12 +94,56 @@
 
 ### Arhitekturni Principi
 
-1. **Separation of Concerns** - Frontend i backend su jasno odvojeni
-2. **Type Safety** - TypeScript kroz cijeli stack
-3. **Schema-First** - Drizzle schema definiše strukturu podataka
-4. **API-First** - RESTful API za svu komunikaciju
-5. **Session-Based Auth** - Bezbjedna autentifikacija sa session storage
-6. **Responsive Design** - Prilagođen za desktop i tablet
+1. **Mobile-First Design** - Prioritet na mobilnom iskustvu sa native-app-like performansama
+2. **Separation of Concerns** - Frontend i backend su jasno odvojeni
+3. **Type Safety** - TypeScript kroz cijeli stack
+4. **Schema-First** - Drizzle schema definiše strukturu podataka
+5. **API-First** - RESTful API za svu komunikaciju
+6. **Session-Based Auth** - Bezbjedna autentifikacija sa session storage
+7. **PWA Support** - Offline funkcionalnost i instalabilnost na uređaje
+8. **Responsive Design** - Prilagođen za smartphone, tablet i desktop
+
+### Mobile-First & PWA Dizajn
+
+**DžematApp** koristi napredne mobile-first tehnike za pružanje native-app iskustva:
+
+#### Fixed Layout System
+- **TopBar**: 64px visina, position: fixed
+- **BottomNavigation**: 88px visina, position: fixed
+- **Content Area**: Scrollable sadržaj između TopBar-a i BottomNavigation-a
+- **Padding**: Top 80px (64px + 16px), Bottom 104px (88px + 16px), Horizontal 16px
+
+#### iOS Bounce Prevention
+Aplikacija koristi custom `useEdgeLockScroll` hook koji implementira edge-offset clamping strategiju:
+- Održava scroll poziciju između [1, maxScroll-1]
+- Sprječava Safari viewport rubber-banding efekat
+- Koristi touchstart/scroll guards
+- Dinamički injektira filler kad je sadržaj kraći od viewport-a
+- **Rezultat**: Zero bounce/overscroll - sadržaj se čisto zaustavlja na granicama
+
+#### Auto-Scroll Reset
+Automatski reset scroll pozicije na svaku promjenu rute za konzistentnu navigaciju.
+
+#### Branding & Visual Identity
+- **Logo**: Transparentni SVG logo (`DzematLogo.tsx`) sa polumjesecom i knjigom u plavoj boji (#2196F3)
+- **App Icons**: Kompletna kolekcija PNG ikona za sve veličine (72px-512px)
+- **Tema**: Light green (#81c784) kao primarna boja, #e8f5e9 kao background
+- **Design Details**: 1px borderi, 12px border radius kroz cijelu aplikaciju
+
+#### PWA Konfiguracija
+- **Manifest**: Kompletan `manifest.json` sa svim potrebnim ikonama
+- **Apple Touch Icons**: Optimizovano za iPhone Home Screen (180x180, 152x152)
+- **Meta Tags**: Apple-mobile-web-app-capable, theme-color, itd.
+- **Offline Support**: Service worker sa caching strategijom
+- **Installability**: Može se dodati na home screen iOS i Android uređaja
+
+#### Spacing System
+Konzistentan spacing kroz cijelu aplikaciju:
+```typescript
+MOBILE_APP_BAR_HEIGHT = 64px
+BOTTOM_NAV_HEIGHT = 88px
+MOBILE_CONTENT_PADDING = 16px
+```
 
 ---
 
@@ -1254,6 +1300,39 @@ Top bar sa:
 
 **Lokacija:** `client/src/components/layout/AppBar.tsx`
 
+#### MobileAppBar
+Fixed top bar optimizovan za mobile sa:
+- Transparentnim SVG logom (DzematLogo)
+- Naslovom aplikacije
+- Back dugmetom za navigaciju
+- Notifikacijama i profilom
+- Visina: 64px, position: fixed
+
+**Lokacija:** `client/src/components/MobileAppBar.tsx`
+
+#### BottomNavigation
+Fixed bottom navigacija za mobile sa:
+- 4 glavne rute (Dashboard, Obavijesti, Događaji, Profil)
+- Badge notifikacijama
+- Ikonama i labelama
+- Visina: 88px, position: fixed
+
+**Lokacija:** `client/src/components/layout/BottomNavigation.tsx`
+
+#### DzematLogo
+Transparentni SVG logo komponenta sa:
+- Polumjesec (crescent moon)
+- Knjiga (book)
+- Plava boja (#2196F3)
+- Prilagodljiva veličina (default 64px)
+
+**Lokacija:** `client/src/components/DzematLogo.tsx`
+
+**Korištenje:**
+```tsx
+<DzematLogo size={40} />
+```
+
 ### shadcn/ui Komponente
 
 Aplikacija koristi sljedeće shadcn/ui komponente:
@@ -1344,14 +1423,43 @@ const mutation = useMutation({
 });
 ```
 
+### Custom Hooks
+
+#### useEdgeLockScroll
+**Svrha:** Sprječava iOS Safari bounce/overscroll efekat korištenjem edge-offset clamping strategije.
+
+**Lokacija:** `client/src/hooks/useEdgeLockScroll.ts`
+
+**Kako radi:**
+1. Održava scroll poziciju između [1, maxScroll-1]
+2. Koristi `touchstart` event da presreće scroll na granicama
+3. Koristi `scroll` event za fine-tuning scroll pozicije
+4. Dinamički injektira top/bottom filler elemente ako je sadržaj kraći od viewport-a
+5. Rezultat: Zero bounce - sadržaj se čisto zaustavlja bez rubber-band animacije
+
+**Korištenje:**
+```tsx
+const contentRef = useRef<HTMLDivElement>(null);
+useEdgeLockScroll(contentRef);
+
+return (
+  <div ref={contentRef} style={{ overflow: 'auto' }}>
+    {/* scrollable content */}
+  </div>
+);
+```
+
+**Važno:** Hook automatski čisti sve listeners i filler elemente na unmount.
+
 ---
 
 ## Internacionalizacija
 
-Aplikacija podržava **3 jezika:**
-- **Bosanski (bs)** - Glavni jezik
+Aplikacija podržava **4 jezika:**
+- **Bosanski (bs)** - Glavni jezik (ijekavica)
 - **Njemački (de)** 
 - **Engleski (en)**
+- **Albanski (al)**
 
 ### Implementacija
 
@@ -1642,6 +1750,57 @@ Preporučeni alati za monitoring:
 4. **Database indexing** - Na foreign keys
 5. **Caching** - React Query cache
 
+---
+
+## Nedavna Ažuriranja (November 2024)
+
+### Mobile-First Transformacija
+
+DžematApp je prošao kroz značajnu transformaciju u Progressive Web App sa native-app iskustvom:
+
+#### iOS Safari Bounce Prevention ✅
+- **Problem riješen**: Eliminisan nepoželjni bounce/overscroll efekat na iOS Safari
+- **Rješenje**: Custom `useEdgeLockScroll` hook sa edge-offset clamping strategijom
+- **Rezultat**: Sadržaj se čisto zaustavlja na granicama - zero rubber-band animacije
+
+#### Fixed Layout System ✅
+- **TopBar**: Position fixed, 64px visina
+- **BottomNavigation**: Position fixed, 88px visina (povećano sa 72px radi sprječavanja icon clipping-a)
+- **Content Area**: Scrollable sadržaj između fiksnih elemenata
+- **Padding System**: Konzistentan kroz cijelu aplikaciju (16px)
+
+#### Branding & Visual Identity ✅
+- **DzematLogo.tsx**: Kreiran transparentni SVG logo sa polumjesecom i knjigom
+- **PWA Icons**: Kompletna kolekcija ikona za sve veličine (72px-512px)
+- **Apple Touch Icons**: Optimizovano za iPhone Home Screen
+- **Manifest**: Potpuno konfigurisan `manifest.json` za PWA instalaciju
+
+#### Auto-Scroll Reset ✅
+- Implementiran automatski reset scroll pozicije na promjenu rute
+- Rješava problem gdje se scroll pozicija ne resetuje (npr. Moduli stranica)
+
+#### Tehnička Implementacija
+```typescript
+// Spacing konstante
+MOBILE_APP_BAR_HEIGHT = 64px
+BOTTOM_NAV_HEIGHT = 88px  
+MOBILE_CONTENT_PADDING = 16px
+
+// Layout padding
+paddingTop: 80px (64px + 16px)
+paddingBottom: 104px (88px + 16px)
+paddingHorizontal: 16px
+```
+
+#### Fajlovi Kreirani/Ažurirani
+- ✅ `client/src/hooks/useEdgeLockScroll.ts` - iOS bounce prevention
+- ✅ `client/src/components/DzematLogo.tsx` - Transparentni SVG logo
+- ✅ `client/src/components/MobileAppBar.tsx` - Ažuriran sa DzematLogo
+- ✅ `client/src/components/layout/BottomNavigation.tsx` - Povećana visina
+- ✅ `client/public/icons/` - Dodane sve PWA ikone
+- ✅ `client/index.html` - Apple touch icon meta tags
+- ✅ `client/public/manifest.json` - PWA konfiguracija
+
 ### Budući Razvoj
 
 Planirane funkcionalnosti:
@@ -1665,8 +1824,8 @@ Za pitanja i podršku, kontaktirajte:
 
 ---
 
-**Verzija:** 1.0  
-**Datum:** 26.10.2025  
+**Verzija:** 1.1 (Mobile-First PWA)  
+**Datum:** 19.11.2024  
 **Autor:** DžematApp Tim
 
 ---
