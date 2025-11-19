@@ -97,6 +97,37 @@ export const requireAdmin = (req: Request, res: Response, next: NextFunction) =>
   next();
 };
 
+// Initialize default admin user if none exists
+async function ensureAdminUser() {
+  try {
+    const adminUser = await storage.getUserByUsername('admin');
+    if (!adminUser) {
+      console.log('🔧 Creating default admin user...');
+      await storage.createUser({
+        username: 'admin',
+        password: 'admin123',
+        firstName: 'Admin',
+        lastName: 'User',
+        email: 'admin@dzemat.app',
+        phone: '',
+        address: '',
+        jmbg: '',
+        roles: ['admin'],
+        isAdmin: true,
+        totalPoints: 0
+      });
+      console.log('✅ Default admin user created (username: admin, password: admin123)');
+    } else {
+      console.log('✅ Admin user already exists');
+    }
+  } catch (error) {
+    console.error('❌ Error ensuring admin user:', error);
+  }
+}
+
+// Call on startup
+ensureAdminUser();
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
