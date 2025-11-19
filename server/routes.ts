@@ -2471,6 +2471,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/prayer-times/export", requireAdmin, async (req, res) => {
+    try {
+      const prayerTimes = await storage.getAllPrayerTimes();
+      console.log(`[EXPORT] Found ${prayerTimes.length} prayer times to export`);
+      
+      if (prayerTimes.length === 0) {
+        return res.status(404).json({ message: "No prayer times to export" });
+      }
+
+      const csvRows = [];
+      csvRows.push('Datum;Sabah;Izlazak sunca;Podne;Ikindija;Akšam;Jacija');
+      
+      prayerTimes.forEach(pt => {
+        csvRows.push([
+          pt.date,
+          pt.fajr,
+          pt.sunrise || '',
+          pt.dhuhr,
+          pt.asr,
+          pt.maghrib,
+          pt.isha
+        ].join(';'));
+      });
+
+      const csvContent = csvRows.join('\n');
+      
+      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+      res.setHeader('Content-Disposition', 'attachment; filename=vaktija.csv');
+      res.send(csvContent);
+    } catch (error) {
+      console.error('CSV export error:', error);
+      res.status(500).json({ message: "Failed to export CSV" });
+    }
+  });
+
   app.get("/api/prayer-times/:date", async (req, res) => {
     try {
       const prayerTime = await storage.getPrayerTimeByDate(req.params.date);
@@ -2564,41 +2599,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('CSV upload error:', error);
       res.status(500).json({ message: "Failed to upload and parse CSV" });
-    }
-  });
-
-  app.get("/api/prayer-times/export", requireAdmin, async (req, res) => {
-    try {
-      const prayerTimes = await storage.getAllPrayerTimes();
-      console.log(`[EXPORT] Found ${prayerTimes.length} prayer times to export`);
-      
-      if (prayerTimes.length === 0) {
-        return res.status(404).json({ message: "No prayer times to export" });
-      }
-
-      const csvRows = [];
-      csvRows.push('Datum;Sabah;Izlazak sunca;Podne;Ikindija;Akšam;Jacija');
-      
-      prayerTimes.forEach(pt => {
-        csvRows.push([
-          pt.date,
-          pt.fajr,
-          pt.sunrise || '',
-          pt.dhuhr,
-          pt.asr,
-          pt.maghrib,
-          pt.isha
-        ].join(';'));
-      });
-
-      const csvContent = csvRows.join('\n');
-      
-      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-      res.setHeader('Content-Disposition', 'attachment; filename=vaktija.csv');
-      res.send(csvContent);
-    } catch (error) {
-      console.error('CSV export error:', error);
-      res.status(500).json({ message: "Failed to export CSV" });
     }
   });
 
