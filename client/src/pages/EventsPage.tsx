@@ -51,9 +51,10 @@ import { useToast } from '../hooks/use-toast';
 import { useMarkAsViewed } from '../hooks/useMarkAsViewed';
 import { apiRequest } from '../lib/queryClient';
 
-function EventDay(props: PickersDayProps & { eventDates?: Date[]; selectedDate?: Date | null }) {
-  const { eventDates = [], selectedDate, day, outsideCurrentMonth, ...other } = props;
+function EventDay(props: PickersDayProps & { eventDates?: Date[]; importantDates?: Date[]; selectedDate?: Date | null }) {
+  const { eventDates = [], importantDates = [], selectedDate, day, outsideCurrentMonth, ...other } = props;
   const hasEvent = eventDates.some((eventDate: Date) => isSameDay(eventDate, day));
+  const hasImportantDate = importantDates.some((importantDate: Date) => isSameDay(importantDate, day));
   const isToday = isSameDay(day, new Date());
   const isSelected = selectedDate ? isSameDay(day, selectedDate) : false;
   const isWeekendDay = isWeekend(day);
@@ -62,11 +63,11 @@ function EventDay(props: PickersDayProps & { eventDates?: Date[]; selectedDate?:
     <Badge
       key={day.toString()}
       overlap="circular"
-      badgeContent={hasEvent ? '•' : undefined}
+      badgeContent={hasEvent || hasImportantDate ? '•' : undefined}
       sx={{
         '& .MuiBadge-badge': {
-          backgroundColor: 'var(--semantic-success-active)',
-          color: 'var(--semantic-success-active)',
+          backgroundColor: hasImportantDate ? 'hsl(14 100% 45%)' : 'var(--semantic-success-active)',
+          color: hasImportantDate ? 'hsl(14 100% 45%)' : 'var(--semantic-success-active)',
           minWidth: 6,
           height: 6,
           borderRadius: '50%',
@@ -87,6 +88,8 @@ function EventDay(props: PickersDayProps & { eventDates?: Date[]; selectedDate?:
             ? 'var(--semantic-info-active) !important' 
             : isToday 
             ? 'var(--semantic-award-active) !important'
+            : hasImportantDate
+            ? 'hsl(14 100% 95%)'
             : isWeekendDay 
             ? 'var(--semantic-info-bg)'
             : hasEvent
@@ -96,16 +99,20 @@ function EventDay(props: PickersDayProps & { eventDates?: Date[]; selectedDate?:
             ? 'var(--semantic-neutral-text)'
             : isSelected || isToday
             ? '#ffffff !important'
+            : hasImportantDate
+            ? 'hsl(14 100% 45%)'
             : hasEvent
             ? 'var(--semantic-success-text)'
             : isWeekendDay
             ? 'var(--semantic-info-text)'
             : 'inherit',
-          fontWeight: isToday || isSelected || hasEvent ? 600 : 400,
+          fontWeight: isToday || isSelected || hasEvent || hasImportantDate ? 600 : 400,
           border: outsideCurrentMonth
             ? '1px solid var(--semantic-neutral-border)'
             : isToday 
-            ? '2px solid var(--semantic-award-border)' 
+            ? '2px solid var(--semantic-award-border)'
+            : hasImportantDate
+            ? '1px solid hsl(14 100% 65%)'
             : '1px solid hsl(0 0% 85%)',
           borderRadius: '8px',
           margin: '2px',
@@ -116,6 +123,8 @@ function EventDay(props: PickersDayProps & { eventDates?: Date[]; selectedDate?:
               ? 'var(--semantic-info-active-hover) !important'
               : isToday
               ? 'var(--semantic-award-active-hover) !important'
+              : hasImportantDate
+              ? 'hsl(14 100% 90%)'
               : isWeekendDay
               ? 'var(--semantic-info-bg-hover)'
               : hasEvent
@@ -453,7 +462,7 @@ export default function EventsPage() {
   }
 
   const allEvents = eventsQuery.data || [];
-  const importantDates = importantDatesQuery.data || [];
+  const importantDatesData = importantDatesQuery.data || [];
   
   // Sort events by date
   const sortedEvents = [...allEvents].sort((a, b) => {
@@ -474,6 +483,14 @@ export default function EventsPage() {
   const otherUpcomingEvents = upcomingEvents.slice(3);
   
   const eventDates = allEvents.map(event => new Date(event.dateTime));
+  const importantDates = importantDatesData.map(importantDate => {
+    // Parse date formats: "dd.MM", "dd.MM.", "dd.MM.yyyy", "dd.MM.yyyy."
+    const parts = importantDate.date.split('.').filter(p => p.trim() !== '');
+    const day = parseInt(parts[0]);
+    const month = parseInt(parts[1]) - 1; // JS months are 0-indexed
+    const year = parts.length >= 3 ? parseInt(parts[2]) : new Date().getFullYear();
+    return new Date(year, month, day);
+  });
 
   return (
     <Box>
@@ -544,6 +561,7 @@ export default function EventsPage() {
                   slotProps={{
                     day: {
                       eventDates,
+                      importantDates,
                       selectedDate,
                     } as any,
                   }}
@@ -884,7 +902,7 @@ export default function EventsPage() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {importantDates.map((date: ImportantDate) => (
+                  {importantDatesData.map((date: ImportantDate) => (
                     <TableRow key={date.id}>
                       <TableCell sx={{ fontWeight: 500 }}>{date.date}</TableCell>
                       <TableCell>{date.name}</TableCell>
@@ -912,7 +930,7 @@ export default function EventsPage() {
                       )}
                     </TableRow>
                   ))}
-                  {importantDates.length === 0 && (
+                  {importantDatesData.length === 0 && (
                     <TableRow>
                       <TableCell colSpan={user?.isAdmin ? 3 : 2} sx={{ textAlign: 'center', py: 4 }}>
                         <Typography color="text.secondary">
