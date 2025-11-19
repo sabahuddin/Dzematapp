@@ -50,7 +50,7 @@ import {
 import { SiFacebook, SiInstagram, SiYoutube, SiX } from 'react-icons/si';
 import { useAuth } from '@/contexts/AuthContext';
 import type { OrganizationSettings } from '@shared/schema';
-import mosqueLogoPath from '@assets/ChatGPT Image 20. okt 2025. u 22_58_31_1760993927064.png';
+import { DzematLogo } from '@/components/DzematLogo';
 import { useTranslation } from 'react-i18next';
 
 interface SidebarProps {
@@ -160,11 +160,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
           justifyContent: collapsed ? 'center' : 'flex-start'
         }}
       >
-        <img 
-          src={mosqueLogoPath} 
-          alt="Mosque Logo" 
-          style={{ width: 48, height: 48, objectFit: 'contain' }}
-        />
+        <DzematLogo size={48} />
         {!collapsed && (
           <Typography variant="h5" sx={{ fontWeight: 600, color: '#1976d2', fontFamily: 'Aladin, cursive' }}>
             DžematApp
