@@ -11,10 +11,14 @@ import {
   Alert,
   Container,
   ToggleButtonGroup,
-  ToggleButton
+  ToggleButton,
+  Snackbar,
+  IconButton
 } from '@mui/material';
+import { Download, Close } from '@mui/icons-material';
 import { useAuth } from '../hooks/useAuth';
 import { DzematLogo } from '@/components/DzematLogo';
+import { usePWAInstall } from '@/hooks/usePWAInstall';
 
 export default function LoginPage() {
   const { t, i18n } = useTranslation(['login', 'common']);
@@ -23,6 +27,8 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
+  const { isInstallable, promptInstall } = usePWAInstall();
+  const [showInstallPrompt, setShowInstallPrompt] = useState(true);
 
   const handleLanguageChange = (event: React.MouseEvent<HTMLElement>, newLanguage: string | null) => {
     if (newLanguage) {
@@ -57,6 +63,13 @@ export default function LoginPage() {
 
   const handleGuestAccess = () => {
     setLocation('/guest');
+  };
+
+  const handleInstallClick = async () => {
+    const installed = await promptInstall();
+    if (installed) {
+      setShowInstallPrompt(false);
+    }
   };
 
   return (
@@ -198,6 +211,57 @@ export default function LoginPage() {
           </CardContent>
         </Card>
       </Container>
+
+      {/* PWA Install Prompt */}
+      <Snackbar
+        open={isInstallable && showInstallPrompt}
+        onClose={() => setShowInstallPrompt(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        sx={{ bottom: { xs: 90, sm: 24 } }}
+      >
+        <Box
+          sx={{
+            bgcolor: '#1976d2',
+            color: 'white',
+            px: 3,
+            py: 2,
+            borderRadius: 2,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+          }}
+        >
+          <Download />
+          <Box sx={{ flex: 1 }}>
+            <Typography variant="body2" sx={{ fontWeight: 600 }}>
+              Instalirajte DžematApp
+            </Typography>
+            <Typography variant="caption">
+              Koristite kao pravu aplikaciju
+            </Typography>
+          </Box>
+          <Button
+            size="small"
+            variant="contained"
+            onClick={handleInstallClick}
+            sx={{
+              bgcolor: 'white',
+              color: '#1976d2',
+              '&:hover': { bgcolor: 'grey.100' }
+            }}
+          >
+            Instaliraj
+          </Button>
+          <IconButton
+            size="small"
+            onClick={() => setShowInstallPrompt(false)}
+            sx={{ color: 'white', ml: -1 }}
+          >
+            <Close />
+          </IconButton>
+        </Box>
+      </Snackbar>
     </Box>
   );
 }
