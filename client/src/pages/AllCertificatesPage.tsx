@@ -4,30 +4,29 @@ import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
 import {
+  Box,
+  Button,
   Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
+  Typography,
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
-  TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Award, Trash2, Eye } from "lucide-react";
+  IconButton,
+  Chip,
+  CircularProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
+} from '@mui/material';
+import {
+  Visibility,
+  Delete,
+  EmojiEvents
+} from '@mui/icons-material';
 import { format } from "date-fns";
 
 interface UserCertificate {
@@ -97,145 +96,166 @@ export default function AllCertificatesPage({ hideHeader = false }: AllCertifica
   };
 
   if (isLoading) {
-    return <div className="p-8">Učitavanje...</div>;
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
+        <CircularProgress />
+      </Box>
+    );
   }
 
   return (
-    <div className={hideHeader ? "" : "container mx-auto p-6"}>
+    <Box>
+      {!hideHeader && (
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="h5" sx={{ fontWeight: 600 }} data-testid="text-page-title">
+            Sve Zahvale
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Pregled svih izdanih zahvalnica
+          </Typography>
+        </Box>
+      )}
+
       <Card>
-        {!hideHeader && (
-          <CardHeader>
-            <CardTitle data-testid="text-page-title">Sve Zahvale</CardTitle>
-            <CardDescription>
-              Pregled svih izdanih zahvalnica
-            </CardDescription>
-          </CardHeader>
-        )}
-        <CardContent>
+        <TableContainer sx={{ overflowX: 'auto' }}>
           {certificates.length === 0 ? (
-            <div className="text-center py-12" data-testid="text-no-certificates">
-              <Award className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-medium mb-2">Nema zahvalnica</h3>
-              <p className="text-muted-foreground">
+            <Box sx={{ textAlign: 'center', py: 12 }}>
+              <EmojiEvents sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
+              <Typography variant="h6" sx={{ mb: 1 }} data-testid="text-no-certificates">
+                Nema zahvalnica
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
                 Još nisu izdane nijedne zahvalnice
-              </p>
-            </div>
+              </Typography>
+            </Box>
           ) : (
-            <div className="rounded-md border">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Primalac</TableHead>
-                    <TableHead>Poruka</TableHead>
-                    <TableHead>Datum izdavanja</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Akcije</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {certificates.map((certificate) => (
-                    <TableRow key={certificate.id} data-testid={`row-certificate-${certificate.id}`}>
-                      <TableCell className="font-medium" data-testid={`text-recipient-${certificate.id}`}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ fontWeight: 600 }}>Primalac</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Poruka</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Datum izdavanja</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {certificates.map((certificate) => (
+                  <TableRow key={certificate.id} data-testid={`row-certificate-${certificate.id}`}>
+                    <TableCell data-testid={`text-recipient-${certificate.id}`}>
+                      <Typography variant="body2" fontWeight={500}>
                         {certificate.recipientName}
-                      </TableCell>
-                      <TableCell className="max-w-md truncate" data-testid={`text-message-${certificate.id}`}>
+                      </Typography>
+                    </TableCell>
+                    <TableCell data-testid={`text-message-${certificate.id}`}>
+                      <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {certificate.message || '-'}
-                      </TableCell>
-                      <TableCell data-testid={`text-date-${certificate.id}`}>
+                      </Typography>
+                    </TableCell>
+                    <TableCell data-testid={`text-date-${certificate.id}`}>
+                      <Typography variant="body2">
                         {certificate.issuedAt
                           ? format(new Date(certificate.issuedAt), 'dd.MM.yyyy')
                           : '-'}
-                      </TableCell>
-                      <TableCell data-testid={`text-status-${certificate.id}`}>
-                        {certificate.viewed ? (
-                          <span className="text-muted-foreground">Viđeno</span>
-                        ) : (
-                          <span className="text-primary font-medium">Novo</span>
-                        )}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleViewCertificate(certificate)}
-                            data-testid={`button-view-${certificate.id}`}
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleDeleteClick(certificate)}
-                            data-testid={`button-delete-${certificate.id}`}
-                          >
-                            <Trash2 className="h-4 w-4 text-destructive" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                      </Typography>
+                    </TableCell>
+                    <TableCell data-testid={`text-status-${certificate.id}`}>
+                      <Chip
+                        label={certificate.viewed ? 'Viđeno' : 'Novo'}
+                        color={certificate.viewed ? 'default' : 'primary'}
+                        size="small"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Box sx={{ display: 'flex', gap: 0.5 }}>
+                        <IconButton
+                          size="small"
+                          onClick={() => handleViewCertificate(certificate)}
+                          sx={{ color: 'hsl(207 88% 55%)' }}
+                          data-testid={`button-view-${certificate.id}`}
+                        >
+                          <Visibility fontSize="small" />
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          onClick={() => handleDeleteClick(certificate)}
+                          sx={{ color: 'hsl(4 90% 58%)' }}
+                          data-testid={`button-delete-${certificate.id}`}
+                        >
+                          <Delete fontSize="small" />
+                        </IconButton>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           )}
-        </CardContent>
+        </TableContainer>
       </Card>
 
-      <Dialog open={viewModalOpen} onOpenChange={setViewModalOpen}>
-        <DialogContent className="max-w-4xl">
-          <DialogHeader>
-            <DialogTitle data-testid="text-modal-title">
-              Zahvalnica - {selectedCertificate?.recipientName}
-            </DialogTitle>
-          </DialogHeader>
+      {/* View Certificate Dialog */}
+      <Dialog 
+        open={viewModalOpen} 
+        onClose={() => setViewModalOpen(false)}
+        maxWidth="lg"
+        fullWidth
+      >
+        <DialogTitle data-testid="text-modal-title">
+          Zahvalnica - {selectedCertificate?.recipientName}
+        </DialogTitle>
+        <DialogContent>
           {selectedCertificate && (
-            <div className="space-y-4">
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, pt: 2 }}>
               <img
                 src={selectedCertificate.certificateImagePath}
                 alt={`Zahvalnica za ${selectedCertificate.recipientName}`}
-                className="w-full h-auto rounded-lg border"
+                style={{ width: '100%', height: 'auto', borderRadius: 8, border: '1px solid hsl(0 0% 88%)' }}
                 data-testid="img-modal-certificate"
               />
               {selectedCertificate.message && (
-                <div className="p-4 bg-muted rounded-lg" data-testid="text-modal-message">
-                  <p className="text-sm font-medium mb-1">Poruka:</p>
-                  <p className="text-sm">{selectedCertificate.message}</p>
-                </div>
+                <Box sx={{ p: 2, bgcolor: 'hsl(0 0% 98%)', borderRadius: 1, border: '1px solid hsl(0 0% 88%)' }} data-testid="text-modal-message">
+                  <Typography variant="body2" sx={{ fontWeight: 500, mb: 1 }}>Poruka:</Typography>
+                  <Typography variant="body2">{selectedCertificate.message}</Typography>
+                </Box>
               )}
-            </div>
+            </Box>
           )}
         </DialogContent>
       </Dialog>
 
-      <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
+      {/* Delete Confirmation Dialog */}
+      <Dialog 
+        open={deleteModalOpen} 
+        onClose={() => setDeleteModalOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Potvrda brisanja</DialogTitle>
         <DialogContent data-testid="dialog-delete-confirm">
-          <DialogHeader>
-            <DialogTitle>Potvrda brisanja</DialogTitle>
-            <DialogDescription>
-              Da li ste sigurni da želite obrisati zahvalnicu za {certificateToDelete?.recipientName}?
-              Ova akcija se ne može poništiti.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setDeleteModalOpen(false)}
-              data-testid="button-cancel-delete"
-            >
-              Odustani
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={handleConfirmDelete}
-              disabled={deleteMutation.isPending}
-              data-testid="button-confirm-delete"
-            >
-              {deleteMutation.isPending ? "Brisanje..." : "Obriši"}
-            </Button>
-          </DialogFooter>
+          <Typography variant="body2" color="text.secondary" sx={{ pt: 1 }}>
+            Da li ste sigurni da želite obrisati zahvalnicu za {certificateToDelete?.recipientName}?
+            Ova akcija se ne može poništiti.
+          </Typography>
         </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setDeleteModalOpen(false)}
+            data-testid="button-cancel-delete"
+          >
+            Odustani
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={handleConfirmDelete}
+            disabled={deleteMutation.isPending}
+            data-testid="button-confirm-delete"
+          >
+            {deleteMutation.isPending ? "Brisanje..." : "Obriši"}
+          </Button>
+        </DialogActions>
       </Dialog>
-    </div>
+    </Box>
   );
 }

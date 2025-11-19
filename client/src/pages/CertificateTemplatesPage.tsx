@@ -4,47 +4,32 @@ import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
 import {
+  Box,
+  Button,
   Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import {
+  Typography,
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
-  TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import {
+  IconButton,
+  CircularProgress,
   Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
   DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
+  DialogContent,
+  DialogActions,
+  TextField,
+  MenuItem,
+  Stack
+} from '@mui/material';
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Plus, Pencil, Trash2, Upload } from "lucide-react";
+  Add,
+  Edit,
+  Delete,
+  Upload
+} from '@mui/icons-material';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -87,8 +72,10 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
   const [selectedTemplate, setSelectedTemplate] = useState<CertificateTemplate | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [templateToDelete, setTemplateToDelete] = useState<string | null>(null);
 
-  const form = useForm<TemplateFormData>({
+  const { register, handleSubmit: hookFormSubmit, reset, watch, formState: { errors } } = useForm<TemplateFormData>({
     resolver: zodResolver(templateFormSchema),
     defaultValues: {
       name: "",
@@ -101,20 +88,20 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
     },
   });
 
-  // Fetch templates
   const { data: templates = [], isLoading } = useQuery<CertificateTemplate[]>({
     queryKey: ['/api/certificates/templates'],
   });
 
-  // Create template mutation
   const createMutation = useMutation({
     mutationFn: async (data: TemplateFormData) => {
-      if (!selectedFile) {
+      if (!selectedFile && !selectedTemplate) {
         throw new Error("Template image is required");
       }
 
       const formData = new FormData();
-      formData.append('templateImage', selectedFile);
+      if (selectedFile) {
+        formData.append('templateImage', selectedFile);
+      }
       formData.append('name', data.name);
       if (data.description) formData.append('description', data.description);
       formData.append('textPositionX', data.textPositionX.toString());
@@ -153,10 +140,34 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
     },
   });
 
-  // Update template mutation
   const updateMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: Partial<TemplateFormData> }) => {
-      return apiRequest(`/api/certificates/templates/${id}`, 'PUT', data);
+    mutationFn: async ({ id, data, file }: { id: string; data: Partial<TemplateFormData>; file?: File | null }) => {
+      if (file) {
+        const formData = new FormData();
+        formData.append('templateImage', file);
+        formData.append('name', data.name || '');
+        if (data.description) formData.append('description', data.description);
+        formData.append('textPositionX', data.textPositionX?.toString() || '0');
+        formData.append('textPositionY', data.textPositionY?.toString() || '0');
+        formData.append('fontSize', data.fontSize?.toString() || '0');
+        formData.append('fontColor', data.fontColor || '#000000');
+        formData.append('textAlign', data.textAlign || 'center');
+
+        const response = await fetch(`/api/certificates/templates/${id}`, {
+          method: 'PUT',
+          body: formData,
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || 'Failed to update template');
+        }
+
+        return response.json();
+      } else {
+        return apiRequest(`/api/certificates/templates/${id}`, 'PUT', data);
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/certificates/templates'] });
@@ -175,7 +186,6 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
     },
   });
 
-  // Delete template mutation
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       return apiRequest(`/api/certificates/templates/${id}`, 'DELETE');
@@ -200,7 +210,7 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
     if (template) {
       setSelectedTemplate(template);
       setPreviewUrl(template.templateImagePath);
-      form.reset({
+      reset({
         name: template.name,
         description: template.description || "",
         textPositionX: template.textPositionX ?? 400,
@@ -213,7 +223,7 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
       setSelectedTemplate(null);
       setPreviewUrl(null);
       setSelectedFile(null);
-      form.reset();
+      reset();
     }
     setModalOpen(true);
   };
@@ -223,7 +233,7 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
     setSelectedTemplate(null);
     setSelectedFile(null);
     setPreviewUrl(null);
-    form.reset();
+    reset();
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -246,75 +256,86 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
     }
   };
 
-  const handleSubmit = (data: TemplateFormData) => {
+  const handleFormSubmit = (data: TemplateFormData) => {
     if (selectedTemplate) {
-      // Update existing template (without file upload)
-      updateMutation.mutate({ id: selectedTemplate.id, data });
+      updateMutation.mutate({ id: selectedTemplate.id, data, file: selectedFile });
     } else {
-      // Create new template (with file upload)
       createMutation.mutate(data);
     }
   };
 
-  const handleDelete = (id: string) => {
-    if (window.confirm("Da li ste sigurni da želite obrisati ovaj template?")) {
-      deleteMutation.mutate(id);
+  const handleDeleteClick = (id: string) => {
+    setTemplateToDelete(id);
+    setDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (templateToDelete) {
+      deleteMutation.mutate(templateToDelete);
+      setDeleteModalOpen(false);
+      setTemplateToDelete(null);
     }
   };
 
   if (isLoading) {
-    return <div className="p-8">Učitavanje...</div>;
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
+        <CircularProgress />
+      </Box>
+    );
   }
 
   return (
-    <div className={hideHeader ? "" : "container mx-auto p-6"}>
+    <Box>
+      {!hideHeader && (
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Typography variant="h5" sx={{ fontWeight: 600 }} data-testid="text-page-title">
+            Zahvalnice - Templatei
+          </Typography>
+          <Button
+            variant="contained"
+            startIcon={<Add />}
+            onClick={() => handleOpenModal()}
+            data-testid="button-add-template"
+          >
+            Dodaj novi template
+          </Button>
+        </Box>
+      )}
+
+      {hideHeader && (
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3 }}>
+          <Button
+            variant="contained"
+            startIcon={<Add />}
+            onClick={() => handleOpenModal()}
+            data-testid="button-add-template"
+          >
+            Dodaj novi template
+          </Button>
+        </Box>
+      )}
+
       <Card>
-        {!hideHeader && (
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle data-testid="text-page-title">Zahvalnice - Templatei</CardTitle>
-              <CardDescription>
-                Upravljajte template-ima za zahvalnice
-              </CardDescription>
-            </div>
-            <Button
-              onClick={() => handleOpenModal()}
-              className="ml-auto"
-              data-testid="button-add-template"
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Dodaj novi template
-            </Button>
-          </CardHeader>
-        )}
-        {hideHeader && (
-          <CardHeader className="flex flex-row items-center justify-end">
-            <Button
-              onClick={() => handleOpenModal()}
-              data-testid="button-add-template"
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Dodaj novi template
-            </Button>
-          </CardHeader>
-        )}
-        <CardContent>
+        <TableContainer sx={{ overflowX: 'auto' }}>
           {templates.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground" data-testid="text-no-templates">
-              Nema kreiranih template-a
-            </div>
+            <Box sx={{ textAlign: 'center', py: 8 }}>
+              <Typography color="text.secondary" data-testid="text-no-templates">
+                Nema kreiranih template-a
+              </Typography>
+            </Box>
           ) : (
             <Table>
-              <TableHeader>
+              <TableHead>
                 <TableRow>
-                  <TableHead>Slika</TableHead>
-                  <TableHead>Naziv</TableHead>
-                  <TableHead>Opis</TableHead>
-                  <TableHead>Font</TableHead>
-                  <TableHead>Pozicija</TableHead>
-                  <TableHead className="text-right">Akcije</TableHead>
+                  <TableCell sx={{ fontWeight: 600 }}>Slika</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Naziv</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Opis</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Font</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Pozicija</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
                 </TableRow>
-              </TableHeader>
+              </TableHead>
               <TableBody>
                 {templates.map((template) => (
                   <TableRow key={template.id} data-testid={`row-template-${template.id}`}>
@@ -322,333 +343,366 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
                       <img
                         src={template.templateImagePath}
                         alt={template.name}
-                        className="w-20 h-14 object-cover rounded"
+                        style={{ width: 80, height: 56, objectFit: 'cover', borderRadius: 4 }}
                         data-testid={`img-template-${template.id}`}
                       />
                     </TableCell>
                     <TableCell data-testid={`text-name-${template.id}`}>
-                      {template.name}
+                      <Typography variant="body2" fontWeight={500}>
+                        {template.name}
+                      </Typography>
                     </TableCell>
                     <TableCell data-testid={`text-description-${template.id}`}>
-                      {template.description || "-"}
+                      <Typography variant="body2" color="text.secondary">
+                        {template.description || "-"}
+                      </Typography>
                     </TableCell>
                     <TableCell data-testid={`text-font-${template.id}`}>
-                      {template.fontSize}px {template.fontColor}
+                      <Typography variant="body2">
+                        {template.fontSize}px {template.fontColor}
+                      </Typography>
                     </TableCell>
                     <TableCell data-testid={`text-position-${template.id}`}>
-                      X:{template.textPositionX} Y:{template.textPositionY}
+                      <Typography variant="body2">
+                        X:{template.textPositionX} Y:{template.textPositionY}
+                      </Typography>
                     </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
+                    <TableCell>
+                      <Box sx={{ display: 'flex', gap: 0.5 }}>
+                        <IconButton
+                          size="small"
                           onClick={() => handleOpenModal(template)}
+                          sx={{ color: 'hsl(207 88% 55%)' }}
                           data-testid={`button-edit-${template.id}`}
                         >
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => handleDelete(template.id)}
+                          <Edit fontSize="small" />
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          onClick={() => handleDeleteClick(template.id)}
+                          sx={{ color: 'hsl(4 90% 58%)' }}
                           data-testid={`button-delete-${template.id}`}
                         >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
+                          <Delete fontSize="small" />
+                        </IconButton>
+                      </Box>
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           )}
-        </CardContent>
+        </TableContainer>
       </Card>
 
       {/* Template Modal */}
-      <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle data-testid="text-modal-title">
-              {selectedTemplate ? "Uredi template" : "Dodaj novi template"}
-            </DialogTitle>
-            <DialogDescription>
-              {selectedTemplate
-                ? "Ažurirajte informacije o template-u"
-                : "Kreiranje novog template-a za zahvalnice"}
-            </DialogDescription>
-          </DialogHeader>
+      <Dialog open={modalOpen} onClose={handleCloseModal} maxWidth="md" fullWidth>
+        <form onSubmit={hookFormSubmit(handleFormSubmit)}>
+          <DialogTitle data-testid="text-modal-title">
+            {selectedTemplate ? "Uredi template" : "Dodaj novi template"}
+          </DialogTitle>
+          <DialogContent>
+            <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 3 }}>
+              <Typography variant="caption" color="text.secondary">
+                {selectedTemplate
+                  ? "Ažurirajte informacije o template-u"
+                  : "Kreiranje novog template-a za zahvalnice"}
+              </Typography>
 
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
               {/* File Upload */}
               {!selectedTemplate && (
-                <div className="space-y-2">
-                  <FormLabel>Template slika (PNG)</FormLabel>
-                  <div className="flex items-center gap-4">
-                    <Input
+                <Box>
+                  <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+                    Template slika (PNG)
+                  </Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <input
                       type="file"
                       accept="image/png"
                       onChange={handleFileChange}
-                      className="hidden"
+                      style={{ display: 'none' }}
                       id="template-upload"
                       data-testid="input-template-file"
                     />
                     <Button
-                      type="button"
-                      variant="outline"
+                      variant="outlined"
+                      startIcon={<Upload />}
                       onClick={() => document.getElementById('template-upload')?.click()}
                       data-testid="button-upload-file"
                     >
-                      <Upload className="mr-2 h-4 w-4" />
                       {selectedFile ? "Promeni sliku" : "Izaberi sliku"}
                     </Button>
                     {selectedFile && (
-                      <span className="text-sm text-muted-foreground">
+                      <Typography variant="body2" color="text.secondary">
                         {selectedFile.name}
-                      </span>
+                      </Typography>
                     )}
-                  </div>
+                  </Box>
                   {previewUrl && (
-                    <div>
-                      <div className="relative mt-2 inline-block">
+                    <Box sx={{ mt: 2 }}>
+                      <Box sx={{ position: 'relative', display: 'inline-block' }}>
                         <img
                           src={previewUrl}
                           alt="Preview"
-                          className="max-w-full h-64 object-contain border rounded"
+                          style={{ maxWidth: '100%', height: 256, objectFit: 'contain', border: '1px solid hsl(0 0% 88%)', borderRadius: 4 }}
                           data-testid="img-preview"
                         />
-                        <div
-                          className="absolute border-2 border-red-500 bg-red-500/10"
-                          style={{
-                            left: `${((form.watch('textPositionX') || 0) / 1024) * 100}%`,
-                            top: `${((form.watch('textPositionY') || 0) / 724) * 100}%`,
+                        <Box
+                          sx={{
+                            position: 'absolute',
+                            border: '2px solid hsl(4 90% 58%)',
+                            backgroundColor: 'hsla(4, 90%, 58%, 0.1)',
+                            left: `${((watch('textPositionX') || 0) / 1024) * 100}%`,
+                            top: `${((watch('textPositionY') || 0) / 724) * 100}%`,
                             transform: 'translate(-50%, -50%)',
-                            fontSize: `${Math.min((form.watch('fontSize') || 48) / 10, 16)}px`,
-                            color: form.watch('fontColor') || '#000000',
-                            textAlign: form.watch('textAlign') as any || 'center',
+                            fontSize: `${Math.min((watch('fontSize') || 48) / 10, 16)}px`,
+                            color: watch('fontColor') || '#000000',
+                            textAlign: watch('textAlign') || 'center',
                             minWidth: '200px',
                             padding: '4px 8px',
                             pointerEvents: 'none',
                           }}
                         >
                           Ime Prezime
-                        </div>
-                      </div>
-                      <p className="text-xs text-muted-foreground mt-1">
+                        </Box>
+                      </Box>
+                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
                         Crveni okvir pokazuje približnu poziciju imena na template-u
-                      </p>
-                    </div>
+                      </Typography>
+                    </Box>
                   )}
-                </div>
+                </Box>
               )}
 
               {selectedTemplate && previewUrl && (
-                <div>
-                  <FormLabel>Trenutna slika</FormLabel>
-                  <div className="relative mt-2 inline-block">
+                <Box>
+                  <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+                    Trenutna slika
+                  </Typography>
+                  <Box sx={{ position: 'relative', display: 'inline-block' }}>
                     <img
                       src={previewUrl}
                       alt="Current template"
-                      className="max-w-full h-64 object-contain border rounded"
+                      style={{ maxWidth: '100%', height: 256, objectFit: 'contain', border: '1px solid hsl(0 0% 88%)', borderRadius: 4 }}
                       data-testid="img-current-template"
                     />
-                    <div
-                      className="absolute border-2 border-red-500 bg-red-500/10"
-                      style={{
-                        left: `${((form.watch('textPositionX') || 0) / 1024) * 100}%`,
-                        top: `${((form.watch('textPositionY') || 0) / 724) * 100}%`,
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        border: '2px solid hsl(4 90% 58%)',
+                        backgroundColor: 'hsla(4, 90%, 58%, 0.1)',
+                        left: `${((watch('textPositionX') || 0) / 1024) * 100}%`,
+                        top: `${((watch('textPositionY') || 0) / 724) * 100}%`,
                         transform: 'translate(-50%, -50%)',
-                        fontSize: `${Math.min((form.watch('fontSize') || 48) / 10, 16)}px`,
-                        color: form.watch('fontColor') || '#000000',
-                        textAlign: form.watch('textAlign') as any || 'center',
+                        fontSize: `${Math.min((watch('fontSize') || 48) / 10, 16)}px`,
+                        color: watch('fontColor') || '#000000',
+                        textAlign: watch('textAlign') || 'center',
                         minWidth: '200px',
                         padding: '4px 8px',
                         pointerEvents: 'none',
                       }}
                     >
                       Ime Prezime
-                    </div>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">
+                    </Box>
+                  </Box>
+                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
                     Crveni okvir pokazuje približnu poziciju imena na template-u
-                  </p>
-                </div>
+                  </Typography>
+                  <Box sx={{ mt: 2 }}>
+                    <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+                      Zamijeni sliku (opcionalno)
+                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                      <input
+                        type="file"
+                        accept="image/png"
+                        onChange={handleFileChange}
+                        style={{ display: 'none' }}
+                        id="template-upload-edit"
+                        data-testid="input-template-file-edit"
+                      />
+                      <Button
+                        variant="outlined"
+                        startIcon={<Upload />}
+                        onClick={() => document.getElementById('template-upload-edit')?.click()}
+                        data-testid="button-upload-file-edit"
+                      >
+                        {selectedFile ? "Promeni sliku" : "Izaberi novu sliku"}
+                      </Button>
+                      {selectedFile && (
+                        <Typography variant="body2" color="text.secondary">
+                          {selectedFile.name}
+                        </Typography>
+                      )}
+                    </Box>
+                  </Box>
+                </Box>
               )}
 
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Naziv</FormLabel>
-                    <FormControl>
-                      <Input {...field} data-testid="input-name" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+              <TextField
+                fullWidth
+                label="Naziv"
+                {...register('name')}
+                error={!!errors.name}
+                helperText={errors.name?.message}
+                required
+                data-testid="input-name"
               />
 
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Opis (opcionalno)</FormLabel>
-                    <FormControl>
-                      <Textarea {...field} data-testid="input-description" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+              <TextField
+                fullWidth
+                label="Opis (opcionalno)"
+                multiline
+                rows={2}
+                {...register('description')}
+                error={!!errors.description}
+                helperText={errors.description?.message}
+                data-testid="input-description"
               />
 
-              <div className="space-y-2">
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="textPositionX"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Pozicija X</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            {...field}
-                            onChange={(e) => field.onChange(parseInt(e.target.value))}
-                            data-testid="input-position-x"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+              <Box>
+                <Stack direction="row" spacing={2}>
+                  <TextField
+                    fullWidth
+                    label="Pozicija X"
+                    type="number"
+                    {...register('textPositionX', { 
+                      valueAsNumber: true,
+                      setValueAs: (v) => v === '' ? 0 : parseInt(v, 10)
+                    })}
+                    error={!!errors.textPositionX}
+                    helperText={errors.textPositionX?.message}
+                    required
+                    data-testid="input-position-x"
                   />
-
-                  <FormField
-                    control={form.control}
-                    name="textPositionY"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Pozicija Y</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            {...field}
-                            onChange={(e) => field.onChange(parseInt(e.target.value))}
-                            data-testid="input-position-y"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                  <TextField
+                    fullWidth
+                    label="Pozicija Y"
+                    type="number"
+                    {...register('textPositionY', { 
+                      valueAsNumber: true,
+                      setValueAs: (v) => v === '' ? 0 : parseInt(v, 10)
+                    })}
+                    error={!!errors.textPositionY}
+                    helperText={errors.textPositionY?.message}
+                    required
+                    data-testid="input-position-y"
                   />
-                </div>
-                <p className="text-xs text-muted-foreground">
+                </Stack>
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
                   💡 Za centriranje: X=512, Y=165. Prilagodite prema potrebi koristeći preview gore.
-                </p>
-              </div>
+                </Typography>
+              </Box>
 
-              <div className="space-y-2">
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="fontSize"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Veličina fonta</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            {...field}
-                            onChange={(e) => field.onChange(parseInt(e.target.value))}
-                            data-testid="input-font-size"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+              <Box>
+                <Stack direction="row" spacing={2}>
+                  <TextField
+                    fullWidth
+                    label="Veličina fonta"
+                    type="number"
+                    {...register('fontSize', { 
+                      valueAsNumber: true,
+                      setValueAs: (v) => v === '' ? 0 : parseInt(v, 10)
+                    })}
+                    error={!!errors.fontSize}
+                    helperText={errors.fontSize?.message}
+                    required
+                    data-testid="input-font-size"
                   />
-
-                <FormField
-                  control={form.control}
-                  name="fontColor"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Boja fonta</FormLabel>
-                      <FormControl>
-                        <div className="flex gap-2">
-                          <Input
-                            type="color"
-                            {...field}
-                            className="w-20"
-                            data-testid="input-font-color-picker"
-                          />
-                          <Input
-                            type="text"
-                            {...field}
-                            className="flex-1"
-                            data-testid="input-font-color"
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                </div>
-                <p className="text-xs text-muted-foreground">
+                  <TextField
+                    fullWidth
+                    label="Boja fonta"
+                    {...register('fontColor')}
+                    error={!!errors.fontColor}
+                    helperText={errors.fontColor?.message}
+                    required
+                    data-testid="input-font-color"
+                    InputProps={{
+                      startAdornment: (
+                        <input
+                          type="color"
+                          {...register('fontColor')}
+                          style={{ width: 40, height: 32, border: 'none', cursor: 'pointer', marginRight: 8 }}
+                          data-testid="input-font-color-picker"
+                        />
+                      ),
+                    }}
+                  />
+                </Stack>
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
                   💡 Preporučeno: Font 64-80px za dobru čitljivost
-                </p>
-              </div>
+                </Typography>
+              </Box>
 
-              <FormField
-                control={form.control}
-                name="textAlign"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Poravnanje teksta</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger data-testid="select-text-align">
-                          <SelectValue />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="left">Lijevo</SelectItem>
-                        <SelectItem value="center">Centar</SelectItem>
-                        <SelectItem value="right">Desno</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <DialogFooter>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleCloseModal}
-                  data-testid="button-cancel"
-                >
-                  Otkaži
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={createMutation.isPending || updateMutation.isPending}
-                  data-testid="button-save"
-                >
-                  {createMutation.isPending || updateMutation.isPending
-                    ? "Čuvanje..."
-                    : "Sačuvaj"}
-                </Button>
-              </DialogFooter>
-            </form>
-          </Form>
-        </DialogContent>
+              <TextField
+                select
+                fullWidth
+                label="Poravnanje teksta"
+                {...register('textAlign')}
+                error={!!errors.textAlign}
+                helperText={errors.textAlign?.message}
+                defaultValue="center"
+                required
+                data-testid="select-text-align"
+              >
+                <MenuItem value="left">Lijevo</MenuItem>
+                <MenuItem value="center">Centar</MenuItem>
+                <MenuItem value="right">Desno</MenuItem>
+              </TextField>
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={handleCloseModal}
+              data-testid="button-cancel"
+            >
+              Otkaži
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={createMutation.isPending || updateMutation.isPending}
+              data-testid="button-save"
+            >
+              {createMutation.isPending || updateMutation.isPending
+                ? "Čuvanje..."
+                : "Sačuvaj"}
+            </Button>
+          </DialogActions>
+        </form>
       </Dialog>
-    </div>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog 
+        open={deleteModalOpen} 
+        onClose={() => setDeleteModalOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Potvrda brisanja</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" color="text.secondary" sx={{ pt: 1 }}>
+            Da li ste sigurni da želite obrisati ovaj template? Ova akcija se ne može poništiti.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setDeleteModalOpen(false)}
+            data-testid="button-cancel-delete"
+          >
+            Odustani
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={handleConfirmDelete}
+            disabled={deleteMutation.isPending}
+            data-testid="button-confirm-delete"
+          >
+            {deleteMutation.isPending ? "Brisanje..." : "Obriši"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   );
 }
