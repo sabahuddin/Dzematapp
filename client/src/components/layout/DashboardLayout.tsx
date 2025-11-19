@@ -76,10 +76,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           left: 0,
           right: 0,
           zIndex: 1100,
-          bgcolor: 'var(--card)',
+          bgcolor: '#000000',
           paddingTop: 'env(safe-area-inset-top)',
         }}>
-          <MobileAppBar title="DžematApp" />
+          <Box sx={{ bgcolor: 'var(--card)' }}>
+            <MobileAppBar title="DžematApp" />
+          </Box>
         </Box>
 
         {/* Main Content - Scrollable area */}
@@ -106,6 +108,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           left: 0,
           right: 0,
           zIndex: 1100,
+          bgcolor: '#000000',
           paddingBottom: 'env(safe-area-inset-bottom)',
         }}>
           <BottomNavigation />

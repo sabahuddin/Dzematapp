@@ -255,17 +255,25 @@
     box-sizing: border-box;
   }
 
-  html, body {
+  html {
     margin: 0;
     padding: 0;
     width: 100%;
     height: 100%;
+    background-color: #000000;
   }
-
+  
   body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
     @apply font-sans antialiased text-foreground;
     font-family: var(--font-sans);
     background-color: #eeeeee !important;
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
   }
 
   /* Material-UI component customizations - Card/Paper styling removed to allow theme overrides */
