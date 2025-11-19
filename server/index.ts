@@ -30,6 +30,10 @@ app.use(express.urlencoded({ extended: false, limit: '5mb' }));
 const MemStore = MemoryStore(session);
 
 // Session configuration
+// Auto-detect if we're behind HTTPS (Replit deployment uses REPL_ID env var)
+const isReplitDeployment = !!process.env.REPL_ID;
+const isProduction = process.env.NODE_ENV === 'production';
+
 app.use(session({
   secret: process.env.SESSION_SECRET || 'dev-secret-key-change-in-production',
   store: new MemStore({
@@ -38,9 +42,10 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false, // Set to true in production with HTTPS
+    secure: isReplitDeployment || isProduction, // true on Replit or production
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    sameSite: 'lax' // Important for cookies to work properly
   },
   name: 'sessionId' // Name of the session cookie
 }));
