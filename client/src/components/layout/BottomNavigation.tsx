@@ -2,7 +2,7 @@ import { BottomNavigation as MuiBottomNavigation, BottomNavigationAction, Paper 
 import { Home, CalendarMonth, Campaign, Store, Apps } from '@mui/icons-material';
 import { useLocation } from 'wouter';
 
-export const BOTTOM_NAV_HEIGHT = 88;
+export const BOTTOM_NAV_HEIGHT = 78;
 
 export default function BottomNavigation() {
   const [location, setLocation] = useLocation();
@@ -26,6 +26,7 @@ export default function BottomNavigation() {
       sx={{
         borderTop: '1px solid var(--semantic-success-border)',
         backgroundColor: 'var(--semantic-success-bg)',
+        borderRadius: 0,
       }}
       elevation={8}
     >
@@ -35,8 +36,9 @@ export default function BottomNavigation() {
         showLabels={false}
         sx={{
           backgroundColor: 'transparent',
-          height: '88px',
+          height: '78px',
           px: 2,
+          borderRadius: 0,
           '& .MuiBottomNavigationAction-root': {
             color: 'hsl(123 46% 34%)',
             minWidth: '60px',
