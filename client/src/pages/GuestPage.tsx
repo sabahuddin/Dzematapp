@@ -562,7 +562,7 @@ export default function GuestPage() {
       <AppBar position="static" sx={{ bgcolor: '#ffffff', boxShadow: 1 }}>
         <Toolbar>
           <Box sx={{ mr: 2 }}>
-            <DzematLogo size={40} />
+            <DzematLogo size={80} />
           </Box>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: 'hsl(207 88% 55%)' }}>
             DžematApp - Gost pristup

@@ -124,7 +124,7 @@ export function MobileAppBar({ title = 'DžematApp', showBack }: MobileAppBarPro
               <ArrowBack />
             </IconButton>
           )}
-          <DzematLogo size={40} />
+          <DzematLogo size={80} />
           <Typography 
             variant="h6" 
             sx={{ 

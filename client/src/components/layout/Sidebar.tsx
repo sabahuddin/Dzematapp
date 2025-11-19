@@ -160,7 +160,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
           justifyContent: collapsed ? 'center' : 'flex-start'
         }}
       >
-        <DzematLogo size={48} />
+        <DzematLogo size={96} />
         {!collapsed && (
           <Typography variant="h5" sx={{ fontWeight: 600, color: '#1976d2', fontFamily: 'Aladin, cursive' }}>
             DžematApp

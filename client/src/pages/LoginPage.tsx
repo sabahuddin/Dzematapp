@@ -118,7 +118,7 @@ export default function LoginPage() {
 
             <Box sx={{ textAlign: 'center', mb: 4 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1.5, mb: 1 }}>
-                <DzematLogo size={60} />
+                <DzematLogo size={120} />
                 <Typography variant="h3" sx={{ fontWeight: 600, color: 'hsl(207 88% 55%)', fontFamily: 'Aladin, cursive' }}>
                   {t('login:title')}
                 </Typography>
