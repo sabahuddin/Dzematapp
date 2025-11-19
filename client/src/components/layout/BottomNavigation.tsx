@@ -24,8 +24,8 @@ export default function BottomNavigation() {
   return (
     <Paper
       sx={{
-        borderTop: '1px solid #2a2a2a',
-        backgroundColor: '#1a1a1a',
+        borderTop: '1px solid var(--semantic-success-border)',
+        backgroundColor: 'var(--semantic-success-bg)',
       }}
       elevation={8}
     >
@@ -39,10 +39,10 @@ export default function BottomNavigation() {
           px: 2,
           pb: 'calc(env(safe-area-inset-bottom, 0px) + 4px)',
           '& .MuiBottomNavigationAction-root': {
-            color: '#9e9e9e',
+            color: 'hsl(123 46% 34%)',
             minWidth: '60px',
             '&.Mui-selected': {
-              color: '#81c784',
+              color: 'hsl(123 46% 54%)',
             },
           },
         }}

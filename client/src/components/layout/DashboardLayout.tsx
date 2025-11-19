@@ -76,7 +76,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           left: 0,
           right: 0,
           zIndex: 1100,
-          bgcolor: '#1a1a1a',
+          bgcolor: 'var(--card)',
         }}>
           <MobileAppBar title="DžematApp" />
         </Box>
@@ -92,7 +92,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             pt: `calc(${MOBILE_APP_BAR_HEIGHT}px + ${MOBILE_CONTENT_PADDING}px)`,
             pb: `calc(${BOTTOM_NAV_HEIGHT}px + ${MOBILE_CONTENT_PADDING}px)`,
             px: 2,
-            bgcolor: '#121212',
+            bgcolor: 'var(--background)',
           }}
         >
           {children}
