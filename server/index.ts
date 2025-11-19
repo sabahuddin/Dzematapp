@@ -23,6 +23,10 @@ declare module "express-session" {
 }
 
 const app = express();
+
+// Trust proxy - Required for Replit deployment behind their reverse proxy
+app.set('trust proxy', 1);
+
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: false, limit: '5mb' }));
 
