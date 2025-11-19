@@ -338,7 +338,7 @@ export default function TasksDashboard() {
                 />
               </Box>
               {workGroup.description && (
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2, wordBreak: 'break-word' }}>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2, wordBreak: 'break-word', whiteSpace: 'pre-line' }}>
                   {workGroup.description}
                 </Typography>
               )}

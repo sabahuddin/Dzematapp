@@ -168,7 +168,7 @@ export default function MemberManagementDialog({
         <DialogContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {workGroup.description && (
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'pre-line' }}>
                 {workGroup.description}
               </Typography>
             )}

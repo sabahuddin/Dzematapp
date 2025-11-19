@@ -91,7 +91,7 @@ export default function AllSectionsPage() {
                 </Typography>
                 
                 {workGroup.description && (
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2, whiteSpace: 'pre-line' }}>
                     {workGroup.description}
                   </Typography>
                 )}

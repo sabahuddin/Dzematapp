@@ -142,7 +142,7 @@ function WorkGroupCard({ workGroup, onManageMembers, onManageTasks, onJoinReques
           <Typography 
             variant="body2" 
             color="text.secondary" 
-            sx={{ mb: 2, flex: 1 }}
+            sx={{ mb: 2, flex: 1, whiteSpace: 'pre-line' }}
           >
             {workGroup.description}
           </Typography>

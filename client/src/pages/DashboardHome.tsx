@@ -921,7 +921,8 @@ export default function DashboardHome() {
                               textOverflow: 'ellipsis',
                               display: '-webkit-box',
                               WebkitLineClamp: 1,
-                              WebkitBoxOrient: 'vertical'
+                              WebkitBoxOrient: 'vertical',
+                              whiteSpace: 'pre-line'
                             }}
                           >
                             {workGroup.description}
