@@ -3,6 +3,7 @@
   "todaysPrayerTimes": "Današnja vaktija",
   "monthlyPrayerTimes": "Mjesečne vaktije",
   "uploadCSV": "Učitaj CSV",
+  "exportCSV": "Preuzmi CSV",
   "uploadPrayerTimes": "Učitaj vaktije iz CSV fajla",
   "selectCSV": "Odaberi CSV fajl",
   "deleteAll": "Obriši sve",
@@ -31,6 +32,8 @@
     "error": "Greška",
     "uploadSuccess": "Vaktije su uspješno učitane",
     "uploadError": "Greška pri učitavanju CSV fajla",
+    "exportSuccess": "CSV fajl je uspješno preuzet",
+    "exportError": "Greška pri preuzimanju CSV fajla",
     "deleteSuccess": "Sve vaktije su obrisane",
     "deleteError": "Greška pri brisanju vaktija"
   },

@@ -24,7 +24,7 @@ import {
   AccordionSummary,
   AccordionDetails,
 } from '@mui/material';
-import { Upload, Schedule, ExpandMore } from '@mui/icons-material';
+import { Upload, Schedule, ExpandMore, Download } from '@mui/icons-material';
 import { useAuth } from '@/contexts/AuthContext';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
@@ -127,6 +127,40 @@ export default function VaktijaPage() {
     setExpandedMonth(isExpanded ? panel : false);
   };
 
+  const handleExport = async () => {
+    try {
+      const response = await fetch('/api/prayer-times/export', {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to export CSV');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'vaktija.csv';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+
+      toast({
+        title: t('vaktija:messages.success'),
+        description: t('vaktija:messages.exportSuccess'),
+      });
+    } catch (error) {
+      toast({
+        title: t('vaktija:messages.error'),
+        description: t('vaktija:messages.exportError'),
+        variant: 'destructive',
+      });
+    }
+  };
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
@@ -143,6 +177,14 @@ export default function VaktijaPage() {
               data-testid="button-delete-all-prayer-times"
             >
               {t('vaktija:deleteAll')}
+            </Button>
+            <Button
+              variant="outlined"
+              startIcon={<Download />}
+              onClick={handleExport}
+              data-testid="button-export-csv"
+            >
+              {t('vaktija:exportCSV')}
             </Button>
             <Button
               variant="contained"

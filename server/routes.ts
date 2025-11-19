@@ -2567,6 +2567,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/prayer-times/export", requireAdmin, async (req, res) => {
+    try {
+      const prayerTimes = await storage.getAllPrayerTimes();
+      
+      if (prayerTimes.length === 0) {
+        return res.status(404).json({ message: "No prayer times to export" });
+      }
+
+      const csvRows = [];
+      csvRows.push('Datum;Sabah;Izlazak sunca;Podne;Ikindija;Akšam;Jacija');
+      
+      prayerTimes.forEach(pt => {
+        csvRows.push([
+          pt.date,
+          pt.fajr,
+          pt.sunrise || '',
+          pt.dhuhr,
+          pt.asr,
+          pt.maghrib,
+          pt.isha
+        ].join(';'));
+      });
+
+      const csvContent = csvRows.join('\n');
+      
+      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+      res.setHeader('Content-Disposition', 'attachment; filename=vaktija.csv');
+      res.send(csvContent);
+    } catch (error) {
+      console.error('CSV export error:', error);
+      res.status(500).json({ message: "Failed to export CSV" });
+    }
+  });
+
   app.delete("/api/prayer-times", requireAdmin, async (req, res) => {
     try {
       await storage.deleteAllPrayerTimes();
