@@ -107,9 +107,9 @@ export function MobileAppBar({ title = 'DžematApp', showBack }: MobileAppBarPro
       position="static" 
       elevation={0}
       sx={{
-        bgcolor: 'var(--card)',
-        borderBottom: '1px solid var(--border)',
-        color: 'var(--card-foreground)',
+        bgcolor: '#1a1a1a',
+        borderBottom: '1px solid #2a2a2a',
+        color: '#ffffff',
       }}
     >
       <Toolbar sx={{ justifyContent: 'space-between', minHeight: '64px !important', px: 2 }}>
@@ -118,7 +118,7 @@ export function MobileAppBar({ title = 'DžematApp', showBack }: MobileAppBarPro
           {shouldShowBack && (
             <IconButton 
               onClick={handleBack}
-              sx={{ color: 'var(--card-foreground)', mr: 0.5 }}
+              sx={{ color: '#ffffff', mr: 0.5 }}
               data-testid="button-back"
             >
               <ArrowBack />
@@ -130,7 +130,7 @@ export function MobileAppBar({ title = 'DžematApp', showBack }: MobileAppBarPro
             sx={{ 
               fontWeight: 700,
               fontSize: '18px',
-              color: 'var(--primary)',
+              color: '#81c784',
               letterSpacing: '-0.02em'
             }}
             data-testid="appbar-title"
@@ -165,7 +165,7 @@ export function MobileAppBar({ title = 'DžematApp', showBack }: MobileAppBarPro
           {/* Notifikacije */}
           <IconButton 
             onClick={handleNotificationsClick}
-            sx={{ color: 'var(--card-foreground)' }}
+            sx={{ color: '#ffffff' }}
             data-testid="button-notifications"
           >
             <Badge 
