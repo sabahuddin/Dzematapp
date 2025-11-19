@@ -1306,7 +1306,7 @@ export class DatabaseStorage implements IStorage {
     const [marketItem] = await db.insert(marketplaceItems).values(item).returning();
     
     // Add to activity feed
-    const typeText = marketItem.type === 'prodajem' ? 'Prodaje se' : 'Poklanja se';
+    const typeText = marketItem.type === 'sale' ? 'Prodaje se' : 'Poklanja se';
     await this.createActivityFeedItem({
       type: "shop_item",
       title: typeText,
