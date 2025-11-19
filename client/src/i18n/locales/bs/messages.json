@@ -19,7 +19,7 @@
   "noConversations": "Nema konverzacija",
   "noSubject": "(Bez teme)",
   "searchMessages": "Pretraži poruke...",
-  "searchConversations": "Pretraži konverzacije...",
+  "searchConversations": "Pretraži poruke...",
   "messagePlaceholder": "Unesite vašu poruku...",
   "writeMessage": "Napišite poruku...",
   "unreadMessages": "Nepročitane poruke: {{count}}",
