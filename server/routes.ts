@@ -2570,6 +2570,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/prayer-times/export", requireAdmin, async (req, res) => {
     try {
       const prayerTimes = await storage.getAllPrayerTimes();
+      console.log(`[EXPORT] Found ${prayerTimes.length} prayer times to export`);
       
       if (prayerTimes.length === 0) {
         return res.status(404).json({ message: "No prayer times to export" });
