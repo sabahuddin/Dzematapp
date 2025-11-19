@@ -1,27 +1,43 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Mail, MailOpen, User, Plus, Search } from "lucide-react";
+import { 
+  Box, 
+  Button, 
+  Card, 
+  TextField, 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableContainer, 
+  TableHead, 
+  TableRow, 
+  Chip, 
+  IconButton, 
+  Typography, 
+  Alert,
+  CircularProgress,
+  Autocomplete,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
+} from '@mui/material';
+import {
+  Add,
+  Visibility,
+  Reply,
+  Mail,
+  DraftsOutlined
+} from '@mui/icons-material';
 import { format } from "date-fns";
 import { useAuth } from "@/hooks/useAuth";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useMarkAsViewed } from "@/hooks/useMarkAsViewed";
 import { useTranslation } from "react-i18next";
+import { Input } from "@/components/ui/input";
 
 interface ImamQuestion {
   id: string;
@@ -46,7 +62,7 @@ export default function AskImamPage() {
   const { toast } = useToast();
   useMarkAsViewed('imamQuestions');
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedTab, setSelectedTab] = useState("my-questions");
+  const [statusFilter, setStatusFilter] = useState<string>("");
   const [isNewQuestionOpen, setIsNewQuestionOpen] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState<ImamQuestion | null>(null);
   const [questionSubject, setQuestionSubject] = useState("");
@@ -58,24 +74,6 @@ export default function AskImamPage() {
   });
 
   const myQuestions = user?.isAdmin ? questions : questions.filter(q => q.userId === user?.id);
-  const unansweredQuestions = user?.isAdmin ? questions.filter(q => !q.isAnswered) : [];
-  const answeredQuestions = user?.isAdmin ? questions.filter(q => q.isAnswered) : [];
-
-  const getQuestionsForTab = () => {
-    if (selectedTab === "my-questions") return myQuestions;
-    if (selectedTab === "unanswered") return unansweredQuestions;
-    if (selectedTab === "answered") return answeredQuestions;
-    return myQuestions;
-  };
-
-  const filteredQuestions = getQuestionsForTab().filter(
-    (q) =>
-      q.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      q.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (q.answer && q.answer.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      q.user?.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      q.user?.lastName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   const sendQuestionMutation = useMutation({
     mutationFn: (data: { subject: string; question: string }) => {
@@ -126,6 +124,7 @@ export default function AskImamPage() {
 
   const handleQuestionClick = (question: ImamQuestion) => {
     setSelectedQuestion(question);
+    setAnswerContent(question.answer || "");
     if (!question.isRead && question.userId === user?.id) {
       markAsReadMutation.mutate(question.id);
     }
@@ -155,242 +154,174 @@ export default function AskImamPage() {
     answerQuestionMutation.mutate({ questionId: selectedQuestion.id, answer: answerContent });
   };
 
+  const statusOptions = user?.isAdmin 
+    ? ['Svi', 'Neodgovorena', 'Arhiva'] 
+    : [];
+
+  const filteredQuestions = myQuestions.filter((q) => {
+    const matchesSearch = 
+      q.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      q.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (q.answer && q.answer.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (q.user?.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
+      (q.user?.lastName?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
+
+    const matchesStatus = 
+      !statusFilter || statusFilter === 'Svi' ||
+      (statusFilter === 'Neodgovorena' && !q.isAnswered) ||
+      (statusFilter === 'Arhiva' && q.isAnswered);
+
+    return matchesSearch && matchesStatus;
+  });
+
+  if (isLoading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
-    <div className="container mx-auto py-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold">{t('askImam:title')}</h1>
-          <p className="text-muted-foreground">
-            {user?.isAdmin ? t('askImam:descriptionAdmin') : t('askImam:descriptionUser')}
-          </p>
-        </div>
+    <Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Typography variant="h5" sx={{ fontWeight: 600 }}>
+          {t('askImam:title')}
+        </Typography>
         {!user?.isAdmin && (
-          <Button onClick={() => setIsNewQuestionOpen(true)} data-testid="button-new-question">
-            <Plus className="h-4 w-4 mr-2" />
+          <Button
+            variant="contained"
+            startIcon={<Add />}
+            onClick={() => setIsNewQuestionOpen(true)}
+            data-testid="button-new-question"
+          >
             {t('askImam:newQuestion')}
           </Button>
         )}
-      </div>
+      </Box>
 
-      {/* Search */}
-      <div className="flex items-center space-x-2">
-        <Search className="h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder={t('askImam:searchQuestions')}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="max-w-sm"
-          data-testid="input-search"
-        />
-      </div>
-
-      {/* Tabs */}
-      <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-        <TabsList>
-          <TabsTrigger value="my-questions" data-testid="tab-my-questions">
-            {user?.isAdmin ? t('askImam:allQuestions') : t('askImam:myQuestions')}
-          </TabsTrigger>
+      <Card>
+        <Box sx={{ p: 3, borderBottom: '1px solid hsl(0 0% 88%)', display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+          <TextField
+            variant="outlined"
+            placeholder={t('askImam:searchQuestions')}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            sx={{ minWidth: 250, flex: 1, maxWidth: 400 }}
+            data-testid="input-search"
+          />
           {user?.isAdmin && (
-            <>
-              <TabsTrigger value="unanswered" data-testid="tab-unanswered">
-                {t('askImam:unanswered')}
-                {unansweredQuestions.length > 0 && (
-                  <Badge variant="destructive" className="ml-2">
-                    {unansweredQuestions.length}
-                  </Badge>
-                )}
-              </TabsTrigger>
-              <TabsTrigger value="answered" data-testid="tab-answered">
-                {t('askImam:archive')}
-                {answeredQuestions.length > 0 && (
-                  <Badge variant="secondary" className="ml-2">
-                    {answeredQuestions.length}
-                  </Badge>
-                )}
-              </TabsTrigger>
-            </>
+            <Autocomplete
+              options={statusOptions}
+              value={statusFilter || null}
+              onChange={(event, newValue) => setStatusFilter(newValue || '')}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  placeholder="Filtriraj po statusu"
+                  data-testid="input-status-filter"
+                />
+              )}
+              sx={{ minWidth: 250, flex: 1, maxWidth: 400 }}
+              data-testid="autocomplete-status-filter"
+            />
           )}
-        </TabsList>
+        </Box>
 
-        <TabsContent value="my-questions" className="space-y-4">
-          {isLoading ? (
-            <Card>
-              <CardContent className="py-8 text-center">
-                <Mail className="h-12 w-12 mx-auto text-muted-foreground animate-pulse" />
-                <p className="mt-2 text-muted-foreground">{t('common:common.loading')}</p>
-              </CardContent>
-            </Card>
-          ) : filteredQuestions.length === 0 ? (
-            <Card>
-              <CardContent className="py-8 text-center">
-                <Mail className="h-12 w-12 mx-auto text-muted-foreground" />
-                <p className="mt-2 text-muted-foreground">{t('askImam:noQuestions')}</p>
-              </CardContent>
-            </Card>
-          ) : (
-            filteredQuestions.map((question) => (
-              <Card
-                key={question.id}
-                className={`cursor-pointer transition-all hover:shadow-md ${
-                  !question.isRead && question.userId === user?.id ? 'border-l-4 border-l-primary bg-blue-50' : ''
-                }`}
-                onClick={() => handleQuestionClick(question)}
-                data-testid={`question-card-${question.id}`}
-              >
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start space-x-3 flex-1">
-                      {question.isAnswered ? (
-                        <MailOpen className="h-5 w-5 text-green-600 mt-0.5" />
-                      ) : (
-                        <Mail className="h-5 w-5 text-muted-foreground mt-0.5" />
-                      )}
-                      <div className="flex-1">
-                        <CardTitle className="text-lg">{question.subject}</CardTitle>
-                        {user?.isAdmin && question.user && (
-                          <CardDescription className="flex items-center gap-1 mt-1">
-                            <User className="h-3 w-3" />
+        <TableContainer sx={{ overflowX: 'auto' }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell sx={{ fontWeight: 600 }}>Tema</TableCell>
+                {user?.isAdmin && <TableCell sx={{ fontWeight: 600 }}>Autor</TableCell>}
+                <TableCell sx={{ fontWeight: 600 }}>Datum objave</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredQuestions.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={user?.isAdmin ? 5 : 4} align="center" sx={{ py: 8 }}>
+                    <Mail sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
+                    <Typography variant="body1" color="text.secondary">
+                      {t('askImam:noQuestions')}
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                filteredQuestions.map((question) => (
+                  <TableRow key={question.id}>
+                    <TableCell>
+                      <Typography variant="body2" fontWeight={500}>
+                        {question.subject}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
+                        {question.question.substring(0, 80)}
+                        {question.question.length > 80 ? '...' : ''}
+                      </Typography>
+                    </TableCell>
+                    {user?.isAdmin && (
+                      <TableCell>
+                        {question.user ? (
+                          <Typography variant="body2">
                             {question.user.firstName} {question.user.lastName}
-                          </CardDescription>
+                          </Typography>
+                        ) : (
+                          <Typography variant="body2" color="text.secondary">-</Typography>
                         )}
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-end gap-2">
-                      {question.isAnswered ? (
-                        <Badge variant="default">{t('askImam:answered')}</Badge>
-                      ) : (
-                        <Badge variant="secondary">{t('askImam:pending')}</Badge>
-                      )}
-                      <span className="text-xs text-muted-foreground">
-                        {format(new Date(question.createdAt), "dd.MM.yyyy.")}
-                      </span>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground line-clamp-2">{question.question}</p>
-                  {question.isAnswered && question.answer && (
-                    <div className="mt-3 p-3 bg-green-50 rounded-md border border-green-200">
-                      <p className="text-sm font-medium text-green-900">{t('askImam:answerColon')}</p>
-                      <p className="text-sm text-green-800 mt-1 line-clamp-2">{question.answer}</p>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            ))
-          )}
-        </TabsContent>
-
-        {user?.isAdmin && (
-          <TabsContent value="unanswered" className="space-y-4">
-            {unansweredQuestions.length === 0 ? (
-              <Card>
-                <CardContent className="py-8 text-center">
-                  <MailOpen className="h-12 w-12 mx-auto text-muted-foreground" />
-                  <p className="mt-2 text-muted-foreground">{t('askImam:noUnansweredQuestions')}</p>
-                </CardContent>
-              </Card>
-            ) : (
-              unansweredQuestions.map((question) => (
-                <Card
-                  key={question.id}
-                  className="cursor-pointer transition-all hover:shadow-md border-l-4 border-l-orange-500"
-                  onClick={() => handleQuestionClick(question)}
-                  data-testid={`question-card-${question.id}`}
-                >
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-start space-x-3 flex-1">
-                        <Mail className="h-5 w-5 text-orange-600 mt-0.5" />
-                        <div className="flex-1">
-                          <CardTitle className="text-lg">{question.subject}</CardTitle>
-                          {question.user && (
-                            <CardDescription className="flex items-center gap-1 mt-1">
-                              <User className="h-3 w-3" />
-                              {question.user.firstName} {question.user.lastName}
-                            </CardDescription>
-                          )}
-                        </div>
-                      </div>
-                      <span className="text-xs text-muted-foreground">
-                        {format(new Date(question.createdAt), "dd.MM.yyyy.")}
-                      </span>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground line-clamp-2">{question.question}</p>
-                  </CardContent>
-                </Card>
-              ))
-            )}
-          </TabsContent>
-        )}
-
-        {user?.isAdmin && (
-          <TabsContent value="answered" className="space-y-4">
-            {answeredQuestions.length === 0 ? (
-              <Card>
-                <CardContent className="py-8 text-center">
-                  <MailOpen className="h-12 w-12 mx-auto text-muted-foreground" />
-                  <p className="mt-2 text-muted-foreground">{t('askImam:noAnsweredQuestions')}</p>
-                </CardContent>
-              </Card>
-            ) : (
-              filteredQuestions.map((question) => (
-                <Card
-                  key={question.id}
-                  className="cursor-pointer transition-all hover:shadow-md border-l-4 border-l-green-500"
-                  onClick={() => handleQuestionClick(question)}
-                  data-testid={`question-card-${question.id}`}
-                >
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-start space-x-3 flex-1">
-                        <MailOpen className="h-5 w-5 text-green-600 mt-0.5" />
-                        <div className="flex-1">
-                          <CardTitle className="text-lg">{question.subject}</CardTitle>
-                          {question.user && (
-                            <CardDescription className="flex items-center gap-1 mt-1">
-                              <User className="h-3 w-3" />
-                              {question.user.firstName} {question.user.lastName}
-                            </CardDescription>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-end gap-2">
-                        <Badge variant="default">{t('askImam:answered')}</Badge>
-                        <span className="text-xs text-muted-foreground">
-                          {format(new Date(question.createdAt), "dd.MM.yyyy.")}
-                        </span>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground line-clamp-2">{question.question}</p>
-                    {question.answer && (
-                      <div className="mt-3 p-3 bg-green-50 rounded-md border border-green-200">
-                        <p className="text-sm font-medium text-green-900">{t('askImam:answerColon')}</p>
-                        <p className="text-sm text-green-800 mt-1 line-clamp-2">{question.answer}</p>
-                      </div>
+                      </TableCell>
                     )}
-                  </CardContent>
-                </Card>
-              ))
-            )}
-          </TabsContent>
-        )}
-      </Tabs>
+                    <TableCell>
+                      {format(new Date(question.createdAt), "dd.MM.yyyy.")}
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        label={question.isAnswered ? t('askImam:answered') : t('askImam:pending')}
+                        color={question.isAnswered ? 'success' : 'warning'}
+                        size="small"
+                        data-testid={`status-${question.id}`}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Box sx={{ display: 'flex', gap: 1 }}>
+                        <IconButton
+                          size="small"
+                          onClick={() => handleQuestionClick(question)}
+                          data-testid={`button-view-${question.id}`}
+                        >
+                          <Visibility fontSize="small" sx={{ color: 'hsl(207 88% 55%)' }} />
+                        </IconButton>
+                        {user?.isAdmin && !question.isAnswered && (
+                          <IconButton
+                            size="small"
+                            onClick={() => handleQuestionClick(question)}
+                            data-testid={`button-reply-${question.id}`}
+                          >
+                            <Reply fontSize="small" sx={{ color: 'hsl(120 68% 42%)' }} />
+                          </IconButton>
+                        )}
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Card>
 
       {/* New Question Dialog */}
-      <Dialog open={isNewQuestionOpen} onOpenChange={setIsNewQuestionOpen}>
-        <DialogContent data-testid="dialog-new-question">
-          <DialogHeader>
-            <DialogTitle>{t('askImam:askQuestion')}</DialogTitle>
-            <DialogDescription>
-              {t('askImam:newQuestionDescription')}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
+      <Dialog 
+        open={isNewQuestionOpen} 
+        onClose={() => setIsNewQuestionOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>{t('askImam:askQuestion')}</DialogTitle>
+        <DialogContent>
+          <Box sx={{ pt: 2, display: 'flex', flexDirection: 'column', gap: 3 }}>
             <div>
               <Label htmlFor="subject">{t('askImam:topic')}</Label>
               <Input
@@ -412,57 +343,67 @@ export default function AskImamPage() {
                 data-testid="textarea-question-content"
               />
             </div>
-          </div>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setIsNewQuestionOpen(false)}
-              data-testid="button-cancel-question"
-            >
-              {t('common:buttons.cancel')}
-            </Button>
-            <Button
-              onClick={handleSendQuestion}
-              disabled={sendQuestionMutation.isPending}
-              data-testid="button-send-question"
-            >
-              {sendQuestionMutation.isPending ? t('askImam:sending') : t('common:buttons.send')}
-            </Button>
-          </DialogFooter>
+          </Box>
         </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setIsNewQuestionOpen(false)}
+            data-testid="button-cancel-question"
+          >
+            {t('common:buttons.cancel')}
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleSendQuestion}
+            disabled={sendQuestionMutation.isPending}
+            data-testid="button-send-question"
+          >
+            {sendQuestionMutation.isPending ? t('askImam:sending') : t('common:buttons.send')}
+          </Button>
+        </DialogActions>
       </Dialog>
 
       {/* Question Details Dialog */}
-      <Dialog open={!!selectedQuestion} onOpenChange={() => setSelectedQuestion(null)}>
-        <DialogContent className="max-w-2xl" data-testid="dialog-question-details">
-          <DialogHeader>
-            <DialogTitle>{selectedQuestion?.subject}</DialogTitle>
-            <DialogDescription>
-              {selectedQuestion?.user && (
-                <span>{t('askImam:from')}: {selectedQuestion.user.firstName} {selectedQuestion.user.lastName}</span>
-              )}
-              {" • "}
-              {selectedQuestion?.createdAt && format(new Date(selectedQuestion.createdAt), "dd.MM.yyyy. u HH:mm")}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
+      <Dialog 
+        open={!!selectedQuestion} 
+        onClose={() => setSelectedQuestion(null)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>{selectedQuestion?.subject}</DialogTitle>
+        <DialogContent>
+          <Box sx={{ pt: 2, display: 'flex', flexDirection: 'column', gap: 3 }}>
+            <Box>
+              <Typography variant="caption" color="text.secondary">
+                {selectedQuestion?.user && (
+                  <span>{t('askImam:from')}: {selectedQuestion.user.firstName} {selectedQuestion.user.lastName}</span>
+                )}
+                {" • "}
+                {selectedQuestion?.createdAt && format(new Date(selectedQuestion.createdAt), "dd.MM.yyyy. u HH:mm")}
+              </Typography>
+            </Box>
+
             <div>
               <Label>{t('askImam:questionColon')}</Label>
-              <p className="mt-2 text-sm whitespace-pre-wrap bg-muted p-4 rounded-md">
-                {selectedQuestion?.question}
-              </p>
+              <Box sx={{ mt: 2, p: 2, bgcolor: 'hsl(0 0% 98%)', borderRadius: 1, border: '1px solid hsl(0 0% 88%)' }}>
+                <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
+                  {selectedQuestion?.question}
+                </Typography>
+              </Box>
             </div>
             
             {selectedQuestion?.isAnswered && selectedQuestion.answer ? (
               <div>
                 <Label>{t('askImam:answerColon')}</Label>
-                <p className="mt-2 text-sm whitespace-pre-wrap bg-green-50 p-4 rounded-md border border-green-200">
-                  {selectedQuestion.answer}
-                </p>
+                <Box sx={{ mt: 2, p: 2, bgcolor: 'hsl(120 60% 95%)', borderRadius: 1, border: '1px solid hsl(123 46% 64%)' }}>
+                  <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', color: 'hsl(122 60% 20%)' }}>
+                    {selectedQuestion.answer}
+                  </Typography>
+                </Box>
                 {selectedQuestion.answeredAt && (
-                  <p className="text-xs text-muted-foreground mt-2">
+                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
                     {t('askImam:answeredOn')}: {format(new Date(selectedQuestion.answeredAt), "dd.MM.yyyy. u HH:mm")}
-                  </p>
+                  </Typography>
                 )}
               </div>
             ) : user?.isAdmin ? (
@@ -478,26 +419,27 @@ export default function AskImamPage() {
                 />
               </div>
             ) : (
-              <div className="p-4 bg-orange-50 rounded-md border border-orange-200">
-                <p className="text-sm text-orange-800">
+              <Box sx={{ p: 2, bgcolor: 'hsl(36 100% 94%)', borderRadius: 1, border: '1px solid hsl(35 100% 66%)' }}>
+                <Typography variant="body2" sx={{ color: 'hsl(14 100% 45%)' }}>
                   {t('askImam:questionReceived')}
-                </p>
-              </div>
+                </Typography>
+              </Box>
             )}
-          </div>
-          <DialogFooter>
-            {user?.isAdmin && !selectedQuestion?.isAnswered && (
-              <Button
-                onClick={handleSendAnswer}
-                disabled={answerQuestionMutation.isPending}
-                data-testid="button-send-answer"
-              >
-                {answerQuestionMutation.isPending ? t('askImam:sending') : t('askImam:sendAnswer')}
-              </Button>
-            )}
-          </DialogFooter>
+          </Box>
         </DialogContent>
+        <DialogActions>
+          {user?.isAdmin && !selectedQuestion?.isAnswered && (
+            <Button
+              variant="contained"
+              onClick={handleSendAnswer}
+              disabled={answerQuestionMutation.isPending}
+              data-testid="button-send-answer"
+            >
+              {answerQuestionMutation.isPending ? t('askImam:sending') : t('askImam:sendAnswer')}
+            </Button>
+          )}
+        </DialogActions>
       </Dialog>
-    </div>
+    </Box>
   );
 }
