@@ -54,7 +54,7 @@ export default function WorkGroupModal({
     }
   }, [workGroup, open]);
 
-  const handleChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({
       ...prev,
       [field]: event.target.value
