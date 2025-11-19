@@ -14,7 +14,7 @@ import {
   ToggleButton
 } from '@mui/material';
 import { useAuth } from '../hooks/useAuth';
-import mosqueLogoPath from '@assets/ChatGPT Image 20. okt 2025. u 22_58_31_1760993927064.png';
+import { DzematLogo } from '@/components/DzematLogo';
 
 export default function LoginPage() {
   const { t, i18n } = useTranslation(['login', 'common']);
@@ -118,11 +118,7 @@ export default function LoginPage() {
 
             <Box sx={{ textAlign: 'center', mb: 4 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1.5, mb: 1 }}>
-                <img 
-                  src={mosqueLogoPath} 
-                  alt="Mosque Logo" 
-                  style={{ width: 60, height: 60, objectFit: 'contain' }}
-                />
+                <DzematLogo size={60} />
                 <Typography variant="h3" sx={{ fontWeight: 600, color: 'hsl(207 88% 55%)', fontFamily: 'Aladin, cursive' }}>
                   {t('login:title')}
                 </Typography>

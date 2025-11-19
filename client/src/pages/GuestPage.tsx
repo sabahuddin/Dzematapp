@@ -36,7 +36,7 @@ import { useLocation } from 'wouter';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import type { Announcement as AnnouncementType, Event as EventType, PrayerTime } from '@shared/schema';
 import { format } from 'date-fns';
-import mosqueLogoPath from '@assets/ChatGPT Image 20. okt 2025. u 22_58_31_1761044165883.png';
+import { DzematLogo } from '@/components/DzematLogo';
 import { apiRequest } from '@/lib/queryClient';
 
 interface TabPanelProps {
@@ -561,11 +561,9 @@ export default function GuestPage() {
     <Box sx={{ minHeight: '100vh', bgcolor: 'hsl(0 0% 96%)' }}>
       <AppBar position="static" sx={{ bgcolor: '#ffffff', boxShadow: 1 }}>
         <Toolbar>
-          <img 
-            src={mosqueLogoPath} 
-            alt="Mosque Logo" 
-            style={{ width: 40, height: 40, objectFit: 'contain', marginRight: 16 }}
-          />
+          <Box sx={{ mr: 2 }}>
+            <DzematLogo size={40} />
+          </Box>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: 'hsl(207 88% 55%)' }}>
             DžematApp - Gost pristup
           </Typography>
