@@ -1,5 +1,5 @@
-const CACHE_NAME = 'dzematapp-v7-new-logo';
-const RUNTIME_CACHE = 'dzematapp-runtime-v7';
+const CACHE_NAME = 'dzematapp-v8-transparent-icons';
+const RUNTIME_CACHE = 'dzematapp-runtime-v8';
 
 // Resources to cache on install
 const PRECACHE_URLS = [
