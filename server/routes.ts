@@ -366,6 +366,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const userData = insertUserSchema.partial().parse(req.body);
       
+      // Protect the default "admin" account from password/username changes
+      const userToUpdate = await storage.getUser(id);
+      if (userToUpdate?.username === 'admin') {
+        if (userData.password !== undefined) {
+          return res.status(403).json({ message: "Nije dozvoljeno mijenjanje lozinke za admin nalog" });
+        }
+        if (userData.username !== undefined && userData.username !== 'admin') {
+          return res.status(403).json({ message: "Nije dozvoljeno mijenjanje korisničkog imena za admin nalog" });
+        }
+      }
+      
       // Regular users can only update certain fields on their own profile
       if (isOwnProfile && !isAdmin) {
         // Remove sensitive fields that only admins can update
