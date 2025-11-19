@@ -114,7 +114,7 @@ export function MobileAppBar({ title = 'DžematApp', showBack }: MobileAppBarPro
     >
       <Toolbar sx={{ justifyContent: 'space-between', minHeight: '64px !important', px: 2 }}>
         {/* Lijeva strana - Back ili Logo */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           {shouldShowBack && (
             <IconButton 
               onClick={handleBack}
@@ -124,7 +124,7 @@ export function MobileAppBar({ title = 'DžematApp', showBack }: MobileAppBarPro
               <ArrowBack />
             </IconButton>
           )}
-          <DzematLogo size={80} />
+          <DzematLogo size={48} />
           <Typography 
             variant="h6" 
             sx={{ 
