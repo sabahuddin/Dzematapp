@@ -1,15 +1,30 @@
 # Overview
 
-DžematApp is a web-based admin dashboard application designed to manage mosque community operations. It provides a comprehensive system for administrators to handle users, announcements, events, work groups ("Sekcije"), and tasks. The application aims to streamline administrative tasks, improve communication within the community, and offer a modern, responsive user experience. It supports desktop and tablet usage with a consistent Material-UI and shadcn/ui design. The project envisions enhancing community engagement, improving administrative efficiency, and offering a robust platform for mosque management.
+DžematApp is a Progressive Web App (PWA) designed for mosque community management with a mobile-first approach. It provides a comprehensive system for administrators to handle users, announcements, events, work groups ("Sekcije"), and tasks. The application delivers a native-app-like experience with smooth scrolling, fixed navigation, and offline support. It uses Serbian/Croatian (Bosnian ijekavica) language and features a clean visual design with light green theme (#e8f5e9), 1px borders, and 12px border radius. The project aims to enhance community engagement, improve administrative efficiency, and offer a robust platform accessible on smartphones, tablets, and desktops.
 
 # User Preferences
 
-Preferred communication style: Simple, everyday language.
+- **Communication Style**: Simple, everyday language (Serbian/Croatian/Bosnian).
+- **Visual Design**: Light green theme (#e8f5e9), 1px borders, 12px border radius.
+- **Layout Requirements**: Fixed TopBar and BottomNavigation with zero bounce/overscroll effect on iOS.
+- **Language**: Serbian/Croatian (Bosnian ijekavica dialect).
 
 # System Architecture
 
 ## Frontend Architecture
-The frontend is built using React with TypeScript, leveraging a component-based architecture. It uses Vite for development, Material-UI (MUI) and shadcn/ui for UI components, and Tailwind CSS for styling. Wouter handles client-side routing, and React Query manages server state. Authentication is context-based with localStorage persistence. The design adheres to Material-UI and shadcn/ui principles, providing a responsive and modern user experience across desktop and tablet devices. PWA features provide offline support and installability.
+The frontend is built using React with TypeScript, leveraging a component-based architecture with mobile-first design principles. It uses Vite for development, Material-UI (MUI) and shadcn/ui for UI components, and Tailwind CSS for styling. Wouter handles client-side routing, and React Query manages server state. Authentication is context-based with localStorage persistence.
+
+### Mobile-First Design
+- **Fixed Layout System**: TopBar (64px height) and BottomNavigation (88px) use position: fixed with scrollable content contained between them.
+- **iOS Bounce Prevention**: Custom `useEdgeLockScroll` hook implements edge-offset clamping strategy to prevent Safari viewport rubber-banding. Content scroll is maintained at [1, maxScroll-1] to avoid WebKit's non-cancelable bounce events.
+- **Spacing System**: Consistent padding using MOBILE_CONTENT_PADDING (16px). Layout padding: top 80px (64px + 16px), bottom 104px (88px + 16px), horizontal 16px.
+- **Auto-Scroll Reset**: Automatic scroll position reset on route changes for consistent navigation experience.
+- **PWA Configuration**: Full Progressive Web App setup with offline support, installability, and app icons optimized for iPhone home screen (72px-512px sizes).
+
+### Branding and Visual Identity
+- **Logo**: Custom transparent SVG logo (DzematLogo.tsx) displaying crescent moon and book symbol in blue (#2196F3).
+- **App Icons**: Complete icon suite in PNG format for all device sizes, configured for iOS and Android PWA installation.
+- **Theme**: Light green primary color (#81c784), Material-UI based design system.
 
 ## Backend Architecture
 The backend is an Express.js application built with TypeScript, following a REST API pattern. It uses Drizzle ORM for type-safe database operations with a PostgreSQL database backend. The application includes centralized error handling and persistent data storage.
@@ -74,3 +89,23 @@ The system employs a simple session-based authentication using username/password
 
 ## Internationalization
 - **react-i18next**: Internationalization framework for React.
+
+## Custom Hooks and Utilities
+- **useEdgeLockScroll**: Prevents iOS Safari bounce effect using edge-offset clamping, touchstart/scroll guards, and dynamic filler injection.
+
+# Recent Updates (November 2024)
+
+## Mobile Experience Improvements
+- Resolved iOS Safari bounce/overscroll effect using edge-offset clamping strategy
+- Implemented native-app-like scrolling with clean boundary stops
+- Added transparent SVG logo component for consistent branding
+- Configured complete PWA app icon suite for iPhone home screen installation
+- Established consistent spacing system throughout mobile layout
+- Increased BottomNavigation height to 88px to prevent icon clipping
+
+## Technical Implementation
+- Created `useEdgeLockScroll` hook for iOS bounce prevention
+- Developed `DzematLogo.tsx` as reusable SVG component
+- Set up PWA manifest with all required icon sizes (72px-512px)
+- Configured Apple touch icons in HTML meta tags
+- Implemented automatic scroll reset on route changes
