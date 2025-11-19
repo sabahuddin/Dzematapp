@@ -77,6 +77,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           right: 0,
           zIndex: 1100,
           bgcolor: 'var(--card)',
+          paddingTop: 'env(safe-area-inset-top)',
         }}>
           <MobileAppBar title="DžematApp" />
         </Box>
@@ -89,8 +90,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             overflowY: 'auto',
             overflowX: 'hidden',
             WebkitOverflowScrolling: 'touch',
-            pt: `calc(${MOBILE_APP_BAR_HEIGHT}px + ${MOBILE_CONTENT_PADDING}px)`,
-            pb: `calc(${BOTTOM_NAV_HEIGHT}px + ${MOBILE_CONTENT_PADDING}px)`,
+            pt: `calc(${MOBILE_APP_BAR_HEIGHT}px + ${MOBILE_CONTENT_PADDING}px + env(safe-area-inset-top))`,
+            pb: `calc(${BOTTOM_NAV_HEIGHT}px + ${MOBILE_CONTENT_PADDING}px + env(safe-area-inset-bottom))`,
             px: 2,
             bgcolor: 'var(--background)',
           }}
@@ -105,6 +106,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           left: 0,
           right: 0,
           zIndex: 1100,
+          paddingBottom: 'env(safe-area-inset-bottom)',
         }}>
           <BottomNavigation />
         </Box>
