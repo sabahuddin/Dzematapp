@@ -53,6 +53,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     password: string,
   ): Promise<boolean> => {
     try {
+      console.log("🔐 Login attempt:", { username, password: "***" });
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
@@ -62,14 +63,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         body: JSON.stringify({ username, password }),
       });
 
+      console.log("📡 Login response:", response.status, response.statusText);
+
       if (response.ok) {
         const data = await response.json();
+        console.log("✅ Login successful:", data.user);
         setUser(data.user);
         return true;
       }
+      
+      const errorData = await response.json().catch(() => ({}));
+      console.error("❌ Login failed:", response.status, errorData);
       return false;
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("💥 Login error:", error);
       return false;
     }
   };
