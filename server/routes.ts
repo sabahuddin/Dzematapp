@@ -2546,7 +2546,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       for (let i = 0; i < dataLines.length; i++) {
         const line = dataLines[i];
-        // Use semicolon as delimiter for SwissMosque CSV format
+        // Use semicolon as delimiter
         const parts = line.split(';').map(p => p.trim());
         
         // Log first line for debugging
@@ -2554,12 +2554,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.log(`First data line has ${parts.length} parts:`, parts);
         }
         
-        // Expected format: Datum;Hijri;Tag;Fajr-Beginn;Sonnenaufgang;Dhuhr;Asr;Maghrib;Isha;Wichtige Ereignisse
-        if (parts.length >= 9) {
+        // Support two formats:
+        // 1. Export format (7 columns): Datum;Sabah;Izlazak sunca;Podne;Ikindija;Akšam;Jacija
+        // 2. SwissMosque format (10 columns): Datum;Hijri;Tag;Fajr-Beginn;Sonnenaufgang;Dhuhr;Asr;Maghrib;Isha;Wichtige Ereignisse
+        
+        if (parts.length === 7) {
+          // Export format: Datum;Sabah;Izlazak sunca;Podne;Ikindija;Akšam;Jacija
+          const [date, fajr, sunrise, dhuhr, asr, maghrib, isha] = parts;
+          
+          if (date && date.match(/\d{2}\.\d{2}\.\d{4}/) && fajr && dhuhr && asr && maghrib && isha) {
+            prayerTimes.push({
+              date,
+              fajr,
+              sunrise: sunrise || null,
+              dhuhr,
+              asr,
+              maghrib,
+              isha,
+              hijriDate: null,
+              events: null
+            });
+          } else if (i === 0) {
+            console.log('Export format validation failed:', { date, fajr, dhuhr, asr, maghrib, isha });
+          }
+        } else if (parts.length >= 9) {
+          // SwissMosque format: Datum;Hijri;Tag;Fajr-Beginn;Sonnenaufgang;Dhuhr;Asr;Maghrib;Isha;Wichtige Ereignisse
           const [date, hijri, day, fajr, sunrise, dhuhr, asr, maghrib, isha, events] = parts;
           
-          // Validate that we have at least the required fields (date and prayer times)
-          // Date should be in format dd.mm.yyyy
           if (date && date.match(/\d{2}\.\d{2}\.\d{4}/) && fajr && dhuhr && asr && maghrib && isha) {
             prayerTimes.push({
               date,
@@ -2573,10 +2594,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
               events: events || null
             });
           } else if (i === 0) {
-            console.log('First line validation failed:', { date, fajr, dhuhr, asr, maghrib, isha });
+            console.log('SwissMosque format validation failed:', { date, fajr, dhuhr, asr, maghrib, isha });
           }
         } else if (i === 0) {
-          console.log(`First line has only ${parts.length} parts, expected at least 9`);
+          console.log(`First line has ${parts.length} parts, expected 7 (export format) or 9+ (SwissMosque format)`);
         }
       }
 
