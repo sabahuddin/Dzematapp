@@ -114,7 +114,7 @@ export function MobileAppBar({ title = 'DžematApp', showBack }: MobileAppBarPro
     >
       <Toolbar sx={{ justifyContent: 'space-between', minHeight: '64px !important', px: 2 }}>
         {/* Lijeva strana - Back ili Logo */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0 }}>
           {shouldShowBack && (
             <IconButton 
               onClick={handleBack}

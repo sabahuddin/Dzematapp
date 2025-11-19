@@ -154,7 +154,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
           borderBottom: '1px solid hsl(0 0% 88%)',
           display: 'flex',
           alignItems: 'center',
-          gap: 1.5,
+          gap: 0,
           minHeight: 64,
           width: '100%',
           justifyContent: collapsed ? 'center' : 'flex-start'
