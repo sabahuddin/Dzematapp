@@ -1,5 +1,3 @@
-import logoImage from '/logo.png';
-
 interface DzematLogoProps {
   size?: number;
 }
@@ -7,7 +5,7 @@ interface DzematLogoProps {
 export function DzematLogo({ size = 64 }: DzematLogoProps) {
   return (
     <img
-      src={logoImage}
+      src="/logo.png?v=2"
       alt="DžematApp Logo"
       width={size}
       height={size}
