@@ -227,12 +227,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { username, password } = req.body;
       
+      console.log('[LOGIN] Received credentials:', { username, passwordLength: password?.length });
+      
       if (!username || !password) {
         return res.status(400).json({ message: "Username and password are required" });
       }
 
       const user = await storage.getUserByUsername(username);
+      console.log('[LOGIN] User from DB:', user ? { 
+        username: user.username, 
+        hasPassword: !!user.password,
+        passwordLength: user.password?.length,
+        passwordMatch: user.password === password
+      } : 'NOT FOUND');
+      
       if (!user || user.password !== password) {
+        console.log('[LOGIN] Authentication failed:', !user ? 'User not found' : 'Password mismatch');
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
