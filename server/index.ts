@@ -109,12 +109,8 @@ async function ensureAdminUser() {
         firstName: 'Admin',
         lastName: 'User',
         email: 'admin@dzemat.app',
-        phone: '',
-        address: '',
-        jmbg: '',
         roles: ['admin'],
-        isAdmin: true,
-        totalPoints: 0
+        isAdmin: true
       });
       console.log('✅ Default admin user created (username: admin, password: admin123)');
     } else {
