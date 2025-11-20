@@ -36,6 +36,7 @@ import UserPointsDetailsPage from "@/pages/UserPointsDetailsPage";
 import BadgesPage from "@/pages/BadgesPage";
 import MyBadgesPage from "@/pages/MyBadgesPage";
 import BadgesAdminPage from "@/pages/BadgesAdminPage";
+import ProjectsPage from "@/pages/ProjectsPage";
 import CertificateTemplatesPage from "@/pages/CertificateTemplatesPage";
 import IssueCertificatesPage from "@/pages/IssueCertificatesPage";
 import MyCertificatesPage from "@/pages/MyCertificatesPage";
@@ -328,6 +329,12 @@ function Router() {
         <AdminRoute>
           <BadgesAdminPage />
         </AdminRoute>
+      </Route>
+      
+      <Route path="/projects">
+        <ProtectedRoute>
+          <ProjectsPage />
+        </ProtectedRoute>
       </Route>
       
       <Route path="/certificate-templates">

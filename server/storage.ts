@@ -2028,27 +2028,27 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Projects (Feature 4)
-  async createProject(project: InsertProject & { createdById: string }): Promise<Project> {
-    const [p] = await db.insert(projects).values(project).returning();
+  async createProject(project: InsertProject & { createdById: string; tenantId: string }): Promise<Project> {
+    const [p] = await db.insert(projects).values({...project, tenantId: project.tenantId}).returning();
     return p;
   }
 
-  async getProject(id: string): Promise<Project | undefined> {
-    const result = await db.select().from(projects).where(eq(projects.id, id)).limit(1);
+  async getProject(id: string, tenantId: string): Promise<Project | undefined> {
+    const result = await db.select().from(projects).where(and(eq(projects.id, id), eq(projects.tenantId, tenantId))).limit(1);
     return result[0];
   }
 
-  async getAllProjects(): Promise<Project[]> {
-    return await db.select().from(projects).orderBy(desc(projects.createdAt));
+  async getAllProjects(tenantId: string): Promise<Project[]> {
+    return await db.select().from(projects).where(eq(projects.tenantId, tenantId)).orderBy(desc(projects.createdAt));
   }
 
-  async getActiveProjects(): Promise<Project[]> {
-    return await db.select().from(projects).where(eq(projects.status, 'active')).orderBy(desc(projects.createdAt));
+  async getActiveProjects(tenantId: string): Promise<Project[]> {
+    return await db.select().from(projects).where(and(eq(projects.tenantId, tenantId), eq(projects.status, 'active'))).orderBy(desc(projects.createdAt));
   }
 
-  async updateProject(id: string, updates: Partial<InsertProject>): Promise<Project | undefined> {
-    const oldProject = await this.getProject(id);
-    const [project] = await db.update(projects).set(updates).where(eq(projects.id, id)).returning();
+  async updateProject(id: string, tenantId: string, updates: Partial<InsertProject>): Promise<Project | undefined> {
+    const oldProject = await this.getProject(id, tenantId);
+    const [project] = await db.update(projects).set(updates).where(and(eq(projects.id, id), eq(projects.tenantId, tenantId))).returning();
     
     // Add to activity feed when project is completed
     if (oldProject && oldProject.status !== 'završen' && project.status === 'završen') {
@@ -2058,26 +2058,27 @@ export class DatabaseStorage implements IStorage {
         description: project.name,
         relatedEntityId: project.id,
         relatedEntityType: "project",
-        isClickable: true
+        isClickable: true,
+        tenantId: tenantId
       });
     }
     
     return project;
   }
 
-  async deleteProject(id: string): Promise<boolean> {
-    const result = await db.delete(projects).where(eq(projects.id, id)).returning();
+  async deleteProject(id: string, tenantId: string): Promise<boolean> {
+    const result = await db.delete(projects).where(and(eq(projects.id, id), eq(projects.tenantId, tenantId))).returning();
     return result.length > 0;
   }
 
-  async updateProjectAmount(projectId: string, amount: number): Promise<Project | undefined> {
-    const project = await this.getProject(projectId);
+  async updateProjectAmount(projectId: string, tenantId: string, amount: number): Promise<Project | undefined> {
+    const project = await this.getProject(projectId, tenantId);
     if (!project) return undefined;
     
     const currentAmount = parseFloat(project.currentAmount || '0');
     const newAmount = currentAmount + amount;
     
-    return await this.updateProject(projectId, { 
+    return await this.updateProject(projectId, tenantId, { 
       currentAmount: newAmount.toString() 
     });
   }
