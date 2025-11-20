@@ -23,6 +23,7 @@ const upload = multer({
       } catch (error) {
         cb(error as Error, '');
       }
+    },
     filename: (req, file, cb) => {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
       const extension = path.extname(file.originalname);
@@ -30,15 +31,8 @@ const upload = multer({
     }
   }),
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB limit
+    fileSize: 5 * 1024 * 1024,
     files: 1
-  fileFilter: (req, file, cb) => {
-    const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    if (allowedMimes.includes(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(new Error('Only image files (JPEG, PNG, GIF, WebP) are allowed'));
-    }
   }
 });
 
@@ -54,6 +48,7 @@ const shopUpload = multer({
       } catch (error) {
         cb(error as Error, '');
       }
+    },
     filename: (req, file, cb) => {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
       const extension = path.extname(file.originalname);
@@ -61,15 +56,8 @@ const shopUpload = multer({
     }
   }),
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB per file
-    files: 10 // max 10 files
-  fileFilter: (req, file, cb) => {
-    const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    if (allowedMimes.includes(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(new Error('Only image files (JPEG, PNG, GIF, WebP) are allowed'));
-    }
+    fileSize: 5 * 1024 * 1024,
+    files: 10
   }
 });
 
@@ -757,11 +745,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
             return {
               ...event,
               rsvpCount: rsvpStats.totalAttendees
-});          }
+            };
+          }
           return {
             ...event,
             rsvpCount: 0
-});        })
+          };
+        })
       );
       
       // Disable caching for this endpoint
@@ -870,7 +860,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         tenantId: tenantId,
         adultsCount: adultsCount || 1,
         childrenCount: childrenCount || 0
-});      
+      };
       const rsvp = await storage.createEventRsvp(rsvpData);
 
       // Log activity
@@ -879,14 +869,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       await storage.createActivityLog({
         userId: req.user!.id,
-        tenantId: req.user!.tenantId
-});
-        tenantId: tenantId,
         activityType: 'event_rsvp',
         description: `RSVP na događaj: ${event.name}`,
         points,
         relatedEntityId: id,
-});
+        tenantId: tenantId
+      });
 
       res.json(rsvp);
     } catch (error) {
@@ -903,7 +891,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const rsvp = await storage.updateEventRsvp(rsvpId, tenantId, {
         adultsCount,
         childrenCount
-});
+      });
       
       if (!rsvp) {
         return res.status(404).json({ message: "RSVP not found" });
@@ -968,7 +956,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return {
             ...wg,
             members
-});        })
+          };
+        })
       );
       
       // Prevent caching of this endpoint
@@ -1172,7 +1161,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
               lastName: user.lastName, 
               email: user.email 
             } : null
-});        })
+        };
+        })
       );
       
       res.json(membersWithUserDetails);
@@ -1501,7 +1491,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
               firstName: user.firstName, 
               lastName: user.lastName 
             } : null
-});        })
+        };
+        })
       );
       
       res.json(commentsWithUserDetails);
@@ -1619,7 +1610,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
               firstName: user.firstName, 
               lastName: user.lastName 
             } : null
-});        })
+        };
+        })
       );
       
       res.json(filesWithUserDetails);
@@ -1836,7 +1828,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
               email: relatedUser.email,
               phone: relatedUser.phone
             } : null
-});        })
+        };
+        })
       );
       
       res.json(relationshipsWithUsers);
@@ -1919,7 +1912,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
               firstName: recipient.firstName,
               lastName: recipient.lastName
             } : null
-});        })
+        };
+        })
       );
       
       res.json(messagesWithSenderInfo);
@@ -1969,7 +1963,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
               firstName: recipient.firstName,
               lastName: recipient.lastName
             } : null
-});        })
+        };
+        })
       );
       
       res.json(threadWithUserInfo);
@@ -2088,7 +2083,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
               firstName: user.firstName,
               lastName: user.lastName
             } : null
-});        })
+        };
+        })
       );
       
       res.json(questionsWithUserInfo);
