@@ -73,6 +73,7 @@ const eventUpload = multer({
       } catch (error) {
         cb(error as Error, '');
       }
+    },
     filename: (req, file, cb) => {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
       const extension = path.extname(file.originalname);
@@ -125,6 +126,7 @@ const certificateUpload = multer({
       } catch (error) {
         cb(error as Error, '');
       }
+    },
     filename: (req, file, cb) => {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
       const extension = path.extname(file.originalname);
@@ -4212,8 +4214,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
             readOnlyModules: [],
             maxUsers: null,
             maxStorage: null
-          isActive: true
-});
+          }
+        },
+        isActive: true
+      });
       }
       
       if (!tenantId) {
