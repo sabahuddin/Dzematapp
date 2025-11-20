@@ -73,6 +73,8 @@ import {
   type AkikaApplication,
   type InsertAkikaApplication,
   type MarriageApplication,
+  type Tenant,
+  type InsertTenant,
   type InsertMarriageApplication,
   type ActivityFeedItem,
   type InsertActivityFeedItem,
@@ -426,6 +428,14 @@ export interface IStorage {
   // Activity Feed
   getActivityFeed(tenantId: string, limit?: number): Promise<ActivityFeedItem[]>;
   createActivityFeedItem(item: InsertActivityFeedItem): Promise<ActivityFeedItem>;
+
+  // Tenants (Super Admin only - global tenant management)
+  getAllTenants(): Promise<Tenant[]>;
+  getTenant(id: string): Promise<Tenant | undefined>;
+  createTenant(tenant: InsertTenant): Promise<Tenant>;
+  updateTenant(id: string, updates: Partial<InsertTenant>): Promise<Tenant | undefined>;
+  updateTenantStatus(id: string, isActive: boolean): Promise<Tenant | undefined>;
+  deleteTenant(id: string): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -2626,6 +2636,42 @@ export class DatabaseStorage implements IStorage {
   async createActivityFeedItem(item: InsertActivityFeedItem): Promise<ActivityFeedItem> {
     const [feedItem] = await db.insert(activityFeed).values(item).returning();
     return feedItem;
+  }
+
+  // Tenant Management (Super Admin only)
+  async getAllTenants(): Promise<Tenant[]> {
+    return await db.select().from(tenants).orderBy(tenants.createdAt);
+  }
+
+  async getTenant(id: string): Promise<Tenant | undefined> {
+    const result = await db.select().from(tenants).where(eq(tenants.id, id)).limit(1);
+    return result[0];
+  }
+
+  async createTenant(insertTenant: InsertTenant): Promise<Tenant> {
+    const [tenant] = await db.insert(tenants).values(insertTenant).returning();
+    return tenant;
+  }
+
+  async updateTenant(id: string, updates: Partial<InsertTenant>): Promise<Tenant | undefined> {
+    const [tenant] = await db.update(tenants)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(tenants.id, id))
+      .returning();
+    return tenant;
+  }
+
+  async updateTenantStatus(id: string, isActive: boolean): Promise<Tenant | undefined> {
+    const [tenant] = await db.update(tenants)
+      .set({ isActive, updatedAt: new Date() })
+      .where(eq(tenants.id, id))
+      .returning();
+    return tenant;
+  }
+
+  async deleteTenant(id: string): Promise<boolean> {
+    const result = await db.delete(tenants).where(eq(tenants.id, id));
+    return result.rowCount ? result.rowCount > 0 : false;
   }
 }
 

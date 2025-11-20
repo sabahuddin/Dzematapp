@@ -24,6 +24,7 @@ export const users = pgTable("users", {
   categories: text("categories").array(), // Muškarci, Žene, Roditelji, Omladina, custom
   roles: text("roles").array().default(sql`ARRAY['clan']::text[]`), // admin, clan_io, clan, clan_porodice (moderator se dodeljuje u grupi)
   isAdmin: boolean("is_admin").default(false),
+  isSuperAdmin: boolean("is_super_admin").default(false), // Global super admin for tenant management
   lastViewedShop: timestamp("last_viewed_shop"),
   lastViewedEvents: timestamp("last_viewed_events"),
   lastViewedAnnouncements: timestamp("last_viewed_announcements"),
