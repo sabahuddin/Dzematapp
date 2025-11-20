@@ -23,7 +23,6 @@ const upload = multer({
       } catch (error) {
         cb(error as Error, '');
       }
-    },
     filename: (req, file, cb) => {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
       const extension = path.extname(file.originalname);
@@ -33,7 +32,6 @@ const upload = multer({
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB limit
     files: 1
-  },
   fileFilter: (req, file, cb) => {
     const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
     if (allowedMimes.includes(file.mimetype)) {
@@ -56,7 +54,6 @@ const shopUpload = multer({
       } catch (error) {
         cb(error as Error, '');
       }
-    },
     filename: (req, file, cb) => {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
       const extension = path.extname(file.originalname);
@@ -66,7 +63,6 @@ const shopUpload = multer({
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB per file
     files: 10 // max 10 files
-  },
   fileFilter: (req, file, cb) => {
     const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
     if (allowedMimes.includes(file.mimetype)) {
@@ -89,7 +85,6 @@ const eventUpload = multer({
       } catch (error) {
         cb(error as Error, '');
       }
-    },
     filename: (req, file, cb) => {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
       const extension = path.extname(file.originalname);
@@ -99,7 +94,6 @@ const eventUpload = multer({
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB limit
     files: 1
-  },
   fileFilter: (req, file, cb) => {
     const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
     if (allowedMimes.includes(file.mimetype)) {
@@ -116,7 +110,6 @@ const csvUpload = multer({
   limits: {
     fileSize: 1 * 1024 * 1024, // 1MB limit for CSV
     files: 1
-  },
   fileFilter: (req, file, cb) => {
     const allowedMimes = ['text/csv', 'application/vnd.ms-excel', 'text/plain'];
     const allowedExtensions = ['.csv'];
@@ -142,7 +135,6 @@ const certificateUpload = multer({
       } catch (error) {
         cb(error as Error, '');
       }
-    },
     filename: (req, file, cb) => {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
       const extension = path.extname(file.originalname);
@@ -152,7 +144,6 @@ const certificateUpload = multer({
   limits: {
     fileSize: 10 * 1024 * 1024, // 10MB limit for templates
     files: 1
-  },
   fileFilter: (req, file, cb) => {
     const allowedMimes = ['image/png'];
     if (allowedMimes.includes(file.mimetype)) {
@@ -489,7 +480,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Log activity
       await storage.createActivityLog({
-        tenantId: req.user!.tenantId,
+        tenantId: req.user!.tenantId
+    });
         userId: id,
         tenantId: tenantId,
         activityType: 'profile_updated',
@@ -510,7 +502,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     storage: multer.memoryStorage(),
     limits: {
       fileSize: 10 * 1024 * 1024,
-    },
     fileFilter: (req, file, cb) => {
       const allowedMimes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
       if (allowedMimes.includes(file.mimetype)) {
@@ -534,16 +525,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const worksheet = XLSX.utils.aoa_to_sheet(templateData);
       
       worksheet['!cols'] = [
-        { wch: 15 },
-        { wch: 15 },
-        { wch: 18 },
-        { wch: 15 },
-        { wch: 25 },
-        { wch: 18 },
-        { wch: 25 },
-        { wch: 12 },
-        { wch: 18 },
-        { wch: 15 },
+        { wch: 15 ,
+        { wch: 15 ,
+        { wch: 18 ,
+        { wch: 15 ,
+        { wch: 25 ,
+        { wch: 18 ,
+        { wch: 25 ,
+        { wch: 12 ,
+        { wch: 18 ,
+        { wch: 15 ,
         { wch: 18 }
       ];
 
@@ -901,7 +892,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       await storage.createActivityLog({
         userId: req.user!.id,
-        tenantId: req.user!.tenantId,
+        tenantId: req.user!.tenantId
+    });
         tenantId: tenantId,
         activityType: 'event_rsvp',
         description: `RSVP na događaj: ${event.name}`,
@@ -2880,8 +2872,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         description: `Uplata: ${validated.amount} CHF (${validated.purpose})`,
         points,
         relatedEntityId: contribution.id,
-      },
-        tenantId: req.user!.tenantId,
+        tenantId: req.user!.tenantId
+    });
       });
 
       // If bonus points were added, create a separate activity log entry
@@ -2892,8 +2884,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           description: `Bonus bodovi za uplatu: ${validated.amount} CHF`,
           points: parseInt(bonusPoints),
           relatedEntityId: contribution.id,
-        },
-        tenantId: req.user!.tenantId,
+        tenantId: req.user!.tenantId
+    });
       });
       }
 
@@ -2907,8 +2899,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             description: `Doprinos projektu: ${project.name} (${validated.amount} CHF)`,
             points: 0, // Points already awarded in contribution_made log
             relatedEntityId: contribution.id,
-          },
-        tenantId: req.user!.tenantId,
+        tenantId: req.user!.tenantId
+    });
       });
         }
       }
@@ -2988,8 +2980,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         description: `Finansijski doprinos: ${newAmount} CHF`,
         points: pointsFromContribution,
         relatedEntityId: req.params.id,
-      },
-        tenantId: req.user!.tenantId,
+        tenantId: req.user!.tenantId
+    });
       });
 
       // If contribution is for a project, create additional activity log
@@ -3002,8 +2994,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             description: `Doprinos projektu: ${project.name} (${newAmount} CHF)`,
             points: 0,
             relatedEntityId: req.params.id,
-          },
-        tenantId: req.user!.tenantId,
+        tenantId: req.user!.tenantId
+    });
       });
         }
       }
@@ -3599,7 +3591,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/receipts/:id", requireAuth, async (req, res) => {
     try {
-      const receipt = await storage.getReceipt(req.params.id);
+      const receipt = await storage.getReceipt(req.params.id, req.user!.tenantId);
       if (!receipt) {
         return res.status(404).json({ message: "Receipt not found" });
       }
@@ -3644,7 +3636,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const { reviewComment } = req.body;
-      const updated = await storage.approveReceipt(req.params.id, user.id, reviewComment);
+      const updated = await storage.approveReceipt(req.params.id, req.user!.tenantId, user.id, reviewComment);
       res.json(updated);
     } catch (error) {
       console.error('Error approving receipt:', error);
@@ -3666,7 +3658,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Review comment is required for rejection" });
       }
       
-      const updated = await storage.rejectReceipt(req.params.id, user.id, reviewComment);
+      const updated = await storage.rejectReceipt(req.params.id, req.user!.tenantId, user.id, reviewComment);
       res.json(updated);
     } catch (error) {
       console.error('Error rejecting receipt:', error);
@@ -3677,7 +3669,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Certificate Templates Routes (Zahvalnice)
   app.get("/api/certificates/templates", requireAdmin, requireFeature("certificates"), async (req, res) => {
     try {
-      const templates = await storage.getAllCertificateTemplates();
+      const templates = await storage.getAllCertificateTemplates(req.user!.tenantId);
       res.json(templates);
     } catch (error) {
       console.error('Error getting certificate templates:', error);
@@ -3733,7 +3725,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/certificates/templates/:id", requireAdmin, requireFeature("certificates"), async (req, res) => {
     try {
-      const success = await storage.deleteCertificateTemplate(req.params.id);
+      const success = await storage.deleteCertificateTemplate(req.params.id, req.user!.tenantId);
       if (!success) {
         return res.status(404).json({ message: "Certificate template not found" });
       }
@@ -3758,7 +3750,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/certificates/all", requireAdmin, requireFeature("certificates"), async (req, res) => {
     try {
-      const certificates = await storage.getAllUserCertificates();
+      const certificates = await storage.getAllUserCertificates(req.user!.tenantId);
       res.json(certificates);
     } catch (error) {
       console.error('Error getting all certificates:', error);
@@ -3847,7 +3839,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/certificates/:id/viewed", requireAuth, requireFeature("certificates"), async (req, res) => {
     try {
       const user = req.user!;
-      const certificate = await storage.getUserCertificate(req.params.id);
+      const certificate = await storage.getUserCertificate(req.params.id, req.user!.tenantId);
       
       if (!certificate) {
         return res.status(404).json({ message: "Certificate not found" });
@@ -3857,7 +3849,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Access denied" });
       }
       
-      const updated = await storage.markCertificateAsViewed(req.params.id);
+      const updated = await storage.markCertificateAsViewed(req.params.id, req.user!.tenantId);
       res.json(updated);
     } catch (error) {
       console.error('Error marking certificate as viewed:', error);
@@ -3867,7 +3859,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/certificates/:id", requireAdmin, requireFeature("certificates"), async (req, res) => {
     try {
-      const success = await storage.deleteCertificate(req.params.id);
+      const success = await storage.deleteCertificate(req.params.id, req.user!.tenantId);
       if (!success) {
         return res.status(404).json({ message: "Certificate not found" });
       }
@@ -3892,7 +3884,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/membership-applications", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
-      const applications = await storage.getAllMembershipApplications();
+      const applications = await storage.getAllMembershipApplications(req.user!.tenantId);
       res.json(applications);
     } catch (error) {
       console.error('Error getting membership applications:', error);
@@ -3902,7 +3894,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/membership-applications/:id", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
-      const application = await storage.getMembershipApplication(req.params.id);
+      const application = await storage.getMembershipApplication(req.params.id, req.user!.tenantId);
       if (!application) {
         return res.status(404).json({ message: "Application not found" });
       }
@@ -3916,7 +3908,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/membership-applications/:id", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
       const validated = insertMembershipApplicationSchema.partial().parse(req.body);
-      const updated = await storage.updateMembershipApplication(req.params.id, validated);
+      const updated = await storage.updateMembershipApplication(req.params.id, req.user!.tenantId, validated);
       if (!updated) {
         return res.status(404).json({ message: "Application not found" });
       }
@@ -3948,7 +3940,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/membership-applications/:id", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
-      const success = await storage.deleteMembershipApplication(req.params.id);
+      const success = await storage.deleteMembershipApplication(req.params.id, req.user!.tenantId);
       if (!success) {
         return res.status(404).json({ message: "Application not found" });
       }
@@ -3988,7 +3980,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/akika-applications", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
-      const applications = await storage.getAllAkikaApplications();
+      const applications = await storage.getAllAkikaApplications(req.user!.tenantId);
       res.json(applications);
     } catch (error) {
       console.error('Error getting akika applications:', error);
@@ -3998,7 +3990,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/akika-applications/:id", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
-      const application = await storage.getAkikaApplication(req.params.id);
+      const application = await storage.getAkikaApplication(req.params.id, req.user!.tenantId);
       if (!application) {
         return res.status(404).json({ message: "Application not found" });
       }
@@ -4012,7 +4004,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/akika-applications/:id", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
       const validated = insertAkikaApplicationSchema.partial().parse(req.body);
-      const updated = await storage.updateAkikaApplication(req.params.id, validated);
+      const updated = await storage.updateAkikaApplication(req.params.id, req.user!.tenantId, validated);
       if (!updated) {
         return res.status(404).json({ message: "Application not found" });
       }
@@ -4044,7 +4036,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/akika-applications/:id", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
-      const success = await storage.deleteAkikaApplication(req.params.id);
+      const success = await storage.deleteAkikaApplication(req.params.id, req.user!.tenantId);
       if (!success) {
         return res.status(404).json({ message: "Application not found" });
       }
@@ -4069,7 +4061,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/marriage-applications", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
-      const applications = await storage.getAllMarriageApplications();
+      const applications = await storage.getAllMarriageApplications(req.user!.tenantId);
       res.json(applications);
     } catch (error) {
       console.error('Error getting marriage applications:', error);
@@ -4079,7 +4071,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/marriage-applications/:id", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
-      const application = await storage.getMarriageApplication(req.params.id);
+      const application = await storage.getMarriageApplication(req.params.id, req.user!.tenantId);
       if (!application) {
         return res.status(404).json({ message: "Application not found" });
       }
@@ -4093,7 +4085,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/marriage-applications/:id", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
       const validated = insertMarriageApplicationSchema.partial().parse(req.body);
-      const updated = await storage.updateMarriageApplication(req.params.id, validated);
+      const updated = await storage.updateMarriageApplication(req.params.id, req.user!.tenantId, validated);
       if (!updated) {
         return res.status(404).json({ message: "Application not found" });
       }
@@ -4125,7 +4117,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/marriage-applications/:id", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
-      const success = await storage.deleteMarriageApplication(req.params.id);
+      const success = await storage.deleteMarriageApplication(req.params.id, req.user!.tenantId);
       if (!success) {
         return res.status(404).json({ message: "Application not found" });
       }
@@ -4240,7 +4232,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
             readOnlyModules: [],
             maxUsers: null,
             maxStorage: null
-          },
           isActive: true
         });
       }
