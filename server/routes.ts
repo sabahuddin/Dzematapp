@@ -489,6 +489,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Log activity
       await storage.createActivityLog({
+        tenantId: req.user!.tenantId,
         userId: id,
         tenantId: tenantId,
         activityType: 'profile_updated',
@@ -900,6 +901,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       await storage.createActivityLog({
         userId: req.user!.id,
+        tenantId: req.user!.tenantId,
         tenantId: tenantId,
         activityType: 'event_rsvp',
         description: `RSVP na događaj: ${event.name}`,
@@ -2930,9 +2932,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Delete old activity log entries for this contribution
       // Note: Both contribution_made and project_contribution logs use contributionId as relatedEntityId
-      await storage.deleteActivityLogByRelatedEntity(req.params.id);
+      await storage.deleteActivityLogByRelatedEntity(req.params.id, req.user!.tenantId);
 
-      const contribution = await storage.updateFinancialContribution(req.params.id, validated);
+      const contribution = await storage.updateFinancialContribution(req.params.id, req.user!.tenantId, validated);
       if (!contribution) {
         return res.status(404).json({ message: "Contribution not found" });
       }
@@ -2946,29 +2948,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (oldProjectId !== newProjectId) {
         // Remove from old project
         if (oldProjectId) {
-          const oldProject = await storage.getProject(oldProjectId);
+          const oldProject = await storage.getProject(oldProjectId, req.user!.tenantId);
           if (oldProject) {
             const currentAmount = parseFloat(oldProject.currentAmount || '0');
             const updatedAmount = Math.max(0, currentAmount - oldAmount).toFixed(2);
-            await storage.updateProject(oldProjectId, { currentAmount: updatedAmount });
+            await storage.updateProject(oldProjectId, req.user!.tenantId, { currentAmount: updatedAmount });
           }
         }
         // Add to new project
         if (newProjectId) {
-          const newProject = await storage.getProject(newProjectId);
+          const newProject = await storage.getProject(newProjectId, req.user!.tenantId);
           if (newProject) {
             const currentAmount = parseFloat(newProject.currentAmount || '0');
             const updatedAmount = (currentAmount + newAmount).toFixed(2);
-            await storage.updateProject(newProjectId, { currentAmount: updatedAmount });
+            await storage.updateProject(newProjectId, req.user!.tenantId, { currentAmount: updatedAmount });
           }
         }
       } else if (newProjectId && oldAmount !== newAmount) {
         // Same project, different amount
-        const project = await storage.getProject(newProjectId);
+        const project = await storage.getProject(newProjectId, req.user!.tenantId);
         if (project) {
           const currentAmount = parseFloat(project.currentAmount || '0');
           const updatedAmount = (currentAmount - oldAmount + newAmount).toFixed(2);
-          await storage.updateProject(newProjectId, { currentAmount: updatedAmount });
+          await storage.updateProject(newProjectId, req.user!.tenantId, { currentAmount: updatedAmount });
         }
       }
 
@@ -2984,7 +2986,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // If contribution is for a project, create additional activity log
       if (newProjectId) {
-        const project = await storage.getProject(newProjectId);
+        const project = await storage.getProject(newProjectId, req.user!.tenantId);
         if (project) {
           await storage.createActivityLog({
             userId: userId,
@@ -2997,9 +2999,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Recalculate user's total points and re-check badges
-      await storage.recalculateUserPoints(userId);
-      await storage.checkAndAwardBadges(userId);
-      await storage.removeUnqualifiedBadges(userId);
+      await storage.recalculateUserPoints(userId, req.user!.tenantId);
+      await storage.checkAndAwardBadges(userId, req.user!.tenantId);
+      await storage.removeUnqualifiedBadges(userId, req.user!.tenantId);
 
       res.json(contribution);
     } catch (error) {
@@ -3032,29 +3034,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (oldProjectId !== newProjectId) {
         // Remove from old project
         if (oldProjectId) {
-          const oldProject = await storage.getProject(oldProjectId);
+          const oldProject = await storage.getProject(oldProjectId, req.user!.tenantId);
           if (oldProject) {
             const currentAmount = parseFloat(oldProject.currentAmount || '0');
             const updatedAmount = Math.max(0, currentAmount - oldAmount).toFixed(2);
-            await storage.updateProject(oldProjectId, { currentAmount: updatedAmount });
+            await storage.updateProject(oldProjectId, req.user!.tenantId, { currentAmount: updatedAmount });
           }
         }
         // Add to new project
         if (newProjectId) {
-          const newProject = await storage.getProject(newProjectId);
+          const newProject = await storage.getProject(newProjectId, req.user!.tenantId);
           if (newProject) {
             const currentAmount = parseFloat(newProject.currentAmount || '0');
             const updatedAmount = (currentAmount + newAmount).toFixed(2);
-            await storage.updateProject(newProjectId, { currentAmount: updatedAmount });
+            await storage.updateProject(newProjectId, req.user!.tenantId, { currentAmount: updatedAmount });
           }
         }
       } else if (newProjectId && oldAmount !== newAmount) {
         // Same project, different amount
-        const project = await storage.getProject(newProjectId);
+        const project = await storage.getProject(newProjectId, req.user!.tenantId);
         if (project) {
           const currentAmount = parseFloat(project.currentAmount || '0');
           const updatedAmount = (currentAmount - oldAmount + newAmount).toFixed(2);
-          await storage.updateProject(newProjectId, { currentAmount: updatedAmount });
+          await storage.updateProject(newProjectId, req.user!.tenantId, { currentAmount: updatedAmount });
         }
       }
 
