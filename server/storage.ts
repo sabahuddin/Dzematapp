@@ -2523,10 +2523,11 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Activity Feed
-  async getActivityFeed(limit: number = 50): Promise<ActivityFeedItem[]> {
+  async getActivityFeed(tenantId: string, limit: number = 50): Promise<ActivityFeedItem[]> {
     // Get base activity feed items
     const items = await db.select()
       .from(activityFeed)
+      .where(eq(activityFeed.tenantId, tenantId))
       .orderBy(desc(activityFeed.createdAt))
       .limit(limit);
 
