@@ -45,7 +45,8 @@ import {
   ExpandLess,
   ExpandMore,
   OndemandVideo,
-  DynamicFeed
+  DynamicFeed,
+  AdminPanelSettings
 } from '@mui/icons-material';
 import { SiFacebook, SiInstagram, SiYoutube, SiX } from 'react-icons/si';
 import { useAuth } from '@/contexts/AuthContext';
@@ -448,7 +449,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
           </Collapse>
         )}
 
-        {/* Settings Menu (Admin Only) - Last Item */}
+        {/* Settings Menu (Admin Only) */}
         {user?.isAdmin && (
           <ListItem disablePadding sx={{ width: '100%', maxWidth: '100%' }}>
             <ListItemButton
@@ -473,6 +474,35 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
                 <Settings />
               </ListItemIcon>
               {!collapsed && <ListItemText primary="Podešavanja" />}
+            </ListItemButton>
+          </ListItem>
+        )}
+
+        {/* Super Admin Panel (Super Admin Only) - Last Item */}
+        {user?.isSuperAdmin && (
+          <ListItem disablePadding sx={{ width: '100%', maxWidth: '100%' }}>
+            <ListItemButton
+              onClick={() => handleNavigation('/tenant-management')}
+              sx={{
+                mx: 1,
+                borderRadius: 1,
+                bgcolor: location === '/tenant-management' ? '#ff9800' : 'transparent',
+                color: location === '/tenant-management' ? '#fff' : '#ff9800',
+                borderRight: location === '/tenant-management' ? '3px solid #ff9800' : 'none',
+                justifyContent: collapsed ? 'center' : 'flex-start',
+                px: collapsed ? 0 : 2,
+                minWidth: 0,
+                '&:hover': {
+                  bgcolor: location === '/tenant-management' ? '#ff9800' : '#fff3e0',
+                  color: location === '/tenant-management' ? '#fff' : '#ff9800'
+                }
+              }}
+              data-testid="nav-tenant-management"
+            >
+              <ListItemIcon sx={{ color: 'inherit', minWidth: collapsed ? 'auto' : 40, justifyContent: 'center' }}>
+                <AdminPanelSettings />
+              </ListItemIcon>
+              {!collapsed && <ListItemText primary="Super Admin Panel" />}
             </ListItemButton>
           </ListItem>
         )}
