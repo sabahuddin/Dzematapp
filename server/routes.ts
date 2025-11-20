@@ -7,6 +7,7 @@ import * as XLSX from "xlsx";
 import { ZodError } from "zod";
 import { storage } from "./storage";
 import { requireAuth, requireAdmin, requireSuperAdmin } from "./index";
+import { requireFeature, getTenantSubscriptionInfo } from "./feature-access";
 import { generateCertificate, saveCertificate } from "./certificateService";
 import { type User, insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema, insertFinancialContributionSchema, insertActivityLogSchema, insertEventAttendanceSchema, insertPointsSettingsSchema, insertBadgeSchema, insertUserBadgeSchema, insertProjectSchema, insertProposalSchema, insertReceiptSchema, insertCertificateTemplateSchema, insertUserCertificateSchema, insertMembershipApplicationSchema, insertAkikaApplicationSchema, insertMarriageApplicationSchema, insertServiceSchema, insertTenantSchema } from "@shared/schema";
 
@@ -2326,7 +2327,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Shop Products routes
-  app.get("/api/shop/products", requireAuth, async (req, res) => {
+  app.get("/api/shop/products", requireAuth, requireFeature("shop"), async (req, res) => {
     try {
       const products = await storage.getAllShopProducts();
       res.json(products);
@@ -4193,6 +4194,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error getting tenant:', error);
       res.status(500).json({ message: "Failed to get tenant" });
+    }
+  });
+
+  // Get current tenant's subscription info (for logged-in users)
+  app.get("/api/subscription/current", requireAuth, async (req, res) => {
+    try {
+      const session = req.session as any;
+      const tenantId = session.tenantId;
+      
+      // Super Admin without tenant context
+      if (session.isSuperAdmin && !tenantId) {
+        return res.json({
+          tenantId: null,
+          tenantName: "Super Admin",
+          subscriptionTier: "full",
+          subscriptionStatus: "active",
+          plan: {
+            name: "Super Admin",
+            slug: "full",
+            description: "Full access to all features",
+            priceMonthly: "0.00",
+            currency: "EUR",
+            enabledModules: ["*"],
+            readOnlyModules: [],
+            maxUsers: null,
+            maxStorage: null
+          },
+          isActive: true
+        });
+      }
+      
+      if (!tenantId) {
+        return res.status(401).json({ message: "No tenant context" });
+      }
+      
+      const subscriptionInfo = await getTenantSubscriptionInfo(tenantId);
+      
+      if (!subscriptionInfo) {
+        return res.status(404).json({ message: "Tenant not found" });
+      }
+      
+      res.json(subscriptionInfo);
+    } catch (error) {
+      console.error('Error getting subscription info:', error);
+      res.status(500).json({ message: "Failed to get subscription info" });
     }
   });
 

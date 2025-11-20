@@ -7,6 +7,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { useToast } from "@/hooks/use-toast";
 import { useMarkAsViewed } from "@/hooks/useMarkAsViewed";
+import { useFeatureAccess } from "@/hooks/useFeatureAccess";
+import { UpgradeCTA } from "@/components/UpgradeCTA";
 import { useTranslation } from "react-i18next";
 import type { ShopProduct, MarketplaceItem, User, Service, ServiceWithUser } from "@shared/schema";
 
@@ -24,6 +26,10 @@ export default function ShopPage() {
   const { toast } = useToast();
   const { t } = useTranslation(['shop']);
   useMarkAsViewed('shop');
+  
+  // Feature Access Check
+  const { isEnabled, upgradeRequired, currentPlan, requiredPlan, isLoading: featureLoading } = useFeatureAccess("shop");
+  
   const [activeTab, setActiveTab] = useState(0);
   const [productModalOpen, setProductModalOpen] = useState(false);
   const [marketplaceModalOpen, setMarketplaceModalOpen] = useState(false);
@@ -678,6 +684,24 @@ export default function ShopPage() {
   const saleItems = marketplaceItems?.filter(item => item.type === "sale" && item.status === "active") || [];
   const giftItems = marketplaceItems?.filter(item => item.type === "gift" && item.status === "active") || [];
   const archivedItems = marketplaceItems?.filter(item => item.status === "completed") || [];
+
+  // Show upgrade CTA if feature is locked
+  if (upgradeRequired && currentPlan && requiredPlan) {
+    return (
+      <Box>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Typography variant="h5" sx={{ fontWeight: 600 }}>
+            {t('shop:title')}
+          </Typography>
+        </Box>
+        <UpgradeCTA 
+          moduleId="shop" 
+          requiredPlan={requiredPlan} 
+          currentPlan={currentPlan} 
+        />
+      </Box>
+    );
+  }
 
   return (
     <Box>
