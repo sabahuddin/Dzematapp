@@ -25,7 +25,9 @@ import {
   FormControl,
   InputLabel,
   Select,
-  MenuItem
+  MenuItem,
+  Tabs,
+  Tab
 } from '@mui/material';
 import { Add, Edit, Delete, Visibility, CheckCircle, Cancel } from '@mui/icons-material';
 import { useAuth } from "@/hooks/useAuth";
@@ -47,6 +49,15 @@ export default function SuperAdminPanel() {
   const [statsDialogOpen, setStatsDialogOpen] = useState(false);
   const [selectedTenantStats, setSelectedTenantStats] = useState<TenantStats | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentTab, setCurrentTab] = useState(0);
+  const [userForm, setUserForm] = useState({
+    firstName: "",
+    lastName: "",
+    username: "",
+    email: "",
+    password: "",
+    isAdmin: false
+  });
 
   // Check if user is Super Admin
   if (!user?.isSuperAdmin) {
