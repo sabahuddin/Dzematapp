@@ -1207,8 +1207,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Tasks routes
   app.get("/api/work-groups/:workGroupId/tasks", async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const { workGroupId } = req.params;
-      const tasks = await storage.getTasksByWorkGroup(workGroupId);
+      const tasks = await storage.getTasksByWorkGroup(workGroupId, tenantId);
       res.json(tasks);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch tasks" });
@@ -1217,10 +1218,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/tasks/dashboard", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const userId = req.user!.id;
       const isAdmin = req.user!.isAdmin || false;
       
-      const tasks = await storage.getAllTasksWithWorkGroup(userId, isAdmin);
+      const tasks = await storage.getAllTasksWithWorkGroup(userId, isAdmin, tenantId);
       res.json(tasks);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch dashboard tasks" });
@@ -1229,10 +1231,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/tasks/admin-archive", requireAdmin, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const userId = req.user!.id;
       const isAdmin = true;
       
-      const tasks = await storage.getAllTasksWithWorkGroup(userId, isAdmin);
+      const tasks = await storage.getAllTasksWithWorkGroup(userId, isAdmin, tenantId);
       res.json(tasks);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch admin archive tasks" });
@@ -1241,23 +1244,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/tasks", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const taskData = insertTaskSchema.parse(req.body);
       
       // Check if work group exists
-      const workGroup = await storage.getWorkGroup(taskData.workGroupId);
+      const workGroup = await storage.getWorkGroup(taskData.workGroupId, tenantId);
       if (!workGroup) {
         return res.status(404).json({ message: "Work group not found" });
       }
 
       // Authorization check: Only admins or group moderators can create tasks
       const isAdmin = req.user!.isAdmin;
-      const isModerator = await storage.isUserModeratorOfWorkGroup(taskData.workGroupId, req.user!.id);
+      const isModerator = await storage.isUserModeratorOfWorkGroup(taskData.workGroupId, req.user!.id, tenantId);
       
       if (!isAdmin && !isModerator) {
         return res.status(403).json({ message: "Forbidden: Only admins or group moderators can create tasks" });
       }
 
-      const task = await storage.createTask(taskData);
+      const task = await storage.createTask({ ...taskData, tenantId });
       res.json(task);
     } catch (error) {
       res.status(400).json({ message: "Invalid task data" });
@@ -1266,11 +1270,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/tasks/:id", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const { id } = req.params;
       const taskData = insertTaskSchema.partial().parse(req.body);
       
       // Get existing task to check work group
-      const existingTask = await storage.getTask(id);
+      const existingTask = await storage.getTask(id, tenantId);
       if (!existingTask) {
         return res.status(404).json({ message: "Task not found" });
       }
@@ -1283,7 +1288,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Authorization check: Only admins or group moderators can update tasks
       // OR assigned users can update status to na_cekanju
       const isAdmin = req.user!.isAdmin;
-      const isModerator = await storage.isUserModeratorOfWorkGroup(existingTask.workGroupId, req.user!.id);
+      const isModerator = await storage.isUserModeratorOfWorkGroup(existingTask.workGroupId, req.user!.id, tenantId);
       const isAssignedUser = existingTask.assignedUserIds?.includes(req.user!.id) || false;
       
       // If not admin or moderator, only allow assigned user to change status to na_cekanju
@@ -1298,7 +1303,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         taskData.completedAt = new Date();
       }
 
-      const task = await storage.updateTask(id, taskData);
+      const task = await storage.updateTask(id, tenantId, taskData);
       if (!task) {
         return res.status(404).json({ message: "Task not found" });
       }
@@ -1307,8 +1312,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const statusChanged = taskData.status && existingTask.status !== taskData.status;
 
       if (statusChanged) {
-        const workGroup = await storage.getWorkGroup(task.workGroupId);
-        const settings = await storage.getPointsSettings();
+        const workGroup = await storage.getWorkGroup(task.workGroupId, tenantId);
+        const settings = await storage.getPointsSettings(tenantId);
         const points = task.pointsValue || settings?.pointsPerTask || 50;
 
         // If assigned user marked as na_cekanju (pending approval), log for that user WITHOUT points
@@ -1316,6 +1321,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (taskData.status === 'na_cekanju' && isAssignedUser && !isAdmin && !isModerator && existingTask.status !== 'na_cekanju') {
           await storage.createActivityLog({
             userId: req.user!.id,
+            tenantId: tenantId,
             activityType: 'task_completed',
             description: `Završen zadatak: ${task.title} u sekciji ${workGroup?.name || 'Nepoznata'} (čeka odobrenje)`,
             points: 0, // No points until admin approves
@@ -1329,6 +1335,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           for (const userId of task.assignedUserIds) {
             await storage.createActivityLog({
               userId,
+              tenantId: tenantId,
               activityType: 'task_completed',
               description: `Završen zadatak: ${task.title} u sekciji ${workGroup?.name || 'Nepoznata'}`,
               points,
@@ -1346,10 +1353,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/tasks/:id", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const { id } = req.params;
       
       // Get existing task to check work group
-      const existingTask = await storage.getTask(id);
+      const existingTask = await storage.getTask(id, tenantId);
       if (!existingTask) {
         return res.status(404).json({ message: "Task not found" });
       }
@@ -1361,13 +1369,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Authorization check: Only admins or group moderators can delete tasks
       const isAdmin = req.user!.isAdmin;
-      const isModerator = await storage.isUserModeratorOfWorkGroup(existingTask.workGroupId, req.user!.id);
+      const isModerator = await storage.isUserModeratorOfWorkGroup(existingTask.workGroupId, req.user!.id, tenantId);
       
       if (!isAdmin && !isModerator) {
         return res.status(403).json({ message: "Forbidden: Only admins or group moderators can delete tasks" });
       }
 
-      const deleted = await storage.deleteTask(id);
+      const deleted = await storage.deleteTask(id, tenantId);
       if (!deleted) {
         return res.status(404).json({ message: "Task not found" });
       }
@@ -1379,6 +1387,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.patch("/api/tasks/:taskId/move", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const { taskId } = req.params;
       const { newWorkGroupId } = req.body;
 
@@ -1387,21 +1396,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Get existing task to check current work group
-      const existingTask = await storage.getTask(taskId);
+      const existingTask = await storage.getTask(taskId, tenantId);
       if (!existingTask) {
         return res.status(404).json({ message: "Task not found" });
       }
 
       // Authorization check: Only admins or moderators of current group can move tasks
       const isAdmin = req.user!.isAdmin;
-      const isModerator = await storage.isUserModeratorOfWorkGroup(existingTask.workGroupId, req.user!.id);
+      const isModerator = await storage.isUserModeratorOfWorkGroup(existingTask.workGroupId, req.user!.id, tenantId);
       
       if (!isAdmin && !isModerator) {
         return res.status(403).json({ message: "Forbidden: Only admins or group moderators can move tasks" });
       }
 
       // Check if new work group exists
-      const newWorkGroup = await storage.getWorkGroup(newWorkGroupId);
+      const newWorkGroup = await storage.getWorkGroup(newWorkGroupId, tenantId);
       if (!newWorkGroup) {
         return res.status(404).json({ message: "New work group not found" });
       }
@@ -2142,7 +2151,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Documents routes
   app.get("/api/documents", requireAuth, async (req, res) => {
     try {
-      const documents = await storage.getAllDocuments();
+      const tenantId = req.tenantId!;
+      const documents = await storage.getAllDocuments(tenantId);
       res.json(documents);
     } catch (error) {
       res.status(500).json({ message: "Failed to get documents" });
@@ -2151,8 +2161,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/documents", requireAdmin, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const documentData = insertDocumentSchema.parse(req.body);
-      const document = await storage.createDocument(documentData);
+      const document = await storage.createDocument({ ...documentData, tenantId });
       res.status(201).json(document);
     } catch (error) {
       res.status(400).json({ message: "Invalid document data" });
@@ -2161,7 +2172,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/documents/:id", requireAdmin, async (req, res) => {
     try {
-      const deleted = await storage.deleteDocument(req.params.id);
+      const tenantId = req.tenantId!;
+      const deleted = await storage.deleteDocument(req.params.id, tenantId);
       if (!deleted) {
         return res.status(404).json({ message: "Document not found" });
       }
