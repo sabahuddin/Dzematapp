@@ -504,8 +504,11 @@ export default function SuperAdminPanel() {
               <Grid item xs={12}>
                 <Button 
                   variant="contained" 
-                  onClick={() => createUserMutation.mutate(userForm)}
-                  disabled={createUserMutation.isPending || !userForm.firstName || !userForm.lastName || !userForm.username || !userForm.email || !userForm.password}
+                  onClick={() => {
+                    const defaultEmail = userForm.email || `${userForm.username}@dzemat.app`;
+                    createUserMutation.mutate({ ...userForm, email: defaultEmail });
+                  }}
+                  disabled={createUserMutation.isPending || !userForm.firstName || !userForm.lastName || !userForm.username || !userForm.password}
                   fullWidth
                   data-testid="button-create-user"
                 >
