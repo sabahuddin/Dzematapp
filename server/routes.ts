@@ -893,6 +893,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Work Groups routes
   app.get("/api/work-groups", async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       // Proslijedi userId i isAdmin za filtriranje po vidljivosti
       const userId = req.user?.id;
       const isAdmin = req.user?.isAdmin || false;
@@ -901,7 +902,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Član IO i Admin vide sve sekcije (javne i privatne)
       const canSeeAll = isAdmin || isClanIO;
       
-      const workGroups = await storage.getAllWorkGroups(userId, canSeeAll);
+      const workGroups = await storage.getAllWorkGroups(userId, canSeeAll, tenantId);
       
       // FILTER ARCHIVED SECTIONS FOR NON-ADMIN USERS
       const filteredWorkGroups = isAdmin 
@@ -911,7 +912,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Add members to each work group
       const workGroupsWithMembers = await Promise.all(
         filteredWorkGroups.map(async (wg) => {
-          const members = await storage.getWorkGroupMembers(wg.id);
+          const members = await storage.getWorkGroupMembers(wg.id, tenantId);
           return {
             ...wg,
             members
@@ -931,8 +932,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/work-groups", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const workGroupData = insertWorkGroupSchema.parse(req.body);
-      const workGroup = await storage.createWorkGroup(workGroupData);
+      const workGroup = await storage.createWorkGroup({ ...workGroupData, tenantId });
       res.json(workGroup);
     } catch (error) {
       res.status(400).json({ message: "Invalid work group data" });
@@ -941,24 +943,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/work-groups/:id", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const { id } = req.params;
 
       // Check if work group exists
-      const workGroup = await storage.getWorkGroup(id);
+      const workGroup = await storage.getWorkGroup(id, tenantId);
       if (!workGroup) {
         return res.status(404).json({ message: "Work group not found" });
       }
 
       // Authorization check: Only admins or group moderators can update
       const isAdmin = req.user!.isAdmin;
-      const isModerator = await storage.isUserModeratorOfWorkGroup(id, req.user!.id);
+      const isModerator = await storage.isUserModeratorOfWorkGroup(id, req.user!.id, tenantId);
       
       if (!isAdmin && !isModerator) {
         return res.status(403).json({ message: "Forbidden: Only admins or group moderators can update work groups" });
       }
 
       const updates = insertWorkGroupSchema.partial().parse(req.body);
-      const updatedWorkGroup = await storage.updateWorkGroup(id, updates);
+      const updatedWorkGroup = await storage.updateWorkGroup(id, tenantId, updates);
       
       res.json(updatedWorkGroup);
     } catch (error) {
@@ -968,16 +971,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/work-groups/:id/archive", requireAdmin, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const { id } = req.params;
 
       // Check if work group exists
-      const workGroup = await storage.getWorkGroup(id);
+      const workGroup = await storage.getWorkGroup(id, tenantId);
       if (!workGroup) {
         return res.status(404).json({ message: "Work group not found" });
       }
 
       // Toggle archive status
-      const updatedWorkGroup = await storage.updateWorkGroup(id, { archived: !workGroup.archived });
+      const updatedWorkGroup = await storage.updateWorkGroup(id, tenantId, { archived: !workGroup.archived });
       
       res.json(updatedWorkGroup);
     } catch (error) {
@@ -987,16 +991,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/work-groups/:id", requireAdmin, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const { id } = req.params;
 
       // Check if work group exists
-      const workGroup = await storage.getWorkGroup(id);
+      const workGroup = await storage.getWorkGroup(id, tenantId);
       if (!workGroup) {
         return res.status(404).json({ message: "Work group not found" });
       }
 
       // Delete work group
-      const deleted = await storage.deleteWorkGroup(id);
+      const deleted = await storage.deleteWorkGroup(id, tenantId);
       
       if (deleted) {
         res.json({ message: "Work group deleted successfully" });
@@ -1012,6 +1017,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Work Group Members routes
   app.post("/api/work-groups/:id/members", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const { id } = req.params;
       const { userId } = req.body;
 
@@ -1020,32 +1026,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Check if work group exists
-      const workGroup = await storage.getWorkGroup(id);
+      const workGroup = await storage.getWorkGroup(id, tenantId);
       if (!workGroup) {
         return res.status(404).json({ message: "Work group not found" });
       }
 
       // Authorization check: Only admins or group moderators can add members
       const isAdmin = req.user!.isAdmin;
-      const isModerator = await storage.isUserModeratorOfWorkGroup(id, req.user!.id);
+      const isModerator = await storage.isUserModeratorOfWorkGroup(id, req.user!.id, tenantId);
       
       if (!isAdmin && !isModerator) {
         return res.status(403).json({ message: "Forbidden: Only admins or group moderators can add members" });
       }
 
       // Check if user exists
-      const user = await storage.getUser(userId);
+      const user = await storage.getUser(userId, tenantId);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
 
       // Check if user is already a member
-      const isAlreadyMember = await storage.isUserMemberOfWorkGroup(id, userId);
+      const isAlreadyMember = await storage.isUserMemberOfWorkGroup(id, userId, tenantId);
       if (isAlreadyMember) {
         return res.status(409).json({ message: "User is already a member of this work group" });
       }
 
-      const member = await storage.addMemberToWorkGroup(id, userId);
+      const member = await storage.addMemberToWorkGroup(id, userId, tenantId);
       res.json(member);
     } catch (error) {
       res.status(500).json({ message: "Failed to add member to work group" });
@@ -1054,10 +1060,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/work-groups/:id/members/:userId", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const { id, userId } = req.params;
 
       // Check if work group exists
-      const workGroup = await storage.getWorkGroup(id);
+      const workGroup = await storage.getWorkGroup(id, tenantId);
       if (!workGroup) {
         return res.status(404).json({ message: "Work group not found" });
       }
@@ -1065,7 +1072,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Authorization check: Only admins or group moderators can remove members
       // Or users can remove themselves
       const isAdmin = req.user!.isAdmin;
-      const isModerator = await storage.isUserModeratorOfWorkGroup(id, req.user!.id);
+      const isModerator = await storage.isUserModeratorOfWorkGroup(id, req.user!.id, tenantId);
       const isSelfRemoval = userId === req.user!.id;
       
       if (!isAdmin && !isModerator && !isSelfRemoval) {
@@ -1073,12 +1080,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Check if user exists
-      const user = await storage.getUser(userId);
+      const user = await storage.getUser(userId, tenantId);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
 
-      const removed = await storage.removeMemberFromWorkGroup(id, userId);
+      const removed = await storage.removeMemberFromWorkGroup(id, userId, tenantId);
       if (!removed) {
         return res.status(404).json({ message: "User is not a member of this work group" });
       }
@@ -1091,20 +1098,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/work-groups/:id/members", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const { id } = req.params;
 
       // Check if work group exists
-      const workGroup = await storage.getWorkGroup(id);
+      const workGroup = await storage.getWorkGroup(id, tenantId);
       if (!workGroup) {
         return res.status(404).json({ message: "Work group not found" });
       }
 
-      const members = await storage.getWorkGroupMembers(id);
+      const members = await storage.getWorkGroupMembers(id, tenantId);
       
       // Get user details for each member
       const membersWithUserDetails = await Promise.all(
         members.map(async (member) => {
-          const user = await storage.getUser(member.userId);
+          const user = await storage.getUser(member.userId, tenantId);
           return {
             ...member,
             user: user ? { 
