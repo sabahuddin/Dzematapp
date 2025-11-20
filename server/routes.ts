@@ -171,11 +171,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ 
         message: "Photo uploaded successfully",
         photoUrl: photoUrl 
-      });
+});
     } catch (error) {
       res.status(500).json({ message: "Failed to upload photo" });
     }
-  });
+});
 
   // Shop photos upload route (multiple files)
   app.post("/api/upload/shop-photos", requireAuth, shopUpload.array('photos', 10), async (req, res) => {
@@ -191,11 +191,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ 
         message: "Photos uploaded successfully",
         photoUrls: photoUrls 
-      });
+});
     } catch (error) {
       res.status(500).json({ message: "Failed to upload photos" });
     }
-  });
+});
 
   // Photo upload route
   app.post("/api/upload/photo", requireAuth, upload.single('photo'), async (req, res) => {
@@ -209,11 +209,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ 
         message: "Photo uploaded successfully",
         photoUrl: photoUrl 
-      });
+});
     } catch (error) {
       res.status(500).json({ message: "Failed to upload photo" });
     }
-  });
+});
 
   // Authentication routes
   // Regular user login (requires tenant code)
@@ -263,11 +263,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           totalPoints: user.totalPoints || 0,
           tenantId: tenantId
         } 
-      });
+});
     } catch (error) {
       res.status(500).json({ message: "Internal server error" });
     }
-  });
+});
 
   // Super Admin login (no tenant code required)
   app.post("/api/auth/superadmin/login", async (req, res) => {
@@ -314,12 +314,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           totalPoints: 0,
           tenantId: null
         } 
-      });
+});
     } catch (error) {
       console.error('[SUPERADMIN LOGIN] Error:', error);
       res.status(500).json({ message: "Internal server error" });
     }
-  });
+});
 
   // Logout route
   app.post("/api/auth/logout", (req, res) => {
@@ -335,8 +335,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       res.clearCookie('sessionId');
       res.json({ message: "Logged out successfully" });
-    });
-  });
+});
+});
 
   // Session check route
   app.get("/api/auth/session", (req, res) => {
@@ -355,11 +355,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           totalPoints: req.user.totalPoints || 0,
           tenantId: session.isSuperAdmin ? null : req.tenantId
         } 
-      });
+});
     } else {
       res.status(401).json({ message: "Not authenticated" });
     }
-  });
+});
 
   // Users routes
   app.get("/api/users", requireAuth, async (req, res) => {
@@ -370,7 +370,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch users" });
     }
-  });
+});
 
   app.get("/api/users/:id", requireAuth, async (req, res) => {
     try {
@@ -395,7 +395,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch user" });
     }
-  });
+});
 
   app.post("/api/users", requireAdmin, async (req, res) => {
     try {
@@ -415,7 +415,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(400).json({ message: "Invalid user data" });
     }
-  });
+});
 
   app.put("/api/users/:id", requireAuth, async (req, res) => {
     try {
@@ -481,21 +481,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Log activity
       await storage.createActivityLog({
         tenantId: req.user!.tenantId
-    });
+});
         userId: id,
         tenantId: tenantId,
         activityType: 'profile_updated',
         description: 'Profil ažuriran',
         points: 0,
         relatedEntityId: id,
-      });
+});
 
       res.json({ ...user, password: undefined });
     } catch (error) {
       console.error('User update error:', error);
       res.status(400).json({ message: "Invalid user data", error: error instanceof Error ? error.message : String(error) });
     }
-  });
+});
 
   // Bulk upload endpoints
   const xlsxUpload = multer({
@@ -510,7 +510,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         cb(new Error('Only Excel files (.xlsx, .xls) are allowed'));
       }
     }
-  });
+});
 
   app.get("/api/users/template", requireAuth, async (req, res) => {
     try {
@@ -548,7 +548,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to generate template" });
     }
-  });
+});
 
   app.post("/api/users/bulk-upload", requireAdmin, xlsxUpload.single('file'), async (req, res) => {
     try {
@@ -571,8 +571,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const results = {
         success: [] as any[],
         errors: [] as { row: number; errors: string[] }[]
-      };
-
+});
       for (let i = 0; i < rows.length; i++) {
         const row = rows[i];
         const rowNumber = i + 2;
@@ -644,7 +643,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           results.errors.push({ 
             row: rowNumber, 
             errors: [`Korisničko ime '${username}' već postoji u sistemu`] 
-          });
+});
           continue;
         }
 
@@ -652,7 +651,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           results.errors.push({ 
             row: rowNumber, 
             errors: [`Email adresa '${email}' već postoji u sistemu`] 
-          });
+});
           continue;
         }
 
@@ -673,7 +672,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             city: city || undefined,
             postalCode: postalCode || undefined,
             dateOfBirth: undefined
-          });
+});
           
           results.success.push({
             row: rowNumber,
@@ -682,12 +681,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
               lastName: newUser.lastName, 
               username: newUser.username 
             }
-          });
+});
         } catch (error: any) {
           results.errors.push({ 
             row: rowNumber, 
             errors: [`Greška pri kreiranju korisnika: ${error.message || 'Nepoznata greška'}`] 
-          });
+});
         }
       }
 
@@ -695,11 +694,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         successCount: results.success.length,
         errorCount: results.errors.length,
         results
-      });
+});
     } catch (error: any) {
       res.status(500).json({ message: `Greška pri obradi fajla: ${error.message}` });
     }
-  });
+});
 
   // Announcements routes
   app.get("/api/announcements", async (req, res) => {
@@ -710,7 +709,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch announcements" });
     }
-  });
+});
 
   app.post("/api/announcements", requireAuth, async (req, res) => {
     try {
@@ -721,7 +720,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(400).json({ message: "Invalid announcement data" });
     }
-  });
+});
 
   app.put("/api/announcements/:id", requireAuth, async (req, res) => {
     try {
@@ -736,7 +735,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(400).json({ message: "Invalid announcement data" });
     }
-  });
+});
 
   app.delete("/api/announcements/:id", requireAdmin, async (req, res) => {
     try {
@@ -750,7 +749,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to delete announcement" });
     }
-  });
+});
 
   // Events routes
   app.get("/api/events", async (req, res) => {
@@ -767,13 +766,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
             return {
               ...event,
               rsvpCount: rsvpStats.totalAttendees
-            };
-          }
+});          }
           return {
             ...event,
             rsvpCount: 0
-          };
-        })
+});        })
       );
       
       // Disable caching for this endpoint
@@ -785,7 +782,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch events" });
     }
-  });
+});
 
   app.get("/api/events/locations", async (req, res) => {
     try {
@@ -795,7 +792,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch event locations" });
     }
-  });
+});
 
   app.post("/api/events", requireAuth, async (req, res) => {
     try {
@@ -806,7 +803,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(400).json({ message: "Invalid event data" });
     }
-  });
+});
 
   app.put("/api/events/:id", requireAuth, async (req, res) => {
     try {
@@ -821,7 +818,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(400).json({ message: "Invalid event data" });
     }
-  });
+});
 
   app.delete("/api/events/:id", requireAuth, async (req, res) => {
     try {
@@ -835,7 +832,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to delete event" });
     }
-  });
+});
 
   app.get("/api/events/:id/rsvps", async (req, res) => {
     try {
@@ -846,7 +843,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch RSVPs" });
     }
-  });
+});
 
   app.post("/api/events/:id/rsvp", requireAuth, async (req, res) => {
     try {
@@ -872,7 +869,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             currentTotal: rsvpStats.totalAttendees,
             maxAttendees: event.maxAttendees,
             requested: requestedCount
-          });
+});
         }
       }
       
@@ -882,8 +879,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         tenantId: tenantId,
         adultsCount: adultsCount || 1,
         childrenCount: childrenCount || 0
-      };
-      
+});      
       const rsvp = await storage.createEventRsvp(rsvpData);
 
       // Log activity
@@ -893,19 +889,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       await storage.createActivityLog({
         userId: req.user!.id,
         tenantId: req.user!.tenantId
-    });
+});
         tenantId: tenantId,
         activityType: 'event_rsvp',
         description: `RSVP na događaj: ${event.name}`,
         points,
         relatedEntityId: id,
-      });
+});
 
       res.json(rsvp);
     } catch (error) {
       res.status(400).json({ message: "Failed to create RSVP" });
     }
-  });
+});
 
   app.put("/api/events/:eventId/rsvp/:rsvpId", requireAuth, async (req, res) => {
     try {
@@ -916,7 +912,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const rsvp = await storage.updateEventRsvp(rsvpId, tenantId, {
         adultsCount,
         childrenCount
-      });
+});
       
       if (!rsvp) {
         return res.status(404).json({ message: "RSVP not found" });
@@ -926,7 +922,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(400).json({ message: "Failed to update RSVP" });
     }
-  });
+});
 
   app.delete("/api/events/:eventId/rsvp/:rsvpId", requireAuth, async (req, res) => {
     try {
@@ -942,7 +938,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to delete RSVP" });
     }
-  });
+});
 
   app.get("/api/events/:eventId/user-rsvp", requireAuth, async (req, res) => {
     try {
@@ -953,7 +949,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch user RSVP" });
     }
-  });
+});
 
   // Work Groups routes
   app.get("/api/work-groups", requireFeature("tasks"), async (req, res) => {
@@ -981,8 +977,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return {
             ...wg,
             members
-          };
-        })
+});        })
       );
       
       // Prevent caching of this endpoint
@@ -993,7 +988,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch work groups" });
     }
-  });
+});
 
   app.post("/api/work-groups", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
@@ -1004,7 +999,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(400).json({ message: "Invalid work group data" });
     }
-  });
+});
 
   app.put("/api/work-groups/:id", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
@@ -1032,7 +1027,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(400).json({ message: "Invalid work group data" });
     }
-  });
+});
 
   app.post("/api/work-groups/:id/archive", requireAdmin, requireFeature("tasks"), async (req, res) => {
     try {
@@ -1052,7 +1047,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to archive work group" });
     }
-  });
+});
 
   app.delete("/api/work-groups/:id", requireAdmin, requireFeature("tasks"), async (req, res) => {
     try {
@@ -1077,7 +1072,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error deleting work group:", error);
       res.status(500).json({ message: "Failed to delete work group", error: String(error) });
     }
-  });
+});
 
   // Work Group Members routes
   app.post("/api/work-groups/:id/members", requireAuth, requireFeature("tasks"), async (req, res) => {
@@ -1121,7 +1116,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to add member to work group" });
     }
-  });
+});
 
   app.delete("/api/work-groups/:id/members/:userId", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
@@ -1159,7 +1154,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to remove member from work group" });
     }
-  });
+});
 
   app.get("/api/work-groups/:id/members", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
@@ -1186,15 +1181,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
               lastName: user.lastName, 
               email: user.email 
             } : null
-          };
-        })
+});        })
       );
       
       res.json(membersWithUserDetails);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch work group members" });
     }
-  });
+});
 
   // Moderator management routes
   app.put("/api/work-groups/:workGroupId/members/:userId/moderator", requireAdmin, requireFeature("tasks"), async (req, res) => {
@@ -1233,7 +1227,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to update moderator status" });
     }
-  });
+});
 
   app.get("/api/work-groups/:id/moderators", requireFeature("tasks"), async (req, res) => {
     try {
@@ -1250,7 +1244,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch moderators" });
     }
-  });
+});
 
   app.get("/api/users/:id/work-groups", requireFeature("tasks"), async (req, res) => {
     try {
@@ -1267,7 +1261,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch user work groups" });
     }
-  });
+});
 
   // Tasks routes
   app.get("/api/work-groups/:workGroupId/tasks", requireFeature("tasks"), async (req, res) => {
@@ -1279,7 +1273,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch tasks" });
     }
-  });
+});
 
   app.get("/api/tasks/dashboard", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
@@ -1292,7 +1286,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch dashboard tasks" });
     }
-  });
+});
 
   app.get("/api/tasks/admin-archive", requireAdmin, requireFeature("tasks"), async (req, res) => {
     try {
@@ -1305,7 +1299,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch admin archive tasks" });
     }
-  });
+});
 
   app.post("/api/tasks", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
@@ -1331,7 +1325,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(400).json({ message: "Invalid task data" });
     }
-  });
+});
 
   app.put("/api/tasks/:id", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
@@ -1391,7 +1385,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             description: `Završen zadatak: ${task.title} u sekciji ${workGroup?.name || 'Nepoznata'} (čeka odobrenje)`,
             points: 0, // No points until admin approves
             relatedEntityId: task.id,
-          });
+});
         }
         
         // If admin/moderator marks as završeno (approved), log for all assigned users WITH points
@@ -1405,7 +1399,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               description: `Završen zadatak: ${task.title} u sekciji ${workGroup?.name || 'Nepoznata'}`,
               points,
               relatedEntityId: task.id,
-            });
+});
           }
         }
       }
@@ -1414,7 +1408,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(400).json({ message: "Invalid task data" });
     }
-  });
+});
 
   app.delete("/api/tasks/:id", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
@@ -1448,7 +1442,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to delete task" });
     }
-  });
+});
 
   app.patch("/api/tasks/:taskId/move", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
@@ -1490,7 +1484,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to move task" });
     }
-  });
+});
 
   // Task Comments routes
   app.get("/api/tasks/:taskId/comments", requireFeature("tasks"), async (req, res) => {
@@ -1516,15 +1510,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
               firstName: user.firstName, 
               lastName: user.lastName 
             } : null
-          };
-        })
+});        })
       );
       
       res.json(commentsWithUserDetails);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch task comments" });
     }
-  });
+});
 
   app.post("/api/tasks/:taskId/comments", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
@@ -1558,7 +1551,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userId, 
         content,
         commentImage: commentImage || null 
-      });
+});
       const comment = await storage.createTaskComment(commentData);
       
       // Get user details for the response
@@ -1569,13 +1562,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           firstName: user.firstName, 
           lastName: user.lastName 
         }
-      };
-      
+});      
       res.json(commentWithUser);
     } catch (error) {
       res.status(400).json({ message: "Invalid comment data" });
     }
-  });
+});
 
   app.delete("/api/comments/:id", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
@@ -1610,8 +1602,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to delete comment" });
     }
-  });
-
+});
 
   // Announcement Files
   app.get("/api/announcements/:announcementId/files", async (req, res) => {
@@ -1637,15 +1628,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
               firstName: user.firstName, 
               lastName: user.lastName 
             } : null
-          };
-        })
+});        })
       );
       
       res.json(filesWithUserDetails);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch announcement files" });
     }
-  });
+});
 
   app.post("/api/announcements/:announcementId/files", requireAuth, async (req, res) => {
     try {
@@ -1694,7 +1684,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         fileType,
         fileSize,
         filePath: secureFilePath
-      });
+});
       
       const file = await storage.createAnnouncementFile(fileData);
       
@@ -1706,13 +1696,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           firstName: user.firstName, 
           lastName: user.lastName 
         }
-      };
-      
+});      
       res.json(fileWithUser);
     } catch (error) {
       res.status(400).json({ message: "Invalid file data" });
     }
-  });
+});
 
   app.delete("/api/announcement-files/:id", requireAuth, async (req, res) => {
     try {
@@ -1740,7 +1729,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to delete file" });
     }
-  });
+});
 
   // Access Requests routes
   app.get("/api/access-requests", requireAdmin, requireFeature("tasks"), async (req, res) => {
@@ -1750,7 +1739,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch access requests" });
     }
-  });
+});
 
   app.get("/api/access-requests/my", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
@@ -1759,7 +1748,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch user access requests" });
     }
-  });
+});
 
   app.post("/api/access-requests", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
@@ -1769,7 +1758,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(400).json({ message: "Invalid request data" });
     }
-  });
+});
 
   app.put("/api/access-requests/:id", requireAdmin, requireFeature("tasks"), async (req, res) => {
     try {
@@ -1789,7 +1778,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(400).json({ message: "Invalid request status" });
     }
-  });
+});
 
   // Activities routes
   app.get("/api/activities", async (req, res) => {
@@ -1799,7 +1788,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch activities" });
     }
-  });
+});
 
   // Statistics routes
   app.get("/api/statistics", async (req, res) => {
@@ -1813,7 +1802,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           newAnnouncementsCount: 0,
           upcomingEventsCount: 0,
           activeTasksCount: 0
-        });
+});
       }
       
       const [userCount, newAnnouncementsCount, upcomingEventsCount, activeTasksCount] = await Promise.all([
@@ -1828,11 +1817,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         newAnnouncementsCount,
         upcomingEventsCount,
         activeTasksCount
-      });
+});
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch statistics" });
     }
-  });
+});
 
   // Family Relationships routes
   app.get("/api/family-relationships/:userId", requireAuth, async (req, res) => {
@@ -1856,15 +1845,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
               email: relatedUser.email,
               phone: relatedUser.phone
             } : null
-          };
-        })
+});        })
       );
       
       res.json(relationshipsWithUsers);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch family relationships" });
     }
-  });
+});
 
   app.post("/api/family-relationships", requireAuth, async (req, res) => {
     try {
@@ -1874,7 +1862,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(400).json({ message: "Invalid family relationship data" });
     }
-  });
+});
 
   app.delete("/api/family-relationships/:id", requireAuth, async (req, res) => {
     try {
@@ -1887,7 +1875,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to delete family relationship" });
     }
-  });
+});
 
   app.get("/api/family-relationships/by-type/:userId/:relationship", requireAuth, async (req, res) => {
     try {
@@ -1897,7 +1885,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch family members by relationship" });
     }
-  });
+});
 
   // Messages routes
   app.get("/api/messages/conversations", requireAuth, requireFeature("messages"), async (req, res) => {
@@ -1912,7 +1900,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch conversations" });
     }
-  });
+});
 
   app.get("/api/messages", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
@@ -1940,15 +1928,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
               firstName: recipient.firstName,
               lastName: recipient.lastName
             } : null
-          };
-        })
+});        })
       );
       
       res.json(messagesWithSenderInfo);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch messages" });
     }
-  });
+});
 
   app.get("/api/messages/unread-count", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
@@ -1962,7 +1949,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch unread count" });
     }
-  });
+});
 
   app.get("/api/messages/thread/:threadId", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
@@ -1991,15 +1978,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
               firstName: recipient.firstName,
               lastName: recipient.lastName
             } : null
-          };
-        })
+});        })
       );
       
       res.json(threadWithUserInfo);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch message thread" });
     }
-  });
+});
 
   app.post("/api/messages", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
@@ -2034,7 +2020,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(400).json({ message: "Invalid message data" });
     }
-  });
+});
 
   app.put("/api/messages/:id/read", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
@@ -2054,7 +2040,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to mark message as read" });
     }
-  });
+});
 
   app.put("/api/messages/thread/:threadId/read", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
@@ -2069,7 +2055,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to mark thread as read" });
     }
-  });
+});
 
   app.delete("/api/messages/:id", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
@@ -2089,7 +2075,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to delete message" });
     }
-  });
+});
 
   // Imam Questions routes
   app.get("/api/imam-questions", requireAuth, requireFeature("ask-imam"), async (req, res) => {
@@ -2111,15 +2097,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
               firstName: user.firstName,
               lastName: user.lastName
             } : null
-          };
-        })
+});        })
       );
       
       res.json(questionsWithUserInfo);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch imam questions" });
     }
-  });
+});
 
   app.post("/api/imam-questions", requireAuth, requireFeature("ask-imam"), async (req, res) => {
     try {
@@ -2131,14 +2116,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userId: req.user.id,
         subject: req.body.subject,
         question: req.body.question,
-      };
-
+});
       const question = await storage.createImamQuestion(questionData);
       res.status(201).json(question);
     } catch (error) {
       res.status(500).json({ message: "Failed to create imam question" });
     }
-  });
+});
 
   app.put("/api/imam-questions/:id/answer", requireAuth, requireFeature("ask-imam"), async (req, res) => {
     try {
@@ -2162,7 +2146,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to answer question" });
     }
-  });
+});
 
   app.put("/api/imam-questions/:id/read", requireAuth, requireFeature("ask-imam"), async (req, res) => {
     try {
@@ -2181,7 +2165,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to mark question as read" });
     }
-  });
+});
 
   app.delete("/api/imam-questions/:id", requireAuth, requireFeature("ask-imam"), async (req, res) => {
     try {
@@ -2200,7 +2184,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to delete question" });
     }
-  });
+});
 
   // Organization Settings routes
   app.get("/api/organization-settings", async (req, res) => {
@@ -2214,7 +2198,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to get organization settings" });
     }
-  });
+});
 
   app.put("/api/organization-settings", requireAdmin, async (req, res) => {
     try {
@@ -2225,7 +2209,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(400).json({ message: "Invalid organization settings data" });
     }
-  });
+});
 
   // Documents routes
   app.get("/api/documents", requireAuth, requireFeature("documents"), async (req, res) => {
@@ -2236,7 +2220,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to get documents" });
     }
-  });
+});
 
   app.post("/api/documents", requireAdmin, requireFeature("documents"), async (req, res) => {
     try {
@@ -2247,7 +2231,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(400).json({ message: "Invalid document data" });
     }
-  });
+});
 
   app.delete("/api/documents/:id", requireAdmin, requireFeature("documents"), async (req, res) => {
     try {
@@ -2260,7 +2244,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to delete document" });
     }
-  });
+});
 
   // Requests routes
   app.get("/api/requests", requireAdmin, async (req, res) => {
@@ -2271,7 +2255,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to get requests" });
     }
-  });
+});
 
   app.get("/api/requests/my", requireAuth, async (req, res) => {
     try {
@@ -2282,7 +2266,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to get user requests" });
     }
-  });
+});
 
   app.post("/api/requests", requireAuth, async (req, res) => {
     try {
@@ -2291,13 +2275,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const requestData = insertRequestSchema.parse({
         ...req.body,
         userId
-      });
+});
       const request = await storage.createRequest({ ...requestData, tenantId });
       res.status(201).json(request);
     } catch (error) {
       res.status(400).json({ message: "Invalid request data" });
     }
-  });
+});
 
   app.put("/api/requests/:id/status", requireAdmin, async (req, res) => {
     try {
@@ -2318,7 +2302,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to update request status" });
     }
-  });
+});
 
   // Shop Products routes
   app.get("/api/shop/products", requireAuth, requireFeature("shop"), async (req, res) => {
@@ -2328,7 +2312,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to get products" });
     }
-  });
+});
 
   app.post("/api/shop/products", requireAdmin, async (req, res) => {
     try {
@@ -2336,13 +2320,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const productData = insertShopProductSchema.parse({
         ...req.body,
         createdById
-      });
+});
       const product = await storage.createShopProduct(productData);
       res.status(201).json(product);
     } catch (error) {
       res.status(400).json({ message: "Invalid product data" });
     }
-  });
+});
 
   app.put("/api/shop/products/:id", requireAdmin, async (req, res) => {
     try {
@@ -2354,7 +2338,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to update product" });
     }
-  });
+});
 
   app.delete("/api/shop/products/:id", requireAdmin, async (req, res) => {
     try {
@@ -2366,7 +2350,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to delete product" });
     }
-  });
+});
 
   // Marketplace Items routes
   app.get("/api/marketplace/items", requireAuth, requireFeature("marketplace"), async (req, res) => {
@@ -2376,7 +2360,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to get marketplace items" });
     }
-  });
+});
 
   app.post("/api/marketplace/items", requireAuth, requireFeature("marketplace"), async (req, res) => {
     try {
@@ -2384,13 +2368,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const itemData = insertMarketplaceItemSchema.parse({
         ...req.body,
         userId
-      });
+});
       const item = await storage.createMarketplaceItem(itemData);
       res.status(201).json(item);
     } catch (error) {
       res.status(400).json({ message: "Invalid item data" });
     }
-  });
+});
 
   app.put("/api/marketplace/items/:id", requireAuth, requireFeature("marketplace"), async (req, res) => {
     try {
@@ -2414,7 +2398,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to update item" });
     }
-  });
+});
 
   app.delete("/api/marketplace/items/:id", requireAuth, requireFeature("marketplace"), async (req, res) => {
     try {
@@ -2438,7 +2422,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to delete item" });
     }
-  });
+});
 
   // Services (Usluge) routes
   app.get("/api/services", requireAuth, async (req, res) => {
@@ -2448,7 +2432,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to get services" });
     }
-  });
+});
 
   app.post("/api/services", requireAuth, async (req, res) => {
     try {
@@ -2456,13 +2440,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const serviceData = insertServiceSchema.parse({
         ...req.body,
         userId
-      });
+});
       const service = await storage.createService(serviceData);
       res.status(201).json(service);
     } catch (error) {
       res.status(400).json({ message: "Invalid service data" });
     }
-  });
+});
 
   app.put("/api/services/:id", requireAuth, async (req, res) => {
     try {
@@ -2483,7 +2467,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to update service" });
     }
-  });
+});
 
   app.delete("/api/services/:id", requireAuth, async (req, res) => {
     try {
@@ -2507,7 +2491,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to delete service" });
     }
-  });
+});
 
   // Purchase Requests routes
   app.get("/api/shop/purchase-requests", requireAdmin, async (req, res) => {
@@ -2517,7 +2501,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to get purchase requests" });
     }
-  });
+});
 
   app.post("/api/shop/purchase-requests", requireAuth, async (req, res) => {
     try {
@@ -2525,13 +2509,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const requestData = insertProductPurchaseRequestSchema.parse({
         ...req.body,
         userId
-      });
+});
       const request = await storage.createProductPurchaseRequest(requestData);
       res.status(201).json(request);
     } catch (error) {
       res.status(400).json({ message: "Invalid purchase request data" });
     }
-  });
+});
 
   app.put("/api/shop/purchase-requests/:id/status", requireAdmin, async (req, res) => {
     try {
@@ -2544,7 +2528,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to update purchase request" });
     }
-  });
+});
 
   // Notifications routes
   app.get("/api/notifications/unread", requireAuth, async (req, res) => {
@@ -2556,7 +2540,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error in /api/notifications/unread:", error);
       res.status(500).json({ message: "Failed to fetch notification counts" });
     }
-  });
+});
 
   app.put("/api/notifications/mark-viewed/:type", requireAuth, async (req, res) => {
     try {
@@ -2575,7 +2559,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to update last viewed timestamp" });
     }
-  });
+});
 
   // Prayer Times routes
   app.get("/api/prayer-times", async (req, res) => {
@@ -2585,7 +2569,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to get prayer times" });
     }
-  });
+});
 
   app.get("/api/prayer-times/today", async (req, res) => {
     try {
@@ -2610,7 +2594,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to get today's prayer times" });
     }
-  });
+});
 
   app.get("/api/prayer-times/export", requireAdmin, async (req, res) => {
     try {
@@ -2634,7 +2618,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           pt.maghrib,
           pt.isha
         ].join(';'));
-      });
+});
 
       const csvContent = csvRows.join('\n');
       
@@ -2645,7 +2629,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('CSV export error:', error);
       res.status(500).json({ message: "Failed to export CSV" });
     }
-  });
+});
 
   app.get("/api/prayer-times/:date", async (req, res) => {
     try {
@@ -2657,7 +2641,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to get prayer times" });
     }
-  });
+});
 
   app.post("/api/prayer-times/upload", requireAdmin, csvUpload.single('csv'), async (req, res) => {
     try {
@@ -2714,7 +2698,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               isha,
               hijriDate: null,
               events: null
-            });
+});
           } else if (i === 0) {
             console.log('Export format validation failed:', { date, fajr, dhuhr, asr, maghrib, isha });
           }
@@ -2733,7 +2717,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               isha,
               hijriDate: hijri || null,
               events: events || null
-            });
+});
           } else if (i === 0) {
             console.log('SwissMosque format validation failed:', { date, fajr, dhuhr, asr, maghrib, isha });
           }
@@ -2748,7 +2732,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ 
           message: "No valid prayer times found in CSV", 
           details: `Processed ${lines.length} total lines, ${dataLines.length} data lines` 
-        });
+});
       }
 
       // Bulk create prayer times
@@ -2757,12 +2741,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ 
         message: `Successfully imported ${created.length} prayer times`,
         count: created.length 
-      });
+});
     } catch (error) {
       console.error('CSV upload error:', error);
       res.status(500).json({ message: "Failed to upload and parse CSV" });
     }
-  });
+});
 
   app.delete("/api/prayer-times", requireAdmin, async (req, res) => {
     try {
@@ -2771,7 +2755,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to delete prayer times" });
     }
-  });
+});
 
   // Important Dates Routes
   app.get("/api/important-dates", requireAuth, async (req, res) => {
@@ -2781,7 +2765,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to get important dates" });
     }
-  });
+});
 
   app.post("/api/important-dates", requireAdmin, async (req, res) => {
     try {
@@ -2790,7 +2774,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to create important date" });
     }
-  });
+});
 
   app.put("/api/important-dates/:id", requireAdmin, async (req, res) => {
     try {
@@ -2802,7 +2786,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to update important date" });
     }
-  });
+});
 
   app.delete("/api/important-dates/:id", requireAdmin, async (req, res) => {
     try {
@@ -2814,7 +2798,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to delete important date" });
     }
-  });
+});
 
   // Financial Contributions Routes (Feature 1)
   app.get("/api/financial-contributions", requireAdmin, requireFeature("finances"), async (req, res) => {
@@ -2824,7 +2808,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to get financial contributions" });
     }
-  });
+});
 
   app.get("/api/financial-contributions/user/:userId", requireAuth, requireFeature("finances"), async (req, res) => {
     try {
@@ -2837,7 +2821,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to get user contributions" });
     }
-  });
+});
 
   app.post("/api/financial-contributions", requireAdmin, requireFeature("finances"), async (req, res) => {
     try {
@@ -2847,7 +2831,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ...validated,
         createdById: req.user!.id,
         tenantId: req.user!.tenantId
-      });
+});
 
       // If contribution is for a project, update project's currentAmount
       if (validated.projectId) {
@@ -2859,7 +2843,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           await storage.updateProject(validated.projectId, req.user!.tenantId, {
             currentAmount: newAmount
-          });
+});
         }
       }
 
@@ -2873,8 +2857,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         points,
         relatedEntityId: contribution.id,
         tenantId: req.user!.tenantId
-    });
-      });
+});
+});
 
       // If bonus points were added, create a separate activity log entry
       if (bonusPoints && bonusPoints > 0) {
@@ -2885,8 +2869,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           points: parseInt(bonusPoints),
           relatedEntityId: contribution.id,
         tenantId: req.user!.tenantId
-    });
-      });
+});
+});
       }
 
       // If contribution is for a project, create additional activity log
@@ -2900,8 +2884,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             points: 0, // Points already awarded in contribution_made log
             relatedEntityId: contribution.id,
         tenantId: req.user!.tenantId
-    });
-      });
+});
+});
         }
       }
 
@@ -2913,7 +2897,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error creating financial contribution:', error);
       res.status(500).json({ message: "Failed to create financial contribution" });
     }
-  });
+});
 
   app.put("/api/financial-contributions/:id", requireAdmin, requireFeature("finances"), async (req, res) => {
     try {
@@ -2981,8 +2965,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         points: pointsFromContribution,
         relatedEntityId: req.params.id,
         tenantId: req.user!.tenantId
-    });
-      });
+});
+});
 
       // If contribution is for a project, create additional activity log
       if (newProjectId) {
@@ -2995,8 +2979,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             points: 0,
             relatedEntityId: req.params.id,
         tenantId: req.user!.tenantId
-    });
-      });
+});
+});
         }
       }
 
@@ -3009,7 +2993,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to update contribution" });
     }
-  });
+});
 
   app.patch("/api/financial-contributions/:id", requireAdmin, requireFeature("finances"), async (req, res) => {
     try {
@@ -3066,7 +3050,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to update contribution" });
     }
-  });
+});
 
   app.delete("/api/financial-contributions/:id", requireAdmin, requireFeature("finances"), async (req, res) => {
     try {
@@ -3084,7 +3068,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       res.status(500).json({ message: "Failed to delete contribution" });
     }
-  });
+});
 
   // Activity Log Routes (Feature 1)
   app.get("/api/activity-logs/user/:userId", requireAuth, requireFeature("activity-log"), async (req, res) => {
@@ -3098,7 +3082,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to get activity log" });
     }
-  });
+});
 
   app.get("/api/activity-logs", requireAdmin, requireFeature("activity-log"), async (req, res) => {
     try {
@@ -3107,7 +3091,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to get activity logs" });
     }
-  });
+});
 
   // Event Attendance Routes (Feature 1)
   app.post("/api/event-attendance", requireAdmin, async (req, res) => {
@@ -3134,7 +3118,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error creating event attendance:', error);
       res.status(500).json({ message: "Failed to record event attendance" });
     }
-  });
+});
 
   app.get("/api/event-attendance/:eventId", requireAuth, async (req, res) => {
     try {
@@ -3143,7 +3127,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to get event attendance" });
     }
-  });
+});
 
   app.get("/api/event-attendance/user/:userId", requireAuth, async (req, res) => {
     try {
@@ -3156,7 +3140,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to get user attendance" });
     }
-  });
+});
 
   // Points Settings Routes (Feature 2)
   app.get("/api/point-settings", requireAuth, async (req, res) => {
@@ -3166,7 +3150,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to get points settings" });
     }
-  });
+});
 
   app.put("/api/point-settings/:id", requireAdmin, async (req, res) => {
     try {
@@ -3176,7 +3160,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to update points settings" });
     }
-  });
+});
 
   // Badges Routes (Feature 2)
   app.get("/api/badges", requireAuth, requireFeature("badges"), async (req, res) => {
@@ -3186,7 +3170,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to get badges" });
     }
-  });
+});
 
   app.post("/api/badges", requireAdmin, requireFeature("badges"), async (req, res) => {
     try {
@@ -3197,7 +3181,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error creating badge:', error);
       res.status(500).json({ message: "Failed to create badge" });
     }
-  });
+});
 
   app.put("/api/badges/:id", requireAdmin, requireFeature("badges"), async (req, res) => {
     try {
@@ -3210,7 +3194,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to update badge" });
     }
-  });
+});
 
   app.delete("/api/badges/:id", requireAdmin, requireFeature("badges"), async (req, res) => {
     try {
@@ -3222,7 +3206,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to delete badge" });
     }
-  });
+});
 
   // User Badges Routes (Feature 2)
   app.get("/api/user-badges/:userId", requireAuth, async (req, res) => {
@@ -3232,7 +3216,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to get user badges" });
     }
-  });
+});
 
   app.post("/api/user-badges/check/:userId", requireAdmin, async (req, res) => {
     try {
@@ -3241,7 +3225,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to check and award badges" });
     }
-  });
+});
 
   app.post("/api/user-badges/check-all", requireAdmin, async (req, res) => {
     try {
@@ -3254,11 +3238,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.json({ 
         message: `Badges checked and awarded for ${users.length} users`
-      });
+});
     } catch (error) {
       res.status(500).json({ message: "Failed to check badges for all users" });
     }
-  });
+});
 
   app.get("/api/user-badges/all", requireAdmin, async (req, res) => {
     try {
@@ -3267,7 +3251,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to get all user badges" });
     }
-  });
+});
 
   // Projects Routes (Feature 4)
   app.get("/api/projects", requireAuth, requireFeature("projects"), async (req, res) => {
@@ -3277,7 +3261,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to get projects" });
     }
-  });
+});
 
   app.get("/api/projects/active", requireFeature("projects"), async (req, res) => {
     try {
@@ -3288,7 +3272,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to get active projects" });
     }
-  });
+});
 
   app.get("/api/projects/:id", requireAuth, requireFeature("projects"), async (req, res) => {
     try {
@@ -3300,7 +3284,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to get project" });
     }
-  });
+});
 
   app.post("/api/projects", requireAdmin, requireFeature("projects"), async (req, res) => {
     try {
@@ -3309,12 +3293,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ...validated,
         createdById: req.user!.id,
         tenantId: req.user!.tenantId
-      });
+});
       res.status(201).json(project);
     } catch (error) {
       res.status(500).json({ message: "Failed to create project" });
     }
-  });
+});
 
   app.patch("/api/projects/:id", requireAdmin, requireFeature("projects"), async (req, res) => {
     try {
@@ -3327,7 +3311,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to update project" });
     }
-  });
+});
 
   app.delete("/api/projects/:id", requireAdmin, requireFeature("projects"), async (req, res) => {
     try {
@@ -3339,7 +3323,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Failed to delete project" });
     }
-  });
+});
 
   // User Statistics Routes (Feature 2)
   app.get("/api/user-stats/:userId", requireAuth, async (req, res) => {
@@ -3362,11 +3346,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         eventsAttended,
         totalDonations,
         totalPoints
-      });
+});
     } catch (error) {
       res.status(500).json({ message: "Failed to get user statistics" });
     }
-  });
+});
 
   // User Preferences Routes (Feature: Quick Access)
   app.get("/api/user-preferences", requireAuth, async (req, res) => {
@@ -3379,7 +3363,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         preferences = await storage.createUserPreferences({
           userId,
           quickAccessShortcuts: []
-        });
+});
       }
       
       res.json(preferences);
@@ -3387,7 +3371,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error getting user preferences:', error);
       res.status(500).json({ message: "Failed to get user preferences" });
     }
-  });
+});
 
   app.put("/api/user-preferences", requireAuth, async (req, res) => {
     try {
@@ -3407,12 +3391,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         preferences = await storage.createUserPreferences({
           userId,
           quickAccessShortcuts
-        });
+});
       } else {
         // Update existing preferences
         preferences = await storage.updateUserPreferences(userId, req.user!.tenantId, {
           quickAccessShortcuts
-        });
+});
       }
       
       res.json(preferences);
@@ -3420,7 +3404,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error updating user preferences:', error);
       res.status(500).json({ message: "Failed to update user preferences" });
     }
-  });
+});
 
   // Proposals Routes (Moderator Proposals System)
   app.get("/api/proposals", requireAuth, async (req, res) => {
@@ -3453,7 +3437,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error getting proposals:', error);
       res.status(500).json({ message: "Failed to get proposals" });
     }
-  });
+});
 
   app.get("/api/proposals/:id", requireAuth, async (req, res) => {
     try {
@@ -3466,7 +3450,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error getting proposal:', error);
       res.status(500).json({ message: "Failed to get proposal" });
     }
-  });
+});
 
   app.post("/api/proposals", requireAuth, async (req, res) => {
     try {
@@ -3485,7 +3469,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validated = insertProposalSchema.parse({
         ...req.body,
         createdById: user.id
-      });
+});
       
       const proposal = await storage.createProposal(validated);
       res.status(201).json(proposal);
@@ -3493,7 +3477,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error creating proposal:', error);
       res.status(500).json({ message: "Failed to create proposal" });
     }
-  });
+});
 
   app.patch("/api/proposals/:id", requireAuth, async (req, res) => {
     try {
@@ -3516,7 +3500,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error updating proposal:', error);
       res.status(500).json({ message: "Failed to update proposal" });
     }
-  });
+});
 
   app.patch("/api/proposals/:id/approve", requireAuth, async (req, res) => {
     try {
@@ -3534,7 +3518,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error approving proposal:', error);
       res.status(500).json({ message: "Failed to approve proposal" });
     }
-  });
+});
 
   app.patch("/api/proposals/:id/reject", requireAuth, async (req, res) => {
     try {
@@ -3556,7 +3540,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error rejecting proposal:', error);
       res.status(500).json({ message: "Failed to reject proposal" });
     }
-  });
+});
 
   // Receipts Routes (Expense Receipts System)
   app.get("/api/receipts", requireAuth, async (req, res) => {
@@ -3573,7 +3557,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else if (proposalId) {
         receipts = await storage.getReceiptsByProposal(proposalId as string);
       } else {
-        receipts = await storage.getAllReceipts();
+        receipts = await storage.getAllReceipts(req.user!.tenantId);
       }
 
       // Filter based on user role - blagajnik (treasurers) and admins see all
@@ -3587,7 +3571,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error getting receipts:', error);
       res.status(500).json({ message: "Failed to get receipts" });
     }
-  });
+});
 
   app.get("/api/receipts/:id", requireAuth, async (req, res) => {
     try {
@@ -3600,7 +3584,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error getting receipt:', error);
       res.status(500).json({ message: "Failed to get receipt" });
     }
-  });
+});
 
   app.post("/api/receipts", requireAuth, upload.single('file'), async (req, res) => {
     try {
@@ -3616,7 +3600,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         uploadedById: user.id,
         fileName: file.filename,
         fileUrl: `/uploads/${file.filename}`
-      });
+});
       
       const receipt = await storage.createReceipt(validated);
       res.status(201).json(receipt);
@@ -3624,7 +3608,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error uploading receipt:', error);
       res.status(500).json({ message: "Failed to upload receipt" });
     }
-  });
+});
 
   app.patch("/api/receipts/:id/approve", requireAuth, async (req, res) => {
     try {
@@ -3636,13 +3620,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const { reviewComment } = req.body;
-      const updated = await storage.approveReceipt(req.params.id, req.user!.tenantId, user.id, reviewComment);
+      const updated = await storage.approveReceipt(req.params.id, req.user!.tenantId, req.user!.tenantId, user.id, reviewComment);
       res.json(updated);
     } catch (error) {
       console.error('Error approving receipt:', error);
       res.status(500).json({ message: "Failed to approve receipt" });
     }
-  });
+});
 
   app.patch("/api/receipts/:id/reject", requireAuth, async (req, res) => {
     try {
@@ -3658,13 +3642,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Review comment is required for rejection" });
       }
       
-      const updated = await storage.rejectReceipt(req.params.id, req.user!.tenantId, user.id, reviewComment);
+      const updated = await storage.rejectReceipt(req.params.id, req.user!.tenantId, req.user!.tenantId, user.id, reviewComment);
       res.json(updated);
     } catch (error) {
       console.error('Error rejecting receipt:', error);
       res.status(500).json({ message: "Failed to reject receipt" });
     }
-  });
+});
 
   // Certificate Templates Routes (Zahvalnice)
   app.get("/api/certificates/templates", requireAdmin, requireFeature("certificates"), async (req, res) => {
@@ -3675,7 +3659,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error getting certificate templates:', error);
       res.status(500).json({ message: "Failed to get certificate templates" });
     }
-  });
+});
 
   app.post("/api/certificates/templates", requireAdmin, requireFeature("certificates"), certificateUpload.single('templateImage'), async (req, res) => {
     try {
@@ -3693,7 +3677,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         textPositionY: parseInt(req.body.textPositionY),
         fontSize: parseInt(req.body.fontSize),
         createdById: user.id
-      });
+});
       
       const template = await storage.createCertificateTemplate(validated);
       res.status(201).json(template);
@@ -3701,7 +3685,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error creating certificate template:', error);
       res.status(500).json({ message: "Failed to create certificate template" });
     }
-  });
+});
 
   app.put("/api/certificates/templates/:id", requireAdmin, requireFeature("certificates"), async (req, res) => {
     try {
@@ -3710,9 +3694,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ...(req.body.textPositionX && { textPositionX: parseInt(req.body.textPositionX) }),
         ...(req.body.textPositionY && { textPositionY: parseInt(req.body.textPositionY) }),
         ...(req.body.fontSize && { fontSize: parseInt(req.body.fontSize) })
-      };
-      
-      const updated = await storage.updateCertificateTemplate(req.params.id, req.user!.tenantId, updates);
+});      
+      const updated = await storage.updateCertificateTemplate(req.params.id, req.user!.tenantId, req.user!.tenantId, updates);
       if (!updated) {
         return res.status(404).json({ message: "Certificate template not found" });
       }
@@ -3721,7 +3704,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error updating certificate template:', error);
       res.status(500).json({ message: "Failed to update certificate template" });
     }
-  });
+});
 
   app.delete("/api/certificates/templates/:id", requireAdmin, requireFeature("certificates"), async (req, res) => {
     try {
@@ -3734,7 +3717,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error deleting certificate template:', error);
       res.status(500).json({ message: "Failed to delete certificate template" });
     }
-  });
+});
 
   // User Certificates Routes
   app.get("/api/certificates/user", requireAuth, requireFeature("certificates"), async (req, res) => {
@@ -3746,7 +3729,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error getting user certificates:', error);
       res.status(500).json({ message: "Failed to get user certificates" });
     }
-  });
+});
 
   app.get("/api/certificates/all", requireAdmin, requireFeature("certificates"), async (req, res) => {
     try {
@@ -3756,7 +3739,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error getting all certificates:', error);
       res.status(500).json({ message: "Failed to get all certificates" });
     }
-  });
+});
 
   app.get("/api/certificates/unviewed-count", requireAuth, requireFeature("certificates"), async (req, res) => {
     try {
@@ -3767,7 +3750,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error getting unviewed certificates count:', error);
       res.status(500).json({ message: "Failed to get unviewed certificates count" });
     }
-  });
+});
 
   app.post("/api/certificates/issue", requireAdmin, requireFeature("certificates"), async (req, res) => {
     try {
@@ -3803,7 +3786,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           fontSize: template.fontSize ?? 48,
           fontColor: template.fontColor ?? "#000000",
           textAlign: (template.textAlign as 'left' | 'center' | 'right') ?? 'center'
-        });
+});
         
         // Save certificate image
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -3819,7 +3802,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           certificateImagePath: certificateUrl,
           issuedById: req.user!.id,
           message: customMessage || null
-        });
+});
         console.log(`[Certificates] Created DB record for ${recipientName}: certId=${certificate.id}, userId=${userId}, imageUrl=${certificateUrl}`);
         
         issuedCertificates.push(certificate);
@@ -3829,12 +3812,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         message: "Certificates issued successfully",
         count: issuedCertificates.length,
         certificates: issuedCertificates
-      });
+});
     } catch (error) {
       console.error('Error issuing certificates:', error);
       res.status(500).json({ message: "Failed to issue certificates" });
     }
-  });
+});
 
   app.patch("/api/certificates/:id/viewed", requireAuth, requireFeature("certificates"), async (req, res) => {
     try {
@@ -3855,7 +3838,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error marking certificate as viewed:', error);
       res.status(500).json({ message: "Failed to mark certificate as viewed" });
     }
-  });
+});
 
   app.delete("/api/certificates/:id", requireAdmin, requireFeature("certificates"), async (req, res) => {
     try {
@@ -3868,7 +3851,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error deleting certificate:', error);
       res.status(500).json({ message: "Failed to delete certificate" });
     }
-  });
+});
 
   // Membership Applications (Pristupnice)
   app.post("/api/membership-applications", requireFeature("applications"), async (req, res) => {
@@ -3880,7 +3863,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error creating membership application:', error);
       res.status(500).json({ message: "Failed to create membership application" });
     }
-  });
+});
 
   app.get("/api/membership-applications", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
@@ -3890,7 +3873,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error getting membership applications:', error);
       res.status(500).json({ message: "Failed to get membership applications" });
     }
-  });
+});
 
   app.get("/api/membership-applications/:id", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
@@ -3903,12 +3886,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error getting membership application:', error);
       res.status(500).json({ message: "Failed to get membership application" });
     }
-  });
+});
 
   app.patch("/api/membership-applications/:id", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
       const validated = insertMembershipApplicationSchema.partial().parse(req.body);
-      const updated = await storage.updateMembershipApplication(req.params.id, req.user!.tenantId, validated);
+      const updated = await storage.updateMembershipApplication(req.params.id, req.user!.tenantId, req.user!.tenantId, validated);
       if (!updated) {
         return res.status(404).json({ message: "Application not found" });
       }
@@ -3917,7 +3900,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error updating membership application:', error);
       res.status(500).json({ message: "Failed to update membership application" });
     }
-  });
+});
 
   app.patch("/api/membership-applications/:id/review", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
@@ -3936,7 +3919,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error reviewing membership application:', error);
       res.status(500).json({ message: "Failed to review membership application" });
     }
-  });
+});
 
   app.delete("/api/membership-applications/:id", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
@@ -3949,7 +3932,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error deleting membership application:', error);
       res.status(500).json({ message: "Failed to delete membership application" });
     }
-  });
+});
 
   // Akika Applications (Prijave akike)
   app.post("/api/akika-applications", requireFeature("applications"), async (req, res) => {
@@ -3959,14 +3942,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const applicationData = {
         ...validated,
         submittedBy: req.user?.id || null
-      };
-      const application = await storage.createAkikaApplication(applicationData);
+});      const application = await storage.createAkikaApplication(applicationData);
       res.status(201).json(application);
     } catch (error) {
       console.error('Error creating akika application:', error);
       res.status(500).json({ message: "Failed to create akika application" });
     }
-  });
+});
 
   app.get("/api/akika-applications/my", requireAuth, requireFeature("applications"), async (req, res) => {
     try {
@@ -3976,7 +3958,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error getting user akika applications:', error);
       res.status(500).json({ message: "Failed to get user akika applications" });
     }
-  });
+});
 
   app.get("/api/akika-applications", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
@@ -3986,7 +3968,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error getting akika applications:', error);
       res.status(500).json({ message: "Failed to get akika applications" });
     }
-  });
+});
 
   app.get("/api/akika-applications/:id", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
@@ -3999,12 +3981,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error getting akika application:', error);
       res.status(500).json({ message: "Failed to get akika application" });
     }
-  });
+});
 
   app.patch("/api/akika-applications/:id", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
       const validated = insertAkikaApplicationSchema.partial().parse(req.body);
-      const updated = await storage.updateAkikaApplication(req.params.id, req.user!.tenantId, validated);
+      const updated = await storage.updateAkikaApplication(req.params.id, req.user!.tenantId, req.user!.tenantId, validated);
       if (!updated) {
         return res.status(404).json({ message: "Application not found" });
       }
@@ -4013,7 +3995,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error updating akika application:', error);
       res.status(500).json({ message: "Failed to update akika application" });
     }
-  });
+});
 
   app.patch("/api/akika-applications/:id/review", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
@@ -4032,7 +4014,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error reviewing akika application:', error);
       res.status(500).json({ message: "Failed to review akika application" });
     }
-  });
+});
 
   app.delete("/api/akika-applications/:id", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
@@ -4045,7 +4027,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error deleting akika application:', error);
       res.status(500).json({ message: "Failed to delete akika application" });
     }
-  });
+});
 
   // Marriage Applications (Prijave šerijatskog vjenčanja)
   app.post("/api/marriage-applications", requireFeature("applications"), async (req, res) => {
@@ -4057,7 +4039,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error creating marriage application:', error);
       res.status(500).json({ message: "Failed to create marriage application" });
     }
-  });
+});
 
   app.get("/api/marriage-applications", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
@@ -4067,7 +4049,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error getting marriage applications:', error);
       res.status(500).json({ message: "Failed to get marriage applications" });
     }
-  });
+});
 
   app.get("/api/marriage-applications/:id", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
@@ -4080,12 +4062,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error getting marriage application:', error);
       res.status(500).json({ message: "Failed to get marriage application" });
     }
-  });
+});
 
   app.patch("/api/marriage-applications/:id", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
       const validated = insertMarriageApplicationSchema.partial().parse(req.body);
-      const updated = await storage.updateMarriageApplication(req.params.id, req.user!.tenantId, validated);
+      const updated = await storage.updateMarriageApplication(req.params.id, req.user!.tenantId, req.user!.tenantId, validated);
       if (!updated) {
         return res.status(404).json({ message: "Application not found" });
       }
@@ -4094,7 +4076,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error updating marriage application:', error);
       res.status(500).json({ message: "Failed to update marriage application" });
     }
-  });
+});
 
   app.patch("/api/marriage-applications/:id/review", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
@@ -4113,7 +4095,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error reviewing marriage application:', error);
       res.status(500).json({ message: "Failed to review marriage application" });
     }
-  });
+});
 
   app.delete("/api/marriage-applications/:id", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
@@ -4126,7 +4108,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error deleting marriage application:', error);
       res.status(500).json({ message: "Failed to delete marriage application" });
     }
-  });
+});
 
   // Activity Feed
   app.get("/api/activity-feed", requireFeature("feed"), async (req, res) => {
@@ -4140,7 +4122,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error getting activity feed:', error);
       res.status(500).json({ message: "Failed to get activity feed" });
     }
-  });
+});
 
   // ============================================================================
   // TENANT MANAGEMENT (Super Admin only - Global tenant operations)
@@ -4167,12 +4149,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ 
         tenantId: tenant.id,
         name: tenant.name 
-      });
+});
     } catch (error) {
       console.error('Error verifying tenant code:', error);
       res.status(500).json({ message: "Failed to verify tenant code" });
     }
-  });
+});
 
   // Get all tenants
   app.get("/api/tenants", requireSuperAdmin, async (req, res) => {
@@ -4183,7 +4165,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error getting tenants:', error);
       res.status(500).json({ message: "Failed to get tenants" });
     }
-  });
+});
 
   // Get single tenant by ID
   app.get("/api/tenants/:id", requireSuperAdmin, async (req, res) => {
@@ -4197,7 +4179,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error getting tenant:', error);
       res.status(500).json({ message: "Failed to get tenant" });
     }
-  });
+});
 
   // Get current tenant's subscription info (for logged-in users)
   // Get all subscription plans (public endpoint for pricing page)
@@ -4208,7 +4190,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
-  });
+});
 
   app.get("/api/subscription/current", requireAuth, async (req, res) => {
     try {
@@ -4233,7 +4215,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             maxUsers: null,
             maxStorage: null
           isActive: true
-        });
+});
       }
       
       if (!tenantId) {
@@ -4251,7 +4233,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error getting subscription info:', error);
       res.status(500).json({ message: "Failed to get subscription info" });
     }
-  });
+});
 
   // Create new tenant
   app.post("/api/tenants", requireSuperAdmin, async (req, res) => {
@@ -4264,12 +4246,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ 
           message: "Invalid tenant data", 
           errors: error.errors 
-        });
+});
       }
       console.error('Error creating tenant:', error);
       res.status(500).json({ message: "Failed to create tenant" });
     }
-  });
+});
 
   // Update tenant
   app.patch("/api/tenants/:id", requireSuperAdmin, async (req, res) => {
@@ -4285,12 +4267,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ 
           message: "Invalid tenant data", 
           errors: error.errors 
-        });
+});
       }
       console.error('Error updating tenant:', error);
       res.status(500).json({ message: "Failed to update tenant" });
     }
-  });
+});
 
   // Update tenant status (activate/deactivate)
   app.patch("/api/tenants/:id/status", requireSuperAdmin, async (req, res) => {
@@ -4311,7 +4293,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error updating tenant status:', error);
       res.status(500).json({ message: "Failed to update tenant status" });
     }
-  });
+});
 
   // Delete tenant
   app.delete("/api/tenants/:id", requireSuperAdmin, async (req, res) => {
@@ -4326,7 +4308,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error deleting tenant:', error);
       res.status(500).json({ message: "Failed to delete tenant" });
     }
-  });
+});
 
   // Get tenant statistics
   app.get("/api/tenants/:id/stats", requireSuperAdmin, async (req, res) => {
@@ -4340,7 +4322,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error getting tenant stats:', error);
       res.status(500).json({ message: "Failed to get tenant stats" });
     }
-  });
+});
 
   const httpServer = createServer(app);
   return httpServer;
