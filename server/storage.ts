@@ -661,6 +661,7 @@ export class DatabaseStorage implements IStorage {
 
     const rsvps: EventRsvpWithUser[] = rsvpResults.map(result => ({
       id: result.id,
+      tenantId: tenantId,
       eventId: result.eventId,
       userId: result.userId,
       adultsCount: result.adultsCount ?? 1,
@@ -1572,11 +1573,11 @@ export class DatabaseStorage implements IStorage {
     return count;
   }
 
-  async getPendingAccessRequestsCount(lastViewed?: Date | null): Promise<number> {
+  async getPendingAccessRequestsCount(tenantId: string, lastViewed?: Date | null): Promise<number> {
     if (!lastViewed) {
       const result = await db.select({ count: sql<number>`count(*)` })
         .from(accessRequests)
-        .where(eq(accessRequests.status, 'pending'));
+        .where(and(eq(accessRequests.status, 'pending'), eq(accessRequests.tenantId, tenantId)));
       return Number(result[0]?.count ?? 0);
     }
     
@@ -1584,23 +1585,24 @@ export class DatabaseStorage implements IStorage {
       .from(accessRequests)
       .where(and(
         eq(accessRequests.status, 'pending'),
+        eq(accessRequests.tenantId, tenantId),
         gt(accessRequests.requestDate, lastViewed)
       ));
     return Number(result[0]?.count ?? 0);
   }
 
-  async getAllNewItemsCounts(userId: string): Promise<{ shop: number; events: number; announcements: number; imamQuestions: number; tasks: number; accessRequests: number }> {
+  async getAllNewItemsCounts(userId: string, tenantId: string): Promise<{ shop: number; events: number; announcements: number; imamQuestions: number; tasks: number; accessRequests: number }> {
     try {
-      const user = await this.getUser(userId);
+      const user = await this.getUser(userId, tenantId);
       const lastViewedTasks = user?.lastViewedTasks || null;
       
       const [shop, events, announcements, imamQuestions, tasks, accessRequests] = await Promise.all([
-        this.getNewItemsCount(userId, 'shop').catch(err => { console.error('Error getting shop count:', err); return 0; }),
-        this.getNewItemsCount(userId, 'events').catch(err => { console.error('Error getting events count:', err); return 0; }),
-        this.getNewItemsCount(userId, 'announcements').catch(err => { console.error('Error getting announcements count:', err); return 0; }),
-        this.getNewItemsCount(userId, 'imamQuestions').catch(err => { console.error('Error getting imamQuestions count:', err); return 0; }),
-        this.getNewItemsCount(userId, 'tasks').catch(err => { console.error('Error getting tasks count:', err); return 0; }),
-        this.getPendingAccessRequestsCount(lastViewedTasks).catch(err => { console.error('Error getting accessRequests count:', err); return 0; })
+        this.getNewItemsCount(userId, tenantId, 'shop').catch(err => { console.error('Error getting shop count:', err); return 0; }),
+        this.getNewItemsCount(userId, tenantId, 'events').catch(err => { console.error('Error getting events count:', err); return 0; }),
+        this.getNewItemsCount(userId, tenantId, 'announcements').catch(err => { console.error('Error getting announcements count:', err); return 0; }),
+        this.getNewItemsCount(userId, tenantId, 'imamQuestions').catch(err => { console.error('Error getting imamQuestions count:', err); return 0; }),
+        this.getNewItemsCount(userId, tenantId, 'tasks').catch(err => { console.error('Error getting tasks count:', err); return 0; }),
+        this.getPendingAccessRequestsCount(tenantId, lastViewedTasks).catch(err => { console.error('Error getting accessRequests count:', err); return 0; })
       ]);
 
       return { shop, events, announcements, imamQuestions, tasks, accessRequests };
@@ -1615,13 +1617,13 @@ export class DatabaseStorage implements IStorage {
     return pt;
   }
 
-  async getPrayerTimeByDate(date: string): Promise<PrayerTime | undefined> {
-    const result = await db.select().from(prayerTimes).where(eq(prayerTimes.date, date)).limit(1);
+  async getPrayerTimeByDate(date: string, tenantId: string): Promise<PrayerTime | undefined> {
+    const result = await db.select().from(prayerTimes).where(and(eq(prayerTimes.date, date), eq(prayerTimes.tenantId, tenantId))).limit(1);
     return result[0];
   }
 
-  async getAllPrayerTimes(): Promise<PrayerTime[]> {
-    const allPrayerTimes = await db.select().from(prayerTimes);
+  async getAllPrayerTimes(tenantId: string): Promise<PrayerTime[]> {
+    const allPrayerTimes = await db.select().from(prayerTimes).where(eq(prayerTimes.tenantId, tenantId));
     return allPrayerTimes.sort((a, b) => {
       const [dayA, monthA, yearA] = a.date.split('.').map(Number);
       const [dayB, monthB, yearB] = b.date.split('.').map(Number);
@@ -2137,7 +2139,7 @@ export class DatabaseStorage implements IStorage {
     return prefs;
   }
 
-  async updateUserPreferences(userId: string, updates: Partial<InsertUserPreferences>): Promise<UserPreferences | undefined> {
+  async updateUserPreferences(userId: string, tenantId: string, updates: Partial<InsertUserPreferences>): Promise<UserPreferences | undefined> {
     const [prefs] = await db.update(userPreferences)
       .set({ ...updates, updatedAt: new Date() })
       .where(eq(userPreferences.userId, userId))
@@ -2152,7 +2154,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getProposal(id: string): Promise<Proposal | undefined> {
-    const result = await db.select().from(proposals).where(eq(proposals.id, id)).limit(1);
+    const result = await db.select().from(proposals).where(and(eq(proposals.id, id), eq(proposals.tenantId, tenantId))).limit(1);
     return result[0];
   }
 
@@ -2172,10 +2174,10 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(proposals.createdAt));
   }
 
-  async updateProposal(id: string, updates: Partial<InsertProposal>): Promise<Proposal | undefined> {
+  async updateProposal(id: string, tenantId: string, updates: Partial<InsertProposal>): Promise<Proposal | undefined> {
     const [p] = await db.update(proposals)
       .set(updates)
-      .where(eq(proposals.id, id))
+      .where(and(eq(proposals.id, id), eq(proposals.tenantId, tenantId)))
       .returning();
     return p;
   }
@@ -2188,7 +2190,7 @@ export class DatabaseStorage implements IStorage {
         reviewComment: reviewComment || null,
         reviewedAt: new Date() 
       })
-      .where(eq(proposals.id, id))
+      .where(and(eq(proposals.id, id), eq(proposals.tenantId, tenantId)))
       .returning();
     return p;
   }
@@ -2201,7 +2203,7 @@ export class DatabaseStorage implements IStorage {
         reviewComment,
         reviewedAt: new Date() 
       })
-      .where(eq(proposals.id, id))
+      .where(and(eq(proposals.id, id), eq(proposals.tenantId, tenantId)))
       .returning();
     return p;
   }
@@ -2213,7 +2215,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getReceipt(id: string): Promise<Receipt | undefined> {
-    const result = await db.select().from(receipts).where(eq(receipts.id, id)).limit(1);
+    const result = await db.select().from(receipts).where(and(eq(receipts.id, id), eq(receipts.tenantId, tenantId))).limit(1);
     return result[0];
   }
 
@@ -2239,10 +2241,10 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(receipts.uploadedAt));
   }
 
-  async updateReceipt(id: string, updates: Partial<InsertReceipt>): Promise<Receipt | undefined> {
+  async updateReceipt(id: string, tenantId: string, updates: Partial<InsertReceipt>): Promise<Receipt | undefined> {
     const [r] = await db.update(receipts)
       .set(updates)
-      .where(eq(receipts.id, id))
+      .where(and(eq(receipts.id, id), eq(receipts.tenantId, tenantId)))
       .returning();
     return r;
   }
@@ -2255,7 +2257,7 @@ export class DatabaseStorage implements IStorage {
         reviewComment: reviewComment || null,
         reviewedAt: new Date() 
       })
-      .where(eq(receipts.id, id))
+      .where(and(eq(receipts.id, id), eq(receipts.tenantId, tenantId)))
       .returning();
     return r;
   }
@@ -2268,7 +2270,7 @@ export class DatabaseStorage implements IStorage {
         reviewComment,
         reviewedAt: new Date() 
       })
-      .where(eq(receipts.id, id))
+      .where(and(eq(receipts.id, id), eq(receipts.tenantId, tenantId)))
       .returning();
     return r;
   }
@@ -2280,7 +2282,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getCertificateTemplate(id: string): Promise<CertificateTemplate | undefined> {
-    const result = await db.select().from(certificateTemplates).where(eq(certificateTemplates.id, id)).limit(1);
+    const result = await db.select().from(certificateTemplates).where(and(eq(certificateTemplates.id, id), eq(certificateTemplates.tenantId, tenantId))).limit(1);
     return result[0];
   }
 
@@ -2288,16 +2290,16 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(certificateTemplates).orderBy(desc(certificateTemplates.createdAt));
   }
 
-  async updateCertificateTemplate(id: string, updates: Partial<InsertCertificateTemplate>): Promise<CertificateTemplate | undefined> {
+  async updateCertificateTemplate(id: string, tenantId: string, updates: Partial<InsertCertificateTemplate>): Promise<CertificateTemplate | undefined> {
     const [t] = await db.update(certificateTemplates)
       .set(updates)
-      .where(eq(certificateTemplates.id, id))
+      .where(and(eq(certificateTemplates.id, id), eq(certificateTemplates.tenantId, tenantId)))
       .returning();
     return t;
   }
 
   async deleteCertificateTemplate(id: string): Promise<boolean> {
-    const result = await db.delete(certificateTemplates).where(eq(certificateTemplates.id, id)).returning();
+    const result = await db.delete(certificateTemplates).where(and(eq(certificateTemplates.id, id), eq(certificateTemplates.tenantId, tenantId))).returning();
     return result.length > 0;
   }
 

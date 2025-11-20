@@ -2588,7 +2588,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Prayer Times routes
   app.get("/api/prayer-times", async (req, res) => {
     try {
-      const prayerTimes = await storage.getAllPrayerTimes();
+      const prayerTimes = await storage.getAllPrayerTimes(req.user!.tenantId);
       res.json(prayerTimes);
     } catch (error) {
       res.status(500).json({ message: "Failed to get prayer times" });
@@ -2622,7 +2622,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/prayer-times/export", requireAdmin, async (req, res) => {
     try {
-      const prayerTimes = await storage.getAllPrayerTimes();
+      const prayerTimes = await storage.getAllPrayerTimes(req.user!.tenantId);
       console.log(`[EXPORT] Found ${prayerTimes.length} prayer times to export`);
       
       if (prayerTimes.length === 0) {
@@ -3408,7 +3408,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       } else {
         // Update existing preferences
-        preferences = await storage.updateUserPreferences(userId, {
+        preferences = await storage.updateUserPreferences(userId, req.user!.tenantId, {
           quickAccessShortcuts
         });
       }
@@ -3508,7 +3508,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const validated = insertProposalSchema.partial().parse(req.body);
-      const updated = await storage.updateProposal(req.params.id, validated);
+      const updated = await storage.updateProposal(req.params.id, req.user!.tenantId, validated);
       res.json(updated);
     } catch (error) {
       console.error('Error updating proposal:', error);
@@ -3710,7 +3710,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ...(req.body.fontSize && { fontSize: parseInt(req.body.fontSize) })
       };
       
-      const updated = await storage.updateCertificateTemplate(req.params.id, updates);
+      const updated = await storage.updateCertificateTemplate(req.params.id, req.user!.tenantId, updates);
       if (!updated) {
         return res.status(404).json({ message: "Certificate template not found" });
       }
