@@ -962,7 +962,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Work Groups routes
-  app.get("/api/work-groups", async (req, res) => {
+  app.get("/api/work-groups", requireFeature("tasks"), async (req, res) => {
     try {
       const tenantId = req.tenantId!;
       // Proslijedi userId i isAdmin za filtriranje po vidljivosti
@@ -1001,7 +1001,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/work-groups", requireAuth, async (req, res) => {
+  app.post("/api/work-groups", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
       const tenantId = req.tenantId!;
       const workGroupData = insertWorkGroupSchema.parse(req.body);
@@ -1012,7 +1012,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/work-groups/:id", requireAuth, async (req, res) => {
+  app.put("/api/work-groups/:id", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
       const tenantId = req.tenantId!;
       const { id } = req.params;
@@ -1040,7 +1040,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/work-groups/:id/archive", requireAdmin, async (req, res) => {
+  app.post("/api/work-groups/:id/archive", requireAdmin, requireFeature("tasks"), async (req, res) => {
     try {
       const tenantId = req.tenantId!;
       const { id } = req.params;
@@ -1060,7 +1060,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/work-groups/:id", requireAdmin, async (req, res) => {
+  app.delete("/api/work-groups/:id", requireAdmin, requireFeature("tasks"), async (req, res) => {
     try {
       const tenantId = req.tenantId!;
       const { id } = req.params;
@@ -1086,7 +1086,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Work Group Members routes
-  app.post("/api/work-groups/:id/members", requireAuth, async (req, res) => {
+  app.post("/api/work-groups/:id/members", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
       const tenantId = req.tenantId!;
       const { id } = req.params;
@@ -1129,7 +1129,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/work-groups/:id/members/:userId", requireAuth, async (req, res) => {
+  app.delete("/api/work-groups/:id/members/:userId", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
       const tenantId = req.tenantId!;
       const { id, userId } = req.params;
@@ -1167,7 +1167,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/work-groups/:id/members", requireAuth, async (req, res) => {
+  app.get("/api/work-groups/:id/members", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
       const tenantId = req.tenantId!;
       const { id } = req.params;
@@ -1203,7 +1203,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Moderator management routes
-  app.put("/api/work-groups/:workGroupId/members/:userId/moderator", requireAdmin, async (req, res) => {
+  app.put("/api/work-groups/:workGroupId/members/:userId/moderator", requireAdmin, requireFeature("tasks"), async (req, res) => {
     try {
       const { workGroupId, userId } = req.params;
       const { isModerator } = req.body;
@@ -1241,7 +1241,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/work-groups/:id/moderators", async (req, res) => {
+  app.get("/api/work-groups/:id/moderators", requireFeature("tasks"), async (req, res) => {
     try {
       const { id } = req.params;
 
@@ -1258,7 +1258,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/users/:id/work-groups", async (req, res) => {
+  app.get("/api/users/:id/work-groups", requireFeature("tasks"), async (req, res) => {
     try {
       const { id } = req.params;
 
@@ -1276,7 +1276,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Tasks routes
-  app.get("/api/work-groups/:workGroupId/tasks", async (req, res) => {
+  app.get("/api/work-groups/:workGroupId/tasks", requireFeature("tasks"), async (req, res) => {
     try {
       const tenantId = req.tenantId!;
       const { workGroupId } = req.params;
@@ -1287,7 +1287,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/tasks/dashboard", requireAuth, async (req, res) => {
+  app.get("/api/tasks/dashboard", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
       const tenantId = req.tenantId!;
       const userId = req.user!.id;
@@ -1300,7 +1300,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/tasks/admin-archive", requireAdmin, async (req, res) => {
+  app.get("/api/tasks/admin-archive", requireAdmin, requireFeature("tasks"), async (req, res) => {
     try {
       const tenantId = req.tenantId!;
       const userId = req.user!.id;
@@ -1313,7 +1313,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/tasks", requireAuth, async (req, res) => {
+  app.post("/api/tasks", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
       const tenantId = req.tenantId!;
       const taskData = insertTaskSchema.parse(req.body);
@@ -1339,7 +1339,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/tasks/:id", requireAuth, async (req, res) => {
+  app.put("/api/tasks/:id", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
       const tenantId = req.tenantId!;
       const { id } = req.params;
@@ -1422,7 +1422,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/tasks/:id", requireAuth, async (req, res) => {
+  app.delete("/api/tasks/:id", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
       const tenantId = req.tenantId!;
       const { id } = req.params;
@@ -1456,7 +1456,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/tasks/:taskId/move", requireAuth, async (req, res) => {
+  app.patch("/api/tasks/:taskId/move", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
       const tenantId = req.tenantId!;
       const { taskId } = req.params;
@@ -1499,7 +1499,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Task Comments routes
-  app.get("/api/tasks/:taskId/comments", async (req, res) => {
+  app.get("/api/tasks/:taskId/comments", requireFeature("tasks"), async (req, res) => {
     try {
       const { taskId } = req.params;
       
@@ -1532,7 +1532,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/tasks/:taskId/comments", requireAuth, async (req, res) => {
+  app.post("/api/tasks/:taskId/comments", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
       const { taskId } = req.params;
       const { content, commentImage } = req.body;
@@ -1583,7 +1583,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/comments/:id", requireAuth, async (req, res) => {
+  app.delete("/api/comments/:id", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
       const { id } = req.params;
 
@@ -1749,7 +1749,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Access Requests routes
-  app.get("/api/access-requests", requireAdmin, async (req, res) => {
+  app.get("/api/access-requests", requireAdmin, requireFeature("tasks"), async (req, res) => {
     try {
       const requests = await storage.getAllAccessRequests();
       res.json(requests);
@@ -1758,7 +1758,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/access-requests/my", requireAuth, async (req, res) => {
+  app.get("/api/access-requests/my", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
       const requests = await storage.getUserAccessRequests(req.user!.id);
       res.json(requests);
@@ -1767,7 +1767,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/access-requests", requireAuth, async (req, res) => {
+  app.post("/api/access-requests", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
       const requestData = insertAccessRequestSchema.parse(req.body);
       const request = await storage.createAccessRequest(requestData);
@@ -1777,7 +1777,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/access-requests/:id", requireAdmin, async (req, res) => {
+  app.put("/api/access-requests/:id", requireAdmin, requireFeature("tasks"), async (req, res) => {
     try {
       const { id } = req.params;
       const { status } = req.body;
@@ -1906,7 +1906,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Messages routes
-  app.get("/api/messages/conversations", requireAuth, async (req, res) => {
+  app.get("/api/messages/conversations", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
       const tenantId = req.tenantId!;
       if (!req.user) {
@@ -1920,7 +1920,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/messages", requireAuth, async (req, res) => {
+  app.get("/api/messages", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
       const tenantId = req.tenantId!;
       if (!req.user) {
@@ -1956,7 +1956,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/messages/unread-count", requireAuth, async (req, res) => {
+  app.get("/api/messages/unread-count", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
       const tenantId = req.tenantId!;
       if (!req.user) {
@@ -1970,7 +1970,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/messages/thread/:threadId", requireAuth, async (req, res) => {
+  app.get("/api/messages/thread/:threadId", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
       const tenantId = req.tenantId!;
       if (!req.user) {
@@ -2007,7 +2007,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/messages", requireAuth, async (req, res) => {
+  app.post("/api/messages", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
       const tenantId = req.tenantId!;
       if (!req.user) {
@@ -2042,7 +2042,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/messages/:id/read", requireAuth, async (req, res) => {
+  app.put("/api/messages/:id/read", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
       const tenantId = req.tenantId!;
       if (!req.user) {
@@ -2062,7 +2062,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/messages/thread/:threadId/read", requireAuth, async (req, res) => {
+  app.put("/api/messages/thread/:threadId/read", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
       const tenantId = req.tenantId!;
       if (!req.user) {
@@ -2077,7 +2077,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/messages/:id", requireAuth, async (req, res) => {
+  app.delete("/api/messages/:id", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
       const tenantId = req.tenantId!;
       if (!req.user) {
@@ -2098,7 +2098,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Imam Questions routes
-  app.get("/api/imam-questions", requireAuth, async (req, res) => {
+  app.get("/api/imam-questions", requireAuth, requireFeature("ask-imam"), async (req, res) => {
     try {
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
@@ -2127,7 +2127,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/imam-questions", requireAuth, async (req, res) => {
+  app.post("/api/imam-questions", requireAuth, requireFeature("ask-imam"), async (req, res) => {
     try {
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
@@ -2146,7 +2146,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/imam-questions/:id/answer", requireAuth, async (req, res) => {
+  app.put("/api/imam-questions/:id/answer", requireAuth, requireFeature("ask-imam"), async (req, res) => {
     try {
       if (!req.user?.isAdmin) {
         return res.status(403).json({ message: "Only admins can answer questions" });
@@ -2170,7 +2170,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/imam-questions/:id/read", requireAuth, async (req, res) => {
+  app.put("/api/imam-questions/:id/read", requireAuth, requireFeature("ask-imam"), async (req, res) => {
     try {
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
@@ -2189,7 +2189,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/imam-questions/:id", requireAuth, async (req, res) => {
+  app.delete("/api/imam-questions/:id", requireAuth, requireFeature("ask-imam"), async (req, res) => {
     try {
       if (!req.user?.isAdmin) {
         return res.status(403).json({ message: "Only admins can delete questions" });
@@ -2234,7 +2234,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Documents routes
-  app.get("/api/documents", requireAuth, async (req, res) => {
+  app.get("/api/documents", requireAuth, requireFeature("documents"), async (req, res) => {
     try {
       const tenantId = req.tenantId!;
       const documents = await storage.getAllDocuments(tenantId);
@@ -2244,7 +2244,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/documents", requireAdmin, async (req, res) => {
+  app.post("/api/documents", requireAdmin, requireFeature("documents"), async (req, res) => {
     try {
       const tenantId = req.tenantId!;
       const documentData = insertDocumentSchema.parse(req.body);
@@ -2255,7 +2255,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/documents/:id", requireAdmin, async (req, res) => {
+  app.delete("/api/documents/:id", requireAdmin, requireFeature("documents"), async (req, res) => {
     try {
       const tenantId = req.tenantId!;
       const deleted = await storage.deleteDocument(req.params.id, tenantId);
@@ -2375,7 +2375,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Marketplace Items routes
-  app.get("/api/marketplace/items", requireAuth, async (req, res) => {
+  app.get("/api/marketplace/items", requireAuth, requireFeature("marketplace"), async (req, res) => {
     try {
       const items = await storage.getAllMarketplaceItems();
       res.json(items);
@@ -2384,7 +2384,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/marketplace/items", requireAuth, async (req, res) => {
+  app.post("/api/marketplace/items", requireAuth, requireFeature("marketplace"), async (req, res) => {
     try {
       const userId = req.session.userId!;
       const itemData = insertMarketplaceItemSchema.parse({
@@ -2398,7 +2398,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/marketplace/items/:id", requireAuth, async (req, res) => {
+  app.put("/api/marketplace/items/:id", requireAuth, requireFeature("marketplace"), async (req, res) => {
     try {
       const item = await storage.getMarketplaceItem(req.params.id);
       if (!item) {
@@ -2422,7 +2422,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/marketplace/items/:id", requireAuth, async (req, res) => {
+  app.delete("/api/marketplace/items/:id", requireAuth, requireFeature("marketplace"), async (req, res) => {
     try {
       const item = await storage.getMarketplaceItem(req.params.id);
       if (!item) {
@@ -2825,7 +2825,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Financial Contributions Routes (Feature 1)
-  app.get("/api/financial-contributions", requireAdmin, async (req, res) => {
+  app.get("/api/financial-contributions", requireAdmin, requireFeature("finances"), async (req, res) => {
     try {
       const contributions = await storage.getAllFinancialContributions();
       res.json(contributions);
@@ -2834,7 +2834,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/financial-contributions/user/:userId", requireAuth, async (req, res) => {
+  app.get("/api/financial-contributions/user/:userId", requireAuth, requireFeature("finances"), async (req, res) => {
     try {
       // Only admins or the user themselves can view contributions
       if (req.user?.id !== req.params.userId && !req.user?.isAdmin) {
@@ -2847,7 +2847,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/financial-contributions", requireAdmin, async (req, res) => {
+  app.post("/api/financial-contributions", requireAdmin, requireFeature("finances"), async (req, res) => {
     try {
       const { points: bonusPoints, ...contributionData } = req.body;
       const validated = insertFinancialContributionSchema.parse(contributionData);
@@ -2916,7 +2916,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/financial-contributions/:id", requireAdmin, async (req, res) => {
+  app.put("/api/financial-contributions/:id", requireAdmin, requireFeature("finances"), async (req, res) => {
     try {
       const validated = insertFinancialContributionSchema.partial().parse(req.body);
       
@@ -3008,7 +3008,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/financial-contributions/:id", requireAdmin, async (req, res) => {
+  app.patch("/api/financial-contributions/:id", requireAdmin, requireFeature("finances"), async (req, res) => {
     try {
       const validated = insertFinancialContributionSchema.partial().parse(req.body);
       
@@ -3065,7 +3065,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/financial-contributions/:id", requireAdmin, async (req, res) => {
+  app.delete("/api/financial-contributions/:id", requireAdmin, requireFeature("finances"), async (req, res) => {
     try {
       // Delete contribution with all related logs in a transaction
       const { userId, projectId } = await storage.deleteContributionWithLogs(req.params.id);
@@ -3084,7 +3084,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Activity Log Routes (Feature 1)
-  app.get("/api/activity-logs/user/:userId", requireAuth, async (req, res) => {
+  app.get("/api/activity-logs/user/:userId", requireAuth, requireFeature("activity-log"), async (req, res) => {
     try {
       // Only admins or the user themselves can view activity log
       if (req.user?.id !== req.params.userId && !req.user?.isAdmin) {
@@ -3097,7 +3097,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/activity-logs", requireAdmin, async (req, res) => {
+  app.get("/api/activity-logs", requireAdmin, requireFeature("activity-log"), async (req, res) => {
     try {
       const logs = await storage.getAllActivityLogs();
       res.json(logs);
@@ -3175,7 +3175,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Badges Routes (Feature 2)
-  app.get("/api/badges", requireAuth, async (req, res) => {
+  app.get("/api/badges", requireAuth, requireFeature("badges"), async (req, res) => {
     try {
       const badges = await storage.getAllBadges();
       res.json(badges);
@@ -3184,7 +3184,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/badges", requireAdmin, async (req, res) => {
+  app.post("/api/badges", requireAdmin, requireFeature("badges"), async (req, res) => {
     try {
       const validated = insertBadgeSchema.parse(req.body);
       const badge = await storage.createBadge(validated);
@@ -3195,7 +3195,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/badges/:id", requireAdmin, async (req, res) => {
+  app.put("/api/badges/:id", requireAdmin, requireFeature("badges"), async (req, res) => {
     try {
       const validated = insertBadgeSchema.partial().parse(req.body);
       const badge = await storage.updateBadge(req.params.id, validated);
@@ -3208,7 +3208,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/badges/:id", requireAdmin, async (req, res) => {
+  app.delete("/api/badges/:id", requireAdmin, requireFeature("badges"), async (req, res) => {
     try {
       const success = await storage.deleteBadge(req.params.id);
       if (!success) {
@@ -3266,7 +3266,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Projects Routes (Feature 4)
-  app.get("/api/projects", requireAuth, async (req, res) => {
+  app.get("/api/projects", requireAuth, requireFeature("projects"), async (req, res) => {
     try {
       const projects = await storage.getAllProjects();
       res.json(projects);
@@ -3275,7 +3275,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/projects/active", async (req, res) => {
+  app.get("/api/projects/active", requireFeature("projects"), async (req, res) => {
     try {
       const projects = await storage.getActiveProjects();
       res.json(projects);
@@ -3284,7 +3284,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/projects/:id", requireAuth, async (req, res) => {
+  app.get("/api/projects/:id", requireAuth, requireFeature("projects"), async (req, res) => {
     try {
       const project = await storage.getProject(req.params.id);
       if (!project) {
@@ -3296,7 +3296,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/projects", requireAdmin, async (req, res) => {
+  app.post("/api/projects", requireAdmin, requireFeature("projects"), async (req, res) => {
     try {
       console.log('Creating project with body:', req.body);
       const validated = insertProjectSchema.parse(req.body);
@@ -3315,7 +3315,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/projects/:id", requireAdmin, async (req, res) => {
+  app.patch("/api/projects/:id", requireAdmin, requireFeature("projects"), async (req, res) => {
     try {
       const validated = insertProjectSchema.partial().parse(req.body);
       const project = await storage.updateProject(req.params.id, validated);
@@ -3329,7 +3329,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/projects/:id", requireAdmin, async (req, res) => {
+  app.delete("/api/projects/:id", requireAdmin, requireFeature("projects"), async (req, res) => {
     try {
       const success = await storage.deleteProject(req.params.id);
       if (!success) {
@@ -3667,7 +3667,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Certificate Templates Routes (Zahvalnice)
-  app.get("/api/certificates/templates", requireAdmin, async (req, res) => {
+  app.get("/api/certificates/templates", requireAdmin, requireFeature("certificates"), async (req, res) => {
     try {
       const templates = await storage.getAllCertificateTemplates();
       res.json(templates);
@@ -3677,7 +3677,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/certificates/templates", requireAdmin, certificateUpload.single('templateImage'), async (req, res) => {
+  app.post("/api/certificates/templates", requireAdmin, requireFeature("certificates"), certificateUpload.single('templateImage'), async (req, res) => {
     try {
       const user = req.user as User;
       const file = req.file;
@@ -3703,7 +3703,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/certificates/templates/:id", requireAdmin, async (req, res) => {
+  app.put("/api/certificates/templates/:id", requireAdmin, requireFeature("certificates"), async (req, res) => {
     try {
       const updates = {
         ...req.body,
@@ -3723,7 +3723,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/certificates/templates/:id", requireAdmin, async (req, res) => {
+  app.delete("/api/certificates/templates/:id", requireAdmin, requireFeature("certificates"), async (req, res) => {
     try {
       const success = await storage.deleteCertificateTemplate(req.params.id);
       if (!success) {
@@ -3737,7 +3737,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // User Certificates Routes
-  app.get("/api/certificates/user", requireAuth, async (req, res) => {
+  app.get("/api/certificates/user", requireAuth, requireFeature("certificates"), async (req, res) => {
     try {
       const user = req.user!;
       const certificates = await storage.getUserCertificates(user.id);
@@ -3748,7 +3748,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/certificates/all", requireAdmin, async (req, res) => {
+  app.get("/api/certificates/all", requireAdmin, requireFeature("certificates"), async (req, res) => {
     try {
       const certificates = await storage.getAllUserCertificates();
       res.json(certificates);
@@ -3758,7 +3758,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/certificates/unviewed-count", requireAuth, async (req, res) => {
+  app.get("/api/certificates/unviewed-count", requireAuth, requireFeature("certificates"), async (req, res) => {
     try {
       const user = req.user!;
       const count = await storage.getUnviewedCertificatesCount(user.id);
@@ -3769,7 +3769,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/certificates/issue", requireAdmin, async (req, res) => {
+  app.post("/api/certificates/issue", requireAdmin, requireFeature("certificates"), async (req, res) => {
     try {
       const { templateId, userIds, customMessage } = req.body;
       
@@ -3836,7 +3836,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/certificates/:id/viewed", requireAuth, async (req, res) => {
+  app.patch("/api/certificates/:id/viewed", requireAuth, requireFeature("certificates"), async (req, res) => {
     try {
       const user = req.user!;
       const certificate = await storage.getUserCertificate(req.params.id);
@@ -3857,7 +3857,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/certificates/:id", requireAdmin, async (req, res) => {
+  app.delete("/api/certificates/:id", requireAdmin, requireFeature("certificates"), async (req, res) => {
     try {
       const success = await storage.deleteCertificate(req.params.id);
       if (!success) {
@@ -3871,7 +3871,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Membership Applications (Pristupnice)
-  app.post("/api/membership-applications", async (req, res) => {
+  app.post("/api/membership-applications", requireFeature("applications"), async (req, res) => {
     try {
       const validated = insertMembershipApplicationSchema.parse(req.body);
       const application = await storage.createMembershipApplication(validated);
@@ -3882,7 +3882,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/membership-applications", requireAdmin, async (req, res) => {
+  app.get("/api/membership-applications", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
       const applications = await storage.getAllMembershipApplications();
       res.json(applications);
@@ -3892,7 +3892,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/membership-applications/:id", requireAdmin, async (req, res) => {
+  app.get("/api/membership-applications/:id", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
       const application = await storage.getMembershipApplication(req.params.id);
       if (!application) {
@@ -3905,7 +3905,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/membership-applications/:id", requireAdmin, async (req, res) => {
+  app.patch("/api/membership-applications/:id", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
       const validated = insertMembershipApplicationSchema.partial().parse(req.body);
       const updated = await storage.updateMembershipApplication(req.params.id, validated);
@@ -3919,7 +3919,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/membership-applications/:id/review", requireAdmin, async (req, res) => {
+  app.patch("/api/membership-applications/:id/review", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
       const { status, reviewNotes } = req.body;
       const updated = await storage.reviewMembershipApplication(
@@ -3938,7 +3938,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/membership-applications/:id", requireAdmin, async (req, res) => {
+  app.delete("/api/membership-applications/:id", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
       const success = await storage.deleteMembershipApplication(req.params.id);
       if (!success) {
@@ -3952,7 +3952,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Akika Applications (Prijave akike)
-  app.post("/api/akika-applications", async (req, res) => {
+  app.post("/api/akika-applications", requireFeature("applications"), async (req, res) => {
     try {
       const validated = insertAkikaApplicationSchema.parse(req.body);
       // Add submittedBy if user is logged in
@@ -3968,7 +3968,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/akika-applications/my", requireAuth, async (req, res) => {
+  app.get("/api/akika-applications/my", requireAuth, requireFeature("applications"), async (req, res) => {
     try {
       const applications = await storage.getUserAkikaApplications(req.user!.id);
       res.json(applications);
@@ -3978,7 +3978,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/akika-applications", requireAdmin, async (req, res) => {
+  app.get("/api/akika-applications", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
       const applications = await storage.getAllAkikaApplications();
       res.json(applications);
@@ -3988,7 +3988,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/akika-applications/:id", requireAdmin, async (req, res) => {
+  app.get("/api/akika-applications/:id", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
       const application = await storage.getAkikaApplication(req.params.id);
       if (!application) {
@@ -4001,7 +4001,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/akika-applications/:id", requireAdmin, async (req, res) => {
+  app.patch("/api/akika-applications/:id", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
       const validated = insertAkikaApplicationSchema.partial().parse(req.body);
       const updated = await storage.updateAkikaApplication(req.params.id, validated);
@@ -4015,7 +4015,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/akika-applications/:id/review", requireAdmin, async (req, res) => {
+  app.patch("/api/akika-applications/:id/review", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
       const { status, reviewNotes } = req.body;
       const updated = await storage.reviewAkikaApplication(
@@ -4034,7 +4034,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/akika-applications/:id", requireAdmin, async (req, res) => {
+  app.delete("/api/akika-applications/:id", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
       const success = await storage.deleteAkikaApplication(req.params.id);
       if (!success) {
@@ -4048,7 +4048,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Marriage Applications (Prijave šerijatskog vjenčanja)
-  app.post("/api/marriage-applications", async (req, res) => {
+  app.post("/api/marriage-applications", requireFeature("applications"), async (req, res) => {
     try {
       const validated = insertMarriageApplicationSchema.parse(req.body);
       const application = await storage.createMarriageApplication(validated);
@@ -4059,7 +4059,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/marriage-applications", requireAdmin, async (req, res) => {
+  app.get("/api/marriage-applications", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
       const applications = await storage.getAllMarriageApplications();
       res.json(applications);
@@ -4069,7 +4069,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/marriage-applications/:id", requireAdmin, async (req, res) => {
+  app.get("/api/marriage-applications/:id", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
       const application = await storage.getMarriageApplication(req.params.id);
       if (!application) {
@@ -4082,7 +4082,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/marriage-applications/:id", requireAdmin, async (req, res) => {
+  app.patch("/api/marriage-applications/:id", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
       const validated = insertMarriageApplicationSchema.partial().parse(req.body);
       const updated = await storage.updateMarriageApplication(req.params.id, validated);
@@ -4096,7 +4096,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/marriage-applications/:id/review", requireAdmin, async (req, res) => {
+  app.patch("/api/marriage-applications/:id/review", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
       const { status, reviewNotes } = req.body;
       const updated = await storage.reviewMarriageApplication(
@@ -4115,7 +4115,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/marriage-applications/:id", requireAdmin, async (req, res) => {
+  app.delete("/api/marriage-applications/:id", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
       const success = await storage.deleteMarriageApplication(req.params.id);
       if (!success) {
@@ -4129,7 +4129,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Activity Feed
-  app.get("/api/activity-feed", async (req, res) => {
+  app.get("/api/activity-feed", requireFeature("feed"), async (req, res) => {
     try {
       const limit = req.query.limit ? parseInt(req.query.limit as string) : 50;
       const activities = await storage.getActivityFeed(limit);

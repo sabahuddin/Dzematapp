@@ -48,6 +48,8 @@ import { useAuth } from '../hooks/useAuth';
 import { useCurrency } from '../contexts/CurrencyContext';
 import { useToast } from '../hooks/use-toast';
 import { apiRequest } from '../lib/queryClient';
+import { useFeatureAccess } from '../hooks/useFeatureAccess';
+import { UpgradeCTA } from '../components/UpgradeCTA';
 
 // Mark tasks as viewed when page loads
 const useMarkTasksAsViewed = () => {
@@ -478,8 +480,22 @@ export default function TaskManagerPage() {
   const queryClient = useQueryClient();
   const [location, setLocation] = useLocation();
   
+  // Check feature access
+  const featureAccess = useFeatureAccess('tasks');
+  
   // Mark tasks as viewed when page loads
   useMarkTasksAsViewed();
+  
+  // Show upgrade CTA if feature not accessible
+  if (featureAccess.upgradeRequired) {
+    return (
+      <UpgradeCTA 
+        moduleId="tasks"
+        requiredPlan={featureAccess.requiredPlan || 'standard'}
+        currentPlan={featureAccess.currentPlan || 'basic'}
+      />
+    );
+  }
   
   const [tabValue, setTabValue] = useState(0);
   const [subTabValue, setSubTabValue] = useState(0);
