@@ -1808,11 +1808,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Messages routes
   app.get("/api/messages/conversations", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
-      const conversations = await storage.getConversations(req.user.id);
+      const conversations = await storage.getConversations(req.user.id, tenantId);
       res.json(conversations);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch conversations" });
@@ -1821,16 +1822,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/messages", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
-      const messages = await storage.getMessages(req.user.id);
+      const messages = await storage.getMessages(req.user.id, tenantId);
       
       const messagesWithSenderInfo = await Promise.all(
         messages.map(async (msg) => {
-          const sender = await storage.getUser(msg.senderId);
-          const recipient = msg.recipientId ? await storage.getUser(msg.recipientId) : null;
+          const sender = await storage.getUser(msg.senderId, tenantId);
+          const recipient = msg.recipientId ? await storage.getUser(msg.recipientId, tenantId) : null;
           
           return {
             ...msg,
@@ -1856,11 +1858,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/messages/unread-count", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
-      const count = await storage.getUnreadCount(req.user.id);
+      const count = await storage.getUnreadCount(req.user.id, tenantId);
       res.json({ count });
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch unread count" });
@@ -1869,17 +1872,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/messages/thread/:threadId", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
       const { threadId } = req.params;
-      const thread = await storage.getMessageThread(threadId, req.user.id);
+      const thread = await storage.getMessageThread(threadId, req.user.id, tenantId);
       
       const threadWithUserInfo = await Promise.all(
         thread.map(async (msg) => {
-          const sender = await storage.getUser(msg.senderId);
-          const recipient = msg.recipientId ? await storage.getUser(msg.recipientId) : null;
+          const sender = await storage.getUser(msg.senderId, tenantId);
+          const recipient = msg.recipientId ? await storage.getUser(msg.recipientId, tenantId) : null;
           
           return {
             ...msg,
@@ -1905,6 +1909,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/messages", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
       }
@@ -1930,7 +1935,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Must specify either recipient or category" });
       }
 
-      const message = await storage.createMessage(messageData);
+      const message = await storage.createMessage({ ...messageData, tenantId });
       res.json(message);
     } catch (error) {
       res.status(400).json({ message: "Invalid message data" });
@@ -1939,12 +1944,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/messages/:id/read", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
       const { id } = req.params;
-      const message = await storage.markAsRead(id, req.user.id);
+      const message = await storage.markAsRead(id, req.user.id, tenantId);
       
       if (!message) {
         return res.status(404).json({ message: "Message not found or you don't have permission" });
@@ -1958,12 +1964,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/messages/thread/:threadId/read", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
       const { threadId } = req.params;
-      await storage.markThreadAsRead(threadId, req.user.id);
+      await storage.markThreadAsRead(threadId, req.user.id, tenantId);
       res.json({ success: true });
     } catch (error) {
       res.status(500).json({ message: "Failed to mark thread as read" });
@@ -1972,12 +1979,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/messages/:id", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
       const { id } = req.params;
-      const deleted = await storage.deleteMessage(id);
+      const deleted = await storage.deleteMessage(id, tenantId);
       
       if (!deleted) {
         return res.status(404).json({ message: "Message not found" });
