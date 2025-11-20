@@ -394,9 +394,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       let tenantId = req.body.tenantId || req.tenantId;
       if (!tenantId) {
-        const allTenants = await storage.getAllTenants();
-        if (!allTenants || allTenants.length === 0) return res.status(400).json({ message: "No tenants available" });
-        tenantId = allTenants[0].id;
+        tenantId = "default-tenant-demo";
       }
       const userData = insertUserSchema.parse({ ...req.body, tenantId });
       
