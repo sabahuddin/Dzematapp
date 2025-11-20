@@ -357,7 +357,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Users routes
   app.get("/api/users", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const users = await storage.getAllUsers(tenantId);
       res.json(users.map(user => ({ ...user, password: undefined })));
     } catch (error) {
@@ -1021,7 +1021,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/work-groups/:id/archive", requireAdmin, requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const { id } = req.params;
 
       // Check if work group exists
