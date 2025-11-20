@@ -36,6 +36,9 @@ export default function LoginPage() {
   const { isInstallable, promptInstall } = usePWAInstall();
   const [showInstallPrompt, setShowInstallPrompt] = useState(true);
   const [storedTenantId, setStoredTenantId] = useState<string | null>(null);
+  
+  const [logoClickCount, setLogoClickCount] = useState(0);
+  const [logoClickTimer, setLogoClickTimer] = useState<NodeJS.Timeout | null>(null);
 
   // Check if tenant is already set
   useEffect(() => {
@@ -98,6 +101,26 @@ export default function LoginPage() {
     setStoredTenantId(null);
     setShowTenantSetup(true);
     setFormData({ username: '', password: '' });
+  };
+
+  const handleLogoClick = () => {
+    if (logoClickTimer) {
+      clearTimeout(logoClickTimer);
+    }
+
+    const newCount = logoClickCount + 1;
+    setLogoClickCount(newCount);
+
+    if (newCount >= 5) {
+      setLogoClickCount(0);
+      setLocation('/superadmin/login');
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setLogoClickCount(0);
+    }, 2000);
+    setLogoClickTimer(timer);
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -194,7 +217,18 @@ export default function LoginPage() {
             </Box>
 
             <Box sx={{ textAlign: 'center', mb: 4 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
+              <Box 
+                onClick={handleLogoClick}
+                sx={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  gap: 1,
+                  cursor: 'pointer',
+                  userSelect: 'none'
+                }}
+                data-testid="logo-container"
+              >
                 <DzematLogo size={72} />
                 <Typography variant="h3" sx={{ fontWeight: 600, color: 'hsl(207 88% 55%)', fontFamily: 'Aladin, cursive' }}>
                   {t('login:title')}
@@ -307,7 +341,7 @@ export default function LoginPage() {
                   </Box>
                 </form>
 
-                <Box sx={{ mt: 3, textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 1 }}>
+                <Box sx={{ mt: 3, textAlign: 'center' }}>
                   <MuiLink
                     component="button"
                     type="button"
@@ -317,16 +351,6 @@ export default function LoginPage() {
                     data-testid="link-change-tenant"
                   >
                     Promijenite organizaciju
-                  </MuiLink>
-                  <MuiLink
-                    component="button"
-                    type="button"
-                    variant="caption"
-                    onClick={() => setLocation('/superadmin/login')}
-                    sx={{ cursor: 'pointer', color: 'text.secondary' }}
-                    data-testid="link-superadmin-login"
-                  >
-                    Super Admin Login
                   </MuiLink>
                 </Box>
 
