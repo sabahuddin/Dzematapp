@@ -57,83 +57,48 @@ function EventDay(props: PickersDayProps & { eventDates?: Date[]; importantDates
   const hasImportantDate = importantDates.some((importantDate: Date) => isSameDay(importantDate, day));
   const isToday = isSameDay(day, new Date());
   const isSelected = selectedDate ? isSameDay(day, selectedDate) : false;
-  const isWeekendDay = isWeekend(day);
 
   return (
-    <Badge
-      key={day.toString()}
-      overlap="circular"
-      badgeContent={hasEvent || hasImportantDate ? '•' : undefined}
+    <PickersDay 
+      {...other} 
+      day={day} 
+      outsideCurrentMonth={outsideCurrentMonth}
       sx={{
-        '& .MuiBadge-badge': {
-          backgroundColor: hasImportantDate ? 'hsl(14 100% 45%)' : 'var(--semantic-success-active)',
-          color: hasImportantDate ? 'hsl(14 100% 45%)' : 'var(--semantic-success-active)',
-          minWidth: 6,
-          height: 6,
-          borderRadius: '50%',
-          padding: 0,
-          top: 4,
-          right: 4,
-        }
+        backgroundColor: outsideCurrentMonth 
+          ? 'var(--semantic-neutral-bg)'
+          : isSelected 
+          ? 'var(--semantic-info-active) !important' 
+          : isToday 
+          ? 'var(--semantic-award-active) !important'
+          : 'white',
+        color: outsideCurrentMonth
+          ? 'var(--semantic-neutral-text)'
+          : isSelected || isToday
+          ? '#ffffff !important'
+          : 'inherit',
+        fontWeight: isToday || isSelected || hasEvent || hasImportantDate ? 600 : 400,
+        border: outsideCurrentMonth
+          ? '1px solid var(--semantic-neutral-border)'
+          : isToday 
+          ? '2px solid var(--semantic-award-border)'
+          : hasImportantDate
+          ? '2px solid hsl(4 90% 58%)'
+          : hasEvent
+          ? '2px solid var(--semantic-success-active)'
+          : '1px solid hsl(0 0% 85%)',
+        borderRadius: '12px',
+        margin: '2px',
+        '&:hover': {
+          backgroundColor: outsideCurrentMonth
+            ? 'var(--semantic-neutral-bg-hover)'
+            : isSelected
+            ? 'var(--semantic-info-active-hover) !important'
+            : isToday
+            ? 'var(--semantic-award-active-hover) !important'
+            : 'var(--semantic-neutral-bg)',
+        },
       }}
-    >
-      <PickersDay 
-        {...other} 
-        day={day} 
-        outsideCurrentMonth={outsideCurrentMonth}
-        sx={{
-          backgroundColor: outsideCurrentMonth 
-            ? 'var(--semantic-neutral-bg)'
-            : isSelected 
-            ? 'var(--semantic-info-active) !important' 
-            : isToday 
-            ? 'var(--semantic-award-active) !important'
-            : hasImportantDate
-            ? 'hsl(14 100% 95%)'
-            : isWeekendDay 
-            ? 'var(--semantic-info-bg)'
-            : hasEvent
-            ? 'var(--semantic-success-bg)'
-            : 'white',
-          color: outsideCurrentMonth
-            ? 'var(--semantic-neutral-text)'
-            : isSelected || isToday
-            ? '#ffffff !important'
-            : hasImportantDate
-            ? 'hsl(14 100% 45%)'
-            : hasEvent
-            ? 'var(--semantic-success-text)'
-            : isWeekendDay
-            ? 'var(--semantic-info-text)'
-            : 'inherit',
-          fontWeight: isToday || isSelected || hasEvent || hasImportantDate ? 600 : 400,
-          border: outsideCurrentMonth
-            ? '1px solid var(--semantic-neutral-border)'
-            : isToday 
-            ? '2px solid var(--semantic-award-border)'
-            : hasImportantDate
-            ? '1px solid hsl(14 100% 65%)'
-            : '1px solid hsl(0 0% 85%)',
-          borderRadius: '8px',
-          margin: '2px',
-          '&:hover': {
-            backgroundColor: outsideCurrentMonth
-              ? 'var(--semantic-neutral-bg-hover)'
-              : isSelected
-              ? 'var(--semantic-info-active-hover) !important'
-              : isToday
-              ? 'var(--semantic-award-active-hover) !important'
-              : hasImportantDate
-              ? 'hsl(14 100% 90%)'
-              : isWeekendDay
-              ? 'var(--semantic-info-bg-hover)'
-              : hasEvent
-              ? 'var(--semantic-success-bg-hover)'
-              : 'var(--semantic-neutral-bg)',
-          },
-        }}
-      />
-    </Badge>
+    />
   );
 }
 
