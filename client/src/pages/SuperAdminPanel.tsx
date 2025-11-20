@@ -427,7 +427,96 @@ export default function SuperAdminPanel() {
             )}
           </TableBody>
         </Table>
-      </TableContainer>
+          </TableContainer>
+        </>
+      ) : (
+        /* Tab 1: User Management */
+        <Box>
+          <Card sx={{ p: 3, mb: 3 }}>
+            <Typography variant="h6" sx={{ mb: 3 }}>Dodaj novog korisnika</Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Ime"
+                  value={userForm.firstName}
+                  onChange={(e) => setUserForm({ ...userForm, firstName: e.target.value })}
+                  required
+                  data-testid="input-firstName"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Prezime"
+                  value={userForm.lastName}
+                  onChange={(e) => setUserForm({ ...userForm, lastName: e.target.value })}
+                  required
+                  data-testid="input-lastName"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Korisničko ime"
+                  value={userForm.username}
+                  onChange={(e) => setUserForm({ ...userForm, username: e.target.value })}
+                  required
+                  data-testid="input-username"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Email"
+                  type="email"
+                  value={userForm.email}
+                  onChange={(e) => setUserForm({ ...userForm, email: e.target.value })}
+                  required
+                  data-testid="input-user-email"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Lozinka"
+                  type="password"
+                  value={userForm.password}
+                  onChange={(e) => setUserForm({ ...userForm, password: e.target.value })}
+                  required
+                  data-testid="input-password"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <InputLabel>Admin</InputLabel>
+                  <Select
+                    value={userForm.isAdmin ? "true" : "false"}
+                    onChange={(e) => setUserForm({ ...userForm, isAdmin: e.target.value === "true" })}
+                    label="Admin"
+                    data-testid="select-isAdmin"
+                  >
+                    <MenuItem value="false">Ne</MenuItem>
+                    <MenuItem value="true">Da</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <Button 
+                  variant="contained" 
+                  onClick={() => createUserMutation.mutate(userForm)}
+                  disabled={createUserMutation.isPending || !userForm.firstName || !userForm.lastName || !userForm.username || !userForm.email || !userForm.password}
+                  fullWidth
+                  data-testid="button-create-user"
+                >
+                  {createUserMutation.isPending ? <CircularProgress size={20} sx={{ mr: 1 }} /> : null}
+                  Kreiraj Korisnika
+                </Button>
+              </Grid>
+            </Grid>
+          </Card>
+        </Box>
+      )}
 
       {/* Create/Edit Dialog */}
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="md" fullWidth>
