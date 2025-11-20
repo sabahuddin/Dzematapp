@@ -254,13 +254,7 @@ function Router() {
       </Route>
       
       <Route path="/superadmin/login">
-        {user?.isSuperAdmin ? <Redirect to="/superadmin/dashboard" /> : <SuperAdminLoginPage />}
-      </Route>
-      
-      <Route path="/superadmin/dashboard">
-        <SuperAdminRoute>
-          <TenantManagementPage />
-        </SuperAdminRoute>
+        {user?.isSuperAdmin ? <Redirect to="/super-admin/panel" /> : <SuperAdminLoginPage />}
       </Route>
       
       <Route path="/guest">
