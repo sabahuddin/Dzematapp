@@ -272,8 +272,8 @@ export const productPurchaseRequests = pgTable("product_purchase_requests", {
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
-  tenantId: true,
 }).extend({
+  tenantId: z.string(),
   membershipDate: z.union([
     z.date(),
     z.string().transform((str) => new Date(str)),
@@ -283,15 +283,16 @@ export const insertUserSchema = createInsertSchema(users).omit({
 
 export const insertAnnouncementSchema = createInsertSchema(announcements).omit({
   id: true,
-  tenantId: true,
   publishDate: true,
+}).extend({
+  tenantId: z.string()
 });
 
 export const insertEventSchema = createInsertSchema(events).omit({
   id: true,
-  tenantId: true,
   createdAt: true,
 }).extend({
+  tenantId: z.string(),
   dateTime: z.union([
     z.date(),
     z.string().transform((str) => new Date(str))
@@ -300,27 +301,30 @@ export const insertEventSchema = createInsertSchema(events).omit({
 
 export const insertEventRsvpSchema = createInsertSchema(eventRsvps).omit({
   id: true,
-  tenantId: true,
   rsvpDate: true,
+}).extend({
+  tenantId: z.string()
 });
 
 export const insertWorkGroupSchema = createInsertSchema(workGroups).omit({
   id: true,
-  tenantId: true,
   createdAt: true,
+}).extend({
+  tenantId: z.string()
 });
 
 export const insertWorkGroupMemberSchema = createInsertSchema(workGroupMembers).omit({
   id: true,
-  tenantId: true,
   joinedAt: true,
+}).extend({
+  tenantId: z.string()
 });
 
 export const insertTaskSchema = createInsertSchema(tasks).omit({
   id: true,
-  tenantId: true,
   createdAt: true,
 }).extend({
+  tenantId: z.string(),
   dueDate: z.union([
     z.date(),
     z.string().transform((str) => new Date(str)),
@@ -330,69 +334,79 @@ export const insertTaskSchema = createInsertSchema(tasks).omit({
 
 export const insertAccessRequestSchema = createInsertSchema(accessRequests).omit({
   id: true,
-  tenantId: true,
   requestDate: true,
+}).extend({
+  tenantId: z.string()
 });
 
 export const insertTaskCommentSchema = createInsertSchema(taskComments).omit({
   id: true,
-  tenantId: true,
   createdAt: true,
+}).extend({
+  tenantId: z.string()
 });
 
 
 export const insertAnnouncementFileSchema = createInsertSchema(announcementFiles).omit({
   id: true,
-  tenantId: true,
   uploadedAt: true,
+}).extend({
+  tenantId: z.string()
 });
 
 export const insertFamilyRelationshipSchema = createInsertSchema(familyRelationships).omit({
   id: true,
-  tenantId: true,
   createdAt: true,
+}).extend({
+  tenantId: z.string()
 });
 
 export const insertMessageSchema = createInsertSchema(messages).omit({
   id: true,
-  tenantId: true,
   createdAt: true,
   isRead: true,
+}).extend({
+  tenantId: z.string()
 });
 
 export const insertImamQuestionSchema = createInsertSchema(imamQuestions).omit({
   id: true,
-  tenantId: true,
   createdAt: true,
   isRead: true,
   isAnswered: true,
   answeredAt: true,
   answer: true,
+}).extend({
+  tenantId: z.string()
 });
 
 export const insertOrganizationSettingsSchema = createInsertSchema(organizationSettings).omit({
   id: true,
-  tenantId: true,
   updatedAt: true,
+}).extend({
+  tenantId: z.string()
 });
 
 export const insertDocumentSchema = createInsertSchema(documents).omit({
   id: true,
-  tenantId: true,
   uploadedAt: true,
+}).extend({
+  tenantId: z.string()
 });
 
 export const insertRequestSchema = createInsertSchema(requests).omit({
   id: true,
-  tenantId: true,
   createdAt: true,
   reviewedAt: true,
+}).extend({
+  tenantId: z.string()
 });
 
 export const insertShopProductSchema = createInsertSchema(shopProducts).omit({
   id: true,
-  tenantId: true,
   createdAt: true,
+}).extend({
+  tenantId: z.string()
 }).superRefine((data, ctx) => {
   // Validate category-specific fields
   if (data.category === 'hrana') {
@@ -440,14 +454,16 @@ export const insertShopProductSchema = createInsertSchema(shopProducts).omit({
 
 export const insertMarketplaceItemSchema = createInsertSchema(marketplaceItems).omit({
   id: true,
-  tenantId: true,
   createdAt: true,
+}).extend({
+  tenantId: z.string()
 });
 
 export const insertProductPurchaseRequestSchema = createInsertSchema(productPurchaseRequests).omit({
   id: true,
-  tenantId: true,
   createdAt: true,
+}).extend({
+  tenantId: z.string()
 });
 
 // Types
