@@ -6,6 +6,7 @@ import { setupVite, serveStatic, log } from "./vite";
 import { storage } from "./storage";
 import type { User } from "@shared/schema";
 import { tenantContextMiddleware, DEFAULT_TENANT_ID } from "./tenant-context";
+import { seedSubscriptionPlans } from "./subscription-plans-seed";
 
 // Extend Express Request interface to include user
 declare global {
@@ -160,6 +161,7 @@ async function ensureAdminUser() {
 
 // Call on startup
 ensureAdminUser();
+seedSubscriptionPlans();
 
 app.use((req, res, next) => {
   const start = Date.now();

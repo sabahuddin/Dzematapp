@@ -105,3 +105,40 @@ export const MODULE_DISPLAY_NAMES: Record<string, string> = {
   "finances": "Potpune finansije",
   "applications": "Pristupnice i aplikacije"
 };
+
+import { db } from "./db";
+import { subscriptionPlans } from "@shared/schema";
+import { eq } from "drizzle-orm";
+
+/**
+ * Seed subscription plans to the database on startup
+ */
+export async function seedSubscriptionPlans() {
+  try {
+    for (const [key, plan] of Object.entries(SUBSCRIPTION_PLANS)) {
+      const existing = await db.select()
+        .from(subscriptionPlans)
+        .where(eq(subscriptionPlans.slug, plan.slug))
+        .limit(1);
+      
+      if (existing.length === 0) {
+        await db.insert(subscriptionPlans).values({
+          name: plan.name,
+          slug: plan.slug,
+          description: plan.description,
+          priceMonthly: plan.priceMonthly,
+          priceYearly: plan.priceYearly,
+          currency: plan.currency,
+          enabledModules: plan.enabledModules,
+          readOnlyModules: plan.readOnlyModules,
+          maxUsers: plan.maxUsers,
+          maxStorage: plan.maxStorage,
+          isActive: plan.isActive
+        });
+        console.log(`✅ Seeded subscription plan: ${plan.name}`);
+      }
+    }
+  } catch (error) {
+    console.error('❌ Error seeding subscription plans:', error);
+  }
+}
