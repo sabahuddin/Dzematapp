@@ -1,5 +1,5 @@
 import { BottomNavigation as MuiBottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
-import { Home, CalendarMonth, Campaign, Store, Apps } from '@mui/icons-material';
+import { Home, CalendarMonth, Campaign, Store, Apps, FolderOpen } from '@mui/icons-material';
 import { useLocation } from 'wouter';
 
 export const BOTTOM_NAV_HEIGHT = 64;
@@ -12,12 +12,13 @@ export default function BottomNavigation() {
     if (location.startsWith('/announcements')) return 1;
     if (location.startsWith('/events')) return 2;
     if (location.startsWith('/shop')) return 3;
-    if (location.startsWith('/modules')) return 4;
+    if (location.startsWith('/projects')) return 4;
+    if (location.startsWith('/modules')) return 5;
     return 0;
   };
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
-    const routes = ['/', '/announcements', '/events', '/shop', '/modules'];
+    const routes = ['/', '/announcements', '/events', '/shop', '/projects', '/modules'];
     setLocation(routes[newValue]);
   };
 
@@ -63,6 +64,10 @@ export default function BottomNavigation() {
         <BottomNavigationAction
           icon={<Store />}
           data-testid="bottom-nav-shop"
+        />
+        <BottomNavigationAction
+          icon={<FolderOpen />}
+          data-testid="bottom-nav-projects"
         />
         <BottomNavigationAction
           icon={<Apps />}

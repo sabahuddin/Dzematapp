@@ -719,8 +719,8 @@ export class DatabaseStorage implements IStorage {
     // 1. Delete all access requests for this work group
     await db.delete(accessRequests).where(and(eq(accessRequests.workGroupId, id), eq(accessRequests.tenantId, tenantId)));
     
-    // 2. Delete all proposals for this work group
-    await db.delete(proposals).where(and(eq(proposals.workGroupId, id), eq(proposals.tenantId, tenantId)));
+    // 2. Delete all proposals for this work group (proposals table doesn't have tenant_id)
+    await db.delete(proposals).where(eq(proposals.workGroupId, id));
     
     // 3. Delete all tasks for this work group
     await db.delete(tasks).where(and(eq(tasks.workGroupId, id), eq(tasks.tenantId, tenantId)));
