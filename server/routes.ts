@@ -2384,19 +2384,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/marketplace/items/:id", requireAuth, requireFeature("marketplace"), async (req, res) => {
     try {
-      const item = await storage.getMarketplaceItem(req.params.id);
+      const tenantId = req.tenantId || "default-tenant-demo";
+      const item = await storage.getMarketplaceItem(req.params.id, tenantId);
       if (!item) {
         return res.status(404).json({ message: "Item not found" });
       }
       
       // Allow update only by owner or admin
-      const user = await storage.getUser(req.session.userId!);
+      const user = await storage.getUser(req.session.userId!, tenantId);
       const isAdmin = user?.isAdmin || false;
       if (item.userId !== req.session.userId && !isAdmin) {
         return res.status(403).json({ message: "Not authorized" });
       }
 
-      const updatedItem = await storage.updateMarketplaceItem(req.params.id, req.body);
+      const updatedItem = await storage.updateMarketplaceItem(req.params.id, tenantId, req.body);
       if (!updatedItem) {
         return res.status(404).json({ message: "Item not found" });
       }
@@ -2408,19 +2409,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/marketplace/items/:id", requireAuth, requireFeature("marketplace"), async (req, res) => {
     try {
-      const item = await storage.getMarketplaceItem(req.params.id);
+      const tenantId = req.tenantId || "default-tenant-demo";
+      const item = await storage.getMarketplaceItem(req.params.id, tenantId);
       if (!item) {
         return res.status(404).json({ message: "Item not found" });
       }
       
       // Allow deletion only by owner or admin
-      const user = await storage.getUser(req.session.userId!);
+      const user = await storage.getUser(req.session.userId!, tenantId);
       const isAdmin = user?.isAdmin || false;
       if (item.userId !== req.session.userId && !isAdmin) {
         return res.status(403).json({ message: "Not authorized" });
       }
 
-      const deleted = await storage.deleteMarketplaceItem(req.params.id);
+      const deleted = await storage.deleteMarketplaceItem(req.params.id, tenantId);
       if (!deleted) {
         return res.status(404).json({ message: "Item not found" });
       }
