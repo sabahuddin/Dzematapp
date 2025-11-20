@@ -4,10 +4,11 @@ import multer from "multer";
 import path from "path";
 import { promises as fs } from "fs";
 import * as XLSX from "xlsx";
+import { ZodError } from "zod";
 import { storage } from "./storage";
-import { requireAuth, requireAdmin } from "./index";
+import { requireAuth, requireAdmin, requireSuperAdmin } from "./index";
 import { generateCertificate, saveCertificate } from "./certificateService";
-import { type User, insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema, insertFinancialContributionSchema, insertActivityLogSchema, insertEventAttendanceSchema, insertPointsSettingsSchema, insertBadgeSchema, insertUserBadgeSchema, insertProjectSchema, insertProposalSchema, insertReceiptSchema, insertCertificateTemplateSchema, insertUserCertificateSchema, insertMembershipApplicationSchema, insertAkikaApplicationSchema, insertMarriageApplicationSchema, insertServiceSchema } from "@shared/schema";
+import { type User, insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema, insertFinancialContributionSchema, insertActivityLogSchema, insertEventAttendanceSchema, insertPointsSettingsSchema, insertBadgeSchema, insertUserBadgeSchema, insertProjectSchema, insertProposalSchema, insertReceiptSchema, insertCertificateTemplateSchema, insertUserCertificateSchema, insertMembershipApplicationSchema, insertAkikaApplicationSchema, insertMarriageApplicationSchema, insertServiceSchema, insertTenantSchema } from "@shared/schema";
 
 // Configure multer for photo uploads
 const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'photos');
@@ -4047,6 +4048,110 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error getting activity feed:', error);
       res.status(500).json({ message: "Failed to get activity feed" });
+    }
+  });
+
+  // ============================================================================
+  // TENANT MANAGEMENT (Super Admin only - Global tenant operations)
+  // ============================================================================
+
+  // Get all tenants
+  app.get("/api/tenants", requireSuperAdmin, async (req, res) => {
+    try {
+      const tenants = await storage.getAllTenants();
+      res.json(tenants);
+    } catch (error) {
+      console.error('Error getting tenants:', error);
+      res.status(500).json({ message: "Failed to get tenants" });
+    }
+  });
+
+  // Get single tenant by ID
+  app.get("/api/tenants/:id", requireSuperAdmin, async (req, res) => {
+    try {
+      const tenant = await storage.getTenant(req.params.id);
+      if (!tenant) {
+        return res.status(404).json({ message: "Tenant not found" });
+      }
+      res.json(tenant);
+    } catch (error) {
+      console.error('Error getting tenant:', error);
+      res.status(500).json({ message: "Failed to get tenant" });
+    }
+  });
+
+  // Create new tenant
+  app.post("/api/tenants", requireSuperAdmin, async (req, res) => {
+    try {
+      const validated = insertTenantSchema.parse(req.body);
+      const newTenant = await storage.createTenant(validated);
+      res.status(201).json(newTenant);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return res.status(400).json({ 
+          message: "Invalid tenant data", 
+          errors: error.errors 
+        });
+      }
+      console.error('Error creating tenant:', error);
+      res.status(500).json({ message: "Failed to create tenant" });
+    }
+  });
+
+  // Update tenant
+  app.patch("/api/tenants/:id", requireSuperAdmin, async (req, res) => {
+    try {
+      const validated = insertTenantSchema.partial().parse(req.body);
+      const updated = await storage.updateTenant(req.params.id, validated);
+      if (!updated) {
+        return res.status(404).json({ message: "Tenant not found" });
+      }
+      res.json(updated);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return res.status(400).json({ 
+          message: "Invalid tenant data", 
+          errors: error.errors 
+        });
+      }
+      console.error('Error updating tenant:', error);
+      res.status(500).json({ message: "Failed to update tenant" });
+    }
+  });
+
+  // Update tenant status (activate/deactivate)
+  app.patch("/api/tenants/:id/status", requireSuperAdmin, async (req, res) => {
+    try {
+      const { isActive } = req.body;
+      
+      if (typeof isActive !== 'boolean') {
+        return res.status(400).json({ message: "isActive must be a boolean" });
+      }
+
+      const updated = await storage.updateTenantStatus(req.params.id, isActive);
+      if (!updated) {
+        return res.status(404).json({ message: "Tenant not found" });
+      }
+
+      res.json(updated);
+    } catch (error) {
+      console.error('Error updating tenant status:', error);
+      res.status(500).json({ message: "Failed to update tenant status" });
+    }
+  });
+
+  // Delete tenant
+  app.delete("/api/tenants/:id", requireSuperAdmin, async (req, res) => {
+    try {
+      const success = await storage.deleteTenant(req.params.id);
+      if (!success) {
+        return res.status(404).json({ message: "Tenant not found" });
+      }
+
+      res.json({ message: "Tenant deleted successfully" });
+    } catch (error) {
+      console.error('Error deleting tenant:', error);
+      res.status(500).json({ message: "Failed to delete tenant" });
     }
   });
 

@@ -68,7 +68,8 @@ app.use(async (req, res, next) => {
         const hasImamRole = user.roles?.includes('imam') || false;
         req.user = {
           ...user,
-          isAdmin: user.isAdmin || hasImamRole
+          isAdmin: user.isAdmin || hasImamRole,
+          isSuperAdmin: user.isSuperAdmin || false
         };
       } else {
         // User no longer exists, clear the session
@@ -97,6 +98,17 @@ export const requireAdmin = (req: Request, res: Response, next: NextFunction) =>
   }
   if (!req.user.isAdmin) {
     return res.status(403).json({ message: "Admin privileges required" });
+  }
+  next();
+};
+
+// Helper middleware to require super admin privileges (global tenant management)
+export const requireSuperAdmin = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.user) {
+    return res.status(401).json({ message: "Authentication required" });
+  }
+  if (!req.user.isSuperAdmin) {
+    return res.status(403).json({ message: "Super Admin privileges required" });
   }
   next();
 };

@@ -49,6 +49,7 @@ import ModulesPage from "@/pages/ModulesPage";
 import MobileDashboard from "@/pages/MobileDashboard";
 import MyProfilePage from "@/pages/MyProfilePage";
 import NotificationsPage from "@/pages/NotificationsPage";
+import TenantManagementPage from "@/pages/TenantManagementPage";
 import NotFound from "@/pages/not-found";
 
 // Layout
@@ -221,6 +222,25 @@ function AdminRoute({ children }: { children: React.ReactNode }) {
   return <DashboardLayout>{children}</DashboardLayout>;
 }
 
+// Super Admin-Only Route Component (Global tenant management)
+function SuperAdminRoute({ children }: { children: React.ReactNode }) {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!user) {
+    return <Redirect to="/login" />;
+  }
+
+  if (!user.isSuperAdmin) {
+    return <Redirect to="/dashboard" />;
+  }
+
+  return <DashboardLayout>{children}</DashboardLayout>;
+}
+
 // Router Component
 function Router() {
   const { user } = useAuth();
@@ -335,6 +355,12 @@ function Router() {
         <AdminRoute>
           <CertificatesPage />
         </AdminRoute>
+      </Route>
+      
+      <Route path="/tenant-management">
+        <SuperAdminRoute>
+          <TenantManagementPage />
+        </SuperAdminRoute>
       </Route>
       
       <Route path="/membership-applications">
