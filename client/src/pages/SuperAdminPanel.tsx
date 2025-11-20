@@ -169,6 +169,30 @@ export default function SuperAdminPanel() {
     }
   });
 
+  // Create user mutation
+  const createUserMutation = useMutation({
+    mutationFn: (data: any) => apiRequest("/api/users", "POST", data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/users"] });
+      toast({ title: "Korisnik kreiran uspješno!" });
+      setUserForm({
+        firstName: "",
+        lastName: "",
+        username: "",
+        email: "",
+        password: "",
+        isAdmin: false
+      });
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: "Greška", 
+        description: error.message || "Neuspjelo kreiranje korisnika",
+        variant: "destructive" 
+      });
+    }
+  });
+
   const resetForm = () => {
     setFormData({
       name: "",
@@ -274,31 +298,39 @@ export default function SuperAdminPanel() {
 
   return (
     <Box sx={{ p: 4 }}>
-      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="h4" data-testid="text-page-title">
-          Super Admin Panel - Tenant Management
-        </Typography>
-        <Button 
-          variant="contained" 
-          startIcon={<Add />} 
-          onClick={() => handleOpenDialog()}
-          data-testid="button-create-tenant"
-        >
-          Novi Tenant
-        </Button>
-      </Box>
+      <Typography variant="h4" data-testid="text-page-title" sx={{ mb: 3 }}>
+        Super Admin Panel
+      </Typography>
 
-      <Card sx={{ p: 2, mb: 3 }}>
-        <TextField
-          fullWidth
-          placeholder="Pretraži po nazivu, email-u ili kodu..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          data-testid="input-search"
-        />
-      </Card>
+      <Tabs value={currentTab} onChange={(e, newValue) => setCurrentTab(newValue)} sx={{ mb: 3 }}>
+        <Tab label="Upravljanje Tenant-ima" />
+        <Tab label="Upravljanje Korisnicima" />
+      </Tabs>
 
-      <TableContainer component={Card}>
+      {currentTab === 0 ? (
+        <>
+          <Box sx={{ mb: 3, display: 'flex', justifyContent: 'flex-end' }}>
+            <Button 
+              variant="contained" 
+              startIcon={<Add />} 
+              onClick={() => handleOpenDialog()}
+              data-testid="button-create-tenant"
+            >
+              Novi Tenant
+            </Button>
+          </Box>
+
+          <Card sx={{ p: 2, mb: 3 }}>
+            <TextField
+              fullWidth
+              placeholder="Pretraži po nazivu, email-u ili kodu..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              data-testid="input-search"
+            />
+          </Card>
+
+          <TableContainer component={Card}>
         <Table>
           <TableHead>
             <TableRow>
