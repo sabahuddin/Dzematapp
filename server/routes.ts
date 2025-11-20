@@ -2128,7 +2128,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Organization Settings routes
   app.get("/api/organization-settings", async (req, res) => {
     try {
-      const settings = await storage.getOrganizationSettings();
+      const tenantId = req.tenantId!;
+      const settings = await storage.getOrganizationSettings(tenantId);
       if (!settings) {
         return res.status(404).json({ message: "Organization settings not found" });
       }
@@ -2140,8 +2141,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/organization-settings", requireAdmin, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const settingsData = insertOrganizationSettingsSchema.parse(req.body);
-      const updatedSettings = await storage.updateOrganizationSettings(settingsData);
+      const updatedSettings = await storage.updateOrganizationSettings(tenantId, settingsData);
       res.json(updatedSettings);
     } catch (error) {
       res.status(400).json({ message: "Invalid organization settings data" });
@@ -2186,7 +2188,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Requests routes
   app.get("/api/requests", requireAdmin, async (req, res) => {
     try {
-      const requests = await storage.getAllRequests();
+      const tenantId = req.tenantId!;
+      const requests = await storage.getAllRequests(tenantId);
       res.json(requests);
     } catch (error) {
       res.status(500).json({ message: "Failed to get requests" });
@@ -2195,8 +2198,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/requests/my", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const userId = req.session.userId!;
-      const requests = await storage.getUserRequests(userId);
+      const requests = await storage.getUserRequests(userId, tenantId);
       res.json(requests);
     } catch (error) {
       res.status(500).json({ message: "Failed to get user requests" });
@@ -2205,12 +2209,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/requests", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const userId = req.session.userId!;
       const requestData = insertRequestSchema.parse({
         ...req.body,
         userId
       });
-      const request = await storage.createRequest(requestData);
+      const request = await storage.createRequest({ ...requestData, tenantId });
       res.status(201).json(request);
     } catch (error) {
       res.status(400).json({ message: "Invalid request data" });
@@ -2219,10 +2224,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/requests/:id/status", requireAdmin, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const { status, adminNotes } = req.body;
       const reviewedById = req.session.userId!;
       const request = await storage.updateRequestStatus(
         req.params.id,
+        tenantId,
         status,
         reviewedById,
         adminNotes
