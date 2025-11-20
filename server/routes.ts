@@ -393,8 +393,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/users", requireAdmin, async (req, res) => {
     try {
       let tenantId = req.body.tenantId || req.tenantId;
-      if (!tenantId) return res.status(400).json({ message: "Tenant ID required" });
-      const userData = insertUserSchema.parse(req.body);
+      if (!tenantId) {
+        const allTenants = await storage.getAllTenants();
+        if (!allTenants || allTenants.length === 0) return res.status(400).json({ message: "No tenants available" });
+        tenantId = allTenants[0].id;
+      }
+      const userData = insertUserSchema.parse({ ...req.body, tenantId });
       
       // Check if username already exists (only if username is provided)
       if (userData.username) {
