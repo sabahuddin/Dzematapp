@@ -367,7 +367,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/users/:id", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const { id } = req.params;
       const currentUser = req.user!;
       
@@ -417,7 +417,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/users/:id", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const { id } = req.params;
       const currentUser = req.user!;
       
@@ -692,7 +692,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Announcements routes
   app.get("/api/announcements", async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const announcements = await storage.getAllAnnouncements(tenantId);
       res.json(announcements);
     } catch (error) {
@@ -702,7 +702,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/announcements", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const announcementData = insertAnnouncementSchema.parse(req.body);
       const announcement = await storage.createAnnouncement({ ...announcementData, tenantId });
       res.json(announcement);
@@ -713,7 +713,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/announcements/:id", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const { id } = req.params;
       const announcementData = insertAnnouncementSchema.partial().parse(req.body);
       const announcement = await storage.updateAnnouncement(id, tenantId, announcementData);
@@ -728,7 +728,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/announcements/:id", requireAdmin, async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const { id } = req.params;
       const deleted = await storage.deleteAnnouncement(id, tenantId);
       if (!deleted) {
@@ -743,7 +743,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Events routes
   app.get("/api/events", async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const events = await storage.getAllEvents(tenantId);
       
       // Add RSVP count to each event
@@ -777,7 +777,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/events/locations", async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const locations = await storage.getEventLocations(tenantId);
       res.json(locations);
     } catch (error) {
@@ -787,7 +787,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/events", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const eventData = insertEventSchema.parse(req.body);
       const event = await storage.createEvent({ ...eventData, tenantId });
       res.json(event);
@@ -798,7 +798,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/events/:id", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const { id } = req.params;
       const eventData = insertEventSchema.partial().parse(req.body);
       const event = await storage.updateEvent(id, tenantId, eventData);
@@ -813,7 +813,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/events/:id", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const { id } = req.params;
       const deleted = await storage.deleteEvent(id, tenantId);
       if (!deleted) {
@@ -827,7 +827,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/events/:id/rsvps", async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const { id } = req.params;
       const rsvpStats = await storage.getEventRsvps(id, tenantId);
       res.json(rsvpStats);
@@ -838,7 +838,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/events/:id/rsvp", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const { id } = req.params;
       const { adultsCount, childrenCount } = req.body;
       
@@ -894,7 +894,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/events/:eventId/rsvp/:rsvpId", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const { rsvpId } = req.params;
       const { adultsCount, childrenCount } = req.body;
       
@@ -915,7 +915,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/events/:eventId/rsvp/:rsvpId", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const { rsvpId } = req.params;
       const deleted = await storage.deleteEventRsvp(rsvpId, tenantId);
       
@@ -931,7 +931,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/events/:eventId/user-rsvp", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const { eventId } = req.params;
       const rsvp = await storage.getUserEventRsvp(eventId, req.user!.id, tenantId);
       res.json(rsvp);
@@ -993,7 +993,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/work-groups/:id", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const { id } = req.params;
 
       // Check if work group exists
@@ -1041,7 +1041,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/work-groups/:id", requireAdmin, requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const { id } = req.params;
 
       // Check if work group exists
@@ -1067,7 +1067,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Work Group Members routes
   app.post("/api/work-groups/:id/members", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const { id } = req.params;
       const { userId } = req.body;
 
@@ -1110,7 +1110,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/work-groups/:id/members/:userId", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const { id, userId } = req.params;
 
       // Check if work group exists
@@ -1148,7 +1148,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/work-groups/:id/members", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const { id } = req.params;
 
       // Check if work group exists
@@ -1192,7 +1192,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Check if work group exists
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const workGroup = await storage.getWorkGroup(workGroupId, tenantId);
       if (!workGroup) {
         return res.status(404).json({ message: "Work group not found" });
@@ -1226,7 +1226,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { id } = req.params;
 
       // Check if work group exists
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const workGroup = await storage.getWorkGroup(id, tenantId);
       if (!workGroup) {
         return res.status(404).json({ message: "Work group not found" });
@@ -1242,7 +1242,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/users/:id/work-groups", requireFeature("tasks"), async (req, res) => {
     try {
       const { id } = req.params;
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
 
       // Check if user exists
       const user = await storage.getUser(id, tenantId);
@@ -1260,7 +1260,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Tasks routes
   app.get("/api/work-groups/:workGroupId/tasks", requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const { workGroupId } = req.params;
       const tasks = await storage.getTasksByWorkGroup(workGroupId, tenantId);
       res.json(tasks);
@@ -1271,7 +1271,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/tasks/dashboard", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const userId = req.user!.id;
       const isAdmin = req.user!.isAdmin || false;
       
@@ -1284,7 +1284,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/tasks/admin-archive", requireAdmin, requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const userId = req.user!.id;
       const isAdmin = true;
       
@@ -1297,7 +1297,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/tasks", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const taskData = insertTaskSchema.parse(req.body);
       
       // Check if work group exists
@@ -1323,7 +1323,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/tasks/:id", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const { id } = req.params;
       const taskData = insertTaskSchema.partial().parse(req.body);
       
@@ -1406,7 +1406,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/tasks/:id", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const { id } = req.params;
       
       // Get existing task to check work group
@@ -1440,7 +1440,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.patch("/api/tasks/:taskId/move", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const { taskId } = req.params;
       const { newWorkGroupId } = req.body;
 
@@ -1576,7 +1576,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Get the task to find the work group
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const task = await storage.getTask(comment.taskId, tenantId);
       if (!task) {
         return res.status(404).json({ message: "Associated task not found" });
@@ -1889,7 +1889,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Messages routes
   app.get("/api/messages/conversations", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
       }
@@ -1903,7 +1903,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/messages", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
       }
@@ -1939,7 +1939,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/messages/unread-count", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
       }
@@ -1953,7 +1953,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/messages/thread/:threadId", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
       }
@@ -1990,7 +1990,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/messages", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
       }
@@ -2025,7 +2025,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/messages/:id/read", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
       }
@@ -2045,7 +2045,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/messages/thread/:threadId/read", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
       }
@@ -2060,7 +2060,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/messages/:id", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
       }
@@ -2192,7 +2192,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Organization Settings routes
   app.get("/api/organization-settings", async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const settings = await storage.getOrganizationSettings(tenantId);
       if (!settings) {
         return res.status(404).json({ message: "Organization settings not found" });
@@ -2205,7 +2205,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/organization-settings", requireAdmin, async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const settingsData = insertOrganizationSettingsSchema.parse(req.body);
       const updatedSettings = await storage.updateOrganizationSettings(tenantId, settingsData);
       res.json(updatedSettings);
@@ -2217,7 +2217,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Documents routes
   app.get("/api/documents", requireAuth, requireFeature("documents"), async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const documents = await storage.getAllDocuments(tenantId);
       res.json(documents);
     } catch (error) {
@@ -2238,7 +2238,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/documents/:id", requireAdmin, requireFeature("documents"), async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const deleted = await storage.deleteDocument(req.params.id, tenantId);
       if (!deleted) {
         return res.status(404).json({ message: "Document not found" });
@@ -2252,7 +2252,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Requests routes
   app.get("/api/requests", requireAdmin, async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const requests = await storage.getAllRequests(tenantId);
       res.json(requests);
     } catch (error) {
@@ -2262,7 +2262,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/requests/my", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const userId = req.session.userId!;
       const requests = await storage.getUserRequests(userId, tenantId);
       res.json(requests);
@@ -2273,7 +2273,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/requests", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const userId = req.session.userId!;
       const requestData = insertRequestSchema.parse({
         ...req.body,
@@ -2288,7 +2288,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/requests/:id/status", requireAdmin, async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const { status, adminNotes } = req.body;
       const reviewedById = req.session.userId!;
       const request = await storage.updateRequestStatus(
