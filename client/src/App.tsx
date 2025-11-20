@@ -267,9 +267,13 @@ function Router() {
       </Route>
       
       <Route path="/dashboard">
-        <ProtectedRoute>
-          <DashboardHome />
-        </ProtectedRoute>
+        {user?.isSuperAdmin ? (
+          <Redirect to="/superadmin/dashboard" />
+        ) : (
+          <ProtectedRoute>
+            <DashboardHome />
+          </ProtectedRoute>
+        )}
       </Route>
       
       <Route path="/feed">
