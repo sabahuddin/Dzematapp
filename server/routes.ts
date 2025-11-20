@@ -2895,7 +2895,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // If contribution is for a project, create additional activity log
       if (validated.projectId) {
-        const project = await storage.getProject(validated.projectId);
+        const project = await storage.getProject(validated.projectId, req.user!.tenantId);
         if (project) {
           await storage.createActivityLog({
             userId: validated.userId,
@@ -2908,7 +2908,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Recalculate user's total points
-      await storage.recalculateUserPoints(validated.userId);
+      await storage.recalculateUserPoints(validated.userId, req.user!.tenantId);
 
       res.status(201).json(contribution);
     } catch (error) {
@@ -2922,7 +2922,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validated = insertFinancialContributionSchema.partial().parse(req.body);
       
       // Get existing contribution to handle project updates
-      const existingContribution = await storage.getFinancialContribution(req.params.id);
+      const existingContribution = await storage.getFinancialContribution(req.params.id, req.user!.tenantId);
       if (!existingContribution) {
         return res.status(404).json({ message: "Contribution not found" });
       }
@@ -3014,12 +3014,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validated = insertFinancialContributionSchema.partial().parse(req.body);
       
       // Get existing contribution to handle project updates
-      const existingContribution = await storage.getFinancialContribution(req.params.id);
+      const existingContribution = await storage.getFinancialContribution(req.params.id, req.user!.tenantId);
       if (!existingContribution) {
         return res.status(404).json({ message: "Contribution not found" });
       }
 
-      const contribution = await storage.updateFinancialContribution(req.params.id, validated);
+      const contribution = await storage.updateFinancialContribution(req.params.id, req.user!.tenantId, validated);
       if (!contribution) {
         return res.status(404).json({ message: "Contribution not found" });
       }
@@ -3069,7 +3069,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/financial-contributions/:id", requireAdmin, requireFeature("finances"), async (req, res) => {
     try {
       // Delete contribution with all related logs in a transaction
-      const { userId, projectId } = await storage.deleteContributionWithLogs(req.params.id);
+      const { userId, projectId } = await storage.deleteContributionWithLogs(req.params.id, req.user!.tenantId);
       
       // Recalculate points and badges outside transaction
       await storage.recalculateUserPoints(userId, req.user!.tenantId);
@@ -3349,10 +3349,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const userId = req.params.userId;
       const [tasksCompleted, eventsAttended, totalDonations, totalPoints] = await Promise.all([
-        storage.getUserTasksCompleted(userId),
-        storage.getUserEventsAttended(userId),
-        storage.getUserTotalDonations(userId),
-        storage.recalculateUserPoints(userId)
+        storage.getUserTasksCompleted(userId, req.user!.tenantId),
+        storage.getUserEventsAttended(userId, req.user!.tenantId),
+        storage.getUserTotalDonations(userId, req.user!.tenantId),
+        storage.recalculateUserPoints(userId, req.user!.tenantId)
       ]);
 
       res.json({
