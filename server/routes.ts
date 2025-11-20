@@ -1232,14 +1232,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/users/:id/work-groups", requireFeature("tasks"), async (req, res) => {
     try {
       const { id } = req.params;
+      const tenantId = req.tenantId!;
 
       // Check if user exists
-      const user = await storage.getUser(id);
+      const user = await storage.getUser(id, tenantId);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
 
-      const userWorkGroups = await storage.getUserWorkGroups(id);
+      const userWorkGroups = await storage.getUserWorkGroups(id, tenantId);
       res.json(userWorkGroups);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch user work groups" });
@@ -1367,8 +1368,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             activityType: 'task_completed',
             description: `Završen zadatak: ${task.title} u sekciji ${workGroup?.name || 'Nepoznata'} (čeka odobrenje)`,
             points: 0, // No points until admin approves
-            relatedEntityId: task.id,
-});
+            relatedEntityId: task.id
+          });
         }
         
         // If admin/moderator marks as završeno (approved), log for all assigned users WITH points
@@ -1381,8 +1382,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
               activityType: 'task_completed',
               description: `Završen zadatak: ${task.title} u sekciji ${workGroup?.name || 'Nepoznata'}`,
               points,
-              relatedEntityId: task.id,
-});
+              relatedEntityId: task.id
+            });
           }
         }
       }
@@ -1524,7 +1525,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Check if user is a member of the work group this task belongs to (admins can comment on any task)
       if (!user.isAdmin) {
-        const isMember = await storage.isUserMemberOfWorkGroup(task.workGroupId, userId);
+        const isMember = await storage.isUserMemberOfWorkGroup(task.workGroupId, userId, req.tenantId!);
         if (!isMember) {
           return res.status(403).json({ message: "Forbidden: Only work group members can comment on tasks" });
         }
@@ -1606,7 +1607,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get user details for each file
       const filesWithUserDetails = await Promise.all(
         files.map(async (file) => {
-          const user = await storage.getUser(file.uploadedById);
+          const user = await storage.getUser(file.uploadedById, req.tenantId!);
           return {
             ...file,
             uploadedBy: user ? { 
@@ -3334,7 +3335,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         eventsAttended,
         totalDonations,
         totalPoints
-});
+      });
     } catch (error) {
       res.status(500).json({ message: "Failed to get user statistics" });
     }
@@ -3344,14 +3345,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/user-preferences", requireAuth, async (req, res) => {
     try {
       const userId = req.user!.id;
-      let preferences = await storage.getUserPreferences(userId);
+      const tenantId = req.user!.tenantId;
+      let preferences = await storage.getUserPreferences(userId, tenantId);
       
       // If no preferences exist, create default ones
       if (!preferences) {
         preferences = await storage.createUserPreferences({
           userId,
+          tenantId,
           quickAccessShortcuts: []
-});
+        });
       }
       
       res.json(preferences);
@@ -3364,6 +3367,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put("/api/user-preferences", requireAuth, async (req, res) => {
     try {
       const userId = req.user!.id;
+      const tenantId = req.user!.tenantId;
       const { quickAccessShortcuts } = req.body;
       
       // Validate that shortcuts is an array
@@ -3372,19 +3376,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Check if preferences exist
-      let preferences = await storage.getUserPreferences(userId);
+      let preferences = await storage.getUserPreferences(userId, tenantId);
       
       if (!preferences) {
         // Create new preferences
         preferences = await storage.createUserPreferences({
           userId,
+          tenantId,
           quickAccessShortcuts
-});
+        });
       } else {
         // Update existing preferences
-        preferences = await storage.updateUserPreferences(userId, req.user!.tenantId, {
+        preferences = await storage.updateUserPreferences(userId, tenantId, {
           quickAccessShortcuts
-});
+        });
       }
       
       res.json(preferences);
@@ -3398,16 +3403,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/proposals", requireAuth, async (req, res) => {
     try {
       const user = req.user!;
+      const tenantId = req.user!.tenantId;
       const { status, workGroupId } = req.query;
 
       let proposals;
       
       if (status) {
-        proposals = await storage.getProposalsByStatus(status as string);
+        proposals = await storage.getProposalsByStatus(status as string, tenantId);
       } else if (workGroupId) {
-        proposals = await storage.getProposalsByWorkGroup(workGroupId as string);
+        proposals = await storage.getProposalsByWorkGroup(workGroupId as string, tenantId);
       } else {
-        proposals = await storage.getAllProposals();
+        proposals = await storage.getAllProposals(tenantId);
       }
 
       // Filter based on user role
@@ -3416,7 +3422,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         res.json(proposals);
       } else {
         // Regular members can only see proposals from their work groups
-        const userWorkGroups = await storage.getUserWorkGroups(user.id);
+        const userWorkGroups = await storage.getUserWorkGroups(user.id, tenantId);
         const userWorkGroupIds = userWorkGroups.map(wg => wg.id);
         const filteredProposals = proposals.filter(p => userWorkGroupIds.includes(p.workGroupId));
         res.json(filteredProposals);
