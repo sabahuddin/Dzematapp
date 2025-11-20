@@ -87,7 +87,6 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     { path: '/users', label: t('navigation:menu.users'), labelForMember: t('navigation:menu.profile'), icon: People },
     { path: '/finances', label: t('navigation:menu.finances'), labelForMember: t('navigation:menu.myPayments'), icon: AttachMoney },
     { path: '/activity-log', label: t('navigation:menu.activityLog'), labelForMember: t('navigation:menu.myActivities'), icon: Timeline },
-    { path: '/projects', label: t('navigation:menu.projects'), icon: Work },
     { path: '/announcements', label: t('navigation:menu.announcements'), icon: Campaign, showBadge: true },
     { path: '/events', label: t('navigation:menu.events'), icon: Event, showBadge: true },
     { path: '/tasks', label: t('navigation:menu.tasks'), labelForMember: t('navigation:menu.sections'), icon: Task, showBadge: true },
