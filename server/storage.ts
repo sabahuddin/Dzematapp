@@ -2652,7 +2652,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createActivityFeedItem(item: InsertActivityFeedItem): Promise<ActivityFeedItem> {
-    const [feedItem] = await db.insert(activityFeed).values(item).returning();
+    const [feedItem] = await db.insert(activityFeed).values({...item, tenantId: item.tenantId}).returning();
     return feedItem;
   }
 
