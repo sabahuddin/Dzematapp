@@ -58,6 +58,23 @@ export default function SuperAdminPanel() {
     password: "",
     isAdmin: false
   });
+  const [usernameTaken, setUsernameTaken] = useState(false);
+
+  // Fetch all users to check for duplicates
+  const { data: allUsers = [] } = useQuery({
+    queryKey: ["/api/users"],
+    enabled: currentTab === 1 // Only fetch when on User Management tab
+  });
+
+  // Check if username exists
+  const checkUsername = (username: string) => {
+    if (!username) {
+      setUsernameTaken(false);
+      return;
+    }
+    const exists = allUsers.some((u: any) => u.username?.toLowerCase() === username.toLowerCase());
+    setUsernameTaken(exists);
+  };
 
   // Check if user is Super Admin
   if (!user?.isSuperAdmin) {
@@ -460,8 +477,13 @@ export default function SuperAdminPanel() {
                   fullWidth
                   label="Korisničko ime"
                   value={userForm.username}
-                  onChange={(e) => setUserForm({ ...userForm, username: e.target.value })}
+                  onChange={(e) => {
+                    setUserForm({ ...userForm, username: e.target.value });
+                    checkUsername(e.target.value);
+                  }}
                   required
+                  error={usernameTaken}
+                  helperText={usernameTaken ? "Ovo korisničko ime je već zauzeto" : ""}
                   data-testid="input-username"
                 />
               </Grid>
@@ -501,12 +523,25 @@ export default function SuperAdminPanel() {
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
+                {usernameTaken && (
+                  <Alert severity="error" sx={{ mb: 2 }} data-testid="alert-username-taken">
+                    Korisničko ime je već zauzeto. Molimo odaberite drugo korisničko ime.
+                  </Alert>
+                )}
                 <Button 
                   variant="contained" 
                   onClick={() => {
+                    if (usernameTaken) {
+                      toast({ 
+                        title: "Greška", 
+                        description: "Korisničko ime je već zauzeto",
+                        variant: "destructive" 
+                      });
+                      return;
+                    }
                     createUserMutation.mutate(userForm);
                   }}
-                  disabled={createUserMutation.isPending || !userForm.firstName || !userForm.lastName || !userForm.username || !userForm.password}
+                  disabled={createUserMutation.isPending || !userForm.firstName || !userForm.lastName || !userForm.username || !userForm.password || usernameTaken}
                   fullWidth
                   data-testid="button-create-user"
                 >
