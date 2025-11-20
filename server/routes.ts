@@ -408,8 +408,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const user = await storage.createUser(userData);
       res.json({ ...user, password: undefined });
-      console.error("Error creating user:", error);
     } catch (error) {
+      console.error("Error creating user:", error);
       res.status(400).json({ message: "Invalid user data" });
     }
 });
