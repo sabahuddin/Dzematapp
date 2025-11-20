@@ -38,7 +38,7 @@ export default function SuperAdminLoginPage() {
     try {
       const success = await loginAsSuperAdmin(formData.username, formData.password);
       if (success) {
-        setLocation('/superadmin/dashboard');
+        setLocation('/super-admin/panel');
       } else {
         setError('Invalid Super Admin credentials');
       }
