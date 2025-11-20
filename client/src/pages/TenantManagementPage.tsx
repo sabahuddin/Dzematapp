@@ -38,7 +38,9 @@ import { formatDateForDisplay } from '../utils/dateUtils';
 
 interface TenantFormData {
   name: string;
+  slug: string;
   subdomain: string;
+  email: string;
   subscriptionTier: string;
 }
 
@@ -50,7 +52,9 @@ export default function TenantManagementPage() {
   const [selectedTenant, setSelectedTenant] = useState<Tenant | null>(null);
   const [formData, setFormData] = useState<TenantFormData>({
     name: '',
+    slug: '',
     subdomain: '',
+    email: '',
     subscriptionTier: 'basic'
   });
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -126,14 +130,18 @@ export default function TenantManagementPage() {
       setSelectedTenant(tenant);
       setFormData({
         name: tenant.name,
+        slug: tenant.slug,
         subdomain: tenant.subdomain || '',
+        email: tenant.email,
         subscriptionTier: tenant.subscriptionTier
       });
     } else {
       setSelectedTenant(null);
       setFormData({
         name: '',
+        slug: '',
         subdomain: '',
+        email: '',
         subscriptionTier: 'basic'
       });
     }
@@ -145,7 +153,9 @@ export default function TenantManagementPage() {
     setSelectedTenant(null);
     setFormData({
       name: '',
+      slug: '',
       subdomain: '',
+      email: '',
       subscriptionTier: 'basic'
     });
   };
@@ -330,13 +340,32 @@ export default function TenantManagementPage() {
               data-testid="input-name"
             />
             <TextField
+              label="Slug (URL identifier)"
+              value={formData.slug}
+              onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+              fullWidth
+              required
+              disabled={!!selectedTenant}
+              helperText={selectedTenant ? 'Slug se ne može mijenjati' : 'Npr: iz-zurich (lowercase, bez razmaka)'}
+              data-testid="input-slug"
+            />
+            <TextField
+              label="Email"
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              fullWidth
+              required
+              helperText="Kontakt email za organizaciju"
+              data-testid="input-email"
+            />
+            <TextField
               label="Subdomen"
               value={formData.subdomain}
               onChange={(e) => setFormData({ ...formData, subdomain: e.target.value })}
               fullWidth
-              required
               disabled={!!selectedTenant}
-              helperText={selectedTenant ? 'Subdomen se ne može mijenjati' : 'Npr: moja-dzamija'}
+              helperText={selectedTenant ? 'Subdomen se ne može mijenjati' : 'Npr: moja-dzamija (opciono)'}
               data-testid="input-subdomain"
             />
             <TextField
