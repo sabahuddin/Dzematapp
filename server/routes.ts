@@ -4327,6 +4327,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get tenant statistics
+  app.get("/api/tenants/:id/stats", requireSuperAdmin, async (req, res) => {
+    try {
+      const stats = await storage.getTenantStats(req.params.id);
+      if (!stats) {
+        return res.status(404).json({ message: "Tenant not found" });
+      }
+      res.json(stats);
+    } catch (error) {
+      console.error('Error getting tenant stats:', error);
+      res.status(500).json({ message: "Failed to get tenant stats" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

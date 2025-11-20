@@ -437,6 +437,7 @@ export interface IStorage {
   updateTenant(id: string, updates: Partial<InsertTenant>): Promise<Tenant | undefined>;
   updateTenantStatus(id: string, isActive: boolean): Promise<Tenant | undefined>;
   deleteTenant(id: string): Promise<boolean>;
+  getTenantStats(id: string): Promise<{ userCount: number; storageUsed: number; activeSubscription: boolean } | undefined>;
   
   // Subscription Plans (public - for pricing page)
   getAllSubscriptionPlans(): Promise<Array<{
@@ -2689,6 +2690,31 @@ export class DatabaseStorage implements IStorage {
   async deleteTenant(id: string): Promise<boolean> {
     const result = await db.delete(tenants).where(eq(tenants.id, id));
     return result.rowCount ? result.rowCount > 0 : false;
+  }
+
+  async getTenantStats(id: string): Promise<{ userCount: number; storageUsed: number; activeSubscription: boolean } | undefined> {
+    // Check if tenant exists
+    const tenant = await this.getTenant(id);
+    if (!tenant) return undefined;
+
+    // Count users
+    const userCountResult = await db.select({ count: sql<number>`count(*)::int` })
+      .from(users)
+      .where(eq(users.tenantId, id));
+    const userCount = userCountResult[0]?.count || 0;
+
+    // Calculate storage usage (documents + photos)
+    // For now, return a placeholder - you can implement actual storage calculation later
+    const storageUsed = 0; // TODO: Calculate actual storage usage
+
+    // Check subscription status
+    const activeSubscription = tenant.subscriptionStatus === 'active' || tenant.subscriptionStatus === 'trial';
+
+    return {
+      userCount,
+      storageUsed,
+      activeSubscription
+    };
   }
 
   async getAllSubscriptionPlans() {
