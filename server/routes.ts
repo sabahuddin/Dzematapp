@@ -4214,10 +4214,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
             readOnlyModules: [],
             maxUsers: null,
             maxStorage: null
-          }
-        },
-        isActive: true
-      });
+          },
+          isActive: true
+        });
       }
       
       if (!tenantId) {
