@@ -1709,17 +1709,17 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(financialContributions).orderBy(desc(financialContributions.paymentDate));
   }
 
-  async updateFinancialContribution(id: string, updates: Partial<InsertFinancialContribution>): Promise<FinancialContribution | undefined> {
-    const [contrib] = await db.update(financialContributions).set(updates).where(eq(financialContributions.id, id)).returning();
+  async updateFinancialContribution(id: string, tenantId: string, updates: Partial<InsertFinancialContribution>): Promise<FinancialContribution | undefined> {
+    const [contrib] = await db.update(financialContributions).set(updates).where(and(eq(financialContributions.id, id), eq(financialContributions.tenantId, tenantId))).returning();
     return contrib;
   }
 
-  async deleteFinancialContribution(id: string): Promise<boolean> {
-    const result = await db.delete(financialContributions).where(eq(financialContributions.id, id)).returning();
+  async deleteFinancialContribution(id: string, tenantId: string): Promise<boolean> {
+    const result = await db.delete(financialContributions).where(and(eq(financialContributions.id, id), eq(financialContributions.tenantId, tenantId))).returning();
     return result.length > 0;
   }
 
-  async deleteContributionWithLogs(contributionId: string): Promise<{ userId: string; projectId: string | null }> {
+  async deleteContributionWithLogs(contributionId: string, tenantId: string): Promise<{ userId: string; projectId: string | null }> {
     return await db.transaction(async (tx) => {
       // Get contribution for userId and projectId
       const [contribution] = await tx
@@ -2018,17 +2018,18 @@ export class DatabaseStorage implements IStorage {
     return removedBadgeNames;
   }
 
-  async deleteActivityLogByRelatedEntity(relatedEntityId: string): Promise<number> {
-    const result = await db.delete(activityLog).where(eq(activityLog.relatedEntityId, relatedEntityId));
+  async deleteActivityLogByRelatedEntity(relatedEntityId: string, tenantId: string): Promise<number> {
+    const result = await db.delete(activityLog).where(and(eq(activityLog.relatedEntityId, relatedEntityId), eq(activityLog.tenantId, tenantId)));
     return result.rowCount || 0;
   }
 
-  async deleteActivityLogByUserAndType(userId: string, activityType: string, relatedEntityId: string): Promise<number> {
+  async deleteActivityLogByUserAndType(userId: string, activityType: string, relatedEntityId: string, tenantId: string): Promise<number> {
     const result = await db.delete(activityLog).where(
       and(
         eq(activityLog.userId, userId),
         eq(activityLog.activityType, activityType),
-        eq(activityLog.relatedEntityId, relatedEntityId)
+        eq(activityLog.relatedEntityId, relatedEntityId),
+        eq(activityLog.tenantId, tenantId)
       )
     );
     return result.rowCount || 0;
