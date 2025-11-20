@@ -130,15 +130,12 @@ export default function LoginPage() {
             </Box>
 
             <Box sx={{ textAlign: 'center', mb: 4 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, mb: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
                 <DzematLogo size={72} />
                 <Typography variant="h3" sx={{ fontWeight: 600, color: 'hsl(207 88% 55%)', fontFamily: 'Aladin, cursive' }}>
                   {t('login:title')}
                 </Typography>
               </Box>
-              <Typography variant="body2" color="text.secondary">
-                {t('login:subtitle')}
-              </Typography>
             </Box>
 
             {error && (
