@@ -4,12 +4,14 @@
     "dzematShop": "Shop",
     "sell": "Selling",
     "gift": "Gifting",
+    "services": "Services",
     "archive": "Archive"
   },
   "buttons": {
     "addProduct": "Add Product",
     "addListing": "Add Listing",
     "addGift": "Add Gift",
+    "addService": "Add Service",
     "buy": "Buy",
     "edit": "Edit",
     "delete": "Delete",
@@ -36,7 +38,13 @@
     "quantity": "Quantity",
     "color": "Color",
     "notes": "Notes",
-    "messageContent": "Message content"
+    "messageContent": "Message content",
+    "duration": "Duration",
+    "serviceName": "Service Name",
+    "serviceDescription": "Service Description",
+    "servicePrice": "Price (optional)",
+    "serviceDuration": "Duration (e.g. 1 hour, 30 min)",
+    "serviceCategory": "Category (optional)"
   },
   "categories": {
     "hrana": "Food",
@@ -70,6 +78,8 @@
     "editListing": "Edit Listing",
     "addSaleListing": "Add Sale Listing",
     "addGiftListing": "Add Gift",
+    "addService": "Add Service",
+    "editService": "Edit Service",
     "order": "Order {{product}}",
     "sendMessage": "Send message"
   },

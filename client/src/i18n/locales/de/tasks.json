@@ -24,7 +24,8 @@
     "setAsModerator": "Als Moderator festlegen",
     "removeFromModerators": "Moderator entfernen",
     "count_one": "{{count}} Mitglied",
-    "count_other": "{{count}} Mitglieder"
+    "count_few": "{{count}} Mitglieder",
+    "count_many": "{{count}} Mitglieder"
   },
   "manageMembers": "Mitglieder verwalten",
   "manageTasks": "Aufgaben verwalten",
@@ -133,7 +134,8 @@
     "noTasksWithStatus": "Keine Aufgaben mit Status \"{{status}}\"",
     "taskCount": "{{count}} Aufgaben",
     "taskCount_one": "{{count}} Aufgabe",
-    "taskCount_other": "{{count}} Aufgaben",
+    "taskCount_few": "{{count}} Aufgaben",
+    "taskCount_many": "{{count}} Aufgaben",
     "loadingError": "Fehler beim Laden der Aufgaben. Bitte versuchen Sie es erneut.",
     "deadlineLabel": "Frist:"
   },

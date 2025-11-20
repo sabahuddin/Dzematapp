@@ -32,6 +32,8 @@
     "error": "Gabim",
     "uploadSuccess": "Kohët e namazit u ngarkuan me sukses",
     "uploadError": "Gabim gjatë ngarkimit të skedarit CSV",
+    "exportSuccess": "Skedari CSV u shkarkua me sukses",
+    "exportError": "Gabim gjatë shkarkimit të skedarit CSV",
     "deleteSuccess": "Të gjitha kohët e namazit u fshinë",
     "deleteError": "Gabim gjatë fshirjes së kohëve të namazit"
   },

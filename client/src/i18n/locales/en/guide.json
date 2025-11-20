@@ -50,6 +50,7 @@
   "sections": {
     "dashboard": {
       "title": "Dashboard (Control panel)",
+      "shortDesc": "Overview of congregation activities and statistics",
       "description": "Dashboard is the central place of the application where each user gets a personalized overview of the most important information. This is the first page you see after logging in and serves as a quick overview of all congregation activities.",
       "features": [
         "Today's prayer times displayed at the top of the page",
@@ -63,6 +64,7 @@
     },
     "users": {
       "title": "Users",
+      "shortDesc": "Member management and profiles",
       "description": "Module for managing all congregation members and their family relationships. Detailed member profiles are stored here with contact information, membership categories and activity history. The system supports creating family connections between members.",
       "features": [
         "Detailed profiles with photo, contact data and occupation",
@@ -77,6 +79,7 @@
     },
     "announcements": {
       "title": "Announcements",
+      "shortDesc": "Announcements and information for members",
       "description": "System for publishing important information and communication with congregation members. Announcements can be general or categorized, with text formatting option, adding images and scheduling publication.",
       "features": [
         "Announcement categorization: Congregation, IZBCH (Islamic Community BiH Switzerland), IC (Islamic Community), Other",
@@ -92,6 +95,7 @@
     },
     "events": {
       "title": "Events",
+      "shortDesc": "Event organization and RSVP system",
       "description": "Complete system for managing congregation events with calendar, RSVP functionalities and important dates. Enables organization of iftars, mawlids, educational programs, sports activities and other social events.",
       "features": [
         "Calendar with monthly view and event date marking",
@@ -108,6 +112,7 @@
     },
     "workgroups": {
       "title": "Sections (Work groups)",
+      "shortDesc": "Sections and task assignment",
       "description": "System for organizing members into work groups according to activities and areas of work. Each section can have its tasks, moderators and members. Sections can be public (visible to all) or private (access only to approved members).",
       "features": [
         "Creating unlimited number of sections (e.g. Administration, Halal food, Iftar, Cleaning)",
@@ -125,6 +130,7 @@
     },
     "messages": {
       "title": "Messages",
+      "shortDesc": "Administrator communication with members",
       "description": "Internal messaging system that allows administration to send messages to members. Messages can be sent to all members at once or targeted to specific categories (Men, Women, Parents, Children).",
       "features": [
         "Sending messages to all members or specific categories",
@@ -139,6 +145,7 @@
     },
     "askImam": {
       "title": "Ask Imam",
+      "shortDesc": "Questions for the congregation imam",
       "description": "Private system that allows members to ask Islamic questions to congregation imam. Each member can ask question, track its status and get answer. Questions are private - each member sees only their questions.",
       "features": [
         "Privacy - each member sees only their questions",
@@ -153,6 +160,7 @@
     },
     "requests": {
       "title": "Requests & Applications",
+      "shortDesc": "Member requests to the congregation",
       "description": "Central system for submitting and processing various types of member requests to congregation. Includes requests for material assistance, organizing weddings, births, deaths, as well as new membership applications.",
       "features": [
         "Request types: Material assistance, Wedding, Birth, Death, Miscellaneous, Membership",
@@ -168,6 +176,7 @@
     },
     "shop": {
       "title": "Shop",
+      "shortDesc": "Buying and selling among members",
       "description": "Internal marketplace where members can buy and sell items within congregation. Admin publishes items on behalf of members, and interested buyers contact seller directly. All prices are in CHF (Swiss franc).",
       "features": [
         "Items with photos, description and price in CHF",
@@ -183,6 +192,7 @@
     },
     "vaktija": {
       "title": "Prayer Times",
+      "shortDesc": "Prayer times for each day",
       "description": "Display of Islamic prayer times for each day. Prayer times can be automatically loaded from CSV file from SwissMosque.ch website and displayed organized by months.",
       "features": [
         "Automatic loading from CSV file (SwissMosque.ch format)",
@@ -198,6 +208,7 @@
     },
     "finances": {
       "title": "Finances",
+      "shortDesc": "Record of member financial contributions",
       "description": "Record of all financial contributions from congregation members. System enables tracking contributions, categorization by purpose and linking with projects. All transactions are recorded and stored in database.",
       "features": [
         "Contribution categories: Membership, Donation, Waqf, Sergija, Other",
@@ -213,6 +224,7 @@
     },
     "projects": {
       "title": "Projects",
+      "shortDesc": "Congregation projects and donations",
       "description": "Management of larger congregation projects that require fundraising. Each project has target amount, current progress and option to link financial contributions directly with project.",
       "features": [
         "Creating projects with target amount in CHF",
@@ -228,6 +240,7 @@
     },
     "activity": {
       "title": "Activity Log",
+      "shortDesc": "Activity tracking and points",
       "description": "Complete record of all member activities in application. System automatically tracks who did what, when and how many points they earned. This enables transparency and gamification through reward system.",
       "features": [
         "Automatic logging of all activities",
@@ -243,6 +256,7 @@
     },
     "badges": {
       "title": "Badges",
+      "shortDesc": "Badge and achievement system",
       "description": "Reward and recognition system for active congregation members. Badges are awarded automatically (based on achievements) or manually (by admin) for special community contribution.",
       "features": [
         "Creating badges with name, description and criteria",
@@ -258,6 +272,7 @@
     },
     "points": {
       "title": "Point System",
+      "shortDesc": "Gamification through point system",
       "description": "Gamification system that rewards member activity through point assignment. Points are awarded automatically for different activities and can be used for member ranking or granting special privileges.",
       "features": [
         "Points for event attendance (RSVP)",
@@ -273,6 +288,7 @@
     },
     "certificates": {
       "title": "Acknowledgements (Certificates)",
+      "shortDesc": "Issuing acknowledgements and recognition",
       "description": "System for creating and issuing certificates to members for their contribution to congregation. Administrators can design templates with background images and personalize each certificate with member's name, contribution description and issue date.",
       "features": [
         "Creating templates with PNG background images",
@@ -288,6 +304,7 @@
     },
     "documents": {
       "title": "Documents",
+      "shortDesc": "Central library of important documents",
       "description": "Centralized library for storing and sharing important congregation documents. Administrators can upload PDF documents (statutes, regulations, minutes, reports) and make them available to members with visibility control.",
       "features": [
         "Upload of PDF documents with description and category",
@@ -303,6 +320,7 @@
     },
     "media": {
       "title": "Media (Livestream)",
+      "shortDesc": "YouTube livestream program broadcasts",
       "description": "Module for livestream broadcasts of Friday prayers, lectures and other programs via YouTube platform. Administrators set YouTube link that is displayed to all members and guests in real time.",
       "features": [
         "Embedded YouTube video player",
@@ -318,6 +336,7 @@
     },
     "settings": {
       "title": "Settings",
+      "shortDesc": "Application and profile settings",
       "description": "Configuration of basic congregation information, application settings and user personal data. Here are all administrative settings that control how application functions.",
       "features": [
         "Basic congregation data (name, address, contact)",

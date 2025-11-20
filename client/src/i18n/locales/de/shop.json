@@ -4,12 +4,14 @@
     "dzematShop": "DžematShop",
     "sell": "Verkaufe",
     "gift": "Verschenke",
+    "services": "Dienstleistungen",
     "archive": "Archiv"
   },
   "buttons": {
     "addProduct": "Artikel hinzufügen",
     "addListing": "Anzeige hinzufügen",
     "addGift": "Geschenk hinzufügen",
+    "addService": "Dienstleistung hinzufügen",
     "buy": "Kaufen",
     "edit": "Bearbeiten",
     "delete": "Löschen",
@@ -36,7 +38,13 @@
     "quantity": "Menge",
     "color": "Farbe",
     "notes": "Notiz",
-    "messageContent": "Nachrichteninhalt"
+    "messageContent": "Nachrichteninhalt",
+    "duration": "Dauer",
+    "serviceName": "Dienstleistungsname",
+    "serviceDescription": "Dienstleistungsbeschreibung",
+    "servicePrice": "Preis (optional)",
+    "serviceDuration": "Dauer (z.B. 1 Stunde, 30 Min)",
+    "serviceCategory": "Kategorie (optional)"
   },
   "categories": {
     "hrana": "Lebensmittel",
@@ -70,6 +78,8 @@
     "editListing": "Anzeige bearbeiten",
     "addSaleListing": "Verkaufsanzeige hinzufügen",
     "addGiftListing": "Geschenk hinzufügen",
+    "addService": "Dienstleistung hinzufügen",
+    "editService": "Dienstleistung bearbeiten",
     "order": "Bestellen {{product}}",
     "sendMessage": "Nachricht senden"
   },

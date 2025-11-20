@@ -32,6 +32,8 @@
     "error": "Fehler",
     "uploadSuccess": "Gebetszeiten erfolgreich hochgeladen",
     "uploadError": "Fehler beim Hochladen der CSV-Datei",
+    "exportSuccess": "CSV-Datei erfolgreich heruntergeladen",
+    "exportError": "Fehler beim Herunterladen der CSV-Datei",
     "deleteSuccess": "Alle Gebetszeiten gelöscht",
     "deleteError": "Fehler beim Löschen der Gebetszeiten"
   },

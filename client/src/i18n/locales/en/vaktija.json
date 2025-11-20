@@ -32,6 +32,8 @@
     "error": "Error",
     "uploadSuccess": "Prayer times uploaded successfully",
     "uploadError": "Error uploading CSV file",
+    "exportSuccess": "CSV file downloaded successfully",
+    "exportError": "Error downloading CSV file",
     "deleteSuccess": "All prayer times deleted",
     "deleteError": "Error deleting prayer times"
   },

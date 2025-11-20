@@ -50,6 +50,7 @@
   "sections": {
     "dashboard": {
       "title": "Dashboard (Paneli i Kontrollit)",
+      "shortDesc": "Përmbledhje e aktiviteteve dhe statistikave të xhematit",
       "description": "Dashboard është vendi qendror i aplikacionit ku çdo përdorues merr një pamje të personalizuar të informacioneve më të rëndësishme. Kjo është faqja e parë që shihni pas hyrjes dhe shërben si një pamje e shpejtë e të gjitha aktiviteteve në xhemat.",
       "features": [
         "Pamje e vakijave të sotme (kohët e namazit) në krye të faqes",
@@ -63,6 +64,7 @@
     },
     "users": {
       "title": "Përdoruesit",
+      "shortDesc": "Menaxhimi i anëtarëve dhe profileve",
       "description": "Moduli për menaxhimin e të gjithë anëtarëve të xhematit dhe lidhjeve të tyre familjare. Këtu ruhen profile të detajuara të anëtarëve me informacione kontakti, kategori të përkatësisë dhe histori aktiviteti. Sistemi mbështet krijimin e lidhjeve familjare midis anëtarëve.",
       "features": [
         "Profile të detajuara me foto, të dhëna kontakti dhe profesion",
@@ -77,6 +79,7 @@
     },
     "announcements": {
       "title": "Njoftimet",
+      "shortDesc": "Njoftime dhe informacione për anëtarët",
       "description": "Sistemi për publikimin e informacioneve të rëndësishme dhe komunikimin me anëtarët e xhematit. Njoftimet mund të jenë të përgjithshme ose të kategorizuara, me mundësi formatimi të tekstit, shtimi i imazheve dhe planifikimi i publikimit.",
       "features": [
         "Kategorizimi i njoftimeve: Xhemat, IZBCH (Bashkësia Islame e BiH Zvicër), IZ (Bashkësia Islame), Të tjera",
@@ -92,6 +95,7 @@
     },
     "events": {
       "title": "Ngjarjet",
+      "shortDesc": "Organizimi i ngjarjeve dhe sistemi RSVP",
       "description": "Sistem i plotë për menaxhimin e ngjarjeve në xhemat me kalendar, funksionalitete RSVP dhe data të rëndësishme. Mundëson organizimin e iftar-eve, mevlud-eve, programeve edukative, aktiviteteve sportive dhe ngjarjeve të tjera sociale.",
       "features": [
         "Kalendari me pamje mujore dhe shënjimin e datave të ngjarjeve",
@@ -108,6 +112,7 @@
     },
     "workgroups": {
       "title": "Seksionet (Grupet e Punës)",
+      "shortDesc": "Seksionet dhe caktimi i detyrave",
       "description": "Sistemi për organizimin e anëtarëve në grupe pune sipas aktiviteteve dhe fushave të punës. Çdo seksion mund të ketë detyrat e tij, moderatorët dhe anëtarët. Seksionet mund të jenë publike (të dukshme për të gjithë) ose private (akses vetëm për anëtarët e miratuar).",
       "features": [
         "Krijimi i një numri të pakufizuar seksionesh (p.sh. Administrata, Ushqimi Halal, Iftar, Pastrimi)",
@@ -125,6 +130,7 @@
     },
     "messages": {
       "title": "Mesazhet",
+      "shortDesc": "Komunikimi i administratorit me anëtarët",
       "description": "Sistemi i brendshëm i mesazheve që i mundëson administrimit të dërgojë mesazhe anëtarëve. Mesazhet mund të dërgohen të gjithë anëtarëve njëkohësisht ose të synuara sipas kategorive specifike (Burra, Gra, Prindër, Fëmijë).",
       "features": [
         "Dërgimi i mesazheve të gjithë anëtarëve ose kategorive specifike",
@@ -139,6 +145,7 @@
     },
     "askImam": {
       "title": "Pyetjet për Imamin",
+      "shortDesc": "Pyetjet për imamin e xhematit",
       "description": "Sistem privat që u mundëson anëtarëve të bëjnë pyetje islame imamit të xhematit. Çdo anëtar mund të bëjë pyetje, të ndjekë statusin e tij dhe të marrë përgjigje. Pyetjet janë private - çdo anëtar sheh vetëm pyetjet e veta.",
       "features": [
         "Privatësia - çdo anëtar sheh vetëm pyetjet e veta",
@@ -153,6 +160,7 @@
     },
     "requests": {
       "title": "Kërkesat dhe Aplikimet",
+      "shortDesc": "Kërkesat e anëtarëve ndaj xhematit",
       "description": "Sistem qendror për paraqitjen dhe përpunimin e llojeve të ndryshme të kërkesave të anëtarëve ndaj xhematit. Përfshin kërkesa për ndihmë materiale, organizimin e dasmave, lindjes, vdekjes, si dhe aplikimet për anëtarësi të re.",
       "features": [
         "Llojet e kërkesave: Ndihmë Materiale, Martesë, Lindje, Vdekje, Të ndryshme, Anëtarësi",
@@ -168,6 +176,7 @@
     },
     "shop": {
       "title": "DžematShop (Dyqani)",
+      "shortDesc": "Blerje dhe shitje mes anëtarëve",
       "description": "Treg i brendshëm ku anëtarët mund të blejnë dhe shesin artikuj brenda xhematit. Admini publikon artikuj në emër të anëtarëve, dhe blerësit e interesuar kontaktojnë shitësin drejtpërdrejt. Të gjitha çmimet janë në CHF (franga zviceran).",
       "features": [
         "Artikuj me fotografi, përshkrim dhe çmim në CHF",
@@ -183,6 +192,7 @@
     },
     "vaktija": {
       "title": "Vaktija (Kohët e Namazit)",
+      "shortDesc": "Kohët e namazit për çdo ditë",
       "description": "Shfaqja e kohëve islame të namazit (namazit) për çdo ditë. Vakijat mund të ngarkohen automatikisht nga skedari CSV nga faqja e internetit SwissMosque.ch dhe shfaqen të organizuara sipas muajve.",
       "features": [
         "Ngarkimi automatik nga skedari CSV (formati SwissMosque.ch)",
@@ -198,6 +208,7 @@
     },
     "finances": {
       "title": "Financat",
+      "shortDesc": "Evidenca e kontributeve financiare të anëtarëve",
       "description": "Evidenca e të gjitha kontributeve financiare të anëtarëve të xhematit. Sistemi mundëson ndjekjen e pagesave, kategorizimin sipas qëllimit dhe lidhjen me projektet. Të gjitha transaksionet regjistrohen dhe ruhen në bazën e të dhënave.",
       "features": [
         "Kategoritë e pagesave: Kotizacioni, Donacioni, Vakëfi, Sergija, Të tjera",
@@ -213,6 +224,7 @@
     },
     "projects": {
       "title": "Projektet",
+      "shortDesc": "Projektet e xhematit dhe donacionet",
       "description": "Menaxhimi i projekteve më të mëdha të xhematit që kërkojnë mbledhjen e fondeve. Çdo projekt ka një shumë të synuar, progres aktual dhe mundësinë e lidhjes së kontributeve financiare direkt me projektin.",
       "features": [
         "Krijimi i projekteve me shumë të synuar në CHF",
@@ -228,6 +240,7 @@
     },
     "activity": {
       "title": "Aktivitetet (Activity Log)",
+      "shortDesc": "Ndjekja e aktiviteteve dhe pikëve",
       "description": "Evidenca e plotë e të gjitha aktiviteteve të anëtarëve në aplikacion. Sistemi automatikisht ndjek kush ka bërë çfarë, kur dhe sa pikë ka fituar. Kjo mundëson transparencë dhe gamifikacion përmes sistemit të shpërblimeve.",
       "features": [
         "Regjistrimi automatik i të gjitha aktiviteteve",
@@ -243,6 +256,7 @@
     },
     "badges": {
       "title": "Simbolet (Badges)",
+      "shortDesc": "Sistemi i simboleve dhe arritjeve",
       "description": "Sistemi i shpërblimeve dhe njohjes për anëtarët aktivë të xhematit. Simbolet jepen automatikisht (bazuar në arritje) ose manualisht (nga admini) për kontribut të veçantë në komunitet.",
       "features": [
         "Krijimi i simboleve me emër, përshkrim dhe kritere",
@@ -258,6 +272,7 @@
     },
     "points": {
       "title": "Sistemi i Pikëve",
+      "shortDesc": "Gamifikacion përmes sistemit të pikëve",
       "description": "Sistem gamifikimi që shpërblen aktivitetin e anëtarëve përmes caktimit të pikëve. Pikët jepen automatikisht për aktivitete të ndryshme dhe mund të përdoren për renditjen e anëtarëve ose dhënien e privilegjeve të veçanta.",
       "features": [
         "Pikë për pjesëmarrje në ngjarje (RSVP)",
@@ -273,6 +288,7 @@
     },
     "certificates": {
       "title": "Mirënjohjët (Certifikatat)",
+      "shortDesc": "Lëshimi i mirënjohjeve dhe certifikatave",
       "description": "Sistemi për krijimin dhe lëshimin e certifikatave të mirënjohjes për anëtarët për kontributin e tyre në xhemat. Administratorët mund të dizajnojnë shabllone me imazhe sfondi dhe të personalizojnë çdo certifikatë me emrin e anëtarit, përshkrimin e kontributit dhe datën e lëshimit.",
       "features": [
         "Krijimi i shablloneve me imazhe sfondi PNG",
@@ -288,6 +304,7 @@
     },
     "documents": {
       "title": "Dokumentet",
+      "shortDesc": "Biblioteka qendrore e dokumenteve të rëndësishme",
       "description": "Bibliotekë e centralizuar për ruajtjen dhe ndarjen e dokumenteve të rëndësishme të xhematit. Administratorët mund të ngarkojnë dokumente PDF (statuti, rregulloret, procesverbalet, raportet) dhe t'i bëjnë ato të disponueshme për anëtarët me kontroll të dukshmërisë.",
       "features": [
         "Ngarkimi i dokumenteve PDF me përshkrim dhe kategori",
@@ -303,6 +320,7 @@
     },
     "media": {
       "title": "Media (Livestream)",
+      "shortDesc": "Transmetime livestream të programeve në YouTube",
       "description": "Moduli për transmetimet livestream të namazit të xhumasë, ligjëratave dhe programeve të tjera përmes platformës YouTube. Administratorët vendosin lidhjen YouTube që shfaqet për të gjithë anëtarët dhe mysafirët në kohë reale.",
       "features": [
         "Player video YouTube i integruar",
@@ -318,6 +336,7 @@
     },
     "settings": {
       "title": "Cilësimet",
+      "shortDesc": "Cilësimet e aplikacionit dhe profilit",
       "description": "Konfigurimi i informacioneve bazë për xhematin, cilësimet e aplikacionit dhe të dhënat personale të përdoruesit. Këtu gjenden të gjitha cilësimet administrative që kontrollojnë se si funksionon aplikacioni.",
       "features": [
         "Të dhënat bazë për xhematin (emri, adresa, kontakti)",

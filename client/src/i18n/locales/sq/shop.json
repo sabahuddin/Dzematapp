@@ -4,12 +4,14 @@
     "dzematShop": "XhematShop",
     "sell": "Shes",
     "gift": "Dhuratë",
+    "services": "Shërbime",
     "archive": "Arkiva"
   },
   "buttons": {
     "addProduct": "Shto Artikull",
     "addListing": "Shto Njoftim",
     "addGift": "Shto Dhuratë",
+    "addService": "Shto Shërbim",
     "buy": "Bli",
     "edit": "Redakto",
     "delete": "Fshi",
@@ -36,7 +38,13 @@
     "quantity": "Sasia",
     "color": "Ngjyra",
     "notes": "Shënim",
-    "messageContent": "Përmbajtja e mesazhit"
+    "messageContent": "Përmbajtja e mesazhit",
+    "duration": "Kohëzgjatja",
+    "serviceName": "Emri i Shërbimit",
+    "serviceDescription": "Përshkrimi i Shërbimit",
+    "servicePrice": "Çmimi (opsional)",
+    "serviceDuration": "Kohëzgjatja (p.sh. 1 orë, 30 min)",
+    "serviceCategory": "Kategoria (opsionale)"
   },
   "categories": {
     "hrana": "Ushqim",
@@ -70,6 +78,8 @@
     "editListing": "Redakto Njoftimin",
     "addSaleListing": "Shto Njoftim për Shitje",
     "addGiftListing": "Shto Dhuratë",
+    "addService": "Shto Shërbim",
+    "editService": "Redakto Shërbimin",
     "order": "Porosit {{product}}",
     "sendMessage": "Dërgo mesazh"
   },

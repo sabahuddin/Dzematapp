@@ -50,6 +50,7 @@
   "sections": {
     "dashboard": {
       "title": "Dashboard (Kontrollzentrum)",
+      "shortDesc": "Überblick über Gemeindeaktivitäten und Statistiken",
       "description": "Das Dashboard ist der zentrale Ort der Anwendung, an dem jeder Benutzer einen personalisierten Überblick über die wichtigsten Informationen erhält. Dies ist die erste Seite, die Sie nach der Anmeldung sehen, und dient als schneller Überblick über alle Aktivitäten in der Gemeinde.",
       "features": [
         "Überblick über die heutigen Gebetszeiten oben auf der Seite",
@@ -63,6 +64,7 @@
     },
     "users": {
       "title": "Benutzer",
+      "shortDesc": "Mitgliederverwaltung und Profile",
       "description": "Modul zur Verwaltung aller Gemeindemitglieder und ihrer familiären Beziehungen. Hier werden detaillierte Mitgliederprofile mit Kontaktinformationen, Zugehörigkeitskategorien und Aktivitätshistorie gespeichert. Das System unterstützt die Erstellung von Familienbeziehungen zwischen Mitgliedern.",
       "features": [
         "Detaillierte Profile mit Foto, Kontaktdaten und Beruf",
@@ -77,6 +79,7 @@
     },
     "announcements": {
       "title": "Ankündigungen",
+      "shortDesc": "Ankündigungen und Informationen für Mitglieder",
       "description": "System zur Veröffentlichung wichtiger Informationen und Kommunikation mit Gemeindemitgliedern. Ankündigungen können allgemein oder kategorisiert sein, mit der Möglichkeit, Text zu formatieren, Bilder hinzuzufügen und Veröffentlichungen zu planen.",
       "features": [
         "Kategorisierung von Ankündigungen: Gemeinde, IZBCH (Islamische Gemeinschaft BiH Schweiz), IZ (Islamische Gemeinschaft), Sonstiges",
@@ -92,6 +95,7 @@
     },
     "events": {
       "title": "Veranstaltungen",
+      "shortDesc": "Veranstaltungsorganisation und RSVP-System",
       "description": "Vollständiges System zur Verwaltung von Veranstaltungen in der Gemeinde mit Kalender, RSVP-Funktionen und wichtigen Daten. Ermöglicht die Organisation von Iftars, Mevluds, Bildungsprogrammen, Sportaktivitäten und anderen sozialen Veranstaltungen.",
       "features": [
         "Kalender mit monatlicher Ansicht und Markierung von Veranstaltungsdaten",
@@ -108,6 +112,7 @@
     },
     "workgroups": {
       "title": "Bereiche (Arbeitsgruppen)",
+      "shortDesc": "Bereiche und Aufgabenzuweisung",
       "description": "System zur Organisation von Mitgliedern in Arbeitsgruppen nach Aktivitäten und Arbeitsbereichen. Jeder Bereich kann seine eigenen Aufgaben, Moderatoren und Mitglieder haben. Bereiche können öffentlich (für alle sichtbar) oder privat (Zugriff nur für genehmigte Mitglieder) sein.",
       "features": [
         "Erstellung unbegrenzter Anzahl von Bereichen (z.B. Verwaltung, Halal-Lebensmittel, Iftar, Reinigung)",
@@ -125,6 +130,7 @@
     },
     "messages": {
       "title": "Nachrichten",
+      "shortDesc": "Administratorkommunikation mit Mitgliedern",
       "description": "Internes Messaging-System, das es der Verwaltung ermöglicht, Nachrichten an Mitglieder zu senden. Nachrichten können an alle Mitglieder auf einmal oder gezielt an bestimmte Kategorien (Männer, Frauen, Eltern, Kinder) gesendet werden.",
       "features": [
         "Senden von Nachrichten an alle Mitglieder oder bestimmte Kategorien",
@@ -139,6 +145,7 @@
     },
     "askImam": {
       "title": "Fragen an den Imam",
+      "shortDesc": "Fragen an den Gemeinde-Imam",
       "description": "Privates System, das es Mitgliedern ermöglicht, dem Gemeinde-Imam islamische Fragen zu stellen. Jedes Mitglied kann eine Frage stellen, ihren Status verfolgen und eine Antwort erhalten. Fragen sind privat - jedes Mitglied sieht nur seine eigenen Fragen.",
       "features": [
         "Privatsphäre - jedes Mitglied sieht nur seine eigenen Fragen",
@@ -153,6 +160,7 @@
     },
     "requests": {
       "title": "Anfragen und Anmeldungen",
+      "shortDesc": "Mitgliederanfragen an die Gemeinde",
       "description": "Zentrales System zur Einreichung und Bearbeitung verschiedener Arten von Mitgliederanfragen an die Gemeinde. Umfasst Anfragen für materielle Hilfe, Organisation von Hochzeiten, Geburten, Todesfällen sowie Anmeldungen für neue Mitgliedschaften.",
       "features": [
         "Anfragetypen: Materielle Hilfe, Hochzeit, Geburt, Tod, Sonstiges, Mitgliedschaft",
@@ -168,6 +176,7 @@
     },
     "shop": {
       "title": "DžematShop (Geschäft)",
+      "shortDesc": "Kauf und Verkauf unter Mitgliedern",
       "description": "Interner Marktplatz, auf dem Mitglieder Artikel innerhalb der Gemeinde kaufen und verkaufen können. Der Admin veröffentlicht Artikel im Namen der Mitglieder, und interessierte Käufer kontaktieren den Verkäufer direkt. Alle Preise sind in CHF (Schweizer Franken).",
       "features": [
         "Artikel mit Fotos, Beschreibung und Preis in CHF",
@@ -183,6 +192,7 @@
     },
     "vaktija": {
       "title": "Vaktija (Gebetszeiten)",
+      "shortDesc": "Gebetszeiten für jeden Tag",
       "description": "Anzeige islamischer Gebetszeiten (Namaz) für jeden Tag. Vaktijas können automatisch aus einer CSV-Datei von der SwissMosque.ch-Website geladen und monatlich organisiert angezeigt werden.",
       "features": [
         "Automatisches Laden aus CSV-Datei (SwissMosque.ch-Format)",
@@ -198,6 +208,7 @@
     },
     "finances": {
       "title": "Finanzen",
+      "shortDesc": "Aufzeichnung finanzieller Beiträge der Mitglieder",
       "description": "Aufzeichnung aller finanziellen Beiträge der Gemeindemitglieder. Das System ermöglicht die Verfolgung von Zahlungen, Kategorisierung nach Zweck und Verknüpfung mit Projekten. Alle Transaktionen werden aufgezeichnet und in der Datenbank gespeichert.",
       "features": [
         "Zahlungskategorien: Mitgliedsbeitrag, Spende, Wakf, Sergija, Sonstiges",
@@ -213,6 +224,7 @@
     },
     "projects": {
       "title": "Projekte",
+      "shortDesc": "Gemeindeprojekte und Spenden",
       "description": "Verwaltung größerer Gemeindeprojekte, die Mittelbeschaffung erfordern. Jedes Projekt hat einen Zielbetrag, aktuellen Fortschritt und die Möglichkeit, finanzielle Beiträge direkt mit dem Projekt zu verknüpfen.",
       "features": [
         "Erstellung von Projekten mit Zielbetrag in CHF",
@@ -228,6 +240,7 @@
     },
     "activity": {
       "title": "Aktivitäten (Activity Log)",
+      "shortDesc": "Aktivitätsverfolgung und Punkte",
       "description": "Vollständige Aufzeichnung aller Mitgliederaktivitäten in der Anwendung. Das System verfolgt automatisch, wer was wann getan hat und wie viele Punkte verdient wurden. Dies ermöglicht Transparenz und Gamification durch ein Belohnungssystem.",
       "features": [
         "Automatische Protokollierung aller Aktivitäten",
@@ -243,6 +256,7 @@
     },
     "badges": {
       "title": "Abzeichen (Badges)",
+      "shortDesc": "Abzeichen- und Erfolgssystem",
       "description": "Belohnungs- und Anerkennungssystem für aktive Gemeindemitglieder. Abzeichen werden automatisch (basierend auf Errungenschaften) oder manuell (durch den Admin) für besondere Beiträge zur Gemeinschaft vergeben.",
       "features": [
         "Erstellung von Abzeichen mit Name, Beschreibung und Kriterien",
@@ -258,6 +272,7 @@
     },
     "points": {
       "title": "Punktesystem",
+      "shortDesc": "Gamifikation durch Punktesystem",
       "description": "Gamifikationssystem, das die Aktivität der Mitglieder durch Punktevergabe belohnt. Punkte werden automatisch für verschiedene Aktivitäten vergeben und können für das Ranking von Mitgliedern oder die Vergabe besonderer Privilegien verwendet werden.",
       "features": [
         "Punkte für Teilnahme an Veranstaltungen (RSVP)",
@@ -273,6 +288,7 @@
     },
     "certificates": {
       "title": "Anerkennungen (Urkunden)",
+      "shortDesc": "Ausgabe von Anerkennungen und Urkunden",
       "description": "System zur Erstellung und Ausstellung von Anerkennungsurkunden an Mitglieder für ihren Beitrag zur Gemeinde. Administratoren können Vorlagen mit Hintergrundbildern gestalten und jede Urkunde mit dem Namen des Mitglieds, einer Beschreibung des Beitrags und dem Ausstellungsdatum personalisieren.",
       "features": [
         "Erstellung von Vorlagen mit PNG-Hintergrundbildern",
@@ -288,6 +304,7 @@
     },
     "documents": {
       "title": "Dokumente",
+      "shortDesc": "Zentrale Bibliothek wichtiger Dokumente",
       "description": "Zentralisierte Bibliothek zur Aufbewahrung und Weitergabe wichtiger Gemeindedokumente. Administratoren können PDF-Dokumente (Satzungen, Vorschriften, Protokolle, Berichte) hochladen und sie den Mitgliedern mit Sichtbarkeitskontrolle zur Verfügung stellen.",
       "features": [
         "Upload von PDF-Dokumenten mit Beschreibung und Kategorie",
@@ -303,6 +320,7 @@
     },
     "media": {
       "title": "Medien (Livestream)",
+      "shortDesc": "YouTube-Livestream-Programmübertragungen",
       "description": "Modul für Livestream-Übertragungen von Freitagsgebeten, Vorträgen und anderen Programmen über die YouTube-Plattform. Administratoren legen den YouTube-Link fest, der allen Mitgliedern und Gästen in Echtzeit angezeigt wird.",
       "features": [
         "Eingebetteter YouTube-Videoplayer",
@@ -318,6 +336,7 @@
     },
     "settings": {
       "title": "Einstellungen",
+      "shortDesc": "Anwendungs- und Profileinstellungen",
       "description": "Konfiguration grundlegender Informationen über die Gemeinde, Anwendungseinstellungen und persönlicher Benutzerdaten. Hier befinden sich alle administrativen Einstellungen, die steuern, wie die Anwendung funktioniert.",
       "features": [
         "Grundlegende Daten über die Gemeinde (Name, Adresse, Kontakt)",
