@@ -14,6 +14,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   login: (username: string, password: string, tenantId: string) => Promise<boolean>;
+  loginAsSuperAdmin: (username: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
   isLoading: boolean;
   checkSession: () => Promise<void>;
@@ -62,7 +63,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", // Include cookies in requests
+        credentials: "include",
         body: JSON.stringify({ username, password, tenantId }),
       });
 
@@ -84,6 +85,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const loginAsSuperAdmin = async (
+    username: string,
+    password: string
+  ): Promise<boolean> => {
+    try {
+      console.log("🛡️ Super Admin login attempt:", { username, password: "***" });
+      const response = await fetch("/api/auth/superadmin/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ username, password }),
+      });
+
+      console.log("📡 Super Admin login response:", response.status, response.statusText);
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("✅ Super Admin login successful:", data.user);
+        setUser(data.user);
+        return true;
+      }
+      
+      const errorData = await response.json().catch(() => ({}));
+      console.error("❌ Super Admin login failed:", response.status, errorData);
+      return false;
+    } catch (error) {
+      console.error("💥 Super Admin login error:", error);
+      return false;
+    }
+  };
+
   const logout = async () => {
     try {
       await fetch("/api/auth/logout", {
@@ -99,7 +133,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, isLoading, checkSession }}
+      value={{ user, login, loginAsSuperAdmin, logout, isLoading, checkSession }}
     >
       {children}
     </AuthContext.Provider>

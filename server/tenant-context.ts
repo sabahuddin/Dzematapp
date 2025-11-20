@@ -25,19 +25,31 @@ declare global {
 
 /**
  * Middleware koji dodaje tenant_id u request
+ * 
+ * Special case: Super Admins do NOT get a tenantId in their request context
+ * since they operate across all tenants.
  */
 export function tenantContextMiddleware(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  // Tenant resolution strategy:
+  // Check if this is a Super Admin session
+  const session = req.session as any;
+  if (session.isSuperAdmin) {
+    // Super Admins do NOT get a tenantId
+    // They can access all tenants via dedicated APIs
+    next();
+    return;
+  }
+  
+  // Tenant resolution strategy for regular users:
   // 1. Session tenantId (set during login)
   // 2. Subdomain routing: Extract from req.hostname (future)
   // 3. Tenant header: req.headers['x-tenant-id'] (future)
   // 4. Fallback to default tenant
   
-  req.tenantId = (req.session as any).tenantId || DEFAULT_TENANT_ID;
+  req.tenantId = session.tenantId || DEFAULT_TENANT_ID;
   
   next();
 }

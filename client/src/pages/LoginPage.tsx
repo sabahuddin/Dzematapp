@@ -307,7 +307,7 @@ export default function LoginPage() {
                   </Box>
                 </form>
 
-                <Box sx={{ mt: 3, textAlign: 'center' }}>
+                <Box sx={{ mt: 3, textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 1 }}>
                   <MuiLink
                     component="button"
                     type="button"
@@ -317,6 +317,16 @@ export default function LoginPage() {
                     data-testid="link-change-tenant"
                   >
                     Promijenite organizaciju
+                  </MuiLink>
+                  <MuiLink
+                    component="button"
+                    type="button"
+                    variant="caption"
+                    onClick={() => setLocation('/superadmin/login')}
+                    sx={{ cursor: 'pointer', color: 'text.secondary' }}
+                    data-testid="link-superadmin-login"
+                  >
+                    Super Admin Login
                   </MuiLink>
                 </Box>
 

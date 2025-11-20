@@ -224,6 +224,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Authentication routes
+  // Regular user login (requires tenant code)
   app.post("/api/auth/login", async (req, res) => {
     try {
       const { username, password, tenantId } = req.body;
@@ -266,12 +267,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
           email: user.email,
           roles: user.roles || [],
           isAdmin: user.isAdmin || hasImamRole,
-          isSuperAdmin: user.isSuperAdmin || false,
+          isSuperAdmin: false,
           totalPoints: user.totalPoints || 0,
           tenantId: tenantId
         } 
       });
     } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Super Admin login (no tenant code required)
+  app.post("/api/auth/superadmin/login", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      console.log('[SUPERADMIN LOGIN] Received credentials:', { username, passwordLength: password?.length });
+      
+      if (!username || !password) {
+        return res.status(400).json({ message: "Username and password are required" });
+      }
+
+      // Get all users across all tenants and find the Super Admin
+      const allTenants = await storage.getAllTenants();
+      let superAdminUser = null;
+      
+      for (const tenant of allTenants) {
+        const user = await storage.getUserByUsername(username, tenant.id);
+        if (user && user.isSuperAdmin && user.password === password) {
+          superAdminUser = user;
+          break;
+        }
+      }
+      
+      if (!superAdminUser) {
+        console.log('[SUPERADMIN LOGIN] Authentication failed: Super Admin not found or invalid password');
+        return res.status(401).json({ message: "Invalid Super Admin credentials" });
+      }
+
+      // Create session WITHOUT tenantId, but WITH isSuperAdmin flag
+      req.session.userId = superAdminUser.id;
+      req.session.isSuperAdmin = true;
+      // Do NOT set req.session.tenantId for Super Admin
+      
+      res.json({ 
+        user: { 
+          id: superAdminUser.id, 
+          firstName: superAdminUser.firstName, 
+          lastName: superAdminUser.lastName, 
+          email: superAdminUser.email,
+          roles: superAdminUser.roles || [],
+          isAdmin: true,
+          isSuperAdmin: true,
+          totalPoints: 0,
+          tenantId: null
+        } 
+      });
+    } catch (error) {
+      console.error('[SUPERADMIN LOGIN] Error:', error);
       res.status(500).json({ message: "Internal server error" });
     }
   });
@@ -289,6 +342,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Session check route
   app.get("/api/auth/session", (req, res) => {
+    const session = req.session as any;
+    
     if (req.user) {
       res.json({ 
         user: { 
@@ -298,9 +353,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           email: req.user.email,
           roles: req.user.roles || [],
           isAdmin: req.user.isAdmin,
-          isSuperAdmin: req.user.isSuperAdmin || false,
+          isSuperAdmin: session.isSuperAdmin || false,
           totalPoints: req.user.totalPoints || 0,
-          tenantId: req.tenantId
+          tenantId: session.isSuperAdmin ? null : req.tenantId
         } 
       });
     } else {

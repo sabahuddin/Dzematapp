@@ -13,6 +13,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 
 // Pages
 import LoginPage from "@/pages/LoginPage";
+import SuperAdminLoginPage from "@/pages/SuperAdminLoginPage";
 import GuestPage from "@/pages/GuestPage";
 import DashboardHome from "@/pages/DashboardHome";
 import UsersPage from "@/pages/UsersPage";
@@ -249,6 +250,16 @@ function Router() {
     <Switch>
       <Route path="/login">
         {user ? <Redirect to="/dashboard" /> : <LoginPage />}
+      </Route>
+      
+      <Route path="/superadmin/login">
+        {user?.isSuperAdmin ? <Redirect to="/superadmin/dashboard" /> : <SuperAdminLoginPage />}
+      </Route>
+      
+      <Route path="/superadmin/dashboard">
+        <SuperAdminRoute>
+          <TenantManagementPage />
+        </SuperAdminRoute>
       </Route>
       
       <Route path="/guest">
