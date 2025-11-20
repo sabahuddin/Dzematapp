@@ -119,7 +119,8 @@ import {
   akikaApplications,
   marriageApplications,
   activityFeed,
-  services
+  services,
+  tenants
 } from "@shared/schema";
 import { db } from './db';
 import { eq, and, or, desc, asc, gt, sql, inArray } from 'drizzle-orm';
