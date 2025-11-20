@@ -943,7 +943,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Work Groups routes
   app.get("/api/work-groups", requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       // Proslijedi userId i isAdmin za filtriranje po vidljivosti
       const userId = req.user?.id;
       const isAdmin = req.user?.isAdmin || false;
