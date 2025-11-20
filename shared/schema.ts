@@ -5,6 +5,7 @@ import { z } from "zod";
 
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   firstName: text("first_name").notNull(),
   lastName: text("last_name").notNull(),
   username: text("username").unique(),
@@ -34,6 +35,7 @@ export const users = pgTable("users", {
 
 export const familyRelationships = pgTable("family_relationships", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   userId: varchar("user_id").notNull().references(() => users.id),
   relatedUserId: varchar("related_user_id").notNull().references(() => users.id),
   relationship: text("relationship").notNull(), // supružnik, dijete, roditelj, brat, sestra, ostalo
@@ -42,6 +44,7 @@ export const familyRelationships = pgTable("family_relationships", {
 
 export const announcements = pgTable("announcements", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   title: text("title").notNull(),
   content: text("content").notNull(),
   authorId: varchar("author_id").notNull().references(() => users.id),
@@ -53,6 +56,7 @@ export const announcements = pgTable("announcements", {
 
 export const events = pgTable("events", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
   description: text("description"),
   location: text("location").notNull(),
@@ -70,6 +74,7 @@ export const events = pgTable("events", {
 
 export const eventRsvps = pgTable("event_rsvps", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   eventId: varchar("event_id").notNull().references(() => events.id),
   userId: varchar("user_id").notNull().references(() => users.id),
   adultsCount: integer("adults_count").default(1),
@@ -79,6 +84,7 @@ export const eventRsvps = pgTable("event_rsvps", {
 
 export const workGroups = pgTable("work_groups", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
   description: text("description"),
   visibility: text("visibility").notNull().default("javna"), // javna, privatna
@@ -88,6 +94,7 @@ export const workGroups = pgTable("work_groups", {
 
 export const workGroupMembers = pgTable("work_group_members", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   workGroupId: varchar("work_group_id").notNull().references(() => workGroups.id),
   userId: varchar("user_id").notNull().references(() => users.id),
   isModerator: boolean("is_moderator").default(false),
@@ -96,6 +103,7 @@ export const workGroupMembers = pgTable("work_group_members", {
 
 export const tasks = pgTable("tasks", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   title: text("title").notNull(),
   description: text("description"),
   descriptionImage: text("description_image"),
@@ -111,6 +119,7 @@ export const tasks = pgTable("tasks", {
 
 export const accessRequests = pgTable("access_requests", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   userId: varchar("user_id").notNull().references(() => users.id),
   workGroupId: varchar("work_group_id").notNull().references(() => workGroups.id),
   status: text("status").notNull().default("pending"), // pending, approved, rejected
@@ -119,6 +128,7 @@ export const accessRequests = pgTable("access_requests", {
 
 export const taskComments = pgTable("task_comments", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   taskId: varchar("task_id").notNull().references(() => tasks.id, { onDelete: "cascade" }),
   userId: varchar("user_id").notNull().references(() => users.id),
   content: text("content").notNull(),
@@ -129,6 +139,7 @@ export const taskComments = pgTable("task_comments", {
 
 export const announcementFiles = pgTable("announcement_files", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   announcementId: varchar("announcement_id").notNull().references(() => announcements.id),
   uploadedById: varchar("uploaded_by_id").notNull().references(() => users.id),
   fileName: text("file_name").notNull(),
@@ -140,6 +151,7 @@ export const announcementFiles = pgTable("announcement_files", {
 
 export const activities = pgTable("activities", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   type: text("type").notNull(), // registration, announcement, event, task
   description: text("description").notNull(),
   userId: varchar("user_id").references(() => users.id),
@@ -148,6 +160,7 @@ export const activities = pgTable("activities", {
 
 export const messages = pgTable("messages", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   senderId: varchar("sender_id").references(() => users.id).notNull(),
   recipientId: varchar("recipient_id").references(() => users.id),
   category: text("category"),
@@ -161,6 +174,7 @@ export const messages = pgTable("messages", {
 
 export const imamQuestions = pgTable("imam_questions", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   userId: varchar("user_id").references(() => users.id).notNull(),
   subject: text("subject").notNull(),
   question: text("question").notNull(),
@@ -173,6 +187,7 @@ export const imamQuestions = pgTable("imam_questions", {
 
 export const organizationSettings = pgTable("organization_settings", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   name: text("name").notNull().default("Islamska Zajednica"),
   address: text("address").notNull().default("Ulica Džemata 123"),
   phone: text("phone").notNull().default("+387 33 123 456"),
@@ -190,6 +205,7 @@ export const organizationSettings = pgTable("organization_settings", {
 
 export const documents = pgTable("documents", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   title: text("title").notNull(),
   description: text("description"),
   fileName: text("file_name").notNull(),
@@ -201,6 +217,7 @@ export const documents = pgTable("documents", {
 
 export const requests = pgTable("requests", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   userId: varchar("user_id").notNull().references(() => users.id),
   requestType: text("request_type").notNull(), // wedding, mekteb, facility, akika
   status: text("status").notNull().default("pending"), // pending, approved, rejected
@@ -213,6 +230,7 @@ export const requests = pgTable("requests", {
 
 export const shopProducts = pgTable("shop_products", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
   photos: text("photos").array(), // array of photo URLs (max 10)
   category: text("category"), // hrana, piće, odjeća
@@ -229,6 +247,7 @@ export const shopProducts = pgTable("shop_products", {
 
 export const marketplaceItems = pgTable("marketplace_items", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
   description: text("description"),
   photos: text("photos").array(), // array of photo URLs (max 3)
@@ -241,6 +260,7 @@ export const marketplaceItems = pgTable("marketplace_items", {
 
 export const productPurchaseRequests = pgTable("product_purchase_requests", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   productId: varchar("product_id").notNull().references(() => shopProducts.id),
   userId: varchar("user_id").notNull().references(() => users.id),
   quantity: integer("quantity").default(1).notNull(),
@@ -251,6 +271,7 @@ export const productPurchaseRequests = pgTable("product_purchase_requests", {
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
+  tenantId: true,
 }).extend({
   membershipDate: z.union([
     z.date(),
@@ -261,11 +282,13 @@ export const insertUserSchema = createInsertSchema(users).omit({
 
 export const insertAnnouncementSchema = createInsertSchema(announcements).omit({
   id: true,
+  tenantId: true,
   publishDate: true,
 });
 
 export const insertEventSchema = createInsertSchema(events).omit({
   id: true,
+  tenantId: true,
   createdAt: true,
 }).extend({
   dateTime: z.union([
@@ -276,21 +299,25 @@ export const insertEventSchema = createInsertSchema(events).omit({
 
 export const insertEventRsvpSchema = createInsertSchema(eventRsvps).omit({
   id: true,
+  tenantId: true,
   rsvpDate: true,
 });
 
 export const insertWorkGroupSchema = createInsertSchema(workGroups).omit({
   id: true,
+  tenantId: true,
   createdAt: true,
 });
 
 export const insertWorkGroupMemberSchema = createInsertSchema(workGroupMembers).omit({
   id: true,
+  tenantId: true,
   joinedAt: true,
 });
 
 export const insertTaskSchema = createInsertSchema(tasks).omit({
   id: true,
+  tenantId: true,
   createdAt: true,
 }).extend({
   dueDate: z.union([
@@ -302,33 +329,39 @@ export const insertTaskSchema = createInsertSchema(tasks).omit({
 
 export const insertAccessRequestSchema = createInsertSchema(accessRequests).omit({
   id: true,
+  tenantId: true,
   requestDate: true,
 });
 
 export const insertTaskCommentSchema = createInsertSchema(taskComments).omit({
   id: true,
+  tenantId: true,
   createdAt: true,
 });
 
 
 export const insertAnnouncementFileSchema = createInsertSchema(announcementFiles).omit({
   id: true,
+  tenantId: true,
   uploadedAt: true,
 });
 
 export const insertFamilyRelationshipSchema = createInsertSchema(familyRelationships).omit({
   id: true,
+  tenantId: true,
   createdAt: true,
 });
 
 export const insertMessageSchema = createInsertSchema(messages).omit({
   id: true,
+  tenantId: true,
   createdAt: true,
   isRead: true,
 });
 
 export const insertImamQuestionSchema = createInsertSchema(imamQuestions).omit({
   id: true,
+  tenantId: true,
   createdAt: true,
   isRead: true,
   isAnswered: true,
@@ -338,22 +371,26 @@ export const insertImamQuestionSchema = createInsertSchema(imamQuestions).omit({
 
 export const insertOrganizationSettingsSchema = createInsertSchema(organizationSettings).omit({
   id: true,
+  tenantId: true,
   updatedAt: true,
 });
 
 export const insertDocumentSchema = createInsertSchema(documents).omit({
   id: true,
+  tenantId: true,
   uploadedAt: true,
 });
 
 export const insertRequestSchema = createInsertSchema(requests).omit({
   id: true,
+  tenantId: true,
   createdAt: true,
   reviewedAt: true,
 });
 
 export const insertShopProductSchema = createInsertSchema(shopProducts).omit({
   id: true,
+  tenantId: true,
   createdAt: true,
 }).superRefine((data, ctx) => {
   // Validate category-specific fields
@@ -402,11 +439,13 @@ export const insertShopProductSchema = createInsertSchema(shopProducts).omit({
 
 export const insertMarketplaceItemSchema = createInsertSchema(marketplaceItems).omit({
   id: true,
+  tenantId: true,
   createdAt: true,
 });
 
 export const insertProductPurchaseRequestSchema = createInsertSchema(productPurchaseRequests).omit({
   id: true,
+  tenantId: true,
   createdAt: true,
 });
 
@@ -511,6 +550,7 @@ export type EventRsvpStats = {
 
 export const prayerTimes = pgTable("prayer_times", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   date: text("date").notNull().unique(), // dd.mm.yyyy
   hijriDate: text("hijri_date"),
   fajr: text("fajr").notNull(),
@@ -524,6 +564,7 @@ export const prayerTimes = pgTable("prayer_times", {
 
 export const importantDates = pgTable("important_dates", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   name: text("name").notNull(), // e.g. "Ramazanski Bajram", "Nova godina"
   date: text("date").notNull(), // dd.mm format (without year, since it repeats)
   isRecurring: boolean("is_recurring").default(true).notNull(), // true if repeats yearly
@@ -533,6 +574,7 @@ export const importantDates = pgTable("important_dates", {
 // Feature 1: Contribution Tracking System
 export const financialContributions = pgTable("financial_contributions", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   userId: varchar("user_id").notNull().references(() => users.id),
   amount: text("amount").notNull(), // decimal as text, in CHF
   paymentDate: timestamp("payment_date").notNull(),
@@ -546,6 +588,7 @@ export const financialContributions = pgTable("financial_contributions", {
 
 export const activityLog = pgTable("activity_log", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   userId: varchar("user_id").notNull().references(() => users.id),
   activityType: text("activity_type").notNull(), // task_completed, event_attendance
   description: text("description").notNull(),
@@ -556,6 +599,7 @@ export const activityLog = pgTable("activity_log", {
 
 export const eventAttendance = pgTable("event_attendance", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   eventId: varchar("event_id").notNull().references(() => events.id),
   userId: varchar("user_id").notNull().references(() => users.id),
   attended: boolean("attended").default(true).notNull(),
@@ -566,6 +610,7 @@ export const eventAttendance = pgTable("event_attendance", {
 // Feature 2: Gamification System
 export const pointsSettings = pgTable("points_settings", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   pointsPerChf: integer("points_per_chf").default(1).notNull(), // Points per CHF donated
   pointsPerTask: integer("points_per_task").default(50).notNull(), // Points per completed task
   pointsPerEvent: integer("points_per_event").default(20).notNull(), // Points per event attendance
@@ -574,6 +619,7 @@ export const pointsSettings = pgTable("points_settings", {
 
 export const badges = pgTable("badges", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
   description: text("description").notNull(),
   icon: text("icon"), // Icon name or URL
@@ -584,6 +630,7 @@ export const badges = pgTable("badges", {
 
 export const userBadges = pgTable("user_badges", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   userId: varchar("user_id").notNull().references(() => users.id),
   badgeId: varchar("badge_id").notNull().references(() => badges.id),
   earnedAt: timestamp("earned_at").defaultNow().notNull(),
@@ -592,6 +639,7 @@ export const userBadges = pgTable("user_badges", {
 // Feature 4: Projects Module
 export const projects = pgTable("projects", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
   description: text("description").notNull(),
   goalAmount: text("goal_amount").notNull(), // decimal as text, in CHF
@@ -647,10 +695,12 @@ export const receipts = pgTable("receipts", {
 
 export const insertPrayerTimeSchema = createInsertSchema(prayerTimes).omit({
   id: true,
+  tenantId: true,
 });
 
 export const insertImportantDateSchema = createInsertSchema(importantDates).omit({
   id: true,
+  tenantId: true,
   createdAt: true,
 });
 
@@ -662,6 +712,7 @@ export type InsertImportantDate = z.infer<typeof insertImportantDateSchema>;
 // Feature 1: Contribution Tracking System
 export const insertFinancialContributionSchema = createInsertSchema(financialContributions).omit({
   id: true,
+  tenantId: true,
   createdAt: true,
 }).extend({
   paymentDate: z.union([
@@ -672,33 +723,39 @@ export const insertFinancialContributionSchema = createInsertSchema(financialCon
 
 export const insertActivityLogSchema = createInsertSchema(activityLog).omit({
   id: true,
+  tenantId: true,
   createdAt: true,
 });
 
 export const insertEventAttendanceSchema = createInsertSchema(eventAttendance).omit({
   id: true,
+  tenantId: true,
   recordedAt: true,
 });
 
 // Feature 2: Gamification System
 export const insertPointsSettingsSchema = createInsertSchema(pointsSettings).omit({
   id: true,
+  tenantId: true,
   updatedAt: true,
 });
 
 export const insertBadgeSchema = createInsertSchema(badges).omit({
   id: true,
+  tenantId: true,
   createdAt: true,
 });
 
 export const insertUserBadgeSchema = createInsertSchema(userBadges).omit({
   id: true,
+  tenantId: true,
   earnedAt: true,
 });
 
 // Feature 4: Projects Module
 export const insertProjectSchema = createInsertSchema(projects).omit({
   id: true,
+  tenantId: true,
   createdAt: true,
   completedAt: true,
   createdById: true,
@@ -781,6 +838,7 @@ export type ProjectWithCreator = Project & {
 // Certificate Templates (Zahvalnice Templates)
 export const certificateTemplates = pgTable("certificate_templates", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   name: text("name").notNull(), // Naziv template-a (npr. "Zahvala za doprinos", "Priznanje za volontiranje")
   description: text("description"),
   templateImagePath: text("template_image_path").notNull(), // Path do PNG slike
@@ -797,6 +855,7 @@ export const certificateTemplates = pgTable("certificate_templates", {
 // User Certificates (Izdati Certifikati)
 export const userCertificates = pgTable("user_certificates", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   userId: varchar("user_id").notNull().references(() => users.id),
   templateId: varchar("template_id").notNull().references(() => certificateTemplates.id),
   recipientName: text("recipient_name").notNull(), // Ime korisnika na certifikatu
@@ -807,8 +866,8 @@ export const userCertificates = pgTable("user_certificates", {
   viewed: boolean("viewed").default(false), // Da li je korisnik vidio certifikat
 });
 
-export const insertCertificateTemplateSchema = createInsertSchema(certificateTemplates).omit({ id: true, createdAt: true });
-export const insertUserCertificateSchema = createInsertSchema(userCertificates).omit({ id: true, issuedAt: true });
+export const insertCertificateTemplateSchema = createInsertSchema(certificateTemplates).omit({ id: true, tenantId: true, createdAt: true });
+export const insertUserCertificateSchema = createInsertSchema(userCertificates).omit({ id: true, tenantId: true, issuedAt: true });
 
 export type CertificateTemplate = typeof certificateTemplates.$inferSelect;
 export type InsertCertificateTemplate = z.infer<typeof insertCertificateTemplateSchema>;
@@ -827,6 +886,7 @@ export type UserCertificateWithTemplate = UserCertificate & {
 // Membership Applications (Pristupnice)
 export const membershipApplications = pgTable("membership_applications", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   // Lični podaci
   lastName: text("last_name").notNull(),
   firstName: text("first_name").notNull(),
@@ -865,6 +925,7 @@ export const membershipApplications = pgTable("membership_applications", {
 
 export const insertMembershipApplicationSchema = createInsertSchema(membershipApplications).omit({
   id: true,
+  tenantId: true,
   createdAt: true,
   reviewedAt: true,
 });
@@ -875,6 +936,7 @@ export type InsertMembershipApplication = z.infer<typeof insertMembershipApplica
 // Prijave Akike
 export const akikaApplications = pgTable("akika_applications", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   // Da li je član džemata
   isMember: boolean("is_member").notNull().default(true),
   
@@ -914,6 +976,7 @@ export const akikaApplications = pgTable("akika_applications", {
 
 export const insertAkikaApplicationSchema = createInsertSchema(akikaApplications).omit({
   id: true,
+  tenantId: true,
   createdAt: true,
   reviewedAt: true,
 });
@@ -924,6 +987,7 @@ export type InsertAkikaApplication = z.infer<typeof insertAkikaApplicationSchema
 // Prijave šerijatskog vjenčanja
 export const marriageApplications = pgTable("marriage_applications", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   
   // Podaci o mladoženji
   groomLastName: text("groom_last_name").notNull(),
@@ -985,6 +1049,7 @@ export const marriageApplications = pgTable("marriage_applications", {
 
 export const insertMarriageApplicationSchema = createInsertSchema(marriageApplications).omit({
   id: true,
+  tenantId: true,
   createdAt: true,
   reviewedAt: true,
 });
@@ -995,6 +1060,7 @@ export type InsertMarriageApplication = z.infer<typeof insertMarriageApplication
 // Activity Feed - prikazuje sve što se dešava u džematu
 export const activityFeed = pgTable("activity_feed", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   
   type: text("type").notNull(), // new_member, project_completed, shop_item, badge_awarded, certificate_issued, announcement, event, important_date_reminder
   title: text("title").notNull(),
@@ -1015,6 +1081,7 @@ export const activityFeed = pgTable("activity_feed", {
 
 export const insertActivityFeedSchema = createInsertSchema(activityFeed).omit({
   id: true,
+  tenantId: true,
   createdAt: true,
 });
 
@@ -1024,6 +1091,7 @@ export type InsertActivityFeedItem = z.infer<typeof insertActivityFeedSchema>;
 // Services (Usluge) - dodatne usluge koje članovi nude
 export const services = pgTable("services", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
   description: text("description").notNull(),
   photos: text("photos").array(), // array of photo URLs (max 3)
@@ -1037,6 +1105,7 @@ export const services = pgTable("services", {
 
 export const insertServiceSchema = createInsertSchema(services).omit({
   id: true,
+  tenantId: true,
   createdAt: true,
 });
 

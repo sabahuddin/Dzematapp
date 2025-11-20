@@ -5,6 +5,7 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { storage } from "./storage";
 import type { User } from "@shared/schema";
+import { tenantContextMiddleware, DEFAULT_TENANT_ID } from "./tenant-context";
 
 // Extend Express Request interface to include user
 declare global {
@@ -54,11 +55,14 @@ app.use(session({
   name: 'sessionId' // Name of the session cookie
 }));
 
+// Tenant Context Middleware - dodaje tenantId u svaki request
+app.use(tenantContextMiddleware);
+
 // Authentication middleware - checks session and sets req.user if authenticated
 app.use(async (req, res, next) => {
   if (req.session.userId) {
     try {
-      const user = await storage.getUser(req.session.userId);
+      const user = await storage.getUser(req.session.userId, req.tenantId);
       if (user) {
         // Set isAdmin to true if user has "imam" or "admin" role
         const hasImamRole = user.roles?.includes('imam') || false;
@@ -100,10 +104,11 @@ export const requireAdmin = (req: Request, res: Response, next: NextFunction) =>
 // Initialize default admin user if none exists
 async function ensureAdminUser() {
   try {
-    const adminUser = await storage.getUserByUsername('admin');
+    const adminUser = await storage.getUserByUsername('admin', DEFAULT_TENANT_ID);
     if (!adminUser) {
       console.log('🔧 Creating default admin user...');
       await storage.createUser({
+        tenantId: DEFAULT_TENANT_ID,
         username: 'admin',
         password: 'admin123',
         firstName: 'Admin',
