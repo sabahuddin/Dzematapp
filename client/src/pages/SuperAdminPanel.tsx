@@ -468,11 +468,10 @@ export default function SuperAdminPanel() {
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
-                  label="Email"
+                  label="Email (opciono)"
                   type="email"
                   value={userForm.email}
                   onChange={(e) => setUserForm({ ...userForm, email: e.target.value })}
-                  required
                   data-testid="input-user-email"
                 />
               </Grid>
@@ -505,8 +504,7 @@ export default function SuperAdminPanel() {
                 <Button 
                   variant="contained" 
                   onClick={() => {
-                    const defaultEmail = userForm.email || `${userForm.username}@dzemat.app`;
-                    createUserMutation.mutate({ ...userForm, email: defaultEmail });
+                    createUserMutation.mutate(userForm);
                   }}
                   disabled={createUserMutation.isPending || !userForm.firstName || !userForm.lastName || !userForm.username || !userForm.password}
                   fullWidth
