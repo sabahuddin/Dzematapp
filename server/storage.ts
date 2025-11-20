@@ -437,6 +437,22 @@ export interface IStorage {
   updateTenant(id: string, updates: Partial<InsertTenant>): Promise<Tenant | undefined>;
   updateTenantStatus(id: string, isActive: boolean): Promise<Tenant | undefined>;
   deleteTenant(id: string): Promise<boolean>;
+  
+  // Subscription Plans (public - for pricing page)
+  getAllSubscriptionPlans(): Promise<Array<{
+    id: string;
+    name: string;
+    slug: string;
+    description: string;
+    priceMonthly: string;
+    priceYearly: string;
+    currency: string;
+    enabledModules: string[];
+    readOnlyModules: string[];
+    maxUsers: number | null;
+    maxStorage: number | null;
+    isActive: boolean;
+  }>>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -2673,6 +2689,12 @@ export class DatabaseStorage implements IStorage {
   async deleteTenant(id: string): Promise<boolean> {
     const result = await db.delete(tenants).where(eq(tenants.id, id));
     return result.rowCount ? result.rowCount > 0 : false;
+  }
+
+  async getAllSubscriptionPlans() {
+    const { subscriptionPlans } = await import("@shared/schema");
+    const plans = await db.select().from(subscriptionPlans).where(eq(subscriptionPlans.isActive, true));
+    return plans;
   }
 }
 

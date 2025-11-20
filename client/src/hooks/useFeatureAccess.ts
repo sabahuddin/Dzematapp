@@ -48,12 +48,11 @@ export function useFeatureAccess(moduleId: string) {
 
   const { plan } = subscription;
   const isEnabled = plan.enabledModules.includes(moduleId);
-  const isReadOnly = plan.readOnlyModules?.includes(moduleId) || false;
   
   return {
     isLoading: false,
     isEnabled,
-    isReadOnly,
+    isReadOnly: false, // Simplified: no read-only mode
     upgradeRequired: !isEnabled,
     currentPlan: subscription.subscriptionTier,
     requiredPlan: getRequiredPlan(moduleId),

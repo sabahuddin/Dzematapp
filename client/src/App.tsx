@@ -51,6 +51,7 @@ import MobileDashboard from "@/pages/MobileDashboard";
 import MyProfilePage from "@/pages/MyProfilePage";
 import NotificationsPage from "@/pages/NotificationsPage";
 import TenantManagementPage from "@/pages/TenantManagementPage";
+import PricingPage from "@/pages/PricingPage";
 import NotFound from "@/pages/not-found";
 
 // Layout
@@ -264,6 +265,10 @@ function Router() {
       
       <Route path="/guest">
         <GuestPage />
+      </Route>
+      
+      <Route path="/pricing">
+        <PricingPage />
       </Route>
       
       <Route path="/dashboard">

@@ -4198,6 +4198,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get current tenant's subscription info (for logged-in users)
+  // Get all subscription plans (public endpoint for pricing page)
+  app.get("/api/subscription/plans", async (req, res) => {
+    try {
+      const plans = await storage.getAllSubscriptionPlans();
+      res.json(plans);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   app.get("/api/subscription/current", requireAuth, async (req, res) => {
     try {
       const session = req.session as any;

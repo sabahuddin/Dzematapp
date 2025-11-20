@@ -1,6 +1,7 @@
-import { Card, CardContent, Typography, Button, Box, Chip } from '@mui/material';
+import { Card, CardContent, Typography, Button, Box, Chip, CircularProgress } from '@mui/material';
 import { LockOpen, Upgrade, CheckCircle } from '@mui/icons-material';
 import { getModuleDisplayName } from '@/hooks/useFeatureAccess';
+import { useQuery } from '@tanstack/react-query';
 
 interface UpgradeCTAProps {
   moduleId: string;
@@ -8,22 +9,45 @@ interface UpgradeCTAProps {
   currentPlan: string;
 }
 
-const PLAN_PRICES: Record<string, string> = {
-  basic: "€29",
-  standard: "€39",
-  full: "€49"
-};
-
-const PLAN_NAMES: Record<string, string> = {
-  basic: "Basic",
-  standard: "Standard",
-  full: "Full"
-};
+interface SubscriptionPlan {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  priceMonthly: string;
+  priceYearly: string;
+  currency: string;
+  enabledModules: string[];
+  maxUsers: number | null;
+  maxStorage: number | null;
+}
 
 export function UpgradeCTA({ moduleId, requiredPlan, currentPlan }: UpgradeCTAProps) {
   const featureName = getModuleDisplayName(moduleId);
-  const requiredPlanName = PLAN_NAMES[requiredPlan] || requiredPlan;
-  const requiredPrice = PLAN_PRICES[requiredPlan] || "€49";
+  
+  // Fetch pricing plans dynamically
+  const { data: plans, isLoading } = useQuery<SubscriptionPlan[]>({
+    queryKey: ['/api/subscription/plans'],
+    staleTime: 300000, // Cache for 5 minutes
+  });
+  
+  if (isLoading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+  
+  const plan = plans?.find(p => p.slug === requiredPlan);
+  const currentPlanData = plans?.find(p => p.slug === currentPlan);
+  
+  if (!plan) {
+    return null;
+  }
+  
+  const requiredPlanName = plan.name;
+  const requiredPrice = `€${plan.priceMonthly}`;
   
   return (
     <Box
@@ -65,7 +89,7 @@ export function UpgradeCTA({ moduleId, requiredPlan, currentPlan }: UpgradeCTAPr
           {/* Current Plan Badge */}
           <Box sx={{ mb: 3 }}>
             <Chip 
-              label={`Trenutni paket: ${PLAN_NAMES[currentPlan] || currentPlan}`}
+              label={`Trenutni paket: ${currentPlanData?.name || currentPlan}`}
               sx={{ 
                 bgcolor: 'rgba(255,255,255,0.2)', 
                 color: 'white',
@@ -80,7 +104,7 @@ export function UpgradeCTA({ moduleId, requiredPlan, currentPlan }: UpgradeCTAPr
             <Typography variant="h6" sx={{ mb: 2, textAlign: 'center' }}>
               {requiredPlanName} Paket Uključuje:
             </Typography>
-            {getFeaturesList(requiredPlan).map((feature, index) => (
+            {getFeaturesList(plan).map((feature, index) => (
               <Box key={index} sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
                 <CheckCircle sx={{ mr: 1.5, fontSize: 20 }} />
                 <Typography variant="body2">{feature}</Typography>
@@ -135,33 +159,31 @@ export function UpgradeCTA({ moduleId, requiredPlan, currentPlan }: UpgradeCTAPr
   );
 }
 
-function getFeaturesList(plan: string): string[] {
-  switch (plan) {
-    case 'basic':
-      return [
-        'Dashboard i osnovna statistika',
-        'Obavještenja i događaji',
-        'Do 50 korisnika',
-        'Vaktija i vodič',
-      ];
-    case 'standard':
-      return [
-        'Sve iz Basic paketa',
-        'Sekcije i zadaci',
-        'Poruke i dokumenti',
-        'Finansije i projekti',
-        'Do 200 korisnika',
-      ];
-    case 'full':
-      return [
-        'Sve iz Standard paketa',
-        'DžematShop i Marketplace',
-        'Pitaj imama',
-        'Live prijenos',
-        'Zahvalnice i značke',
-        'Neograničen broj korisnika',
-      ];
-    default:
-      return [];
+function getFeaturesList(plan: SubscriptionPlan): string[] {
+  const features: string[] = [];
+  
+  // User limits
+  if (plan.maxUsers) {
+    features.push(`Do ${plan.maxUsers} korisnika`);
+  } else {
+    features.push('Neograničen broj korisnika');
   }
+  
+  // Storage limits
+  if (plan.maxStorage) {
+    features.push(`${plan.maxStorage} MB storage-a`);
+  } else {
+    features.push('Neograničen storage');
+  }
+  
+  // Key modules based on plan
+  if (plan.slug === 'basic') {
+    features.push('Dashboard i statistika', 'Obavještenja i događaji', 'Vaktija i vodič');
+  } else if (plan.slug === 'standard') {
+    features.push('Sve iz Basic paketa', 'Sekcije i zadaci', 'Poruke i dokumenti', 'Finansije i projekti');
+  } else if (plan.slug === 'full') {
+    features.push('Sve iz Standard paketa', 'DžematShop i Marketplace', 'Pitaj imama', 'Live prijenos', 'Zahvalnice i značke');
+  }
+  
+  return features;
 }

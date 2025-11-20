@@ -15,11 +15,7 @@ export const SUBSCRIPTION_PLANS = {
       "vaktija",
       "vodic"
     ],
-    readOnlyModules: [
-      "tasks",      // Preview only
-      "messages",   // Preview only
-      "shop"        // Preview only
-    ],
+    readOnlyModules: [],
     maxUsers: 50,
     maxStorage: 500, // MB
     isActive: true
@@ -46,11 +42,7 @@ export const SUBSCRIPTION_PLANS = {
       "projects",
       "feed"
     ],
-    readOnlyModules: [
-      "shop",           // Preview only
-      "certificates",   // Preview only
-      "livestream"      // Preview only
-    ],
+    readOnlyModules: [],
     maxUsers: 200,
     maxStorage: 2000, // MB
     isActive: true
