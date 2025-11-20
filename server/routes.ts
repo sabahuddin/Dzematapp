@@ -308,7 +308,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create session WITHOUT tenantId, but WITH isSuperAdmin flag
       req.session.userId = superAdminUser.id;
       req.session.isSuperAdmin = true;
-      // Do NOT set req.session.tenantId for Super Admin
+      req.session.tenantId = undefined; // Explicitly clear tenantId for Super Admin
       
       res.json({ 
         user: { 
@@ -331,6 +331,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Logout route
   app.post("/api/auth/logout", (req, res) => {
+    // Explicitly clear session fields before destroying
+    const session = req.session as any;
+    session.userId = undefined;
+    session.tenantId = undefined;
+    session.isSuperAdmin = undefined;
+    
     req.session.destroy((err) => {
       if (err) {
         return res.status(500).json({ message: "Could not log out" });

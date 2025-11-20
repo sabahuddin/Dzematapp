@@ -60,24 +60,44 @@ app.use(tenantContextMiddleware);
 
 // Authentication middleware - checks session and sets req.user if authenticated
 app.use(async (req, res, next) => {
-  if (req.session.userId) {
+  const session = req.session as any;
+  
+  if (session.userId) {
     try {
-      const user = await storage.getUser(req.session.userId, req.tenantId);
+      let user;
+      
+      // Super Admin: Find user across all tenants
+      if (session.isSuperAdmin) {
+        const allTenants = await storage.getAllTenants();
+        for (const tenant of allTenants) {
+          const foundUser = await storage.getUser(session.userId, tenant.id);
+          if (foundUser && foundUser.isSuperAdmin) {
+            user = foundUser;
+            break;
+          }
+        }
+      } else {
+        // Regular user: Find in their tenant
+        user = await storage.getUser(session.userId, req.tenantId);
+      }
+      
       if (user) {
         // Set isAdmin to true if user has "imam" or "admin" role
         const hasImamRole = user.roles?.includes('imam') || false;
         req.user = {
           ...user,
           isAdmin: user.isAdmin || hasImamRole,
-          isSuperAdmin: user.isSuperAdmin || false
+          isSuperAdmin: session.isSuperAdmin || user.isSuperAdmin || false
         };
       } else {
         // User no longer exists, clear the session
-        req.session.userId = undefined;
+        session.userId = undefined;
+        session.isSuperAdmin = undefined;
       }
     } catch (error) {
       console.error('Error loading user from session:', error);
-      req.session.userId = undefined;
+      session.userId = undefined;
+      session.isSuperAdmin = undefined;
     }
   }
   next();
