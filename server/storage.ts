@@ -2214,30 +2214,30 @@ export class DatabaseStorage implements IStorage {
     return r;
   }
 
-  async getReceipt(id: string): Promise<Receipt | undefined> {
+  async getReceipt(id: string, tenantId: string): Promise<Receipt | undefined> {
     const result = await db.select().from(receipts).where(and(eq(receipts.id, id), eq(receipts.tenantId, tenantId))).limit(1);
     return result[0];
   }
 
-  async getAllReceipts(): Promise<Receipt[]> {
-    return await db.select().from(receipts).orderBy(desc(receipts.uploadedAt));
+  async getAllReceipts(tenantId: string): Promise<Receipt[]> {
+    return await db.select().from(receipts).where(eq(receipts.tenantId, tenantId)).orderBy(desc(receipts.uploadedAt));
   }
 
-  async getReceiptsByTask(taskId: string): Promise<Receipt[]> {
+  async getReceiptsByTask(taskId: string, tenantId: string): Promise<Receipt[]> {
     return await db.select().from(receipts)
-      .where(eq(receipts.taskId, taskId))
+      .where(and(eq(receipts.taskId, taskId), eq(receipts.tenantId, tenantId)))
       .orderBy(desc(receipts.uploadedAt));
   }
 
-  async getReceiptsByProposal(proposalId: string): Promise<Receipt[]> {
+  async getReceiptsByProposal(proposalId: string, tenantId: string): Promise<Receipt[]> {
     return await db.select().from(receipts)
-      .where(eq(receipts.proposalId, proposalId))
+      .where(and(eq(receipts.proposalId, proposalId), eq(receipts.tenantId, tenantId)))
       .orderBy(desc(receipts.uploadedAt));
   }
 
-  async getReceiptsByStatus(status: string): Promise<Receipt[]> {
+  async getReceiptsByStatus(status: string, tenantId: string): Promise<Receipt[]> {
     return await db.select().from(receipts)
-      .where(eq(receipts.status, status))
+      .where(and(eq(receipts.status, status), eq(receipts.tenantId, tenantId)))
       .orderBy(desc(receipts.uploadedAt));
   }
 
@@ -2249,7 +2249,7 @@ export class DatabaseStorage implements IStorage {
     return r;
   }
 
-  async approveReceipt(id: string, reviewedById: string, reviewComment?: string): Promise<Receipt | undefined> {
+  async approveReceipt(id: string, tenantId: string, reviewedById: string, reviewComment?: string): Promise<Receipt | undefined> {
     const [r] = await db.update(receipts)
       .set({ 
         status: 'approved', 
@@ -2262,7 +2262,7 @@ export class DatabaseStorage implements IStorage {
     return r;
   }
 
-  async rejectReceipt(id: string, reviewedById: string, reviewComment: string): Promise<Receipt | undefined> {
+  async rejectReceipt(id: string, tenantId: string, reviewedById: string, reviewComment: string): Promise<Receipt | undefined> {
     const [r] = await db.update(receipts)
       .set({ 
         status: 'rejected', 
@@ -2281,13 +2281,13 @@ export class DatabaseStorage implements IStorage {
     return t;
   }
 
-  async getCertificateTemplate(id: string): Promise<CertificateTemplate | undefined> {
+  async getCertificateTemplate(id: string, tenantId: string): Promise<CertificateTemplate | undefined> {
     const result = await db.select().from(certificateTemplates).where(and(eq(certificateTemplates.id, id), eq(certificateTemplates.tenantId, tenantId))).limit(1);
     return result[0];
   }
 
-  async getAllCertificateTemplates(): Promise<CertificateTemplate[]> {
-    return await db.select().from(certificateTemplates).orderBy(desc(certificateTemplates.createdAt));
+  async getAllCertificateTemplates(tenantId: string): Promise<CertificateTemplate[]> {
+    return await db.select().from(certificateTemplates).where(eq(certificateTemplates.tenantId, tenantId)).orderBy(desc(certificateTemplates.createdAt));
   }
 
   async updateCertificateTemplate(id: string, tenantId: string, updates: Partial<InsertCertificateTemplate>): Promise<CertificateTemplate | undefined> {
@@ -2298,7 +2298,7 @@ export class DatabaseStorage implements IStorage {
     return t;
   }
 
-  async deleteCertificateTemplate(id: string): Promise<boolean> {
+  async deleteCertificateTemplate(id: string, tenantId: string): Promise<boolean> {
     const result = await db.delete(certificateTemplates).where(and(eq(certificateTemplates.id, id), eq(certificateTemplates.tenantId, tenantId))).returning();
     return result.length > 0;
   }
@@ -2308,7 +2308,7 @@ export class DatabaseStorage implements IStorage {
     const [c] = await db.insert(userCertificates).values(certificate).returning();
     
     // Add to activity feed
-    const user = await this.getUser(certificate.userId);
+    const user = await this.getUser(certificate.userId, certificate.tenantId);
     if (user) {
       const initials = `${user.firstName[0]}. ${user.lastName[0]}.`;
       await this.createActivityFeedItem({
@@ -2317,29 +2317,30 @@ export class DatabaseStorage implements IStorage {
         description: initials,
         relatedEntityId: c.id,
         relatedEntityType: "certificate",
-        isClickable: false
+        isClickable: false,
+        tenantId: certificate.tenantId
       });
     }
     
     return c;
   }
 
-  async getUserCertificate(id: string): Promise<UserCertificate | undefined> {
-    const result = await db.select().from(userCertificates).where(eq(userCertificates.id, id)).limit(1);
+  async getUserCertificate(id: string, tenantId: string): Promise<UserCertificate | undefined> {
+    const result = await db.select().from(userCertificates).where(and(eq(userCertificates.id, id), eq(userCertificates.tenantId, tenantId))).limit(1);
     return result[0];
   }
 
-  async getUserCertificates(userId: string): Promise<UserCertificate[]> {
+  async getUserCertificates(userId: string, tenantId: string): Promise<UserCertificate[]> {
     return await db.select().from(userCertificates)
-      .where(eq(userCertificates.userId, userId))
+      .where(and(eq(userCertificates.userId, userId), eq(userCertificates.tenantId, tenantId)))
       .orderBy(desc(userCertificates.issuedAt));
   }
 
-  async getAllUserCertificates(): Promise<UserCertificate[]> {
-    return await db.select().from(userCertificates).orderBy(desc(userCertificates.issuedAt));
+  async getAllUserCertificates(tenantId: string): Promise<UserCertificate[]> {
+    return await db.select().from(userCertificates).where(eq(userCertificates.tenantId, tenantId)).orderBy(desc(userCertificates.issuedAt));
   }
 
-  async getUnviewedCertificatesCount(userId: string): Promise<number> {
+  async getUnviewedCertificatesCount(userId: string, tenantId: string): Promise<number> {
     const result = await db.select({ count: sql<number>`count(*)` })
       .from(userCertificates)
       .where(and(
@@ -2349,16 +2350,16 @@ export class DatabaseStorage implements IStorage {
     return Number(result[0]?.count || 0);
   }
 
-  async markCertificateAsViewed(id: string): Promise<UserCertificate | undefined> {
+  async markCertificateAsViewed(id: string, tenantId: string): Promise<UserCertificate | undefined> {
     const [c] = await db.update(userCertificates)
       .set({ viewed: true })
-      .where(eq(userCertificates.id, id))
+      .where(and(eq(userCertificates.id, id), eq(userCertificates.tenantId, tenantId)))
       .returning();
     return c;
   }
 
-  async deleteCertificate(id: string): Promise<boolean> {
-    const result = await db.delete(userCertificates).where(eq(userCertificates.id, id)).returning();
+  async deleteCertificate(id: string, tenantId: string): Promise<boolean> {
+    const result = await db.delete(userCertificates).where(and(eq(userCertificates.id, id), eq(userCertificates.tenantId, tenantId))).returning();
     return result.length > 0;
   }
 
@@ -2368,30 +2369,32 @@ export class DatabaseStorage implements IStorage {
     
     await this.createActivity({
       type: "membership_application",
+      userId: app.applicantId,
       description: `Nova pristupnica: ${app.firstName} ${app.lastName}`,
+      tenantId: application.tenantId
     });
     
     return app;
   }
 
-  async getMembershipApplication(id: string): Promise<MembershipApplication | undefined> {
-    const result = await db.select().from(membershipApplications).where(eq(membershipApplications.id, id)).limit(1);
+  async getMembershipApplication(id: string, tenantId: string): Promise<MembershipApplication | undefined> {
+    const result = await db.select().from(membershipApplications).where(and(eq(membershipApplications.id, id), eq(membershipApplications.tenantId, tenantId))).limit(1);
     return result[0];
   }
 
-  async getAllMembershipApplications(): Promise<MembershipApplication[]> {
-    return await db.select().from(membershipApplications).orderBy(desc(membershipApplications.createdAt));
+  async getAllMembershipApplications(tenantId: string): Promise<MembershipApplication[]> {
+    return await db.select().from(membershipApplications).where(eq(membershipApplications.tenantId, tenantId)).orderBy(desc(membershipApplications.createdAt));
   }
 
-  async updateMembershipApplication(id: string, updates: Partial<InsertMembershipApplication>): Promise<MembershipApplication | undefined> {
+  async updateMembershipApplication(id: string, tenantId: string, updates: Partial<InsertMembershipApplication>): Promise<MembershipApplication | undefined> {
     const [app] = await db.update(membershipApplications)
       .set(updates)
-      .where(eq(membershipApplications.id, id))
+      .where(and(eq(membershipApplications.id, id), eq(membershipApplications.tenantId, tenantId)))
       .returning();
     return app;
   }
 
-  async reviewMembershipApplication(id: string, status: string, reviewedById: string, reviewNotes?: string): Promise<MembershipApplication | undefined> {
+  async reviewMembershipApplication(id: string, tenantId: string, status: string, reviewedById: string, reviewNotes?: string): Promise<MembershipApplication | undefined> {
     const [app] = await db.update(membershipApplications)
       .set({ 
         status, 
@@ -2399,13 +2402,13 @@ export class DatabaseStorage implements IStorage {
         reviewNotes: reviewNotes || null,
         reviewedAt: new Date() 
       })
-      .where(eq(membershipApplications.id, id))
+      .where(and(eq(membershipApplications.id, id), eq(membershipApplications.tenantId, tenantId)))
       .returning();
     return app;
   }
 
-  async deleteMembershipApplication(id: string): Promise<boolean> {
-    const result = await db.delete(membershipApplications).where(eq(membershipApplications.id, id)).returning();
+  async deleteMembershipApplication(id: string, tenantId: string): Promise<boolean> {
+    const result = await db.delete(membershipApplications).where(and(eq(membershipApplications.id, id), eq(membershipApplications.tenantId, tenantId))).returning();
     return result.length > 0;
   }
 
@@ -2415,30 +2418,32 @@ export class DatabaseStorage implements IStorage {
     
     await this.createActivity({
       type: "akika_application",
+      userId: app.applicantId,
       description: `Nova prijava akike: ${app.childName}`,
+      tenantId: application.tenantId
     });
     
     return app;
   }
 
-  async getAkikaApplication(id: string): Promise<AkikaApplication | undefined> {
-    const result = await db.select().from(akikaApplications).where(eq(akikaApplications.id, id)).limit(1);
+  async getAkikaApplication(id: string, tenantId: string): Promise<AkikaApplication | undefined> {
+    const result = await db.select().from(akikaApplications).where(and(eq(akikaApplications.id, id), eq(akikaApplications.tenantId, tenantId))).limit(1);
     return result[0];
   }
 
-  async getAllAkikaApplications(): Promise<AkikaApplication[]> {
-    return await db.select().from(akikaApplications).orderBy(desc(akikaApplications.createdAt));
+  async getAllAkikaApplications(tenantId: string): Promise<AkikaApplication[]> {
+    return await db.select().from(akikaApplications).where(eq(akikaApplications.tenantId, tenantId)).orderBy(desc(akikaApplications.createdAt));
   }
 
-  async updateAkikaApplication(id: string, updates: Partial<InsertAkikaApplication>): Promise<AkikaApplication | undefined> {
+  async updateAkikaApplication(id: string, tenantId: string, updates: Partial<InsertAkikaApplication>): Promise<AkikaApplication | undefined> {
     const [app] = await db.update(akikaApplications)
       .set(updates)
-      .where(eq(akikaApplications.id, id))
+      .where(and(eq(akikaApplications.id, id), eq(akikaApplications.tenantId, tenantId)))
       .returning();
     return app;
   }
 
-  async reviewAkikaApplication(id: string, status: string, reviewedById: string, reviewNotes?: string): Promise<AkikaApplication | undefined> {
+  async reviewAkikaApplication(id: string, tenantId: string, status: string, reviewedById: string, reviewNotes?: string): Promise<AkikaApplication | undefined> {
     const [app] = await db.update(akikaApplications)
       .set({ 
         status, 
@@ -2447,7 +2452,7 @@ export class DatabaseStorage implements IStorage {
         reviewNotes: reviewNotes || null,
         reviewedAt: new Date() 
       })
-      .where(eq(akikaApplications.id, id))
+      .where(and(eq(akikaApplications.id, id), eq(akikaApplications.tenantId, tenantId)))
       .returning();
     
     // Send notification message to the user who submitted the application
@@ -2474,14 +2479,14 @@ export class DatabaseStorage implements IStorage {
     return app;
   }
 
-  async getUserAkikaApplications(userId: string): Promise<AkikaApplication[]> {
+  async getUserAkikaApplications(userId: string, tenantId: string): Promise<AkikaApplication[]> {
     return await db.select()
       .from(akikaApplications)
       .where(eq(akikaApplications.submittedBy, userId))
       .orderBy(desc(akikaApplications.createdAt));
   }
 
-  async deleteAkikaApplication(id: string): Promise<boolean> {
+  async deleteAkikaApplication(id: string, tenantId: string): Promise<boolean> {
     const result = await db.delete(akikaApplications).where(eq(akikaApplications.id, id)).returning();
     return result.length > 0;
   }
@@ -2498,24 +2503,24 @@ export class DatabaseStorage implements IStorage {
     return app;
   }
 
-  async getMarriageApplication(id: string): Promise<MarriageApplication | undefined> {
-    const result = await db.select().from(marriageApplications).where(eq(marriageApplications.id, id)).limit(1);
+  async getMarriageApplication(id: string, tenantId: string): Promise<MarriageApplication | undefined> {
+    const result = await db.select().from(marriageApplications).where(and(eq(marriageApplications.id, id), eq(marriageApplications.tenantId, tenantId))).limit(1);
     return result[0];
   }
 
-  async getAllMarriageApplications(): Promise<MarriageApplication[]> {
-    return await db.select().from(marriageApplications).orderBy(desc(marriageApplications.createdAt));
+  async getAllMarriageApplications(tenantId: string): Promise<MarriageApplication[]> {
+    return await db.select().from(marriageApplications).where(eq(marriageApplications.tenantId, tenantId)).orderBy(desc(marriageApplications.createdAt));
   }
 
-  async updateMarriageApplication(id: string, updates: Partial<InsertMarriageApplication>): Promise<MarriageApplication | undefined> {
+  async updateMarriageApplication(id: string, tenantId: string, updates: Partial<InsertMarriageApplication>): Promise<MarriageApplication | undefined> {
     const [app] = await db.update(marriageApplications)
       .set(updates)
-      .where(eq(marriageApplications.id, id))
+      .where(and(eq(marriageApplications.id, id), eq(marriageApplications.tenantId, tenantId)))
       .returning();
     return app;
   }
 
-  async reviewMarriageApplication(id: string, status: string, reviewedById: string, reviewNotes?: string): Promise<MarriageApplication | undefined> {
+  async reviewMarriageApplication(id: string, tenantId: string, status: string, reviewedById: string, reviewNotes?: string): Promise<MarriageApplication | undefined> {
     const [app] = await db.update(marriageApplications)
       .set({ 
         status, 
@@ -2528,7 +2533,7 @@ export class DatabaseStorage implements IStorage {
     return app;
   }
 
-  async deleteMarriageApplication(id: string): Promise<boolean> {
+  async deleteMarriageApplication(id: string, tenantId: string): Promise<boolean> {
     const result = await db.delete(marriageApplications).where(eq(marriageApplications.id, id)).returning();
     return result.length > 0;
   }
