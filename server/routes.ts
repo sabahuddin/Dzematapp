@@ -226,13 +226,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Authentication routes
   app.post("/api/auth/login", async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
-      const { username, password } = req.body;
+      const { username, password, tenantId } = req.body;
       
       console.log('[LOGIN] Received credentials:', { username, passwordLength: password?.length, tenantId });
       
       if (!username || !password) {
         return res.status(400).json({ message: "Username and password are required" });
+      }
+
+      if (!tenantId) {
+        return res.status(400).json({ message: "Tenant selection is required" });
       }
 
       const user = await storage.getUserByUsername(username, tenantId);
@@ -248,8 +251,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
-      // Create session
+      // Create session with tenantId
       req.session.userId = user.id;
+      req.session.tenantId = tenantId;
       
       // Check if user has Imam role for admin privileges
       const hasImamRole = user.roles?.includes('imam') || false;
@@ -263,7 +267,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           roles: user.roles || [],
           isAdmin: user.isAdmin || hasImamRole,
           isSuperAdmin: user.isSuperAdmin || false,
-          totalPoints: user.totalPoints || 0
+          totalPoints: user.totalPoints || 0,
+          tenantId: tenantId
         } 
       });
     } catch (error) {
@@ -293,7 +298,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           email: req.user.email,
           roles: req.user.roles || [],
           isAdmin: req.user.isAdmin,
-          totalPoints: req.user.totalPoints || 0
+          isSuperAdmin: req.user.isSuperAdmin || false,
+          totalPoints: req.user.totalPoints || 0,
+          tenantId: req.tenantId
         } 
       });
     } else {
@@ -4055,6 +4062,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ============================================================================
   // TENANT MANAGEMENT (Super Admin only - Global tenant operations)
   // ============================================================================
+
+  // PUBLIC: Get active tenants for login screen (no auth required)
+  app.get("/api/tenants/active", async (req, res) => {
+    try {
+      const allTenants = await storage.getAllTenants();
+      const activeTenants = allTenants
+        .filter(t => t.isActive)
+        .map(t => ({
+          id: t.id,
+          name: t.name,
+          slug: t.slug,
+          subdomain: t.subdomain
+        }));
+      res.json(activeTenants);
+    } catch (error) {
+      console.error('Error getting active tenants:', error);
+      res.status(500).json({ message: "Failed to get active tenants" });
+    }
+  });
 
   // Get all tenants
   app.get("/api/tenants", requireSuperAdmin, async (req, res) => {

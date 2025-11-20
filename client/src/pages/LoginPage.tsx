@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
+import { useQuery } from '@tanstack/react-query';
 import {
   Box,
   Card,
@@ -13,22 +14,36 @@ import {
   ToggleButtonGroup,
   ToggleButton,
   Snackbar,
-  IconButton
+  IconButton,
+  MenuItem,
+  CircularProgress
 } from '@mui/material';
 import { Download, Close } from '@mui/icons-material';
 import { useAuth } from '../hooks/useAuth';
 import { DzematLogo } from '@/components/DzematLogo';
 import { usePWAInstall } from '@/hooks/usePWAInstall';
 
+interface ActiveTenant {
+  id: string;
+  name: string;
+  slug: string;
+  subdomain: string | null;
+}
+
 export default function LoginPage() {
   const { t, i18n } = useTranslation(['login', 'common']);
   const [, setLocation] = useLocation();
-  const [formData, setFormData] = useState({ username: '', password: '' });
+  const [formData, setFormData] = useState({ username: '', password: '', tenantId: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const { isInstallable, promptInstall } = usePWAInstall();
   const [showInstallPrompt, setShowInstallPrompt] = useState(true);
+
+  // Fetch active tenants
+  const { data: tenants = [], isLoading: tenantsLoading } = useQuery<ActiveTenant[]>({
+    queryKey: ['/api/tenants/active'],
+  });
 
   const handleLanguageChange = (event: React.MouseEvent<HTMLElement>, newLanguage: string | null) => {
     if (newLanguage) {
@@ -47,8 +62,14 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
 
+    if (!formData.tenantId) {
+      setError('Molimo odaberite organizaciju');
+      setLoading(false);
+      return;
+    }
+
     try {
-      const success = await login(formData.username, formData.password);
+      const success = await login(formData.username, formData.password, formData.tenantId);
       if (success) {
         setLocation('/dashboard');
       } else {
@@ -146,6 +167,32 @@ export default function LoginPage() {
 
             <form onSubmit={handleSubmit}>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                {tenantsLoading ? (
+                  <Box sx={{ display: 'flex', justifyContent: 'center', py: 2 }}>
+                    <CircularProgress size={24} />
+                  </Box>
+                ) : (
+                  <TextField
+                    select
+                    fullWidth
+                    variant="outlined"
+                    label="Organizacija / Džemat"
+                    value={formData.tenantId}
+                    onChange={handleChange('tenantId')}
+                    required
+                    data-testid="select-tenant"
+                  >
+                    <MenuItem value="" disabled>
+                      Odaberite organizaciju
+                    </MenuItem>
+                    {tenants.map((tenant) => (
+                      <MenuItem key={tenant.id} value={tenant.id}>
+                        {tenant.name}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                )}
+
                 <TextField
                   fullWidth
                   variant="outlined"

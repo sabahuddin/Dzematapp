@@ -31,13 +31,13 @@ export function tenantContextMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  // TODO: Implementirati tenant resolution strategy:
-  // 1. Subdomain routing: Extract from req.hostname
-  // 2. Tenant header: req.headers['x-tenant-id']
-  // 3. User session: req.user?.tenantId
+  // Tenant resolution strategy:
+  // 1. Session tenantId (set during login)
+  // 2. Subdomain routing: Extract from req.hostname (future)
+  // 3. Tenant header: req.headers['x-tenant-id'] (future)
+  // 4. Fallback to default tenant
   
-  // Za sada, koristimo default tenant
-  req.tenantId = DEFAULT_TENANT_ID;
+  req.tenantId = (req.session as any).tenantId || DEFAULT_TENANT_ID;
   
   next();
 }

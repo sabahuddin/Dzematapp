@@ -7,11 +7,13 @@ interface User {
   email: string;
   roles?: string[];
   isAdmin: boolean;
+  isSuperAdmin?: boolean;
+  tenantId?: string;
 }
 
 interface AuthContextType {
   user: User | null;
-  login: (username: string, password: string) => Promise<boolean>;
+  login: (username: string, password: string, tenantId: string) => Promise<boolean>;
   logout: () => Promise<void>;
   isLoading: boolean;
   checkSession: () => Promise<void>;
@@ -51,16 +53,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (
     username: string,
     password: string,
+    tenantId: string
   ): Promise<boolean> => {
     try {
-      console.log("🔐 Login attempt:", { username, password: "***" });
+      console.log("🔐 Login attempt:", { username, password: "***", tenantId });
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         credentials: "include", // Include cookies in requests
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, password, tenantId }),
       });
 
       console.log("📡 Login response:", response.status, response.statusText);
