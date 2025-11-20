@@ -952,7 +952,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Član IO i Admin vide sve sekcije (javne i privatne)
       const canSeeAll = isAdmin || isClanIO;
       
-      const workGroups = await storage.getAllWorkGroups(userId, canSeeAll, tenantId);
+      const workGroups = await storage.getAllWorkGroups(tenantId, userId, canSeeAll);
       
       // FILTER ARCHIVED SECTIONS FOR NON-ADMIN USERS
       const filteredWorkGroups = isAdmin 
@@ -2358,7 +2358,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Marketplace Items routes
   app.get("/api/marketplace/items", requireAuth, requireFeature("marketplace"), async (req, res) => {
     try {
-      const items = await storage.getAllMarketplaceItems();
+      const tenantId = req.tenantId || "default-tenant-demo";
+      const items = await storage.getAllMarketplaceItems(tenantId);
       res.json(items);
     } catch (error) {
       res.status(500).json({ message: "Failed to get marketplace items" });
@@ -2367,11 +2368,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/marketplace/items", requireAuth, requireFeature("marketplace"), async (req, res) => {
     try {
-      let tenantId = req.body.tenantId || req.tenantId; if (!tenantId) tenantId = "default-tenant-demo"; const userId = req.session.userId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
+      const userId = req.session.userId!;
       const itemData = insertMarketplaceItemSchema.parse({
         ...req.body,
+        tenantId,
         userId
-});
+      });
       const item = await storage.createMarketplaceItem(itemData);
       res.status(201).json(item);
     } catch (error) {
