@@ -3,6 +3,7 @@
   "todaysPrayerTimes": "Vaktija e sotme",
   "monthlyPrayerTimes": "Vaktija mujore",
   "uploadCSV": "Ngarko CSV",
+  "exportCSV": "Shkarko CSV",
   "uploadPrayerTimes": "Ngarko kohët e namazit nga skedari CSV",
   "selectCSV": "Zgjidh skedarin CSV",
   "deleteAll": "Fshi të gjitha",

@@ -3,6 +3,7 @@
   "todaysPrayerTimes": "Today's prayer times",
   "monthlyPrayerTimes": "Monthly prayer times",
   "uploadCSV": "Upload CSV",
+  "exportCSV": "Download CSV",
   "uploadPrayerTimes": "Upload prayer times from CSV file",
   "selectCSV": "Select CSV file",
   "deleteAll": "Delete all",

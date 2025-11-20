@@ -29,6 +29,7 @@
     "bank": "Bank"
   },
   "notes": "Notes",
+  "bonusPoints": "Add points",
   "user": "User",
   "selectUser": "Select user",
   "unknown": "Unknown",

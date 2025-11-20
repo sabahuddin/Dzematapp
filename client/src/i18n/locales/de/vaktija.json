@@ -3,6 +3,7 @@
   "todaysPrayerTimes": "Heutige Gebetszeiten",
   "monthlyPrayerTimes": "Monatliche Gebetszeiten",
   "uploadCSV": "CSV hochladen",
+  "exportCSV": "CSV herunterladen",
   "uploadPrayerTimes": "Gebetszeiten aus CSV-Datei hochladen",
   "selectCSV": "CSV-Datei auswählen",
   "deleteAll": "Alle löschen",

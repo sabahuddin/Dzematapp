@@ -29,6 +29,7 @@
     "bank": "Bank"
   },
   "notes": "Notizen",
+  "bonusPoints": "Punkte hinzufügen",
   "user": "Benutzer",
   "selectUser": "Benutzer auswählen",
   "unknown": "Unbekannt",
