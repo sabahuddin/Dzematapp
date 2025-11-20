@@ -82,7 +82,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     showBadge?: boolean;
   }> = [
     { path: '/dashboard', label: t('navigation:menu.dashboard'), icon: Dashboard },
-    { path: '/superadmin/dashboard', label: 'Super Admin Panel', icon: AdminPanelSettings, superAdminOnly: true },
+    { path: '/super-admin/panel', label: 'Super Admin Panel', icon: AdminPanelSettings, superAdminOnly: true },
     { path: '/feed', label: 'Feed', icon: DynamicFeed },
     { path: '/users', label: t('navigation:menu.users'), labelForMember: t('navigation:menu.profile'), icon: People },
     { path: '/finances', label: t('navigation:menu.finances'), labelForMember: t('navigation:menu.myPayments'), icon: AttachMoney },

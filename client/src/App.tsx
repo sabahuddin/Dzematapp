@@ -50,7 +50,7 @@ import ModulesPage from "@/pages/ModulesPage";
 import MobileDashboard from "@/pages/MobileDashboard";
 import MyProfilePage from "@/pages/MyProfilePage";
 import NotificationsPage from "@/pages/NotificationsPage";
-import TenantManagementPage from "@/pages/TenantManagementPage";
+import SuperAdminPanel from "@/pages/SuperAdminPanel";
 import PricingPage from "@/pages/PricingPage";
 import NotFound from "@/pages/not-found";
 
@@ -373,9 +373,9 @@ function Router() {
         </AdminRoute>
       </Route>
       
-      <Route path="/tenant-management">
+      <Route path="/super-admin/panel">
         <SuperAdminRoute>
-          <TenantManagementPage />
+          <SuperAdminPanel />
         </SuperAdminRoute>
       </Route>
       
