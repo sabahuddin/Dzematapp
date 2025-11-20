@@ -2120,7 +2120,7 @@ export class DatabaseStorage implements IStorage {
     
     const totalPoints = Number(result[0]?.total ?? 0);
     
-    await this.updateUser(userId, { totalPoints });
+    await this.updateUser(userId, tenantId, { totalPoints });
     
     // Automatically check and award badges after points update
     await this.checkAndAwardBadges(userId, tenantId);
@@ -2153,24 +2153,24 @@ export class DatabaseStorage implements IStorage {
     return p;
   }
 
-  async getProposal(id: string): Promise<Proposal | undefined> {
+  async getProposal(id: string, tenantId: string): Promise<Proposal | undefined> {
     const result = await db.select().from(proposals).where(and(eq(proposals.id, id), eq(proposals.tenantId, tenantId))).limit(1);
     return result[0];
   }
 
-  async getAllProposals(): Promise<Proposal[]> {
-    return await db.select().from(proposals).orderBy(desc(proposals.createdAt));
+  async getAllProposals(tenantId: string): Promise<Proposal[]> {
+    return await db.select().from(proposals).where(eq(proposals.tenantId, tenantId)).orderBy(desc(proposals.createdAt));
   }
 
-  async getProposalsByWorkGroup(workGroupId: string): Promise<Proposal[]> {
+  async getProposalsByWorkGroup(workGroupId: string, tenantId: string): Promise<Proposal[]> {
     return await db.select().from(proposals)
-      .where(eq(proposals.workGroupId, workGroupId))
+      .where(and(eq(proposals.workGroupId, workGroupId), eq(proposals.tenantId, tenantId)))
       .orderBy(desc(proposals.createdAt));
   }
 
-  async getProposalsByStatus(status: string): Promise<Proposal[]> {
+  async getProposalsByStatus(status: string, tenantId: string): Promise<Proposal[]> {
     return await db.select().from(proposals)
-      .where(eq(proposals.status, status))
+      .where(and(eq(proposals.status, status), eq(proposals.tenantId, tenantId)))
       .orderBy(desc(proposals.createdAt));
   }
 
@@ -2182,7 +2182,7 @@ export class DatabaseStorage implements IStorage {
     return p;
   }
 
-  async approveProposal(id: string, reviewedById: string, reviewComment?: string): Promise<Proposal | undefined> {
+  async approveProposal(id: string, tenantId: string, reviewedById: string, reviewComment?: string): Promise<Proposal | undefined> {
     const [p] = await db.update(proposals)
       .set({ 
         status: 'approved', 
@@ -2195,7 +2195,7 @@ export class DatabaseStorage implements IStorage {
     return p;
   }
 
-  async rejectProposal(id: string, reviewedById: string, reviewComment: string): Promise<Proposal | undefined> {
+  async rejectProposal(id: string, tenantId: string, reviewedById: string, reviewComment: string): Promise<Proposal | undefined> {
     const [p] = await db.update(proposals)
       .set({ 
         status: 'rejected', 

@@ -1753,7 +1753,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Access Requests routes
   app.get("/api/access-requests", requireAdmin, requireFeature("tasks"), async (req, res) => {
     try {
-      const requests = await storage.getAllAccessRequests();
+      const requests = await storage.getAllAccessRequests(req.user!.tenantId);
       res.json(requests);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch access requests" });
@@ -2880,6 +2880,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         description: `Uplata: ${validated.amount} CHF (${validated.purpose})`,
         points,
         relatedEntityId: contribution.id,
+      },
+        tenantId: req.user!.tenantId,
       });
 
       // If bonus points were added, create a separate activity log entry
@@ -2890,7 +2892,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           description: `Bonus bodovi za uplatu: ${validated.amount} CHF`,
           points: parseInt(bonusPoints),
           relatedEntityId: contribution.id,
-        });
+        },
+        tenantId: req.user!.tenantId,
+      });
       }
 
       // If contribution is for a project, create additional activity log
@@ -2903,7 +2907,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
             description: `Doprinos projektu: ${project.name} (${validated.amount} CHF)`,
             points: 0, // Points already awarded in contribution_made log
             relatedEntityId: contribution.id,
-          });
+          },
+        tenantId: req.user!.tenantId,
+      });
         }
       }
 
@@ -2982,6 +2988,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         description: `Finansijski doprinos: ${newAmount} CHF`,
         points: pointsFromContribution,
         relatedEntityId: req.params.id,
+      },
+        tenantId: req.user!.tenantId,
       });
 
       // If contribution is for a project, create additional activity log
@@ -2994,7 +3002,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
             description: `Doprinos projektu: ${project.name} (${newAmount} CHF)`,
             points: 0,
             relatedEntityId: req.params.id,
-          });
+          },
+        tenantId: req.user!.tenantId,
+      });
         }
       }
 
