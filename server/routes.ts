@@ -982,9 +982,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/work-groups", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
-      let tenantId = req.body.tenantId || req.tenantId; if (!tenantId) tenantId = "default-tenant-demo";
-      const workGroupData = insertWorkGroupSchema.parse(req.body);
-      const workGroup = await storage.createWorkGroup({ ...workGroupData, tenantId });
+      const tenantId = req.tenantId || "default-tenant-demo";
+      const workGroupData = insertWorkGroupSchema.parse({ ...req.body, tenantId });
+      const workGroup = await storage.createWorkGroup(workGroupData);
       res.json(workGroup);
     } catch (error) {
       res.status(400).json({ message: "Invalid work group data" });
