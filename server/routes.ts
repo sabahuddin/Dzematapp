@@ -302,7 +302,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Users routes
   app.get("/api/users", requireAuth, async (req, res) => {
     try {
-      const users = await storage.getAllUsers();
+      const tenantId = req.tenantId!;
+      const users = await storage.getAllUsers(tenantId);
       res.json(users.map(user => ({ ...user, password: undefined })));
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch users" });
@@ -311,6 +312,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/users/:id", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const { id } = req.params;
       const currentUser = req.user!;
       
@@ -322,7 +324,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Unauthorized" });
       }
       
-      const user = await storage.getUser(id);
+      const user = await storage.getUser(id, tenantId);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
@@ -335,11 +337,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/users", requireAdmin, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const userData = insertUserSchema.parse(req.body);
       
       // Check if username already exists (only if username is provided)
       if (userData.username) {
-        const existingUser = await storage.getUserByUsername(userData.username);
+        const existingUser = await storage.getUserByUsername(userData.username, tenantId);
         if (existingUser) {
           return res.status(400).json({ message: "Korisničko ime već postoji" });
         }
@@ -354,6 +357,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/users/:id", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const { id } = req.params;
       const currentUser = req.user!;
       
@@ -368,7 +372,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userData = insertUserSchema.partial().parse(req.body);
       
       // Protect the default "admin" account from password/username changes
-      const userToUpdate = await storage.getUser(id);
+      const userToUpdate = await storage.getUser(id, tenantId);
       if (userToUpdate?.username === 'admin') {
         if (userData.password !== undefined) {
           return res.status(403).json({ message: "Nije dozvoljeno mijenjanje lozinke za admin nalog" });
@@ -401,13 +405,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Check if username is being changed and if it already exists
       if (userData.username) {
-        const existingUser = await storage.getUserByUsername(userData.username);
+        const existingUser = await storage.getUserByUsername(userData.username, tenantId);
         if (existingUser && existingUser.id !== id) {
           return res.status(400).json({ message: "Korisničko ime već postoji" });
         }
       }
       
-      const user = await storage.updateUser(id, userData);
+      const user = await storage.updateUser(id, tenantId, userData);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
@@ -415,6 +419,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Log activity
       await storage.createActivityLog({
         userId: id,
+        tenantId: tenantId,
         activityType: 'profile_updated',
         description: 'Profil ažuriran',
         points: 0,
