@@ -82,6 +82,7 @@ const eventUpload = multer({
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB limit
     files: 1
+  },
   fileFilter: (req, file, cb) => {
     const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
     if (allowedMimes.includes(file.mimetype)) {
@@ -98,6 +99,7 @@ const csvUpload = multer({
   limits: {
     fileSize: 1 * 1024 * 1024, // 1MB limit for CSV
     files: 1
+  },
   fileFilter: (req, file, cb) => {
     const allowedMimes = ['text/csv', 'application/vnd.ms-excel', 'text/plain'];
     const allowedExtensions = ['.csv'];
@@ -132,6 +134,7 @@ const certificateUpload = multer({
   limits: {
     fileSize: 10 * 1024 * 1024, // 10MB limit for templates
     files: 1
+  },
   fileFilter: (req, file, cb) => {
     const allowedMimes = ['image/png'];
     if (allowedMimes.includes(file.mimetype)) {
@@ -1684,7 +1687,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           firstName: user.firstName, 
           lastName: user.lastName 
         }
-});      
+      };
       res.json(fileWithUser);
     } catch (error) {
       res.status(400).json({ message: "Invalid file data" });
@@ -2080,7 +2083,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const questionsWithUserInfo = await Promise.all(
         questions.map(async (q) => {
-          const user = await storage.getUser(q.userId);
+          const user = await storage.getUser(q.userId, req.user!.tenantId);
           return {
             ...q,
             user: user ? {
@@ -2088,7 +2091,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               firstName: user.firstName,
               lastName: user.lastName
             } : null
-        };
+          };
         })
       );
       
@@ -2108,7 +2111,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userId: req.user.id,
         subject: req.body.subject,
         question: req.body.question,
-});
+        tenantId: req.user!.tenantId
+      };
       const question = await storage.createImamQuestion(questionData);
       res.status(201).json(question);
     } catch (error) {
@@ -2954,8 +2958,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         points: pointsFromContribution,
         relatedEntityId: req.params.id,
         tenantId: req.user!.tenantId
-});
-});
+      });
 
       // If contribution is for a project, create additional activity log
       if (newProjectId) {
@@ -2967,9 +2970,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             description: `Doprinos projektu: ${project.name} (${newAmount} CHF)`,
             points: 0,
             relatedEntityId: req.params.id,
-        tenantId: req.user!.tenantId
-});
-});
+            tenantId: req.user!.tenantId
+          });
         }
       }
 
@@ -3688,8 +3690,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ...(req.body.textPositionX && { textPositionX: parseInt(req.body.textPositionX) }),
         ...(req.body.textPositionY && { textPositionY: parseInt(req.body.textPositionY) }),
         ...(req.body.fontSize && { fontSize: parseInt(req.body.fontSize) })
-});      
-      const updated = await storage.updateCertificateTemplate(req.params.id, req.user!.tenantId, req.user!.tenantId, updates);
+      };
+      const updated = await storage.updateCertificateTemplate(req.params.id, req.user!.tenantId, updates);
       if (!updated) {
         return res.status(404).json({ message: "Certificate template not found" });
       }
@@ -3935,8 +3937,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Add submittedBy if user is logged in
       const applicationData = {
         ...validated,
-        submittedBy: req.user?.id || null
-});      const application = await storage.createAkikaApplication(applicationData);
+        submittedBy: req.user?.id || null,
+        tenantId: req.user?.id ? req.user.tenantId : (req.body.tenantId || 'guest')
+      };
+      const application = await storage.createAkikaApplication(applicationData);
       res.status(201).json(application);
     } catch (error) {
       console.error('Error creating akika application:', error);
