@@ -14,7 +14,7 @@ export function requireFeature(moduleId: string) {
       const tenantId = session.tenantId;
       
       // Super Admin bypass - has access to everything
-      if (session.isSuperAdmin && !tenantId) {
+      if (session.isSuperAdmin) {
         return next();
       }
       
