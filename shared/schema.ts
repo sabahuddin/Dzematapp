@@ -1042,3 +1042,144 @@ export const insertServiceSchema = createInsertSchema(services).omit({
 
 export type Service = typeof services.$inferSelect;
 export type InsertService = z.infer<typeof insertServiceSchema>;
+
+// ========================================
+// MULTI-TENANT ARCHITECTURE
+// ========================================
+
+// Tenants - Organizations/Džemati
+export const tenants = pgTable("tenants", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(), // Naziv džemata (e.g. "IZ Zürich")
+  slug: text("slug").notNull().unique(), // URL-friendly identifier (e.g. "iz-zurich")
+  subdomain: text("subdomain").unique(), // For subdomain routing (e.g. "zurich.dzemat-app.com")
+  
+  // Contact & Location
+  email: text("email").notNull(),
+  phone: text("phone"),
+  address: text("address"),
+  city: text("city"),
+  country: text("country").notNull().default("Switzerland"), // For GDPR data residency
+  
+  // Subscription & Billing
+  subscriptionTier: text("subscription_tier").notNull().default("basic"), // basic, standard, full
+  subscriptionStatus: text("subscription_status").notNull().default("trial"), // trial, active, suspended, cancelled
+  trialEndsAt: timestamp("trial_ends_at"),
+  subscriptionStartedAt: timestamp("subscription_started_at"),
+  
+  // Stripe Integration
+  stripeCustomerId: text("stripe_customer_id").unique(),
+  stripeSubscriptionId: text("stripe_subscription_id").unique(),
+  
+  // Settings
+  isActive: boolean("is_active").default(true).notNull(),
+  locale: text("locale").default("bs").notNull(), // Default language
+  currency: text("currency").default("CHF").notNull(),
+  
+  // Metadata
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Subscription Plans - Definicije paketa
+export const subscriptionPlans = pgTable("subscription_plans", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(), // "Basic", "Standard", "Full"
+  slug: text("slug").notNull().unique(), // "basic", "standard", "full"
+  description: text("description"),
+  
+  // Pricing
+  priceMonthly: text("price_monthly").notNull(), // "29.00", "79.00", "149.00"
+  priceYearly: text("price_yearly"), // Optional yearly pricing
+  currency: text("currency").default("EUR").notNull(),
+  
+  // Stripe Product IDs
+  stripePriceIdMonthly: text("stripe_price_id_monthly"),
+  stripePriceIdYearly: text("stripe_price_id_yearly"),
+  stripeProductId: text("stripe_product_id"),
+  
+  // Module Access (JSON array of enabled module IDs)
+  enabledModules: text("enabled_modules").array(), // ["dashboard", "announcements", "events", ...]
+  readOnlyModules: text("read_only_modules").array(), // Modules shown as read-only preview
+  
+  // Limits
+  maxUsers: integer("max_users"), // null = unlimited
+  maxStorage: integer("max_storage"), // in MB
+  
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Tenant Features - Per-tenant module overrides
+export const tenantFeatures = pgTable("tenant_features", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
+  moduleId: text("module_id").notNull(), // "shop", "finances", "tasks", etc.
+  
+  isEnabled: boolean("is_enabled").default(true).notNull(),
+  isReadOnly: boolean("is_read_only").default(false).notNull(), // Show as preview with upgrade CTA
+  
+  // Custom module settings (JSON)
+  settings: text("settings"), // Module-specific configuration
+  
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Audit Logs - GDPR Compliance & Security
+export const auditLogs = pgTable("audit_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  
+  // Tenant & User Context
+  tenantId: varchar("tenant_id").references(() => tenants.id, { onDelete: "cascade" }),
+  userId: varchar("user_id").references(() => users.id),
+  
+  // Action Details
+  action: text("action").notNull(), // "create", "read", "update", "delete", "export", "login"
+  resourceType: text("resource_type").notNull(), // "user", "announcement", "event", "tenant_data"
+  resourceId: varchar("resource_id"),
+  
+  // Change Tracking
+  dataBefore: text("data_before"), // JSON snapshot before change
+  dataAfter: text("data_after"), // JSON snapshot after change
+  
+  // Request Metadata
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  
+  // Description
+  description: text("description"),
+  
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Insert Schemas
+export const insertTenantSchema = createInsertSchema(tenants).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertSubscriptionPlanSchema = createInsertSchema(subscriptionPlans).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertTenantFeatureSchema = createInsertSchema(tenantFeatures).omit({
+  id: true,
+  updatedAt: true,
+});
+
+export const insertAuditLogSchema = createInsertSchema(auditLogs).omit({
+  id: true,
+  createdAt: true,
+});
+
+// Types
+export type Tenant = typeof tenants.$inferSelect;
+export type InsertTenant = z.infer<typeof insertTenantSchema>;
+export type SubscriptionPlan = typeof subscriptionPlans.$inferSelect;
+export type InsertSubscriptionPlan = z.infer<typeof insertSubscriptionPlanSchema>;
+export type TenantFeature = typeof tenantFeatures.$inferSelect;
+export type InsertTenantFeature = z.infer<typeof insertTenantFeatureSchema>;
+export type AuditLog = typeof auditLogs.$inferSelect;
+export type InsertAuditLog = z.infer<typeof insertAuditLogSchema>;
