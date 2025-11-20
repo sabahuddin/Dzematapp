@@ -1436,7 +1436,7 @@ export class DatabaseStorage implements IStorage {
     return request;
   }
 
-  async updateLastViewed(userId: string, type: 'shop' | 'events' | 'announcements' | 'imamQuestions' | 'tasks'): Promise<User | undefined> {
+  async updateLastViewed(userId: string, tenantId: string, type: 'shop' | 'events' | 'announcements' | 'imamQuestions' | 'tasks'): Promise<User | undefined> {
     const now = new Date();
     const updates: Partial<InsertUser> = {};
 
@@ -1458,12 +1458,12 @@ export class DatabaseStorage implements IStorage {
         break;
     }
 
-    const [user] = await db.update(users).set(updates).where(eq(users.id, userId)).returning();
+    const [user] = await db.update(users).set(updates).where(and(eq(users.id, userId), eq(users.tenantId, tenantId))).returning();
     return user;
   }
 
-  async getNewItemsCount(userId: string, type: 'shop' | 'events' | 'announcements' | 'imamQuestions' | 'tasks'): Promise<number> {
-    const user = await this.getUser(userId);
+  async getNewItemsCount(userId: string, tenantId: string, type: 'shop' | 'events' | 'announcements' | 'imamQuestions' | 'tasks'): Promise<number> {
+    const user = await this.getUser(userId, tenantId);
     if (!user) return 0;
 
     let lastViewed: Date | null = null;
