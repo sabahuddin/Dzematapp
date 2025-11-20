@@ -1809,6 +1809,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Statistics routes
   app.get("/api/statistics", async (req, res) => {
     try {
+      const session = req.session as any;
+      
+      // If Super Admin (no tenantId), return empty/zero statistics
+      if (session.isSuperAdmin && !session.tenantId) {
+        return res.json({
+          userCount: 0,
+          newAnnouncementsCount: 0,
+          upcomingEventsCount: 0,
+          activeTasksCount: 0
+        });
+      }
+      
       const [userCount, newAnnouncementsCount, upcomingEventsCount, activeTasksCount] = await Promise.all([
         storage.getUserCount(),
         storage.getNewAnnouncementsCount(7),
@@ -2582,6 +2594,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/prayer-times/today", async (req, res) => {
     try {
+      const session = req.session as any;
+      
+      // If Super Admin (no tenantId), return null
+      if (session.isSuperAdmin && !session.tenantId) {
+        return res.status(404).json({ message: "Prayer times not available for Super Admin" });
+      }
+      
       const now = new Date();
       const day = String(now.getDate()).padStart(2, '0');
       const month = String(now.getMonth() + 1).padStart(2, '0');
