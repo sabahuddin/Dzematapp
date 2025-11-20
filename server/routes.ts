@@ -641,7 +641,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Announcements routes
   app.get("/api/announcements", async (req, res) => {
     try {
-      const announcements = await storage.getAllAnnouncements();
+      const tenantId = req.tenantId!;
+      const announcements = await storage.getAllAnnouncements(tenantId);
       res.json(announcements);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch announcements" });
@@ -650,8 +651,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/announcements", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const announcementData = insertAnnouncementSchema.parse(req.body);
-      const announcement = await storage.createAnnouncement(announcementData);
+      const announcement = await storage.createAnnouncement({ ...announcementData, tenantId });
       res.json(announcement);
     } catch (error) {
       res.status(400).json({ message: "Invalid announcement data" });
@@ -660,9 +662,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/announcements/:id", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const { id } = req.params;
       const announcementData = insertAnnouncementSchema.partial().parse(req.body);
-      const announcement = await storage.updateAnnouncement(id, announcementData);
+      const announcement = await storage.updateAnnouncement(id, tenantId, announcementData);
       if (!announcement) {
         return res.status(404).json({ message: "Announcement not found" });
       }
@@ -674,8 +677,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/announcements/:id", requireAdmin, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const { id } = req.params;
-      const deleted = await storage.deleteAnnouncement(id);
+      const deleted = await storage.deleteAnnouncement(id, tenantId);
       if (!deleted) {
         return res.status(404).json({ message: "Announcement not found" });
       }
@@ -688,13 +692,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Events routes
   app.get("/api/events", async (req, res) => {
     try {
-      const events = await storage.getAllEvents();
+      const tenantId = req.tenantId!;
+      const events = await storage.getAllEvents(tenantId);
       
       // Add RSVP count to each event
       const eventsWithRsvpCount = await Promise.all(
         events.map(async (event) => {
           if (event.rsvpEnabled) {
-            const rsvpStats = await storage.getEventRsvps(event.id);
+            const rsvpStats = await storage.getEventRsvps(event.id, tenantId);
             console.log(`Event ${event.name}: rsvpCount = ${rsvpStats.totalAttendees}`);
             return {
               ...event,
@@ -721,7 +726,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/events/locations", async (req, res) => {
     try {
-      const locations = await storage.getEventLocations();
+      const tenantId = req.tenantId!;
+      const locations = await storage.getEventLocations(tenantId);
       res.json(locations);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch event locations" });
@@ -730,8 +736,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/events", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const eventData = insertEventSchema.parse(req.body);
-      const event = await storage.createEvent(eventData);
+      const event = await storage.createEvent({ ...eventData, tenantId });
       res.json(event);
     } catch (error) {
       res.status(400).json({ message: "Invalid event data" });
@@ -740,9 +747,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/events/:id", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const { id } = req.params;
       const eventData = insertEventSchema.partial().parse(req.body);
-      const event = await storage.updateEvent(id, eventData);
+      const event = await storage.updateEvent(id, tenantId, eventData);
       if (!event) {
         return res.status(404).json({ message: "Event not found" });
       }
@@ -754,8 +762,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/events/:id", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const { id } = req.params;
-      const deleted = await storage.deleteEvent(id);
+      const deleted = await storage.deleteEvent(id, tenantId);
       if (!deleted) {
         return res.status(404).json({ message: "Event not found" });
       }
@@ -767,8 +776,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/events/:id/rsvps", async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const { id } = req.params;
-      const rsvpStats = await storage.getEventRsvps(id);
+      const rsvpStats = await storage.getEventRsvps(id, tenantId);
       res.json(rsvpStats);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch RSVPs" });
@@ -777,18 +787,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/events/:id/rsvp", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const { id } = req.params;
       const { adultsCount, childrenCount } = req.body;
       
       // Get event to check max attendees
-      const event = await storage.getEvent(id);
+      const event = await storage.getEvent(id, tenantId);
       if (!event) {
         return res.status(404).json({ message: "Event not found" });
       }
       
       // If max attendees is set, check capacity
       if (event.maxAttendees) {
-        const rsvpStats = await storage.getEventRsvps(id);
+        const rsvpStats = await storage.getEventRsvps(id, tenantId);
         const requestedCount = (adultsCount || 1) + (childrenCount || 0);
         const newTotal = rsvpStats.totalAttendees + requestedCount;
         
@@ -805,6 +816,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const rsvpData = {
         eventId: id,
         userId: req.user!.id,
+        tenantId: tenantId,
         adultsCount: adultsCount || 1,
         childrenCount: childrenCount || 0
       };
@@ -812,11 +824,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const rsvp = await storage.createEventRsvp(rsvpData);
 
       // Log activity
-      const pointsSettings = await storage.getPointsSettings();
+      const pointsSettings = await storage.getPointsSettings(tenantId);
       const points = event.pointsValue || pointsSettings?.pointsPerEvent || 20;
       
       await storage.createActivityLog({
         userId: req.user!.id,
+        tenantId: tenantId,
         activityType: 'event_rsvp',
         description: `RSVP na događaj: ${event.name}`,
         points,
@@ -831,10 +844,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/events/:eventId/rsvp/:rsvpId", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const { rsvpId } = req.params;
       const { adultsCount, childrenCount } = req.body;
       
-      const rsvp = await storage.updateEventRsvp(rsvpId, {
+      const rsvp = await storage.updateEventRsvp(rsvpId, tenantId, {
         adultsCount,
         childrenCount
       });
@@ -851,8 +865,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/events/:eventId/rsvp/:rsvpId", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const { rsvpId } = req.params;
-      const deleted = await storage.deleteEventRsvp(rsvpId);
+      const deleted = await storage.deleteEventRsvp(rsvpId, tenantId);
       
       if (!deleted) {
         return res.status(404).json({ message: "RSVP not found" });
@@ -866,8 +881,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/events/:eventId/user-rsvp", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId!;
       const { eventId } = req.params;
-      const rsvp = await storage.getUserEventRsvp(eventId, req.user!.id);
+      const rsvp = await storage.getUserEventRsvp(eventId, req.user!.id, tenantId);
       res.json(rsvp);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch user RSVP" });
