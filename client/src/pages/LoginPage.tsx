@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from '@tanstack/react-query';
 import {
   Box,
   Card,
@@ -15,35 +14,39 @@ import {
   ToggleButton,
   Snackbar,
   IconButton,
-  MenuItem,
-  CircularProgress
+  Link as MuiLink
 } from '@mui/material';
-import { Download, Close } from '@mui/icons-material';
+import { Download, Close, Business } from '@mui/icons-material';
 import { useAuth } from '../hooks/useAuth';
 import { DzematLogo } from '@/components/DzematLogo';
 import { usePWAInstall } from '@/hooks/usePWAInstall';
 
-interface ActiveTenant {
-  id: string;
-  name: string;
-  slug: string;
-  subdomain: string | null;
-}
+const TENANT_STORAGE_KEY = 'dzemat_tenant_id';
 
 export default function LoginPage() {
   const { t, i18n } = useTranslation(['login', 'common']);
   const [, setLocation] = useLocation();
-  const [formData, setFormData] = useState({ username: '', password: '', tenantId: '' });
+  const [showTenantSetup, setShowTenantSetup] = useState(false);
+  const [tenantCode, setTenantCode] = useState('');
+  const [formData, setFormData] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [verifyingTenant, setVerifyingTenant] = useState(false);
   const { login } = useAuth();
   const { isInstallable, promptInstall } = usePWAInstall();
   const [showInstallPrompt, setShowInstallPrompt] = useState(true);
+  const [storedTenantId, setStoredTenantId] = useState<string | null>(null);
 
-  // Fetch active tenants
-  const { data: tenants = [], isLoading: tenantsLoading } = useQuery<ActiveTenant[]>({
-    queryKey: ['/api/tenants/active'],
-  });
+  // Check if tenant is already set
+  useEffect(() => {
+    const savedTenantId = localStorage.getItem(TENANT_STORAGE_KEY);
+    if (savedTenantId) {
+      setStoredTenantId(savedTenantId);
+      setShowTenantSetup(false);
+    } else {
+      setShowTenantSetup(true);
+    }
+  }, []);
 
   const handleLanguageChange = (event: React.MouseEvent<HTMLElement>, newLanguage: string | null) => {
     if (newLanguage) {
@@ -57,19 +60,59 @@ export default function LoginPage() {
     if (error) setError('');
   };
 
+  const handleVerifyTenant = async () => {
+    if (!tenantCode.trim()) {
+      setError('Molimo unesite kod organizacije');
+      return;
+    }
+
+    setVerifyingTenant(true);
+    setError('');
+
+    try {
+      const response = await fetch('/api/tenants/verify-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tenantCode: tenantCode.trim().toUpperCase() })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem(TENANT_STORAGE_KEY, data.tenantId);
+        setStoredTenantId(data.tenantId);
+        setShowTenantSetup(false);
+        setTenantCode('');
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || 'Neispravan kod organizacije');
+      }
+    } catch (err) {
+      setError('Greška pri provjeri koda');
+    } finally {
+      setVerifyingTenant(false);
+    }
+  };
+
+  const handleChangeTenant = () => {
+    localStorage.removeItem(TENANT_STORAGE_KEY);
+    setStoredTenantId(null);
+    setShowTenantSetup(true);
+    setFormData({ username: '', password: '' });
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
     setError('');
 
-    if (!formData.tenantId) {
-      setError('Molimo odaberite organizaciju');
+    if (!storedTenantId) {
+      setError('Morate prvo postaviti organizaciju');
       setLoading(false);
       return;
     }
 
     try {
-      const success = await login(formData.username, formData.password, formData.tenantId);
+      const success = await login(formData.username, formData.password, storedTenantId);
       if (success) {
         setLocation('/dashboard');
       } else {
@@ -165,93 +208,131 @@ export default function LoginPage() {
               </Alert>
             )}
 
-            <form onSubmit={handleSubmit}>
+            {showTenantSetup ? (
+              /* Tenant Code Setup */
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                {tenantsLoading ? (
-                  <Box sx={{ display: 'flex', justifyContent: 'center', py: 2 }}>
-                    <CircularProgress size={24} />
-                  </Box>
-                ) : (
-                  <TextField
-                    select
-                    fullWidth
-                    variant="outlined"
-                    label="Organizacija / Džemat"
-                    value={formData.tenantId}
-                    onChange={handleChange('tenantId')}
-                    required
-                    data-testid="select-tenant"
-                  >
-                    <MenuItem value="" disabled>
-                      Odaberite organizaciju
-                    </MenuItem>
-                    {tenants.map((tenant) => (
-                      <MenuItem key={tenant.id} value={tenant.id}>
-                        {tenant.name}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                )}
+                <Alert severity="info" sx={{ mb: 1 }}>
+                  <Typography variant="body2" sx={{ fontWeight: 500, mb: 0.5 }}>
+                    Prva prijava
+                  </Typography>
+                  <Typography variant="caption">
+                    Unesite kod vaše organizacije koji ste dobili od administratora.
+                  </Typography>
+                </Alert>
 
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label={t('login:username')}
-                  type="text"
-                  value={formData.username}
-                  onChange={handleChange('username')}
-                  placeholder="admin"
-                  data-testid="input-username"
-                />
-
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  label={t('login:password')}
-                  type="password"
-                  value={formData.password}
-                  onChange={handleChange('password')}
-                  placeholder="••••••••"
-                  required
-                  data-testid="input-password"
+                  label="Kod organizacije"
+                  value={tenantCode}
+                  onChange={(e) => setTenantCode(e.target.value.toUpperCase())}
+                  placeholder="DEMO2024"
+                  InputProps={{
+                    startAdornment: <Business sx={{ mr: 1, color: 'text.secondary' }} />
+                  }}
+                  data-testid="input-tenant-code"
                 />
 
                 <Button
-                  type="submit"
                   variant="contained"
                   size="large"
                   fullWidth
-                  disabled={loading}
+                  disabled={verifyingTenant || !tenantCode.trim()}
+                  onClick={handleVerifyTenant}
                   sx={{ py: 1.5, fontSize: '1rem' }}
-                  data-testid="button-login"
+                  data-testid="button-verify-tenant"
                 >
-                  {loading ? t('login:loggingIn') : t('login:loginButton')}
+                  {verifyingTenant ? 'Provjeravam...' : 'Potvrdi'}
                 </Button>
 
-                <Button
-                  variant="outlined"
-                  size="large"
-                  fullWidth
-                  onClick={handleGuestAccess}
-                  sx={{ py: 1.5, fontSize: '1rem' }}
-                  data-testid="button-guest"
-                >
-                  {t('login:guestButton')}
-                </Button>
+                <Box sx={{ mt: 2, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
+                    Za demo pristup koristite:
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block', fontWeight: 600 }}>
+                    Kod: DEMO2024
+                  </Typography>
+                </Box>
               </Box>
-            </form>
+            ) : (
+              /* Normal Login Form */
+              <>
+                <form onSubmit={handleSubmit}>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                    <TextField
+                      fullWidth
+                      variant="outlined"
+                      label={t('login:username')}
+                      type="text"
+                      value={formData.username}
+                      onChange={handleChange('username')}
+                      placeholder="admin"
+                      data-testid="input-username"
+                    />
 
-            <Box sx={{ mt: 3, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
-                {t('login:demoCredentials')}
-              </Typography>
-              <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                {t('login:username')}: admin | {t('login:password')}: admin123
-              </Typography>
-              <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                {t('login:username')}: ali.alic | {t('login:password')}: password123
-              </Typography>
-            </Box>
+                    <TextField
+                      fullWidth
+                      variant="outlined"
+                      label={t('login:password')}
+                      type="password"
+                      value={formData.password}
+                      onChange={handleChange('password')}
+                      placeholder="••••••••"
+                      required
+                      data-testid="input-password"
+                    />
+
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      size="large"
+                      fullWidth
+                      disabled={loading}
+                      sx={{ py: 1.5, fontSize: '1rem' }}
+                      data-testid="button-login"
+                    >
+                      {loading ? t('login:loggingIn') : t('login:loginButton')}
+                    </Button>
+
+                    <Button
+                      variant="outlined"
+                      size="large"
+                      fullWidth
+                      onClick={handleGuestAccess}
+                      sx={{ py: 1.5, fontSize: '1rem' }}
+                      data-testid="button-guest"
+                    >
+                      {t('login:guestButton')}
+                    </Button>
+                  </Box>
+                </form>
+
+                <Box sx={{ mt: 3, textAlign: 'center' }}>
+                  <MuiLink
+                    component="button"
+                    type="button"
+                    variant="caption"
+                    onClick={handleChangeTenant}
+                    sx={{ cursor: 'pointer' }}
+                    data-testid="link-change-tenant"
+                  >
+                    Promijenite organizaciju
+                  </MuiLink>
+                </Box>
+
+                <Box sx={{ mt: 2, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
+                    {t('login:demoCredentials')}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                    {t('login:username')}: admin | {t('login:password')}: admin123
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                    {t('login:username')}: ali.alic | {t('login:password')}: password123
+                  </Typography>
+                </Box>
+              </>
+            )}
           </CardContent>
         </Card>
       </Container>

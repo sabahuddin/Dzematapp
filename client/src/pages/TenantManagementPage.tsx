@@ -39,6 +39,7 @@ import { formatDateForDisplay } from '../utils/dateUtils';
 interface TenantFormData {
   name: string;
   slug: string;
+  tenantCode: string;
   subdomain: string;
   email: string;
   subscriptionTier: string;
@@ -53,6 +54,7 @@ export default function TenantManagementPage() {
   const [formData, setFormData] = useState<TenantFormData>({
     name: '',
     slug: '',
+    tenantCode: '',
     subdomain: '',
     email: '',
     subscriptionTier: 'basic'
@@ -131,6 +133,7 @@ export default function TenantManagementPage() {
       setFormData({
         name: tenant.name,
         slug: tenant.slug,
+        tenantCode: tenant.tenantCode || '',
         subdomain: tenant.subdomain || '',
         email: tenant.email,
         subscriptionTier: tenant.subscriptionTier
@@ -140,6 +143,7 @@ export default function TenantManagementPage() {
       setFormData({
         name: '',
         slug: '',
+        tenantCode: '',
         subdomain: '',
         email: '',
         subscriptionTier: 'basic'
@@ -154,6 +158,7 @@ export default function TenantManagementPage() {
     setFormData({
       name: '',
       slug: '',
+      tenantCode: '',
       subdomain: '',
       email: '',
       subscriptionTier: 'basic'
@@ -348,6 +353,16 @@ export default function TenantManagementPage() {
               disabled={!!selectedTenant}
               helperText={selectedTenant ? 'Slug se ne može mijenjati' : 'Npr: iz-zurich (lowercase, bez razmaka)'}
               data-testid="input-slug"
+            />
+            <TextField
+              label="Tenant Code (Kod za login)"
+              value={formData.tenantCode}
+              onChange={(e) => setFormData({ ...formData, tenantCode: e.target.value.toUpperCase() })}
+              fullWidth
+              required
+              disabled={!!selectedTenant}
+              helperText={selectedTenant ? 'Tenant code se ne može mijenjati' : 'Npr: IZBERN2024 (uppercase, bez razmaka)'}
+              data-testid="input-tenant-code"
             />
             <TextField
               label="Email"

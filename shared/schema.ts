@@ -1122,6 +1122,7 @@ export const tenants = pgTable("tenants", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull(), // Naziv džemata (e.g. "IZ Zürich")
   slug: text("slug").notNull().unique(), // URL-friendly identifier (e.g. "iz-zurich")
+  tenantCode: text("tenant_code").notNull().unique(), // Unique code for tenant login (e.g. "DEMO2024", "IZBERN2024")
   subdomain: text("subdomain").unique(), // For subdomain routing (e.g. "zurich.dzemat-app.com")
   
   // Contact & Location

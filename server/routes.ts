@@ -4063,22 +4063,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // TENANT MANAGEMENT (Super Admin only - Global tenant operations)
   // ============================================================================
 
-  // PUBLIC: Get active tenants for login screen (no auth required)
-  app.get("/api/tenants/active", async (req, res) => {
+  // PUBLIC: Verify tenant code and return tenant ID (no auth required)
+  app.post("/api/tenants/verify-code", async (req, res) => {
     try {
+      const { tenantCode } = req.body;
+      
+      if (!tenantCode) {
+        return res.status(400).json({ message: "Tenant code is required" });
+      }
+
       const allTenants = await storage.getAllTenants();
-      const activeTenants = allTenants
-        .filter(t => t.isActive)
-        .map(t => ({
-          id: t.id,
-          name: t.name,
-          slug: t.slug,
-          subdomain: t.subdomain
-        }));
-      res.json(activeTenants);
+      const tenant = allTenants.find(t => 
+        t.tenantCode?.toUpperCase() === tenantCode.toUpperCase() && t.isActive
+      );
+
+      if (!tenant) {
+        return res.status(404).json({ message: "Neispravan kod organizacije" });
+      }
+
+      res.json({ 
+        tenantId: tenant.id,
+        name: tenant.name 
+      });
     } catch (error) {
-      console.error('Error getting active tenants:', error);
-      res.status(500).json({ message: "Failed to get active tenants" });
+      console.error('Error verifying tenant code:', error);
+      res.status(500).json({ message: "Failed to verify tenant code" });
     }
   });
 
