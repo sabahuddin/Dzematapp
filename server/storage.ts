@@ -1684,9 +1684,12 @@ export class DatabaseStorage implements IStorage {
     
     // NOTE: Project amount is updated in routes.ts to avoid duplicate addition
     
-    // Recalculate user points
-    await this.recalculateUserPoints(contrib.userId);
-    await this.checkAndAwardBadges(contrib.userId);
+    // Recalculate user points (tenantId from contribution)
+    const tenantId = contribution.tenantId;
+    if (tenantId) {
+      await this.recalculateUserPoints(contrib.userId, tenantId);
+      await this.checkAndAwardBadges(contrib.userId, tenantId);
+    }
     
     return contrib;
   }
@@ -1753,8 +1756,8 @@ export class DatabaseStorage implements IStorage {
     });
   }
 
-  async getUserTotalDonations(userId: string): Promise<number> {
-    const contributions = await this.getUserFinancialContributions(userId);
+  async getUserTotalDonations(userId: string, tenantId: string): Promise<number> {
+    const contributions = await this.getUserFinancialContributions(userId, tenantId);
     return contributions.reduce((sum, c) => sum + parseFloat(c.amount || '0'), 0);
   }
 
@@ -1864,13 +1867,13 @@ export class DatabaseStorage implements IStorage {
     return badge;
   }
 
-  async deleteBadge(id: string): Promise<boolean> {
-    const result = await db.delete(badges).where(eq(badges.id, id)).returning();
+  async deleteBadge(id: string, tenantId: string): Promise<boolean> {
+    const result = await db.delete(badges).where(and(eq(badges.id, id), eq(badges.tenantId, tenantId))).returning();
     return result.length > 0;
   }
 
   // User Badges (Feature 2)
-  async awardBadgeToUser(userId: string, badgeId: string): Promise<UserBadge> {
+  async awardBadgeToUser(userId: string, badgeId: string, tenantId: string): Promise<UserBadge> {
     // Check if already awarded
     const existing = await db.select().from(userBadges)
       .where(and(eq(userBadges.userId, userId), eq(userBadges.badgeId, badgeId)))
@@ -1883,7 +1886,7 @@ export class DatabaseStorage implements IStorage {
     const [ub] = await db.insert(userBadges).values({ userId, badgeId }).returning();
     
     // Add to activity feed
-    const badge = await this.getBadge(badgeId);
+    const badge = await this.getBadge(badgeId, tenantId);
     const user = await this.getUser(userId);
     if (badge && user) {
       const initials = `${user.firstName[0]}. ${user.lastName[0]}.`;
@@ -1893,18 +1896,19 @@ export class DatabaseStorage implements IStorage {
         description: `${badge.name} - ${initials}`,
         relatedEntityId: badgeId,
         relatedEntityType: "badge",
-        isClickable: false
+        isClickable: false,
+        tenantId: tenantId
       });
     }
     
     return ub;
   }
 
-  async getUserBadges(userId: string): Promise<UserBadge[]> {
+  async getUserBadges(userId: string, tenantId: string): Promise<UserBadge[]> {
     return await db.select().from(userBadges).where(eq(userBadges.userId, userId));
   }
 
-  async getAllUserBadges(): Promise<Array<UserBadge & { user: User; badge: Badge }>> {
+  async getAllUserBadges(tenantId: string): Promise<Array<UserBadge & { user: User; badge: Badge }>> {
     const result = await db.select({
       userBadge: userBadges,
       user: users,
@@ -1913,6 +1917,7 @@ export class DatabaseStorage implements IStorage {
     .from(userBadges)
     .innerJoin(users, eq(userBadges.userId, users.id))
     .innerJoin(badges, eq(userBadges.badgeId, badges.id))
+    .where(eq(badges.tenantId, tenantId))
     .orderBy(desc(userBadges.earnedAt));
     
     return result.map(row => ({
@@ -1922,9 +1927,9 @@ export class DatabaseStorage implements IStorage {
     }));
   }
 
-  async checkAndAwardBadges(userId: string): Promise<UserBadge[]> {
-    const allBadges = await this.getAllBadges();
-    const existingBadges = await this.getUserBadges(userId);
+  async checkAndAwardBadges(userId: string, tenantId: string): Promise<UserBadge[]> {
+    const allBadges = await this.getAllBadges(tenantId);
+    const existingBadges = await this.getUserBadges(userId, tenantId);
     const existingBadgeIds = existingBadges.map(ub => ub.badgeId);
     const awarded: UserBadge[] = [];
     
@@ -1938,17 +1943,17 @@ export class DatabaseStorage implements IStorage {
       
       switch (badge.criteriaType) {
         case 'contributions_amount': {
-          const total = await this.getUserTotalDonations(userId);
+          const total = await this.getUserTotalDonations(userId, tenantId);
           qualifies = total >= badge.criteriaValue;
           break;
         }
         case 'tasks_completed': {
-          const count = await this.getUserTasksCompleted(userId);
+          const count = await this.getUserTasksCompleted(userId, tenantId);
           qualifies = count >= badge.criteriaValue;
           break;
         }
         case 'events_attended': {
-          const count = await this.getUserEventsAttended(userId);
+          const count = await this.getUserEventsAttended(userId, tenantId);
           qualifies = count >= badge.criteriaValue;
           break;
         }
@@ -1960,7 +1965,7 @@ export class DatabaseStorage implements IStorage {
       }
       
       if (qualifies) {
-        const ub = await this.awardBadgeToUser(userId, badge.id);
+        const ub = await this.awardBadgeToUser(userId, badge.id, tenantId);
         awarded.push(ub);
       }
     }
@@ -1968,9 +1973,9 @@ export class DatabaseStorage implements IStorage {
     return awarded;
   }
 
-  async removeUnqualifiedBadges(userId: string): Promise<string[]> {
-    const allBadges = await this.getAllBadges();
-    const awardedBadges = await this.getUserBadges(userId);
+  async removeUnqualifiedBadges(userId: string, tenantId: string): Promise<string[]> {
+    const allBadges = await this.getAllBadges(tenantId);
+    const awardedBadges = await this.getUserBadges(userId, tenantId);
     const removedBadgeNames: string[] = [];
 
     // Check each awarded badge to see if user still qualifies
@@ -1982,17 +1987,17 @@ export class DatabaseStorage implements IStorage {
 
       switch (badge.criteriaType) {
         case 'contributions_amount': {
-          const total = await this.getUserTotalDonations(userId);
+          const total = await this.getUserTotalDonations(userId, tenantId);
           stillQualifies = total >= badge.criteriaValue;
           break;
         }
         case 'tasks_completed': {
-          const count = await this.getUserTasksCompleted(userId);
+          const count = await this.getUserTasksCompleted(userId, tenantId);
           stillQualifies = count >= badge.criteriaValue;
           break;
         }
         case 'events_attended': {
-          const count = await this.getUserEventsAttended(userId);
+          const count = await this.getUserEventsAttended(userId, tenantId);
           stillQualifies = count >= badge.criteriaValue;
           break;
         }
@@ -2086,35 +2091,36 @@ export class DatabaseStorage implements IStorage {
   }
 
   // User Statistics (Feature 2)
-  async getUserTasksCompleted(userId: string): Promise<number> {
+  async getUserTasksCompleted(userId: string, tenantId: string): Promise<number> {
     const logs = await db.select({ count: sql<number>`count(*)` })
       .from(activityLog)
       .where(and(
         eq(activityLog.userId, userId),
-        eq(activityLog.activityType, 'task_completed')
+        eq(activityLog.activityType, 'task_completed'),
+        eq(activityLog.tenantId, tenantId)
       ));
     return Number(logs[0]?.count ?? 0);
   }
 
-  async getUserEventsAttended(userId: string): Promise<number> {
+  async getUserEventsAttended(userId: string, tenantId: string): Promise<number> {
     const result = await db.select({ count: sql<number>`count(*)` })
       .from(eventAttendance)
-      .where(eq(eventAttendance.userId, userId));
+      .where(and(eq(eventAttendance.userId, userId), eq(eventAttendance.tenantId, tenantId)));
     return Number(result[0]?.count ?? 0);
   }
 
-  async recalculateUserPoints(userId: string): Promise<number> {
+  async recalculateUserPoints(userId: string, tenantId: string): Promise<number> {
     // Sum all points from activity_log (centralized points ledger)
     const result = await db.select({ total: sql<number>`COALESCE(SUM(${activityLog.points}), 0)` })
       .from(activityLog)
-      .where(eq(activityLog.userId, userId));
+      .where(and(eq(activityLog.userId, userId), eq(activityLog.tenantId, tenantId)));
     
     const totalPoints = Number(result[0]?.total ?? 0);
     
     await this.updateUser(userId, { totalPoints });
     
     // Automatically check and award badges after points update
-    await this.checkAndAwardBadges(userId);
+    await this.checkAndAwardBadges(userId, tenantId);
     
     return totalPoints;
   }

@@ -3070,8 +3070,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { userId, projectId } = await storage.deleteContributionWithLogs(req.params.id);
       
       // Recalculate points and badges outside transaction
-      await storage.recalculateUserPoints(userId);
-      await storage.removeUnqualifiedBadges(userId);
+      await storage.recalculateUserPoints(userId, req.user!.tenantId);
+      await storage.removeUnqualifiedBadges(userId, req.user!.tenantId);
       
       res.json({ message: "Contribution deleted successfully" });
     } catch (error) {
@@ -3089,7 +3089,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (req.user?.id !== req.params.userId && !req.user?.isAdmin) {
         return res.status(403).json({ message: "Access denied" });
       }
-      const logs = await storage.getUserActivityLog(req.params.userId);
+      const logs = await storage.getUserActivityLog(req.params.userId, req.user!.tenantId);
       res.json(logs);
     } catch (error) {
       res.status(500).json({ message: "Failed to get activity log" });
@@ -3098,7 +3098,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/activity-logs", requireAdmin, requireFeature("activity-log"), async (req, res) => {
     try {
-      const logs = await storage.getAllActivityLogs();
+      const logs = await storage.getAllActivityLogs(req.user!.tenantId);
       res.json(logs);
     } catch (error) {
       res.status(500).json({ message: "Failed to get activity logs" });
@@ -3120,7 +3120,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           eventId,
           userId,
           attended: true,
-          recordedById: req.user!.id
+          recordedById: req.user!.id,
+          tenantId: req.user!.tenantId
         }))
       );
       
@@ -3133,7 +3134,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/event-attendance/:eventId", requireAuth, async (req, res) => {
     try {
-      const attendance = await storage.getEventAttendance(req.params.eventId);
+      const attendance = await storage.getEventAttendance(req.params.eventId, req.user!.tenantId);
       res.json(attendance);
     } catch (error) {
       res.status(500).json({ message: "Failed to get event attendance" });
@@ -3146,7 +3147,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (req.user?.id !== req.params.userId && !req.user?.isAdmin) {
         return res.status(403).json({ message: "Access denied" });
       }
-      const attendance = await storage.getUserEventAttendance(req.params.userId);
+      const attendance = await storage.getUserEventAttendance(req.params.userId, req.user!.tenantId);
       res.json(attendance);
     } catch (error) {
       res.status(500).json({ message: "Failed to get user attendance" });
@@ -3156,7 +3157,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Points Settings Routes (Feature 2)
   app.get("/api/point-settings", requireAuth, async (req, res) => {
     try {
-      const settings = await storage.getPointsSettings();
+      const settings = await storage.getPointsSettings(req.user!.tenantId);
       res.json(settings);
     } catch (error) {
       res.status(500).json({ message: "Failed to get points settings" });
@@ -3166,7 +3167,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put("/api/point-settings/:id", requireAdmin, async (req, res) => {
     try {
       const validated = insertPointsSettingsSchema.partial().parse(req.body);
-      const settings = await storage.updatePointsSettings(validated);
+      const settings = await storage.updatePointsSettings(req.user!.tenantId, validated);
       res.json(settings);
     } catch (error) {
       res.status(500).json({ message: "Failed to update points settings" });
@@ -3176,7 +3177,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Badges Routes (Feature 2)
   app.get("/api/badges", requireAuth, requireFeature("badges"), async (req, res) => {
     try {
-      const badges = await storage.getAllBadges();
+      const badges = await storage.getAllBadges(req.user!.tenantId);
       res.json(badges);
     } catch (error) {
       res.status(500).json({ message: "Failed to get badges" });
@@ -3186,7 +3187,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/badges", requireAdmin, requireFeature("badges"), async (req, res) => {
     try {
       const validated = insertBadgeSchema.parse(req.body);
-      const badge = await storage.createBadge(validated);
+      const badge = await storage.createBadge({...validated, tenantId: req.user!.tenantId});
       res.status(201).json(badge);
     } catch (error) {
       console.error('Error creating badge:', error);
@@ -3197,7 +3198,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put("/api/badges/:id", requireAdmin, requireFeature("badges"), async (req, res) => {
     try {
       const validated = insertBadgeSchema.partial().parse(req.body);
-      const badge = await storage.updateBadge(req.params.id, validated);
+      const badge = await storage.updateBadge(req.params.id, req.user!.tenantId, validated);
       if (!badge) {
         return res.status(404).json({ message: "Badge not found" });
       }
@@ -3209,7 +3210,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/badges/:id", requireAdmin, requireFeature("badges"), async (req, res) => {
     try {
-      const success = await storage.deleteBadge(req.params.id);
+      const success = await storage.deleteBadge(req.params.id, req.user!.tenantId);
       if (!success) {
         return res.status(404).json({ message: "Badge not found" });
       }
@@ -3222,7 +3223,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // User Badges Routes (Feature 2)
   app.get("/api/user-badges/:userId", requireAuth, async (req, res) => {
     try {
-      const badges = await storage.getUserBadges(req.params.userId);
+      const badges = await storage.getUserBadges(req.params.userId, req.user!.tenantId);
       res.json(badges);
     } catch (error) {
       res.status(500).json({ message: "Failed to get user badges" });
@@ -3231,7 +3232,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/user-badges/check/:userId", requireAdmin, async (req, res) => {
     try {
-      const awarded = await storage.checkAndAwardBadges(req.params.userId);
+      const awarded = await storage.checkAndAwardBadges(req.params.userId, req.user!.tenantId);
       res.json(awarded);
     } catch (error) {
       res.status(500).json({ message: "Failed to check and award badges" });
@@ -3240,11 +3241,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/user-badges/check-all", requireAdmin, async (req, res) => {
     try {
-      const users = await storage.getAllUsers();
+      const users = await storage.getAllUsers(req.user!.tenantId);
       
       for (const user of users) {
         // recalculateUserPoints automatically calls checkAndAwardBadges
-        await storage.recalculateUserPoints(user.id);
+        await storage.recalculateUserPoints(user.id, req.user!.tenantId);
       }
       
       res.json({ 
@@ -3257,7 +3258,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/user-badges/all", requireAdmin, async (req, res) => {
     try {
-      const allUserBadges = await storage.getAllUserBadges();
+      const allUserBadges = await storage.getAllUserBadges(req.user!.tenantId);
       res.json(allUserBadges);
     } catch (error) {
       res.status(500).json({ message: "Failed to get all user badges" });
