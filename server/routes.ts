@@ -2827,7 +2827,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Financial Contributions Routes (Feature 1)
   app.get("/api/financial-contributions", requireAdmin, requireFeature("finances"), async (req, res) => {
     try {
-      const contributions = await storage.getAllFinancialContributions();
+      const contributions = await storage.getAllFinancialContributions(req.user!.tenantId);
       res.json(contributions);
     } catch (error) {
       res.status(500).json({ message: "Failed to get financial contributions" });
@@ -2840,7 +2840,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (req.user?.id !== req.params.userId && !req.user?.isAdmin) {
         return res.status(403).json({ message: "Access denied" });
       }
-      const contributions = await storage.getUserFinancialContributions(req.params.userId);
+      const contributions = await storage.getUserFinancialContributions(req.params.userId, req.user!.tenantId);
       res.json(contributions);
     } catch (error) {
       res.status(500).json({ message: "Failed to get user contributions" });
@@ -2853,18 +2853,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validated = insertFinancialContributionSchema.parse(contributionData);
       const contribution = await storage.createFinancialContribution({
         ...validated,
-        createdById: req.user!.id
+        createdById: req.user!.id,
+        tenantId: req.user!.tenantId
       });
 
       // If contribution is for a project, update project's currentAmount
       if (validated.projectId) {
-        const project = await storage.getProject(validated.projectId);
+        const project = await storage.getProject(validated.projectId, req.user!.tenantId);
         if (project) {
           const currentAmount = parseFloat(project.currentAmount || '0');
           const contributionAmount = parseFloat(validated.amount);
           const newAmount = (currentAmount + contributionAmount).toFixed(2);
           
-          await storage.updateProject(validated.projectId, {
+          await storage.updateProject(validated.projectId, req.user!.tenantId, {
             currentAmount: newAmount
           });
         }
@@ -3268,7 +3269,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Projects Routes (Feature 4)
   app.get("/api/projects", requireAuth, requireFeature("projects"), async (req, res) => {
     try {
-      const projects = await storage.getAllProjects();
+      const projects = await storage.getAllProjects(req.user!.tenantId);
       res.json(projects);
     } catch (error) {
       res.status(500).json({ message: "Failed to get projects" });
@@ -3277,7 +3278,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/projects/active", requireFeature("projects"), async (req, res) => {
     try {
-      const projects = await storage.getActiveProjects();
+      const tenantId = req.user?.tenantId || req.query.tenantId as string;
+      if (!tenantId) return res.status(400).json({ message: "Tenant ID required" });
+      const projects = await storage.getActiveProjects(tenantId);
       res.json(projects);
     } catch (error) {
       res.status(500).json({ message: "Failed to get active projects" });
@@ -3286,7 +3289,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/projects/:id", requireAuth, requireFeature("projects"), async (req, res) => {
     try {
-      const project = await storage.getProject(req.params.id);
+      const project = await storage.getProject(req.params.id, req.user!.tenantId);
       if (!project) {
         return res.status(404).json({ message: "Project not found" });
       }
@@ -3298,19 +3301,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/projects", requireAdmin, requireFeature("projects"), async (req, res) => {
     try {
-      console.log('Creating project with body:', req.body);
       const validated = insertProjectSchema.parse(req.body);
-      console.log('Validated project data:', validated);
       const project = await storage.createProject({
         ...validated,
-        createdById: req.user!.id
+        createdById: req.user!.id,
+        tenantId: req.user!.tenantId
       });
       res.status(201).json(project);
     } catch (error) {
-      console.error('Error creating project:', error);
-      if (error instanceof Error) {
-        console.error('Error details:', error.message);
-      }
       res.status(500).json({ message: "Failed to create project" });
     }
   });
@@ -3318,20 +3316,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/projects/:id", requireAdmin, requireFeature("projects"), async (req, res) => {
     try {
       const validated = insertProjectSchema.partial().parse(req.body);
-      const project = await storage.updateProject(req.params.id, validated);
+      const project = await storage.updateProject(req.params.id, req.user!.tenantId, validated);
       if (!project) {
         return res.status(404).json({ message: "Project not found" });
       }
       res.json(project);
     } catch (error) {
-      console.error('Error updating project:', error);
       res.status(500).json({ message: "Failed to update project" });
     }
   });
 
   app.delete("/api/projects/:id", requireAdmin, requireFeature("projects"), async (req, res) => {
     try {
-      const success = await storage.deleteProject(req.params.id);
+      const success = await storage.deleteProject(req.params.id, req.user!.tenantId);
       if (!success) {
         return res.status(404).json({ message: "Project not found" });
       }
@@ -4132,7 +4129,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/activity-feed", requireFeature("feed"), async (req, res) => {
     try {
       const limit = req.query.limit ? parseInt(req.query.limit as string) : 50;
-      const activities = await storage.getActivityFeed(limit);
+      const tenantId = req.user?.tenantId || req.query.tenantId as string;
+      if (!tenantId) return res.status(400).json({ message: "Tenant ID required" });
+      const activities = await storage.getActivityFeed(tenantId, limit);
       res.json(activities);
     } catch (error) {
       console.error('Error getting activity feed:', error);
