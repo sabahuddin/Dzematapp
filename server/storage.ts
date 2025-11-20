@@ -1653,28 +1653,28 @@ export class DatabaseStorage implements IStorage {
     return true;
   }
 
-  async createImportantDate(importantDate: InsertImportantDate): Promise<ImportantDate> {
-    const [date] = await db.insert(importantDates).values(importantDate).returning();
+  async createImportantDate(importantDate: InsertImportantDate & { tenantId: string }): Promise<ImportantDate> {
+    const [date] = await db.insert(importantDates).values({...importantDate, tenantId: importantDate.tenantId}).returning();
     return date;
   }
 
-  async getImportantDate(id: string): Promise<ImportantDate | undefined> {
-    const result = await db.select().from(importantDates).where(eq(importantDates.id, id)).limit(1);
+  async getImportantDate(id: string, tenantId: string): Promise<ImportantDate | undefined> {
+    const result = await db.select().from(importantDates).where(and(eq(importantDates.id, id), eq(importantDates.tenantId, tenantId))).limit(1);
     return result[0];
   }
 
-  async getAllImportantDates(): Promise<ImportantDate[]> {
-    const dates = await db.select().from(importantDates).orderBy(asc(importantDates.date));
+  async getAllImportantDates(tenantId: string): Promise<ImportantDate[]> {
+    const dates = await db.select().from(importantDates).where(eq(importantDates.tenantId, tenantId)).orderBy(asc(importantDates.date));
     return dates;
   }
 
-  async updateImportantDate(id: string, updates: Partial<InsertImportantDate>): Promise<ImportantDate | undefined> {
-    const [date] = await db.update(importantDates).set(updates).where(eq(importantDates.id, id)).returning();
+  async updateImportantDate(id: string, tenantId: string, updates: Partial<InsertImportantDate>): Promise<ImportantDate | undefined> {
+    const [date] = await db.update(importantDates).set(updates).where(and(eq(importantDates.id, id), eq(importantDates.tenantId, tenantId))).returning();
     return date;
   }
 
-  async deleteImportantDate(id: string): Promise<boolean> {
-    const result = await db.delete(importantDates).where(eq(importantDates.id, id)).returning();
+  async deleteImportantDate(id: string, tenantId: string): Promise<boolean> {
+    const result = await db.delete(importantDates).where(and(eq(importantDates.id, id), eq(importantDates.tenantId, tenantId))).returning();
     return result.length > 0;
   }
 

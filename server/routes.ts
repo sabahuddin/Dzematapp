@@ -2780,9 +2780,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Important Dates Routes
-  app.get("/api/important-dates", async (req, res) => {
+  app.get("/api/important-dates", requireAuth, async (req, res) => {
     try {
-      const dates = await storage.getAllImportantDates();
+      const dates = await storage.getAllImportantDates(req.user!.tenantId);
       res.json(dates);
     } catch (error) {
       res.status(500).json({ message: "Failed to get important dates" });
@@ -2791,18 +2791,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/important-dates", requireAdmin, async (req, res) => {
     try {
-      console.log('Creating important date with data:', req.body);
-      const date = await storage.createImportantDate(req.body);
+      const date = await storage.createImportantDate({...req.body, tenantId: req.user!.tenantId});
       res.status(201).json(date);
     } catch (error) {
-      console.error('Error creating important date:', error);
       res.status(500).json({ message: "Failed to create important date" });
     }
   });
 
   app.put("/api/important-dates/:id", requireAdmin, async (req, res) => {
     try {
-      const date = await storage.updateImportantDate(req.params.id, req.body);
+      const date = await storage.updateImportantDate(req.params.id, req.user!.tenantId, req.body);
       if (!date) {
         return res.status(404).json({ message: "Important date not found" });
       }
@@ -2814,7 +2812,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/important-dates/:id", requireAdmin, async (req, res) => {
     try {
-      const success = await storage.deleteImportantDate(req.params.id);
+      const success = await storage.deleteImportantDate(req.params.id, req.user!.tenantId);
       if (!success) {
         return res.status(404).json({ message: "Important date not found" });
       }
