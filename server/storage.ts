@@ -1219,7 +1219,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createImamQuestion(questionData: InsertImamQuestion): Promise<ImamQuestion> {
-    const [question] = await db.insert(imamQuestions).values(questionData).returning();
+    const [question] = await db.insert(imamQuestions).values({...questionData, tenantId: questionData.tenantId}).returning();
     return question;
   }
 
@@ -1272,7 +1272,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createDocument(document: InsertDocument): Promise<Document> {
-    const [doc] = await db.insert(documents).values(document).returning();
+    const [doc] = await db.insert(documents).values({...document, tenantId: document.tenantId}).returning();
     return doc;
   }
 
@@ -1291,7 +1291,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createRequest(request: InsertRequest): Promise<Request> {
-    const [req] = await db.insert(requests).values(request).returning();
+    const [req] = await db.insert(requests).values({...request, tenantId: request.tenantId}).returning();
     return req;
   }
 
@@ -1329,7 +1329,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createShopProduct(product: InsertShopProduct): Promise<ShopProduct> {
-    const [prod] = await db.insert(shopProducts).values(product).returning();
+    const [prod] = await db.insert(shopProducts).values({...product, tenantId: product.tenantId}).returning();
     return prod;
   }
 
@@ -1353,7 +1353,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createMarketplaceItem(item: InsertMarketplaceItem): Promise<MarketplaceItem> {
-    const [marketItem] = await db.insert(marketplaceItems).values(item).returning();
+    const [marketItem] = await db.insert(marketplaceItems).values({...item, tenantId: item.tenantId}).returning();
     
     // Add to activity feed
     const typeText = marketItem.type === 'sale' ? 'Prodaje se' : 'Poklanja se';
@@ -1397,7 +1397,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createService(service: InsertService): Promise<Service> {
-    const [newService] = await db.insert(services).values(service).returning();
+    const [newService] = await db.insert(services).values({...service, tenantId: service.tenantId}).returning();
     return newService;
   }
 
@@ -1449,7 +1449,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createProductPurchaseRequest(request: InsertProductPurchaseRequest): Promise<ProductPurchaseRequest> {
-    const [req] = await db.insert(productPurchaseRequests).values(request).returning();
+    const [req] = await db.insert(productPurchaseRequests).values({...request, tenantId: request.tenantId}).returning();
     return req;
   }
 
