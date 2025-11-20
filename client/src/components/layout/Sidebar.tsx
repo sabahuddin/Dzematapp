@@ -79,10 +79,9 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     icon: any;
     adminOnly?: boolean;
     superAdminOnly?: boolean;
-    hideForSuperAdmin?: boolean;
     showBadge?: boolean;
   }> = [
-    { path: '/dashboard', label: t('navigation:menu.dashboard'), icon: Dashboard, hideForSuperAdmin: true },
+    { path: '/dashboard', label: t('navigation:menu.dashboard'), icon: Dashboard },
     { path: '/superadmin/dashboard', label: 'Super Admin Panel', icon: AdminPanelSettings, superAdminOnly: true },
     { path: '/feed', label: 'Feed', icon: DynamicFeed },
     { path: '/users', label: t('navigation:menu.users'), labelForMember: t('navigation:menu.profile'), icon: People },
@@ -210,11 +209,6 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
           
           // Hide super-admin-only items from non-super-admin users
           if (item.superAdminOnly && !user?.isSuperAdmin) {
-            return null;
-          }
-          
-          // Hide regular items from super-admin users
-          if (item.hideForSuperAdmin && user?.isSuperAdmin) {
             return null;
           }
 
