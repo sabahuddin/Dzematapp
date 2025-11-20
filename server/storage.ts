@@ -1759,48 +1759,49 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Activity Log (Feature 1)
-  async createActivityLog(log: InsertActivityLog): Promise<ActivityLog> {
-    const [activity] = await db.insert(activityLog).values(log).returning();
+  async createActivityLog(log: InsertActivityLog & { tenantId: string }): Promise<ActivityLog> {
+    const [activity] = await db.insert(activityLog).values({...log, tenantId: log.tenantId}).returning();
     
     // Recalculate user points and check for badges
-    await this.recalculateUserPoints(activity.userId);
-    await this.checkAndAwardBadges(activity.userId);
+    await this.recalculateUserPoints(activity.userId, log.tenantId);
+    await this.checkAndAwardBadges(activity.userId, log.tenantId);
     
     return activity;
   }
 
-  async getUserActivityLog(userId: string): Promise<ActivityLog[]> {
+  async getUserActivityLog(userId: string, tenantId: string): Promise<ActivityLog[]> {
     return await db.select().from(activityLog)
-      .where(eq(activityLog.userId, userId))
+      .where(and(eq(activityLog.userId, userId), eq(activityLog.tenantId, tenantId)))
       .orderBy(desc(activityLog.createdAt));
   }
 
-  async getAllActivityLogs(): Promise<ActivityLog[]> {
-    return await db.select().from(activityLog).orderBy(desc(activityLog.createdAt));
+  async getAllActivityLogs(tenantId: string): Promise<ActivityLog[]> {
+    return await db.select().from(activityLog).where(eq(activityLog.tenantId, tenantId)).orderBy(desc(activityLog.createdAt));
   }
 
   // Event Attendance (Feature 1)
-  async createEventAttendance(attendance: InsertEventAttendance): Promise<EventAttendance> {
-    const [attend] = await db.insert(eventAttendance).values(attendance).returning();
+  async createEventAttendance(attendance: InsertEventAttendance & { tenantId: string }): Promise<EventAttendance> {
+    const [attend] = await db.insert(eventAttendance).values({...attendance, tenantId: attendance.tenantId}).returning();
     
     // Get points settings
-    const settings = await this.getPointsSettings();
+    const settings = await this.getPointsSettings(attendance.tenantId);
     const points = settings?.pointsPerEvent || 20;
     
     // Log activity
-    const event = await this.getEvent(attend.eventId);
+    const event = await this.getEvent(attend.eventId, attendance.tenantId);
     await this.createActivityLog({
       userId: attend.userId,
       activityType: 'event_attendance',
       description: `Prisustvo na događaju: ${event?.name || 'Nepoznat događaj'}`,
       points,
       relatedEntityId: attend.eventId,
+      tenantId: attendance.tenantId,
     });
     
     return attend;
   }
 
-  async bulkCreateEventAttendance(attendances: InsertEventAttendance[]): Promise<EventAttendance[]> {
+  async bulkCreateEventAttendance(attendances: (InsertEventAttendance & { tenantId: string })[]): Promise<EventAttendance[]> {
     const created: EventAttendance[] = [];
     for (const att of attendances) {
       const result = await this.createEventAttendance(att);
@@ -1809,56 +1810,57 @@ export class DatabaseStorage implements IStorage {
     return created;
   }
 
-  async getEventAttendance(eventId: string): Promise<EventAttendance[]> {
-    return await db.select().from(eventAttendance).where(eq(eventAttendance.eventId, eventId));
+  async getEventAttendance(eventId: string, tenantId: string): Promise<EventAttendance[]> {
+    return await db.select().from(eventAttendance).where(and(eq(eventAttendance.eventId, eventId), eq(eventAttendance.tenantId, tenantId)));
   }
 
-  async getUserEventAttendance(userId: string): Promise<EventAttendance[]> {
-    return await db.select().from(eventAttendance).where(eq(eventAttendance.userId, userId));
+  async getUserEventAttendance(userId: string, tenantId: string): Promise<EventAttendance[]> {
+    return await db.select().from(eventAttendance).where(and(eq(eventAttendance.userId, userId), eq(eventAttendance.tenantId, tenantId)));
   }
 
   // Points Settings (Feature 2)
-  async getPointsSettings(): Promise<PointsSettings | undefined> {
-    const result = await db.select().from(pointsSettings).limit(1);
+  async getPointsSettings(tenantId: string): Promise<PointsSettings | undefined> {
+    const result = await db.select().from(pointsSettings).where(eq(pointsSettings.tenantId, tenantId)).limit(1);
     if (result.length === 0) {
       // Create default settings
       const [settings] = await db.insert(pointsSettings).values({
         pointsPerChf: 1,
         pointsPerTask: 50,
         pointsPerEvent: 20,
+        tenantId,
       }).returning();
       return settings;
     }
     return result[0];
   }
 
-  async updatePointsSettings(settings: Partial<InsertPointsSettings>): Promise<PointsSettings> {
-    const existing = await this.getPointsSettings();
+  async updatePointsSettings(tenantId: string, settings: Partial<InsertPointsSettings>): Promise<PointsSettings> {
+    const existing = await this.getPointsSettings(tenantId);
     if (!existing) {
-      const [newSettings] = await db.insert(pointsSettings).values(settings as InsertPointsSettings).returning();
+      const [newSettings] = await db.insert(pointsSettings).values({...settings, tenantId} as InsertPointsSettings).returning();
       return newSettings;
     }
-    const [updated] = await db.update(pointsSettings).set(settings).where(eq(pointsSettings.id, existing.id)).returning();
+    const [updated] = await db.update(pointsSettings).set(settings).where(and(eq(pointsSettings.id, existing.id), eq(pointsSettings.tenantId, tenantId))).returning();
     return updated;
   }
 
   // Badges (Feature 2)
-  async createBadge(badge: InsertBadge): Promise<Badge> {
-    const [b] = await db.insert(badges).values(badge).returning();
+  async createBadge(badge: InsertBadge & { tenantId: string }): Promise<Badge> {
+    const [b] = await db.insert(badges).values({...badge, tenantId: badge.tenantId}).returning();
     return b;
   }
 
-  async getBadge(id: string): Promise<Badge | undefined> {
-    const result = await db.select().from(badges).where(eq(badges.id, id)).limit(1);
+  async getBadge(id: string, tenantId: string): Promise<Badge | undefined> {
+    const result = await db.select().from(badges).where(and(eq(badges.id, id), eq(badges.tenantId, tenantId))).limit(1);
     return result[0];
   }
 
-  async getAllBadges(): Promise<Badge[]> {
-    return await db.select().from(badges);
+  async getAllBadges(tenantId: string): Promise<Badge[]> {
+    return await db.select().from(badges).where(eq(badges.tenantId, tenantId));
   }
 
-  async updateBadge(id: string, updates: Partial<InsertBadge>): Promise<Badge | undefined> {
-    const [badge] = await db.update(badges).set(updates).where(eq(badges.id, id)).returning();
+  async updateBadge(id: string, tenantId: string, updates: Partial<InsertBadge>): Promise<Badge | undefined> {
+    const [badge] = await db.update(badges).set(updates).where(and(eq(badges.id, id), eq(badges.tenantId, tenantId))).returning();
     return badge;
   }
 
