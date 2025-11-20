@@ -7,17 +7,24 @@ import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/contexts/AuthContext";
 import type { Document } from "@shared/schema";
+import { useFeatureAccess } from "@/hooks/useFeatureAccess";
+import { UpgradeCTA } from "@/components/UpgradeCTA";
 
 export default function DocumentsPage() {
   const { t } = useTranslation(['documents']);
   const { toast } = useToast();
   const { user } = useAuth();
+  const featureAccess = useFeatureAccess('documents');
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [uploadData, setUploadData] = useState({
     title: "",
     description: "",
     file: null as File | null
   });
+
+  if (featureAccess.upgradeRequired) {
+    return <UpgradeCTA moduleId="documents" requiredPlan={featureAccess.requiredPlan || 'standard'} currentPlan={featureAccess.currentPlan || 'basic'} />;
+  }
 
   const { data: documents = [], isLoading } = useQuery<Document[]>({
     queryKey: ["/api/documents"]

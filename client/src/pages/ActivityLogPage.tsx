@@ -38,13 +38,20 @@ import { ActivityLog, User } from '@shared/schema';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/use-toast';
 import { exportToExcel } from '../utils/excelExport';
+import { useFeatureAccess } from '../hooks/useFeatureAccess';
+import { UpgradeCTA } from '../components/UpgradeCTA';
 
 export default function ActivityLogPage() {
   const { t } = useTranslation(['activity']);
   const { user: currentUser } = useAuth();
   const { toast } = useToast();
+  const featureAccess = useFeatureAccess('activity-log');
   const [filterType, setFilterType] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
+
+  if (featureAccess.upgradeRequired) {
+    return <UpgradeCTA moduleId="activity-log" requiredPlan={featureAccess.requiredPlan || 'full'} currentPlan={featureAccess.currentPlan || 'standard'} />;
+  }
 
   // Fetch activity logs
   const activityLogsQuery = useQuery({

@@ -4,10 +4,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CertificateTemplatesPage from "./CertificateTemplatesPage";
 import IssueCertificatesPage from "./IssueCertificatesPage";
 import AllCertificatesPage from "./AllCertificatesPage";
+import { useFeatureAccess } from "@/hooks/useFeatureAccess";
+import { UpgradeCTA } from "@/components/UpgradeCTA";
 
 export default function CertificatesPage() {
   const { t } = useTranslation(['certificates']);
+  const featureAccess = useFeatureAccess('certificates');
   const [activeTab, setActiveTab] = useState("templates");
+
+  if (featureAccess.upgradeRequired) {
+    return <UpgradeCTA moduleId="certificates" requiredPlan={featureAccess.requiredPlan || 'full'} currentPlan={featureAccess.currentPlan || 'standard'} />;
+  }
 
   return (
     <div className="container mx-auto p-6">

@@ -38,6 +38,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useMarkAsViewed } from "@/hooks/useMarkAsViewed";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
+import { useFeatureAccess } from "@/hooks/useFeatureAccess";
+import { UpgradeCTA } from "@/components/UpgradeCTA";
 
 interface ImamQuestion {
   id: string;
@@ -60,9 +62,14 @@ export default function AskImamPage() {
   const { t } = useTranslation(['askImam', 'common']);
   const { user } = useAuth();
   const { toast } = useToast();
+  const featureAccess = useFeatureAccess('ask-imam');
   useMarkAsViewed('imamQuestions');
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("");
+
+  if (featureAccess.upgradeRequired) {
+    return <UpgradeCTA moduleId="ask-imam" requiredPlan={featureAccess.requiredPlan || 'full'} currentPlan={featureAccess.currentPlan || 'standard'} />;
+  }
   const [isNewQuestionOpen, setIsNewQuestionOpen] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState<ImamQuestion | null>(null);
   const [questionSubject, setQuestionSubject] = useState("");

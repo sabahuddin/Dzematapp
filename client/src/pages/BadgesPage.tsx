@@ -36,6 +36,8 @@ import { Badge, insertBadgeSchema } from '@shared/schema';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/use-toast';
 import { apiRequest, queryClient } from '../lib/queryClient';
+import { useFeatureAccess } from '../hooks/useFeatureAccess';
+import { UpgradeCTA } from '../components/UpgradeCTA';
 
 interface BadgesPageProps {
   hideHeader?: boolean;
@@ -45,9 +47,14 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
   const { user: currentUser } = useAuth();
   const { toast } = useToast();
   const { t } = useTranslation(['badges', 'common']);
+  const featureAccess = useFeatureAccess('badges');
   
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null);
+
+  if (featureAccess.upgradeRequired) {
+    return <UpgradeCTA moduleId="badges" requiredPlan={featureAccess.requiredPlan || 'full'} currentPlan={featureAccess.currentPlan || 'standard'} />;
+  }
 
   // Check admin access
   if (!currentUser?.isAdmin) {

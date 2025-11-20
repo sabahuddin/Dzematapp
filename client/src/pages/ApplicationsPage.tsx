@@ -8,6 +8,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
 import { useToast } from "@/hooks/use-toast";
 import type { Request, AkikaApplication } from "@shared/schema";
+import { useFeatureAccess } from "@/hooks/useFeatureAccess";
+import { UpgradeCTA } from "@/components/UpgradeCTA";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -1465,7 +1467,12 @@ function IncomingAkikaApplications() {
 export default function ApplicationsPage() {
   const { user } = useAuth();
   const { t } = useTranslation("applications");
+  const featureAccess = useFeatureAccess('applications');
   const [tabValue, setTabValue] = useState(0);
+
+  if (featureAccess.upgradeRequired) {
+    return <UpgradeCTA moduleId="applications" requiredPlan={featureAccess.requiredPlan || 'standard'} currentPlan={featureAccess.currentPlan || 'basic'} />;
+  }
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);

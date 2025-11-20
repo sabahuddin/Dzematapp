@@ -12,6 +12,8 @@ import NewMessageModal from "@/components/modals/NewMessageModal";
 import { useAuth } from "@/hooks/useAuth";
 import { Textarea } from "@/components/ui/textarea";
 import { useTranslation } from "react-i18next";
+import { useFeatureAccess } from "@/hooks/useFeatureAccess";
+import { UpgradeCTA } from "@/components/UpgradeCTA";
 
 interface MessageWithDetails {
   id: string;
@@ -50,11 +52,16 @@ interface Conversation {
 export default function MessagesPage() {
   const { t } = useTranslation(['messages']);
   const { user } = useAuth();
+  const featureAccess = useFeatureAccess('messages');
   const [searchQuery, setSearchQuery] = useState("");
   const [isNewMessageModalOpen, setIsNewMessageModalOpen] = useState(false);
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [newMessage, setNewMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  if (featureAccess.upgradeRequired) {
+    return <UpgradeCTA moduleId="messages" requiredPlan={featureAccess.requiredPlan || 'standard'} currentPlan={featureAccess.currentPlan || 'basic'} />;
+  }
 
   const { data: conversations = [], isLoading } = useQuery<Conversation[]>({
     queryKey: ["/api/messages/conversations"],

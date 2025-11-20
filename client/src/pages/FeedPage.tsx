@@ -26,10 +26,17 @@ import {
 } from '@mui/icons-material';
 import { type ActivityFeedItem } from '@shared/schema';
 import { format } from 'date-fns';
+import { useFeatureAccess } from '@/hooks/useFeatureAccess';
+import { UpgradeCTA } from '@/components/UpgradeCTA';
 
 export default function FeedPage() {
   const { t, i18n } = useTranslation(['common']);
   const [, setLocation] = useLocation();
+  const featureAccess = useFeatureAccess('feed');
+
+  if (featureAccess.upgradeRequired) {
+    return <UpgradeCTA moduleId="feed" requiredPlan={featureAccess.requiredPlan || 'standard'} currentPlan={featureAccess.currentPlan || 'basic'} />;
+  }
 
   const { data: feedItems = [], isLoading } = useQuery<ActivityFeedItem[]>({
     queryKey: ['/api/activity-feed'],

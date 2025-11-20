@@ -40,17 +40,24 @@ import { useCurrency } from '../contexts/CurrencyContext';
 import { useToast } from '../hooks/use-toast';
 import { apiRequest, queryClient } from '../lib/queryClient';
 import { exportToExcel } from '../utils/excelExport';
+import { useFeatureAccess } from '../hooks/useFeatureAccess';
+import { UpgradeCTA } from '../components/UpgradeCTA';
 
 export default function FinancesPage() {
   const { user: currentUser } = useAuth();
   const { formatPrice, currency } = useCurrency();
   const { toast } = useToast();
   const { t } = useTranslation(['finances', 'common']);
+  const featureAccess = useFeatureAccess('finances');
   
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedContribution, setSelectedContribution] = useState<FinancialContribution | null>(null);
+
+  if (featureAccess.upgradeRequired) {
+    return <UpgradeCTA moduleId="finances" requiredPlan={featureAccess.requiredPlan || 'standard'} currentPlan={featureAccess.currentPlan || 'basic'} />;
+  }
 
   // Fetch contributions
   const contributionsQuery = useQuery({
