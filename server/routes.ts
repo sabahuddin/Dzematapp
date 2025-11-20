@@ -392,7 +392,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/users", requireAdmin, async (req, res) => {
     try {
-      const tenantId = req.tenantId!;
+      let tenantId = req.body.tenantId || req.tenantId;
+      if (!tenantId) return res.status(400).json({ message: "Tenant ID required" });
       const userData = insertUserSchema.parse(req.body);
       
       // Check if username already exists (only if username is provided)
@@ -405,6 +406,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const user = await storage.createUser(userData);
       res.json({ ...user, password: undefined });
+      console.error("Error creating user:", error);
     } catch (error) {
       res.status(400).json({ message: "Invalid user data" });
     }
