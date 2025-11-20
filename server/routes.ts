@@ -480,15 +480,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Log activity
       await storage.createActivityLog({
-        tenantId: req.user!.tenantId
-});
         userId: id,
-        tenantId: tenantId,
         activityType: 'profile_updated',
         description: 'Profil ažuriran',
         points: 0,
         relatedEntityId: id,
-});
+        tenantId: tenantId
+      });
 
       res.json({ ...user, password: undefined });
     } catch (error) {
@@ -501,16 +499,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const xlsxUpload = multer({
     storage: multer.memoryStorage(),
     limits: {
-      fileSize: 10 * 1024 * 1024,
-    fileFilter: (req, file, cb) => {
-      const allowedMimes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
-      if (allowedMimes.includes(file.mimetype)) {
-        cb(null, true);
-      } else {
-        cb(new Error('Only Excel files (.xlsx, .xls) are allowed'));
-      }
+      fileSize: 10 * 1024 * 1024
     }
-});
+  });
 
   app.get("/api/users/template", requireAuth, async (req, res) => {
     try {
@@ -525,16 +516,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const worksheet = XLSX.utils.aoa_to_sheet(templateData);
       
       worksheet['!cols'] = [
-        { wch: 15 ,
-        { wch: 15 ,
-        { wch: 18 ,
-        { wch: 15 ,
-        { wch: 25 ,
-        { wch: 18 ,
-        { wch: 25 ,
-        { wch: 12 ,
-        { wch: 18 ,
-        { wch: 15 ,
+        { wch: 15 },
+        { wch: 15 },
+        { wch: 18 },
+        { wch: 15 },
+        { wch: 25 },
+        { wch: 18 },
+        { wch: 25 },
+        { wch: 12 },
+        { wch: 18 },
+        { wch: 15 },
         { wch: 18 }
       ];
 
@@ -571,7 +562,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const results = {
         success: [] as any[],
         errors: [] as { row: number; errors: string[] }[]
-});
+      };
       for (let i = 0; i < rows.length; i++) {
         const row = rows[i];
         const rowNumber = i + 2;
@@ -2843,7 +2834,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           await storage.updateProject(validated.projectId, req.user!.tenantId, {
             currentAmount: newAmount
-});
+          });
         }
       }
 
@@ -2857,8 +2848,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         points,
         relatedEntityId: contribution.id,
         tenantId: req.user!.tenantId
-});
-});
+      });
 
       // If bonus points were added, create a separate activity log entry
       if (bonusPoints && bonusPoints > 0) {
@@ -2868,9 +2858,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           description: `Bonus bodovi za uplatu: ${validated.amount} CHF`,
           points: parseInt(bonusPoints),
           relatedEntityId: contribution.id,
-        tenantId: req.user!.tenantId
-});
-});
+          tenantId: req.user!.tenantId
+        });
       }
 
       // If contribution is for a project, create additional activity log
@@ -2881,11 +2870,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
             userId: validated.userId,
             activityType: 'project_contribution',
             description: `Doprinos projektu: ${project.name} (${validated.amount} CHF)`,
-            points: 0, // Points already awarded in contribution_made log
+            points: 0,
             relatedEntityId: contribution.id,
-        tenantId: req.user!.tenantId
-});
-});
+            tenantId: req.user!.tenantId
+          });
         }
       }
 
