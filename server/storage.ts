@@ -474,7 +474,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const [user] = await db.insert(users).values(insertUser).returning();
+    const [user] = await db.insert(users).values({...insertUser, tenantId: insertUser.tenantId}).returning();
     
     await this.createActivity({
       type: "registration",
@@ -512,7 +512,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createAnnouncement(insertAnnouncement: InsertAnnouncement): Promise<Announcement> {
-    const [announcement] = await db.insert(announcements).values(insertAnnouncement).returning();
+    const [announcement] = await db.insert(announcements).values({...insertAnnouncement, tenantId: insertAnnouncement.tenantId}).returning();
     
     await this.createActivity({
       type: "announcement",
@@ -589,7 +589,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createEvent(insertEvent: InsertEvent): Promise<Event> {
-    const [event] = await db.insert(events).values(insertEvent).returning();
+    const [event] = await db.insert(events).values({...insertEvent, tenantId: insertEvent.tenantId}).returning();
     
     await this.createActivity({
       type: "event",
@@ -636,7 +636,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createEventRsvp(insertRsvp: InsertEventRsvp): Promise<EventRsvp> {
-    const [rsvp] = await db.insert(eventRsvps).values(insertRsvp).returning();
+    const [rsvp] = await db.insert(eventRsvps).values({...insertRsvp, tenantId: insertRsvp.tenantId}).returning();
     return rsvp;
   }
 
@@ -704,7 +704,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createWorkGroup(insertWorkGroup: InsertWorkGroup): Promise<WorkGroup> {
-    const [workGroup] = await db.insert(workGroups).values(insertWorkGroup).returning();
+    const [workGroup] = await db.insert(workGroups).values({...insertWorkGroup, tenantId: insertWorkGroup.tenantId}).returning();
     return workGroup;
   }
 
@@ -847,7 +847,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createTask(insertTask: InsertTask): Promise<Task> {
-    const [task] = await db.insert(tasks).values(insertTask).returning();
+    const [task] = await db.insert(tasks).values({...insertTask, tenantId: insertTask.tenantId}).returning();
     
     if (task.assignedUserIds && task.assignedUserIds.length > 0) {
       for (const userId of task.assignedUserIds) {
@@ -919,7 +919,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createAccessRequest(insertRequest: InsertAccessRequest): Promise<AccessRequest> {
-    const [request] = await db.insert(accessRequests).values(insertRequest).returning();
+    const [request] = await db.insert(accessRequests).values({...insertRequest, tenantId: insertRequest.tenantId}).returning();
     return request;
   }
 
@@ -980,7 +980,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createTaskComment(insertComment: InsertTaskComment): Promise<TaskComment> {
-    const [comment] = await db.insert(taskComments).values(insertComment).returning();
+    const [comment] = await db.insert(taskComments).values({...insertComment, tenantId: insertComment.tenantId}).returning();
     
     await this.createActivity({
       type: "task",
@@ -1010,7 +1010,7 @@ export class DatabaseStorage implements IStorage {
 
 
   async createAnnouncementFile(insertFile: InsertAnnouncementFile): Promise<AnnouncementFile> {
-    const [file] = await db.insert(announcementFiles).values(insertFile).returning();
+    const [file] = await db.insert(announcementFiles).values({...insertFile, tenantId: insertFile.tenantId}).returning();
     
     await this.createActivity({
       type: "announcement",
@@ -1044,7 +1044,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createFamilyRelationship(insertRelationship: InsertFamilyRelationship): Promise<FamilyRelationship> {
-    const [relationship] = await db.insert(familyRelationships).values(insertRelationship).returning();
+    const [relationship] = await db.insert(familyRelationships).values({...insertRelationship, tenantId: insertRelationship.tenantId}).returning();
     
     await this.createActivity({
       type: "registration",
@@ -1102,6 +1102,7 @@ export class DatabaseStorage implements IStorage {
     
     const [message] = await db.insert(messages).values({
       ...insertMessage,
+      tenantId: insertMessage.tenantId,
       threadId: threadId ?? sql`gen_random_uuid()`
     }).returning();
     
