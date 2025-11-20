@@ -1161,7 +1161,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               lastName: user.lastName, 
               email: user.email 
             } : null
-        };
+          };
         })
       );
       
@@ -1182,24 +1182,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Check if work group exists
-      const workGroup = await storage.getWorkGroup(workGroupId);
+      const tenantId = req.tenantId!;
+      const workGroup = await storage.getWorkGroup(workGroupId, tenantId);
       if (!workGroup) {
         return res.status(404).json({ message: "Work group not found" });
       }
 
       // Check if target user exists
-      const targetUser = await storage.getUser(userId);
+      const targetUser = await storage.getUser(userId, tenantId);
       if (!targetUser) {
         return res.status(404).json({ message: "Target user not found" });
       }
 
       // Check if user is a member
-      const isMember = await storage.isUserMemberOfWorkGroup(workGroupId, userId);
+      const isMember = await storage.isUserMemberOfWorkGroup(workGroupId, userId, tenantId);
       if (!isMember) {
         return res.status(404).json({ message: "User is not a member of this work group" });
       }
 
-      const member = await storage.setModerator(workGroupId, userId, isModerator);
+      const member = await storage.setModerator(workGroupId, userId, tenantId, isModerator);
       if (!member) {
         return res.status(404).json({ message: "Failed to update moderator status" });
       }
@@ -1215,12 +1216,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { id } = req.params;
 
       // Check if work group exists
-      const workGroup = await storage.getWorkGroup(id);
+      const tenantId = req.tenantId!;
+      const workGroup = await storage.getWorkGroup(id, tenantId);
       if (!workGroup) {
         return res.status(404).json({ message: "Work group not found" });
       }
 
-      const moderators = await storage.getWorkGroupModerators(id);
+      const moderators = await storage.getWorkGroupModerators(id, tenantId);
       res.json(moderators);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch moderators" });
@@ -1473,17 +1475,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { taskId } = req.params;
       
       // Check if task exists
-      const task = await storage.getTask(taskId);
+      const task = await storage.getTask(taskId, req.tenantId!);
       if (!task) {
         return res.status(404).json({ message: "Task not found" });
       }
 
-      const comments = await storage.getTaskComments(taskId);
+      const comments = await storage.getTaskComments(taskId, req.tenantId!);
       
       // Get user details for each comment
       const commentsWithUserDetails = await Promise.all(
         comments.map(async (comment) => {
-          const user = await storage.getUser(comment.userId);
+          const user = await storage.getUser(comment.userId, req.tenantId!);
           return {
             ...comment,
             user: user ? { 
@@ -1491,7 +1493,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               firstName: user.firstName, 
               lastName: user.lastName 
             } : null
-        };
+          };
         })
       );
       
@@ -1515,7 +1517,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = req.user!;
 
       // Check if task exists
-      const task = await storage.getTask(taskId);
+      const task = await storage.getTask(taskId, req.tenantId!);
       if (!task) {
         return res.status(404).json({ message: "Task not found" });
       }
@@ -1532,8 +1534,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         taskId, 
         userId, 
         content,
-        commentImage: commentImage || null 
-});
+        commentImage: commentImage || null,
+        tenantId: req.tenantId!
+      });
       const comment = await storage.createTaskComment(commentData);
       
       // Get user details for the response
@@ -1544,7 +1547,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           firstName: user.firstName, 
           lastName: user.lastName 
         }
-});      
+      };
       res.json(commentWithUser);
     } catch (error) {
       res.status(400).json({ message: "Invalid comment data" });
@@ -1562,14 +1565,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Get the task to find the work group
-      const task = await storage.getTask(comment.taskId);
+      const tenantId = req.tenantId!;
+      const task = await storage.getTask(comment.taskId, tenantId);
       if (!task) {
         return res.status(404).json({ message: "Associated task not found" });
       }
 
       // Check authorization: admin, work group moderator, or comment author
       const isAdmin = req.user!.isAdmin;
-      const isModerator = await storage.isUserModeratorOfWorkGroup(task.workGroupId, req.user!.id);
+      const isModerator = await storage.isUserModeratorOfWorkGroup(task.workGroupId, req.user!.id, tenantId);
       const isAuthor = comment.userId === req.user!.id;
 
       if (!isAdmin && !isModerator && !isAuthor) {
@@ -1592,12 +1596,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { announcementId } = req.params;
       
       // Check if announcement exists
-      const announcement = await storage.getAnnouncement(announcementId);
+      const announcement = await storage.getAnnouncement(announcementId, req.tenantId!);
       if (!announcement) {
         return res.status(404).json({ message: "Announcement not found" });
       }
 
-      const files = await storage.getAnnouncementFiles(announcementId);
+      const files = await storage.getAnnouncementFiles(announcementId, req.tenantId!);
       
       // Get user details for each file
       const filesWithUserDetails = await Promise.all(
@@ -1610,7 +1614,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               firstName: user.firstName, 
               lastName: user.lastName 
             } : null
-        };
+          };
         })
       );
       
@@ -1645,7 +1649,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Check if announcement exists
-      const announcement = await storage.getAnnouncement(announcementId);
+      const announcement = await storage.getAnnouncement(announcementId, req.tenantId!);
       if (!announcement) {
         return res.status(404).json({ message: "Announcement not found" });
       }
@@ -1828,7 +1832,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               email: relatedUser.email,
               phone: relatedUser.phone
             } : null
-        };
+          };
         })
       );
       
@@ -1912,7 +1916,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               firstName: recipient.firstName,
               lastName: recipient.lastName
             } : null
-        };
+          };
         })
       );
       
