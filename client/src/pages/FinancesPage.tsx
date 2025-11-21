@@ -167,8 +167,9 @@ export default function FinancesPage() {
       });
       return response as Project;
     },
-    onSuccess: (newProject: Project) => {
-      queryClient.invalidateQueries({ queryKey: ['/api/projects'] });
+    onSuccess: async (newProject: Project) => {
+      // Wait for query to be refetched to ensure new project appears immediately
+      await queryClient.refetchQueries({ queryKey: ['/api/projects'] });
       // Set the newly created project as selected in the contribution form
       form.setValue('projectId', newProject.id);
       toast({ title: t('common:common.success'), description: 'Projekat kreiram uspješno' });
