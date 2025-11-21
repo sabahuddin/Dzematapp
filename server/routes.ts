@@ -1869,7 +1869,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/family-relationships", requireAuth, async (req, res) => {
     try {
-      const relationshipData = insertFamilyRelationshipSchema.parse(req.body);
+      const tenantId = req.tenantId || "default-tenant-demo";
+      const relationshipData = insertFamilyRelationshipSchema.parse({
+        ...req.body,
+        tenantId
+      });
       const relationship = await storage.createFamilyRelationship(relationshipData);
       res.json(relationship);
     } catch (error) {
@@ -2841,7 +2845,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Financial Contributions Routes (Feature 1)
   app.get("/api/financial-contributions", requireAdmin, requireFeature("finances"), async (req, res) => {
     try {
-      const contributions = await storage.getAllFinancialContributions(req.user!.tenantId);
+      const tenantId = req.tenantId || "default-tenant-demo";
+      const contributions = await storage.getAllFinancialContributions(tenantId);
       res.json(contributions);
     } catch (error) {
       res.status(500).json({ message: "Failed to get financial contributions" });
@@ -2850,11 +2855,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/financial-contributions/user/:userId", requireAuth, requireFeature("finances"), async (req, res) => {
     try {
+      const tenantId = req.tenantId || "default-tenant-demo";
       // Only admins or the user themselves can view contributions
       if (req.user?.id !== req.params.userId && !req.user?.isAdmin) {
         return res.status(403).json({ message: "Access denied" });
       }
-      const contributions = await storage.getUserFinancialContributions(req.params.userId, req.user!.tenantId);
+      const contributions = await storage.getUserFinancialContributions(req.params.userId, tenantId);
       res.json(contributions);
     } catch (error) {
       res.status(500).json({ message: "Failed to get user contributions" });
@@ -2863,23 +2869,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/financial-contributions", requireAdmin, requireFeature("finances"), async (req, res) => {
     try {
+      const tenantId = req.tenantId || "default-tenant-demo";
       const { points: bonusPoints, ...contributionData } = req.body;
       const validated = insertFinancialContributionSchema.parse(contributionData);
       const contribution = await storage.createFinancialContribution({
         ...validated,
         createdById: req.user!.id,
-        tenantId: req.user!.tenantId
+        tenantId
 });
 
       // If contribution is for a project, update project's currentAmount
       if (validated.projectId) {
-        const project = await storage.getProject(validated.projectId, req.user!.tenantId);
+        const project = await storage.getProject(validated.projectId, tenantId);
         if (project) {
           const currentAmount = parseFloat(project.currentAmount || '0');
           const contributionAmount = parseFloat(validated.amount);
           const newAmount = (currentAmount + contributionAmount).toFixed(2);
           
-          await storage.updateProject(validated.projectId, req.user!.tenantId, {
+          await storage.updateProject(validated.projectId, tenantId, {
             currentAmount: newAmount
           });
         }
@@ -2894,7 +2901,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         description: `Uplata: ${validated.amount} CHF (${validated.purpose})`,
         points,
         relatedEntityId: contribution.id,
-        tenantId: req.user!.tenantId
+        tenantId
       });
 
       // If bonus points were added, create a separate activity log entry
