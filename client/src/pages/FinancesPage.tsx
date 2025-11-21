@@ -34,7 +34,7 @@ import {
   AttachMoney,
   Download
 } from '@mui/icons-material';
-import { FinancialContribution, User, Project, insertFinancialContributionSchema } from '@shared/schema';
+import { FinancialContribution, User, Project, insertFinancialContributionSchema, insertProjectSchema } from '@shared/schema';
 import { useAuth } from '../hooks/useAuth';
 import { useCurrency } from '../contexts/CurrencyContext';
 import { useToast } from '../hooks/use-toast';
@@ -54,6 +54,10 @@ export default function FinancesPage() {
   const [categoryFilter, setCategoryFilter] = useState<string>('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedContribution, setSelectedContribution] = useState<FinancialContribution | null>(null);
+  const [projectDialogOpen, setProjectDialogOpen] = useState(false);
+  const [newProjectName, setNewProjectName] = useState('');
+  const [newProjectDescription, setNewProjectDescription] = useState('');
+  const [newProjectGoal, setNewProjectGoal] = useState('');
 
   if (featureAccess.upgradeRequired) {
     return <UpgradeCTA moduleId="finances" requiredPlan={featureAccess.requiredPlan || 'standard'} currentPlan={featureAccess.currentPlan || 'basic'} />;
@@ -148,6 +152,32 @@ export default function FinancesPage() {
     },
     onError: () => {
       toast({ title: t('common:common.error'), description: t('finances:messages.errorDeleting'), variant: 'destructive' });
+    }
+  });
+
+  // Create new project mutation
+  const createProjectMutation = useMutation({
+    mutationFn: async () => {
+      return await apiRequest('/api/projects', 'POST', {
+        name: newProjectName,
+        description: newProjectDescription,
+        goalAmount: newProjectGoal,
+        currentAmount: '0',
+        status: 'active'
+      });
+    },
+    onSuccess: (newProject: Project) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/projects'] });
+      // Set the newly created project as selected in the contribution form
+      form.setValue('projectId', newProject.id);
+      toast({ title: t('common:common.success'), description: 'Projekat kreiram uspješno' });
+      setProjectDialogOpen(false);
+      setNewProjectName('');
+      setNewProjectDescription('');
+      setNewProjectGoal('');
+    },
+    onError: () => {
+      toast({ title: t('common:common.error'), description: 'Greška pri kreiranju projekta', variant: 'destructive' });
     }
   });
 
@@ -442,6 +472,52 @@ export default function FinancesPage() {
         </TableContainer>
       </Card>
 
+      {/* Create New Project Dialog */}
+      <Dialog open={projectDialogOpen} onClose={() => setProjectDialogOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Kreiraj novi projekat</DialogTitle>
+        <DialogContent sx={{ pt: 3 }}>
+          <TextField
+            fullWidth
+            label="Naziv projekta"
+            value={newProjectName}
+            onChange={(e) => setNewProjectName(e.target.value)}
+            sx={{ mb: 2 }}
+            data-testid="input-new-project-name"
+          />
+          <TextField
+            fullWidth
+            label="Opis"
+            multiline
+            rows={3}
+            value={newProjectDescription}
+            onChange={(e) => setNewProjectDescription(e.target.value)}
+            sx={{ mb: 2 }}
+            data-testid="input-new-project-description"
+          />
+          <TextField
+            fullWidth
+            label={`Ciljni iznos (${currency})`}
+            type="number"
+            value={newProjectGoal}
+            onChange={(e) => setNewProjectGoal(e.target.value)}
+            data-testid="input-new-project-goal"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setProjectDialogOpen(false)} data-testid="button-cancel-project">
+            Otkaži
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => createProjectMutation.mutate()}
+            disabled={createProjectMutation.isPending || !newProjectName || !newProjectGoal}
+            data-testid="button-save-project"
+          >
+            {createProjectMutation.isPending ? 'Kreiram...' : 'Kreiraj'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       {/* Add/Edit Dialog */}
       <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
         <form onSubmit={handleSubmit}>
@@ -532,23 +608,34 @@ export default function FinancesPage() {
                 </TextField>
               </Grid>
               <Grid size={{ xs: 12 }}>
-                <TextField
-                  select
-                  fullWidth
-                  label={t('finances:projectOptional')}
-                  {...form.register('projectId')}
-                  SelectProps={{ native: true }}
-                  data-testid="select-project"
-                >
-                  <option value="">{t('finances:noProject')}</option>
-                  {(projectsQuery.data as Project[] || [])
-                    .filter(p => p.status === 'active')
-                    .map(project => (
-                      <option key={project.id} value={project.id}>
-                        {project.name}
-                      </option>
-                    ))}
-                </TextField>
+                <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
+                  <TextField
+                    select
+                    fullWidth
+                    label={t('finances:projectOptional')}
+                    {...form.register('projectId')}
+                    SelectProps={{ native: true }}
+                    data-testid="select-project"
+                  >
+                    <option value="">{t('finances:noProject')}</option>
+                    {(projectsQuery.data as Project[] || [])
+                      .filter(p => p.status === 'active')
+                      .map(project => (
+                        <option key={project.id} value={project.id}>
+                          {project.name}
+                        </option>
+                      ))}
+                  </TextField>
+                  <Button
+                    variant="outlined"
+                    startIcon={<Add />}
+                    onClick={() => setProjectDialogOpen(true)}
+                    sx={{ mt: 1 }}
+                    data-testid="button-add-project-quick"
+                  >
+                    {t('common:buttons.new')}
+                  </Button>
+                </Box>
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <TextField
