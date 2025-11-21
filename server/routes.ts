@@ -791,6 +791,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/events", requireAuth, async (req, res) => {
     try {
+      console.error("[EVENT POST] Body:", req.body);
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const eventData = insertEventSchema.parse({
         ...req.body,
