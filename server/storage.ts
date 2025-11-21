@@ -490,8 +490,7 @@ export class DatabaseStorage implements IStorage {
       description: `${user.firstName} ${user.lastName}`,
       relatedEntityId: user.id,
       relatedEntityType: "user",
-      isClickable: false,
-      tenantId: user.tenantId
+      isClickable: false
     });
     
     return user;
@@ -559,7 +558,6 @@ export class DatabaseStorage implements IStorage {
       await this.createActivityFeedItem({
         type: "announcement",
         title: announcement.title,
-        tenantId: announcement.tenantId,
         description: "",
         relatedEntityId: announcementId,
         relatedEntityType: "announcement",
@@ -606,8 +604,7 @@ export class DatabaseStorage implements IStorage {
       relatedEntityId: event.id,
       relatedEntityType: "event",
       isClickable: true,
-      metadata: JSON.stringify({ imageUrl: event.photoUrl || null }),
-      tenantId: event.tenantId
+      metadata: JSON.stringify({ imageUrl: event.photoUrl || null })
     });
     
     return event;
@@ -1380,8 +1377,7 @@ export class DatabaseStorage implements IStorage {
       relatedEntityId: marketItem.id,
       relatedEntityType: "shop_item",
       isClickable: true,
-      metadata: JSON.stringify({ imageUrl: marketItem.photos?.[0] || null }),
-      tenantId: marketItem.tenantId
+      metadata: JSON.stringify({ imageUrl: marketItem.photos?.[0] || null })
     });
     
     return marketItem;
@@ -1651,7 +1647,7 @@ export class DatabaseStorage implements IStorage {
   async bulkCreatePrayerTimes(prayerTimesData: InsertPrayerTime[]): Promise<PrayerTime[]> {
     const created: PrayerTime[] = [];
     for (const pt of prayerTimesData) {
-      const existing = await this.getPrayerTimeByDate(pt.date);
+      const existing = await this.getPrayerTimeByDate(pt.date, pt.tenantId);
       if (!existing) {
         const newPt = await this.createPrayerTime(pt);
         created.push(newPt);
@@ -1913,8 +1909,7 @@ export class DatabaseStorage implements IStorage {
         description: `${badge.name} - ${initials}`,
         relatedEntityId: badgeId,
         relatedEntityType: "badge",
-        isClickable: false,
-        tenantId: tenantId
+        isClickable: false
       });
     }
     
@@ -2686,7 +2681,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createActivityFeedItem(item: InsertActivityFeedItem): Promise<ActivityFeedItem> {
-    const [feedItem] = await db.insert(activityFeed).values({...item, tenantId: item.tenantId}).returning();
+    const [feedItem] = await db.insert(activityFeed).values(item).returning();
     return feedItem;
   }
 
