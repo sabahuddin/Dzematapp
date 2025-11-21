@@ -357,7 +357,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Users routes
   app.get("/api/users", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const users = await storage.getAllUsers(tenantId);
       res.json(users.map(user => ({ ...user, password: undefined })));
     } catch (error) {
@@ -367,7 +367,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/users/:id", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const { id } = req.params;
       const currentUser = req.user!;
       
@@ -417,7 +417,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/users/:id", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const { id } = req.params;
       const currentUser = req.user!;
       
@@ -692,7 +692,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Announcements routes
   app.get("/api/announcements", async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const announcements = await storage.getAllAnnouncements(tenantId);
       res.json(announcements);
     } catch (error) {
@@ -702,7 +702,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/announcements", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const announcementData = insertAnnouncementSchema.parse({
         ...req.body,
         authorId: req.user!.id,
@@ -717,7 +717,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/announcements/:id", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const { id } = req.params;
       const announcementData = insertAnnouncementSchema.partial().parse(req.body);
       const announcement = await storage.updateAnnouncement(id, tenantId, announcementData);
@@ -732,7 +732,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/announcements/:id", requireAdmin, async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const { id } = req.params;
       const deleted = await storage.deleteAnnouncement(id, tenantId);
       if (!deleted) {
@@ -747,7 +747,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Events routes
   app.get("/api/events", async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const events = await storage.getAllEvents(tenantId);
       
       // Add RSVP count to each event
@@ -781,7 +781,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/events/locations", async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const locations = await storage.getEventLocations(tenantId);
       res.json(locations);
     } catch (error) {
@@ -791,7 +791,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/events", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const eventData = insertEventSchema.parse({
         ...req.body,
         createdById: req.user!.id,
@@ -806,7 +806,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/events/:id", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const { id } = req.params;
       const eventData = insertEventSchema.partial().parse(req.body);
       const event = await storage.updateEvent(id, tenantId, eventData);
@@ -821,7 +821,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/events/:id", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const { id } = req.params;
       const deleted = await storage.deleteEvent(id, tenantId);
       if (!deleted) {
@@ -835,7 +835,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/events/:id/rsvps", async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const { id } = req.params;
       const rsvpStats = await storage.getEventRsvps(id, tenantId);
       res.json(rsvpStats);
@@ -846,7 +846,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/events/:id/rsvp", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const { id } = req.params;
       const { adultsCount, childrenCount } = req.body;
       
@@ -902,7 +902,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/events/:eventId/rsvp/:rsvpId", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const { rsvpId } = req.params;
       const { adultsCount, childrenCount } = req.body;
       
@@ -923,7 +923,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/events/:eventId/rsvp/:rsvpId", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const { rsvpId } = req.params;
       const deleted = await storage.deleteEventRsvp(rsvpId, tenantId);
       
@@ -939,7 +939,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/events/:eventId/user-rsvp", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const { eventId } = req.params;
       const rsvp = await storage.getUserEventRsvp(eventId, req.user!.id, tenantId);
       res.json(rsvp);
@@ -951,7 +951,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Work Groups routes
   app.get("/api/work-groups", requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       // Proslijedi userId i isAdmin za filtriranje po vidljivosti
       const userId = req.user?.id;
       const isAdmin = req.user?.isAdmin || false;
@@ -990,7 +990,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/work-groups", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const workGroupData = insertWorkGroupSchema.parse({ ...req.body, tenantId });
       const workGroup = await storage.createWorkGroup(workGroupData);
       res.json(workGroup);
@@ -1001,7 +1001,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/work-groups/:id", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const { id } = req.params;
 
       // Check if work group exists
@@ -1029,7 +1029,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/work-groups/:id/archive", requireAdmin, requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const { id } = req.params;
 
       // Check if work group exists
@@ -1049,7 +1049,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/work-groups/:id", requireAdmin, requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const { id } = req.params;
 
       // Check if work group exists
@@ -1075,7 +1075,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Work Group Members routes
   app.post("/api/work-groups/:id/members", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const { id } = req.params;
       const { userId } = req.body;
 
@@ -1118,7 +1118,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/work-groups/:id/members/:userId", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const { id, userId } = req.params;
 
       // Check if work group exists
@@ -1156,7 +1156,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/work-groups/:id/members", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const { id } = req.params;
 
       // Check if work group exists
@@ -1200,7 +1200,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Check if work group exists
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const workGroup = await storage.getWorkGroup(workGroupId, tenantId);
       if (!workGroup) {
         return res.status(404).json({ message: "Work group not found" });
@@ -1234,7 +1234,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { id } = req.params;
 
       // Check if work group exists
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const workGroup = await storage.getWorkGroup(id, tenantId);
       if (!workGroup) {
         return res.status(404).json({ message: "Work group not found" });
@@ -1250,7 +1250,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/users/:id/work-groups", requireFeature("tasks"), async (req, res) => {
     try {
       const { id } = req.params;
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
 
       // Check if user exists
       const user = await storage.getUser(id, tenantId);
@@ -1268,7 +1268,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Tasks routes
   app.get("/api/work-groups/:workGroupId/tasks", requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const { workGroupId } = req.params;
       const tasks = await storage.getTasksByWorkGroup(workGroupId, tenantId);
       res.json(tasks);
@@ -1279,7 +1279,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/tasks/dashboard", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const userId = req.user!.id;
       const isAdmin = req.user!.isAdmin || false;
       
@@ -1292,7 +1292,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/tasks/admin-archive", requireAdmin, requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const userId = req.user!.id;
       const isAdmin = true;
       
@@ -1305,7 +1305,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/tasks", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const taskData = insertTaskSchema.parse({
         ...req.body,
         status: req.body.status || 'u_toku',
@@ -1335,7 +1335,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/tasks/:id", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const { id } = req.params;
       const taskData = insertTaskSchema.partial().parse(req.body);
       
@@ -1418,7 +1418,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/tasks/:id", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const { id } = req.params;
       
       // Get existing task to check work group
@@ -1452,7 +1452,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.patch("/api/tasks/:taskId/move", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const { taskId } = req.params;
       const { newWorkGroupId } = req.body;
 
@@ -1495,7 +1495,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Task Comments routes
   app.get("/api/tasks/:taskId/comments", requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const { taskId } = req.params;
       
       // Check if task exists
@@ -1529,7 +1529,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/tasks/:taskId/comments", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const { taskId } = req.params;
       const { content, commentImage } = req.body;
 
@@ -1590,7 +1590,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Get the task to find the work group
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const task = await storage.getTask(comment.taskId, tenantId);
       if (!task) {
         return res.status(404).json({ message: "Associated task not found" });
@@ -1869,7 +1869,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/family-relationships", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const relationshipData = insertFamilyRelationshipSchema.parse({
         ...req.body,
         tenantId
@@ -1907,7 +1907,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Messages routes
   app.get("/api/messages/conversations", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
       }
@@ -1921,7 +1921,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/messages", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
       }
@@ -1957,7 +1957,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/messages/unread-count", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
       }
@@ -1971,7 +1971,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/messages/thread/:threadId", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
       }
@@ -2008,7 +2008,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/messages", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
       }
@@ -2043,7 +2043,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/messages/:id/read", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
       }
@@ -2063,7 +2063,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/messages/thread/:threadId/read", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
       }
@@ -2078,7 +2078,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/messages/:id", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
       }
@@ -2210,7 +2210,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Organization Settings routes
   app.get("/api/organization-settings", async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const settings = await storage.getOrganizationSettings(tenantId);
       res.json(settings);
     } catch (error) {
@@ -2220,7 +2220,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/organization-settings", requireAdmin, async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const settingsData = insertOrganizationSettingsSchema.parse(req.body);
       const updatedSettings = await storage.updateOrganizationSettings(tenantId, settingsData);
       res.json(updatedSettings);
@@ -2232,7 +2232,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Documents routes
   app.get("/api/documents", requireAuth, requireFeature("documents"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const documents = await storage.getAllDocuments(tenantId);
       res.json(documents);
     } catch (error) {
@@ -2242,7 +2242,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/documents", requireAdmin, requireFeature("documents"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const documentData = insertDocumentSchema.parse({
         ...req.body,
         uploadedById: req.user!.id,
@@ -2260,7 +2260,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/documents/:id", requireAdmin, requireFeature("documents"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const deleted = await storage.deleteDocument(req.params.id, tenantId);
       if (!deleted) {
         return res.status(404).json({ message: "Document not found" });
@@ -2274,7 +2274,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Requests routes
   app.get("/api/requests", requireAdmin, async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const requests = await storage.getAllRequests(tenantId);
       res.json(requests);
     } catch (error) {
@@ -2284,7 +2284,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/requests/my", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const userId = req.session.userId!;
       const requests = await storage.getUserRequests(userId, tenantId);
       res.json(requests);
@@ -2295,7 +2295,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/requests", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const userId = req.session.userId!;
       const requestData = insertRequestSchema.parse({
         ...req.body,
@@ -2311,7 +2311,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/requests/:id/status", requireAdmin, async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const { status, adminNotes } = req.body;
       const reviewedById = req.session.userId!;
       const request = await storage.updateRequestStatus(
@@ -2333,7 +2333,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Shop Products routes
   app.get("/api/shop/products", requireAuth, requireFeature("shop"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const products = await storage.getAllShopProducts(tenantId);
       res.json(products);
     } catch (error) {
@@ -2343,7 +2343,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/shop/products", requireAdmin, async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const createdById = req.session.userId!;
       const productData = insertShopProductSchema.parse({
         ...req.body,
@@ -2384,7 +2384,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Marketplace Items routes
   app.get("/api/marketplace/items", requireAuth, requireFeature("marketplace"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const items = await storage.getAllMarketplaceItems(tenantId);
       res.json(items);
     } catch (error) {
@@ -2394,7 +2394,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/marketplace/items", requireAuth, requireFeature("marketplace"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const userId = req.session.userId!;
       const itemData = insertMarketplaceItemSchema.parse({
         ...req.body,
@@ -2410,7 +2410,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/marketplace/items/:id", requireAuth, requireFeature("marketplace"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const item = await storage.getMarketplaceItem(req.params.id, tenantId);
       if (!item) {
         return res.status(404).json({ message: "Item not found" });
@@ -2435,7 +2435,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/marketplace/items/:id", requireAuth, requireFeature("marketplace"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const item = await storage.getMarketplaceItem(req.params.id, tenantId);
       if (!item) {
         return res.status(404).json({ message: "Item not found" });
@@ -2471,7 +2471,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/services", requireAuth, async (req, res) => {
     try {
       const userId = req.session.userId!;
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const serviceData = insertServiceSchema.parse({
         ...req.body,
         userId,
@@ -2541,7 +2541,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/shop/purchase-requests", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const userId = req.session.userId!;
       const requestData = insertProductPurchaseRequestSchema.parse({
         ...req.body,
@@ -2774,7 +2774,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Bulk create prayer times
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const created = await storage.bulkCreatePrayerTimes(prayerTimes.map(pt => ({ ...pt, tenantId })));
       
       res.json({ 
@@ -2842,7 +2842,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Financial Contributions Routes (Feature 1)
   app.get("/api/financial-contributions", requireAdmin, requireFeature("finances"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const contributions = await storage.getAllFinancialContributions(tenantId);
       res.json(contributions);
     } catch (error) {
@@ -2852,7 +2852,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/financial-contributions/user/:userId", requireAuth, requireFeature("finances"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       // Only admins or the user themselves can view contributions
       if (req.user?.id !== req.params.userId && !req.user?.isAdmin) {
         return res.status(403).json({ message: "Access denied" });
@@ -2866,7 +2866,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/financial-contributions", requireAdmin, requireFeature("finances"), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const { points: bonusPoints, ...contributionData } = req.body;
       const validated = insertFinancialContributionSchema.parse(contributionData);
       const contribution = await storage.createFinancialContribution({
@@ -3293,7 +3293,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Projects Routes (Feature 4)
   app.get("/api/projects", requireAuthOrSuperAdmin, async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const projects = await storage.getAllProjects(tenantId);
       res.json(projects);
     } catch (error) {
@@ -3313,7 +3313,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/projects/:id", requireAuthOrSuperAdmin, async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const project = await storage.getProject(req.params.id, tenantId);
       if (!project) {
         return res.status(404).json({ message: "Project not found" });
@@ -3326,7 +3326,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/projects", requireAdmin, async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const validated = insertProjectSchema.parse(req.body);
       const project = await storage.createProject({
         ...validated,
@@ -3395,7 +3395,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/user-preferences", requireAuth, async (req, res) => {
     try {
       const userId = req.user!.id;
-      const tenantId = req.user!.tenantId;
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       let preferences = await storage.getUserPreferences(userId, tenantId);
       
       // If no preferences exist, create default ones
@@ -3417,7 +3417,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put("/api/user-preferences", requireAuth, async (req, res) => {
     try {
       const userId = req.user!.id;
-      const tenantId = req.user!.tenantId;
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const { quickAccessShortcuts } = req.body;
       
       // Validate that shortcuts is an array
@@ -3453,7 +3453,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/proposals", requireAuth, async (req, res) => {
     try {
       const user = req.user!;
-      const tenantId = req.user!.tenantId;
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const { status, workGroupId } = req.query;
 
       let proposals;
@@ -3498,7 +3498,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/proposals", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const user = req.user!;
       
       // Check if user is a moderator of the work group or an admin
@@ -3634,7 +3634,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/receipts", requireAuth, upload.single('file'), async (req, res) => {
     try {
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const user = req.user!;
       const file = req.file;
       
@@ -3718,7 +3718,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Template image is required" });
       }
       
-      const tenantId = req.tenantId || "default-tenant-demo";
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const validated = insertCertificateTemplateSchema.parse({
         ...req.body,
         templateImagePath: `/uploads/certificates/${file.filename}`,
