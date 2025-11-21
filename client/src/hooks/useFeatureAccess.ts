@@ -48,7 +48,7 @@ export function useFeatureAccess(moduleId: string) {
 
   const { plan } = subscription;
   // Super Admin has access to everything (plan name is usually "Full" or similar for super admin)
-  const isEnabled = plan.enabledModules.includes(moduleId) || subscription.subscriptionTier === 'full' || plan.name?.includes('Super');
+  const isEnabled = plan.enabledModules.includes(moduleId) || plan.enabledModules.includes("*") || subscription.subscriptionTier === 'full' || plan.name?.includes('Super');
   
   return {
     isLoading: false,
