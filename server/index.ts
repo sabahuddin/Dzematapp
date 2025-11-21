@@ -156,14 +156,7 @@ export const requireSuperAdmin = (req: Request, res: Response, next: NextFunctio
 // Helper middleware to allow either authenticated user OR superadmin
 export const requireAuthOrSuperAdmin = (req: Request, res: Response, next: NextFunction) => {
   if (req.user) {
-    // Regular authenticated user
-    return next();
-  }
-  // Check for superadmin
-  const session = req.session as any;
-  if (session?.isSuperAdmin) {
-    // Set tenantId for SuperAdmin if not already set
-    req.tenantId = req.tenantId || "DEMO2024";
+    // Regular authenticated user OR SuperAdmin (loaded as req.user)
     return next();
   }
   // Neither authenticated user nor superadmin
