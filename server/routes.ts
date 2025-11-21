@@ -3702,6 +3702,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         textPositionX: parseInt(req.body.textPositionX),
         textPositionY: parseInt(req.body.textPositionY),
         fontSize: parseInt(req.body.fontSize),
+        fontColor: req.body.fontColor || "#000000",
+        fontFamily: req.body.fontFamily || "Arial",
+        textAlign: req.body.textAlign || "center",
         createdById: user.id,
         tenantId
 });
@@ -3720,7 +3723,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ...req.body,
         ...(req.body.textPositionX && { textPositionX: parseInt(req.body.textPositionX) }),
         ...(req.body.textPositionY && { textPositionY: parseInt(req.body.textPositionY) }),
-        ...(req.body.fontSize && { fontSize: parseInt(req.body.fontSize) })
+        ...(req.body.fontSize && { fontSize: parseInt(req.body.fontSize) }),
+        ...(req.body.fontColor && { fontColor: req.body.fontColor }),
+        ...(req.body.fontFamily && { fontFamily: req.body.fontFamily }),
+        ...(req.body.textAlign && { textAlign: req.body.textAlign })
       };
       const updated = await storage.updateCertificateTemplate(req.params.id, req.user!.tenantId, updates);
       if (!updated) {
