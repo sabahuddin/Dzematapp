@@ -2332,7 +2332,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Shop Products routes
   app.get("/api/shop/products", requireAuth, requireFeature("shop"), async (req, res) => {
     try {
-      const products = await storage.getAllShopProducts();
+      const tenantId = req.tenantId || "default-tenant-demo";
+      const products = await storage.getAllShopProducts(tenantId);
       res.json(products);
     } catch (error) {
       res.status(500).json({ message: "Failed to get products" });
