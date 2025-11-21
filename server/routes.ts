@@ -791,7 +791,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/events", requireAuth, async (req, res) => {
     try {
-      console.error("[EVENT POST] Body:", req.body);
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const eventData = insertEventSchema.parse({
         ...req.body,
@@ -801,9 +800,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const event = await storage.createEvent(eventData);
       res.json(event);
     } catch (error: any) {
-      res.status(400).json({ message: "Invalid event data", details: error instanceof Error ? error.message : String(error) });
+      const errorMsg = error?.errors?.[0]?.message || error?.message || JSON.stringify(error);
+      console.error("[EVENT CREATE ERROR]", errorMsg, error);
+      res.status(400).json({ message: "Invalid event data", details: errorMsg });
     }
-});
+  });
 
   app.put("/api/events/:id", requireAuth, async (req, res) => {
     try {
@@ -818,7 +819,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       res.status(400).json({ message: "Invalid event data", details: error instanceof Error ? error.message : String(error) });
     }
-});
+  });
 
   app.delete("/api/events/:id", requireAuth, async (req, res) => {
     try {
