@@ -1495,20 +1495,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Task Comments routes
   app.get("/api/tasks/:taskId/comments", requireFeature("tasks"), async (req, res) => {
     try {
+      const tenantId = req.tenantId || "default-tenant-demo";
       const { taskId } = req.params;
       
       // Check if task exists
-      const task = await storage.getTask(taskId, req.tenantId!);
+      const task = await storage.getTask(taskId, tenantId);
       if (!task) {
         return res.status(404).json({ message: "Task not found" });
       }
 
-      const comments = await storage.getTaskComments(taskId, req.tenantId!);
+      const comments = await storage.getTaskComments(taskId, tenantId);
       
       // Get user details for each comment
       const commentsWithUserDetails = await Promise.all(
         comments.map(async (comment) => {
-          const user = await storage.getUser(comment.userId, req.tenantId!);
+          const user = await storage.getUser(comment.userId, tenantId);
           return {
             ...comment,
             user: user ? { 
@@ -1528,6 +1529,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/tasks/:taskId/comments", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
+      const tenantId = req.tenantId || "default-tenant-demo";
       const { taskId } = req.params;
       const { content, commentImage } = req.body;
 
@@ -1540,14 +1542,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = req.user!;
 
       // Check if task exists
-      const task = await storage.getTask(taskId, req.tenantId!);
+      const task = await storage.getTask(taskId, tenantId);
       if (!task) {
         return res.status(404).json({ message: "Task not found" });
       }
 
       // Check if user is a member of the work group this task belongs to (admins can comment on any task)
       if (!user.isAdmin) {
-        const isMember = await storage.isUserMemberOfWorkGroup(task.workGroupId, userId, req.tenantId!);
+        const isMember = await storage.isUserMemberOfWorkGroup(task.workGroupId, userId, tenantId);
         if (!isMember) {
           return res.status(403).json({ message: "Forbidden: Only work group members can comment on tasks" });
         }
@@ -1558,7 +1560,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userId, 
         content,
         commentImage: commentImage || null,
-        tenantId: req.tenantId!
+        tenantId
       });
       const comment = await storage.createTaskComment(commentData);
       
