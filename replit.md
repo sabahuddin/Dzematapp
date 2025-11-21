@@ -109,3 +109,8 @@ The system employs a simple session-based authentication using username/password
 - Set up PWA manifest with all required icon sizes (72px-512px)
 - Configured Apple touch icons in HTML meta tags
 - Implemented automatic scroll reset on route changes
+
+## Database & Event Management Fixes (November 21, 2025)
+- Fixed event creation: Added missing `tenantId` parameter to `createActivityFeedItem()` call in event storage (resolved database constraint violation)
+- Fixed task transfers: Added `tenantId` parameter to `moveTaskToWorkGroup()` function for proper multi-tenant operation
+- Fixed family member addition: Completely refactored `FamilySelectionDialog.tsx` to remove user selection tab - now displays only form for creating new family members (privacy improvement)
