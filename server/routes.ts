@@ -290,10 +290,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid Super Admin credentials" });
       }
 
-      // Create session WITHOUT tenantId, but WITH isSuperAdmin flag
+      // Create session WITH DEMO2024 tenantId and isSuperAdmin flag
       req.session.userId = superAdminUser.id;
       req.session.isSuperAdmin = true;
-      req.session.tenantId = undefined; // Explicitly clear tenantId for Super Admin
+      req.session.tenantId = "DEMO2024"; // Set to DEMO2024 for Super Admin
       
       res.json({ 
         user: { 
@@ -346,7 +346,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           isAdmin: req.user.isAdmin,
           isSuperAdmin: session.isSuperAdmin || false,
           totalPoints: req.user.totalPoints || 0,
-          tenantId: session.isSuperAdmin ? null : req.tenantId
+          tenantId: session.isSuperAdmin ? "DEMO2024" : req.tenantId
         } 
 });
     } else {
