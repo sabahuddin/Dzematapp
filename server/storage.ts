@@ -604,6 +604,7 @@ export class DatabaseStorage implements IStorage {
       relatedEntityId: event.id,
       relatedEntityType: "event",
       isClickable: true,
+      tenantId: event.tenantId,
       metadata: JSON.stringify({ imageUrl: event.photoUrl || null })
     });
     
