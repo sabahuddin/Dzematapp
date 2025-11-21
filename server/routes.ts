@@ -1807,8 +1807,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const session = req.session as any;
       
-      // If Super Admin (no tenantId), return empty/zero statistics
-      if (session.isSuperAdmin && !session.tenantId) {
+      // If Super Admin, return zero statistics
+      if (session.isSuperAdmin) {
         return res.json({
           userCount: 0,
           newAnnouncementsCount: 0,
@@ -4253,12 +4253,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/subscription/current", requireAuth, async (req, res) => {
     try {
       const session = req.session as any;
-      const tenantId = session.tenantId;
       
-      // Super Admin without tenant context
-      if (session.isSuperAdmin && !tenantId) {
+      // Super Admin has full access regardless of tenantId
+      if (session.isSuperAdmin) {
         return res.json({
-          tenantId: null,
+          tenantId: "DEMO2024",
           tenantName: "Super Admin",
           subscriptionTier: "full",
           subscriptionStatus: "active",
@@ -4277,6 +4276,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
+      const tenantId = session.tenantId;
       if (!tenantId) {
         return res.status(401).json({ message: "No tenant context" });
       }
