@@ -1304,7 +1304,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/tasks", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
       const tenantId = req.tenantId || "default-tenant-demo";
-      const taskData = insertTaskSchema.parse(req.body);
+      const taskData = insertTaskSchema.parse({
+        ...req.body,
+        status: req.body.status || 'u_toku'
+      });
       
       // Check if work group exists
       const workGroup = await storage.getWorkGroup(taskData.workGroupId, tenantId);
@@ -2001,11 +2004,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
-      const messageData = insertMessageSchema.parse(req.body);
-
-      if (messageData.senderId !== req.user.id) {
-        return res.status(403).json({ message: "Cannot send message as another user" });
-      }
+      const messageData = insertMessageSchema.parse({
+        ...req.body,
+        senderId: req.user.id
+      });
 
       if (messageData.recipientId === req.user.id) {
         return res.status(400).json({ message: "Cannot send message to yourself" });
