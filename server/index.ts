@@ -69,12 +69,23 @@ app.use(async (req, res, next) => {
       
       // Super Admin: Find user across all tenants
       if (session.isSuperAdmin) {
-        const allTenants = await storage.getAllTenants();
-        for (const tenant of allTenants) {
-          const foundUser = await storage.getUser(session.userId, tenant.id);
-          if (foundUser && foundUser.isSuperAdmin) {
-            user = foundUser;
-            break;
+        // For SuperAdmin, load from DEMO2024 tenant with admin privileges
+        let foundUser = await storage.getUser(session.userId, "DEMO2024");
+        if (!foundUser) {
+          // Fallback to default-tenant-demo if DEMO2024 doesn't exist
+          foundUser = await storage.getUser(session.userId, "default-tenant-demo");
+        }
+        if (foundUser) {
+          user = foundUser;
+        } else {
+          // Final fallback: search all tenants
+          const allTenants = await storage.getAllTenants();
+          for (const tenant of allTenants) {
+            const candidate = await storage.getUser(session.userId, tenant.id);
+            if (candidate && candidate.isSuperAdmin) {
+              user = candidate;
+              break;
+            }
           }
         }
       } else {
@@ -85,10 +96,12 @@ app.use(async (req, res, next) => {
       if (user) {
         // Set isAdmin to true if user has "imam" or "admin" role
         const hasImamRole = user.roles?.includes('imam') || false;
+        const isSuperAdmin = session.isSuperAdmin || user.isSuperAdmin || false;
         req.user = {
           ...user,
-          isAdmin: user.isAdmin || hasImamRole,
-          isSuperAdmin: session.isSuperAdmin || user.isSuperAdmin || false
+          isAdmin: isSuperAdmin ? true : (user.isAdmin || hasImamRole),
+          isSuperAdmin: isSuperAdmin,
+          tenantId: isSuperAdmin ? "DEMO2024" : user.tenantId
         };
       } else {
         // User no longer exists, clear the session
@@ -115,9 +128,15 @@ export const requireAuth = (req: Request, res: Response, next: NextFunction) => 
 // Helper middleware to require admin privileges
 export const requireAdmin = (req: Request, res: Response, next: NextFunction) => {
   if (!req.user) {
+    // Check for superadmin session
+    const session = req.session as any;
+    if (session?.isSuperAdmin) {
+      req.tenantId = req.tenantId || "DEMO2024";
+      return next();
+    }
     return res.status(401).json({ message: "Authentication required" });
   }
-  if (!req.user.isAdmin) {
+  if (!req.user.isAdmin && !req.user.isSuperAdmin) {
     return res.status(403).json({ message: "Admin privileges required" });
   }
   next();
@@ -143,6 +162,8 @@ export const requireAuthOrSuperAdmin = (req: Request, res: Response, next: NextF
   // Check for superadmin
   const session = req.session as any;
   if (session?.isSuperAdmin) {
+    // Set tenantId for SuperAdmin if not already set
+    req.tenantId = req.tenantId || "DEMO2024";
     return next();
   }
   // Neither authenticated user nor superadmin
