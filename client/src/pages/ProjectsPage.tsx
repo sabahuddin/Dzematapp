@@ -41,14 +41,9 @@ export default function ProjectsPage() {
   const { t } = useTranslation(['projects']);
   const { user } = useAuth();
   const { toast } = useToast();
-  const featureAccess = useFeatureAccess('projects');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [activeTab, setActiveTab] = useState<'active' | 'archived'>('active');
-
-  if (featureAccess.upgradeRequired) {
-    return <UpgradeCTA moduleId="projects" requiredPlan={featureAccess.requiredPlan || 'standard'} currentPlan={featureAccess.currentPlan || 'basic'} />;
-  }
 
   // Only admins can manage projects
   const isAdmin = user?.isAdmin || false;
