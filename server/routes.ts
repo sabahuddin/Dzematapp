@@ -2912,13 +2912,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           description: `Bonus bodovi za uplatu: ${validated.amount} CHF`,
           points: parseInt(bonusPoints),
           relatedEntityId: contribution.id,
-          tenantId: req.user!.tenantId
+          tenantId
         });
       }
 
       // If contribution is for a project, create additional activity log
       if (validated.projectId) {
-        const project = await storage.getProject(validated.projectId, req.user!.tenantId);
+        const project = await storage.getProject(validated.projectId, tenantId);
         if (project) {
           await storage.createActivityLog({
             userId: validated.userId,
@@ -2926,13 +2926,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
             description: `Doprinos projektu: ${project.name} (${validated.amount} CHF)`,
             points: 0,
             relatedEntityId: contribution.id,
-            tenantId: req.user!.tenantId
+            tenantId
           });
         }
       }
 
       // Recalculate user's total points
-      await storage.recalculateUserPoints(validated.userId, req.user!.tenantId);
+      await storage.recalculateUserPoints(validated.userId, tenantId);
 
       res.status(201).json(contribution);
     } catch (error) {
