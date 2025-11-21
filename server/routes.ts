@@ -2236,7 +2236,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/documents", requireAdmin, requireFeature("documents"), async (req, res) => {
     try {
       let tenantId = req.body.tenantId || req.tenantId; if (!tenantId) tenantId = "default-tenant-demo";
-      const documentData = insertDocumentSchema.parse(req.body);
+      const documentData = insertDocumentSchema.parse({
+        ...req.body,
+        uploadedById: req.user!.id,
+        fileName: req.body.fileName || 'document',
+        filePath: req.body.filePath || `/uploads/documents/${req.body.fileName || 'document'}`,
+        fileSize: req.body.fileSize || 0
+      });
       const document = await storage.createDocument({ ...documentData, tenantId });
       res.status(201).json(document);
     } catch (error) {
