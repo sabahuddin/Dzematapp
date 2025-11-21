@@ -3296,7 +3296,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Projects Routes (Feature 4)
   app.get("/api/projects", requireAuth, requireFeature("projects"), async (req, res) => {
     try {
-      const projects = await storage.getAllProjects(req.user!.tenantId);
+      const tenantId = req.tenantId || "default-tenant-demo";
+      const projects = await storage.getAllProjects(tenantId);
       res.json(projects);
     } catch (error) {
       res.status(500).json({ message: "Failed to get projects" });
@@ -3305,8 +3306,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/projects/active", requireFeature("projects"), async (req, res) => {
     try {
-      const tenantId = req.user?.tenantId || req.query.tenantId as string;
-      if (!tenantId) return res.status(400).json({ message: "Tenant ID required" });
+      const tenantId = req.tenantId || req.user?.tenantId || "default-tenant-demo";
       const projects = await storage.getActiveProjects(tenantId);
       res.json(projects);
     } catch (error) {
@@ -3316,7 +3316,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/projects/:id", requireAuth, requireFeature("projects"), async (req, res) => {
     try {
-      const project = await storage.getProject(req.params.id, req.user!.tenantId);
+      const tenantId = req.tenantId || "default-tenant-demo";
+      const project = await storage.getProject(req.params.id, tenantId);
       if (!project) {
         return res.status(404).json({ message: "Project not found" });
       }
@@ -3328,11 +3329,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/projects", requireAdmin, requireFeature("projects"), async (req, res) => {
     try {
+      const tenantId = req.tenantId || "default-tenant-demo";
       const validated = insertProjectSchema.parse(req.body);
       const project = await storage.createProject({
         ...validated,
         createdById: req.user!.id,
-        tenantId: req.user!.tenantId
+        tenantId
 });
       res.status(201).json(project);
     } catch (error) {
