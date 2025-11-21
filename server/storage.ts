@@ -1252,8 +1252,23 @@ export class DatabaseStorage implements IStorage {
     return Number(result[0]?.count ?? 0);
   }
 
-  async getOrganizationSettings(tenantId: string): Promise<OrganizationSettings | undefined> {
+  async getOrganizationSettings(tenantId: string): Promise<OrganizationSettings> {
     const result = await db.select().from(organizationSettings).where(eq(organizationSettings.tenantId, tenantId)).limit(1);
+    
+    if (!result[0]) {
+      // Auto-create default organization settings if not found
+      const [newSettings] = await db.insert(organizationSettings).values({
+        tenantId,
+        name: "Islamska Zajednica",
+        address: "Ulica Džemata 123",
+        phone: "+387 33 123 456",
+        email: "info@dzemat.ba",
+        currency: "CHF",
+        livestreamEnabled: false,
+      } as InsertOrganizationSettings).returning();
+      return newSettings;
+    }
+    
     return result[0];
   }
 
