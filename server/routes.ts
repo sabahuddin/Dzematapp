@@ -1481,7 +1481,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Move the task
-      const movedTask = await storage.moveTaskToWorkGroup(taskId, newWorkGroupId);
+      const movedTask = await storage.moveTaskToWorkGroup(taskId, newWorkGroupId, tenantId);
       if (!movedTask) {
         return res.status(500).json({ message: "Failed to move task" });
       }
