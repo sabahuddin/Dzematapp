@@ -705,9 +705,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const tenantId = req.tenantId || "default-tenant-demo";
       const announcementData = insertAnnouncementSchema.parse({
         ...req.body,
-        authorId: req.user!.id
+        authorId: req.user!.id,
+        tenantId
       });
-      const announcement = await storage.createAnnouncement({ ...announcementData, tenantId });
+      const announcement = await storage.createAnnouncement(announcementData);
       res.json(announcement);
     } catch (error) {
       res.status(400).json({ message: "Invalid announcement data" });
@@ -793,9 +794,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const tenantId = req.tenantId || "default-tenant-demo";
       const eventData = insertEventSchema.parse({
         ...req.body,
-        createdById: req.user!.id
+        createdById: req.user!.id,
+        tenantId
       });
-      const event = await storage.createEvent({ ...eventData, tenantId });
+      const event = await storage.createEvent(eventData);
       res.json(event);
     } catch (error) {
       res.status(400).json({ message: "Invalid event data" });
@@ -2007,7 +2009,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const messageData = insertMessageSchema.parse({
         ...req.body,
-        senderId: req.user.id
+        senderId: req.user.id,
+        tenantId
       });
 
       if (messageData.recipientId === req.user.id) {
@@ -2025,7 +2028,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Must specify either recipient or category" });
       }
 
-      const message = await storage.createMessage({ ...messageData, tenantId });
+      const message = await storage.createMessage(messageData);
       res.json(message);
     } catch (error) {
       res.status(400).json({ message: "Invalid message data" });
@@ -2236,15 +2239,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/documents", requireAdmin, requireFeature("documents"), async (req, res) => {
     try {
-      let tenantId = req.body.tenantId || req.tenantId; if (!tenantId) tenantId = "default-tenant-demo";
+      const tenantId = req.tenantId || "default-tenant-demo";
       const documentData = insertDocumentSchema.parse({
         ...req.body,
         uploadedById: req.user!.id,
         fileName: req.body.fileName || 'document',
         filePath: req.body.filePath || `/uploads/documents/${req.body.fileName || 'document'}`,
-        fileSize: req.body.fileSize || 0
+        fileSize: req.body.fileSize || 0,
+        tenantId
       });
-      const document = await storage.createDocument({ ...documentData, tenantId });
+      const document = await storage.createDocument(documentData);
       res.status(201).json(document);
     } catch (error) {
       res.status(400).json({ message: "Invalid document data" });
@@ -2292,9 +2296,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.session.userId!;
       const requestData = insertRequestSchema.parse({
         ...req.body,
-        userId
-});
-      const request = await storage.createRequest({ ...requestData, tenantId });
+        userId,
+        tenantId
+      });
+      const request = await storage.createRequest(requestData);
       res.status(201).json(request);
     } catch (error) {
       res.status(400).json({ message: "Invalid request data" });
@@ -2334,11 +2339,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/shop/products", requireAdmin, async (req, res) => {
     try {
+      const tenantId = req.tenantId || "default-tenant-demo";
       const createdById = req.session.userId!;
       const productData = insertShopProductSchema.parse({
         ...req.body,
-        createdById
-});
+        createdById,
+        tenantId
+      });
       const product = await storage.createShopProduct(productData);
       res.status(201).json(product);
     } catch (error) {
@@ -2530,11 +2537,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/shop/purchase-requests", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId || "default-tenant-demo";
       const userId = req.session.userId!;
       const requestData = insertProductPurchaseRequestSchema.parse({
         ...req.body,
-        userId
-});
+        userId,
+        tenantId
+      });
       const request = await storage.createProductPurchaseRequest(requestData);
       res.status(201).json(request);
     } catch (error) {
@@ -3480,6 +3489,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/proposals", requireAuth, async (req, res) => {
     try {
+      const tenantId = req.tenantId || "default-tenant-demo";
       const user = req.user!;
       
       // Check if user is a moderator of the work group or an admin
@@ -3494,8 +3504,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const validated = insertProposalSchema.parse({
         ...req.body,
-        createdById: user.id
-});
+        createdById: user.id,
+        tenantId
+      });
       
       const proposal = await storage.createProposal(validated);
       res.status(201).json(proposal);
@@ -3614,6 +3625,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/receipts", requireAuth, upload.single('file'), async (req, res) => {
     try {
+      const tenantId = req.tenantId || "default-tenant-demo";
       const user = req.user!;
       const file = req.file;
       
@@ -3625,8 +3637,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ...req.body,
         uploadedById: user.id,
         fileName: file.filename,
-        fileUrl: `/uploads/${file.filename}`
-});
+        fileUrl: `/uploads/${file.filename}`,
+        tenantId
+      });
       
       const receipt = await storage.createReceipt(validated);
       res.status(201).json(receipt);
