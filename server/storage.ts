@@ -1707,8 +1707,8 @@ export class DatabaseStorage implements IStorage {
     return contrib;
   }
 
-  async getFinancialContribution(id: string): Promise<FinancialContribution | undefined> {
-    const result = await db.select().from(financialContributions).where(eq(financialContributions.id, id)).limit(1);
+  async getFinancialContribution(id: string, tenantId: string): Promise<FinancialContribution | undefined> {
+    const result = await db.select().from(financialContributions).where(and(eq(financialContributions.id, id), eq(financialContributions.tenantId, tenantId))).limit(1);
     return result[0];
   }
 

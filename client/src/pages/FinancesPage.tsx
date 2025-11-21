@@ -156,15 +156,16 @@ export default function FinancesPage() {
   });
 
   // Create new project mutation
-  const createProjectMutation = useMutation({
+  const createProjectMutation = useMutation<Project, Error, void>({
     mutationFn: async () => {
-      return await apiRequest('/api/projects', 'POST', {
+      const response = await apiRequest('/api/projects', 'POST', {
         name: newProjectName,
         description: newProjectDescription,
         goalAmount: newProjectGoal,
         currentAmount: '0',
         status: 'active'
       });
+      return response as Project;
     },
     onSuccess: (newProject: Project) => {
       queryClient.invalidateQueries({ queryKey: ['/api/projects'] });
