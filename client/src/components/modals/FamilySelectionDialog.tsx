@@ -193,7 +193,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
           onChange={(e, newValue) => setActiveTab(newValue)}
           sx={{ mb: 3 }}
         >
-          <Tab label="Odaberi postojećeg korisnika" data-testid="tab-existing-user" />
+          <Tab label="Odaberi postojećeg korisnika" data-testid="tab-existing-user" sx={{ display: 'none' }} />
           <Tab label="Dodaj novog korisnika" data-testid="tab-new-user" />
         </Tabs>
 
