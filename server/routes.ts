@@ -3324,7 +3324,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 });
 
-  app.post("/api/projects", requireAdmin, requireFeature("projects"), async (req, res) => {
+  app.post("/api/projects", requireAdmin, async (req, res) => {
     try {
       const tenantId = req.tenantId || "default-tenant-demo";
       const validated = insertProjectSchema.parse(req.body);
@@ -3339,7 +3339,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 });
 
-  app.patch("/api/projects/:id", requireAdmin, requireFeature("projects"), async (req, res) => {
+  app.patch("/api/projects/:id", requireAdmin, async (req, res) => {
     try {
       const validated = insertProjectSchema.partial().parse(req.body);
       const project = await storage.updateProject(req.params.id, req.user!.tenantId, validated);
@@ -3352,7 +3352,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 });
 
-  app.delete("/api/projects/:id", requireAdmin, requireFeature("projects"), async (req, res) => {
+  app.delete("/api/projects/:id", requireAdmin, async (req, res) => {
     try {
       const success = await storage.deleteProject(req.params.id, req.user!.tenantId);
       if (!success) {
