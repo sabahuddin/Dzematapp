@@ -6,7 +6,7 @@ import { promises as fs } from "fs";
 import * as XLSX from "xlsx";
 import { ZodError } from "zod";
 import { storage } from "./storage";
-import { requireAuth, requireAdmin, requireSuperAdmin } from "./index";
+import { requireAuth, requireAdmin, requireSuperAdmin, requireAuthOrSuperAdmin } from "./index";
 import { requireFeature, getTenantSubscriptionInfo } from "./feature-access";
 import { generateCertificate, saveCertificate } from "./certificateService";
 import { type User, insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema, insertFinancialContributionSchema, insertActivityLogSchema, insertEventAttendanceSchema, insertPointsSettingsSchema, insertBadgeSchema, insertUserBadgeSchema, insertProjectSchema, insertProposalSchema, insertReceiptSchema, insertCertificateTemplateSchema, insertUserCertificateSchema, insertMembershipApplicationSchema, insertAkikaApplicationSchema, insertMarriageApplicationSchema, insertServiceSchema, insertTenantSchema } from "@shared/schema";
@@ -3294,7 +3294,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 });
 
   // Projects Routes (Feature 4)
-  app.get("/api/projects", requireAuth, async (req, res) => {
+  app.get("/api/projects", requireAuthOrSuperAdmin, async (req, res) => {
     try {
       const tenantId = req.tenantId || "default-tenant-demo";
       const projects = await storage.getAllProjects(tenantId);
@@ -3314,7 +3314,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 });
 
-  app.get("/api/projects/:id", requireAuth, async (req, res) => {
+  app.get("/api/projects/:id", requireAuthOrSuperAdmin, async (req, res) => {
     try {
       const tenantId = req.tenantId || "default-tenant-demo";
       const project = await storage.getProject(req.params.id, tenantId);

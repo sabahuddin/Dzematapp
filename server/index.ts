@@ -134,6 +134,15 @@ export const requireSuperAdmin = (req: Request, res: Response, next: NextFunctio
   next();
 };
 
+// Helper middleware to allow either authenticated user OR superadmin
+export const requireAuthOrSuperAdmin = (req: Request, res: Response, next: NextFunction) => {
+  const session = req.session as any;
+  if (!req.user && !session.isSuperAdmin) {
+    return res.status(401).json({ message: "Authentication required" });
+  }
+  next();
+};
+
 // Initialize default admin user if none exists
 async function ensureAdminUser() {
   try {
