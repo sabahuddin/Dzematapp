@@ -3294,7 +3294,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 });
 
   // Projects Routes (Feature 4)
-  app.get("/api/projects", requireAuth, requireFeature("projects"), async (req, res) => {
+  app.get("/api/projects", requireAuth, async (req, res) => {
     try {
       const tenantId = req.tenantId || "default-tenant-demo";
       const projects = await storage.getAllProjects(tenantId);
@@ -3304,7 +3304,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 });
 
-  app.get("/api/projects/active", requireFeature("projects"), async (req, res) => {
+  app.get("/api/projects/active", async (req, res) => {
     try {
       const tenantId = req.tenantId || req.user?.tenantId || "default-tenant-demo";
       const projects = await storage.getActiveProjects(tenantId);
@@ -3314,7 +3314,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 });
 
-  app.get("/api/projects/:id", requireAuth, requireFeature("projects"), async (req, res) => {
+  app.get("/api/projects/:id", requireAuth, async (req, res) => {
     try {
       const tenantId = req.tenantId || "default-tenant-demo";
       const project = await storage.getProject(req.params.id, tenantId);
