@@ -305,14 +305,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
           isAdmin: true,
           isSuperAdmin: true,
           totalPoints: 0,
-          tenantId: null
+          tenantId: "DEMO2024"
         } 
-});
+      });
     } catch (error) {
       console.error('[SUPERADMIN LOGIN] Error:', error);
       res.status(500).json({ message: "Internal server error" });
     }
-});
+  });
 
   // Logout route
   app.post("/api/auth/logout", (req, res) => {
