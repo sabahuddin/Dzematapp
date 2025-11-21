@@ -390,7 +390,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 });
 
-  app.post("/api/users", requireAdmin, async (req, res) => {
+  app.post("/api/users", requireAuth, async (req, res) => {
     try {
       let tenantId = req.body.tenantId || req.tenantId;
       console.log("[DEBUG POST /api/users] Received body:", { ...req.body, password: "***" }, "tenantId:", tenantId);
