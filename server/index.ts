@@ -69,8 +69,8 @@ app.use(async (req, res, next) => {
       
       // Super Admin: Find user across all tenants
       if (session.isSuperAdmin) {
-        // For SuperAdmin, load from DEMO2024 tenant with admin privileges
-        let foundUser = await storage.getUser(session.userId, "DEMO2024");
+        // For SuperAdmin, load from default-tenant-demo tenant with admin privileges
+        let foundUser = await storage.getUser(session.userId, "default-tenant-demo");
         if (!foundUser) {
           // Fallback to default-tenant-demo if DEMO2024 doesn't exist
           foundUser = await storage.getUser(session.userId, "default-tenant-demo");
@@ -101,7 +101,7 @@ app.use(async (req, res, next) => {
           ...user,
           isAdmin: isSuperAdmin ? true : (user.isAdmin || hasImamRole),
           isSuperAdmin: isSuperAdmin,
-          tenantId: isSuperAdmin ? "DEMO2024" : user.tenantId
+          tenantId: isSuperAdmin ? "default-tenant-demo" : user.tenantId
         };
       } else {
         // User no longer exists, clear the session
@@ -131,7 +131,7 @@ export const requireAdmin = (req: Request, res: Response, next: NextFunction) =>
     // Check for superadmin session
     const session = req.session as any;
     if (session?.isSuperAdmin) {
-      req.tenantId = req.tenantId || "DEMO2024";
+      req.tenantId = req.tenantId || "default-tenant-demo";
       return next();
     }
     return res.status(401).json({ message: "Authentication required" });
