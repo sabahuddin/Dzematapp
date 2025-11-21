@@ -703,7 +703,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/announcements", requireAuth, async (req, res) => {
     try {
       const tenantId = req.tenantId || "default-tenant-demo";
-      const announcementData = insertAnnouncementSchema.parse(req.body);
+      const announcementData = insertAnnouncementSchema.parse({
+        ...req.body,
+        authorId: req.user!.id
+      });
       const announcement = await storage.createAnnouncement({ ...announcementData, tenantId });
       res.json(announcement);
     } catch (error) {
@@ -788,7 +791,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/events", requireAuth, async (req, res) => {
     try {
       const tenantId = req.tenantId || "default-tenant-demo";
-      const eventData = insertEventSchema.parse(req.body);
+      const eventData = insertEventSchema.parse({
+        ...req.body,
+        createdById: req.user!.id
+      });
       const event = await storage.createEvent({ ...eventData, tenantId });
       res.json(event);
     } catch (error) {
