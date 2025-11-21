@@ -799,8 +799,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       const event = await storage.createEvent(eventData);
       res.json(event);
-    } catch (error) {
-      res.status(400).json({ message: "Invalid event data" });
+    } catch (error: any) {
+      res.status(400).json({ message: "Invalid event data", details: error instanceof Error ? error.message : String(error) });
     }
 });
 
@@ -814,8 +814,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Event not found" });
       }
       res.json(event);
-    } catch (error) {
-      res.status(400).json({ message: "Invalid event data" });
+    } catch (error: any) {
+      res.status(400).json({ message: "Invalid event data", details: error instanceof Error ? error.message : String(error) });
     }
 });
 
@@ -3291,7 +3291,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 });
 
   // Projects Routes (Feature 4)
-  app.get("/api/projects", requireAuthOrSuperAdmin, async (req, res) => {
+  app.get("/api/projects", requireAuthOrSuperAdmin, requireFeature("projects"), async (req, res) => {
     try {
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const projects = await storage.getAllProjects(tenantId);
