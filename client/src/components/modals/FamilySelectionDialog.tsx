@@ -188,87 +188,6 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
       </DialogTitle>
       
       <DialogContent>
-        <Tabs 
-          value={activeTab} 
-          onChange={(e, newValue) => setActiveTab(newValue)}
-          sx={{ mb: 3 }}
-        >
-          <Tab label="Odaberi postojećeg korisnika" data-testid="tab-existing-user" sx={{ display: 'none' }} />
-          <Tab label="Dodaj novog korisnika" data-testid="tab-new-user" />
-        </Tabs>
-
-        {activeTab === 0 && (
-          <Box>
-            <TextField
-              fullWidth
-              variant="outlined"
-              label="Pretražite korisnike"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              InputProps={{
-                startAdornment: <Search sx={{ mr: 1 }} />
-              }}
-              sx={{ mb: 2 }}
-              data-testid="input-search-users"
-            />
-
-            <Box sx={{ maxHeight: 300, overflow: 'auto', mb: 2 }}>
-              {filteredUsers.length > 0 ? (
-                <List>
-                  {filteredUsers.map((user: User) => (
-                    <ListItem key={user.id} disablePadding>
-                      <ListItemButton
-                        selected={selectedUser?.id === user.id}
-                        onClick={() => setSelectedUser(user)}
-                        data-testid={`list-item-user-${user.id}`}
-                      >
-                        <ListItemAvatar>
-                          <Avatar src={user.photo || undefined}>
-                            <Person />
-                          </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary={`${user.firstName} ${user.lastName}`}
-                          secondary={[user.email, user.username].filter(Boolean).join(' • ') || 'Član porodice'}
-                        />
-                      </ListItemButton>
-                    </ListItem>
-                  ))}
-                </List>
-              ) : (
-                <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
-                  {searchTerm ? 'Nema pronađenih korisnika' : 'Nema dostupnih korisnika'}
-                </Typography>
-              )}
-            </Box>
-
-            {selectedUser && (
-              <Box>
-                <Alert severity="info" sx={{ mb: 2 }}>
-                  Odabrani korisnik: <strong>{selectedUser.firstName} {selectedUser.lastName}</strong>
-                </Alert>
-                
-                <FormControl fullWidth>
-                  <InputLabel>Tip odnosa</InputLabel>
-                  <Select
-                    value={relationship}
-                    label="Tip odnosa"
-                    onChange={(e) => setRelationship(e.target.value)}
-                    data-testid="select-relationship"
-                  >
-                    {relationshipOptions.map(option => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Box>
-            )}
-          </Box>
-        )}
-
-        {activeTab === 1 && (
           <Box>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
               Dodajte novog korisnika koji će automatski biti označen kao član porodice.
@@ -356,7 +275,6 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
               </Grid>
             </Grid>
           </Box>
-        )}
       </DialogContent>
       
       <DialogActions sx={{ p: 3 }}>
@@ -368,30 +286,19 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
           Odustani
         </Button>
         
-        {activeTab === 0 ? (
-          <Button 
-            onClick={handleAddExistingUser}
-            variant="contained"
-            disabled={!selectedUser || !relationship || createRelationshipMutation.isPending}
-            data-testid="button-add-existing"
-          >
-            {createRelationshipMutation.isPending ? 'Dodaje se...' : 'Dodaj člana'}
-          </Button>
-        ) : (
-          <Button 
-            onClick={handleAddNewUser}
-            variant="contained"
-            disabled={
-              !newUserData.firstName || 
-              !newUserData.lastName || 
-              !newUserData.relationship ||
-              createUserMutation.isPending
-            }
-            data-testid="button-add-new"
-          >
-            {createUserMutation.isPending ? 'Kreira se...' : 'Kreiraj i dodaj'}
-          </Button>
-        )}
+        <Button 
+          onClick={handleAddNewUser}
+          variant="contained"
+          disabled={
+            !newUserData.firstName || 
+            !newUserData.lastName || 
+            !newUserData.relationship ||
+            createUserMutation.isPending
+          }
+          data-testid="button-add-new"
+        >
+          {createUserMutation.isPending ? 'Kreira se...' : 'Kreiraj i dodaj'}
+        </Button>
       </DialogActions>
     </Dialog>
   );
