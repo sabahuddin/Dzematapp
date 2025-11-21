@@ -2212,14 +2212,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const tenantId = req.tenantId || "default-tenant-demo";
       const settings = await storage.getOrganizationSettings(tenantId);
-      if (!settings) {
-        return res.status(404).json({ message: "Organization settings not found" });
-      }
       res.json(settings);
     } catch (error) {
       res.status(500).json({ message: "Failed to get organization settings" });
     }
-});
+  });
 
   app.put("/api/organization-settings", requireAdmin, async (req, res) => {
     try {
