@@ -10,30 +10,12 @@ import {
   IconButton,
   Box,
   Typography,
-  Card,
-  CardContent,
-  Avatar,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
-  Tabs,
-  Tab,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  ListItemButton,
-  Divider,
-  Alert
 } from '@mui/material';
-import {
-  Close,
-  Person,
-  Search,
-  PersonAdd
-} from '@mui/icons-material';
-import { User } from '@shared/schema';
+import { Close } from '@mui/icons-material';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 
@@ -44,10 +26,6 @@ interface FamilySelectionDialogProps {
 }
 
 export default function FamilySelectionDialog({ open, onClose, userId }: FamilySelectionDialogProps) {
-  const [activeTab, setActiveTab] = useState(1);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [relationship, setRelationship] = useState('');
   const [newUserData, setNewUserData] = useState({
     firstName: '',
     lastName: '',
@@ -59,26 +37,6 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
 
   const queryClient = useQueryClient();
 
-  const { data: allUsers } = useQuery({
-    queryKey: ['/api/users'],
-    enabled: open,
-  });
-
-  const { data: familyRelationships } = useQuery({
-    queryKey: ['/api/family-relationships', userId],
-    enabled: open && !!userId,
-  });
-
-  const createRelationshipMutation = useMutation({
-    mutationFn: async (data: { userId: string; relatedUserId: string; relationship: string }) => {
-      return apiRequest('/api/family-relationships', 'POST', data);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/family-relationships', userId] });
-      handleClose();
-    },
-  });
-
   const createUserMutation = useMutation({
     mutationFn: async (userData: any) => {
       const response = await apiRequest('/api/users', 'POST', userData);
@@ -86,11 +44,13 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
     },
     onSuccess: async (newUser) => {
       // Create family relationship with the new user
-      await createRelationshipMutation.mutateAsync({
+      await apiRequest('/api/family-relationships', 'POST', {
         userId: userId,
         relatedUserId: newUser.id,
         relationship: newUserData.relationship
       });
+      queryClient.invalidateQueries({ queryKey: ['/api/family-relationships', userId] });
+      handleClose();
     },
   });
 
@@ -103,29 +63,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
     { value: 'ostalo', label: 'Ostalo' }
   ];
 
-  const filteredUsers = ((allUsers as User[]) || []).filter((user: User) => {
-    if (user.id === userId) return false; // Don't include self
-    
-    // Don't include users already in family relationships
-    const alreadyRelated = ((familyRelationships as any[]) || []).some((rel: any) => 
-      rel.relatedUser?.id === user.id
-    );
-    if (alreadyRelated) return false;
-
-    // Filter by search term
-    const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
-    const email = user.email?.toLowerCase() || '';
-    const username = user.username?.toLowerCase() || '';
-    const search = searchTerm.toLowerCase();
-    
-    return fullName.includes(search) || email.includes(search) || username.includes(search);
-  }) || [];
-
   const handleClose = () => {
-    setActiveTab(1);
-    setSearchTerm('');
-    setSelectedUser(null);
-    setRelationship('');
     setNewUserData({
       firstName: '',
       lastName: '',
@@ -137,20 +75,9 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
     onClose();
   };
 
-  const handleAddExistingUser = () => {
-    if (selectedUser && relationship) {
-      createRelationshipMutation.mutate({
-        userId: userId,
-        relatedUserId: selectedUser.id,
-        relationship: relationship
-      });
-    }
-  };
-
   const handleAddNewUser = () => {
     const { relationship: rel, ...userData } = newUserData;
     if (userData.firstName && userData.lastName && rel) {
-      // Clean up empty strings to null
       const cleanedUserData = {
         ...userData,
         username: userData.username || null,
@@ -188,93 +115,93 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
       </DialogTitle>
       
       <DialogContent>
-          <Box>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              Dodajte novog korisnika koji će automatski biti označen kao član porodice.
-            </Typography>
-            
-            <Grid container spacing={2}>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  label="Ime"
-                  value={newUserData.firstName}
-                  onChange={handleNewUserChange('firstName')}
-                  required
-                  data-testid="input-new-firstName"
-                />
-              </Grid>
-              
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  label="Prezime"
-                  value={newUserData.lastName}
-                  onChange={handleNewUserChange('lastName')}
-                  required
-                  data-testid="input-new-lastName"
-                />
-              </Grid>
-              
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  label="Korisničko ime"
-                  value={newUserData.username}
-                  onChange={handleNewUserChange('username')}
-                  helperText="Opciono za člana porodice"
-                  data-testid="input-new-username"
-                />
-              </Grid>
-              
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  label="Email"
-                  type="email"
-                  value={newUserData.email}
-                  onChange={handleNewUserChange('email')}
-                  helperText="Opciono za člana porodice"
-                  data-testid="input-new-email"
-                />
-              </Grid>
-              
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  label="Šifra"
-                  type="password"
-                  value={newUserData.password}
-                  onChange={handleNewUserChange('password')}
-                  helperText="Opciono za člana porodice"
-                  data-testid="input-new-password"
-                />
-              </Grid>
-              
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <FormControl fullWidth>
-                  <InputLabel>Tip odnosa</InputLabel>
-                  <Select
-                    value={newUserData.relationship}
-                    label="Tip odnosa"
-                    onChange={(e) => setNewUserData(prev => ({ ...prev, relationship: e.target.value }))}
-                    data-testid="select-new-relationship"
-                  >
-                    {relationshipOptions.map(option => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
+        <Box>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            Dodajte novog člana porodice koji će biti alatski dodan u vašu porodičnu mrežu.
+          </Typography>
+          
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                label="Ime"
+                value={newUserData.firstName}
+                onChange={handleNewUserChange('firstName')}
+                required
+                data-testid="input-new-firstName"
+              />
             </Grid>
-          </Box>
+            
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                label="Prezime"
+                value={newUserData.lastName}
+                onChange={handleNewUserChange('lastName')}
+                required
+                data-testid="input-new-lastName"
+              />
+            </Grid>
+            
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                label="Korisničko ime"
+                value={newUserData.username}
+                onChange={handleNewUserChange('username')}
+                helperText="Opciono"
+                data-testid="input-new-username"
+              />
+            </Grid>
+            
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                label="Email"
+                type="email"
+                value={newUserData.email}
+                onChange={handleNewUserChange('email')}
+                helperText="Opciono"
+                data-testid="input-new-email"
+              />
+            </Grid>
+            
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                label="Šifra"
+                type="password"
+                value={newUserData.password}
+                onChange={handleNewUserChange('password')}
+                helperText="Opciono"
+                data-testid="input-new-password"
+              />
+            </Grid>
+            
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <FormControl fullWidth required>
+                <InputLabel>Tip odnosa</InputLabel>
+                <Select
+                  value={newUserData.relationship}
+                  label="Tip odnosa"
+                  onChange={(e) => setNewUserData(prev => ({ ...prev, relationship: e.target.value }))}
+                  data-testid="select-new-relationship"
+                >
+                  {relationshipOptions.map(option => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
+        </Box>
       </DialogContent>
       
       <DialogActions sx={{ p: 3 }}>
