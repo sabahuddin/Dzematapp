@@ -1306,7 +1306,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const tenantId = req.tenantId || "default-tenant-demo";
       const taskData = insertTaskSchema.parse({
         ...req.body,
-        status: req.body.status || 'u_toku'
+        status: req.body.status || 'u_toku',
+        tenantId
       });
       
       // Check if work group exists
@@ -1323,8 +1324,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Forbidden: Only admins or group moderators can create tasks" });
       }
 
-      const task = await storage.createTask({ ...taskData, tenantId });
-      res.json(task);
+      const task = await storage.createTask(taskData);
+      res.status(201).json(task);
     } catch (error) {
       res.status(400).json({ message: "Invalid task data" });
     }
