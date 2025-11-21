@@ -2445,9 +2445,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/services", requireAuth, async (req, res) => {
     try {
       const userId = req.session.userId!;
+      const tenantId = req.tenantId || "default-tenant-demo";
       const serviceData = insertServiceSchema.parse({
         ...req.body,
-        userId
+        userId,
+        tenantId
 });
       const service = await storage.createService(serviceData);
       res.status(201).json(service);
@@ -2744,7 +2746,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Bulk create prayer times
-      const created = await storage.bulkCreatePrayerTimes(prayerTimes);
+      const tenantId = req.tenantId || "default-tenant-demo";
+      const created = await storage.bulkCreatePrayerTimes(prayerTimes.map(pt => ({ ...pt, tenantId })));
       
       res.json({ 
         message: `Successfully imported ${created.length} prayer times`,
@@ -3678,13 +3681,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Template image is required" });
       }
       
+      const tenantId = req.tenantId || "default-tenant-demo";
       const validated = insertCertificateTemplateSchema.parse({
         ...req.body,
         templateImagePath: `/uploads/certificates/${file.filename}`,
         textPositionX: parseInt(req.body.textPositionX),
         textPositionY: parseInt(req.body.textPositionY),
         fontSize: parseInt(req.body.fontSize),
-        createdById: user.id
+        createdById: user.id,
+        tenantId
 });
       
       const template = await storage.createCertificateTemplate(validated);
