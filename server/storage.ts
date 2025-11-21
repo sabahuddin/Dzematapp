@@ -490,7 +490,8 @@ export class DatabaseStorage implements IStorage {
       description: `${user.firstName} ${user.lastName}`,
       relatedEntityId: user.id,
       relatedEntityType: "user",
-      isClickable: false
+      isClickable: false,
+      tenantId: user.tenantId
     });
     
     return user;
