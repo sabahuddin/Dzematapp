@@ -44,7 +44,7 @@ interface FamilySelectionDialogProps {
 }
 
 export default function FamilySelectionDialog({ open, onClose, userId }: FamilySelectionDialogProps) {
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [relationship, setRelationship] = useState('');
@@ -122,7 +122,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
   }) || [];
 
   const handleClose = () => {
-    setActiveTab(0);
+    setActiveTab(1);
     setSearchTerm('');
     setSelectedUser(null);
     setRelationship('');
