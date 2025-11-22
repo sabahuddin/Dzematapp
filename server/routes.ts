@@ -1868,6 +1868,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         })
       );
       
+      // Prevent client caching - force server to return fresh data
+      res.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
       res.json(relationshipsWithUsers);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch family relationships" });
