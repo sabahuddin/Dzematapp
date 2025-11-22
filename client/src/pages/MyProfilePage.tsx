@@ -240,14 +240,14 @@ export default function MyProfilePage() {
             )}
 
             {/* Family Members Section */}
-            {familyRelationships && familyRelationships.length > 0 && (
-              <Box sx={{ gridColumn: '1 / -1' }}>
-                <Divider sx={{ my: 2 }} />
-                <Typography variant="body2" color="text.secondary" gutterBottom>
-                  Članovi porodice
-                </Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 1 }}>
-                  {familyRelationships.map((rel: any) => (
+            <Box sx={{ gridColumn: '1 / -1' }}>
+              <Divider sx={{ my: 2 }} />
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                Članovi porodice
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 1 }}>
+                {familyRelationships && familyRelationships.length > 0 ? (
+                  familyRelationships.map((rel: any) => (
                     <Card key={rel.id} sx={{ mb: 1 }}>
                       <CardContent sx={{ py: 1, px: 2, '&:last-child': { pb: 1 } }}>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -265,10 +265,14 @@ export default function MyProfilePage() {
                         </Box>
                       </CardContent>
                     </Card>
-                  ))}
-                </Box>
+                  ))
+                ) : (
+                  <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
+                    Nema članova porodice
+                  </Typography>
+                )}
               </Box>
-            )}
+            </Box>
           </Box>
         </CardContent>
       </Card>
