@@ -178,6 +178,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
   const { data: familyRelationships } = useQuery({
     queryKey: ['/api/family-relationships', user?.id],
     enabled: !!user?.id,
+    staleTime: 0,
   });
 
   const predefinedCategories = [
