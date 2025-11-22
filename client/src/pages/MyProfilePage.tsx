@@ -274,7 +274,6 @@ export default function MyProfilePage() {
         onClose={() => setModalOpen(false)}
         onSave={handleSave}
         user={user}
-        isMemberView={true}
       />
     </Box>
   );
