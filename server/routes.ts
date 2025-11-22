@@ -1846,13 +1846,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/family-relationships/:userId", requireAuth, async (req, res) => {
     try {
       const { userId } = req.params;
-      const relationships = await storage.getUserFamilyRelationships(userId);
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      const relationships = await storage.getUserFamilyRelationships(userId, tenantId);
       
       // Get user details for each relationship
       const relationshipsWithUsers = await Promise.all(
         relationships.map(async (rel) => {
           const relatedUser = await storage.getUser(
-            rel.userId === userId ? rel.relatedUserId : rel.userId
+            rel.userId === userId ? rel.relatedUserId : rel.userId,
+            tenantId
           );
           return {
             ...rel,
@@ -1893,7 +1895,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/family-relationships/:id", requireAuth, async (req, res) => {
     try {
       const { id } = req.params;
-      const deleted = await storage.deleteFamilyRelationship(id);
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      const deleted = await storage.deleteFamilyRelationship(id, tenantId);
       if (!deleted) {
         return res.status(404).json({ message: "Family relationship not found" });
       }
@@ -1906,7 +1909,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/family-relationships/by-type/:userId/:relationship", requireAuth, async (req, res) => {
     try {
       const { userId, relationship } = req.params;
-      const relationships = await storage.getFamilyMembersByRelationship(userId, relationship);
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      const relationships = await storage.getFamilyMembersByRelationship(userId, relationship, tenantId);
       res.json(relationships);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch family members by relationship" });
