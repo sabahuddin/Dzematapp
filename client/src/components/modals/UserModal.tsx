@@ -771,7 +771,11 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
           open={showFamilyDialog}
           onClose={() => {
             setShowFamilyDialog(false);
-            queryClient.invalidateQueries({ queryKey: ['/api/family-relationships', user.id] });
+            // Force refetch instead of just invalidate - ensures fresh data from server
+            queryClient.refetchQueries({ 
+              queryKey: ['/api/family-relationships', user.id],
+              type: 'all'
+            });
           }}
           userId={user.id}
         />

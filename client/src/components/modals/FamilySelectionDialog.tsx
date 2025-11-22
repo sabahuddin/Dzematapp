@@ -44,18 +44,16 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
     },
     onSuccess: async (newUser) => {
       // Create family relationship with the new user
-      const relationshipRes = await apiRequest('/api/family-relationships', 'POST', {
+      await apiRequest('/api/family-relationships', 'POST', {
         userId: userId,
         relatedUserId: newUser.id,
         relationship: newUserData.relationship
       });
-      const newRelationship = await relationshipRes.json();
       
-      // Directly update cache with new relationship - this triggers UI update immediately
-      queryClient.setQueryData(
-        ['/api/family-relationships', userId],
-        (oldData: any) => [...(oldData || []), newRelationship]
-      );
+      // Just invalidate cache - UserModal onClose will refetch
+      queryClient.invalidateQueries({ 
+        queryKey: ['/api/family-relationships', userId]
+      });
       handleClose();
     },
   });
