@@ -175,7 +175,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
     }
   }, [user, open]);
 
-  const { data: familyRelationships } = useQuery({
+  const { data: familyRelationships = [] } = useQuery({
     queryKey: ['/api/family-relationships', user?.id],
     enabled: !!user?.id,
     staleTime: 0,
