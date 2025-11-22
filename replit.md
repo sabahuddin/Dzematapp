@@ -114,3 +114,14 @@ The system employs a simple session-based authentication using username/password
 - Fixed event creation: Added missing `tenantId` parameter to `createActivityFeedItem()` call in event storage (resolved database constraint violation)
 - Fixed task transfers: Added `tenantId` parameter to `moveTaskToWorkGroup()` function for proper multi-tenant operation
 - Fixed family member addition: Completely refactored `FamilySelectionDialog.tsx` to remove user selection tab - now displays only form for creating new family members (privacy improvement)
+
+## Family Members Feature (November 22, 2025)
+- **Complete Family Members System** - Users can add family members with relationship types (Supružnik, Dijete, Roditelj, Brat, Sestra, Ostalo)
+- **Fixed Password Deletion Bug** - PUT `/api/users` now correctly preserves password when profile is updated without changing password
+- **Multi-Tenant Support** - Added `tenantId` parameter to all family relationship endpoints (GET, POST, DELETE)
+- **View & Edit Display** - Family members visible in:
+  - MyProfilePage (read-only view of own profile)
+  - UserModal Family Members Section (edit mode)
+- **Cache Optimization** - Implemented `staleTime: 0` and `gcTime: 0` for family relationships to ensure fresh data
+- **Automatic List Update** - `refetchQueries` with `type: 'all'` forces fresh server data after family member addition
+- **Access Requests Fixed** - POST `/api/access-requests` now automatically includes `tenantId` before validation (resolved 400 errors)
