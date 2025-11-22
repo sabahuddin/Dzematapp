@@ -49,7 +49,9 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
         relatedUserId: newUser.id,
         relationship: newUserData.relationship
       });
-      queryClient.invalidateQueries({ queryKey: ['/api/family-relationships', userId] });
+      // Invalidate AND refetch to ensure fresh data
+      await queryClient.invalidateQueries({ queryKey: ['/api/family-relationships', userId] });
+      await queryClient.refetchQueries({ queryKey: ['/api/family-relationships', userId] });
       handleClose();
     },
   });
