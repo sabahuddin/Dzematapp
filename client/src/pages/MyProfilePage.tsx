@@ -29,6 +29,11 @@ export default function MyProfilePage() {
     staleTime: 0,
     gcTime: 0,
   });
+  
+  // Debug log
+  if (familyRelationships && familyRelationships.length > 0) {
+    console.log('Family relationships loaded:', familyRelationships);
+  }
 
   const updateUserMutation = useMutation({
     mutationFn: async (userData: any) => {
