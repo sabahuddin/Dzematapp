@@ -14,6 +14,7 @@ export default function MyProfilePage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [modalOpen, setModalOpen] = useState(false);
+  const [editMode, setEditMode] = useState(false);
 
   // Fetch full user data from API
   const { data: user, isLoading } = useQuery<any>({
@@ -94,7 +95,10 @@ export default function MyProfilePage() {
         <Button
           variant="contained"
           startIcon={<Edit />}
-          onClick={() => setModalOpen(true)}
+          onClick={() => {
+            setEditMode(true);
+            setModalOpen(true);
+          }}
           data-testid="button-edit-profile"
           sx={{
             bgcolor: 'hsl(123 46% 34%)',
@@ -271,9 +275,13 @@ export default function MyProfilePage() {
 
       <UserModal
         open={modalOpen}
-        onClose={() => setModalOpen(false)}
+        onClose={() => {
+          setModalOpen(false);
+          setEditMode(false);
+        }}
         onSave={handleSave}
         user={user}
+        isMemberView={!editMode}
       />
     </Box>
   );
