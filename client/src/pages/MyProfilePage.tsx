@@ -1,4 +1,4 @@
-import { Box, Typography, Button, Card, CardContent, Avatar, Chip } from '@mui/material';
+import { Box, Typography, Button, Card, CardContent, Avatar, Chip, Divider } from '@mui/material';
 import { Edit, Person } from '@mui/icons-material';
 import { useAuth } from '@/hooks/useAuth';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -19,6 +19,14 @@ export default function MyProfilePage() {
   const { data: user, isLoading } = useQuery<any>({
     queryKey: ['/api/users', currentUser?.id],
     enabled: !!currentUser?.id,
+  });
+
+  // Fetch family relationships
+  const { data: familyRelationships = [] } = useQuery<any[]>({
+    queryKey: ['/api/family-relationships', currentUser?.id],
+    enabled: !!currentUser?.id,
+    staleTime: 0,
+    gcTime: 0,
   });
 
   const updateUserMutation = useMutation({
@@ -222,6 +230,37 @@ export default function MyProfilePage() {
                 <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 1 }}>
                   {user.categories.map((category: string, index: number) => (
                     <Chip key={index} label={category} size="small" color="primary" />
+                  ))}
+                </Box>
+              </Box>
+            )}
+
+            {/* Family Members Section */}
+            {familyRelationships && familyRelationships.length > 0 && (
+              <Box sx={{ gridColumn: '1 / -1' }}>
+                <Divider sx={{ my: 2 }} />
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                  Članovi porodice
+                </Typography>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 1 }}>
+                  {familyRelationships.map((rel: any) => (
+                    <Card key={rel.id} sx={{ mb: 1 }}>
+                      <CardContent sx={{ py: 1, px: 2, '&:last-child': { pb: 1 } }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <Avatar src={rel.relatedUser?.photo} sx={{ width: 32, height: 32 }}>
+                              <Person sx={{ fontSize: 16 }} />
+                            </Avatar>
+                            <Box>
+                              <Typography variant="body2" fontWeight={500}>
+                                {rel.relatedUser?.firstName} {rel.relatedUser?.lastName}
+                              </Typography>
+                              <Chip size="small" label={rel.relationship} variant="outlined" />
+                            </Box>
+                          </Box>
+                        </Box>
+                      </CardContent>
+                    </Card>
                   ))}
                 </Box>
               </Box>

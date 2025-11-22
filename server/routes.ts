@@ -1771,7 +1771,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/access-requests", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
-      const requestData = insertAccessRequestSchema.parse(req.body);
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      const requestData = insertAccessRequestSchema.parse({
+        ...req.body,
+        tenantId
+      });
       const request = await storage.createAccessRequest(requestData);
       res.json(request);
     } catch (error) {
