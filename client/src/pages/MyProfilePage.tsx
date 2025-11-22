@@ -24,8 +24,8 @@ export default function MyProfilePage() {
 
   // Fetch family relationships
   const { data: familyRelationships = [] } = useQuery<any[]>({
-    queryKey: ['/api/family-relationships', currentUser?.id],
-    enabled: !!currentUser?.id,
+    queryKey: ['/api/family-relationships', user?.id],
+    enabled: !!user?.id,
     staleTime: 0,
     gcTime: 0,
   });
