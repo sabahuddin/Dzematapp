@@ -50,10 +50,17 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
         relationship: newUserData.relationship
       });
       
-      // Just invalidate cache - UserModal onClose will refetch
-      queryClient.invalidateQueries({ 
-        queryKey: ['/api/family-relationships', userId]
+      // Invalidate and refetch all family-relationships queries to ensure UI updates
+      await queryClient.invalidateQueries({ 
+        queryKey: ['/api/family-relationships']
       });
+      
+      // Force a complete refetch of family relationships
+      await queryClient.refetchQueries({
+        queryKey: ['/api/family-relationships', userId],
+        type: 'all'
+      });
+      
       handleClose();
     },
   });
