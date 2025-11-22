@@ -431,6 +431,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const userData = insertUserSchema.partial().parse(req.body);
       
+      // Don't update password if it's empty or not provided
+      if (!userData.password) {
+        delete (userData as any).password;
+      }
+      
       // Protect the default "admin" account from password/username changes
       const userToUpdate = await storage.getUser(id, tenantId);
       if (userToUpdate?.username === 'admin') {
