@@ -768,7 +768,10 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
       {user && (
         <FamilySelectionDialog
           open={showFamilyDialog}
-          onClose={() => setShowFamilyDialog(false)}
+          onClose={() => {
+            setShowFamilyDialog(false);
+            queryClient.invalidateQueries({ queryKey: ['/api/family-relationships', user.id] });
+          }}
           userId={user.id}
         />
       )}
