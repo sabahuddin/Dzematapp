@@ -692,17 +692,15 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                 <Divider sx={{ my: 2 }} />
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                   <Typography variant="h6">{t('family.title')}</Typography>
-                  {!isMemberView && (
-                    <Button
-                      variant="outlined"
-                      startIcon={<Add />}
-                      onClick={() => setShowFamilyDialog(true)}
-                      size="small"
-                      data-testid="button-add-family-member"
-                    >
-                      {t('family.addMember')}
-                    </Button>
-                  )}
+                  <Button
+                    variant="outlined"
+                    startIcon={<Add />}
+                    onClick={() => setShowFamilyDialog(true)}
+                    size="small"
+                    data-testid="button-add-family-member"
+                  >
+                    {t('family.addMember')}
+                  </Button>
                 </Box>
                 
                 <Box sx={{ maxHeight: 200, overflow: 'auto' }}>
@@ -722,21 +720,19 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                                 <Chip size="small" label={rel.relationship} variant="outlined" />
                               </Box>
                             </Box>
-                            {!isMemberView && (
-                              <IconButton
-                                size="small"
-                                onClick={() => {
-                                  // Handle delete family relationship
-                                  apiRequest('/api/family-relationships/' + rel.id, 'DELETE')
-                                    .then(() => {
-                                      queryClient.invalidateQueries({ queryKey: ['/api/family-relationships', user.id] });
-                                    });
-                                }}
-                                data-testid={`button-delete-family-${rel.id}`}
-                              >
-                                <Delete fontSize="small" />
-                              </IconButton>
-                            )}
+                            <IconButton
+                              size="small"
+                              onClick={() => {
+                                // Handle delete family relationship
+                                apiRequest('/api/family-relationships/' + rel.id, 'DELETE')
+                                  .then(() => {
+                                    queryClient.invalidateQueries({ queryKey: ['/api/family-relationships', user.id] });
+                                  });
+                              }}
+                              data-testid={`button-delete-family-${rel.id}`}
+                            >
+                              <Delete fontSize="small" />
+                            </IconButton>
                           </Box>
                         </CardContent>
                       </Card>
