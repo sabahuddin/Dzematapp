@@ -1817,6 +1817,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/statistics", async (req, res) => {
     try {
       const session = req.session as any;
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       
       // If Super Admin, return zero statistics
       if (session.isSuperAdmin) {
@@ -1829,10 +1830,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const [userCount, newAnnouncementsCount, upcomingEventsCount, activeTasksCount] = await Promise.all([
-        storage.getUserCount(),
-        storage.getNewAnnouncementsCount(7),
-        storage.getUpcomingEventsCount(),
-        storage.getActiveTasksCount()
+        storage.getUserCount(tenantId),
+        storage.getNewAnnouncementsCount(tenantId, 7),
+        storage.getUpcomingEventsCount(tenantId),
+        storage.getActiveTasksCount(tenantId)
       ]);
 
       res.json({
@@ -2606,7 +2607,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid notification type" });
       }
       
-      const user = await storage.updateLastViewed(userId, type as any);
+      const user = await storage.updateLastViewed(userId, req.user!.tenantId, type as any);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
@@ -4077,6 +4078,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { status, reviewNotes } = req.body;
       const updated = await storage.reviewAkikaApplication(
         req.params.id, 
+        req.user!.tenantId, 
         status, 
         req.user!.id, 
         reviewNotes
@@ -4158,6 +4160,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { status, reviewNotes } = req.body;
       const updated = await storage.reviewMarriageApplication(
         req.params.id, 
+        req.user!.tenantId, 
         status, 
         req.user!.id, 
         reviewNotes
