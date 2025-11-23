@@ -20,6 +20,7 @@ export default function MyProfilePage() {
   const { data: user, isLoading } = useQuery<any>({
     queryKey: ['/api/users', currentUser?.id],
     enabled: !!currentUser?.id,
+    select: (data: any[]) => data.find((u: any) => u.id === currentUser?.id),
   });
 
   // Fetch family relationships
@@ -29,6 +30,7 @@ export default function MyProfilePage() {
     staleTime: 0,
     gcTime: 0,
   });
+  
   
 
   const updateUserMutation = useMutation({
