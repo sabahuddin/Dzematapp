@@ -22,7 +22,10 @@ import {
   DialogActions,
   TextField,
   MenuItem,
-  Stack
+  Stack,
+  FormControl,
+  InputLabel,
+  Select
 } from '@mui/material';
 import {
   Add,
@@ -33,6 +36,15 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+
+// Predefined font colors
+const FONT_COLORS = [
+  { value: "#000000", label: "Crna", color: "#000000" },
+  { value: "#2196F3", label: "Plava", color: "#2196F3" },
+  { value: "#4CAF50", label: "Zelena", color: "#4CAF50" },
+  { value: "#8B6F47", label: "Smeđa", color: "#8B6F47" },
+  { value: "#FDD835", label: "Žuta", color: "#FDD835" },
+];
 
 const templateFormSchema = z.object({
   name: z.string().min(1, "Naziv je obavezan"),
@@ -609,25 +621,31 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
                     required
                     data-testid="input-font-size"
                   />
-                  <TextField
-                    fullWidth
-                    label="Boja fonta"
-                    {...register('fontColor')}
-                    error={!!errors.fontColor}
-                    helperText={errors.fontColor?.message}
-                    required
-                    data-testid="input-font-color"
-                    InputProps={{
-                      startAdornment: (
-                        <input
-                          type="color"
-                          {...register('fontColor')}
-                          style={{ width: 40, height: 32, border: 'none', cursor: 'pointer', marginRight: 8 }}
-                          data-testid="input-font-color-picker"
-                        />
-                      ),
-                    }}
-                  />
+                  <FormControl fullWidth error={!!errors.fontColor} required>
+                    <InputLabel>Boja fonta</InputLabel>
+                    <Select
+                      label="Boja fonta"
+                      {...register('fontColor')}
+                      data-testid="select-font-color"
+                    >
+                      {FONT_COLORS.map((colorOption) => (
+                        <MenuItem key={colorOption.value} value={colorOption.value} data-testid={`option-color-${colorOption.value.replace('#', '')}`}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <Box 
+                              sx={{ 
+                                width: 20, 
+                                height: 20, 
+                                backgroundColor: colorOption.color, 
+                                border: '1px solid hsl(0 0% 88%)',
+                                borderRadius: '2px'
+                              }} 
+                            />
+                            {colorOption.label}
+                          </Box>
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                 </Stack>
                 <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
                   💡 Preporučeno: Font 64-80px za dobru čitljivost
