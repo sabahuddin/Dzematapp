@@ -54,7 +54,7 @@ export default function AnnouncementModal({
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
   
-  const predefinedCategories = ['Džemat', 'IZBCH', 'IZ', 'Ostalo'];
+  const predefinedCategories = ['Džemat'];
 
   // Fetch existing announcement files when editing
   const announcementFilesQuery = useQuery<AnnouncementFileWithUser[]>({

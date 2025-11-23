@@ -69,14 +69,7 @@ export default function EventModal({
   const [uploading, setUploading] = useState(false);
 
   const predefinedCategories = [
-    'Iftar',
-    'Mevlud',
-    'Edukacija',
-    'Sport',
-    'Humanitarno',
-    'Omladina',
-    'Halka',
-    'Socijalno'
+    'Džemat'
   ];
 
   // Fetch previous event locations
