@@ -2492,15 +2492,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.session.userId!;
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
-      const serviceData = insertServiceSchema.parse({
-        ...req.body,
+      const parsedData = insertServiceSchema.parse(req.body);
+      const serviceData = {
+        ...parsedData,
         userId,
         tenantId
-});
+      };
       const service = await storage.createService(serviceData);
       res.status(201).json(service);
-    } catch (error) {
-      res.status(400).json({ message: "Invalid service data" });
+    } catch (error: any) {
+      console.error("[SERVICE POST ERROR]", error.errors || error.message || error);
+      res.status(400).json({ message: "Invalid service data", details: error.errors || error.message });
     }
 });
 
