@@ -2421,10 +2421,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       const item = await storage.createMarketplaceItem(itemData);
       res.status(201).json(item);
-    } catch (error) {
-      res.status(400).json({ message: "Invalid item data" });
+    } catch (error: any) {
+      console.error("[MARKETPLACE POST ERROR]", error.errors || error.message || error);
+      res.status(400).json({ message: "Invalid item data", details: error.errors || error.message });
     }
-});
+  });
 
   app.put("/api/marketplace/items/:id", requireAuth, requireFeature("marketplace"), async (req, res) => {
     try {
