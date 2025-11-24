@@ -2288,8 +2288,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Certificate Templates (Zahvalnice)
-  async createCertificateTemplate(template: InsertCertificateTemplate): Promise<CertificateTemplate> {
-    const [t] = await db.insert(certificateTemplates).values(template).returning();
+  async createCertificateTemplate(template: InsertCertificateTemplate, tenantId: string): Promise<CertificateTemplate> {
+    const [t] = await db.insert(certificateTemplates).values({ ...template, tenantId }).returning();
     return t;
   }
 

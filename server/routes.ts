@@ -3736,7 +3736,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Template image is required" });
       }
       
-      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      const tenantId = user.tenantId;
       const validated = insertCertificateTemplateSchema.parse({
         ...req.body,
         templateImagePath: `/uploads/certificates/${file.filename}`,
@@ -3746,11 +3746,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         fontColor: req.body.fontColor || "#000000",
         fontFamily: req.body.fontFamily || "Arial",
         textAlign: req.body.textAlign || "center",
-        createdById: user.id,
-        tenantId
-});
+        createdById: user.id
+      });
       
-      const template = await storage.createCertificateTemplate(validated);
+      const template = await storage.createCertificateTemplate(validated, tenantId);
       res.status(201).json(template);
     } catch (error) {
       console.error('Error creating certificate template:', error);
