@@ -3796,7 +3796,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/certificates/user", requireAuth, requireFeature("certificates"), async (req, res) => {
     try {
       const user = req.user!;
-      const certificates = await storage.getUserCertificates(user.id);
+      const certificates = await storage.getUserCertificates(user.id, user.tenantId);
       res.json(certificates);
     } catch (error) {
       console.error('Error getting user certificates:', error);
@@ -3817,7 +3817,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/certificates/unviewed-count", requireAuth, requireFeature("certificates"), async (req, res) => {
     try {
       const user = req.user!;
-      const count = await storage.getUnviewedCertificatesCount(user.id);
+      const count = await storage.getUnviewedCertificatesCount(user.id, user.tenantId);
       res.json({ count });
     } catch (error) {
       console.error('Error getting unviewed certificates count:', error);
@@ -3828,12 +3828,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/certificates/issue", requireAdmin, requireFeature("certificates"), async (req, res) => {
     try {
       const { templateId, userIds, customMessage } = req.body;
+      const tenantId = req.user!.tenantId;
       
       if (!templateId || !userIds || !Array.isArray(userIds) || userIds.length === 0) {
         return res.status(400).json({ message: "Template ID and user IDs are required" });
       }
       
-      const template = await storage.getCertificateTemplate(templateId);
+      const template = await storage.getCertificateTemplate(templateId, tenantId);
       if (!template) {
         return res.status(404).json({ message: "Certificate template not found" });
       }
@@ -3841,7 +3842,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const issuedCertificates = [];
       
       for (const userId of userIds) {
-        const user = await storage.getUser(userId);
+        const user = await storage.getUser(userId, tenantId);
         if (!user) {
           console.log(`[Certificates] User not found: ${userId}`);
           continue;
@@ -3874,7 +3875,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           recipientName,
           certificateImagePath: certificateUrl,
           issuedById: req.user!.id,
-          message: customMessage || null
+          message: customMessage || null,
+          tenantId
 });
         console.log(`[Certificates] Created DB record for ${recipientName}: certId=${certificate.id}, userId=${userId}, imageUrl=${certificateUrl}`);
         
