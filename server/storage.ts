@@ -1373,6 +1373,7 @@ export class DatabaseStorage implements IStorage {
     // Add to activity feed
     const typeText = marketItem.type === 'sale' ? 'Prodaje se' : 'Poklanja se';
     await this.createActivityFeedItem({
+      tenantId: marketItem.tenantId,
       type: "shop_item",
       title: typeText,
       description: marketItem.name,
