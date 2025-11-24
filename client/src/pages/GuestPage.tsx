@@ -441,11 +441,11 @@ function MembershipApplicationForm() {
         <Grid container spacing={2}>
           <Grid size={{ xs: 12 }}>
             <FormControl fullWidth>
-              <InputLabel>Visina mjesečne članarine (CHF)</InputLabel>
+              <InputLabel>Visina mjesečne članarine</InputLabel>
               <Select
                 value={formData.monthlyFee}
                 onChange={(e) => setFormData(prev => ({ ...prev, monthlyFee: e.target.value }))}
-                label="Visina mjesečne članarine (CHF)"
+                label="Visina mjesečne članarine"
                 data-testid="select-monthlyFee"
               >
                 <MenuItem value="30">30 CHF</MenuItem>

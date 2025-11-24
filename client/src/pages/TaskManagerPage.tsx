@@ -2002,7 +2002,7 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
           <TextField
             id="task-estimated-cost"
             variant="outlined"
-            label="Procijenjena cijena (CHF)"
+            label="Procijenjena cijena"
             type="number"
             value={estimatedCost}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEstimatedCost(e.target.value)}
@@ -2506,7 +2506,7 @@ function TaskDetailDialog({
               />
               <TextField
                 variant="outlined"
-                label="Procijenjena cijena (CHF)"
+                label="Procijenjena cijena"
                 type="number"
                 value={editedEstimatedCost}
                 onChange={(e) => setEditedEstimatedCost(e.target.value)}
@@ -2860,7 +2860,7 @@ function TaskDetailDialog({
               />
             </Button>
             <TextField
-              label="Iznos (CHF)"
+              label="Iznos"
               value={receiptAmount}
               onChange={(e) => setReceiptAmount(e.target.value)}
               fullWidth

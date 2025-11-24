@@ -68,13 +68,7 @@ export default function OrganizationSettingsPage({ hideHeader = false }: Organiz
 
   const updateMutation = useMutation({
     mutationFn: async (data: InsertOrganizationSettings) => {
-      const response = await fetch("/api/organization-settings", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
-      if (!response.ok) throw new Error("Failed to update settings");
-      return await response.json() as OrganizationSettings;
+      return await apiRequest("/api/organization-settings", "PUT", data) as OrganizationSettings;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/organization-settings"] });
