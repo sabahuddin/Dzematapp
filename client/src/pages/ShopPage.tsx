@@ -1469,7 +1469,7 @@ export default function ShopPage() {
 
           <TextField
             fullWidth
-            label={`${t('shop:labels.price')} (${currency})`}
+            label={t('shop:labels.price')}
             value={productForm.price}
             onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
             margin="normal"
@@ -1519,7 +1519,7 @@ export default function ShopPage() {
           {marketplaceForm.type === "sale" && (
             <TextField
               fullWidth
-              label={`${t('shop:labels.price')} (${currency})`}
+              label={t('shop:labels.price')}
               value={marketplaceForm.price}
               onChange={(e) => setMarketplaceForm({ ...marketplaceForm, price: e.target.value })}
               margin="normal"
