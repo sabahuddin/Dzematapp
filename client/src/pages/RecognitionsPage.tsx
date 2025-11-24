@@ -284,30 +284,7 @@ export default function RecognitionsPage() {
             </Box>
           </Box>
 
-          <Card sx={{ mb: 3, p: 3, bgcolor: 'hsl(36 100% 94%)', borderLeft: '4px solid hsl(14 100% 45%)' }} data-testid="card-total-points-overview">
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Box sx={{ 
-                width: 48, 
-                height: 48, 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center',
-                color: 'hsl(14 100% 45%)'
-              }}>
-                <TrendingUp size={40} />
-              </Box>
-              <Box>
-                <Typography variant="h3" sx={{ fontWeight: 700, color: 'hsl(14 100% 45%)' }} data-testid="text-total-points-overview">
-                  {totalPoints}
-                </Typography>
-                <Typography variant="body1" color="text.secondary">
-                  Ukupno bodova
-                </Typography>
-              </Box>
-            </Box>
-          </Card>
-
-          <Card>
+          <Card sx={{ mb: 3 }}>
             <Box sx={{ p: 3, borderBottom: '1px solid hsl(0 0% 88%)' }}>
               <Grid container spacing={2}>
                 <Grid size={{ xs: 12, md: 6 }}>
@@ -339,6 +316,29 @@ export default function RecognitionsPage() {
                   </FormControl>
                 </Grid>
               </Grid>
+            </Box>
+
+            <Box sx={{ p: 3, bgcolor: 'hsl(36 100% 94%)', borderLeft: '4px solid hsl(14 100% 45%)' }} data-testid="card-total-points-overview">
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Box sx={{ 
+                  width: 48, 
+                  height: 48, 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  color: 'hsl(14 100% 45%)'
+                }}>
+                  <TrendingUp size={40} />
+                </Box>
+                <Box>
+                  <Typography variant="h3" sx={{ fontWeight: 700, color: 'hsl(14 100% 45%)' }} data-testid="text-total-points-overview">
+                    {totalPoints}
+                  </Typography>
+                  <Typography variant="body1" color="text.secondary">
+                    Ukupno bodova
+                  </Typography>
+                </Box>
+              </Box>
             </Box>
             <TableContainer>
               <Table>
