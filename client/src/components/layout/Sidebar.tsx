@@ -97,12 +97,10 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     { path: '/applications', label: t('navigation:menu.applications'), icon: Assignment },
     { path: '/vaktija', label: t('navigation:menu.vaktija'), icon: Schedule },
     { path: '/vodic', label: t('navigation:menu.guide'), icon: Info },
+    { path: '/recognitions', label: 'Priznanja', icon: EmojiEvents, memberOnly: true },
   ];
 
   const priznanjaItems = [
-    { path: '/my-certificates', label: 'Moje zahvale', icon: CardGiftcard, showBadge: true, memberOnly: true },
-    { path: '/my-badges', label: 'Moje značke', icon: EmojiEvents, memberOnly: true },
-    { path: '/my-points', label: 'Moji bodovi', icon: Timeline, memberOnly: true },
     { path: '/certificates', label: 'Zahvalnice', icon: CardGiftcard, adminOnly: true },
     { path: '/badges-admin', label: 'Značke', icon: EmojiEvents, adminOnly: true },
   ];

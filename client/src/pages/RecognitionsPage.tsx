@@ -234,6 +234,7 @@ export default function RecognitionsPage() {
           variant="fullWidth"
           data-testid="tabs-recognitions"
         >
+          <Tab label="Moje aktivnosti" data-testid="tab-activities" />
           <Tab label="Moje zahvale" data-testid="tab-certificates" />
           <Tab label="Moje značke" data-testid="tab-badges" />
           <Tab label="Moji bodovi" data-testid="tab-points" />
@@ -241,6 +242,104 @@ export default function RecognitionsPage() {
       </Box>
 
       <TabPanel value={tabValue} index={0}>
+        <Box>
+          <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Box sx={{ 
+              width: 40, 
+              height: 40, 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              color: 'hsl(14 100% 45%)'
+            }}>
+              <TrendingUp size={32} />
+            </Box>
+            <Box>
+              <Typography variant="h5" sx={{ fontWeight: 600 }}>
+                Vaš Profil Aktivnosti
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Pregled svih vaših aktivnosti u džematu
+              </Typography>
+            </Box>
+          </Box>
+
+          <Card sx={{ mb: 3, p: 3, bgcolor: 'hsl(36 100% 94%)', borderLeft: '4px solid hsl(14 100% 45%)' }} data-testid="card-total-points-overview">
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Box sx={{ 
+                width: 48, 
+                height: 48, 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                color: 'hsl(14 100% 45%)'
+              }}>
+                <TrendingUp size={40} />
+              </Box>
+              <Box>
+                <Typography variant="h3" sx={{ fontWeight: 700, color: 'hsl(14 100% 45%)' }} data-testid="text-total-points-overview">
+                  {totalPoints}
+                </Typography>
+                <Typography variant="body1" color="text.secondary">
+                  Ukupno bodova
+                </Typography>
+              </Box>
+            </Box>
+          </Card>
+
+          <Card>
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell><strong>Tip Aktivnosti</strong></TableCell>
+                    <TableCell><strong>Opis</strong></TableCell>
+                    <TableCell align="center"><strong>Bodovi</strong></TableCell>
+                    <TableCell><strong>Datum</strong></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {activityLogs && activityLogs.length > 0 ? (
+                    activityLogs
+                      .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                      .map((entry: any) => (
+                        <TableRow key={entry.id} hover data-testid={`row-activity-overview-${entry.id}`}>
+                          <TableCell>
+                            <Chip 
+                              label={getActivityTypeLabel(entry.activityType)} 
+                              color={getActivityTypeColor(entry.activityType)}
+                              size="small"
+                              data-testid={`chip-activity-type-overview-${entry.id}`}
+                            />
+                          </TableCell>
+                          <TableCell data-testid={`text-activity-description-overview-${entry.id}`}>{entry.description}</TableCell>
+                          <TableCell align="center">
+                            <Typography sx={{ fontWeight: 600, color: (entry.points || 0) > 0 ? 'hsl(122 60% 20%)' : 'inherit' }} data-testid={`text-activity-points-overview-${entry.id}`}>
+                              +{entry.points || 0}
+                            </Typography>
+                          </TableCell>
+                          <TableCell data-testid={`text-activity-date-overview-${entry.id}`}>
+                            {format(new Date(entry.createdAt), 'dd.MM.yyyy HH:mm')}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={4} sx={{ textAlign: 'center', py: 4 }}>
+                        <Typography color="text.secondary" data-testid="text-no-activities-overview">
+                          Nema aktivnosti za prikaz
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Card>
+        </Box>
+      </TabPanel>
+
+      <TabPanel value={tabValue} index={1}>
         <ShadcnCard>
           <CardHeader>
             <CardTitle data-testid="text-page-title">Moje Zahvale</CardTitle>
@@ -344,7 +443,7 @@ export default function RecognitionsPage() {
         </ShadcnCard>
       </TabPanel>
 
-      <TabPanel value={tabValue} index={1}>
+      <TabPanel value={tabValue} index={2}>
         <Box>
           <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h5" component="h2" sx={{ fontWeight: 600 }}>
@@ -429,7 +528,7 @@ export default function RecognitionsPage() {
         </Box>
       </TabPanel>
 
-      <TabPanel value={tabValue} index={2}>
+      <TabPanel value={tabValue} index={3}>
         <Box>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
             <Box sx={{ 
