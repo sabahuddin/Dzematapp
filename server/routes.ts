@@ -2414,11 +2414,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const userId = req.session.userId!;
-      const itemData = insertMarketplaceItemSchema.parse({
-        ...req.body,
+      const parsedData = insertMarketplaceItemSchema.parse(req.body);
+      const itemData = {
+        ...parsedData,
         tenantId,
         userId
-      });
+      };
       const item = await storage.createMarketplaceItem(itemData);
       res.status(201).json(item);
     } catch (error: any) {
