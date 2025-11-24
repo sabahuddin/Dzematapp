@@ -125,3 +125,16 @@ The system employs a simple session-based authentication using username/password
 - **Cache Optimization** - Implemented `staleTime: 0` and `gcTime: 0` for family relationships to ensure fresh data
 - **Automatic List Update** - `refetchQueries` with `type: 'all'` forces fresh server data after family member addition
 - **Access Requests Fixed** - POST `/api/access-requests` now automatically includes `tenantId` before validation (resolved 400 errors)
+
+## Shop Module Fixes (November 24, 2025)
+- **Marketplace Items Creation** - Fixed schema validation for marketplace items (Prodajem/Poklanjam/Usluge):
+  - Removed `userId` and `tenantId` from client-side payload (handled server-side)
+  - Added proper Zod enum validation for `type` ("sale" | "gift") and `status` ("active" | "completed")
+  - Activity feed integration now includes `tenantId` when creating marketplace items
+- **Services (Usluge) Support** - Complete CRUD implementation:
+  - Fixed schema to omit `userId` and `tenantId` (server-managed fields)
+  - Added `tenantId` parameter to all service routes (GET, POST, PUT, DELETE)
+  - Service creation automatically adds entry to activity feed
+  - All service operations now properly multi-tenant scoped
+- **Admin Protection** - Shop product creation (Džemat Trgovina) remains admin-only with `requireAdmin` middleware
+- **Frontend Optimizations** - Removed redundant `userId` submission from marketplace and service mutations
