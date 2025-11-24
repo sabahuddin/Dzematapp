@@ -30,7 +30,6 @@
     "name": "Name",
     "description": "Description",
     "price": "Price",
-    "priceWithCurrency": "Price (CHF)",
     "category": "Category",
     "weight": "Weight (kg)",
     "volume": "Volume (l)",
@@ -55,7 +54,7 @@
     "enterMessage": "Enter your message..."
   },
   "display": {
-    "priceInCHF": "{{price}} CHF",
+    "priceInCHF": "{{price}}",
     "weight": "Weight: {{weight}} kg",
     "volume": "Volume: {{volume}} l",
     "size": "Size: {{size}}",
@@ -66,7 +65,7 @@
     "sold": "Sold",
     "gifted": "Gifted",
     "owner": "Owner: {{name}}",
-    "total": "Total: {{total}} CHF",
+    "total": "Total: {{total}}",
     "loading": "Loading...",
     "noArchivedItems": "No archived items",
     "addPhotos": "Add photos ({{current}}/{{max}})",

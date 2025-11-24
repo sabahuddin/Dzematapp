@@ -30,7 +30,6 @@
     "name": "Name",
     "description": "Beschreibung",
     "price": "Preis",
-    "priceWithCurrency": "Preis (CHF)",
     "category": "Kategorie",
     "weight": "Gewicht (kg)",
     "volume": "Volumen (l)",
@@ -55,7 +54,7 @@
     "enterMessage": "Geben Sie Ihre Nachricht ein..."
   },
   "display": {
-    "priceInCHF": "{{price}} CHF",
+    "priceInCHF": "{{price}}",
     "weight": "Gewicht: {{weight}} kg",
     "volume": "Volumen: {{volume}} l",
     "size": "Größe: {{size}}",
@@ -66,7 +65,7 @@
     "sold": "Verkauft",
     "gifted": "Verschenkt",
     "owner": "Besitzer: {{name}}",
-    "total": "Gesamt: {{total}} CHF",
+    "total": "Gesamt: {{total}}",
     "loading": "Laden...",
     "noArchivedItems": "Keine archivierten Artikel",
     "addPhotos": "Fotos hinzufügen ({{current}}/{{max}})",

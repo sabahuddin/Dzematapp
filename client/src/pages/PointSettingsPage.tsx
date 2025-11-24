@@ -145,7 +145,7 @@ export default function PointSettingsPage() {
                   1. Finansijske Uplate (Članarine, Donacije)
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Bodovi se dodjeljuju prema iznosu uplate. Svaki uloženi CHF donosi određeni broj bodova (definirano u "Bodova po CHF" polju ispod). Primjer: Ako je postavljeno 1 bod po CHF, uplata od 50 CHF = 50 bodova.
+                  Bodovi se dodjeljuju prema iznosu uplate. Svaki uloženi iznos donosi određeni broj bodova (definirano u "Bodova po jedinici" polju ispod). Primjer: Ako je postavljeno 1 bod po jedinici, uplata od 50 = 50 bodova.
                 </Typography>
               </Box>
               <Box>
@@ -169,7 +169,7 @@ export default function PointSettingsPage() {
                   4. Doprinosi Projektima
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Kada član uplati novac za specifičan projekat, dodjeljuju se bodovi prema "Bodova po CHF" postavci, plus se aktivnost bilježi kao doprinos projektu u Activity Log-u.
+                  Kada član uplati novac za specifičan projekat, dodjeljuju se bodovi prema "Bodova po jedinici" postavci, plus se aktivnost bilježi kao doprinos projektu u Activity Log-u.
                 </Typography>
               </Box>
             </Stack>

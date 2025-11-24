@@ -195,7 +195,7 @@ export default function MembershipApplicationsPage() {
                   <TableCell>{app.email}</TableCell>
                   <TableCell>{app.phone}</TableCell>
                   <TableCell>{app.dateOfBirth}</TableCell>
-                  <TableCell>{app.monthlyFee} CHF</TableCell>
+                  <TableCell>{app.monthlyFee}</TableCell>
                   <TableCell>
                     <Chip
                       label={getStatusLabel(app.status)}
@@ -374,7 +374,7 @@ export default function MembershipApplicationsPage() {
                   <Typography variant="caption" color="text.secondary">
                     Mjesečna članarina
                   </Typography>
-                  <Typography>{selectedApplication.monthlyFee} CHF</Typography>
+                  <Typography>{selectedApplication.monthlyFee}</Typography>
                 </Grid>
                 <Grid size={{ xs: 12, sm: 6 }}>
                   <Typography variant="caption" color="text.secondary">

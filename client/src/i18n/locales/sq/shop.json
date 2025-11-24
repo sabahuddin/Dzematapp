@@ -30,7 +30,6 @@
     "name": "Emri",
     "description": "Përshkrimi",
     "price": "Çmimi",
-    "priceWithCurrency": "Çmimi (CHF)",
     "category": "Kategoria",
     "weight": "Pesha (kg)",
     "volume": "Vëllimi (l)",
@@ -55,7 +54,7 @@
     "enterMessage": "Shkruani mesazhin tuaj..."
   },
   "display": {
-    "priceInCHF": "{{price}} CHF",
+    "priceInCHF": "{{price}}",
     "weight": "Pesha: {{weight}} kg",
     "volume": "Vëllimi: {{volume}} l",
     "size": "Madhësia: {{size}}",
@@ -66,7 +65,7 @@
     "sold": "Shitur",
     "gifted": "Dhuruar",
     "owner": "Pronari: {{name}}",
-    "total": "Totali: {{total}} CHF",
+    "total": "Totali: {{total}}",
     "loading": "Duke ngarkuar...",
     "noArchivedItems": "Nuk ka artikuj të arkivuar",
     "addPhotos": "Shto fotografi ({{current}}/{{max}})",

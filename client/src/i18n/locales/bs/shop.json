@@ -30,7 +30,6 @@
     "name": "Naziv",
     "description": "Opis",
     "price": "Cijena",
-    "priceWithCurrency": "Cijena (CHF)",
     "category": "Kategorija",
     "weight": "Težina (kg)",
     "volume": "Zapremina (l)",
@@ -55,7 +54,7 @@
     "enterMessage": "Unesite vašu poruku..."
   },
   "display": {
-    "priceInCHF": "{{price}} CHF",
+    "priceInCHF": "{{price}}",
     "weight": "Težina: {{weight}} kg",
     "volume": "Zapremina: {{volume}} l",
     "size": "Veličina: {{size}}",
@@ -66,7 +65,7 @@
     "sold": "Prodato",
     "gifted": "Pokloneno",
     "owner": "Vlasnik: {{name}}",
-    "total": "Ukupno: {{total}} CHF",
+    "total": "Ukupno: {{total}}",
     "loading": "Učitavanje...",
     "noArchivedItems": "Nema arhiviranih artikala",
     "addPhotos": "Dodaj slike ({{current}}/{{max}})",
