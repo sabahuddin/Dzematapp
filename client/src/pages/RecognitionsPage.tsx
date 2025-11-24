@@ -19,7 +19,13 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Grid
 } from '@mui/material';
 import {
   Card as ShadcnCard,
@@ -94,6 +100,8 @@ export default function RecognitionsPage() {
   const [tabValue, setTabValue] = useState(0);
   const [selectedCertificate, setSelectedCertificate] = useState<UserCertificate | null>(null);
   const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [filterType, setFilterType] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -206,6 +214,18 @@ export default function RecognitionsPage() {
     return colors[type] || 'default';
   };
 
+  const filteredActivityLogs = (activityLogs || []).filter((activity: any) => {
+    const matchesType = filterType === 'all' || activity.activityType === filterType;
+    
+    if (!matchesType) return false;
+    if (!searchTerm) return true;
+    
+    const matchesSearch = 
+      activity.description.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    return matchesSearch;
+  });
+
   const isLoading = certificatesLoading || badgesQuery.isLoading || userBadgesQuery.isLoading || activityLogQuery.isLoading;
 
   if (isLoading) {
@@ -288,6 +308,38 @@ export default function RecognitionsPage() {
           </Card>
 
           <Card>
+            <Box sx={{ p: 3, borderBottom: '1px solid hsl(0 0% 88%)' }}>
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <TextField
+                    variant="outlined"
+                    placeholder="Pretraži aktivnosti..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    fullWidth
+                    data-testid="input-search-activities"
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <FormControl fullWidth>
+                    <InputLabel>Filtriraj po tipu</InputLabel>
+                    <Select
+                      value={filterType}
+                      label="Filtriraj po tipu"
+                      onChange={(e) => setFilterType(e.target.value)}
+                      data-testid="select-filter-activity-type"
+                    >
+                      <MenuItem value="all">Sve aktivnosti</MenuItem>
+                      <MenuItem value="task_completed">Završen zadatak</MenuItem>
+                      <MenuItem value="contribution_made">Finansijska uplata</MenuItem>
+                      <MenuItem value="bonus_points">Bonus bodovi</MenuItem>
+                      <MenuItem value="event_attendance">Prisustvo događaju</MenuItem>
+                      <MenuItem value="project_contribution">Doprinos projektu</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
+            </Box>
             <TableContainer>
               <Table>
                 <TableHead>
@@ -299,8 +351,8 @@ export default function RecognitionsPage() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {activityLogs && activityLogs.length > 0 ? (
-                    activityLogs
+                  {filteredActivityLogs && filteredActivityLogs.length > 0 ? (
+                    filteredActivityLogs
                       .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                       .map((entry: any) => (
                         <TableRow key={entry.id} hover data-testid={`row-activity-overview-${entry.id}`}>
