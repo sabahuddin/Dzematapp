@@ -456,7 +456,9 @@ export const insertMarketplaceItemSchema = createInsertSchema(marketplaceItems).
   id: true,
   createdAt: true,
 }).extend({
-  tenantId: z.string()
+  tenantId: z.string(),
+  type: z.enum(["sale", "gift"]),
+  status: z.enum(["active", "completed"]).default("active")
 });
 
 export const insertProductPurchaseRequestSchema = createInsertSchema(productPurchaseRequests).omit({
