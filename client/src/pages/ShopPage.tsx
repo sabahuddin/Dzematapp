@@ -365,10 +365,7 @@ export default function ShopPage() {
   // Create marketplace item mutation
   const createMarketplaceItemMutation = useMutation({
     mutationFn: async (itemData: typeof marketplaceForm) => {
-      return await apiRequest('/api/marketplace/items', 'POST', {
-        ...itemData,
-        userId: user!.id
-      });
+      return await apiRequest('/api/marketplace/items', 'POST', itemData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/marketplace/items'] });
