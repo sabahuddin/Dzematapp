@@ -1413,6 +1413,19 @@ export class DatabaseStorage implements IStorage {
 
   async createService(service: InsertService): Promise<Service> {
     const [newService] = await db.insert(services).values({...service, tenantId: service.tenantId}).returning();
+    
+    // Add to activity feed
+    await this.createActivityFeedItem({
+      tenantId: newService.tenantId,
+      type: "shop_item",
+      title: "Nova usluga",
+      description: newService.name,
+      relatedEntityId: newService.id,
+      relatedEntityType: "service",
+      isClickable: true,
+      metadata: JSON.stringify({ imageUrl: newService.photos?.[0] || null })
+    });
+    
     return newService;
   }
 
