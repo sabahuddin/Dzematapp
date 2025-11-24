@@ -2481,7 +2481,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Services (Usluge) routes
   app.get("/api/services", requireAuth, async (req, res) => {
     try {
-      const services = await storage.getAllServicesWithUsers();
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      const services = await storage.getAllServicesWithUsers(tenantId);
       res.json(services);
     } catch (error) {
       res.status(500).json({ message: "Failed to get services" });
@@ -2508,19 +2509,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/services/:id", requireAuth, async (req, res) => {
     try {
-      const service = await storage.getService(req.params.id);
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      const service = await storage.getService(req.params.id, tenantId);
       if (!service) {
         return res.status(404).json({ message: "Service not found" });
       }
       
       // Allow edit only by owner or admin
-      const user = await storage.getUser(req.session.userId!);
+      const user = await storage.getUser(req.session.userId!, tenantId);
       const isAdmin = user?.isAdmin || false;
       if (service.userId !== req.session.userId && !isAdmin) {
         return res.status(403).json({ message: "Not authorized" });
       }
 
-      const updated = await storage.updateService(req.params.id, req.body);
+      const updated = await storage.updateService(req.params.id, tenantId, req.body);
       res.json(updated);
     } catch (error) {
       res.status(500).json({ message: "Failed to update service" });
@@ -2529,19 +2531,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/services/:id", requireAuth, async (req, res) => {
     try {
-      const service = await storage.getService(req.params.id);
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      const service = await storage.getService(req.params.id, tenantId);
       if (!service) {
         return res.status(404).json({ message: "Service not found" });
       }
       
       // Allow deletion only by owner or admin
-      const user = await storage.getUser(req.session.userId!);
+      const user = await storage.getUser(req.session.userId!, tenantId);
       const isAdmin = user?.isAdmin || false;
       if (service.userId !== req.session.userId && !isAdmin) {
         return res.status(403).json({ message: "Not authorized" });
       }
 
-      const deleted = await storage.deleteService(req.params.id);
+      const deleted = await storage.deleteService(req.params.id, tenantId);
       if (!deleted) {
         return res.status(404).json({ message: "Service not found" });
       }
