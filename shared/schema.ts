@@ -455,8 +455,9 @@ export const insertShopProductSchema = createInsertSchema(shopProducts).omit({
 export const insertMarketplaceItemSchema = createInsertSchema(marketplaceItems).omit({
   id: true,
   createdAt: true,
+  tenantId: true,
+  userId: true,
 }).extend({
-  tenantId: z.string(),
   type: z.enum(["sale", "gift"]),
   status: z.enum(["active", "completed"]).default("active")
 });
