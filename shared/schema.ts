@@ -1126,6 +1126,7 @@ export const services = pgTable("services", {
 export const insertServiceSchema = createInsertSchema(services).omit({
   id: true,
   tenantId: true,
+  userId: true,
   createdAt: true,
 });
 
