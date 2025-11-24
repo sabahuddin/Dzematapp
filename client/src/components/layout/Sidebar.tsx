@@ -68,7 +68,6 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { user } = useAuth();
   const { t } = useTranslation(['navigation']);
-  const [priznanjaOpen, setPriznanjaOpen] = useState(false);
   const [mediaOpen, setMediaOpen] = useState(false);
 
   const menuItems: Array<{
@@ -80,6 +79,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     adminOnly?: boolean;
     superAdminOnly?: boolean;
     showBadge?: boolean;
+    memberOnly?: boolean;
   }> = [
     { path: '/dashboard', label: t('navigation:menu.dashboard'), icon: Dashboard },
     { path: '/super-admin/panel', label: 'Super Admin Panel', icon: AdminPanelSettings, superAdminOnly: true },
@@ -98,11 +98,6 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     { path: '/vaktija', label: t('navigation:menu.vaktija'), icon: Schedule },
     { path: '/vodic', label: t('navigation:menu.guide'), icon: Info },
     { path: '/recognitions', label: 'Priznanja', icon: EmojiEvents, memberOnly: true },
-  ];
-
-  const priznanjaItems = [
-    { path: '/certificates', label: 'Zahvalnice', icon: CardGiftcard, adminOnly: true },
-    { path: '/badges-admin', label: 'Značke', icon: EmojiEvents, adminOnly: true },
   ];
 
   const mediaItems = [
@@ -209,6 +204,11 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
             return null;
           }
 
+          // Hide member-only items from non-logged-in users or guests
+          if (item.memberOnly && !user) {
+            return null;
+          }
+
           const Icon = item.icon;
           
           // Use different path for non-admin users if pathForMember is defined
@@ -290,98 +290,6 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
             </ListItem>
           );
         })}
-
-        {/* Priznanja Menu Group */}
-        <ListItem disablePadding sx={{ width: '100%', maxWidth: '100%' }}>
-          <ListItemButton
-            onClick={() => setPriznanjaOpen(!priznanjaOpen)}
-            sx={{
-              mx: 1,
-              borderRadius: 1,
-              bgcolor: 'transparent',
-              color: '#666',
-              justifyContent: collapsed ? 'center' : 'flex-start',
-              px: collapsed ? 0 : 2,
-              minWidth: 0,
-              '&:hover': {
-                bgcolor: 'hsl(0 0% 96%)',
-                color: '#1976d2'
-              }
-            }}
-            data-testid="nav-priznanja-group"
-          >
-            <ListItemIcon sx={{ color: 'inherit', minWidth: collapsed ? 'auto' : 40, justifyContent: 'center' }}>
-              {unviewedCertificatesCount && unviewedCertificatesCount.count > 0 ? (
-                <Badge badgeContent={unviewedCertificatesCount.count} color="error" data-testid="badge-priznanja">
-                  <CardGiftcard />
-                </Badge>
-              ) : (
-                <CardGiftcard />
-              )}
-            </ListItemIcon>
-            {!collapsed && (
-              <>
-                <ListItemText primary="Priznanja" />
-                {priznanjaOpen ? <ExpandLess /> : <ExpandMore />}
-              </>
-            )}
-          </ListItemButton>
-        </ListItem>
-        {!collapsed && (
-          <Collapse in={priznanjaOpen} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              {priznanjaItems.map((item: any) => {
-                // Don't render until user is loaded
-                if (!user) return null;
-                if (item.adminOnly && !user.isAdmin) return null;
-                if (item.memberOnly && user.isAdmin) return null;
-                
-                const Icon = item.icon;
-                const isActive = location === item.path;
-                let badgeCount = 0;
-                
-                if (item.path === '/my-certificates' && unviewedCertificatesCount) {
-                  badgeCount = unviewedCertificatesCount.count || 0;
-                }
-                
-                const showBadge = item.showBadge && badgeCount > 0;
-                
-                return (
-                  <ListItem key={item.path} disablePadding sx={{ width: '100%', maxWidth: '100%' }}>
-                    <ListItemButton
-                      onClick={() => handleNavigation(item.path)}
-                      sx={{
-                        mx: 1,
-                        ml: 4,
-                        borderRadius: 1,
-                        bgcolor: isActive ? '#e3f2fd' : 'transparent',
-                        color: isActive ? '#1976d2' : '#666',
-                        borderRight: isActive ? '3px solid #1976d2' : 'none',
-                        px: 2,
-                        '&:hover': {
-                          bgcolor: 'hsl(0 0% 96%)',
-                          color: '#1976d2'
-                        }
-                      }}
-                      data-testid={`nav-${item.path.slice(1)}`}
-                    >
-                      <ListItemIcon sx={{ color: 'inherit', minWidth: 40, justifyContent: 'center' }}>
-                        {showBadge ? (
-                          <Badge badgeContent={badgeCount} color="error">
-                            <Icon />
-                          </Badge>
-                        ) : (
-                          <Icon />
-                        )}
-                      </ListItemIcon>
-                      <ListItemText primary={item.label} />
-                    </ListItemButton>
-                  </ListItem>
-                );
-              })}
-            </List>
-          </Collapse>
-        )}
 
         {/* Media Menu Group */}
         <ListItem disablePadding sx={{ width: '100%', maxWidth: '100%' }}>

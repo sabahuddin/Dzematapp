@@ -349,7 +349,7 @@ function Router() {
         </AdminRoute>
       </Route>
       
-      <Route path="/my-certificates">
+      <Route path="/recognitions">
         <ProtectedRoute>
           <RecognitionsPage />
         </ProtectedRoute>
