@@ -150,6 +150,26 @@ export default function AnnouncementsPage() {
     setDeleteDialogOpen(true);
   };
 
+  const handleDeleteConfirm = () => {
+    if (announcementToDelete) {
+      deleteAnnouncementMutation.mutate(announcementToDelete.id);
+      setDeleteDialogOpen(false);
+      setAnnouncementToDelete(null);
+    }
+  };
+
+  const handleSaveAnnouncement = async (announcementData: any) => {
+    try {
+      if (selectedAnnouncement) {
+        updateAnnouncementMutation.mutate({ id: selectedAnnouncement.id, ...announcementData });
+      } else {
+        createAnnouncementMutation.mutate(announcementData);
+      }
+      setModalOpen(false);
+    } catch (error) {
+      console.error('Error saving announcement:', error);
+    }
+  };
 
   const getStatusChip = (status: string, isFeatured: boolean) => {
     if (isFeatured) {
