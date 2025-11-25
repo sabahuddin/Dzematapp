@@ -240,10 +240,10 @@ export default function RecognitionsPage() {
     <Box sx={{ width: '100%' }}>
       <Box sx={{ mb: 3 }}>
         <Typography variant="h4" component="h1" sx={{ fontWeight: 600, mb: 1 }}>
-          Priznanja
+          Moje aktivnosti
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Vaše zahvale, značke i bodovi
+          Vaše zahvale, značke, bodovi i uplate
         </Typography>
       </Box>
 
@@ -258,6 +258,7 @@ export default function RecognitionsPage() {
           <Tab label="Moje zahvale" data-testid="tab-certificates" />
           <Tab label="Moje značke" data-testid="tab-badges" />
           <Tab label="Moji bodovi" data-testid="tab-points" />
+          <Tab label="Moje uplate" data-testid="tab-payments" />
         </Tabs>
       </Box>
 
@@ -625,6 +626,23 @@ export default function RecognitionsPage() {
               </Table>
             </TableContainer>
           </Card>
+        </Box>
+      </TabPanel>
+
+      <TabPanel value={tabValue} index={4}>
+        <Box>
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="h5" component="h2" sx={{ fontWeight: 600 }}>
+              Moje uplate
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Pregled svih finansijskih uplata i donacija
+            </Typography>
+          </Box>
+
+          <Alert severity="info" data-testid="alert-payments-info">
+            Pregled uplata i donacija koje ste izvršili džematu
+          </Alert>
         </Box>
       </TabPanel>
 
