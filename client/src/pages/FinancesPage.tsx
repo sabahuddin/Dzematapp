@@ -671,45 +671,24 @@ export default function FinancesPage() {
                   <option value={t('finances:paymentMethods.bank')}>{t('finances:paymentMethods.bank')}</option>
                 </TextField>
               </Grid>
-              <Grid size={{ xs: 12 }}>
-                <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
-                  <TextField
-                    select
-                    fullWidth
-                    label={t('finances:projectOptional')}
-                    {...form.register('projectId')}
-                    SelectProps={{ native: true }}
-                    data-testid="select-project"
-                  >
-                    <option value="">{t('finances:noProject')}</option>
-                    {(projectsQuery.data as Project[] || [])
-                      .filter(p => p.status === 'active')
-                      .map(project => (
-                        <option key={project.id} value={project.id}>
-                          {project.name}
-                        </option>
-                      ))}
-                  </TextField>
-                  <Button
-                    variant="outlined"
-                    startIcon={<Add />}
-                    onClick={() => setProjectDialogOpen(true)}
-                    sx={{ mt: 1 }}
-                    data-testid="button-add-project-quick"
-                  >
-                    +Projekat
-                  </Button>
-                </Box>
-              </Grid>
-              <Grid size={{ xs: 12 }}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
+                  select
                   fullWidth
-                  label={t('finances:notes')}
-                  multiline
-                  rows={3}
-                  {...form.register('notes')}
-                  data-testid="input-notes"
-                />
+                  label={t('finances:projectOptional')}
+                  {...form.register('projectId')}
+                  SelectProps={{ native: true }}
+                  data-testid="select-project"
+                >
+                  <option value="">{t('finances:noProject')}</option>
+                  {(projectsQuery.data as Project[] || [])
+                    .filter(p => p.status === 'active')
+                    .map(project => (
+                      <option key={project.id} value={project.id}>
+                        {project.name}
+                      </option>
+                    ))}
+                </TextField>
               </Grid>
               {currentUser?.isAdmin && (
                 <Grid size={{ xs: 12, sm: 6 }}>
@@ -725,6 +704,16 @@ export default function FinancesPage() {
                   />
                 </Grid>
               )}
+              <Grid size={{ xs: 12 }}>
+                <TextField
+                  fullWidth
+                  label={t('finances:notes')}
+                  multiline
+                  rows={3}
+                  {...form.register('notes')}
+                  data-testid="input-notes"
+                />
+              </Grid>
             </Grid>
           </DialogContent>
           <DialogActions>
