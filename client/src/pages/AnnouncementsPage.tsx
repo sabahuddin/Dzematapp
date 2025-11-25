@@ -32,6 +32,16 @@ import { useToast } from '../hooks/use-toast';
 import { useMarkAsViewed } from '../hooks/useMarkAsViewed';
 import { apiRequest } from '../lib/queryClient';
 
+const stripHtmlTags = (html: string): string => {
+  if (!html) return '';
+  return html
+    .replace(/<p>/g, '')
+    .replace(/<\/p>/g, '')
+    .replace(/<br\s*\/?>/g, ' ')
+    .replace(/<[^>]*>/g, '')
+    .trim();
+};
+
 export default function AnnouncementsPage() {
   const { t } = useTranslation(['announcements', 'common']);
   const { user } = useAuth();
@@ -294,7 +304,7 @@ export default function AnnouncementsPage() {
                       overflow: 'hidden'
                     }}
                   >
-                    {announcement.content}
+                    {stripHtmlTags(announcement.content)}
                   </Typography>
                   <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
                     {announcement.categories && announcement.categories.map((cat) => (
