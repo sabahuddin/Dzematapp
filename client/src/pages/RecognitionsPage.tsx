@@ -284,62 +284,57 @@ export default function RecognitionsPage() {
             </Box>
           </Box>
 
-          <Card sx={{ mb: 3 }}>
-            <Box sx={{ p: 3, borderBottom: '1px solid hsl(0 0% 88%)' }}>
-              <Grid container spacing={2}>
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <TextField
-                    variant="outlined"
-                    placeholder="Pretraži aktivnosti..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    fullWidth
-                    data-testid="input-search-activities"
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <FormControl fullWidth>
-                    <InputLabel>Filtriraj po tipu</InputLabel>
-                    <Select
-                      value={filterType}
-                      label="Filtriraj po tipu"
-                      onChange={(e) => setFilterType(e.target.value)}
-                      data-testid="select-filter-activity-type"
-                    >
-                      <MenuItem value="all">Sve aktivnosti</MenuItem>
-                      <MenuItem value="task_completed">Završen zadatak</MenuItem>
-                      <MenuItem value="contribution_made">Finansijska uplata</MenuItem>
-                      <MenuItem value="bonus_points">Bonus bodovi</MenuItem>
-                      <MenuItem value="event_attendance">Prisustvo događaju</MenuItem>
-                      <MenuItem value="project_contribution">Doprinos projektu</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-              </Grid>
-            </Box>
+          <Box sx={{ mb: 3, display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>
+            <TextField
+              variant="outlined"
+              placeholder="Pretraži aktivnosti..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              fullWidth
+              data-testid="input-search-activities"
+            />
+            <FormControl fullWidth>
+              <InputLabel>Filtriraj po tipu</InputLabel>
+              <Select
+                value={filterType}
+                label="Filtriraj po tipu"
+                onChange={(e) => setFilterType(e.target.value)}
+                data-testid="select-filter-activity-type"
+              >
+                <MenuItem value="all">Sve aktivnosti</MenuItem>
+                <MenuItem value="task_completed">Završen zadatak</MenuItem>
+                <MenuItem value="contribution_made">Finansijska uplata</MenuItem>
+                <MenuItem value="bonus_points">Bonus bodovi</MenuItem>
+                <MenuItem value="event_attendance">Prisustvo događaju</MenuItem>
+                <MenuItem value="project_contribution">Doprinos projektu</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
 
-            <Box sx={{ p: 3, bgcolor: 'hsl(36 100% 94%)', borderLeft: '4px solid hsl(14 100% 45%)' }} data-testid="card-total-points-overview">
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Box sx={{ 
-                  width: 48, 
-                  height: 48, 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center',
-                  color: 'hsl(14 100% 45%)'
-                }}>
-                  <TrendingUp size={40} />
-                </Box>
-                <Box>
-                  <Typography variant="h3" sx={{ fontWeight: 700, color: 'hsl(14 100% 45%)' }} data-testid="text-total-points-overview">
-                    {totalPoints}
-                  </Typography>
-                  <Typography variant="body1" color="text.secondary">
-                    Ukupno bodova
-                  </Typography>
-                </Box>
+          <Card sx={{ mb: 3, p: 3, bgcolor: 'hsl(36 100% 94%)', borderLeft: '4px solid hsl(14 100% 45%)' }} data-testid="card-total-points-overview">
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Box sx={{ 
+                width: 48, 
+                height: 48, 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                color: 'hsl(14 100% 45%)'
+              }}>
+                <TrendingUp size={40} />
+              </Box>
+              <Box>
+                <Typography variant="h3" sx={{ fontWeight: 700, color: 'hsl(14 100% 45%)' }} data-testid="text-total-points-overview">
+                  {totalPoints}
+                </Typography>
+                <Typography variant="body1" color="text.secondary">
+                  Ukupno bodova
+                </Typography>
               </Box>
             </Box>
+          </Card>
+
+          <Card>
             <TableContainer>
               <Table>
                 <TableHead>
