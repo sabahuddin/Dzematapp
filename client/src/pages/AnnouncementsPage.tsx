@@ -1,17 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Box,
   Button,
   Card,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Chip,
+  CardContent,
   IconButton,
   Typography,
   Alert,
@@ -21,7 +15,9 @@ import {
   DialogContent,
   DialogActions,
   TextField,
-  Autocomplete
+  Autocomplete,
+  Chip,
+  Stack
 } from '@mui/material';
 import {
   Add,
@@ -49,15 +45,12 @@ export default function AnnouncementsPage() {
   const [announcementToDelete, setAnnouncementToDelete] = useState<Announcement | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [showArchive, setShowArchive] = useState(false);
 
-  // Fetch announcements
   const announcementsQuery = useQuery<Announcement[]>({
     queryKey: ['/api/announcements'],
     retry: 1,
   });
 
-  // Create announcement mutation
   const createAnnouncementMutation = useMutation({
     mutationFn: async (announcementData: any) => {
       const response = await apiRequest('/api/announcements', 'POST', announcementData);
@@ -72,7 +65,6 @@ export default function AnnouncementsPage() {
     }
   });
 
-  // Update announcement mutation
   const updateAnnouncementMutation = useMutation({
     mutationFn: async ({ id, ...announcementData }: any) => {
       const response = await apiRequest(`/api/announcements/${id}`, 'PUT', announcementData);
@@ -87,7 +79,6 @@ export default function AnnouncementsPage() {
     }
   });
 
-  // Delete announcement mutation
   const deleteAnnouncementMutation = useMutation({
     mutationFn: async (id: string) => {
       await apiRequest(`/api/announcements/${id}`, 'DELETE');
@@ -142,17 +133,14 @@ export default function AnnouncementsPage() {
     }
   };
 
-  const getStatusChip = (status: string, isFeatured: boolean) => {
-    if (isFeatured) {
-      return <Chip label={t('announcements:featured')} color="info" size="small" />;
-    }
+  const getStatusColor = (status: string) => {
     switch (status) {
       case 'published':
-        return <Chip label={t('announcements:statuses.published')} color="success" size="small" />;
+        return '#4caf50';
       case 'archived':
-        return <Chip label={t('announcements:statuses.archived')} color="warning" size="small" />;
+        return '#ff9800';
       default:
-        return <Chip label={t('announcements:statuses.draft')} color="default" size="small" />;
+        return '#90a4ae';
     }
   };
 
@@ -184,8 +172,7 @@ export default function AnnouncementsPage() {
       announcement.content.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategories.length === 0 || 
       (announcement.categories && announcement.categories.some(cat => selectedCategories.includes(cat)));
-    const matchesArchive = showArchive ? announcement.status === 'archived' : announcement.status !== 'archived';
-    return matchesSearch && matchesCategory && matchesArchive;
+    return matchesSearch && matchesCategory && announcement.status !== 'archived';
   });
 
   const sortedAnnouncements = [...filteredAnnouncements].sort((a, b) => {
@@ -203,7 +190,7 @@ export default function AnnouncementsPage() {
     }}>
       {/* Header with Add Button */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="h5" sx={{ fontWeight: 600 }}>
+        <Typography variant="h5" sx={{ fontWeight: 600, color: '#1b5e20' }}>
           {t('announcements:title')}
         </Typography>
         {user?.isAdmin && (
@@ -212,17 +199,26 @@ export default function AnnouncementsPage() {
             startIcon={<Add />}
             onClick={handleCreateAnnouncement}
             data-testid="button-add-announcement"
-            sx={{ backgroundColor: '#81c784' }}
+            sx={{ 
+              backgroundColor: '#81c784',
+              color: '#fff',
+              borderRadius: '12px',
+              textTransform: 'none',
+              fontSize: '0.9rem',
+              '&:hover': {
+                backgroundColor: '#66bb6a'
+              }
+            }}
           >
-            {t('announcements:add')}
+            {t('announcements:addAnnouncement')}
           </Button>
         )}
       </Box>
 
       {/* Search and Filter */}
-      <Box sx={{ display: 'flex', gap: 2, flexDirection: 'column' }}>
+      <Stack spacing={1.5}>
         <TextField
-          placeholder={t('announcements:search')}
+          placeholder={t('announcements:searchPlaceholder')}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           size="small"
@@ -230,7 +226,8 @@ export default function AnnouncementsPage() {
           sx={{ 
             '& .MuiOutlinedInput-root': {
               borderRadius: '12px',
-              border: '1px solid #e0e0e0'
+              border: '1px solid #c8e6c9',
+              backgroundColor: '#f1f8f6'
             }
           }}
         />
@@ -243,103 +240,137 @@ export default function AnnouncementsPage() {
           renderInput={(params) => (
             <TextField
               {...params}
-              placeholder={t('announcements:filterByCategory')}
+              placeholder={t('announcements:filterByCategories')}
               size="small"
               data-testid="input-filter-category"
               sx={{ 
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '12px',
-                  border: '1px solid #e0e0e0'
+                  border: '1px solid #c8e6c9',
+                  backgroundColor: '#f1f8f6'
                 }
               }}
             />
           )}
         />
+      </Stack>
 
-        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-          <Button
-            variant={showArchive ? 'contained' : 'outlined'}
-            onClick={() => setShowArchive(!showArchive)}
-            data-testid="button-toggle-archive"
-            size="small"
+      {/* Announcements Cards */}
+      <Stack spacing={1.5}>
+        {sortedAnnouncements.map((announcement) => (
+          <Card
+            key={announcement.id}
+            data-testid={`card-announcement-${announcement.id}`}
+            sx={{
+              border: '1px solid #c8e6c9',
+              borderRadius: '12px',
+              backgroundColor: '#f1f8f6',
+              '&:hover': {
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+              }
+            }}
           >
-            {showArchive ? t('announcements:showingArchive') : t('announcements:showActive')}
-          </Button>
-        </Box>
-      </Box>
-
-      {/* Announcements Table */}
-      <Card>
-        <TableContainer>
-          <Table size="small">
-            <TableHead>
-              <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-                <TableCell sx={{ fontWeight: 600 }}>{t('announcements:title')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('announcements:category')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('announcements:date')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('announcements:status')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }} align="right">{t('announcements:actions')}</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {sortedAnnouncements.map((announcement) => (
-                <TableRow 
-                  key={announcement.id}
-                  hover
-                  data-testid={`row-announcement-${announcement.id}`}
-                >
-                  <TableCell>{announcement.title}</TableCell>
-                  <TableCell>{announcement.categories?.join(', ') || '-'}</TableCell>
-                  <TableCell>{announcement.publishDate ? new Date(announcement.publishDate).toLocaleDateString() : '-'}</TableCell>
-                  <TableCell>{getStatusChip(announcement.status, announcement.isFeatured || false)}</TableCell>
-                  <TableCell align="right">
-                    <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'flex-end' }}>
-                      <IconButton
+            <CardContent sx={{ p: 2 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 2 }}>
+                <Box sx={{ flex: 1 }}>
+                  <Typography 
+                    variant="subtitle1" 
+                    sx={{ 
+                      fontWeight: 600, 
+                      color: '#1b5e20',
+                      mb: 0.5
+                    }}
+                  >
+                    {announcement.title}
+                  </Typography>
+                  <Typography 
+                    variant="body2" 
+                    sx={{ 
+                      color: '#424242',
+                      mb: 1,
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden'
+                    }}
+                  >
+                    {announcement.content}
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
+                    {announcement.categories && announcement.categories.map((cat) => (
+                      <Chip
+                        key={cat}
+                        label={cat}
                         size="small"
-                        onClick={() => handleViewAnnouncement(announcement)}
-                        data-testid={`button-view-announcement-${announcement.id}`}
-                        title={t('announcements:view')}
-                      >
-                        <Visibility fontSize="small" />
-                      </IconButton>
-                      {user?.isAdmin && (
-                        <IconButton
-                          size="small"
-                          onClick={() => handleEditAnnouncement(announcement)}
-                          data-testid={`button-edit-announcement-${announcement.id}`}
-                          title={t('announcements:edit')}
-                        >
-                          <Edit fontSize="small" />
-                        </IconButton>
-                      )}
-                      {user?.isAdmin && (
-                        <IconButton
-                          size="small"
-                          onClick={() => handleDeleteClick(announcement)}
-                          sx={{ color: 'hsl(4 90% 58%)' }}
-                          data-testid={`button-delete-announcement-${announcement.id}`}
-                          title={t('announcements:delete')}
-                        >
-                          <Delete fontSize="small" />
-                        </IconButton>
-                      )}
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {sortedAnnouncements.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={5} sx={{ textAlign: 'center', py: 4 }}>
-                    <Typography color="text.secondary">
-                      {t('announcements:noAnnouncements')}
+                        sx={{
+                          backgroundColor: '#c8e6c9',
+                          color: '#1b5e20',
+                          fontWeight: 500,
+                          borderRadius: '8px'
+                        }}
+                      />
+                    ))}
+                    <Typography variant="caption" sx={{ color: '#757575', ml: 'auto' }}>
+                      {announcement.publishDate ? new Date(announcement.publishDate).toLocaleDateString('bs-BA') : '-'}
                     </Typography>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Card>
+                  </Box>
+                </Box>
+              </Box>
+
+              {/* Actions */}
+              <Box sx={{ display: 'flex', gap: 0.5, mt: 1.5, justifyContent: 'flex-end' }}>
+                <IconButton
+                  size="small"
+                  onClick={() => handleViewAnnouncement(announcement)}
+                  data-testid={`button-view-announcement-${announcement.id}`}
+                  title={t('announcements:view')}
+                  sx={{ color: '#81c784' }}
+                >
+                  <Visibility fontSize="small" />
+                </IconButton>
+                {user?.isAdmin && (
+                  <IconButton
+                    size="small"
+                    onClick={() => handleEditAnnouncement(announcement)}
+                    data-testid={`button-edit-announcement-${announcement.id}`}
+                    title={t('announcements:edit')}
+                    sx={{ color: '#ff9800' }}
+                  >
+                    <Edit fontSize="small" />
+                  </IconButton>
+                )}
+                {user?.isAdmin && (
+                  <IconButton
+                    size="small"
+                    onClick={() => handleDeleteClick(announcement)}
+                    data-testid={`button-delete-announcement-${announcement.id}`}
+                    title={t('announcements:delete')}
+                    sx={{ color: '#f44336' }}
+                  >
+                    <Delete fontSize="small" />
+                  </IconButton>
+                )}
+              </Box>
+            </CardContent>
+          </Card>
+        ))}
+
+        {sortedAnnouncements.length === 0 && (
+          <Card
+            sx={{
+              border: '1px solid #c8e6c9',
+              borderRadius: '12px',
+              backgroundColor: '#f1f8f6',
+              p: 4,
+              textAlign: 'center'
+            }}
+          >
+            <Typography color="text.secondary">
+              {t('announcements:noAnnouncements')}
+            </Typography>
+          </Card>
+        )}
+      </Stack>
 
       {/* Delete Confirmation Dialog */}
       <Dialog
