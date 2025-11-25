@@ -264,11 +264,11 @@ export default function RecognitionsPage() {
           variant="fullWidth"
           data-testid="tabs-recognitions"
         >
-          <Tab label="Moje aktivnosti" data-testid="tab-activities" />
-          <Tab label="Moje zahvale" data-testid="tab-certificates" />
-          <Tab label="Moje značke" data-testid="tab-badges" />
-          <Tab label="Moji bodovi" data-testid="tab-points" />
-          <Tab label="Moje uplate" data-testid="tab-payments" />
+          <Tab label="Aktivnosti" data-testid="tab-activities" />
+          <Tab label="Zahvale" data-testid="tab-certificates" />
+          <Tab label="Značke" data-testid="tab-badges" />
+          <Tab label="Bodovi" data-testid="tab-points" />
+          <Tab label="Uplate" data-testid="tab-payments" />
         </Tabs>
       </Box>
 
@@ -356,7 +356,7 @@ export default function RecognitionsPage() {
       <TabPanel value={tabValue} index={1}>
         <ShadcnCard>
           <CardHeader>
-            <CardTitle data-testid="text-page-title">Moje Zahvale</CardTitle>
+            <CardTitle data-testid="text-page-title">Zahvale</CardTitle>
             <CardDescription>
               Pregled svih primljenih zahvalnica
             </CardDescription>
