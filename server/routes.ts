@@ -417,6 +417,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "No file uploaded" });
       }
 
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+
       const workbook = XLSX.read(req.file.buffer, { type: 'buffer' });
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
@@ -532,7 +534,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             photo: undefined,
             city: city || undefined,
             postalCode: postalCode || undefined,
-            dateOfBirth: undefined
+            dateOfBirth: undefined,
+            tenantId
           });
           
           results.success.push({
