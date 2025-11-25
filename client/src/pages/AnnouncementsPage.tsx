@@ -150,52 +150,19 @@ export default function AnnouncementsPage() {
     setDeleteDialogOpen(true);
   };
 
-    return () => {
 
-  // File upload mutation
-  const handleDeleteConfirm = () => {
-    if (announcementToDelete) {
-      deleteAnnouncementMutation.mutate(announcementToDelete.id);
-      setDeleteDialogOpen(false);
-      setAnnouncementToDelete(null);
+  const getStatusChip = (status: string, isFeatured: boolean) => {
+    if (isFeatured) {
+      return <Chip label={t('announcements:featured')} color="info" size="small" />;
     }
-  };
-
-  const handleSaveAnnouncement = async (announcementData: any) => {
-    try {
-      if (selectedAnnouncement) {
-        updateAnnouncementMutation.mutate({ id: selectedAnnouncement.id, ...announcementData });
-      } else {
-        createAnnouncementMutation.mutate(announcementData);
-      }
-      setModalOpen(false);
-    } catch (error) {
-      console.error('Error saving announcement:', error);
+    switch (status) {
+      case 'published':
+        return <Chip label={t('announcements:statuses.published')} color="success" size="small" />;
+      case 'archived':
+        return <Chip label={t('announcements:statuses.archived')} color="warning" size="small" />;
+      default:
+        return <Chip label={t('announcements:statuses.draft')} color="default" size="small" />;
     }
-  };
-
-    return (
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-        {imageCount > 0 && (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-            <Image fontSize="small" color="primary" />
-            <Typography variant="caption">{imageCount}</Typography>
-          </Box>
-        )}
-        {pdfCount > 0 && (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-            <PictureAsPdf fontSize="small" color="error" />
-            <Typography variant="caption">{pdfCount}</Typography>
-          </Box>
-        )}
-        {files.length > imageCount + pdfCount && (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-            <AttachFile fontSize="small" />
-            <Typography variant="caption">{files.length - imageCount - pdfCount}</Typography>
-          </Box>
-        )}
-      </Box>
-    );
   };
 
   if (announcementsQuery.isLoading) {
@@ -221,355 +188,158 @@ export default function AnnouncementsPage() {
     t('announcements:categories.predefined.other')
   ];
   
-  // Filter announcements
   const filteredAnnouncements = (announcementsQuery.data || []).filter((announcement: Announcement) => {
-    const matchesSearch = searchTerm === '' || 
-      announcement.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch = announcement.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       announcement.content.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesCategory = selectedCategories.length === 0 ||
-      (announcement.categories && announcement.categories.some(cat => selectedCategories.includes(cat)));
-    
-    return matchesSearch && matchesCategory;
+    const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(announcement.category);
+    const matchesArchive = showArchive ? announcement.status === 'archived' : announcement.status !== 'archived';
+    return matchesSearch && matchesCategory && matchesArchive;
   });
 
-  // Sort announcements by date (newest first)
   const sortedAnnouncements = [...filteredAnnouncements].sort((a, b) => {
-    const dateA = a.publishDate ? new Date(a.publishDate).getTime() : 0;
-    const dateB = b.publishDate ? new Date(b.publishDate).getTime() : 0;
+    const dateA = new Date(a.createdAt).getTime();
+    const dateB = new Date(b.createdAt).getTime();
     return dateB - dateA;
   });
 
-  const latestAnnouncement = sortedAnnouncements.length > 0 ? sortedAnnouncements[0] : null;
-  const archivedAnnouncements = sortedAnnouncements.slice(1);
-
-  // Member View - Shows latest announcement with archive
-  if (!user?.isAdmin) {
-    return (
-      <Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h5" sx={{ fontWeight: 600 }}>
-            {t('announcements:title')}
-          </Typography>
-        </Box>
-
-        {/* Search and Filter */}
-        <Box sx={{ mb: 3, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-          <TextField
-            variant="outlined"
-            placeholder={t('announcements:searchPlaceholder')}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            sx={{ width: 350 }}
-            data-testid="input-search"
-          />
-          <Autocomplete
-            multiple
-            options={predefinedCategories}
-            value={selectedCategories}
-            onChange={(event, newValue) => setSelectedCategories(newValue)}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant="outlined"
-                placeholder={t('announcements:filterByCategories')}
-                data-testid="input-category-filter"
-              />
-            )}
-            sx={{ width: 350 }}
-            data-testid="autocomplete-category-filter"
-          />
-        </Box>
-
-        {/* Latest Announcement */}
-        {latestAnnouncement ? (
-          <Card sx={{ mb: 3 }}>
-            <CardContent>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                  {latestAnnouncement.title}
-                </Typography>
-                {latestAnnouncement.isFeatured && (
-                  <Chip label={t('announcements:featured')} color="info" size="small" />
-                )}
-              </Box>
-              
-              {latestAnnouncement.categories && latestAnnouncement.categories.length > 0 && (
-                <Box sx={{ mb: 2, display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-                  {latestAnnouncement.categories.map((category, index) => (
-                    <Chip key={index} label={category} size="small" variant="outlined" />
-                  ))}
-                </Box>
-              )}
-              
-              <Typography variant="caption" color="text.secondary" sx={{ mb: 2, display: 'block' }}>
-                {latestAnnouncement.publishDate ? new Date(latestAnnouncement.publishDate).toLocaleDateString('hr-HR') : ''}
-              </Typography>
-              
-              <Box 
-                data-announcement-content
-                sx={{ 
-                  mt: 2,
-                  '& img': {
-                    maxWidth: '50%',
-                    maxHeight: '400px',
-                    width: 'auto',
-                    height: 'auto',
-                    objectFit: 'contain',
-                    borderRadius: '4px',
-                    display: 'block',
-                    margin: '12px 0',
-                    cursor: 'pointer',
-                    transition: 'opacity 0.2s',
-                    '&:hover': {
-                      opacity: 0.85
-                    }
-                  }
-                }}
-                dangerouslySetInnerHTML={{ __html: latestAnnouncement.content }}
-              />
-              
-              <Box sx={{ mt: 2 }}>
-                <AnnouncementAttachments announcementId={latestAnnouncement.id} />
-              </Box>
-            </CardContent>
-          </Card>
-        ) : (
-          <Alert severity="info">{t('announcements:noPublishedAnnouncements')}</Alert>
-        )}
-
-        {/* Archive Button and List */}
-        {archivedAnnouncements.length > 0 && (
-          <Box>
-            <Button 
-              variant="outlined" 
-              onClick={() => setShowArchive(!showArchive)}
-              sx={{ mb: 2 }}
-              data-testid="button-toggle-archive"
-            >
-              {showArchive ? t('announcements:hideArchive') : t('announcements:showArchive', { count: archivedAnnouncements.length })}
-            </Button>
-            
-            {showArchive && (
-              <Card>
-                <List>
-                  {archivedAnnouncements.map((announcement, index) => (
-                    <React.Fragment key={announcement.id}>
-                      <ListItem>
-                        <ListItemButton onClick={() => setSelectedAnnouncement(announcement)}>
-                          <ListItemText
-                            primary={announcement.title}
-                            secondary={
-                              <Box>
-                                <Typography variant="caption">
-                                  {announcement.publishDate ? new Date(announcement.publishDate).toLocaleDateString('hr-HR') : ''}
-                                </Typography>
-                                {announcement.categories && announcement.categories.length > 0 && (
-                                  <Box sx={{ mt: 0.5, display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-                                    {announcement.categories.map((cat, catIndex) => (
-                                      <Chip key={catIndex} label={cat} size="small" variant="outlined" />
-                                    ))}
-                                  </Box>
-                                )}
-                              </Box>
-                            }
-                          />
-                        </ListItemButton>
-                      </ListItem>
-                      {index < archivedAnnouncements.length - 1 && <Divider />}
-                    </React.Fragment>
-                  ))}
-                </List>
-              </Card>
-            )}
-          </Box>
-        )}
-
-        {/* Announcement Detail Dialog for Archive */}
-        <Dialog
-          open={selectedAnnouncement !== null && selectedAnnouncement.id !== latestAnnouncement?.id}
-          onClose={() => setSelectedAnnouncement(null)}
-          maxWidth="md"
-          fullWidth
-        >
-          {selectedAnnouncement && (
-            <>
-              <DialogTitle>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <Typography variant="h6">{selectedAnnouncement.title}</Typography>
-                  <IconButton onClick={() => setSelectedAnnouncement(null)}>
-                    <Close />
-                  </IconButton>
-                </Box>
-              </DialogTitle>
-              <DialogContent>
-                {selectedAnnouncement.categories && selectedAnnouncement.categories.length > 0 && (
-                  <Box sx={{ mb: 2, display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-                    {selectedAnnouncement.categories.map((category, index) => (
-                      <Chip key={index} label={category} size="small" variant="outlined" />
-                    ))}
-                  </Box>
-                )}
-                
-                <Typography variant="caption" color="text.secondary" sx={{ mb: 2, display: 'block' }}>
-                  {selectedAnnouncement.publishDate ? new Date(selectedAnnouncement.publishDate).toLocaleDateString('hr-HR') : ''}
-                </Typography>
-                
-                <Box 
-                  data-announcement-content
-                  sx={{
-                    '& img': {
-                      maxWidth: '50%',
-                      maxHeight: '400px',
-                      width: 'auto',
-                      height: 'auto',
-                      objectFit: 'contain',
-                      borderRadius: '4px',
-                      display: 'block',
-                      margin: '12px 0',
-                      cursor: 'pointer',
-                      transition: 'opacity 0.2s',
-                      '&:hover': {
-                        opacity: 0.85
-                      }
-                    }
-                  }}
-                  dangerouslySetInnerHTML={{ __html: selectedAnnouncement.content }}
-                />
-                
-                <Box sx={{ mt: 2 }}>
-                  <AnnouncementAttachments announcementId={selectedAnnouncement.id} />
-                </Box>
-              </DialogContent>
-            </>
-          )}
-        </Dialog>
-      </Box>
-    );
-  }
-
-  // Admin View
   return (
-    <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+    <Box sx={{ 
+      display: 'flex', 
+      flexDirection: 'column', 
+      gap: 2,
+      p: 2
+    }}>
+      {/* Header with Add Button */}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant="h5" sx={{ fontWeight: 600 }}>
-          {t('announcements:manageAnnouncements')}
+          {t('announcements:title')}
         </Typography>
-        <Button
-          variant="contained"
-          startIcon={<Add />}
-          onClick={handleCreateAnnouncement}
-          data-testid="button-add-announcement"
-        >
-          {t('announcements:createAnnouncement')}
-        </Button>
+        {user?.isAdmin && (
+          <Button
+            variant="contained"
+            startIcon={<Add />}
+            onClick={handleCreateAnnouncement}
+            data-testid="button-add-announcement"
+            sx={{ backgroundColor: '#81c784' }}
+          >
+            {t('announcements:add')}
+          </Button>
+        )}
       </Box>
 
-      {/* Search and Filter for Admin */}
-      <Box sx={{ mb: 3, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+      {/* Search and Filter */}
+      <Box sx={{ display: 'flex', gap: 2, flexDirection: 'column' }}>
         <TextField
-          variant="outlined"
-          placeholder={t('announcements:searchPlaceholder')}
+          placeholder={t('announcements:search')}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          sx={{ width: 350 }}
-          data-testid="input-search-admin"
+          size="small"
+          data-testid="input-search-announcements"
+          sx={{ 
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '12px',
+              border: '1px solid #e0e0e0'
+            }
+          }}
         />
+        
         <Autocomplete
           multiple
           options={predefinedCategories}
           value={selectedCategories}
-          onChange={(event, newValue) => setSelectedCategories(newValue)}
+          onChange={(_, value) => setSelectedCategories(value)}
           renderInput={(params) => (
             <TextField
               {...params}
-              variant="outlined"
-              placeholder={t('announcements:filterByCategories')}
-              data-testid="input-category-filter-admin"
+              placeholder={t('announcements:filterByCategory')}
+              size="small"
+              data-testid="input-filter-category"
+              sx={{ 
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '12px',
+                  border: '1px solid #e0e0e0'
+                }
+              }}
             />
           )}
-          sx={{ width: 350 }}
-          data-testid="autocomplete-category-filter-admin"
         />
+
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+          <Button
+            variant={showArchive ? 'contained' : 'outlined'}
+            onClick={() => setShowArchive(!showArchive)}
+            data-testid="button-toggle-archive"
+            size="small"
+          >
+            {showArchive ? t('announcements:showingArchive') : t('announcements:showActive')}
+          </Button>
+        </Box>
       </Box>
 
+      {/* Announcements Table */}
       <Card>
         <TableContainer>
-          <Table>
+          <Table size="small">
             <TableHead>
-              <TableRow>
-                <TableCell>{t('announcements:announcementTitle')}</TableCell>
-                <TableCell>{t('announcements:categories.label')}</TableCell>
-                <TableCell>{t('announcements:author')}</TableCell>
-                <TableCell>{t('announcements:publishDate')}</TableCell>
-                <TableCell>{t('announcements:status')}</TableCell>
-                <TableCell>{t('announcements:attachments')}</TableCell>
-                <TableCell>{t('announcements:actions')}</TableCell>
+              <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
+                <TableCell sx={{ fontWeight: 600 }}>{t('announcements:title')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('announcements:category')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('announcements:author')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('announcements:date')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('announcements:status')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }} align="right">{t('announcements:actions')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {sortedAnnouncements.map((announcement: Announcement) => (
-                <TableRow key={announcement.id}>
+              {sortedAnnouncements.map((announcement) => (
+                <TableRow 
+                  key={announcement.id}
+                  hover
+                  data-testid={`row-announcement-${announcement.id}`}
+                >
                   <TableCell>{announcement.title}</TableCell>
-                  <TableCell>
-                    {announcement.categories && announcement.categories.length > 0 ? (
-                      <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-                        {announcement.categories.map((category, index) => (
-                          <Chip key={index} label={category} size="small" variant="outlined" />
-                        ))}
-                      </Box>
-                    ) : (
-                      <Typography variant="caption" color="text.secondary">-</Typography>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {user?.firstName} {user?.lastName}
-                  </TableCell>
-                  <TableCell>
-                    {announcement.publishDate ? new Date(announcement.publishDate).toLocaleDateString('hr-HR') : '-'}
-                  </TableCell>
-                  <TableCell>
-                    {getStatusChip(announcement.status, announcement.isFeatured || false)}
-                  </TableCell>
-                  <TableCell>
-                    <AnnouncementAttachments announcementId={announcement.id} />
-                  </TableCell>
-                  <TableCell>
-                    <Box sx={{ display: 'flex', gap: 0.5 }}>
+                  <TableCell>{announcement.category}</TableCell>
+                  <TableCell>{announcement.author}</TableCell>
+                  <TableCell>{new Date(announcement.createdAt).toLocaleDateString()}</TableCell>
+                  <TableCell>{getStatusChip(announcement.status, announcement.isFeatured)}</TableCell>
+                  <TableCell align="right">
+                    <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'flex-end' }}>
                       <IconButton
                         size="small"
                         onClick={() => handleViewAnnouncement(announcement)}
-                        sx={{ color: 'hsl(207 88% 55%)' }}
                         data-testid={`button-view-announcement-${announcement.id}`}
                         title={t('announcements:view')}
                       >
                         <Visibility fontSize="small" />
                       </IconButton>
-                      <IconButton
-                        size="small"
-                        onClick={() => handleEditAnnouncement(announcement)}
-                        sx={{ color: 'hsl(14 100% 45%)' }}
-                        data-testid={`button-edit-announcement-${announcement.id}`}
-                        title={t('announcements:edit')}
-                      >
-                        <Edit fontSize="small" />
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        onClick={() => handleDeleteClick(announcement)}
-                        sx={{ color: 'hsl(4 90% 58%)' }}
-                        data-testid={`button-delete-announcement-${announcement.id}`}
-                        title={t('announcements:delete')}
-                      >
-                        <Delete fontSize="small" />
-                      </IconButton>
+                      {user?.isAdmin && (
+                        <IconButton
+                          size="small"
+                          onClick={() => handleEditAnnouncement(announcement)}
+                          data-testid={`button-edit-announcement-${announcement.id}`}
+                          title={t('announcements:edit')}
+                        >
+                          <Edit fontSize="small" />
+                        </IconButton>
+                      )}
+                      {user?.isAdmin && (
+                        <IconButton
+                          size="small"
+                          onClick={() => handleDeleteClick(announcement)}
+                          sx={{ color: 'hsl(4 90% 58%)' }}
+                          data-testid={`button-delete-announcement-${announcement.id}`}
+                          title={t('announcements:delete')}
+                        >
+                          <Delete fontSize="small" />
+                        </IconButton>
+                      )}
                     </Box>
                   </TableCell>
                 </TableRow>
               ))}
               {sortedAnnouncements.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={7} sx={{ textAlign: 'center', py: 4 }}>
+                  <TableCell colSpan={6} sx={{ textAlign: 'center', py: 4 }}>
                     <Typography color="text.secondary">
                       {t('announcements:noAnnouncements')}
                     </Typography>
@@ -580,7 +350,6 @@ export default function AnnouncementsPage() {
           </Table>
         </TableContainer>
       </Card>
-
 
       {/* Delete Confirmation Dialog */}
       <Dialog
@@ -616,39 +385,6 @@ export default function AnnouncementsPage() {
         announcement={selectedAnnouncement}
         authorId={user?.id || ''}
       />
-
-      {/* Image Viewer Modal */}
-      <Dialog
-        open={imageModalOpen}
-        onClose={() => setImageModalOpen(false)}
-        maxWidth="lg"
-        fullWidth
-      >
-        <DialogTitle>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h6">{t('common:common.image')}</Typography>
-            <IconButton onClick={() => setImageModalOpen(false)}>
-              <Close />
-            </IconButton>
-          </Box>
-        </DialogTitle>
-        <DialogContent>
-          {selectedImageSrc && (
-            <Box
-              component="img"
-              src={selectedImageSrc}
-              alt="Full size"
-              sx={{
-                width: '100%',
-                height: 'auto',
-                maxHeight: '80vh',
-                objectFit: 'contain',
-                display: 'block'
-              }}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
     </Box>
   );
 }
