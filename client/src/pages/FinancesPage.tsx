@@ -42,6 +42,8 @@ import { apiRequest, queryClient } from '../lib/queryClient';
 import { exportToExcel } from '../utils/excelExport';
 import { useFeatureAccess } from '../hooks/useFeatureAccess';
 import { UpgradeCTA } from '../components/UpgradeCTA';
+import { useSortableTable } from '../hooks/useSortableTable';
+import { SortableHeaderCell } from '../components/SortableHeaderCell';
 
 export default function FinancesPage() {
   const { user: currentUser } = useAuth();
@@ -272,6 +274,12 @@ export default function FinancesPage() {
     return matchesSearch;
   });
 
+  const contributionsSort = useSortableTable({
+    data: filteredContributions,
+    defaultSortKey: 'paymentDate',
+    defaultSortDirection: 'desc',
+  });
+
   const getUserName = (userId: string) => {
     if (!usersQuery.data) return t('finances:unknown');
     const user = (usersQuery.data as User[]).find(u => u.id === userId);
@@ -410,7 +418,7 @@ export default function FinancesPage() {
                 data-testid="button-add-purpose"
                 sx={{ mt: 1 }}
               >
-                + {t('finances:addPurpose') || 'Svrha'}
+                +Svrha
               </Button>
             </Box>
           </Box>
@@ -420,17 +428,17 @@ export default function FinancesPage() {
           <Table>
             <TableHead>
               <TableRow>
-                {currentUser?.isAdmin && <TableCell>{t('finances:user')}</TableCell>}
-                <TableCell>{t('finances:amount')}</TableCell>
-                <TableCell>{t('finances:purpose')}</TableCell>
-                <TableCell>{t('finances:project')}</TableCell>
-                <TableCell>{t('finances:paymentDate')}</TableCell>
-                <TableCell>{t('finances:notes')}</TableCell>
+                {currentUser?.isAdmin && <SortableHeaderCell sortKey="userId" onSort={contributionsSort.handleSort} currentSortKey={contributionsSort.sortKey} currentSortDirection={contributionsSort.sortDirection}>{t('finances:user')}</SortableHeaderCell>}
+                <SortableHeaderCell sortKey="amount" onSort={contributionsSort.handleSort} currentSortKey={contributionsSort.sortKey} currentSortDirection={contributionsSort.sortDirection}>{t('finances:amount')}</SortableHeaderCell>
+                <SortableHeaderCell sortKey="purpose" onSort={contributionsSort.handleSort} currentSortKey={contributionsSort.sortKey} currentSortDirection={contributionsSort.sortDirection}>{t('finances:purpose')}</SortableHeaderCell>
+                <SortableHeaderCell sortKey="projectId" onSort={contributionsSort.handleSort} currentSortKey={contributionsSort.sortKey} currentSortDirection={contributionsSort.sortDirection}>{t('finances:project')}</SortableHeaderCell>
+                <SortableHeaderCell sortKey="paymentDate" onSort={contributionsSort.handleSort} currentSortKey={contributionsSort.sortKey} currentSortDirection={contributionsSort.sortDirection}>{t('finances:paymentDate')}</SortableHeaderCell>
+                <SortableHeaderCell sortKey="notes" onSort={contributionsSort.handleSort} currentSortKey={contributionsSort.sortKey} currentSortDirection={contributionsSort.sortDirection}>{t('finances:notes')}</SortableHeaderCell>
                 {currentUser?.isAdmin && <TableCell>{t('common:common.actions')}</TableCell>}
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredContributions.map((contribution: FinancialContribution) => (
+              {contributionsSort.sortedData.map((contribution: FinancialContribution) => (
                 <TableRow key={contribution.id}>
                   {currentUser?.isAdmin && (
                     <TableCell>
@@ -598,7 +606,7 @@ export default function FinancesPage() {
           <DialogTitle>
             {selectedContribution ? t('finances:editPayment') : t('finances:addNewPayment')}
           </DialogTitle>
-          <DialogContent>
+          <DialogContent sx={{ pt: 3 }}>
             <Grid container spacing={2} sx={{ mt: 1 }}>
               {currentUser?.isAdmin && (
                 <Grid size={{ xs: 12 }}>

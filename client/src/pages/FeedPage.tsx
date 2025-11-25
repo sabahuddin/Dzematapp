@@ -180,7 +180,7 @@ export default function FeedPage() {
                   <Box sx={{ flex: 1 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
                       <Typography variant="h6" component="h3" sx={{ fontWeight: 600 }}>
-                        {item.title}
+                        {item.type === 'new_member' ? `Novi član: ${item.title.split(' ').map((n: string) => n[0]).join('')}` : item.title}
                       </Typography>
                       {item.isClickable && (
                         <ArrowForward 

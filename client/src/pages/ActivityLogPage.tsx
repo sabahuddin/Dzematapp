@@ -540,6 +540,31 @@ export default function ActivityLogPage() {
               </Box>
             </Box>
 
+            {/* Admin Search & Filter */}
+            {currentUser?.isAdmin && (
+              <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
+                <TextField 
+                  variant="outlined" 
+                  placeholder="Pretraži po imenu..." 
+                  value={userSearchTerm} 
+                  onChange={(e) => setUserSearchTerm(e.target.value)} 
+                  fullWidth 
+                  sx={{ maxWidth: 300 }}
+                  data-testid="input-bodove-search"
+                />
+                <FormControl sx={{ minWidth: 200 }}>
+                  <InputLabel>Tip aktivnosti</InputLabel>
+                  <Select value={filterType} label="Tip aktivnosti" onChange={(e) => setFilterType(e.target.value)} data-testid="select-bodove-type">
+                    <MenuItem value="all">Sve</MenuItem>
+                    <MenuItem value="task_completed">Završeni zadaci</MenuItem>
+                    <MenuItem value="event_rsvp">RSVP na događaj</MenuItem>
+                    <MenuItem value="contribution_made">Doprinos</MenuItem>
+                    <MenuItem value="badge_earned">Osvojena značka</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+            )}
+
             {/* Total Points Card - Only for member view */}
             {!currentUser?.isAdmin && (
               <Card sx={{ mb: 3, p: 3, bgcolor: 'hsl(36 100% 94%)', borderLeft: '4px solid hsl(14 100% 45%)' }}>
@@ -570,17 +595,27 @@ export default function ActivityLogPage() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {activitiesSort.sortedData.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={currentUser?.isAdmin ? 5 : 4} sx={{ textAlign: 'center', py: 4 }}>
-                        <Typography color="text.secondary">
-                          Nema aktivnosti za prikaz
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    activitiesSort.sortedData
-                      .map((entry: ActivityLog) => (
+                  {(() => {
+                    const filtered = activitiesSort.sortedData.filter((entry: ActivityLog) => {
+                      if (currentUser?.isAdmin) {
+                        const matchesType = filterType === 'all' || entry.activityType === filterType;
+                        if (!matchesType) return false;
+                        if (!userSearchTerm) return true;
+                        const user = (usersQuery.data as User[] || []).find(u => u.id === entry.userId);
+                        return user && `${user.firstName} ${user.lastName}`.toLowerCase().includes(userSearchTerm.toLowerCase());
+                      }
+                      return true;
+                    });
+                    return filtered.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={currentUser?.isAdmin ? 5 : 4} sx={{ textAlign: 'center', py: 4 }}>
+                          <Typography color="text.secondary">
+                            Nema aktivnosti za prikaz
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      filtered.map((entry: ActivityLog) => (
                         <TableRow key={entry.id} hover>
                           {currentUser?.isAdmin && (
                             <TableCell>
@@ -606,7 +641,8 @@ export default function ActivityLogPage() {
                           </TableCell>
                         </TableRow>
                       ))
-                  )}
+                    );
+                  })()}
                 </TableBody>
               </Table>
             </TableContainer>

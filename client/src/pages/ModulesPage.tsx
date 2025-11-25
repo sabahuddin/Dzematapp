@@ -53,7 +53,6 @@ export default function ModulesPage() {
     { icon: <Assignment sx={{ fontSize: 48 }} />, label: 'Prijave', description: 'Pristupnica, Akika, Vjenčanje', route: '/applications', testId: 'module-applications' },
     { icon: <MenuBook sx={{ fontSize: 48 }} />, label: 'Vaktija', description: 'Raspored namaza', route: '/vaktija', testId: 'module-vaktija' },
     { icon: <Help sx={{ fontSize: 48 }} />, label: 'Vodič', description: 'Vodič kroz aplikaciju', route: '/vodic', testId: 'module-guide' },
-    { icon: <EmojiEvents sx={{ fontSize: 48 }} />, label: 'Moje aktivnosti', description: 'Aktivnosti, zahvalnice, značke i bodovi', route: '/recognitions', testId: 'module-recognition' },
     { icon: <Tv sx={{ fontSize: 48 }} />, label: 'Media', description: 'Livestream i snimci', route: '/livestream', testId: 'module-media' },
     { icon: <Settings sx={{ fontSize: 48 }} />, label: 'Podešavanja', description: 'Podešavanja džemata', route: '/settings', testId: 'module-settings', adminOnly: true },
   ].filter(m => !m.adminOnly || user?.isAdmin);
