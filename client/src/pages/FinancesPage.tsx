@@ -606,7 +606,7 @@ export default function FinancesPage() {
           <DialogTitle>
             {selectedContribution ? t('finances:editPayment') : t('finances:addNewPayment')}
           </DialogTitle>
-          <DialogContent sx={{ pt: 3 }}>
+          <DialogContent sx={{ pt: 4, px: 3 }}>
             <Grid container spacing={2} sx={{ mt: 1 }}>
               {currentUser?.isAdmin && (
                 <Grid size={{ xs: 12 }}>
