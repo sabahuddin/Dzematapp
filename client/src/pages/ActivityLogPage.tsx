@@ -341,6 +341,9 @@ export default function ActivityLogPage() {
             <Button variant={activeTab === 'badges-manage' ? 'contained' : 'outlined'} onClick={() => setActiveTab('badges-manage')} data-testid="tab-badges-manage" startIcon={<BadgeOutlined />}>
               Značke
             </Button>
+            <Button variant={activeTab === 'issued-badges' ? 'contained' : 'outlined'} onClick={() => setActiveTab('issued-badges')} data-testid="tab-issued-badges" startIcon={<BadgeOutlined />}>
+              Dodjeljene značke
+            </Button>
             <Button variant={activeTab === 'templates' ? 'contained' : 'outlined'} onClick={() => setActiveTab('templates')} data-testid="tab-templates">
               Šabloni zahvala
             </Button>
@@ -349,9 +352,6 @@ export default function ActivityLogPage() {
             </Button>
             <Button variant={activeTab === 'issued' ? 'contained' : 'outlined'} onClick={() => setActiveTab('issued')} data-testid="tab-issued" startIcon={<ReceiptLong />}>
               Dodijeljene zahvale
-            </Button>
-            <Button variant={activeTab === 'issued-badges' ? 'contained' : 'outlined'} onClick={() => setActiveTab('issued-badges')} data-testid="tab-issued-badges" startIcon={<BadgeOutlined />}>
-              Dodjeljene značke
             </Button>
           </>
         )}
