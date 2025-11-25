@@ -593,13 +593,23 @@ export const importantDates = pgTable("important_dates", {
 });
 
 // Feature 1: Contribution Tracking System
+export const contributionPurposes = pgTable("contribution_purposes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
+  name: text("name").notNull(), // Članarina, Donacija, Vakuf, etc.
+  description: text("description"),
+  isDefault: boolean("is_default").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdById: varchar("created_by_id").notNull().references(() => users.id), // Admin who created it
+});
+
 export const financialContributions = pgTable("financial_contributions", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   userId: varchar("user_id").notNull().references(() => users.id),
   amount: text("amount").notNull(), // decimal as text, in CHF
   paymentDate: timestamp("payment_date").notNull(),
-  purpose: text("purpose").notNull(), // Članarina, Donacija, Vakuf, Sergija, Ostalo
+  purpose: text("purpose").notNull(), // Reference to contribution purpose name
   paymentMethod: text("payment_method").notNull(), // Gotovina, Banka
   notes: text("notes"),
   projectId: varchar("project_id").references((): any => projects.id), // Optional link to project (Feature 4)
@@ -731,6 +741,13 @@ export type ImportantDate = typeof importantDates.$inferSelect;
 export type InsertImportantDate = z.infer<typeof insertImportantDateSchema>;
 
 // Feature 1: Contribution Tracking System
+export const insertContributionPurposeSchema = createInsertSchema(contributionPurposes).omit({
+  id: true,
+  tenantId: true,
+  createdAt: true,
+  createdById: true,
+});
+
 export const insertFinancialContributionSchema = createInsertSchema(financialContributions).omit({
   id: true,
   tenantId: true,
@@ -806,6 +823,8 @@ export type Proposal = typeof proposals.$inferSelect;
 export type InsertProposal = z.infer<typeof insertProposalSchema>;
 export type Receipt = typeof receipts.$inferSelect;
 export type InsertReceipt = z.infer<typeof insertReceiptSchema>;
+export type ContributionPurpose = typeof contributionPurposes.$inferSelect;
+export type InsertContributionPurpose = z.infer<typeof insertContributionPurposeSchema>;
 export type FinancialContribution = typeof financialContributions.$inferSelect;
 export type InsertFinancialContribution = z.infer<typeof insertFinancialContributionSchema>;
 export type ActivityLog = typeof activityLog.$inferSelect;

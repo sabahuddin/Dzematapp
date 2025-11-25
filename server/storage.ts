@@ -304,6 +304,11 @@ export interface IStorage {
   updateImportantDate(id: string, tenantId: string, updates: Partial<InsertImportantDate>): Promise<ImportantDate | undefined>;
   deleteImportantDate(id: string, tenantId: string): Promise<boolean>;
 
+  // Contribution Purposes (Feature 1)
+  getContributionPurposes(tenantId: string): Promise<ContributionPurpose[]>;
+  createContributionPurpose(purpose: InsertContributionPurpose & { createdById: string; tenantId: string }): Promise<ContributionPurpose>;
+  deleteContributionPurpose(id: string, tenantId: string): Promise<boolean>;
+
   // Financial Contributions (Feature 1)
   createFinancialContribution(contribution: InsertFinancialContribution): Promise<FinancialContribution>;
   getFinancialContribution(id: string, tenantId: string): Promise<FinancialContribution | undefined>;
@@ -1788,6 +1793,21 @@ export class DatabaseStorage implements IStorage {
   async getUserTotalDonations(userId: string, tenantId: string): Promise<number> {
     const contributions = await this.getUserFinancialContributions(userId, tenantId);
     return contributions.reduce((sum, c) => sum + parseFloat(c.amount || '0'), 0);
+  }
+
+  // Contribution Purposes (Feature 1)
+  async getContributionPurposes(tenantId: string): Promise<ContributionPurpose[]> {
+    return await db.select().from(contributionPurposes).where(eq(contributionPurposes.tenantId, tenantId)).orderBy(asc(contributionPurposes.name));
+  }
+
+  async createContributionPurpose(purpose: InsertContributionPurpose & { createdById: string; tenantId: string }): Promise<ContributionPurpose> {
+    const [newPurpose] = await db.insert(contributionPurposes).values(purpose).returning();
+    return newPurpose;
+  }
+
+  async deleteContributionPurpose(id: string, tenantId: string): Promise<boolean> {
+    const result = await db.delete(contributionPurposes).where(and(eq(contributionPurposes.id, id), eq(contributionPurposes.tenantId, tenantId))).returning();
+    return result.length > 0;
   }
 
   // Activity Log (Feature 1)

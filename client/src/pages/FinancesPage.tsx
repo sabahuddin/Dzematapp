@@ -34,7 +34,7 @@ import {
   AttachMoney,
   Download
 } from '@mui/icons-material';
-import { FinancialContribution, User, Project, insertFinancialContributionSchema, insertProjectSchema } from '@shared/schema';
+import { FinancialContribution, User, Project, ContributionPurpose, insertFinancialContributionSchema, insertProjectSchema, insertContributionPurposeSchema } from '@shared/schema';
 import { useAuth } from '../hooks/useAuth';
 import { useCurrency } from '../contexts/CurrencyContext';
 import { useToast } from '../hooks/use-toast';
@@ -58,6 +58,9 @@ export default function FinancesPage() {
   const [newProjectName, setNewProjectName] = useState('');
   const [newProjectDescription, setNewProjectDescription] = useState('');
   const [newProjectGoal, setNewProjectGoal] = useState('');
+  const [purposeDialogOpen, setPurposeDialogOpen] = useState(false);
+  const [newPurposeName, setNewPurposeName] = useState('');
+  const [newPurposeDesc, setNewPurposeDesc] = useState('');
 
   if (featureAccess.upgradeRequired) {
     return <UpgradeCTA moduleId="finances" requiredPlan={featureAccess.requiredPlan || 'standard'} currentPlan={featureAccess.currentPlan || 'basic'} />;
@@ -80,6 +83,12 @@ export default function FinancesPage() {
   // Fetch projects (for admin)
   const projectsQuery = useQuery({
     queryKey: ['/api/projects'],
+    enabled: currentUser?.isAdmin || false,
+  });
+
+  // Fetch contribution purposes (for admin)
+  const purposesQuery = useQuery({
+    queryKey: ['/api/contribution-purposes'],
     enabled: currentUser?.isAdmin || false,
   });
 
@@ -152,6 +161,26 @@ export default function FinancesPage() {
     },
     onError: () => {
       toast({ title: t('common:common.error'), description: t('finances:messages.errorDeleting'), variant: 'destructive' });
+    }
+  });
+
+  // Create new purpose mutation
+  const createPurposeMutation = useMutation<ContributionPurpose, Error, void>({
+    mutationFn: async () => {
+      return await apiRequest('/api/contribution-purposes', 'POST', {
+        name: newPurposeName,
+        description: newPurposeDesc,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/contribution-purposes'] });
+      setPurposeDialogOpen(false);
+      setNewPurposeName('');
+      setNewPurposeDesc('');
+      toast({ title: 'Uspjeh', description: 'Svrha je kreirana' });
+    },
+    onError: () => {
+      toast({ title: 'Greška', description: 'Greška pri kreiranju svrhe', variant: 'destructive' });
     }
   });
 
@@ -370,12 +399,10 @@ export default function FinancesPage() {
                 SelectProps={{ native: true }}
                 data-testid="select-category-filter"
               >
-                <option value="">{t('finances:allCategories')}</option>
-                <option value={t('finances:purposes.membership')}>{t('finances:purposes.membership')}</option>
-                <option value={t('finances:purposes.donation')}>{t('finances:purposes.donation')}</option>
-                <option value={t('finances:purposes.waqf')}>{t('finances:purposes.waqf')}</option>
-                <option value={t('finances:purposes.sergija')}>{t('finances:purposes.sergija')}</option>
-                <option value={t('finances:purposes.other')}>{t('finances:purposes.other')}</option>
+                <option value="">{t("finances:allCategories")}</option>
+                {purposesQuery.data?.map((purpose: ContributionPurpose) => (
+                  <option key={purpose.id} value={purpose.name}>{purpose.name}</option>
+                ))}
               </TextField>
             </Box>
           </Box>
@@ -473,6 +500,43 @@ export default function FinancesPage() {
           </Table>
         </TableContainer>
       </Card>
+
+      {/* Create New Purpose Dialog */}
+      <Dialog open={purposeDialogOpen} onClose={() => setPurposeDialogOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Dodaj novu svrhu</DialogTitle>
+        <DialogContent sx={{ pt: 3 }}>
+          <TextField
+            fullWidth
+            label="Naziv svrhe"
+            value={newPurposeName}
+            onChange={(e) => setNewPurposeName(e.target.value)}
+            sx={{ mb: 2 }}
+            data-testid="input-new-purpose-name"
+          />
+          <TextField
+            fullWidth
+            label="Opis (opcionalno)"
+            multiline
+            rows={2}
+            value={newPurposeDesc}
+            onChange={(e) => setNewPurposeDesc(e.target.value)}
+            data-testid="input-new-purpose-desc"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setPurposeDialogOpen(false)} data-testid="button-cancel-purpose">
+            Otkaži
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => createPurposeMutation.mutate()}
+            disabled={createPurposeMutation.isPending || !newPurposeName}
+            data-testid="button-save-purpose"
+          >
+            {createPurposeMutation.isPending ? 'Kreiram...' : 'Kreiraj'}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Create New Project Dialog */}
       <Dialog open={projectDialogOpen} onClose={() => setProjectDialogOpen(false)} maxWidth="sm" fullWidth>
@@ -587,11 +651,9 @@ export default function FinancesPage() {
                   SelectProps={{ native: true }}
                   data-testid="select-purpose"
                 >
-                  <option value={t('finances:purposes.membership')}>{t('finances:purposes.membership')}</option>
-                  <option value={t('finances:purposes.donation')}>{t('finances:purposes.donation')}</option>
-                  <option value={t('finances:purposes.waqf')}>{t('finances:purposes.waqf')}</option>
-                  <option value={t('finances:purposes.sergija')}>{t('finances:purposes.sergija')}</option>
-                  <option value={t('finances:purposes.other')}>{t('finances:purposes.other')}</option>
+                  {purposesQuery.data?.map((purpose: ContributionPurpose) => (
+                    <option key={purpose.id} value={purpose.name}>{purpose.name}</option>
+                  ))}
                 </TextField>
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
@@ -635,7 +697,7 @@ export default function FinancesPage() {
                     sx={{ mt: 1 }}
                     data-testid="button-add-project-quick"
                   >
-                    {t('common:buttons.new')}
+                    +Projekat
                   </Button>
                 </Box>
               </Grid>

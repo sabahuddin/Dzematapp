@@ -9,7 +9,7 @@ import { storage } from "./storage";
 import { requireAuth, requireAdmin, requireSuperAdmin, requireAuthOrSuperAdmin } from "./index";
 import { requireFeature, getTenantSubscriptionInfo } from "./feature-access";
 import { generateCertificate, saveCertificate } from "./certificateService";
-import { type User, insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema, insertFinancialContributionSchema, insertActivityLogSchema, insertEventAttendanceSchema, insertPointsSettingsSchema, insertBadgeSchema, insertUserBadgeSchema, insertProjectSchema, insertProposalSchema, insertReceiptSchema, insertCertificateTemplateSchema, insertUserCertificateSchema, insertMembershipApplicationSchema, insertAkikaApplicationSchema, insertMarriageApplicationSchema, insertServiceSchema, insertTenantSchema } from "@shared/schema";
+import { type User, insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema, insertContributionPurposeSchema, insertFinancialContributionSchema, insertActivityLogSchema, insertEventAttendanceSchema, insertPointsSettingsSchema, insertBadgeSchema, insertUserBadgeSchema, insertProjectSchema, insertProposalSchema, insertReceiptSchema, insertCertificateTemplateSchema, insertUserCertificateSchema, insertMembershipApplicationSchema, insertAkikaApplicationSchema, insertMarriageApplicationSchema, insertServiceSchema, insertTenantSchema } from "@shared/schema";
 
 // Configure multer for photo uploads
 const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'photos');
@@ -2739,6 +2739,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to delete important date" });
     }
 });
+
+  // Contribution Purposes Routes
+  app.get("/api/contribution-purposes", requireAdmin, requireFeature("finances"), async (req, res) => {
+    try {
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      const purposes = await storage.getContributionPurposes(tenantId);
+      res.json(purposes);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get contribution purposes" });
+    }
+  });
+
+  app.post("/api/contribution-purposes", requireAdmin, requireFeature("finances"), async (req, res) => {
+    try {
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      const validated = insertContributionPurposeSchema.parse(req.body);
+      const purpose = await storage.createContributionPurpose({
+        ...validated,
+        createdById: req.user!.id,
+        tenantId
+      });
+      res.status(201).json(purpose);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to create contribution purpose" });
+    }
+  });
+
+  app.delete("/api/contribution-purposes/:id", requireAdmin, requireFeature("finances"), async (req, res) => {
+    try {
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      const success = await storage.deleteContributionPurpose(req.params.id, tenantId);
+      if (!success) {
+        return res.status(404).json({ message: "Contribution purpose not found" });
+      }
+      res.json({ message: "Contribution purpose deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete contribution purpose" });
+    }
+  });
 
   // Financial Contributions Routes (Feature 1)
   app.get("/api/financial-contributions", requireAdmin, requireFeature("finances"), async (req, res) => {
