@@ -262,128 +262,88 @@ export default function RecognitionsPage() {
       </Box>
 
       <TabPanel value={tabValue} index={0}>
-        <Box>
-          <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Box sx={{ 
-              width: 40, 
-              height: 40, 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center',
-              color: 'hsl(14 100% 45%)'
-            }}>
-              <TrendingUp size={32} />
-            </Box>
-            <Box>
-              <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                Vaš Profil Aktivnosti
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Pregled svih vaših aktivnosti u džematu
-              </Typography>
-            </Box>
+        <Card>
+          <Box sx={{ p: 3, borderBottom: '1px solid hsl(0 0% 88%)' }}>
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <TextField
+                  variant="outlined"
+                  placeholder="Pretraži aktivnosti..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  fullWidth
+                  data-testid="input-search-activities"
+                />
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <FormControl fullWidth>
+                  <InputLabel>Filtriraj po tipu</InputLabel>
+                  <Select
+                    value={filterType}
+                    label="Filtriraj po tipu"
+                    onChange={(e) => setFilterType(e.target.value)}
+                    data-testid="select-filter-activity-type"
+                  >
+                    <MenuItem value="all">Sve aktivnosti</MenuItem>
+                    <MenuItem value="task_completed">Završen zadatak</MenuItem>
+                    <MenuItem value="contribution_made">Finansijska uplata</MenuItem>
+                    <MenuItem value="bonus_points">Bonus bodovi</MenuItem>
+                    <MenuItem value="event_attendance">Prisustvo događaju</MenuItem>
+                    <MenuItem value="project_contribution">Doprinos projektu</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+            </Grid>
           </Box>
-
-          <Box sx={{ mb: 3, display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>
-            <TextField
-              variant="outlined"
-              placeholder="Pretraži aktivnosti..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              fullWidth
-              data-testid="input-search-activities"
-            />
-            <FormControl fullWidth>
-              <InputLabel>Filtriraj po tipu</InputLabel>
-              <Select
-                value={filterType}
-                label="Filtriraj po tipu"
-                onChange={(e) => setFilterType(e.target.value)}
-                data-testid="select-filter-activity-type"
-              >
-                <MenuItem value="all">Sve aktivnosti</MenuItem>
-                <MenuItem value="task_completed">Završen zadatak</MenuItem>
-                <MenuItem value="contribution_made">Finansijska uplata</MenuItem>
-                <MenuItem value="bonus_points">Bonus bodovi</MenuItem>
-                <MenuItem value="event_attendance">Prisustvo događaju</MenuItem>
-                <MenuItem value="project_contribution">Doprinos projektu</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
-
-          <Card sx={{ mb: 3, p: 3, bgcolor: 'hsl(36 100% 94%)', borderLeft: '4px solid hsl(14 100% 45%)' }} data-testid="card-total-points-overview">
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Box sx={{ 
-                width: 48, 
-                height: 48, 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center',
-                color: 'hsl(14 100% 45%)'
-              }}>
-                <TrendingUp size={40} />
-              </Box>
-              <Box>
-                <Typography variant="h3" sx={{ fontWeight: 700, color: 'hsl(14 100% 45%)' }} data-testid="text-total-points-overview">
-                  {totalPoints}
-                </Typography>
-                <Typography variant="body1" color="text.secondary">
-                  Ukupno bodova
-                </Typography>
-              </Box>
-            </Box>
-          </Card>
-
-          <Card>
-            <TableContainer>
-              <Table>
-                <TableHead>
+          
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell><strong>Tip Aktivnosti</strong></TableCell>
+                  <TableCell><strong>Opis</strong></TableCell>
+                  <TableCell align="center"><strong>Bodovi</strong></TableCell>
+                  <TableCell><strong>Datum</strong></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {filteredActivityLogs && filteredActivityLogs.length > 0 ? (
+                  filteredActivityLogs
+                    .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                    .map((entry: any) => (
+                      <TableRow key={entry.id} hover data-testid={`row-activity-${entry.id}`}>
+                        <TableCell>
+                          <Chip 
+                            label={getActivityTypeLabel(entry.activityType)} 
+                            color={getActivityTypeColor(entry.activityType)}
+                            size="small"
+                            data-testid={`chip-activity-type-${entry.id}`}
+                          />
+                        </TableCell>
+                        <TableCell data-testid={`text-activity-description-${entry.id}`}>{entry.description}</TableCell>
+                        <TableCell align="center">
+                          <Typography sx={{ fontWeight: 600, color: (entry.points || 0) > 0 ? 'hsl(122 60% 20%)' : 'inherit' }} data-testid={`text-activity-points-${entry.id}`}>
+                            +{entry.points || 0}
+                          </Typography>
+                        </TableCell>
+                        <TableCell data-testid={`text-activity-date-${entry.id}`}>
+                          {format(new Date(entry.createdAt), 'dd.MM.yyyy HH:mm')}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                ) : (
                   <TableRow>
-                    <TableCell><strong>Tip Aktivnosti</strong></TableCell>
-                    <TableCell><strong>Opis</strong></TableCell>
-                    <TableCell align="center"><strong>Bodovi</strong></TableCell>
-                    <TableCell><strong>Datum</strong></TableCell>
+                    <TableCell colSpan={4} sx={{ textAlign: 'center', py: 4 }}>
+                      <Typography color="text.secondary" data-testid="text-no-activities">
+                        Nema aktivnosti za prikaz
+                      </Typography>
+                    </TableCell>
                   </TableRow>
-                </TableHead>
-                <TableBody>
-                  {filteredActivityLogs && filteredActivityLogs.length > 0 ? (
-                    filteredActivityLogs
-                      .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-                      .map((entry: any) => (
-                        <TableRow key={entry.id} hover data-testid={`row-activity-overview-${entry.id}`}>
-                          <TableCell>
-                            <Chip 
-                              label={getActivityTypeLabel(entry.activityType)} 
-                              color={getActivityTypeColor(entry.activityType)}
-                              size="small"
-                              data-testid={`chip-activity-type-overview-${entry.id}`}
-                            />
-                          </TableCell>
-                          <TableCell data-testid={`text-activity-description-overview-${entry.id}`}>{entry.description}</TableCell>
-                          <TableCell align="center">
-                            <Typography sx={{ fontWeight: 600, color: (entry.points || 0) > 0 ? 'hsl(122 60% 20%)' : 'inherit' }} data-testid={`text-activity-points-overview-${entry.id}`}>
-                              +{entry.points || 0}
-                            </Typography>
-                          </TableCell>
-                          <TableCell data-testid={`text-activity-date-overview-${entry.id}`}>
-                            {format(new Date(entry.createdAt), 'dd.MM.yyyy HH:mm')}
-                          </TableCell>
-                        </TableRow>
-                      ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={4} sx={{ textAlign: 'center', py: 4 }}>
-                        <Typography color="text.secondary" data-testid="text-no-activities-overview">
-                          Nema aktivnosti za prikaz
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Card>
-        </Box>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Card>
       </TabPanel>
 
       <TabPanel value={tabValue} index={1}>
