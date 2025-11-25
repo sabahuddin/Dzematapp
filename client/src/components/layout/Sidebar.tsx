@@ -97,7 +97,6 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     { path: '/applications', label: t('navigation:menu.applications'), icon: Assignment },
     { path: '/vaktija', label: t('navigation:menu.vaktija'), icon: Schedule },
     { path: '/vodic', label: t('navigation:menu.guide'), icon: Info },
-    { path: '/recognitions', label: 'Moje aktivnosti', icon: EmojiEvents, memberOnly: true },
     { path: '/projects', label: 'Projekti', icon: Work, adminOnly: true },
     { path: '/certificate-templates', label: 'Šabloni zahvala', icon: Description, adminOnly: true },
     { path: '/badges-admin', label: 'Značke', icon: CardGiftcard, adminOnly: true },

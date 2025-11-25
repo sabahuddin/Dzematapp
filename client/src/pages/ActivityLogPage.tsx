@@ -66,7 +66,7 @@ export default function ActivityLogPage() {
   const featureAccess = useFeatureAccess('activity-log');
   const [filterType, setFilterType] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'activities' | 'certificates' | 'badges' | 'contributions' | 'issue'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'points' | 'activities' | 'certificates' | 'badges' | 'contributions' | 'issue'>('dashboard');
   const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
   const [selectedTemplate, setSelectedTemplate] = useState<string>('');
   const [customMessage, setCustomMessage] = useState('');
@@ -348,6 +348,14 @@ export default function ActivityLogPage() {
           Dashboard
         </Button>
         <Button
+          variant={activeTab === 'points' ? 'contained' : 'outlined'}
+          onClick={() => setActiveTab('points')}
+          data-testid="tab-points"
+          startIcon={<EmojiEvents />}
+        >
+          Bodovi ({totalPoints})
+        </Button>
+        <Button
           variant={activeTab === 'activities' ? 'contained' : 'outlined'}
           onClick={() => setActiveTab('activities')}
           data-testid="tab-activities"
@@ -504,6 +512,70 @@ export default function ActivityLogPage() {
             </Box>
           </Card>
         </Stack>
+      )}
+
+      {/* Points Tab */}
+      {activeTab === 'points' && (
+        <Card>
+          <Box sx={{ p: 3 }}>
+            <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+              Moji bodovi - Ukupno: {totalPoints}
+            </Typography>
+            
+            <TableContainer sx={{ overflowX: 'auto' }}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Aktivnost</TableCell>
+                    <TableCell>Opis</TableCell>
+                    <TableCell align="right">Bodovi</TableCell>
+                    <TableCell>Datum</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {userActivities.map((activity: ActivityLog) => (
+                    <TableRow key={activity.id}>
+                      <TableCell>
+                        <Chip
+                          icon={getActivityIcon(activity.activityType)}
+                          label={getActivityLabel(activity.activityType)}
+                          color={getActivityColor(activity.activityType) as any}
+                          size="small"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2">{activity.description}</Typography>
+                      </TableCell>
+                      <TableCell align="right">
+                        {activity.points && activity.points > 0 ? (
+                          <Chip
+                            label={`+${activity.points}`}
+                            color="warning"
+                            size="small"
+                          />
+                        ) : (
+                          <Typography variant="body2" color="text.secondary">-</Typography>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {new Date(activity.createdAt).toLocaleDateString('hr-HR')}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {userActivities.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={4} sx={{ textAlign: 'center', py: 4 }}>
+                        <Typography color="text.secondary">
+                          Nema aktivnosti sa bodovima
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+        </Card>
       )}
 
       {/* Activities Tab */}
