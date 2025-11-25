@@ -262,38 +262,35 @@ export default function RecognitionsPage() {
       </Box>
 
       <TabPanel value={tabValue} index={0}>
+        <Box sx={{ mb: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <TextField
+            variant="outlined"
+            placeholder="Pretraži aktivnosti..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            fullWidth
+            data-testid="input-search-activities"
+          />
+          <FormControl fullWidth>
+            <InputLabel>Filtriraj po tipu</InputLabel>
+            <Select
+              value={filterType}
+              label="Filtriraj po tipu"
+              onChange={(e) => setFilterType(e.target.value)}
+              data-testid="select-filter-activity-type"
+            >
+              <MenuItem value="all">Sve aktivnosti</MenuItem>
+              <MenuItem value="task_completed">Završen zadatak</MenuItem>
+              <MenuItem value="contribution_made">Finansijska uplata</MenuItem>
+              <MenuItem value="bonus_points">Bonus bodovi</MenuItem>
+              <MenuItem value="event_attendance">Prisustvo događaju</MenuItem>
+              <MenuItem value="project_contribution">Doprinos projektu</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+        
         <Card>
           <Box sx={{ p: 3, borderBottom: '1px solid hsl(0 0% 88%)' }}>
-            <Grid container spacing={2}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <TextField
-                  variant="outlined"
-                  placeholder="Pretraži aktivnosti..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  fullWidth
-                  data-testid="input-search-activities"
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <FormControl fullWidth>
-                  <InputLabel>Filtriraj po tipu</InputLabel>
-                  <Select
-                    value={filterType}
-                    label="Filtriraj po tipu"
-                    onChange={(e) => setFilterType(e.target.value)}
-                    data-testid="select-filter-activity-type"
-                  >
-                    <MenuItem value="all">Sve aktivnosti</MenuItem>
-                    <MenuItem value="task_completed">Završen zadatak</MenuItem>
-                    <MenuItem value="contribution_made">Finansijska uplata</MenuItem>
-                    <MenuItem value="bonus_points">Bonus bodovi</MenuItem>
-                    <MenuItem value="event_attendance">Prisustvo događaju</MenuItem>
-                    <MenuItem value="project_contribution">Doprinos projektu</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-            </Grid>
           </Box>
           
           <TableContainer>
