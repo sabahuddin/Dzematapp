@@ -22,6 +22,7 @@ export const users = pgTable("users", {
   status: text("status").notNull().default("aktivan"), // aktivan, pasivan, član porodice
   inactiveReason: text("inactive_reason"), // Smrt, Drugi džemat, Isključen, Nepoznato
   categories: text("categories").array(), // Muškarci, Žene, Roditelji, Omladina, custom
+  photoUrl: text("photo_url"),
   roles: text("roles").array().default(sql`ARRAY['clan']::text[]`), // admin, clan_io, clan, clan_porodice (moderator se dodeljuje u grupi)
   isAdmin: boolean("is_admin").default(false),
   isSuperAdmin: boolean("is_super_admin").default(false), // Global super admin for tenant management
@@ -53,6 +54,7 @@ export const announcements = pgTable("announcements", {
   status: text("status").notNull().default("published"), // published, featured, archived
   isFeatured: boolean("is_featured").default(false),
   categories: text("categories").array(), // Džemat, IZBCH, IZ, Ostalo, custom
+  photoUrl: text("photo_url"),
 });
 
 export const events = pgTable("events", {
@@ -68,6 +70,7 @@ export const events = pgTable("events", {
   maxAttendees: integer("max_attendees"),
   reminderTime: text("reminder_time"), // null, "7_days", "24_hours", "2_hours"
   categories: text("categories").array(), // Iftar, Mevlud, Edukacija, Sport, Humanitarno, Omladina, custom
+  photoUrl: text("photo_url"),
   pointsValue: integer("points_value").default(20), // Variable points for event attendance
   createdById: varchar("created_by_id").notNull().references(() => users.id),
   createdAt: timestamp("created_at").defaultNow(),
