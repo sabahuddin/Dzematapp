@@ -19,7 +19,7 @@ import {
   Alert,
   Autocomplete
 } from '@mui/material';
-import { Close, CloudUpload } from '@mui/icons-material';
+import { Close, CloudUpload, Article, Schedule } from '@mui/icons-material';
 import { useToast } from '../../hooks/use-toast';
 import { apiRequest } from '../../lib/queryClient';
 import RichTextEditor from '../ui/rich-text-editor';
@@ -123,6 +123,112 @@ export default function AnnouncementModal({
     }
   };
 
+  if (isReadOnly) {
+    return (
+      <Dialog 
+        open={open} 
+        onClose={onClose} 
+        maxWidth="md" 
+        fullWidth
+        PaperProps={{
+          sx: { borderRadius: 2 }
+        }}
+      >
+        <DialogTitle sx={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          pb: 2,
+          borderBottom: '1px solid',
+          borderColor: 'divider'
+        }}>
+          <Typography variant="h5" sx={{ fontWeight: 600 }}>
+            {formData.title}
+          </Typography>
+          <IconButton onClick={onClose} data-testid="close-announcement-modal">
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        
+        <DialogContent sx={{ pt: 3 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+            {/* Photo */}
+            {photoPreview && (
+              <Box sx={{ 
+                borderRadius: '12px', 
+                overflow: 'hidden',
+                mb: 2
+              }}>
+                <img src={photoPreview} alt="Announcement" style={{ width: '100%', borderRadius: '12px' }} />
+              </Box>
+            )}
+
+            {/* Categories */}
+            {formData.categories && formData.categories.length > 0 && (
+              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                {formData.categories.map((cat) => (
+                  <Chip 
+                    key={cat}
+                    label={cat} 
+                    color="primary"
+                    size="small"
+                    sx={{ backgroundColor: '#81c784', color: '#fff' }}
+                  />
+                ))}
+              </Box>
+            )}
+
+            {/* Publish Date */}
+            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
+              <Schedule sx={{ color: '#81c784', fontSize: 28, mt: 0.5 }} />
+              <Box>
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                  Objavljeno
+                </Typography>
+                <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                  {new Date(announcement?.publishDate || Date.now()).toLocaleDateString('bs-BA', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric'
+                  })}
+                </Typography>
+              </Box>
+            </Box>
+
+            {/* Content */}
+            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
+              <Article sx={{ color: '#81c784', fontSize: 28, mt: 0.5 }} />
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
+                  Sadržaj
+                </Typography>
+                <Box sx={{ 
+                  p: 2, 
+                  border: '1px solid #c8e6c9', 
+                  borderRadius: '8px',
+                  backgroundColor: '#f1f8f6'
+                }}>
+                  <Typography variant="body2" sx={{ lineHeight: 1.6 }} dangerouslySetInnerHTML={{ __html: formData.content }} />
+                </Box>
+              </Box>
+            </Box>
+          </Box>
+        </DialogContent>
+        
+        <DialogActions sx={{ p: 3, borderTop: '1px solid', borderColor: 'divider' }}>
+          <Button 
+            onClick={onClose} 
+            variant="contained"
+            data-testid="button-close"
+            sx={{ backgroundColor: '#81c784' }}
+          >
+            {t('common:buttons.close')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+
   return (
     <Dialog 
       open={open} 
@@ -180,14 +286,6 @@ export default function AnnouncementModal({
                 </label>
               </Box>
             )}
-            {isReadOnly && photoPreview && (
-              <Box sx={{ 
-                borderRadius: '12px', 
-                overflow: 'hidden'
-              }}>
-                <img src={photoPreview} alt="Announcement" style={{ width: '100%', borderRadius: '12px' }} />
-              </Box>
-            )}
 
             <TextField
               fullWidth
@@ -233,37 +331,24 @@ export default function AnnouncementModal({
               data-testid="autocomplete-categories"
             />
             
-            {!isReadOnly ? (
-              <RichTextEditor
-                value={formData.content}
-                onChange={(value) => setFormData(prev => ({ ...prev, content: value }))}
-                label={t('announcements:content')}
-                placeholder={t('announcements:contentPlaceholder')}
-                required
-                data-testid="input-content"
-              />
-            ) : (
-              <Box sx={{ 
-                p: 2, 
-                border: '1px solid #c8e6c9', 
-                borderRadius: '8px',
-                backgroundColor: '#f1f8f6'
-              }}>
-                <Typography variant="body2" dangerouslySetInnerHTML={{ __html: formData.content }} />
-              </Box>
-            )}
+            <RichTextEditor
+              value={formData.content}
+              onChange={(value) => setFormData(prev => ({ ...prev, content: value }))}
+              label={t('announcements:content')}
+              placeholder={t('announcements:contentPlaceholder')}
+              required
+              data-testid="input-content"
+            />
             
             <FormControlLabel
               control={
                 <Switch
                   checked={formData.isFeatured}
                   onChange={handleChange('isFeatured')}
-                  disabled={isReadOnly}
                   data-testid="switch-featured"
                 />
               }
               label={t('announcements:modal.featuredLabel')}
-              sx={{ opacity: isReadOnly ? 0.6 : 1 }}
             />
           </Box>
         </DialogContent>
@@ -274,17 +359,15 @@ export default function AnnouncementModal({
             variant="outlined"
             data-testid="button-cancel"
           >
-            {isReadOnly ? t('common:buttons.close') : t('common:buttons.cancel')}
+            {t('common:buttons.cancel')}
           </Button>
-          {!isReadOnly && (
-            <Button 
-              type="submit" 
-              variant="contained"
-              data-testid="button-save"
-            >
-              {t('announcements:modal.save')}
-            </Button>
-          )}
+          <Button 
+            type="submit" 
+            variant="contained"
+            data-testid="button-save"
+          >
+            {t('announcements:modal.save')}
+          </Button>
         </DialogActions>
       </form>
     </Dialog>
