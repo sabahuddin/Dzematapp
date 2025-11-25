@@ -4228,7 +4228,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create new tenant
   app.post("/api/tenants", requireSuperAdmin, async (req, res) => {
     try {
-      const validated = insertTenantSchema.parse(req.body);
+      const data = req.body;
+      // Convert empty subdomain to undefined (null in DB)
+      if (data.subdomain === '') {
+        data.subdomain = undefined;
+      }
+      const validated = insertTenantSchema.parse(data);
       const newTenant = await storage.createTenant(validated);
       res.status(201).json(newTenant);
     } catch (error) {
