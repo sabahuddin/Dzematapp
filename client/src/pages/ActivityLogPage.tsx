@@ -436,15 +436,22 @@ export default function ActivityLogPage() {
             <Table>
               <TableHead>
                 <TableRow>
-                  {currentUser?.isAdmin && <TableCell>{t('user')}</TableCell>}
-                  <TableCell>{t('type')}</TableCell>
-                  <TableCell>{t('description')}</TableCell>
-                  <TableCell>{t('points')}</TableCell>
-                  <TableCell>{t('date')}</TableCell>
+                  {currentUser?.isAdmin && <SortableHeaderCell sortKey="userId" onSort={activitiesSort.handleSort} currentSortKey={activitiesSort.sortKey} currentSortDirection={activitiesSort.sortDirection}>{t('user')}</SortableHeaderCell>}
+                  <SortableHeaderCell sortKey="activityType" onSort={activitiesSort.handleSort} currentSortKey={activitiesSort.sortKey} currentSortDirection={activitiesSort.sortDirection}>{t('type')}</SortableHeaderCell>
+                  <SortableHeaderCell sortKey="description" onSort={activitiesSort.handleSort} currentSortKey={activitiesSort.sortKey} currentSortDirection={activitiesSort.sortDirection}>{t('description')}</SortableHeaderCell>
+                  <SortableHeaderCell sortKey="points" onSort={activitiesSort.handleSort} currentSortKey={activitiesSort.sortKey} currentSortDirection={activitiesSort.sortDirection}>{t('points')}</SortableHeaderCell>
+                  <SortableHeaderCell sortKey="createdAt" onSort={activitiesSort.handleSort} currentSortKey={activitiesSort.sortKey} currentSortDirection={activitiesSort.sortDirection}>{t('date')}</SortableHeaderCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {filteredActivities.map((activity: ActivityLog) => (
+                {activitiesSort.sortedData.filter((activity: ActivityLog) => {
+                  const matchesType = filterType === 'all' || activity.activityType === filterType;
+                  if (!matchesType) return false;
+                  if (!searchTerm) return true;
+                  const user = (usersQuery.data as User[] || []).find(u => u.id === activity.userId);
+                  return (user && `${user.firstName} ${user.lastName}`.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                    activity.description.toLowerCase().includes(searchTerm.toLowerCase());
+                }).map((activity: ActivityLog) => (
                   <TableRow key={activity.id}>
                     {currentUser?.isAdmin && (
                       <TableCell>
@@ -555,11 +562,11 @@ export default function ActivityLogPage() {
               <Table>
                 <TableHead>
                   <TableRow>
-                    {currentUser?.isAdmin && <TableCell><strong>Korisnik</strong></TableCell>}
-                    <TableCell><strong>Tip Aktivnosti</strong></TableCell>
-                    <TableCell><strong>Opis</strong></TableCell>
-                    <TableCell align="center"><strong>Bodovi</strong></TableCell>
-                    <TableCell><strong>Datum</strong></TableCell>
+                    {currentUser?.isAdmin && <SortableHeaderCell sortKey="userId" onSort={activitiesSort.handleSort} currentSortKey={activitiesSort.sortKey} currentSortDirection={activitiesSort.sortDirection}>Korisnik</SortableHeaderCell>}
+                    <SortableHeaderCell sortKey="activityType" onSort={activitiesSort.handleSort} currentSortKey={activitiesSort.sortKey} currentSortDirection={activitiesSort.sortDirection}>Tip Aktivnosti</SortableHeaderCell>
+                    <SortableHeaderCell sortKey="description" onSort={activitiesSort.handleSort} currentSortKey={activitiesSort.sortKey} currentSortDirection={activitiesSort.sortDirection}>Opis</SortableHeaderCell>
+                    <SortableHeaderCell sortKey="points" onSort={activitiesSort.handleSort} currentSortKey={activitiesSort.sortKey} currentSortDirection={activitiesSort.sortDirection}>Bodovi</SortableHeaderCell>
+                    <SortableHeaderCell sortKey="createdAt" onSort={activitiesSort.handleSort} currentSortKey={activitiesSort.sortKey} currentSortDirection={activitiesSort.sortDirection}>Datum</SortableHeaderCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
