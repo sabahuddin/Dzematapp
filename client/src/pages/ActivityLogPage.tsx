@@ -46,7 +46,8 @@ import {
   Add,
   Edit,
   Delete,
-  Upload
+  Upload,
+  TrendingUp
 } from '@mui/icons-material';
 import { ActivityLog, User, UserCertificate, FinancialContribution, Badge, insertBadgeSchema } from '@shared/schema';
 import { useAuth } from '../hooks/useAuth';
@@ -79,7 +80,7 @@ export default function ActivityLogPage() {
   const featureAccess = useFeatureAccess('activity-log');
   const [filterType, setFilterType] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState<'activities' | 'contributions' | 'badges-manage' | 'badges-earned' | 'templates' | 'issue' | 'issued' | 'issued-badges'>('activities');
+  const [activeTab, setActiveTab] = useState<'activities' | 'contributions' | 'bodove' | 'badges-manage' | 'badges-earned' | 'templates' | 'issue' | 'issued' | 'issued-badges'>('activities');
   const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
   const [selectedTemplate, setSelectedTemplate] = useState<string>('');
   const [customMessage, setCustomMessage] = useState('');
@@ -336,6 +337,9 @@ export default function ActivityLogPage() {
         <Button variant={activeTab === 'contributions' ? 'contained' : 'outlined'} onClick={() => setActiveTab('contributions')} data-testid="tab-contributions" startIcon={<AttachMoney />}>
           Uplate
         </Button>
+        <Button variant={activeTab === 'bodove' ? 'contained' : 'outlined'} onClick={() => setActiveTab('bodove')} data-testid="tab-bodove" startIcon={<EmojiEvents />}>
+          Bodovi
+        </Button>
         {currentUser?.isAdmin && (
           <>
             <Button variant={activeTab === 'badges-manage' ? 'contained' : 'outlined'} onClick={() => setActiveTab('badges-manage')} data-testid="tab-badges-manage" startIcon={<BadgeOutlined />}>
@@ -470,6 +474,97 @@ export default function ActivityLogPage() {
                 </Table>
               </TableContainer>
             )}
+          </Box>
+        </Card>
+      )}
+
+      {/* Bodove Tab */}
+      {activeTab === 'bodove' && (
+        <Card>
+          <Box sx={{ p: 3 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+              <EmojiEvents sx={{ fontSize: 40, color: 'hsl(14 100% 45%)' }} />
+              <Box>
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                  {currentUser?.isAdmin ? 'Pregled svih bodova' : 'Vaši bodovi'}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {currentUser?.isAdmin ? 'Bodovi svih članova' : 'Detaljan pregled svih bodova koje ste zaradili'}
+                </Typography>
+              </Box>
+            </Box>
+
+            {/* Total Points Card - Only for member view */}
+            {!currentUser?.isAdmin && (
+              <Card sx={{ mb: 3, p: 3, bgcolor: 'hsl(36 100% 94%)', borderLeft: '4px solid hsl(14 100% 45%)' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <TrendingUp sx={{ fontSize: 48, color: 'hsl(14 100% 45%)' }} />
+                  <Box>
+                    <Typography variant="h3" sx={{ fontWeight: 700, color: 'hsl(14 100% 45%)' }}>
+                      {((activityLogsQuery.data as ActivityLog[]) || []).reduce((sum, entry) => sum + (entry.points || 0), 0)}
+                    </Typography>
+                    <Typography variant="body1" color="text.secondary">
+                      Ukupno bodova
+                    </Typography>
+                  </Box>
+                </Box>
+              </Card>
+            )}
+
+            {/* Activity Log Table */}
+            <TableContainer sx={{ overflowX: 'auto' }}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    {currentUser?.isAdmin && <TableCell><strong>Korisnik</strong></TableCell>}
+                    <TableCell><strong>Tip Aktivnosti</strong></TableCell>
+                    <TableCell><strong>Opis</strong></TableCell>
+                    <TableCell align="center"><strong>Bodovi</strong></TableCell>
+                    <TableCell><strong>Datum</strong></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {((activityLogsQuery.data as ActivityLog[]) || []).length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={currentUser?.isAdmin ? 5 : 4} sx={{ textAlign: 'center', py: 4 }}>
+                        <Typography color="text.secondary">
+                          Nema aktivnosti za prikaz
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    ((activityLogsQuery.data as ActivityLog[]) || [])
+                      .sort((a, b) => new Date(b.createdAt || '').getTime() - new Date(a.createdAt || '').getTime())
+                      .map((entry: ActivityLog) => (
+                        <TableRow key={entry.id} hover>
+                          {currentUser?.isAdmin && (
+                            <TableCell>
+                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>
+                                  {getUserName(entry.userId).charAt(0)}
+                                </Avatar>
+                                <Typography variant="body2" fontWeight={500}>{getUserName(entry.userId)}</Typography>
+                              </Box>
+                            </TableCell>
+                          )}
+                          <TableCell>
+                            <Chip icon={getActivityIcon(entry.activityType)} label={getActivityLabel(entry.activityType)} color={getActivityColor(entry.activityType) as any} size="small" />
+                          </TableCell>
+                          <TableCell><Typography variant="body2">{entry.description}</Typography></TableCell>
+                          <TableCell align="center">
+                            <Typography sx={{ fontWeight: 600, color: (entry.points || 0) > 0 ? 'hsl(122 60% 29%)' : 'inherit' }}>
+                              +{entry.points || 0}
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            {entry.createdAt ? new Date(entry.createdAt).toLocaleDateString('hr-HR') : '-'}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </Box>
         </Card>
       )}

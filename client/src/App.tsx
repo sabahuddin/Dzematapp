@@ -32,7 +32,6 @@ import VaktijaPage from "@/pages/VaktijaPage";
 import GuidePage from "@/pages/GuidePage";
 import FinancesPage from "@/pages/FinancesPage";
 import ActivityLogPage from "@/pages/ActivityLogPage";
-import UserPointsDetailsPage from "@/pages/UserPointsDetailsPage";
 import BadgesPage from "@/pages/BadgesPage";
 import MyBadgesPage from "@/pages/MyBadgesPage";
 import BadgesAdminPage from "@/pages/BadgesAdminPage";
@@ -304,12 +303,6 @@ function Router() {
       <Route path="/activity-log">
         <ProtectedRoute>
           <ActivityLogPage />
-        </ProtectedRoute>
-      </Route>
-      
-      <Route path="/my-points">
-        <ProtectedRoute>
-          <UserPointsDetailsPage />
         </ProtectedRoute>
       </Route>
       
