@@ -105,6 +105,8 @@ export default function RecognitionsPage() {
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [filterType, setFilterType] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [paymentSearchTerm, setPaymentSearchTerm] = useState('');
+  const [paymentPurposeFilter, setPaymentPurposeFilter] = useState<string>('all');
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -638,75 +640,107 @@ export default function RecognitionsPage() {
       </TabPanel>
 
       <TabPanel value={tabValue} index={4}>
-        <Box>
-          <Box sx={{ mb: 3 }}>
-            <Typography variant="h5" component="h2" sx={{ fontWeight: 600 }}>
-              Moje uplate
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Pregled svih finansijskih uplata i donacija
-            </Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
+            <TextField
+              variant="outlined"
+              placeholder="Pretraži uplate..."
+              value={paymentSearchTerm}
+              onChange={(e) => setPaymentSearchTerm(e.target.value)}
+              fullWidth
+              size="small"
+              data-testid="input-search-payments"
+            />
+            <FormControl fullWidth size="small">
+              <InputLabel>Filtriraj po svrši</InputLabel>
+              <Select
+                value={paymentPurposeFilter}
+                label="Filtriraj po svrši"
+                onChange={(e) => setPaymentPurposeFilter(e.target.value)}
+                data-testid="select-filter-purpose"
+              >
+                <MenuItem value="all">Sve uplate</MenuItem>
+                <MenuItem value="Članarina">Članarina</MenuItem>
+                <MenuItem value="Donacija">Donacija</MenuItem>
+                <MenuItem value="Vakif">Vakif</MenuItem>
+                <MenuItem value="Sergija">Sergija</MenuItem>
+                <MenuItem value="Ostalo">Ostalo</MenuItem>
+              </Select>
+            </FormControl>
           </Box>
 
-          <Card>
-            <TableContainer sx={{ overflowX: 'auto' }}>
-              <Table>
-                <TableHead>
-                  <TableRow sx={{ bgcolor: 'hsl(0 0% 96%)' }}>
-                    <TableCell><strong>Iznos</strong></TableCell>
-                    <TableCell><strong>Svrha</strong></TableCell>
-                    <TableCell><strong>Projekat</strong></TableCell>
-                    <TableCell><strong>Datum uplate</strong></TableCell>
-                    <TableCell><strong>Napomene</strong></TableCell>
+          <TableContainer sx={{ mt: 1 }}>
+            <Table size="small">
+              <TableHead>
+                <TableRow sx={{ bgcolor: 'hsl(0 0% 96%)' }}>
+                  <TableCell><strong>Iznos</strong></TableCell>
+                  <TableCell><strong>Svrha</strong></TableCell>
+                  <TableCell><strong>Projekat</strong></TableCell>
+                  <TableCell><strong>Datum uplate</strong></TableCell>
+                  <TableCell><strong>Napomene</strong></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {((financialContributionsQuery.data || [])
+                  .filter((contribution: FinancialContribution) => {
+                    const matchesPurpose = paymentPurposeFilter === 'all' || contribution.purpose === paymentPurposeFilter;
+                    const matchesSearch = !paymentSearchTerm || 
+                      contribution.purpose.toLowerCase().includes(paymentSearchTerm.toLowerCase()) ||
+                      (contribution.notes || '').toLowerCase().includes(paymentSearchTerm.toLowerCase());
+                    return matchesPurpose && matchesSearch;
+                  })
+                ).length > 0 ? (
+                  (financialContributionsQuery.data || [])
+                    .filter((contribution: FinancialContribution) => {
+                      const matchesPurpose = paymentPurposeFilter === 'all' || contribution.purpose === paymentPurposeFilter;
+                      const matchesSearch = !paymentSearchTerm || 
+                        contribution.purpose.toLowerCase().includes(paymentSearchTerm.toLowerCase()) ||
+                        (contribution.notes || '').toLowerCase().includes(paymentSearchTerm.toLowerCase());
+                      return matchesPurpose && matchesSearch;
+                    })
+                    .sort((a: any, b: any) => new Date(b.paymentDate || 0).getTime() - new Date(a.paymentDate || 0).getTime())
+                    .map((contribution: FinancialContribution) => (
+                      <TableRow key={contribution.id} hover data-testid={`row-payment-${contribution.id}`}>
+                        <TableCell>
+                          <Chip
+                            icon={<AttachMoney />}
+                            label={formatPrice(contribution.amount)}
+                            color="success"
+                            size="small"
+                            data-testid={`amount-${contribution.id}`}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Chip
+                            label={contribution.purpose}
+                            size="small"
+                            variant="outlined"
+                            data-testid={`purpose-${contribution.id}`}
+                          />
+                        </TableCell>
+                        <TableCell sx={{ fontSize: '0.875rem' }} data-testid={`project-${contribution.id}`}>
+                          {contribution.projectId ? '📌' : '-'}
+                        </TableCell>
+                        <TableCell sx={{ fontSize: '0.875rem' }} data-testid={`date-${contribution.id}`}>
+                          {contribution.paymentDate ? new Date(contribution.paymentDate).toLocaleDateString('hr-HR') : '-'}
+                        </TableCell>
+                        <TableCell sx={{ fontSize: '0.875rem' }} data-testid={`notes-${contribution.id}`}>
+                          {contribution.notes || '-'}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5} sx={{ textAlign: 'center', py: 3 }}>
+                      <Typography color="text.secondary" variant="body2" data-testid="text-no-payments">
+                        Nema uplata za prikaz
+                      </Typography>
+                    </TableCell>
                   </TableRow>
-                </TableHead>
-                <TableBody>
-                  {(financialContributionsQuery.data || []).length > 0 ? (
-                    (financialContributionsQuery.data || [])
-                      .sort((a: any, b: any) => new Date(b.paymentDate || 0).getTime() - new Date(a.paymentDate || 0).getTime())
-                      .map((contribution: FinancialContribution) => (
-                        <TableRow key={contribution.id} hover data-testid={`row-payment-${contribution.id}`}>
-                          <TableCell>
-                            <Chip
-                              icon={<AttachMoney />}
-                              label={formatPrice(contribution.amount)}
-                              color="success"
-                              size="small"
-                              data-testid={`amount-${contribution.id}`}
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <Chip
-                              label={contribution.purpose}
-                              size="small"
-                              variant="outlined"
-                              data-testid={`purpose-${contribution.id}`}
-                            />
-                          </TableCell>
-                          <TableCell data-testid={`project-${contribution.id}`}>
-                            {contribution.projectId ? '📌' : '-'}
-                          </TableCell>
-                          <TableCell sx={{ fontSize: '0.875rem' }} data-testid={`date-${contribution.id}`}>
-                            {contribution.paymentDate ? new Date(contribution.paymentDate).toLocaleDateString('hr-HR') : '-'}
-                          </TableCell>
-                          <TableCell sx={{ fontSize: '0.875rem' }} data-testid={`notes-${contribution.id}`}>
-                            {contribution.notes || '-'}
-                          </TableCell>
-                        </TableRow>
-                      ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={5} sx={{ textAlign: 'center', py: 4 }}>
-                        <Typography color="text.secondary" variant="body2" data-testid="text-no-payments">
-                          Još nije bilo uplata
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Card>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </Box>
       </TabPanel>
 
