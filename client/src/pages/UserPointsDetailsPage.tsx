@@ -29,7 +29,6 @@ export default function UserPointsDetailsPage() {
     const labels: Record<string, string> = {
       'task_completed': 'Završen zadatak',
       'contribution_made': 'Finansijska uplata',
-      'bonus_points': 'Bonus bodovi',
       'event_attendance': 'Prisustvo događaju',
       'project_contribution': 'Doprinos projektu',
     };
@@ -41,7 +40,6 @@ export default function UserPointsDetailsPage() {
     const colors: Record<string, "default" | "primary" | "secondary" | "success" | "warning" | "error"> = {
       'task_completed': 'primary',
       'contribution_made': 'success',
-      'bonus_points': 'warning',
       'event_attendance': 'secondary',
       'project_contribution': 'success',
     };

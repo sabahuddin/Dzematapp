@@ -2808,8 +2808,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/financial-contributions", requireAdmin, requireFeature("finances"), async (req, res) => {
     try {
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
-      const { points: bonusPoints, ...contributionData } = req.body;
-      const validated = insertFinancialContributionSchema.parse(contributionData);
+      const validated = insertFinancialContributionSchema.parse(req.body);
       const contribution = await storage.createFinancialContribution({
         ...validated,
         createdById: req.user!.id,
@@ -2841,18 +2840,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         relatedEntityId: contribution.id,
         tenantId
       });
-
-      // If bonus points were added, create a separate activity log entry
-      if (bonusPoints && bonusPoints > 0) {
-        await storage.createActivityLog({
-          userId: validated.userId,
-          activityType: 'bonus_points',
-          description: `Bonus bodovi za uplatu: ${validated.amount} CHF`,
-          points: parseInt(bonusPoints),
-          relatedEntityId: contribution.id,
-          tenantId
-        });
-      }
 
       // If contribution is for a project, create additional activity log
       if (validated.projectId) {

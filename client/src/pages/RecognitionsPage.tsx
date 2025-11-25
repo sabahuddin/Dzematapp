@@ -206,7 +206,6 @@ export default function RecognitionsPage() {
     const labels: Record<string, string> = {
       'task_completed': 'Završen zadatak',
       'contribution_made': 'Finansijska uplata',
-      'bonus_points': 'Bonus bodovi',
       'event_attendance': 'Prisustvo događaju',
       'project_contribution': 'Doprinos projektu',
     };
@@ -217,7 +216,6 @@ export default function RecognitionsPage() {
     const colors: Record<string, "default" | "primary" | "secondary" | "success" | "warning" | "error"> = {
       'task_completed': 'primary',
       'contribution_made': 'success',
-      'bonus_points': 'warning',
       'event_attendance': 'secondary',
       'project_contribution': 'success',
     };
@@ -295,7 +293,6 @@ export default function RecognitionsPage() {
                   <MenuItem value="all">Sve aktivnosti</MenuItem>
                   <MenuItem value="task_completed">Završen zadatak</MenuItem>
                   <MenuItem value="contribution_made">Finansijska uplata</MenuItem>
-                  <MenuItem value="bonus_points">Bonus bodovi</MenuItem>
                   <MenuItem value="event_attendance">Prisustvo događaju</MenuItem>
                   <MenuItem value="project_contribution">Doprinos projektu</MenuItem>
                 </Select>

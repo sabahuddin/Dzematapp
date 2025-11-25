@@ -1772,11 +1772,11 @@ export class DatabaseStorage implements IStorage {
       // Delete contribution
       await tx.delete(financialContributions).where(eq(financialContributions.id, contributionId));
       
-      // Delete all related activity logs (contribution_made, bonus_points, project_contribution)
+      // Delete all related activity logs (contribution_made, project_contribution)
       await tx.delete(activityLog).where(
         and(
           eq(activityLog.relatedEntityId, contributionId),
-          inArray(activityLog.activityType, ['contribution_made', 'bonus_points', 'project_contribution'])
+          inArray(activityLog.activityType, ['contribution_made', 'project_contribution'])
         )
       );
       
