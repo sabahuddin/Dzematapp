@@ -262,7 +262,8 @@ export default function RecognitionsPage() {
       </Box>
 
       <TabPanel value={tabValue} index={0}>
-        <Box sx={{ mb: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Typography sx={{ mb: 2, p: 2, bgcolor: 'rgba(0,0,0,0.1)' }}>DEBUG: Aktivnosti Tab</Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <TextField
             variant="outlined"
             placeholder="Pretraži aktivnosti..."
@@ -287,13 +288,8 @@ export default function RecognitionsPage() {
               <MenuItem value="project_contribution">Doprinos projektu</MenuItem>
             </Select>
           </FormControl>
-        </Box>
-        
-        <Card>
-          <Box sx={{ p: 3, borderBottom: '1px solid hsl(0 0% 88%)' }}>
-          </Box>
           
-          <TableContainer>
+          <TableContainer sx={{ mt: 2 }}>
             <Table>
               <TableHead>
                 <TableRow>
@@ -340,7 +336,7 @@ export default function RecognitionsPage() {
               </TableBody>
             </Table>
           </TableContainer>
-        </Card>
+        </Box>
       </TabPanel>
 
       <TabPanel value={tabValue} index={1}>
