@@ -32,6 +32,7 @@ interface AnnouncementModalProps {
   onSave: (announcementData: any) => Promise<void>;
   announcement?: Announcement | null;
   authorId: string;
+  isReadOnly?: boolean;
 }
 
 export default function AnnouncementModal({ 
@@ -39,7 +40,8 @@ export default function AnnouncementModal({
   onClose, 
   onSave, 
   announcement, 
-  authorId 
+  authorId,
+  isReadOnly = false
 }: AnnouncementModalProps) {
   const { t } = useTranslation(['announcements', 'common']);
   const { toast } = useToast();
@@ -142,40 +144,50 @@ export default function AnnouncementModal({
         <DialogContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
             {/* Photo Upload */}
-            <Box sx={{ 
-              border: '2px dashed #81c784', 
-              borderRadius: '12px', 
-              p: 2, 
-              textAlign: 'center',
-              backgroundColor: '#f1f8f6',
-              cursor: 'pointer',
-              position: 'relative'
-            }}>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handlePhotoChange}
-                style={{ display: 'none' }}
-                id="photo-input"
-              />
-              <label htmlFor="photo-input" style={{ cursor: 'pointer', display: 'block' }}>
-                {photoPreview ? (
-                  <Box>
-                    <img src={photoPreview} alt="Preview" style={{ maxHeight: '150px', borderRadius: '8px' }} />
-                    <Typography variant="caption" sx={{ display: 'block', mt: 1, color: '#81c784' }}>
-                      {t('announcements:modal.uploadFiles')}
-                    </Typography>
-                  </Box>
-                ) : (
-                  <Box sx={{ py: 2 }}>
-                    <CloudUpload sx={{ fontSize: 40, color: '#81c784', mb: 1 }} />
-                    <Typography variant="body2" sx={{ color: '#81c784', fontWeight: 500 }}>
-                      Dodaj sliku obavijesti
-                    </Typography>
-                  </Box>
-                )}
-              </label>
-            </Box>
+            {!isReadOnly && (
+              <Box sx={{ 
+                border: '2px dashed #81c784', 
+                borderRadius: '12px', 
+                p: 2, 
+                textAlign: 'center',
+                backgroundColor: '#f1f8f6',
+                cursor: 'pointer',
+                position: 'relative'
+              }}>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handlePhotoChange}
+                  style={{ display: 'none' }}
+                  id="photo-input"
+                />
+                <label htmlFor="photo-input" style={{ cursor: 'pointer', display: 'block' }}>
+                  {photoPreview ? (
+                    <Box>
+                      <img src={photoPreview} alt="Preview" style={{ maxHeight: '150px', borderRadius: '8px' }} />
+                      <Typography variant="caption" sx={{ display: 'block', mt: 1, color: '#81c784' }}>
+                        {t('announcements:modal.uploadFiles')}
+                      </Typography>
+                    </Box>
+                  ) : (
+                    <Box sx={{ py: 2 }}>
+                      <CloudUpload sx={{ fontSize: 40, color: '#81c784', mb: 1 }} />
+                      <Typography variant="body2" sx={{ color: '#81c784', fontWeight: 500 }}>
+                        Dodaj sliku obavijesti
+                      </Typography>
+                    </Box>
+                  )}
+                </label>
+              </Box>
+            )}
+            {isReadOnly && photoPreview && (
+              <Box sx={{ 
+                borderRadius: '12px', 
+                overflow: 'hidden'
+              }}>
+                <img src={photoPreview} alt="Announcement" style={{ width: '100%', borderRadius: '12px' }} />
+              </Box>
+            )}
 
             <TextField
               fullWidth
@@ -184,12 +196,14 @@ export default function AnnouncementModal({
               value={formData.title}
               onChange={handleChange('title')}
               required
+              disabled={isReadOnly}
               data-testid="input-title"
             />
             
             <Autocomplete
               multiple
               freeSolo
+              disabled={isReadOnly}
               options={predefinedCategories}
               value={formData.categories}
               onChange={(event, newValue) => {
@@ -211,6 +225,7 @@ export default function AnnouncementModal({
                   label={t('announcements:categories.label')}
                   placeholder={t('announcements:categories.placeholder')}
                   InputLabelProps={{ shrink: true }}
+                  disabled={isReadOnly}
                   data-testid="input-categories"
                 />
               )}
@@ -218,24 +233,37 @@ export default function AnnouncementModal({
               data-testid="autocomplete-categories"
             />
             
-            <RichTextEditor
-              value={formData.content}
-              onChange={(value) => setFormData(prev => ({ ...prev, content: value }))}
-              label={t('announcements:content')}
-              placeholder={t('announcements:contentPlaceholder')}
-              required
-              data-testid="input-content"
-            />
+            {!isReadOnly ? (
+              <RichTextEditor
+                value={formData.content}
+                onChange={(value) => setFormData(prev => ({ ...prev, content: value }))}
+                label={t('announcements:content')}
+                placeholder={t('announcements:contentPlaceholder')}
+                required
+                data-testid="input-content"
+              />
+            ) : (
+              <Box sx={{ 
+                p: 2, 
+                border: '1px solid #c8e6c9', 
+                borderRadius: '8px',
+                backgroundColor: '#f1f8f6'
+              }}>
+                <Typography variant="body2" dangerouslySetInnerHTML={{ __html: formData.content }} />
+              </Box>
+            )}
             
             <FormControlLabel
               control={
                 <Switch
                   checked={formData.isFeatured}
                   onChange={handleChange('isFeatured')}
+                  disabled={isReadOnly}
                   data-testid="switch-featured"
                 />
               }
               label={t('announcements:modal.featuredLabel')}
+              sx={{ opacity: isReadOnly ? 0.6 : 1 }}
             />
           </Box>
         </DialogContent>
@@ -246,15 +274,17 @@ export default function AnnouncementModal({
             variant="outlined"
             data-testid="button-cancel"
           >
-            {t('common:buttons.cancel')}
+            {isReadOnly ? t('common:buttons.close') : t('common:buttons.cancel')}
           </Button>
-          <Button 
-            type="submit" 
-            variant="contained"
-            data-testid="button-save"
-          >
-            {t('announcements:modal.save')}
-          </Button>
+          {!isReadOnly && (
+            <Button 
+              type="submit" 
+              variant="contained"
+              data-testid="button-save"
+            >
+              {t('announcements:modal.save')}
+            </Button>
+          )}
         </DialogActions>
       </form>
     </Dialog>

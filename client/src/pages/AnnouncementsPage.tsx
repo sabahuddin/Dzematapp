@@ -431,6 +431,7 @@ export default function AnnouncementsPage() {
         onSave={handleSaveAnnouncement}
         announcement={selectedAnnouncement}
         authorId={user?.id || ''}
+        isReadOnly={selectedAnnouncement !== null && !user?.isAdmin}
       />
     </Box>
   );
