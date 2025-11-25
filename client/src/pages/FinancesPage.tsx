@@ -87,7 +87,7 @@ export default function FinancesPage() {
   });
 
   // Fetch contribution purposes (for admin)
-  const purposesQuery = useQuery({
+  const purposesQuery = useQuery<ContributionPurpose[]>({
     queryKey: ['/api/contribution-purposes'],
     enabled: currentUser?.isAdmin || false,
   });
@@ -170,7 +170,7 @@ export default function FinancesPage() {
       return await apiRequest('/api/contribution-purposes', 'POST', {
         name: newPurposeName,
         description: newPurposeDesc,
-      });
+      }) as Promise<ContributionPurpose>;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/contribution-purposes'] });
@@ -187,14 +187,13 @@ export default function FinancesPage() {
   // Create new project mutation
   const createProjectMutation = useMutation<Project, Error, void>({
     mutationFn: async () => {
-      const response = await apiRequest('/api/projects', 'POST', {
+      return await apiRequest('/api/projects', 'POST', {
         name: newProjectName,
         description: newProjectDescription,
         goalAmount: newProjectGoal,
         currentAmount: '0',
         status: 'active'
-      });
-      return response as Project;
+      }) as Promise<Project>;
     },
     onSuccess: async (newProject: Project) => {
       // Wait for query to be refetched to ensure new project appears immediately
