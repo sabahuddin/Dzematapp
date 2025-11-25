@@ -21,7 +21,8 @@ import {
   Select,
   FormControl,
   InputLabel,
-  Grid
+  Grid,
+  Stack
 } from '@mui/material';
 import {
   Timeline,
@@ -32,22 +33,27 @@ import {
   AttachMoney,
   EmojiEvents,
   Work,
-  Download
+  Download,
+  ReceiptLong,
+  BadgeOutlined
 } from '@mui/icons-material';
-import { ActivityLog, User } from '@shared/schema';
+import { ActivityLog, User, UserCertificate, UserBadge, FinancialContribution } from '@shared/schema';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/use-toast';
 import { exportToExcel } from '../utils/excelExport';
 import { useFeatureAccess } from '../hooks/useFeatureAccess';
 import { UpgradeCTA } from '../components/UpgradeCTA';
+import { useCurrency } from '../contexts/CurrencyContext';
 
 export default function ActivityLogPage() {
-  const { t } = useTranslation(['activity']);
+  const { t } = useTranslation(['activity', 'finances', 'common']);
   const { user: currentUser } = useAuth();
   const { toast } = useToast();
+  const { formatPrice } = useCurrency();
   const featureAccess = useFeatureAccess('activity-log');
   const [filterType, setFilterType] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [activeTab, setActiveTab] = useState<'activities' | 'certificates' | 'badges' | 'contributions'>('activities');
 
   if (featureAccess.upgradeRequired) {
     return <UpgradeCTA moduleId="activity-log" requiredPlan={featureAccess.requiredPlan || 'full'} currentPlan={featureAccess.currentPlan || 'standard'} />;
@@ -59,6 +65,33 @@ export default function ActivityLogPage() {
       ? ['/api/activity-logs'] 
       : [`/api/activity-logs/user/${currentUser?.id}`],
     enabled: !!currentUser,
+  });
+
+  // Fetch certificates
+  const certificatesQuery = useQuery({
+    queryKey: currentUser?.isAdmin 
+      ? ['/api/certificates/all']
+      : ['/api/certificates/user'],
+    enabled: !!currentUser && featureAccess.hasAccess,
+  });
+
+  // Fetch badges
+  const badgesQuery = useQuery({
+    queryKey: ['/api/badges'],
+    enabled: !!currentUser,
+  });
+
+  const userBadgesQuery = useQuery({
+    queryKey: ['/api/user-badges', currentUser?.id],
+    enabled: !!currentUser?.id,
+  });
+
+  // Fetch financial contributions
+  const contributionsQuery = useQuery({
+    queryKey: currentUser?.isAdmin 
+      ? ['/api/financial-contributions'] 
+      : [`/api/financial-contributions/user/${currentUser?.id}`],
+    enabled: !!currentUser && featureAccess.hasAccess,
   });
 
   // Fetch users (for admin to show names)
@@ -186,7 +219,29 @@ export default function ActivityLogPage() {
     });
   };
 
-  if (activityLogsQuery.isLoading) {
+  const allBadges = (badgesQuery.data as any[]) || [];
+  const userBadges = (userBadgesQuery.data as any[]) || [];
+  const earnedBadges = userBadges.map((ub: any) => {
+    const badge = allBadges.find((b: any) => b.id === ub.badgeId);
+    return {
+      ...badge,
+      earnedAt: ub.earnedAt,
+    };
+  }).filter(Boolean);
+
+  const getBadgeColor = (criteriaType: string) => {
+    switch (criteriaType) {
+      case 'points_total': return { bg: 'var(--semantic-award-bg)', text: 'var(--semantic-award-text)', border: 'var(--semantic-award-border)' };
+      case 'contributions_amount': return { bg: 'var(--semantic-success-bg)', text: 'var(--semantic-success-text)', border: 'var(--semantic-success-border)' };
+      case 'tasks_completed': return { bg: 'var(--semantic-info-bg)', text: 'var(--semantic-info-text)', border: 'var(--semantic-info-border)' };
+      case 'events_attended': return { bg: 'var(--semantic-celebration-bg)', text: 'var(--semantic-celebration-text)', border: 'var(--semantic-celebration-border)' };
+      default: return { bg: 'hsl(0 0% 96%)', text: '#616161', border: 'hsl(0 0% 74%)' };
+    }
+  };
+
+  const isLoading = activityLogsQuery.isLoading || certificatesQuery.isLoading || badgesQuery.isLoading || userBadgesQuery.isLoading || contributionsQuery.isLoading;
+
+  if (isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
         <CircularProgress />
@@ -194,21 +249,13 @@ export default function ActivityLogPage() {
     );
   }
 
-  if (activityLogsQuery.error) {
-    return (
-      <Alert severity="error">
-        {t('errorLoading')}
-      </Alert>
-    );
-  }
-
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h5" sx={{ fontWeight: 600 }}>
-          {currentUser?.isAdmin ? t('title') : t('myActivities')}
+          {currentUser?.isAdmin ? 'Pregled' : 'Moje aktivnosti'}
         </Typography>
-        {currentUser?.isAdmin && (
+        {currentUser?.isAdmin && activeTab === 'activities' && (
           <Button
             variant="outlined"
             startIcon={<Download />}
@@ -220,115 +267,308 @@ export default function ActivityLogPage() {
         )}
       </Box>
 
-      <Card>
-        <Box sx={{ p: 3, borderBottom: '1px solid hsl(0 0% 88%)' }}>
-          <Grid container spacing={2}>
-            {currentUser?.isAdmin && (
-              <Grid size={{ xs: 12, md: 6 }}>
-                <TextField
-                  variant="outlined"
-                  placeholder={t('searchPlaceholder')}
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  fullWidth
-                  data-testid="input-search"
-                />
-              </Grid>
-            )}
-            <Grid size={{ xs: 12, md: currentUser?.isAdmin ? 6 : 12 }}>
-              <FormControl fullWidth>
-                <InputLabel>{t('filterByType')}</InputLabel>
-                <Select
-                  value={filterType}
-                  label={t('filterByType')}
-                  onChange={(e) => setFilterType(e.target.value)}
-                  data-testid="select-filter-type"
-                >
-                  <MenuItem value="all">{t('filterOptions.all')}</MenuItem>
-                  <MenuItem value="task_completed">{t('filterOptions.task_completed')}</MenuItem>
-                  <MenuItem value="event_rsvp">{t('filterOptions.event_rsvp')}</MenuItem>
-                  <MenuItem value="announcement_read">{t('filterOptions.announcement_read')}</MenuItem>
-                  <MenuItem value="contribution_made">{t('filterOptions.contribution_made')}</MenuItem>
-                  <MenuItem value="badge_earned">{t('filterOptions.badge_earned')}</MenuItem>
-                  <MenuItem value="profile_updated">{t('filterOptions.profile_updated')}</MenuItem>
-                  <MenuItem value="project_contribution">{t('filterOptions.project_contribution')}</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-          </Grid>
-        </Box>
+      {/* Tab Buttons */}
+      <Box sx={{ display: 'flex', gap: 1, mb: 3, flexWrap: 'wrap' }}>
+        <Button
+          variant={activeTab === 'activities' ? 'contained' : 'outlined'}
+          onClick={() => setActiveTab('activities')}
+          data-testid="tab-activities"
+        >
+          Aktivnosti
+        </Button>
+        <Button
+          variant={activeTab === 'certificates' ? 'contained' : 'outlined'}
+          onClick={() => setActiveTab('certificates')}
+          data-testid="tab-certificates"
+          startIcon={<ReceiptLong />}
+        >
+          Zahvale ({certificatesQuery.data?.length || 0})
+        </Button>
+        <Button
+          variant={activeTab === 'badges' ? 'contained' : 'outlined'}
+          onClick={() => setActiveTab('badges')}
+          data-testid="tab-badges"
+          startIcon={<BadgeOutlined />}
+        >
+          Značke ({earnedBadges.length})
+        </Button>
+        <Button
+          variant={activeTab === 'contributions' ? 'contained' : 'outlined'}
+          onClick={() => setActiveTab('contributions')}
+          data-testid="tab-contributions"
+          startIcon={<AttachMoney />}
+        >
+          Uplate ({contributionsQuery.data?.length || 0})
+        </Button>
+      </Box>
 
-        <TableContainer sx={{ overflowX: 'auto' }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                {currentUser?.isAdmin && <TableCell>{t('user')}</TableCell>}
-                <TableCell>{t('type')}</TableCell>
-                <TableCell>{t('description')}</TableCell>
-                <TableCell>{t('points')}</TableCell>
-                <TableCell>{t('date')}</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredActivities.map((activity: ActivityLog) => (
-                <TableRow key={activity.id}>
-                  {currentUser?.isAdmin && (
-                    <TableCell>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>
-                          {getUserName(activity.userId).charAt(0)}
-                        </Avatar>
-                        <Typography variant="body2" fontWeight={500}>
-                          {getUserName(activity.userId)}
-                        </Typography>
-                      </Box>
-                    </TableCell>
-                  )}
-                  <TableCell>
-                    <Chip
-                      icon={getActivityIcon(activity.activityType)}
-                      label={getActivityLabel(activity.activityType)}
-                      color={getActivityColor(activity.activityType) as any}
-                      size="small"
-                      data-testid={`type-${activity.id}`}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="body2" data-testid={`description-${activity.id}`}>
-                      {activity.description}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    {activity.points && activity.points > 0 ? (
-                      <Chip
-                        icon={<EmojiEvents />}
-                        label={`+${activity.points}`}
-                        color="warning"
-                        size="small"
-                        data-testid={`points-${activity.id}`}
-                      />
-                    ) : (
-                      '-'
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {new Date(activity.createdAt).toLocaleString('hr-HR')}
-                  </TableCell>
-                </TableRow>
-              ))}
-              {filteredActivities.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={currentUser?.isAdmin ? 5 : 4} sx={{ textAlign: 'center', py: 4 }}>
-                    <Typography color="text.secondary">
-                      {t('noActivities')}
-                    </Typography>
-                  </TableCell>
-                </TableRow>
+      {/* Activities Tab */}
+      {activeTab === 'activities' && (
+        <Card>
+          <Box sx={{ p: 3, borderBottom: '1px solid hsl(0 0% 88%)' }}>
+            <Grid container spacing={2}>
+              {currentUser?.isAdmin && (
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <TextField
+                    variant="outlined"
+                    placeholder={t('searchPlaceholder')}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    fullWidth
+                    data-testid="input-search"
+                  />
+                </Grid>
               )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Card>
+              <Grid size={{ xs: 12, md: currentUser?.isAdmin ? 6 : 12 }}>
+                <FormControl fullWidth>
+                  <InputLabel>{t('filterByType')}</InputLabel>
+                  <Select
+                    value={filterType}
+                    label={t('filterByType')}
+                    onChange={(e) => setFilterType(e.target.value)}
+                    data-testid="select-filter-type"
+                  >
+                    <MenuItem value="all">{t('filterOptions.all')}</MenuItem>
+                    <MenuItem value="task_completed">{t('filterOptions.task_completed')}</MenuItem>
+                    <MenuItem value="event_rsvp">{t('filterOptions.event_rsvp')}</MenuItem>
+                    <MenuItem value="announcement_read">{t('filterOptions.announcement_read')}</MenuItem>
+                    <MenuItem value="contribution_made">{t('filterOptions.contribution_made')}</MenuItem>
+                    <MenuItem value="badge_earned">{t('filterOptions.badge_earned')}</MenuItem>
+                    <MenuItem value="profile_updated">{t('filterOptions.profile_updated')}</MenuItem>
+                    <MenuItem value="project_contribution">{t('filterOptions.project_contribution')}</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+            </Grid>
+          </Box>
+
+          <TableContainer sx={{ overflowX: 'auto' }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  {currentUser?.isAdmin && <TableCell>{t('user')}</TableCell>}
+                  <TableCell>{t('type')}</TableCell>
+                  <TableCell>{t('description')}</TableCell>
+                  <TableCell>{t('points')}</TableCell>
+                  <TableCell>{t('date')}</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {filteredActivities.map((activity: ActivityLog) => (
+                  <TableRow key={activity.id}>
+                    {currentUser?.isAdmin && (
+                      <TableCell>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>
+                            {getUserName(activity.userId).charAt(0)}
+                          </Avatar>
+                          <Typography variant="body2" fontWeight={500}>
+                            {getUserName(activity.userId)}
+                          </Typography>
+                        </Box>
+                      </TableCell>
+                    )}
+                    <TableCell>
+                      <Chip
+                        icon={getActivityIcon(activity.activityType)}
+                        label={getActivityLabel(activity.activityType)}
+                        color={getActivityColor(activity.activityType) as any}
+                        size="small"
+                        data-testid={`type-${activity.id}`}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="body2" data-testid={`description-${activity.id}`}>
+                        {activity.description}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      {activity.points && activity.points > 0 ? (
+                        <Chip
+                          icon={<EmojiEvents />}
+                          label={`+${activity.points}`}
+                          color="warning"
+                          size="small"
+                          data-testid={`points-${activity.id}`}
+                        />
+                      ) : (
+                        '-'
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {new Date(activity.createdAt).toLocaleString('hr-HR')}
+                    </TableCell>
+                  </TableRow>
+                ))}
+                {filteredActivities.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={currentUser?.isAdmin ? 5 : 4} sx={{ textAlign: 'center', py: 4 }}>
+                      <Typography color="text.secondary">
+                        {t('noActivities')}
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Card>
+      )}
+
+      {/* Certificates Tab */}
+      {activeTab === 'certificates' && (
+        <Card>
+          <Box sx={{ p: 3 }}>
+            {(certificatesQuery.data as UserCertificate[])?.length === 0 ? (
+              <Alert severity="info">
+                {currentUser?.isAdmin ? 'Nema zahvalnica' : 'Još niste primili nijednu zahvalnicu'}
+              </Alert>
+            ) : (
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      {currentUser?.isAdmin && <TableCell>Korisnik</TableCell>}
+                      <TableCell>Primatelj</TableCell>
+                      <TableCell>Datum izdavanja</TableCell>
+                      <TableCell>Akcije</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {(certificatesQuery.data as UserCertificate[])?.map((cert: UserCertificate) => (
+                      <TableRow key={cert.id}>
+                        {currentUser?.isAdmin && (
+                          <TableCell>
+                            <Typography variant="body2">
+                              {getUserName(cert.userId)}
+                            </Typography>
+                          </TableCell>
+                        )}
+                        <TableCell>{cert.recipientName}</TableCell>
+                        <TableCell>
+                          {cert.issuedAt ? new Date(cert.issuedAt).toLocaleDateString('hr-HR') : '-'}
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            size="small"
+                            href={cert.certificateImagePath}
+                            download
+                            variant="outlined"
+                            data-testid={`button-download-${cert.id}`}
+                          >
+                            Preuzmi
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )}
+          </Box>
+        </Card>
+      )}
+
+      {/* Badges Tab */}
+      {activeTab === 'badges' && (
+        <Card>
+          <Box sx={{ p: 3 }}>
+            {earnedBadges.length === 0 ? (
+              <Alert severity="info">
+                {currentUser?.isAdmin ? 'Nema osvojenih značaka' : 'Još niste osvojili nijednu značku'}
+              </Alert>
+            ) : (
+              <Stack spacing={2}>
+                {earnedBadges.map((badge: any) => {
+                  const colors = getBadgeColor(badge.criteriaType);
+                  return (
+                    <Card 
+                      key={badge.id}
+                      sx={{ 
+                        bgcolor: colors.bg,
+                        border: `2px solid ${colors.border}`,
+                        boxShadow: 2
+                      }}
+                    >
+                      <Box sx={{ p: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Box sx={{ fontSize: '2rem', textAlign: 'center', minWidth: 60 }}>
+                          {badge.icon || '🏆'}
+                        </Box>
+                        <Box sx={{ flex: 1 }}>
+                          <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                            {badge.name}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {badge.description}
+                          </Typography>
+                          {badge.earnedAt && (
+                            <Typography variant="caption" sx={{ display: 'block', mt: 1 }}>
+                              Osvojena: {new Date(badge.earnedAt).toLocaleDateString('hr-HR')}
+                            </Typography>
+                          )}
+                        </Box>
+                      </Box>
+                    </Card>
+                  );
+                })}
+              </Stack>
+            )}
+          </Box>
+        </Card>
+      )}
+
+      {/* Contributions Tab */}
+      {activeTab === 'contributions' && (
+        <Card>
+          <Box sx={{ p: 3 }}>
+            {(contributionsQuery.data as FinancialContribution[])?.length === 0 ? (
+              <Alert severity="info">
+                {currentUser?.isAdmin ? 'Nema uplata' : 'Još niste napravili nijednu uplatu'}
+              </Alert>
+            ) : (
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      {currentUser?.isAdmin && <TableCell>Korisnik</TableCell>}
+                      <TableCell>Iznos</TableCell>
+                      <TableCell>Svrha</TableCell>
+                      <TableCell>Datum</TableCell>
+                      <TableCell>Napomena</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {(contributionsQuery.data as FinancialContribution[])?.map((contrib: FinancialContribution) => (
+                      <TableRow key={contrib.id}>
+                        {currentUser?.isAdmin && (
+                          <TableCell>
+                            <Typography variant="body2">
+                              {getUserName(contrib.userId)}
+                            </Typography>
+                          </TableCell>
+                        )}
+                        <TableCell>
+                          <Chip
+                            icon={<AttachMoney />}
+                            label={formatPrice(contrib.amount)}
+                            color="success"
+                            size="small"
+                          />
+                        </TableCell>
+                        <TableCell>{contrib.purpose}</TableCell>
+                        <TableCell>
+                          {contrib.paymentDate ? new Date(contrib.paymentDate).toLocaleDateString('hr-HR') : '-'}
+                        </TableCell>
+                        <TableCell>{contrib.notes || '-'}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )}
+          </Box>
+        </Card>
+      )}
     </Box>
   );
 }
