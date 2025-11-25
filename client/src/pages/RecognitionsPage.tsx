@@ -84,11 +84,10 @@ function TabPanel(props: TabPanelProps) {
       aria-labelledby={`recognition-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box sx={{ py: 3 }}>
-          {children}
-        </Box>
-      )}
+      <Box sx={{ py: 3, minHeight: 200, bgcolor: index === 0 ? 'rgba(255,0,0,0.1)' : 'rgba(0,255,0,0.1)' }}>
+        DEBUG Tab {index} (visible={value === index}) 
+        {value === index && children}
+      </Box>
     </div>
   );
 }
