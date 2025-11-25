@@ -84,10 +84,11 @@ function TabPanel(props: TabPanelProps) {
       aria-labelledby={`recognition-tab-${index}`}
       {...other}
     >
-      <Box sx={{ py: 3, minHeight: 200, bgcolor: index === 0 ? 'rgba(255,0,0,0.1)' : 'rgba(0,255,0,0.1)' }}>
-        DEBUG Tab {index} (visible={value === index}) 
-        {value === index && children}
-      </Box>
+      {value === index && (
+        <Box sx={{ py: 2 }}>
+          {children}
+        </Box>
+      )}
     </div>
   );
 }
@@ -261,40 +262,42 @@ export default function RecognitionsPage() {
       </Box>
 
       <TabPanel value={tabValue} index={0}>
-        <Typography sx={{ mb: 2, p: 2, bgcolor: 'rgba(0,0,0,0.1)' }}>DEBUG: Aktivnosti Tab</Typography>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <TextField
-            variant="outlined"
-            placeholder="Pretraži aktivnosti..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            fullWidth
-            data-testid="input-search-activities"
-          />
-          <FormControl fullWidth>
-            <InputLabel>Filtriraj po tipu</InputLabel>
-            <Select
-              value={filterType}
-              label="Filtriraj po tipu"
-              onChange={(e) => setFilterType(e.target.value)}
-              data-testid="select-filter-activity-type"
-            >
-              <MenuItem value="all">Sve aktivnosti</MenuItem>
-              <MenuItem value="task_completed">Završen zadatak</MenuItem>
-              <MenuItem value="contribution_made">Finansijska uplata</MenuItem>
-              <MenuItem value="bonus_points">Bonus bodovi</MenuItem>
-              <MenuItem value="event_attendance">Prisustvo događaju</MenuItem>
-              <MenuItem value="project_contribution">Doprinos projektu</MenuItem>
-            </Select>
-          </FormControl>
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
+            <TextField
+              variant="outlined"
+              placeholder="Pretraži aktivnosti..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              fullWidth
+              size="small"
+              data-testid="input-search-activities"
+            />
+            <FormControl fullWidth size="small">
+              <InputLabel>Filtriraj po tipu</InputLabel>
+              <Select
+                value={filterType}
+                label="Filtriraj po tipu"
+                onChange={(e) => setFilterType(e.target.value)}
+                data-testid="select-filter-activity-type"
+              >
+                <MenuItem value="all">Sve aktivnosti</MenuItem>
+                <MenuItem value="task_completed">Završen zadatak</MenuItem>
+                <MenuItem value="contribution_made">Finansijska uplata</MenuItem>
+                <MenuItem value="bonus_points">Bonus bodovi</MenuItem>
+                <MenuItem value="event_attendance">Prisustvo događaju</MenuItem>
+                <MenuItem value="project_contribution">Doprinos projektu</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
           
-          <TableContainer sx={{ mt: 2 }}>
-            <Table>
+          <TableContainer sx={{ mt: 1 }}>
+            <Table size="small">
               <TableHead>
-                <TableRow>
-                  <TableCell><strong>Tip Aktivnosti</strong></TableCell>
+                <TableRow sx={{ bgcolor: 'hsl(0 0% 96%)' }}>
+                  <TableCell><strong>Aktivnost</strong></TableCell>
                   <TableCell><strong>Opis</strong></TableCell>
-                  <TableCell align="center"><strong>Bodovi</strong></TableCell>
+                  <TableCell align="right"><strong>Bodovi</strong></TableCell>
                   <TableCell><strong>Datum</strong></TableCell>
                 </TableRow>
               </TableHead>
@@ -312,21 +315,21 @@ export default function RecognitionsPage() {
                             data-testid={`chip-activity-type-${entry.id}`}
                           />
                         </TableCell>
-                        <TableCell data-testid={`text-activity-description-${entry.id}`}>{entry.description}</TableCell>
-                        <TableCell align="center">
-                          <Typography sx={{ fontWeight: 600, color: (entry.points || 0) > 0 ? 'hsl(122 60% 20%)' : 'inherit' }} data-testid={`text-activity-points-${entry.id}`}>
+                        <TableCell sx={{ fontSize: '0.875rem' }} data-testid={`text-activity-description-${entry.id}`}>{entry.description}</TableCell>
+                        <TableCell align="right">
+                          <Typography sx={{ fontWeight: 600, color: (entry.points || 0) > 0 ? 'hsl(122 60% 20%)' : 'inherit', fontSize: '0.875rem' }} data-testid={`text-activity-points-${entry.id}`}>
                             +{entry.points || 0}
                           </Typography>
                         </TableCell>
-                        <TableCell data-testid={`text-activity-date-${entry.id}`}>
+                        <TableCell sx={{ fontSize: '0.875rem' }} data-testid={`text-activity-date-${entry.id}`}>
                           {format(new Date(entry.createdAt), 'dd.MM.yyyy HH:mm')}
                         </TableCell>
                       </TableRow>
                     ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={4} sx={{ textAlign: 'center', py: 4 }}>
-                      <Typography color="text.secondary" data-testid="text-no-activities">
+                    <TableCell colSpan={4} sx={{ textAlign: 'center', py: 3 }}>
+                      <Typography color="text.secondary" variant="body2" data-testid="text-no-activities">
                         Nema aktivnosti za prikaz
                       </Typography>
                     </TableCell>
