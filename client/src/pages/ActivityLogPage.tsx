@@ -341,9 +341,11 @@ export default function ActivityLogPage() {
           </>
         )}
         {!currentUser?.isAdmin && (
-          <Button variant={activeTab === 'badges-earned' ? 'contained' : 'outlined'} onClick={() => setActiveTab('badges-earned')} data-testid="tab-badges-earned" startIcon={<BadgeOutlined />}>
-            Osvojene značke ({earnedBadges.length})
-          </Button>
+          <>
+            <Button variant={activeTab === 'badges-earned' ? 'contained' : 'outlined'} onClick={() => setActiveTab('badges-earned')} data-testid="tab-badges-earned" startIcon={<BadgeOutlined />}>
+              Osvojene značke ({earnedBadges.length})
+            </Button>
+          </>
         )}
       </Box>
 
@@ -538,7 +540,7 @@ export default function ActivityLogPage() {
           <Box sx={{ p: 3 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
               <Typography variant="h6" sx={{ fontWeight: 600 }}>Šabloni zahvalnica</Typography>
-              <Button variant="contained" startIcon={<Add />} href="/certificate-templates" target="_blank" data-testid="button-manage-templates">
+              <Button variant="contained" startIcon={<Add />} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} data-testid="button-manage-templates">
                 Upravljaj šablonima
               </Button>
             </Box>
