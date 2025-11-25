@@ -273,39 +273,40 @@ export default function RecognitionsPage() {
       </Box>
 
       <TabPanel value={tabValue} index={0}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
-            <TextField
-              variant="outlined"
-              placeholder="Pretraži aktivnosti..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              fullWidth
-              size="small"
-              data-testid="input-search-activities"
-            />
-            <FormControl fullWidth size="small">
-              <InputLabel>Filtriraj po tipu</InputLabel>
-              <Select
-                value={filterType}
-                label="Filtriraj po tipu"
-                onChange={(e) => setFilterType(e.target.value)}
-                data-testid="select-filter-activity-type"
-              >
-                <MenuItem value="all">Sve aktivnosti</MenuItem>
-                <MenuItem value="task_completed">Završen zadatak</MenuItem>
-                <MenuItem value="contribution_made">Finansijska uplata</MenuItem>
-                <MenuItem value="bonus_points">Bonus bodovi</MenuItem>
-                <MenuItem value="event_attendance">Prisustvo događaju</MenuItem>
-                <MenuItem value="project_contribution">Doprinos projektu</MenuItem>
-              </Select>
-            </FormControl>
+        <Card>
+          <Box sx={{ p: 3, borderBottom: '1px solid hsl(0 0% 88%)' }}>
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <TextField
+                variant="outlined"
+                placeholder="Pretraži aktivnosti..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                fullWidth
+                data-testid="input-search-activities"
+              />
+              <FormControl fullWidth>
+                <InputLabel>Filtriraj po tipu</InputLabel>
+                <Select
+                  value={filterType}
+                  label="Filtriraj po tipu"
+                  onChange={(e) => setFilterType(e.target.value)}
+                  data-testid="select-filter-activity-type"
+                >
+                  <MenuItem value="all">Sve aktivnosti</MenuItem>
+                  <MenuItem value="task_completed">Završen zadatak</MenuItem>
+                  <MenuItem value="contribution_made">Finansijska uplata</MenuItem>
+                  <MenuItem value="bonus_points">Bonus bodovi</MenuItem>
+                  <MenuItem value="event_attendance">Prisustvo događaju</MenuItem>
+                  <MenuItem value="project_contribution">Doprinos projektu</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
           </Box>
-          
-          <TableContainer sx={{ mt: 1 }}>
-            <Table size="small">
+
+          <TableContainer sx={{ overflowX: 'auto' }}>
+            <Table>
               <TableHead>
-                <TableRow sx={{ bgcolor: 'hsl(0 0% 96%)' }}>
+                <TableRow>
                   <TableCell><strong>Aktivnost</strong></TableCell>
                   <TableCell><strong>Opis</strong></TableCell>
                   <TableCell align="right"><strong>Bodovi</strong></TableCell>
@@ -339,7 +340,7 @@ export default function RecognitionsPage() {
                     ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={4} sx={{ textAlign: 'center', py: 3 }}>
+                    <TableCell colSpan={4} sx={{ textAlign: 'center', py: 4 }}>
                       <Typography color="text.secondary" variant="body2" data-testid="text-no-activities">
                         Nema aktivnosti za prikaz
                       </Typography>
@@ -349,7 +350,7 @@ export default function RecognitionsPage() {
               </TableBody>
             </Table>
           </TableContainer>
-        </Box>
+        </Card>
       </TabPanel>
 
       <TabPanel value={tabValue} index={1}>
@@ -640,39 +641,40 @@ export default function RecognitionsPage() {
       </TabPanel>
 
       <TabPanel value={tabValue} index={4}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
-            <TextField
-              variant="outlined"
-              placeholder="Pretraži uplate..."
-              value={paymentSearchTerm}
-              onChange={(e) => setPaymentSearchTerm(e.target.value)}
-              fullWidth
-              size="small"
-              data-testid="input-search-payments"
-            />
-            <FormControl fullWidth size="small">
-              <InputLabel>Filtriraj po svrši</InputLabel>
-              <Select
-                value={paymentPurposeFilter}
-                label="Filtriraj po svrši"
-                onChange={(e) => setPaymentPurposeFilter(e.target.value)}
-                data-testid="select-filter-purpose"
-              >
-                <MenuItem value="all">Sve uplate</MenuItem>
-                <MenuItem value="Članarina">Članarina</MenuItem>
-                <MenuItem value="Donacija">Donacija</MenuItem>
-                <MenuItem value="Vakif">Vakif</MenuItem>
-                <MenuItem value="Sergija">Sergija</MenuItem>
-                <MenuItem value="Ostalo">Ostalo</MenuItem>
-              </Select>
-            </FormControl>
+        <Card>
+          <Box sx={{ p: 3, borderBottom: '1px solid hsl(0 0% 88%)' }}>
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <TextField
+                variant="outlined"
+                placeholder="Pretraži uplate..."
+                value={paymentSearchTerm}
+                onChange={(e) => setPaymentSearchTerm(e.target.value)}
+                fullWidth
+                data-testid="input-search-payments"
+              />
+              <FormControl fullWidth>
+                <InputLabel>Filtriraj po svrši</InputLabel>
+                <Select
+                  value={paymentPurposeFilter}
+                  label="Filtriraj po svrši"
+                  onChange={(e) => setPaymentPurposeFilter(e.target.value)}
+                  data-testid="select-filter-purpose"
+                >
+                  <MenuItem value="all">Sve uplate</MenuItem>
+                  <MenuItem value="Članarina">Članarina</MenuItem>
+                  <MenuItem value="Donacija">Donacija</MenuItem>
+                  <MenuItem value="Vakif">Vakif</MenuItem>
+                  <MenuItem value="Sergija">Sergija</MenuItem>
+                  <MenuItem value="Ostalo">Ostalo</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
           </Box>
 
-          <TableContainer sx={{ mt: 1 }}>
-            <Table size="small">
+          <TableContainer sx={{ overflowX: 'auto' }}>
+            <Table>
               <TableHead>
-                <TableRow sx={{ bgcolor: 'hsl(0 0% 96%)' }}>
+                <TableRow>
                   <TableCell><strong>Iznos</strong></TableCell>
                   <TableCell><strong>Svrha</strong></TableCell>
                   <TableCell><strong>Projekat</strong></TableCell>
@@ -718,21 +720,27 @@ export default function RecognitionsPage() {
                             data-testid={`purpose-${contribution.id}`}
                           />
                         </TableCell>
-                        <TableCell sx={{ fontSize: '0.875rem' }} data-testid={`project-${contribution.id}`}>
-                          {contribution.projectId ? '📌' : '-'}
+                        <TableCell>
+                          {contribution.projectId ? (
+                            <Chip
+                              label="📌"
+                              size="small"
+                              color="primary"
+                              variant="outlined"
+                              data-testid={`project-${contribution.id}`}
+                            />
+                          ) : '-'}
                         </TableCell>
-                        <TableCell sx={{ fontSize: '0.875rem' }} data-testid={`date-${contribution.id}`}>
+                        <TableCell>
                           {contribution.paymentDate ? new Date(contribution.paymentDate).toLocaleDateString('hr-HR') : '-'}
                         </TableCell>
-                        <TableCell sx={{ fontSize: '0.875rem' }} data-testid={`notes-${contribution.id}`}>
-                          {contribution.notes || '-'}
-                        </TableCell>
+                        <TableCell>{contribution.notes || '-'}</TableCell>
                       </TableRow>
                     ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={5} sx={{ textAlign: 'center', py: 3 }}>
-                      <Typography color="text.secondary" variant="body2" data-testid="text-no-payments">
+                    <TableCell colSpan={5} sx={{ textAlign: 'center', py: 4 }}>
+                      <Typography color="text.secondary">
                         Nema uplata za prikaz
                       </Typography>
                     </TableCell>
@@ -741,7 +749,7 @@ export default function RecognitionsPage() {
               </TableBody>
             </Table>
           </TableContainer>
-        </Box>
+        </Card>
       </TabPanel>
 
       <Dialog open={viewModalOpen} onOpenChange={setViewModalOpen}>
