@@ -43,9 +43,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Award, Download, Eye, Calendar, TrendingUp } from "lucide-react";
-import { EmojiEvents } from '@mui/icons-material';
+import { EmojiEvents, AttachMoney } from '@mui/icons-material';
 import { format } from "date-fns";
 import { useAuth } from '../hooks/useAuth';
+import { useCurrency } from '../contexts/CurrencyContext';
+import { FinancialContribution } from '@shared/schema';
 
 interface UserCertificate {
   id: string;
@@ -97,6 +99,7 @@ export default function RecognitionsPage() {
   const { t } = useTranslation();
   const { toast } = useToast();
   const { user } = useAuth();
+  const { formatPrice } = useCurrency();
   const [tabValue, setTabValue] = useState(0);
   const [selectedCertificate, setSelectedCertificate] = useState<UserCertificate | null>(null);
   const [viewModalOpen, setViewModalOpen] = useState(false);
@@ -155,6 +158,11 @@ export default function RecognitionsPage() {
 
   const activityLogQuery = useQuery({
     queryKey: ['/api/activity-logs/user', user?.id],
+    enabled: !!user?.id,
+  });
+
+  const financialContributionsQuery = useQuery<FinancialContribution[]>({
+    queryKey: ['/api/financial-contributions/user', user?.id],
     enabled: !!user?.id,
   });
 
@@ -226,7 +234,7 @@ export default function RecognitionsPage() {
     return matchesSearch;
   });
 
-  const isLoading = certificatesLoading || badgesQuery.isLoading || userBadgesQuery.isLoading || activityLogQuery.isLoading;
+  const isLoading = certificatesLoading || badgesQuery.isLoading || userBadgesQuery.isLoading || activityLogQuery.isLoading || financialContributionsQuery.isLoading;
 
   if (isLoading) {
     return (
@@ -640,9 +648,65 @@ export default function RecognitionsPage() {
             </Typography>
           </Box>
 
-          <Alert severity="info" data-testid="alert-payments-info">
-            Pregled uplata i donacija koje ste izvršili džematu
-          </Alert>
+          <Card>
+            <TableContainer sx={{ overflowX: 'auto' }}>
+              <Table>
+                <TableHead>
+                  <TableRow sx={{ bgcolor: 'hsl(0 0% 96%)' }}>
+                    <TableCell><strong>Iznos</strong></TableCell>
+                    <TableCell><strong>Svrha</strong></TableCell>
+                    <TableCell><strong>Projekat</strong></TableCell>
+                    <TableCell><strong>Datum uplate</strong></TableCell>
+                    <TableCell><strong>Napomene</strong></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {(financialContributionsQuery.data || []).length > 0 ? (
+                    (financialContributionsQuery.data || [])
+                      .sort((a: any, b: any) => new Date(b.paymentDate || 0).getTime() - new Date(a.paymentDate || 0).getTime())
+                      .map((contribution: FinancialContribution) => (
+                        <TableRow key={contribution.id} hover data-testid={`row-payment-${contribution.id}`}>
+                          <TableCell>
+                            <Chip
+                              icon={<AttachMoney />}
+                              label={formatPrice(contribution.amount)}
+                              color="success"
+                              size="small"
+                              data-testid={`amount-${contribution.id}`}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Chip
+                              label={contribution.purpose}
+                              size="small"
+                              variant="outlined"
+                              data-testid={`purpose-${contribution.id}`}
+                            />
+                          </TableCell>
+                          <TableCell data-testid={`project-${contribution.id}`}>
+                            {contribution.projectId ? '📌' : '-'}
+                          </TableCell>
+                          <TableCell sx={{ fontSize: '0.875rem' }} data-testid={`date-${contribution.id}`}>
+                            {contribution.paymentDate ? new Date(contribution.paymentDate).toLocaleDateString('hr-HR') : '-'}
+                          </TableCell>
+                          <TableCell sx={{ fontSize: '0.875rem' }} data-testid={`notes-${contribution.id}`}>
+                            {contribution.notes || '-'}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={5} sx={{ textAlign: 'center', py: 4 }}>
+                        <Typography color="text.secondary" variant="body2" data-testid="text-no-payments">
+                          Još nije bilo uplata
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Card>
         </Box>
       </TabPanel>
 
