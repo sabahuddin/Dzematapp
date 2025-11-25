@@ -2747,6 +2747,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const purposes = await storage.getContributionPurposes(tenantId);
       res.json(purposes);
     } catch (error) {
+      console.error("Error fetching contribution purposes:", error);
       res.status(500).json({ message: "Failed to get contribution purposes" });
     }
   });
