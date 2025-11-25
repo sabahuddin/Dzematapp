@@ -276,6 +276,8 @@ export default function AnnouncementsPage() {
               borderRadius: '12px',
               backgroundColor: '#f1f8f6',
               display: 'flex',
+              flexDirection: 'column',
+              overflow: 'hidden',
               '&:hover': {
                 boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
               }
@@ -285,13 +287,12 @@ export default function AnnouncementsPage() {
             {(announcement as any).photoUrl && (
               <Box
                 sx={{
-                  width: '120px',
-                  height: '120px',
-                  flexShrink: 0,
+                  width: '100%',
+                  height: '200px',
                   backgroundImage: `url(${(announcement as any).photoUrl})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
-                  borderRadius: '12px 0 0 12px'
+                  borderRadius: '12px 12px 0 0'
                 }}
               />
             )}
