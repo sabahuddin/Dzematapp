@@ -80,7 +80,7 @@ export default function ActivityLogPage() {
   const featureAccess = useFeatureAccess('activity-log');
   const [filterType, setFilterType] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState<'activities' | 'contributions' | 'bodove' | 'badges-manage' | 'badges-earned' | 'templates' | 'issue' | 'issued' | 'issued-badges'>('activities');
+  const [activeTab, setActiveTab] = useState<'activities' | 'contributions' | 'bodove' | 'badges-manage' | 'badges-earned' | 'zahvale' | 'templates' | 'issue' | 'issued' | 'issued-badges'>('activities');
   const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
   const [selectedTemplate, setSelectedTemplate] = useState<string>('');
   const [customMessage, setCustomMessage] = useState('');
@@ -362,7 +362,10 @@ export default function ActivityLogPage() {
         {!currentUser?.isAdmin && (
           <>
             <Button variant={activeTab === 'badges-earned' ? 'contained' : 'outlined'} onClick={() => setActiveTab('badges-earned')} data-testid="tab-badges-earned" startIcon={<BadgeOutlined />}>
-              Osvojene značke ({earnedBadges.length})
+              Značke ({earnedBadges.length})
+            </Button>
+            <Button variant={activeTab === 'zahvale' ? 'contained' : 'outlined'} onClick={() => setActiveTab('zahvale')} data-testid="tab-zahvale" startIcon={<ReceiptLong />}>
+              Zahvale
             </Button>
           </>
         )}
@@ -621,7 +624,7 @@ export default function ActivityLogPage() {
       {activeTab === 'badges-earned' && !currentUser?.isAdmin && (
         <Card>
           <Box sx={{ p: 3 }}>
-            <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>Osvojene značke ({earnedBadges.length})</Typography>
+            <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>Značke ({earnedBadges.length})</Typography>
             {earnedBadges.length === 0 ? (
               <Alert severity="info">Još niste osvojili nijednu značku</Alert>
             ) : (
@@ -798,6 +801,54 @@ export default function ActivityLogPage() {
                     {(certificatesQuery.data as UserCertificate[])?.map((cert: UserCertificate) => (
                       <TableRow key={cert.id}>
                         <TableCell><Typography variant="body2">{getUserName(cert.userId)}</Typography></TableCell>
+                        <TableCell>{cert.recipientName}</TableCell>
+                        <TableCell>{cert.issuedAt ? new Date(cert.issuedAt).toLocaleDateString('hr-HR') : '-'}</TableCell>
+                        <TableCell>
+                          <Button size="small" href={cert.certificateImagePath} download variant="outlined" data-testid={`button-download-${cert.id}`}>
+                            Preuzmi
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )}
+          </Box>
+        </Card>
+      )}
+
+      {/* Zahvale Tab - Members Only */}
+      {activeTab === 'zahvale' && !currentUser?.isAdmin && (
+        <Card>
+          <Box sx={{ p: 3 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+              <ReceiptLong sx={{ fontSize: 40, color: 'hsl(14 100% 45%)' }} />
+              <Box>
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                  Vaše zahvale
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Zahvale koje ste dobili za vaše doprinos
+                </Typography>
+              </Box>
+            </Box>
+
+            {(certificatesQuery.data as UserCertificate[])?.length === 0 ? (
+              <Alert severity="info">Još niste dobili nijednu zahvalnicu</Alert>
+            ) : (
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell><strong>Primatelj</strong></TableCell>
+                      <TableCell><strong>Datum izdavanja</strong></TableCell>
+                      <TableCell><strong>Akcije</strong></TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {(certificatesQuery.data as UserCertificate[])?.map((cert: UserCertificate) => (
+                      <TableRow key={cert.id} hover>
                         <TableCell>{cert.recipientName}</TableCell>
                         <TableCell>{cert.issuedAt ? new Date(cert.issuedAt).toLocaleDateString('hr-HR') : '-'}</TableCell>
                         <TableCell>
