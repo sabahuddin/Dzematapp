@@ -79,12 +79,13 @@ export default function ActivityLogPage() {
   const featureAccess = useFeatureAccess('activity-log');
   const [filterType, setFilterType] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState<'activities' | 'contributions' | 'badges-manage' | 'badges-earned' | 'templates' | 'issue' | 'issued'>('activities');
+  const [activeTab, setActiveTab] = useState<'activities' | 'contributions' | 'badges-manage' | 'badges-earned' | 'templates' | 'issue' | 'issued' | 'issued-badges'>('activities');
   const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
   const [selectedTemplate, setSelectedTemplate] = useState<string>('');
   const [customMessage, setCustomMessage] = useState('');
   const [badgeDialogOpen, setBadgeDialogOpen] = useState(false);
   const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null);
+  const [userSearchTerm, setUserSearchTerm] = useState<string>('');
 
   if (featureAccess.upgradeRequired && !currentUser?.isAdmin) {
     return <UpgradeCTA moduleId="activity-log" requiredPlan={featureAccess.requiredPlan || 'full'} currentPlan={featureAccess.currentPlan || 'standard'} />;
@@ -270,7 +271,18 @@ export default function ActivityLogPage() {
     return { ...badge, earnedAt: ub.earnedAt };
   }).filter(Boolean);
 
-  const filteredUsers = ((usersQuery.data as User[]) || []).filter(u => !u.isAdmin && u.id !== currentUser?.id);
+  const filteredUsers = ((usersQuery.data as User[]) || []).filter(u => {
+    if (u.isAdmin || u.id === currentUser?.id) return false;
+    const fullName = `${u.firstName} ${u.lastName}`.toLowerCase();
+    const dob = u.dateOfBirth || '';
+    return fullName.includes(userSearchTerm.toLowerCase()) || dob.includes(userSearchTerm.toLowerCase());
+  });
+
+  const allIssuedBadges = ((userBadgesQuery.data as any[]) || []).map((ub: any) => {
+    const badge = allBadges.find((b: any) => b.id === ub.badgeId);
+    const user = (usersQuery.data as User[])?.find(u => u.id === ub.userId);
+    return { ...ub, badge, user };
+  }).filter(Boolean);
 
   const handleExportActivityLogsToExcel = () => {
     if (!filteredActivities || filteredActivities.length === 0) {
@@ -337,6 +349,9 @@ export default function ActivityLogPage() {
             </Button>
             <Button variant={activeTab === 'issued' ? 'contained' : 'outlined'} onClick={() => setActiveTab('issued')} data-testid="tab-issued" startIcon={<ReceiptLong />}>
               Dodijeljene zahvale
+            </Button>
+            <Button variant={activeTab === 'issued-badges' ? 'contained' : 'outlined'} onClick={() => setActiveTab('issued-badges')} data-testid="tab-issued-badges" startIcon={<BadgeOutlined />}>
+              Dodjeljene značke
             </Button>
           </>
         )}
@@ -612,6 +627,8 @@ export default function ActivityLogPage() {
               <Box sx={{ p: 3 }}>
                 <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>Odaberi korisnike ({selectedUsers.size}/{filteredUsers.length})</Typography>
 
+                <TextField fullWidth placeholder="Pretraži po imenu ili datumu rođenja..." value={userSearchTerm} onChange={(e) => setUserSearchTerm(e.target.value)} sx={{ mb: 2 }} data-testid="input-user-search" />
+
                 <Box sx={{ mb: 2 }}>
                   <Checkbox checked={selectedUsers.size === filteredUsers.length && filteredUsers.length > 0} onChange={() => {
                     if (selectedUsers.size === filteredUsers.length) {
@@ -629,7 +646,7 @@ export default function ActivityLogPage() {
                       <TableRow>
                         <TableCell sx={{ width: 50 }}><Checkbox /></TableCell>
                         <TableCell>Korisnik</TableCell>
-                        <TableCell>Email</TableCell>
+                        <TableCell>Datum rođenja</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -647,7 +664,7 @@ export default function ActivityLogPage() {
                             }} />
                           </TableCell>
                           <TableCell>{user.firstName} {user.lastName}</TableCell>
-                          <TableCell>{user.email || '-'}</TableCell>
+                          <TableCell>{user.dateOfBirth ? new Date(user.dateOfBirth).toLocaleDateString('hr-HR') : '-'}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -693,6 +710,40 @@ export default function ActivityLogPage() {
                             Preuzmi
                           </Button>
                         </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )}
+          </Box>
+        </Card>
+      )}
+
+      {/* Issued Badges Tab */}
+      {activeTab === 'issued-badges' && currentUser?.isAdmin && (
+        <Card>
+          <Box sx={{ p: 3 }}>
+            {allIssuedBadges.length === 0 ? (
+              <Alert severity="info">Nema dodjeljenih značaka</Alert>
+            ) : (
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Korisnik</TableCell>
+                      <TableCell>Značka</TableCell>
+                      <TableCell>Opis</TableCell>
+                      <TableCell>Datum dodjele</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {allIssuedBadges.map((item: any) => (
+                      <TableRow key={`${item.userId}-${item.badgeId}`}>
+                        <TableCell><Typography variant="body2">{item.user ? `${item.user.firstName} ${item.user.lastName}` : 'Nepoznat korisnik'}</Typography></TableCell>
+                        <TableCell><Typography variant="body2" sx={{ fontWeight: 600 }}>{item.badge?.name || 'Nepoznata značka'}</Typography></TableCell>
+                        <TableCell><Typography variant="body2" color="text.secondary">{item.badge?.description || '-'}</Typography></TableCell>
+                        <TableCell>{item.earnedAt ? new Date(item.earnedAt).toLocaleDateString('hr-HR') : '-'}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
