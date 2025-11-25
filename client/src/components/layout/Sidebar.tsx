@@ -98,8 +98,6 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     { path: '/vaktija', label: t('navigation:menu.vaktija'), icon: Schedule },
     { path: '/vodic', label: t('navigation:menu.guide'), icon: Info },
     { path: '/projects', label: 'Projekti', icon: Work, adminOnly: true },
-    { path: '/certificate-templates', label: 'Šabloni zahvala', icon: Description, adminOnly: true },
-    { path: '/badges-admin', label: 'Značke', icon: CardGiftcard, adminOnly: true },
   ];
 
   const mediaItems = [
