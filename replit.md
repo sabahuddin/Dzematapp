@@ -93,6 +93,42 @@ The system employs a simple session-based authentication using username/password
 ## Custom Hooks and Utilities
 - **useEdgeLockScroll**: Prevents iOS Safari bounce effect using edge-offset clamping, touchstart/scroll guards, and dynamic filler injection.
 
+# React Native Mobile App (November 2025)
+
+## iOS & Android Native App
+
+**STATUS:** ✅ **COMPLETE & READY FOR BUILD**
+
+Created full React Native + Expo application for iOS and Android with:
+- ✅ Expo Router file-based routing
+- ✅ Login/Autentification sa backend
+- ✅ Dashboard sa statistikom
+- ✅ Tab navigation (Home, Modules, Profile)
+- ✅ API client sa token management
+- ✅ TypeScript types
+
+**LOKACIJA:** `mobile/` direktorijum
+
+**KAD JE PRAVI:** Objedinjena sa lokalnim TriggeredBuild koristeći app.json, eas.json, i native iOS/Android graduals.
+
+### For Xcode/iOS Build:
+```bash
+cd mobile
+open ios/DzematApp.xcworkspace
+# Configure team + signing
+# Product → Archive → Distribute to App Store
+```
+
+### For Android Play Store:
+```bash
+cd mobile
+./gradlew bundleRelease
+# Upload .aab to Play Console
+```
+
+Detaljne uputstvo: `mobile/BUILD_INSTRUCTIONS.md`
+Svi fajlovi su organizovani za lakšu separaciju i deployment.
+
 # Recent Updates (November 2024)
 
 ## Mobile Experience Improvements

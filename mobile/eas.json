@@ -1,0 +1,43 @@
+{
+  "cli": {
+    "version": ">= 5.0.0"
+  },
+  "build": {
+    "preview": {
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "preview2": {
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "preview3": {
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "production": {},
+    "ios": {
+      "buildProfile": "production",
+      "credentialsSource": "local"
+    },
+    "android": {
+      "buildProfile": "production",
+      "credentialsSource": "local"
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "appleId": "your-apple-id@example.com",
+        "ascAppId": "123456789"
+      },
+      "android": {
+        "googleServiceAccount": "path/to/google-service-account.json",
+        "track": "internal"
+      }
+    }
+  }
+}
