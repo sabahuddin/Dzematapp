@@ -97,7 +97,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     { path: '/applications', label: t('navigation:menu.applications'), icon: Assignment },
     { path: '/vaktija', label: t('navigation:menu.vaktija'), icon: Schedule },
     { path: '/vodic', label: t('navigation:menu.guide'), icon: Info },
-    { path: '/recognitions', label: 'Priznanja', icon: EmojiEvents, memberOnly: true },
+    { path: '/recognitions', label: 'Moje aktivnosti', icon: EmojiEvents, memberOnly: true },
   ];
 
   const mediaItems = [
