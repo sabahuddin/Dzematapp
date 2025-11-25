@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
+import { useSortableTable } from '../hooks/useSortableTable';
 import {
   Box,
   Button,
@@ -47,11 +48,15 @@ import {
   Edit,
   Delete,
   Upload,
-  TrendingUp
+  TrendingUp,
+  MoreVert,
+  ExpandLess,
+  ExpandMore
 } from '@mui/icons-material';
 import { ActivityLog, User, UserCertificate, FinancialContribution, Badge, insertBadgeSchema } from '@shared/schema';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/use-toast';
+import { SortableHeaderCell } from '../components/SortableHeaderCell';
 import { exportToExcel } from '../utils/excelExport';
 import { useFeatureAccess } from '../hooks/useFeatureAccess';
 import { UpgradeCTA } from '../components/UpgradeCTA';
@@ -122,6 +127,37 @@ export default function ActivityLogPage() {
   const templatesQuery = useQuery({
     queryKey: ['/api/certificates/templates'],
     enabled: currentUser?.isAdmin || false,
+  });
+
+  // Sorting hooks for tables
+  const activitiesSort = useSortableTable({
+    data: (activityLogsQuery.data as ActivityLog[]) || [],
+    defaultSortKey: 'createdAt',
+    defaultSortDirection: 'desc',
+  });
+
+  const contributionsSort = useSortableTable({
+    data: (contributionsQuery.data as FinancialContribution[]) || [],
+    defaultSortKey: 'paymentDate',
+    defaultSortDirection: 'desc',
+  });
+
+  const badgesSort = useSortableTable({
+    data: (badgesQuery.data as any[]) || [],
+    defaultSortKey: 'name',
+    defaultSortDirection: 'asc',
+  });
+
+  const certificatesSort = useSortableTable({
+    data: (certificatesQuery.data as UserCertificate[]) || [],
+    defaultSortKey: 'issuedAt',
+    defaultSortDirection: 'desc',
+  });
+
+  const templatesSort = useSortableTable({
+    data: (templatesQuery.data as CertificateTemplate[]) || [],
+    defaultSortKey: 'name',
+    defaultSortDirection: 'asc',
   });
 
   // Badge form
@@ -456,15 +492,15 @@ export default function ActivityLogPage() {
                 <Table>
                   <TableHead>
                     <TableRow>
-                      {currentUser?.isAdmin && <TableCell>Korisnik</TableCell>}
-                      <TableCell>Iznos</TableCell>
-                      <TableCell>Svrha</TableCell>
-                      <TableCell>Datum</TableCell>
-                      <TableCell>Napomena</TableCell>
+                      {currentUser?.isAdmin && <SortableHeaderCell sortKey="userId" onSort={contributionsSort.handleSort} currentSortKey={contributionsSort.sortKey} currentSortDirection={contributionsSort.sortDirection}>Korisnik</SortableHeaderCell>}
+                      <SortableHeaderCell sortKey="amount" onSort={contributionsSort.handleSort} currentSortKey={contributionsSort.sortKey} currentSortDirection={contributionsSort.sortDirection}>Iznos</SortableHeaderCell>
+                      <SortableHeaderCell sortKey="purpose" onSort={contributionsSort.handleSort} currentSortKey={contributionsSort.sortKey} currentSortDirection={contributionsSort.sortDirection}>Svrha</SortableHeaderCell>
+                      <SortableHeaderCell sortKey="paymentDate" onSort={contributionsSort.handleSort} currentSortKey={contributionsSort.sortKey} currentSortDirection={contributionsSort.sortDirection}>Datum</SortableHeaderCell>
+                      <SortableHeaderCell sortKey="notes" onSort={contributionsSort.handleSort} currentSortKey={contributionsSort.sortKey} currentSortDirection={contributionsSort.sortDirection}>Napomena</SortableHeaderCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {(contributionsQuery.data as FinancialContribution[])?.map((contrib: FinancialContribution) => (
+                    {contributionsSort.sortedData?.map((contrib: FinancialContribution) => (
                       <TableRow key={contrib.id}>
                         {currentUser?.isAdmin && <TableCell><Typography variant="body2">{getUserName(contrib.userId)}</Typography></TableCell>}
                         <TableCell><Chip icon={<AttachMoney />} label={formatPrice(contrib.amount)} color="success" size="small" /></TableCell>
@@ -527,7 +563,7 @@ export default function ActivityLogPage() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {((activityLogsQuery.data as ActivityLog[]) || []).length === 0 ? (
+                  {activitiesSort.sortedData.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={currentUser?.isAdmin ? 5 : 4} sx={{ textAlign: 'center', py: 4 }}>
                         <Typography color="text.secondary">
@@ -536,8 +572,7 @@ export default function ActivityLogPage() {
                       </TableCell>
                     </TableRow>
                   ) : (
-                    ((activityLogsQuery.data as ActivityLog[]) || [])
-                      .sort((a, b) => new Date(b.createdAt || '').getTime() - new Date(a.createdAt || '').getTime())
+                    activitiesSort.sortedData
                       .map((entry: ActivityLog) => (
                         <TableRow key={entry.id} hover>
                           {currentUser?.isAdmin && (
@@ -587,15 +622,15 @@ export default function ActivityLogPage() {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Naziv</TableCell>
-                    <TableCell>Opis</TableCell>
-                    <TableCell>Kriterij</TableCell>
-                    <TableCell>Vrijednost</TableCell>
+                    <SortableHeaderCell sortKey="name" onSort={badgesSort.handleSort} currentSortKey={badgesSort.sortKey} currentSortDirection={badgesSort.sortDirection}>Naziv</SortableHeaderCell>
+                    <SortableHeaderCell sortKey="description" onSort={badgesSort.handleSort} currentSortKey={badgesSort.sortKey} currentSortDirection={badgesSort.sortDirection}>Opis</SortableHeaderCell>
+                    <SortableHeaderCell sortKey="criteriaType" onSort={badgesSort.handleSort} currentSortKey={badgesSort.sortKey} currentSortDirection={badgesSort.sortDirection}>Kriterij</SortableHeaderCell>
+                    <SortableHeaderCell sortKey="criteriaValue" onSort={badgesSort.handleSort} currentSortKey={badgesSort.sortKey} currentSortDirection={badgesSort.sortDirection}>Vrijednost</SortableHeaderCell>
                     <TableCell>Akcije</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {allBadges.map((badge: any) => (
+                  {badgesSort.sortedData?.map((badge: any) => (
                     <TableRow key={badge.id}>
                       <TableCell>{badge.name}</TableCell>
                       <TableCell><Typography variant="body2" color="text.secondary">{badge.description}</Typography></TableCell>
@@ -665,14 +700,14 @@ export default function ActivityLogPage() {
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell>Naziv</TableCell>
-                      <TableCell>Opis</TableCell>
-                      <TableCell>Font</TableCell>
+                      <SortableHeaderCell sortKey="name" onSort={templatesSort.handleSort} currentSortKey={templatesSort.sortKey} currentSortDirection={templatesSort.sortDirection}>Naziv</SortableHeaderCell>
+                      <SortableHeaderCell sortKey="description" onSort={templatesSort.handleSort} currentSortKey={templatesSort.sortKey} currentSortDirection={templatesSort.sortDirection}>Opis</SortableHeaderCell>
+                      <SortableHeaderCell sortKey="fontSize" onSort={templatesSort.handleSort} currentSortKey={templatesSort.sortKey} currentSortDirection={templatesSort.sortDirection}>Font</SortableHeaderCell>
                       <TableCell>Akcije</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {(templatesQuery.data as CertificateTemplate[])?.map((template: CertificateTemplate) => (
+                    {templatesSort.sortedData?.map((template: CertificateTemplate) => (
                       <TableRow key={template.id}>
                         <TableCell>{template.name}</TableCell>
                         <TableCell><Typography variant="body2" color="text.secondary">{template.description || '-'}</Typography></TableCell>
@@ -791,14 +826,14 @@ export default function ActivityLogPage() {
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell>Korisnik</TableCell>
-                      <TableCell>Primatelj</TableCell>
-                      <TableCell>Datum izdavanja</TableCell>
+                      <SortableHeaderCell sortKey="userId" onSort={certificatesSort.handleSort} currentSortKey={certificatesSort.sortKey} currentSortDirection={certificatesSort.sortDirection}>Korisnik</SortableHeaderCell>
+                      <SortableHeaderCell sortKey="recipientName" onSort={certificatesSort.handleSort} currentSortKey={certificatesSort.sortKey} currentSortDirection={certificatesSort.sortDirection}>Primatelj</SortableHeaderCell>
+                      <SortableHeaderCell sortKey="issuedAt" onSort={certificatesSort.handleSort} currentSortKey={certificatesSort.sortKey} currentSortDirection={certificatesSort.sortDirection}>Datum izdavanja</SortableHeaderCell>
                       <TableCell>Akcije</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {(certificatesQuery.data as UserCertificate[])?.map((cert: UserCertificate) => (
+                    {certificatesSort.sortedData?.map((cert: UserCertificate) => (
                       <TableRow key={cert.id}>
                         <TableCell><Typography variant="body2">{getUserName(cert.userId)}</Typography></TableCell>
                         <TableCell>{cert.recipientName}</TableCell>
@@ -841,13 +876,13 @@ export default function ActivityLogPage() {
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell><strong>Primatelj</strong></TableCell>
-                      <TableCell><strong>Datum izdavanja</strong></TableCell>
-                      <TableCell><strong>Akcije</strong></TableCell>
+                      <SortableHeaderCell sortKey="recipientName" onSort={certificatesSort.handleSort} currentSortKey={certificatesSort.sortKey} currentSortDirection={certificatesSort.sortDirection}>Primatelj</SortableHeaderCell>
+                      <SortableHeaderCell sortKey="issuedAt" onSort={certificatesSort.handleSort} currentSortKey={certificatesSort.sortKey} currentSortDirection={certificatesSort.sortDirection}>Datum izdavanja</SortableHeaderCell>
+                      <TableCell>Akcije</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {(certificatesQuery.data as UserCertificate[])?.map((cert: UserCertificate) => (
+                    {certificatesSort.sortedData?.map((cert: UserCertificate) => (
                       <TableRow key={cert.id} hover>
                         <TableCell>{cert.recipientName}</TableCell>
                         <TableCell>{cert.issuedAt ? new Date(cert.issuedAt).toLocaleDateString('hr-HR') : '-'}</TableCell>
