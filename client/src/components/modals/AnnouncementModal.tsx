@@ -48,8 +48,10 @@ export default function AnnouncementModal({
     content: '',
     isFeatured: false,
     status: 'published',
-    categories: [] as string[]
+    categories: [] as string[],
+    photoUrl: ''
   });
+  const [photoPreview, setPhotoPreview] = useState<string>('');
   const predefinedCategories = ['Džemat'];
 
   useEffect(() => {
@@ -59,18 +61,39 @@ export default function AnnouncementModal({
         content: announcement.content || '',
         isFeatured: announcement.isFeatured || false,
         status: announcement.status || 'published',
-        categories: announcement.categories || []
+        categories: announcement.categories || [],
+        photoUrl: (announcement as any).photoUrl || ''
       });
+      setPhotoPreview((announcement as any).photoUrl || '');
     } else {
       setFormData({
         title: '',
         content: '',
         isFeatured: false,
         status: 'published',
-        categories: []
+        categories: [],
+        photoUrl: ''
       });
+      setPhotoPreview('');
     }
   }, [announcement, open]);
+
+  const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64 = reader.result as string;
+        setPhotoPreview(base64);
+        setFormData(prev => ({ ...prev, photoUrl: base64 }));
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error('Error reading file:', error);
+    }
+  };
 
 
   const handleChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -118,6 +141,42 @@ export default function AnnouncementModal({
       <form onSubmit={handleSubmit}>
         <DialogContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+            {/* Photo Upload */}
+            <Box sx={{ 
+              border: '2px dashed #81c784', 
+              borderRadius: '12px', 
+              p: 2, 
+              textAlign: 'center',
+              backgroundColor: '#f1f8f6',
+              cursor: 'pointer',
+              position: 'relative'
+            }}>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handlePhotoChange}
+                style={{ display: 'none' }}
+                id="photo-input"
+              />
+              <label htmlFor="photo-input" style={{ cursor: 'pointer', display: 'block' }}>
+                {photoPreview ? (
+                  <Box>
+                    <img src={photoPreview} alt="Preview" style={{ maxHeight: '150px', borderRadius: '8px' }} />
+                    <Typography variant="caption" sx={{ display: 'block', mt: 1, color: '#81c784' }}>
+                      {t('announcements:modal.uploadFiles')}
+                    </Typography>
+                  </Box>
+                ) : (
+                  <Box sx={{ py: 2 }}>
+                    <CloudUpload sx={{ fontSize: 40, color: '#81c784', mb: 1 }} />
+                    <Typography variant="body2" sx={{ color: '#81c784', fontWeight: 500 }}>
+                      Dodaj sliku obavijesti
+                    </Typography>
+                  </Box>
+                )}
+              </label>
+            </Box>
+
             <TextField
               fullWidth
               variant="outlined"

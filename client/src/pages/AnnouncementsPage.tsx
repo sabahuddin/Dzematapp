@@ -275,12 +275,27 @@ export default function AnnouncementsPage() {
               border: '1px solid #c8e6c9',
               borderRadius: '12px',
               backgroundColor: '#f1f8f6',
+              display: 'flex',
               '&:hover': {
                 boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
               }
             }}
           >
-            <CardContent sx={{ p: 2 }}>
+            {/* Photo */}
+            {(announcement as any).photoUrl && (
+              <Box
+                sx={{
+                  width: '120px',
+                  height: '120px',
+                  flexShrink: 0,
+                  backgroundImage: `url(${(announcement as any).photoUrl})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  borderRadius: '12px 0 0 12px'
+                }}
+              />
+            )}
+            <CardContent sx={{ p: 2, flex: 1 }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 2 }}>
                 <Box sx={{ flex: 1 }}>
                   <Typography 

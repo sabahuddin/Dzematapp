@@ -53,6 +53,7 @@ export const announcements = pgTable("announcements", {
   status: text("status").notNull().default("published"), // published, featured, archived
   isFeatured: boolean("is_featured").default(false),
   categories: text("categories").array(), // Džemat, IZBCH, IZ, Ostalo, custom
+  photoUrl: text("photo_url"),
 });
 
 export const events = pgTable("events", {
