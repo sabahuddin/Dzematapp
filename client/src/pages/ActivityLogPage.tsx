@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import {
   Box,
@@ -22,7 +22,10 @@ import {
   FormControl,
   InputLabel,
   Grid,
-  Stack
+  Stack,
+  Checkbox,
+  LinearProgress,
+  FormControlLabel
 } from '@mui/material';
 import {
   Timeline,
@@ -35,7 +38,9 @@ import {
   Work,
   Download,
   ReceiptLong,
-  BadgeOutlined
+  BadgeOutlined,
+  Dashboard as DashboardIcon,
+  Send as SendIcon
 } from '@mui/icons-material';
 import { ActivityLog, User, UserCertificate, UserBadge, FinancialContribution } from '@shared/schema';
 import { useAuth } from '../hooks/useAuth';
@@ -44,6 +49,14 @@ import { exportToExcel } from '../utils/excelExport';
 import { useFeatureAccess } from '../hooks/useFeatureAccess';
 import { UpgradeCTA } from '../components/UpgradeCTA';
 import { useCurrency } from '../contexts/CurrencyContext';
+import { queryClient, apiRequest } from '@/lib/queryClient';
+
+interface CertificateTemplate {
+  id: string;
+  name: string;
+  description: string | null;
+  templateImagePath: string;
+}
 
 export default function ActivityLogPage() {
   const { t } = useTranslation(['activity', 'finances', 'common']);
@@ -53,7 +66,10 @@ export default function ActivityLogPage() {
   const featureAccess = useFeatureAccess('activity-log');
   const [filterType, setFilterType] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState<'activities' | 'certificates' | 'badges' | 'contributions'>('activities');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'activities' | 'certificates' | 'badges' | 'contributions' | 'issue'>('dashboard');
+  const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
+  const [selectedTemplate, setSelectedTemplate] = useState<string>('');
+  const [customMessage, setCustomMessage] = useState('');
 
   if (featureAccess.upgradeRequired) {
     return <UpgradeCTA moduleId="activity-log" requiredPlan={featureAccess.requiredPlan || 'full'} currentPlan={featureAccess.currentPlan || 'standard'} />;
@@ -94,10 +110,51 @@ export default function ActivityLogPage() {
     enabled: !!currentUser && featureAccess.hasAccess,
   });
 
-  // Fetch users (for admin to show names)
+  // Fetch users (for admin)
   const usersQuery = useQuery({
     queryKey: ['/api/users'],
     enabled: currentUser?.isAdmin || false,
+  });
+
+  // Fetch certificate templates (for admin)
+  const templatesQuery = useQuery({
+    queryKey: ['/api/certificates/templates'],
+    enabled: currentUser?.isAdmin || false,
+  });
+
+  // Issue certificates mutation
+  const issueMutation = useMutation({
+    mutationFn: async () => {
+      if (!selectedTemplate) {
+        throw new Error("Template nije izabran");
+      }
+      if (selectedUsers.size === 0) {
+        throw new Error("Nije izabran nijedan korisnik");
+      }
+
+      return apiRequest('/api/certificates/issue', 'POST', {
+        templateId: selectedTemplate,
+        userIds: Array.from(selectedUsers),
+        customMessage: customMessage || null,
+      });
+    },
+    onSuccess: (data: any) => {
+      toast({
+        title: "Uspješno",
+        description: `Izdato ${data.count} zahvalnic${data.count === 1 ? 'a' : 'e'}`,
+      });
+      setSelectedUsers(new Set());
+      setSelectedTemplate("");
+      setCustomMessage("");
+      queryClient.invalidateQueries({ queryKey: ['/api/certificates/all'] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Greška",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
   });
 
   const getUserName = (userId: string) => {
@@ -229,6 +286,15 @@ export default function ActivityLogPage() {
     };
   }).filter(Boolean);
 
+  // Calculate total points for current user
+  const userActivities = ((activityLogsQuery.data as ActivityLog[]) || []).filter(a => a.userId === currentUser?.id);
+  const totalPoints = userActivities.reduce((sum, a) => sum + (a.points || 0), 0);
+
+  // Find next badge
+  const sortedBadges = [...allBadges].sort((a, b) => a.criteriaValue - b.criteriaValue);
+  const nextBadge = sortedBadges.find(b => b.criteriaValue > totalPoints);
+  const pointsToNextBadge = nextBadge ? nextBadge.criteriaValue - totalPoints : 0;
+
   const getBadgeColor = (criteriaType: string) => {
     switch (criteriaType) {
       case 'points_total': return { bg: 'var(--semantic-award-bg)', text: 'var(--semantic-award-text)', border: 'var(--semantic-award-border)' };
@@ -248,6 +314,10 @@ export default function ActivityLogPage() {
       </Box>
     );
   }
+
+  const filteredUsers = ((usersQuery.data as User[]) || []).filter(u => 
+    !u.isAdmin && u.id !== currentUser?.id
+  );
 
   return (
     <Box>
@@ -269,6 +339,14 @@ export default function ActivityLogPage() {
 
       {/* Tab Buttons */}
       <Box sx={{ display: 'flex', gap: 1, mb: 3, flexWrap: 'wrap' }}>
+        <Button
+          variant={activeTab === 'dashboard' ? 'contained' : 'outlined'}
+          onClick={() => setActiveTab('dashboard')}
+          data-testid="tab-dashboard"
+          startIcon={<DashboardIcon />}
+        >
+          Dashboard
+        </Button>
         <Button
           variant={activeTab === 'activities' ? 'contained' : 'outlined'}
           onClick={() => setActiveTab('activities')}
@@ -300,7 +378,133 @@ export default function ActivityLogPage() {
         >
           Uplate ({contributionsQuery.data?.length || 0})
         </Button>
+        {currentUser?.isAdmin && (
+          <Button
+            variant={activeTab === 'issue' ? 'contained' : 'outlined'}
+            onClick={() => setActiveTab('issue')}
+            data-testid="tab-issue-certificates"
+            startIcon={<SendIcon />}
+          >
+            Dodjeli zahvalnicu
+          </Button>
+        )}
       </Box>
+
+      {/* Dashboard Tab */}
+      {activeTab === 'dashboard' && (
+        <Stack spacing={3}>
+          {/* Points Card */}
+          <Card>
+            <Box sx={{ p: 3 }}>
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>Moji bodovi</Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                <Box sx={{ flex: 1 }}>
+                  <Typography variant="h4" sx={{ fontWeight: 700, color: 'primary.main' }}>
+                    {totalPoints}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Ukupnih bodova
+                  </Typography>
+                </Box>
+                {nextBadge && (
+                  <Box sx={{ flex: 1 }}>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                      Do sledeće značke <strong>{nextBadge.name}</strong>:
+                    </Typography>
+                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+                      {pointsToNextBadge} bodova
+                    </Typography>
+                    <LinearProgress 
+                      variant="determinate" 
+                      value={Math.min((totalPoints / nextBadge.criteriaValue) * 100, 100)}
+                    />
+                  </Box>
+                )}
+              </Box>
+            </Box>
+          </Card>
+
+          {/* Badges Overview */}
+          <Card>
+            <Box sx={{ p: 3 }}>
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+                Osvojene značke ({earnedBadges.length})
+              </Typography>
+              {earnedBadges.length === 0 ? (
+                <Alert severity="info">
+                  Počnite sa aktivnostima da zaradite prve značke!
+                </Alert>
+              ) : (
+                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)', lg: 'repeat(6, 1fr)' }, gap: 2 }}>
+                  {earnedBadges.map((badge: any) => (
+                    <Box 
+                      key={badge.id} 
+                      sx={{ 
+                        textAlign: 'center', 
+                        p: 2, 
+                        border: '1px solid hsl(0 0% 88%)',
+                        borderRadius: 1
+                      }}
+                    >
+                      <Box sx={{ fontSize: '2rem', mb: 1 }}>
+                        {badge.icon || '🏆'}
+                      </Box>
+                      <Typography variant="caption" sx={{ fontWeight: 600 }}>
+                        {badge.name}
+                      </Typography>
+                    </Box>
+                  ))}
+                </Box>
+              )}
+            </Box>
+          </Card>
+
+          {/* Recent Activity */}
+          <Card>
+            <Box sx={{ p: 3 }}>
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+                Nedavne aktivnosti
+              </Typography>
+              {userActivities.length === 0 ? (
+                <Typography color="text.secondary">Nema aktivnosti</Typography>
+              ) : (
+                <Stack spacing={1}>
+                  {userActivities.slice(0, 5).map((activity: ActivityLog) => (
+                    <Box 
+                      key={activity.id}
+                      sx={{ 
+                        p: 2, 
+                        bgcolor: 'hsl(0 0% 97%)',
+                        borderRadius: 1,
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <Box sx={{ flex: 1 }}>
+                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                          {activity.description}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {new Date(activity.createdAt).toLocaleDateString('hr-HR')}
+                        </Typography>
+                      </Box>
+                      {activity.points && activity.points > 0 && (
+                        <Chip
+                          label={`+${activity.points}`}
+                          color="warning"
+                          size="small"
+                          sx={{ ml: 2 }}
+                        />
+                      )}
+                    </Box>
+                  ))}
+                </Stack>
+              )}
+            </Box>
+          </Card>
+        </Stack>
+      )}
 
       {/* Activities Tab */}
       {activeTab === 'activities' && (
@@ -568,6 +772,125 @@ export default function ActivityLogPage() {
             )}
           </Box>
         </Card>
+      )}
+
+      {/* Issue Certificates Tab (Admin Only) */}
+      {activeTab === 'issue' && currentUser?.isAdmin && (
+        <Stack spacing={3}>
+          {/* Template Selection */}
+          <Card>
+            <Box sx={{ p: 3 }}>
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>Izbor template-a</Typography>
+              <FormControl fullWidth>
+                <InputLabel>Template</InputLabel>
+                <Select 
+                  value={selectedTemplate}
+                  label="Template"
+                  onChange={(e) => setSelectedTemplate(e.target.value)}
+                  data-testid="select-template"
+                >
+                  {(templatesQuery.data as CertificateTemplate[])?.map((template) => (
+                    <MenuItem key={template.id} value={template.id}>
+                      {template.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              
+              {selectedTemplate && (
+                <Box sx={{ mt: 2 }}>
+                  <TextField
+                    fullWidth
+                    multiline
+                    rows={3}
+                    label="Poruka (opcionalno)"
+                    value={customMessage}
+                    onChange={(e) => setCustomMessage(e.target.value)}
+                    data-testid="input-custom-message"
+                  />
+                </Box>
+              )}
+            </Box>
+          </Card>
+
+          {/* User Selection */}
+          {selectedTemplate && (
+            <Card>
+              <Box sx={{ p: 3 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+                  Odaberi korisnike ({selectedUsers.size}/{filteredUsers.length})
+                </Typography>
+
+                <Box sx={{ mb: 2 }}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={selectedUsers.size === filteredUsers.length && filteredUsers.length > 0}
+                        onChange={() => {
+                          if (selectedUsers.size === filteredUsers.length) {
+                            setSelectedUsers(new Set());
+                          } else {
+                            setSelectedUsers(new Set(filteredUsers.map(u => u.id)));
+                          }
+                        }}
+                      />
+                    }
+                    label="Odaberi sve"
+                  />
+                </Box>
+
+                <TableContainer sx={{ maxHeight: 400 }}>
+                  <Table stickyHeader>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell sx={{ width: 50 }}>
+                          <Checkbox />
+                        </TableCell>
+                        <TableCell>Korisnik</TableCell>
+                        <TableCell>Email</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {filteredUsers.map((user: User) => (
+                        <TableRow key={user.id}>
+                          <TableCell>
+                            <Checkbox
+                              checked={selectedUsers.has(user.id)}
+                              onChange={() => {
+                                const newSelected = new Set(selectedUsers);
+                                if (newSelected.has(user.id)) {
+                                  newSelected.delete(user.id);
+                                } else {
+                                  newSelected.add(user.id);
+                                }
+                                setSelectedUsers(newSelected);
+                              }}
+                            />
+                          </TableCell>
+                          <TableCell>{user.firstName} {user.lastName}</TableCell>
+                          <TableCell>{user.email || '-'}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+
+                <Box sx={{ mt: 3 }}>
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    onClick={() => issueMutation.mutate()}
+                    disabled={selectedUsers.size === 0 || issueMutation.isPending}
+                    data-testid="button-issue-certificates"
+                  >
+                    {issueMutation.isPending ? 'Slanje...' : `Dodjeli zahvalnicu (${selectedUsers.size})`}
+                  </Button>
+                </Box>
+              </Box>
+            </Card>
+          )}
+        </Stack>
       )}
     </Box>
   );
