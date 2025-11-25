@@ -33,13 +33,10 @@ import {
   Add,
   Edit,
   Delete,
-  AttachFile,
-  Image,
-  PictureAsPdf,
   Close,
   Visibility
 } from '@mui/icons-material';
-import { Announcement, AnnouncementFileWithUser } from '@shared/schema';
+import { Announcement } from '@shared/schema';
 import AnnouncementModal from '../components/modals/AnnouncementModal';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/use-toast';
@@ -153,6 +150,9 @@ export default function AnnouncementsPage() {
     setDeleteDialogOpen(true);
   };
 
+    return () => {
+
+  // File upload mutation
   const handleDeleteConfirm = () => {
     if (announcementToDelete) {
       deleteAnnouncementMutation.mutate(announcementToDelete.id);
@@ -161,144 +161,18 @@ export default function AnnouncementsPage() {
     }
   };
 
-  // Add click handlers to announcement images for full-size view
-  useEffect(() => {
-    const handleImageClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (target.tagName === 'IMG' && target.closest('[data-announcement-content]')) {
-        const imgSrc = (target as HTMLImageElement).src;
-        setSelectedImageSrc(imgSrc);
-        setImageModalOpen(true);
-      }
-    };
-
-    document.addEventListener('click', handleImageClick);
-    return () => {
-      document.removeEventListener('click', handleImageClick);
-    };
-  }, []);
-
-  // File upload mutation
-  const uploadFilesMutation = useMutation({
-    mutationFn: async ({ announcementId, files }: { announcementId: string; files: File[] }) => {
-      const uploadPromises = files.map(async (file) => {
-        const fileType = getFileType(file.name);
-        const response = await apiRequest(`/api/announcements/${announcementId}/files`, 'POST', {
-          fileName: file.name,
-          fileType,
-          fileSize: file.size,
-        });
-        return response.json();
-      });
-      
-      return Promise.all(uploadPromises);
-    },
-    onSuccess: (data, { files }) => {
-      queryClient.invalidateQueries({ queryKey: ['/api/announcements'] });
-      toast({ 
-        title: t('common:common.success'), 
-        description: t('announcements:messages.filesUploadSuccess', { count: files.length })
-      });
-    },
-    onError: () => {
-      toast({ 
-        title: t('common:common.error'), 
-        description: t('announcements:messages.filesUploadError'), 
-        variant: 'destructive' 
-      });
-    }
-  });
-
-  const getFileType = (fileName: string): string => {
-    const extension = fileName.split('.').pop()?.toLowerCase();
-    switch (extension) {
-      case 'jpg':
-      case 'jpeg':
-      case 'png':
-        return 'image';
-      case 'pdf':
-        return 'pdf';
-      default:
-        return 'document';
-    }
-  };
-
-  const handleSaveAnnouncement = async (announcementData: any, selectedFiles: File[]) => {
+  const handleSaveAnnouncement = async (announcementData: any) => {
     try {
-      let announcementId: string;
-      
       if (selectedAnnouncement) {
-        // Update existing announcement
-        const result = await new Promise<any>((resolve, reject) => {
-          updateAnnouncementMutation.mutate(
-            { id: selectedAnnouncement.id, ...announcementData },
-            {
-              onSuccess: resolve,
-              onError: reject
-            }
-          );
-        });
-        announcementId = selectedAnnouncement.id;
+        updateAnnouncementMutation.mutate({ id: selectedAnnouncement.id, ...announcementData });
       } else {
-        // Create new announcement
-        const result = await new Promise<any>((resolve, reject) => {
-          createAnnouncementMutation.mutate(announcementData, {
-            onSuccess: resolve,
-            onError: reject
-          });
-        });
-        announcementId = result.id;
+        createAnnouncementMutation.mutate(announcementData);
       }
-      
-      // Upload files if any were selected
-      if (selectedFiles.length > 0) {
-        await uploadFilesMutation.mutateAsync({ announcementId, files: selectedFiles });
-      }
-      
       setModalOpen(false);
     } catch (error) {
       console.error('Error saving announcement:', error);
     }
   };
-
-
-  const getStatusChip = (status: string, isFeatured: boolean) => {
-    if (isFeatured) {
-      return <Chip label={t('announcements:featured')} color="info" size="small" />;
-    }
-    switch (status) {
-      case 'published':
-        return <Chip label={t('announcements:statuses.published')} color="success" size="small" />;
-      case 'archived':
-        return <Chip label={t('announcements:statuses.archived')} color="warning" size="small" />;
-      default:
-        return <Chip label={status} color="default" size="small" />;
-    }
-  };
-
-  // Component to display attachment count for an announcement
-  const AnnouncementAttachments = ({ announcementId }: { announcementId: string }) => {
-    const attachmentsQuery = useQuery<AnnouncementFileWithUser[]>({
-      queryKey: ['/api/announcements', announcementId, 'files'],
-      retry: 1,
-    });
-
-    if (attachmentsQuery.isLoading) {
-      return <CircularProgress size={16} />;
-    }
-
-    if (attachmentsQuery.error || !attachmentsQuery.data) {
-      return <Typography variant="caption">-</Typography>;
-    }
-
-    const files = attachmentsQuery.data;
-    if (files.length === 0) {
-      return <Typography variant="caption">-</Typography>;
-    }
-
-    // Count file types
-    const imageCount = files.filter((f) => f.fileType === 'image').length;
-    const pdfCount = files.filter((f) => f.fileType === 'pdf').length;
 
     return (
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
