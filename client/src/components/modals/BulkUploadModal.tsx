@@ -47,14 +47,7 @@ export default function BulkUploadModal({ open, onClose }: BulkUploadModalProps)
 
   const downloadTemplateMutation = useMutation({
     mutationFn: async () => {
-      const response = await fetch('/api/users/template', {
-        credentials: 'include',
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to download template');
-      }
-      
+      const response = await apiRequest('/api/users/template', 'GET');
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -68,8 +61,8 @@ export default function BulkUploadModal({ open, onClose }: BulkUploadModalProps)
     onSuccess: () => {
       toast({ title: 'Uspjeh', description: 'Template fajl je preuzet' });
     },
-    onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri preuzimanju template fajla', variant: 'destructive' });
+    onError: (error: Error) => {
+      toast({ title: 'Greška', description: error.message || 'Greška pri preuzimanju template fajla', variant: 'destructive' });
     }
   });
 
