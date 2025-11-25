@@ -85,7 +85,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     { path: '/super-admin/panel', label: 'Super Admin Panel', icon: AdminPanelSettings, superAdminOnly: true },
     { path: '/feed', label: 'Feed', icon: DynamicFeed },
     { path: '/users', label: t('navigation:menu.users'), labelForMember: t('navigation:menu.profile'), icon: People },
-    { path: '/finances', label: t('navigation:menu.finances'), labelForMember: t('navigation:menu.myPayments'), icon: AttachMoney },
+    { path: '/finances', label: t('navigation:menu.finances'), icon: AttachMoney, adminOnly: true },
     { path: '/activity-log', label: t('navigation:menu.activityLog'), icon: Timeline, adminOnly: true },
     { path: '/announcements', label: t('navigation:menu.announcements'), icon: Campaign, showBadge: true },
     { path: '/events', label: t('navigation:menu.events'), icon: Event, showBadge: true },
