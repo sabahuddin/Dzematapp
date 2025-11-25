@@ -170,7 +170,7 @@ export default function FinancesPage() {
       return await apiRequest('/api/contribution-purposes', 'POST', {
         name: newPurposeName,
         description: newPurposeDesc,
-      }) as Promise<ContributionPurpose>;
+      }) as unknown as ContributionPurpose;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/contribution-purposes'] });
@@ -193,7 +193,7 @@ export default function FinancesPage() {
         goalAmount: newProjectGoal,
         currentAmount: '0',
         status: 'active'
-      }) as Promise<Project>;
+      }) as unknown as Project;
     },
     onSuccess: async (newProject: Project) => {
       // Wait for query to be refetched to ensure new project appears immediately
