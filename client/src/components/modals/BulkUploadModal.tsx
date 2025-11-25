@@ -71,17 +71,7 @@ export default function BulkUploadModal({ open, onClose }: BulkUploadModalProps)
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch('/api/users/bulk-upload', {
-        method: 'POST',
-        credentials: 'include',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to upload file');
-      }
-
+      const response = await apiRequest('/api/users/bulk-upload', 'POST', formData);
       return response.json();
     },
     onSuccess: (data: UploadResult) => {
