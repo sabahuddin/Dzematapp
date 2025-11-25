@@ -21,19 +21,12 @@ import {
   DialogContent,
   DialogActions,
   TextField,
-  Autocomplete,
-  CardContent,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  Divider
+  Autocomplete
 } from '@mui/material';
 import {
   Add,
   Edit,
   Delete,
-  Close,
   Visibility
 } from '@mui/icons-material';
 import { Announcement } from '@shared/schema';
@@ -57,34 +50,12 @@ export default function AnnouncementsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [showArchive, setShowArchive] = useState(false);
-  const [imageModalOpen, setImageModalOpen] = useState(false);
-  const [selectedImageSrc, setSelectedImageSrc] = useState<string>('');
-
-  // Read deep link ID from URL
-  const getDeepLinkAnnouncementId = () => {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('id');
-  };
 
   // Fetch announcements
   const announcementsQuery = useQuery<Announcement[]>({
     queryKey: ['/api/announcements'],
     retry: 1,
   });
-
-  // Handle deep linking - open announcement when data loads
-  useEffect(() => {
-    const deepLinkAnnouncementId = getDeepLinkAnnouncementId();
-    if (deepLinkAnnouncementId && announcementsQuery.data && !modalOpen) {
-      const announcement = announcementsQuery.data.find(a => a.id === deepLinkAnnouncementId);
-      if (announcement) {
-        setSelectedAnnouncement(announcement);
-        setModalOpen(true);
-        // Clear URL only AFTER modal opens
-        window.history.replaceState({}, '', window.location.pathname);
-      }
-    }
-  }, [announcementsQuery.data, modalOpen]);
 
   // Create announcement mutation
   const createAnnouncementMutation = useMutation({
@@ -211,14 +182,15 @@ export default function AnnouncementsPage() {
   const filteredAnnouncements = (announcementsQuery.data || []).filter((announcement: Announcement) => {
     const matchesSearch = announcement.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       announcement.content.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(announcement.category);
+    const matchesCategory = selectedCategories.length === 0 || 
+      (announcement.categories && announcement.categories.some(cat => selectedCategories.includes(cat)));
     const matchesArchive = showArchive ? announcement.status === 'archived' : announcement.status !== 'archived';
     return matchesSearch && matchesCategory && matchesArchive;
   });
 
   const sortedAnnouncements = [...filteredAnnouncements].sort((a, b) => {
-    const dateA = new Date(a.createdAt).getTime();
-    const dateB = new Date(b.createdAt).getTime();
+    const dateA = new Date(a.publishDate || 0).getTime();
+    const dateB = new Date(b.publishDate || 0).getTime();
     return dateB - dateA;
   });
 
@@ -304,7 +276,6 @@ export default function AnnouncementsPage() {
               <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
                 <TableCell sx={{ fontWeight: 600 }}>{t('announcements:title')}</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>{t('announcements:category')}</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{t('announcements:author')}</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>{t('announcements:date')}</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>{t('announcements:status')}</TableCell>
                 <TableCell sx={{ fontWeight: 600 }} align="right">{t('announcements:actions')}</TableCell>
@@ -318,10 +289,9 @@ export default function AnnouncementsPage() {
                   data-testid={`row-announcement-${announcement.id}`}
                 >
                   <TableCell>{announcement.title}</TableCell>
-                  <TableCell>{announcement.category}</TableCell>
-                  <TableCell>{announcement.author}</TableCell>
-                  <TableCell>{new Date(announcement.createdAt).toLocaleDateString()}</TableCell>
-                  <TableCell>{getStatusChip(announcement.status, announcement.isFeatured)}</TableCell>
+                  <TableCell>{announcement.categories?.join(', ') || '-'}</TableCell>
+                  <TableCell>{announcement.publishDate ? new Date(announcement.publishDate).toLocaleDateString() : '-'}</TableCell>
+                  <TableCell>{getStatusChip(announcement.status, announcement.isFeatured || false)}</TableCell>
                   <TableCell align="right">
                     <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'flex-end' }}>
                       <IconButton
@@ -359,7 +329,7 @@ export default function AnnouncementsPage() {
               ))}
               {sortedAnnouncements.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} sx={{ textAlign: 'center', py: 4 }}>
+                  <TableCell colSpan={5} sx={{ textAlign: 'center', py: 4 }}>
                     <Typography color="text.secondary">
                       {t('announcements:noAnnouncements')}
                     </Typography>
