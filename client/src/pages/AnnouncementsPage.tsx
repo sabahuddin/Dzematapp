@@ -203,24 +203,26 @@ export default function AnnouncementsPage() {
         <Typography variant="h5" sx={{ fontWeight: 600, color: '#1b5e20' }}>
           {t('announcements:title')}
         </Typography>
-        <Button
-          variant="contained"
-          startIcon={<Add />}
-          onClick={handleCreateAnnouncement}
-          data-testid="button-add-announcement"
-          sx={{ 
-            backgroundColor: '#81c784',
-            color: '#fff',
-            borderRadius: '12px',
-            textTransform: 'none',
-            fontSize: '0.9rem',
-            '&:hover': {
-              backgroundColor: '#66bb6a'
-            }
-          }}
-        >
-          {t('announcements:addAnnouncement')}
-        </Button>
+        {user?.isAdmin && (
+          <Button
+            variant="contained"
+            startIcon={<Add />}
+            onClick={handleCreateAnnouncement}
+            data-testid="button-add-announcement"
+            sx={{ 
+              backgroundColor: '#81c784',
+              color: '#fff',
+              borderRadius: '12px',
+              textTransform: 'none',
+              fontSize: '0.9rem',
+              '&:hover': {
+                backgroundColor: '#66bb6a'
+              }
+            }}
+          >
+            {t('announcements:addAnnouncement')}
+          </Button>
+        )}
       </Box>
 
       {/* Search and Filter */}
