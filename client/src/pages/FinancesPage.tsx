@@ -380,29 +380,40 @@ export default function FinancesPage() {
       <Card>
         {currentUser?.isAdmin && (
           <Box sx={{ p: 3, borderBottom: '1px solid hsl(0 0% 88%)' }}>
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              <TextField
-                variant="outlined"
-                placeholder={t('finances:searchPlaceholder')}
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                fullWidth
-                data-testid="input-search"
-              />
-              <TextField
-                select
-                variant="outlined"
-                value={categoryFilter}
-                onChange={(e) => setCategoryFilter(e.target.value)}
-                sx={{ minWidth: 200 }}
-                SelectProps={{ native: true }}
-                data-testid="select-category-filter"
+            <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start', flexWrap: 'wrap' }}>
+              <Box sx={{ flex: 1, minWidth: 200, display: 'flex', gap: 2 }}>
+                <TextField
+                  variant="outlined"
+                  placeholder={t('finances:searchPlaceholder')}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  fullWidth
+                  data-testid="input-search"
+                />
+                <TextField
+                  select
+                  variant="outlined"
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value)}
+                  sx={{ minWidth: 200 }}
+                  SelectProps={{ native: true }}
+                  data-testid="select-category-filter"
+                >
+                  <option value="">{t("finances:allCategories")}</option>
+                  {purposesQuery.data?.map((purpose: ContributionPurpose) => (
+                    <option key={purpose.id} value={purpose.name}>{purpose.name}</option>
+                  ))}
+                </TextField>
+              </Box>
+              <Button
+                variant="contained"
+                startIcon={<Add />}
+                onClick={() => setPurposeDialogOpen(true)}
+                data-testid="button-add-purpose"
+                sx={{ mt: 1 }}
               >
-                <option value="">{t("finances:allCategories")}</option>
-                {purposesQuery.data?.map((purpose: ContributionPurpose) => (
-                  <option key={purpose.id} value={purpose.name}>{purpose.name}</option>
-                ))}
-              </TextField>
+                + {t('finances:addPurpose') || 'Svrha'}
+              </Button>
             </Box>
           </Box>
         )}
