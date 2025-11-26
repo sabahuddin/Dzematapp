@@ -527,13 +527,13 @@ export default function FinancesPage() {
       {/* Create New Purpose Dialog */}
       <Dialog open={purposeDialogOpen} onClose={() => setPurposeDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>Dodaj novu svrhu</DialogTitle>
-        <DialogContent sx={{ pt: 8, px: 3 }}>
+        <DialogContent sx={{ pt: 3, px: 3 }}>
           <TextField
             fullWidth
             label="Naziv svrhe"
             value={newPurposeName}
             onChange={(e) => setNewPurposeName(e.target.value)}
-            sx={{ mb: 2 }}
+            sx={{ mb: 2, mt: 4 }}
             data-testid="input-new-purpose-name"
           />
           <TextField
@@ -564,13 +564,13 @@ export default function FinancesPage() {
       {/* Create New Project Dialog */}
       <Dialog open={projectDialogOpen} onClose={() => setProjectDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>Dodaj novi projekat</DialogTitle>
-        <DialogContent sx={{ pt: 8, px: 3 }}>
+        <DialogContent sx={{ pt: 3, px: 3 }}>
           <TextField
             fullWidth
             label="Naziv projekta"
             value={newProjectName}
             onChange={(e) => setNewProjectName(e.target.value)}
-            sx={{ mb: 2 }}
+            sx={{ mb: 2, mt: 4 }}
             data-testid="input-new-project-name"
           />
           <TextField
