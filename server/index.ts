@@ -1,9 +1,11 @@
 import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
 import MemoryStore from "memorystore";
+import pgSimple from "connect-pg-simple";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { storage } from "./storage";
+import { pool } from "./db";
 import type { User } from "@shared/schema";
 import { tenantContextMiddleware, DEFAULT_TENANT_ID } from "./tenant-context";
 import { seedSubscriptionPlans } from "./subscription-plans-seed";
@@ -32,19 +34,29 @@ app.set('trust proxy', 1);
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: false, limit: '5mb' }));
 
-// Initialize memory store for sessions
-const MemStore = MemoryStore(session);
-
-// Session configuration
-// Auto-detect if we're behind HTTPS (Replit deployment uses REPL_ID env var)
+// Session store: Use database in production, memory in development
 const isReplitDeployment = !!process.env.REPL_ID;
 const isProduction = process.env.NODE_ENV === 'production';
+const shouldUseDatabaseStore = isReplitDeployment || isProduction || process.env.DATABASE_URL;
+
+let store;
+if (shouldUseDatabaseStore) {
+  const PostgresStore = pgSimple(session);
+  store = new PostgresStore({
+    pool: pool,
+    tableName: 'session',
+    ttl: 24 * 60 * 60 // 24 hours
+  });
+} else {
+  const MemStore = MemoryStore(session);
+  store = new MemStore({
+    checkPeriod: 86400000 // Prune expired entries every 24h
+  });
+}
 
 app.use(session({
   secret: process.env.SESSION_SECRET || 'dev-secret-key-change-in-production',
-  store: new MemStore({
-    checkPeriod: 86400000 // Prune expired entries every 24h
-  }),
+  store: store,
   resave: false,
   saveUninitialized: false,
   cookie: {
