@@ -275,18 +275,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Get all users across all tenants and find the Super Admin
       const allTenants = await storage.getAllTenants();
+      console.log('[SUPERADMIN LOGIN] Searching in tenants:', allTenants.map(t => ({ id: t.id, name: t.name })));
       let superAdminUser = null;
       
       for (const tenant of allTenants) {
         const user = await storage.getUserByUsername(username, tenant.id);
+        console.log(`[SUPERADMIN LOGIN] Checking tenant ${tenant.id}: found user = ${!!user}, isSuperAdmin = ${user?.isSuperAdmin}, passwordMatch = ${user?.password === password}`);
         if (user && user.isSuperAdmin && user.password === password) {
+          console.log('[SUPERADMIN LOGIN] ✅ Super Admin found!', { id: user.id, username: user.username });
           superAdminUser = user;
           break;
         }
       }
       
       if (!superAdminUser) {
-        console.log('[SUPERADMIN LOGIN] Authentication failed: Super Admin not found or invalid password');
+        console.log('[SUPERADMIN LOGIN] ❌ Authentication failed: Super Admin not found or invalid password');
         return res.status(401).json({ message: "Invalid Super Admin credentials" });
       }
 
