@@ -266,8 +266,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/auth/superadmin/login", async (req, res) => {
     try {
       const { username, password } = req.body;
-      
-      console.log('[SUPERADMIN LOGIN] Received credentials:', { username, passwordLength: password?.length });
+      console.log('[SUPERADMIN LOGIN] 🔍 POST received:', { username, password, bodyKeys: Object.keys(req.body) });
       
       if (!username || !password) {
         return res.status(400).json({ message: "Username and password are required" });
