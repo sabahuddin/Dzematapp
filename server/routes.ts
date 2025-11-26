@@ -266,7 +266,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/auth/superadmin/login", async (req, res) => {
     try {
       const { username, password } = req.body;
-      console.log('[SUPERADMIN LOGIN] 🔍 POST received:', { username, password, bodyKeys: Object.keys(req.body) });
+      console.log('[SUPERADMIN LOGIN] 🔍 Attempting login with:', { username, password: password ? '***' : 'MISSING' });
       
       if (!username || !password) {
         return res.status(400).json({ message: "Username and password are required" });
@@ -281,14 +281,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const user = await storage.getUserByUsername(username, tenant.id);
         // Handle PostgreSQL returning 't' as string instead of boolean true
         const isSuperAdmin = user?.isSuperAdmin === true || (user?.isSuperAdmin as any) === 't';
+        console.log(`[SUPERADMIN] Checked ${tenant.id}: user found=${!!user}, isSuperAdmin=${isSuperAdmin}, pwMatch=${user?.password === password}`);
         if (user && isSuperAdmin && user.password === password) {
+          console.log('[SUPERADMIN] ✅ SUCCESS');
           superAdminUser = user;
           break;
         }
       }
       
       if (!superAdminUser) {
-        console.log('[SUPERADMIN] ❌ Not found');
+        console.log('[SUPERADMIN] ❌ FAILED - Not found in any tenant');
         return res.status(401).json({ message: "Invalid Super Admin credentials" });
       }
 
