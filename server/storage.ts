@@ -441,6 +441,7 @@ export interface IStorage {
   // Tenants (Super Admin only - global tenant management)
   getAllTenants(): Promise<Tenant[]>;
   getTenant(id: string): Promise<Tenant | undefined>;
+  getTenantByCode(tenantCode: string): Promise<Tenant | undefined>;
   createTenant(tenant: InsertTenant): Promise<Tenant>;
   updateTenant(id: string, updates: Partial<InsertTenant>): Promise<Tenant | undefined>;
   updateTenantStatus(id: string, isActive: boolean): Promise<Tenant | undefined>;
@@ -2731,6 +2732,11 @@ export class DatabaseStorage implements IStorage {
 
   async getTenant(id: string): Promise<Tenant | undefined> {
     const result = await db.select().from(tenants).where(eq(tenants.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getTenantByCode(tenantCode: string): Promise<Tenant | undefined> {
+    const result = await db.select().from(tenants).where(eq(tenants.tenantCode, tenantCode)).limit(1);
     return result[0];
   }
 

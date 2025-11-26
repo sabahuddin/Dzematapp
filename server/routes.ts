@@ -4128,14 +4128,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Tenant code is required" });
       }
 
-      const allTenants = await storage.getAllTenants();
-      console.log('[VERIFY] All tenants from storage:', allTenants.map(t => ({ id: t.id, name: t.name, code: (t as any).tenantCode })));
-      
-      const tenant = allTenants.find(t => 
-        (t as any).tenantCode && (t as any).tenantCode.toUpperCase() === tenantCode.toUpperCase()
-      );
-
-      console.log('[VERIFY] Looking for code:', tenantCode, 'Found:', tenant ? `${tenant.id}` : 'NOT FOUND');
+      const tenant = await storage.getTenantByCode(tenantCode.toUpperCase());
       
       if (!tenant) {
         return res.status(404).json({ message: "Neispravan kod organizacije" });
