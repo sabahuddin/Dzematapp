@@ -2737,15 +2737,12 @@ export class DatabaseStorage implements IStorage {
 
   async getTenantByCode(tenantCode: string): Promise<Tenant | undefined> {
     try {
-      // Use raw SQL query to bypass any Drizzle caching issues
-      const result = await pool.query(
-        'SELECT * FROM tenants WHERE UPPER(tenant_code) = UPPER($1) LIMIT 1',
-        [tenantCode]
-      );
-      if (result.rows && result.rows.length > 0) {
-        return result.rows[0] as Tenant;
-      }
-      return undefined;
+      const result = await neonSql`
+        SELECT * FROM tenants 
+        WHERE UPPER(tenant_code) = UPPER(${tenantCode}) 
+        LIMIT 1
+      `;
+      return result?.[0] as Tenant | undefined;
     } catch (error) {
       console.error('[getTenantByCode] Error:', error);
       return undefined;
