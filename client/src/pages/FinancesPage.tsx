@@ -364,6 +364,22 @@ export default function FinancesPage() {
         {currentUser?.isAdmin && (
           <Box sx={{ display: 'flex', gap: 2 }}>
             <Button
+              variant="contained"
+              startIcon={<Add />}
+              onClick={() => setPurposeDialogOpen(true)}
+              data-testid="button-add-purpose"
+            >
+              Svrha
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<Add />}
+              onClick={() => setProjectDialogOpen(true)}
+              data-testid="button-add-project"
+            >
+              Projekat
+            </Button>
+            <Button
               variant="outlined"
               startIcon={<Download />}
               onClick={handleExportFinancesToExcel}
@@ -411,24 +427,6 @@ export default function FinancesPage() {
                   ))}
                 </TextField>
               </Box>
-              <Button
-                variant="contained"
-                startIcon={<Add />}
-                onClick={() => setPurposeDialogOpen(true)}
-                data-testid="button-add-purpose"
-                sx={{ mt: 1 }}
-              >
-                Svrha
-              </Button>
-              <Button
-                variant="contained"
-                startIcon={<Add />}
-                onClick={() => setProjectDialogOpen(true)}
-                data-testid="button-add-project"
-                sx={{ mt: 1 }}
-              >
-                + Projekat
-              </Button>
             </Box>
           </Box>
         )}
