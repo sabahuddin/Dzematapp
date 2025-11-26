@@ -126,7 +126,7 @@ import {
   tenants
 } from "@shared/schema";
 import { db, pool } from './db';
-import { eq, and, or, desc, asc, gt, sql, inArray } from 'drizzle-orm';
+import { eq, and, or, desc, asc, gt, sql, inArray, ilike } from 'drizzle-orm';
 
 export interface IStorage {
   // Users
@@ -2736,13 +2736,13 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getTenantByCode(tenantCode: string): Promise<Tenant | undefined> {
-    const result = await pool.query(
-      'SELECT * FROM tenants WHERE tenant_code = $1 LIMIT 1',
-      [tenantCode.toUpperCase()]
-    );
-    console.log('[getTenantByCode] Query result:', { tenantCode, rows: result.rows?.length, firstRow: result.rows?.[0] });
-    const tenant = result.rows?.[0];
-    return tenant as Tenant | undefined;
+    try {
+      const result = await db.select().from(tenants).where(ilike(tenants.tenantCode, tenantCode)).limit(1);
+      return result[0];
+    } catch (error) {
+      console.error('[getTenantByCode] Error:', error);
+      return undefined;
+    }
   }
 
   async createTenant(insertTenant: InsertTenant): Promise<Tenant> {
