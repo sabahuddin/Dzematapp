@@ -125,7 +125,7 @@ import {
   services,
   tenants
 } from "@shared/schema";
-import { db } from './db';
+import { db, pool } from './db';
 import { eq, and, or, desc, asc, gt, sql, inArray } from 'drizzle-orm';
 
 export interface IStorage {
@@ -2736,10 +2736,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getTenantByCode(tenantCode: string): Promise<Tenant | undefined> {
-    const result = await db.execute(
-      sql`SELECT * FROM tenants WHERE tenant_code = ${tenantCode.toUpperCase()} LIMIT 1`
+    // Use raw query with pool to bypass Drizzle ORM mapping issues
+    const result = await pool.query(
+      'SELECT * FROM tenants WHERE tenant_code = $1 LIMIT 1',
+      [tenantCode.toUpperCase()]
     );
-    return result.rows?.[0] as any;
+    return result.rows?.[0] as Tenant | undefined;
   }
 
   async createTenant(insertTenant: InsertTenant): Promise<Tenant> {
