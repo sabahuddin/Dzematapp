@@ -364,6 +364,14 @@ export default function FinancesPage() {
         {currentUser?.isAdmin && (
           <Box sx={{ display: 'flex', gap: 2 }}>
             <Button
+              variant="outlined"
+              startIcon={<Download />}
+              onClick={handleExportFinancesToExcel}
+              data-testid="button-export-excel"
+            >
+              Exportuj u Excel
+            </Button>
+            <Button
               variant="contained"
               startIcon={<Add />}
               onClick={() => setPurposeDialogOpen(true)}
@@ -378,14 +386,6 @@ export default function FinancesPage() {
               data-testid="button-add-project"
             >
               Projekat
-            </Button>
-            <Button
-              variant="outlined"
-              startIcon={<Download />}
-              onClick={handleExportFinancesToExcel}
-              data-testid="button-export-excel"
-            >
-              Exportuj u Excel
             </Button>
             <Button
               variant="contained"
@@ -527,7 +527,7 @@ export default function FinancesPage() {
       {/* Create New Purpose Dialog */}
       <Dialog open={purposeDialogOpen} onClose={() => setPurposeDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>Dodaj novu svrhu</DialogTitle>
-        <DialogContent sx={{ pt: 3 }}>
+        <DialogContent sx={{ pt: 5, px: 3 }}>
           <TextField
             fullWidth
             label="Naziv svrhe"
@@ -563,8 +563,8 @@ export default function FinancesPage() {
 
       {/* Create New Project Dialog */}
       <Dialog open={projectDialogOpen} onClose={() => setProjectDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>+ Projekat</DialogTitle>
-        <DialogContent sx={{ pt: 4, px: 3 }}>
+        <DialogTitle>Dodaj novi projekat</DialogTitle>
+        <DialogContent sx={{ pt: 5, px: 3 }}>
           <TextField
             fullWidth
             label="Naziv projekta"
