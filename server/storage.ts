@@ -2737,12 +2737,12 @@ export class DatabaseStorage implements IStorage {
 
   async getTenantByCode(tenantCode: string): Promise<Tenant | undefined> {
     try {
-      console.log('[getTenantByCode] SEARCHING FOR:', tenantCode);
-      const result = await neonSql`SELECT * FROM tenants WHERE UPPER(tenant_code) = UPPER(${tenantCode}) LIMIT 1`;
-      console.log('[getTenantByCode] RESULT:', result);
-      return result?.[0] as Tenant | undefined;
+      const result = await db.select().from(tenants)
+        .where(ilike(tenants.tenantCode, tenantCode))
+        .limit(1);
+      return result[0];
     } catch (error) {
-      console.error('[getTenantByCode] ERROR:', error);
+      console.error('[getTenantByCode] Error:', error);
       return undefined;
     }
   }
