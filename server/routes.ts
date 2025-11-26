@@ -280,13 +280,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       for (const tenant of allTenants) {
         const user = await storage.getUserByUsername(username, tenant.id);
-        if (user) {
-          console.log(`[SUPERADMIN LOGIN] User found in ${tenant.id}:`, { username: user.username, isSuperAdmin: user.isSuperAdmin, type: typeof user.isSuperAdmin, passwordLength: user.password?.length });
-        }
-        const isSuperAdmin = user?.isSuperAdmin === true || (user?.isSuperAdmin as any) === 1 || (user?.isSuperAdmin as any) === 't';
-        console.log(`[SUPERADMIN LOGIN] Checking tenant ${tenant.id}: found user = ${!!user}, isSuperAdmin = ${isSuperAdmin}, passwordMatch = ${user?.password === password}`);
-        if (user && isSuperAdmin && user.password === password) {
-          console.log('[SUPERADMIN LOGIN] ✅ Super Admin found!', { id: user.id, username: user.username });
+        if (user && user.isSuperAdmin && user.password === password) {
           superAdminUser = user;
           break;
         }
@@ -4134,13 +4128,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const allTenants = await storage.getAllTenants();
-      console.log('[VERIFY] Tenants:', allTenants.map(t => ({ code: t.tenantCode, active: t.isActive, type: typeof t.isActive })));
-      const tenant = allTenants.find(t => {
-        const codeMatch = t.tenantCode?.toUpperCase() === tenantCode.toUpperCase();
-        const isActive = t.isActive === true || t.isActive === 1 || (t.isActive as any) === 't';
-        console.log(`[VERIFY] Comparing: code=${t.tenantCode} vs ${tenantCode}, match=${codeMatch}, active=${isActive}`);
-        return codeMatch && isActive;
-      });
+      const tenant = allTenants.find(t => 
+        t.tenantCode && t.tenantCode.toUpperCase() === tenantCode.toUpperCase()
+      );
 
       if (!tenant) {
         return res.status(404).json({ message: "Neispravan kod organizacije" });
