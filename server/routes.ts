@@ -280,8 +280,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       for (const tenant of allTenants) {
         const user = await storage.getUserByUsername(username, tenant.id);
-        console.log(`[SUPERADMIN LOGIN] Checking tenant ${tenant.id}: found user = ${!!user}, isSuperAdmin = ${user?.isSuperAdmin}, passwordMatch = ${user?.password === password}`);
-        if (user && user.isSuperAdmin && user.password === password) {
+        const isSuperAdmin = user?.isSuperAdmin === true;
+        console.log(`[SUPERADMIN LOGIN] Checking tenant ${tenant.id}: found user = ${!!user}, isSuperAdmin = ${isSuperAdmin}, passwordMatch = ${user?.password === password}`);
+        if (user && isSuperAdmin && user.password === password) {
           console.log('[SUPERADMIN LOGIN] ✅ Super Admin found!', { id: user.id, username: user.username });
           superAdminUser = user;
           break;
@@ -4130,9 +4131,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const allTenants = await storage.getAllTenants();
-      const tenant = allTenants.find(t => 
-        t.tenantCode?.toUpperCase() === tenantCode.toUpperCase() && t.isActive
-      );
+      const tenant = allTenants.find(t => {
+        const codeMatch = t.tenantCode?.toUpperCase() === tenantCode.toUpperCase();
+        const isActive = (t.isActive === true) || (t.isActive === 't');
+        return codeMatch && isActive;
+      });
 
       if (!tenant) {
         return res.status(404).json({ message: "Neispravan kod organizacije" });
