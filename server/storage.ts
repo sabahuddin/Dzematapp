@@ -2726,30 +2726,7 @@ export class DatabaseStorage implements IStorage {
 
   // Tenant Management (Super Admin only)
   async getAllTenants(): Promise<Tenant[]> {
-    const result = await db.select({
-      id: tenants.id,
-      name: tenants.name,
-      slug: tenants.slug,
-      tenantCode: tenants.tenantCode,
-      subdomain: tenants.subdomain,
-      email: tenants.email,
-      phone: tenants.phone,
-      address: tenants.address,
-      city: tenants.city,
-      country: tenants.country,
-      subscriptionTier: tenants.subscriptionTier,
-      subscriptionStatus: tenants.subscriptionStatus,
-      trialEndsAt: tenants.trialEndsAt,
-      subscriptionStartedAt: tenants.subscriptionStartedAt,
-      stripeCustomerId: tenants.stripeCustomerId,
-      stripeSubscriptionId: tenants.stripeSubscriptionId,
-      isActive: tenants.isActive,
-      locale: tenants.locale,
-      currency: tenants.currency,
-      createdAt: tenants.createdAt,
-      updatedAt: tenants.updatedAt,
-    }).from(tenants).orderBy(tenants.createdAt);
-    return result;
+    return await db.select().from(tenants).orderBy(tenants.createdAt);
   }
 
   async getTenant(id: string): Promise<Tenant | undefined> {
