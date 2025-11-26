@@ -2266,7 +2266,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/shop/products/:id", requireAdmin, async (req, res) => {
     try {
-      const product = await storage.updateShopProduct(req.params.id, req.body);
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      const product = await storage.updateShopProduct(req.params.id, tenantId, req.body);
       if (!product) {
         return res.status(404).json({ message: "Product not found" });
       }
@@ -2278,7 +2279,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/shop/products/:id", requireAdmin, async (req, res) => {
     try {
-      const deleted = await storage.deleteShopProduct(req.params.id);
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      const deleted = await storage.deleteShopProduct(req.params.id, tenantId);
       if (!deleted) {
         return res.status(404).json({ message: "Product not found" });
       }
