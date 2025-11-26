@@ -2736,12 +2736,13 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getTenantByCode(tenantCode: string): Promise<Tenant | undefined> {
-    // Use raw query with pool to bypass Drizzle ORM mapping issues
     const result = await pool.query(
       'SELECT * FROM tenants WHERE tenant_code = $1 LIMIT 1',
       [tenantCode.toUpperCase()]
     );
-    return result.rows?.[0] as Tenant | undefined;
+    console.log('[getTenantByCode] Query result:', { tenantCode, rows: result.rows?.length, firstRow: result.rows?.[0] });
+    const tenant = result.rows?.[0];
+    return tenant as Tenant | undefined;
   }
 
   async createTenant(insertTenant: InsertTenant): Promise<Tenant> {
