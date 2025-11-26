@@ -418,7 +418,7 @@ export default function FinancesPage() {
                 data-testid="button-add-purpose"
                 sx={{ mt: 1 }}
               >
-                +Svrha
+                Svrha
               </Button>
               <Button
                 variant="contained"
