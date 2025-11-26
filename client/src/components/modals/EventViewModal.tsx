@@ -96,8 +96,8 @@ export default function EventViewModal({
           </IconButton>
         </DialogTitle>
         
-        <DialogContent sx={{ pt: 3 }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <DialogContent sx={{ pt: 3, px: 3 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 4 }}>
             {/* Categories */}
             {event.categories && event.categories.length > 0 && (
               <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>

@@ -150,7 +150,7 @@ export default function AnnouncementModal({
           </IconButton>
         </DialogTitle>
         
-        <DialogContent sx={{ pt: 3 }}>
+        <DialogContent sx={{ pt: 3, px: 3 }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
             {/* Photo */}
             {photoPreview && (
