@@ -212,9 +212,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Regular user login (requires tenant code)
   app.post("/api/auth/login", async (req, res) => {
     try {
-      const { username, password, tenantId } = req.body;
+      const { username, password, tenantCode, tenantId: bodyTenantId } = req.body;
       
-      console.log('[LOGIN] Received credentials:', { username, passwordLength: password?.length, tenantId });
+      let tenantId = bodyTenantId;
+      
+      // If tenantCode is provided, convert it to tenantId
+      if (!tenantId && tenantCode) {
+        const tenant = await storage.getTenantByCode(tenantCode);
+        if (!tenant) {
+          return res.status(400).json({ message: "Neispravan kod organizacije" });
+        }
+        tenantId = tenant.id;
+      }
+      
+      console.log('[LOGIN] Received credentials:', { username, passwordLength: password?.length, tenantCode, tenantId });
       
       if (!username || !password) {
         return res.status(400).json({ message: "Username and password are required" });
