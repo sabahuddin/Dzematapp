@@ -4129,10 +4129,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const allTenants = await storage.getAllTenants();
+      console.log('[VERIFY] All tenants from storage:', allTenants.map(t => ({ id: t.id, name: t.name, code: (t as any).tenantCode })));
+      
       const tenant = allTenants.find(t => 
-        t.tenantCode && t.tenantCode.toUpperCase() === tenantCode.toUpperCase()
+        (t as any).tenantCode && (t as any).tenantCode.toUpperCase() === tenantCode.toUpperCase()
       );
 
+      console.log('[VERIFY] Looking for code:', tenantCode, 'Found:', tenant ? `${tenant.id}` : 'NOT FOUND');
+      
       if (!tenant) {
         return res.status(404).json({ message: "Neispravan kod organizacije" });
       }
