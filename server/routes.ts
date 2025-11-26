@@ -280,9 +280,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       for (const tenant of allTenants) {
         const user = await storage.getUserByUsername(username, tenant.id);
-        console.log(`[SUPERADMIN] Tenant ${tenant.id}: user=${!!user}, isSuperAdmin=${user?.isSuperAdmin}, pass=${user?.password}/${password}, match=${user?.password === password}`);
-        if (user && user.isSuperAdmin && user.password === password) {
-          console.log('[SUPERADMIN] ✅ Found!');
+        // Handle PostgreSQL returning 't' as string instead of boolean true
+        const isSuperAdmin = user?.isSuperAdmin === true || (user?.isSuperAdmin as any) === 't';
+        if (user && isSuperAdmin && user.password === password) {
           superAdminUser = user;
           break;
         }
