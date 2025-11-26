@@ -2737,12 +2737,9 @@ export class DatabaseStorage implements IStorage {
 
   async getTenantByCode(tenantCode: string): Promise<Tenant | undefined> {
     try {
-      console.log('[getTenantByCode] Searching for:', tenantCode);
       const result = await db.select().from(tenants)
-        .where(ilike(tenants.tenantCode, tenantCode))
+        .where(eq(tenants.tenantCode, tenantCode.toUpperCase()))
         .limit(1);
-      console.log('[getTenantByCode] Found:', result.length, 'results');
-      if (result.length > 0) console.log('[getTenantByCode] Tenant:', result[0].id, result[0].name, (result[0] as any).tenantCode);
       return result[0];
     } catch (error) {
       console.error('[getTenantByCode] Error:', error);
