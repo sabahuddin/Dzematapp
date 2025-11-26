@@ -420,6 +420,15 @@ export default function FinancesPage() {
               >
                 +Svrha
               </Button>
+              <Button
+                variant="contained"
+                startIcon={<Add />}
+                onClick={() => setProjectDialogOpen(true)}
+                data-testid="button-add-project"
+                sx={{ mt: 1 }}
+              >
+                + Projekat
+              </Button>
             </Box>
           </Box>
         )}
