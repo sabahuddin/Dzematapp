@@ -2532,13 +2532,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Prayer times not available for Super Admin" });
       }
       
+      const tenantId = req.user?.tenantId || session.tenantId || "default-tenant-demo";
+      
       const now = new Date();
       const day = String(now.getDate()).padStart(2, '0');
       const month = String(now.getMonth() + 1).padStart(2, '0');
       const year = now.getFullYear();
       const todayDate = `${day}.${month}.${year}`;
       
-      const prayerTime = await storage.getPrayerTimeByDate(todayDate);
+      const prayerTime = await storage.getPrayerTimeByDate(todayDate, tenantId);
       if (!prayerTime) {
         return res.status(404).json({ message: "Prayer times not found for today" });
       }
