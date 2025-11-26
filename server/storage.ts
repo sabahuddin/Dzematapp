@@ -2736,8 +2736,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getTenantByCode(tenantCode: string): Promise<Tenant | undefined> {
-    const result = await db.select().from(tenants).where(eq(tenants.tenantCode, tenantCode)).limit(1);
-    return result[0];
+    const result = await db.execute(
+      sql`SELECT * FROM tenants WHERE tenant_code = ${tenantCode.toUpperCase()} LIMIT 1`
+    );
+    return result.rows?.[0] as any;
   }
 
   async createTenant(insertTenant: InsertTenant): Promise<Tenant> {
