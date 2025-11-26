@@ -527,7 +527,7 @@ export default function FinancesPage() {
       {/* Create New Purpose Dialog */}
       <Dialog open={purposeDialogOpen} onClose={() => setPurposeDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>Dodaj novu svrhu</DialogTitle>
-        <DialogContent sx={{ pt: 5, px: 3 }}>
+        <DialogContent sx={{ pt: 8, px: 3 }}>
           <TextField
             fullWidth
             label="Naziv svrhe"
@@ -564,7 +564,7 @@ export default function FinancesPage() {
       {/* Create New Project Dialog */}
       <Dialog open={projectDialogOpen} onClose={() => setProjectDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>Dodaj novi projekat</DialogTitle>
-        <DialogContent sx={{ pt: 5, px: 3 }}>
+        <DialogContent sx={{ pt: 8, px: 3 }}>
           <TextField
             fullWidth
             label="Naziv projekta"
