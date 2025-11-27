@@ -250,12 +250,16 @@ async function seedContributionPurposes() {
   }
 }
 
-// Call on startup
+// Call on startup - non-blocking async operations
 ensureAdminUser();
 seedContributionPurposes();
-seedDefaultTenant();
-seedSubscriptionPlans();
-seedDemoData();
+
+// Non-blocking seed operations - don't await to prevent server hang
+(async () => {
+  await seedDefaultTenant();
+  seedSubscriptionPlans();
+  seedDemoData();
+})().catch(err => console.error('Seed error:', err));
 
 app.use((req, res, next) => {
   const start = Date.now();

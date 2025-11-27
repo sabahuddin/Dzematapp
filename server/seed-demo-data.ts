@@ -9,9 +9,11 @@ import { eq } from 'drizzle-orm';
 const DEFAULT_TENANT_ID = 'default-tenant-demo';
 
 export async function seedDemoData() {
-  try {
-    // 1. Kreiraj demo admin korisnika ako ne postoji
-    console.log('\n🌱 Seeding demo data for Demo Džemat...');
+  // Non-blocking seed - don't await, just start the process
+  (async () => {
+    try {
+      // 1. Kreiraj demo admin korisnika ako ne postoji
+      console.log('\n🌱 Seeding demo data for Demo Džemat...');
     
     const existingUsers = await db.select().from(users).where(eq(users.tenantId, DEFAULT_TENANT_ID)).limit(1);
     
@@ -123,9 +125,10 @@ export async function seedDemoData() {
       console.log('ℹ️ Demo data already exists');
     }
 
-    console.log('✅ Demo data seed completed!\n');
-  } catch (error) {
-    console.error('❌ Demo data seed failed:', error);
-    // Don't throw - allow app to continue even if seed fails
-  }
+      console.log('✅ Demo data seed completed!\n');
+    } catch (error) {
+      console.error('❌ Demo data seed failed:', error);
+      // Don't throw - allow app to continue even if seed fails
+    }
+  })();
 }
