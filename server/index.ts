@@ -74,8 +74,8 @@ if (useDatabaseStore) {
 app.use(session({
   secret: process.env.SESSION_SECRET || 'dev-secret-key-change-in-production',
   store: store,
-  resave: false,
-  saveUninitialized: true, // MUST be true - Express won't create Set-Cookie otherwise
+  resave: true, // Must be true - ensures session is saved even if unmodified
+  saveUninitialized: true, // Must be true - creates Set-Cookie header for new sessions
   cookie: {
     secure: isReplitDeployment || isProduction, // true on Replit or production
     httpOnly: true,
