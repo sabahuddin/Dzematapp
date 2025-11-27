@@ -119,6 +119,31 @@ export async function seedDefaultTenant() {
       console.log(`ℹ️  Default tenant already exists: ${defaultTenant.name}\n`);
     }
 
+    // 3. Kreiraj SuperAdmin korisnika ako ne postoji
+    console.log('👤 Creating SuperAdmin user...');
+    const existingSuperAdmin = await db.select().from(users).where(eq(users.tenantId, DEFAULT_TENANT_ID)).limit(1);
+    
+    if (existingSuperAdmin.length === 0) {
+      await db.insert(users).values({
+        tenantId: DEFAULT_TENANT_ID,
+        firstName: 'Super',
+        lastName: 'Admin',
+        username: 'admin',
+        email: 'superadmin@dzemat.app',
+        password: 'admin123',
+        status: 'aktivan',
+        categories: ['Muškarci'],
+        roles: ['admin'],
+        isAdmin: true,
+        isSuperAdmin: true,
+        totalPoints: 0,
+        membershipDate: new Date()
+      });
+      console.log('✅ SuperAdmin user created (username: admin, password: admin123)\n');
+    } else {
+      console.log('ℹ️  SuperAdmin user already exists\n');
+    }
+
     console.log('✅ Seed completed successfully!');
     console.log(`\n📊 Default Tenant ID: ${defaultTenant.id}`);
     console.log(`   Name: ${defaultTenant.name}`);
