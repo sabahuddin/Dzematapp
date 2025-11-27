@@ -51,6 +51,12 @@ export function serveStaticFiles(app: Express) {
       return res.status(404).json({ message: 'Not found' });
     }
     // For everything else (SPA routes), serve index.html
-    res.sendFile(path.resolve(foundPath!, "index.html"));
+    const indexPath = path.resolve(foundPath!, "index.html");
+    res.sendFile(indexPath, (err) => {
+      if (err) {
+        console.error(`❌ Error serving index.html from ${indexPath}:`, err.message);
+        res.status(500).json({ message: 'Failed to serve application' });
+      }
+    });
   });
 }
