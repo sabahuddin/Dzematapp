@@ -98,21 +98,28 @@ app.use(async (req, res, next) => {
       
       // Super Admin: Find user across all tenants
       if (session.isSuperAdmin) {
+        console.log('[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected - userId:', session.userId);
         // For SuperAdmin, load from default-tenant-demo tenant with admin privileges
         let foundUser = await storage.getUser(session.userId, "default-tenant-demo");
+        console.log('[AUTH MIDDLEWARE] SuperAdmin user found in default-tenant-demo:', !!foundUser);
         if (!foundUser) {
           // Fallback to default-tenant-demo if DEMO2024 doesn't exist
           foundUser = await storage.getUser(session.userId, "default-tenant-demo");
+          console.log('[AUTH MIDDLEWARE] SuperAdmin user fallback search:', !!foundUser);
         }
         if (foundUser) {
           user = foundUser;
+          console.log('[AUTH MIDDLEWARE] ✅ SuperAdmin user loaded:', foundUser.id);
         } else {
           // Final fallback: search all tenants
+          console.log('[AUTH MIDDLEWARE] ⚠️ SuperAdmin not found - searching all tenants...');
           const allTenants = await storage.getAllTenants();
+          console.log('[AUTH MIDDLEWARE] Found tenants:', allTenants.map(t => t.id));
           for (const tenant of allTenants) {
             const candidate = await storage.getUser(session.userId, tenant.id);
             if (candidate && candidate.isSuperAdmin) {
               user = candidate;
+              console.log('[AUTH MIDDLEWARE] ✅ SuperAdmin found in tenant:', tenant.id);
               break;
             }
           }
@@ -132,13 +139,15 @@ app.use(async (req, res, next) => {
           isSuperAdmin: isSuperAdmin,
           tenantId: isSuperAdmin ? "default-tenant-demo" : user.tenantId
         };
+        console.log('[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin:', req.user.isSuperAdmin);
       } else {
         // User no longer exists, clear the session
+        console.log('[AUTH MIDDLEWARE] ❌ User not found - clearing session');
         session.userId = undefined;
         session.isSuperAdmin = undefined;
       }
     } catch (error) {
-      console.error('Error loading user from session:', error);
+      console.error('[AUTH MIDDLEWARE] Error loading user from session:', error);
       session.userId = undefined;
       session.isSuperAdmin = undefined;
     }
