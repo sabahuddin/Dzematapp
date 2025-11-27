@@ -9,11 +9,12 @@ import path from "path";
  */
 export function serveStaticFiles(app: Express) {
   // Try multiple possible paths for public directory
+  // Order matters: dist/public has Vite output with assets, so check it first
   const possiblePaths = [
+    path.resolve(process.cwd(), 'dist', 'public'), // dist/public has Vite build output (assets, etc)
     process.env.PUBLIC_PATH, // Set by index.ts in production
     path.resolve(process.cwd(), 'public'), // Current dir
     path.resolve(process.cwd(), '../public'), // Parent dir (if in dist)
-    path.resolve(process.cwd(), 'dist', 'public'), // dist subdirectory
   ].filter(Boolean) as string[];
 
   let foundPath: string | null = null;
