@@ -1,3 +1,4 @@
+import path from "path";
 import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
 import MemoryStore from "memorystore";
@@ -326,6 +327,13 @@ app.use((req, res, next) => {
   if (isDevelopment) {
     await setupVite(app, server);
   } else {
+    // Fix for production bundled code: change working directory to dist
+    // This ensures import.meta.dirname path resolution works correctly in bundled code
+    const distPath = path.join(process.cwd(), 'dist');
+    if (process.cwd() !== distPath) {
+      process.chdir(distPath);
+      console.log(`📂 Changed working directory to: ${distPath}`);
+    }
     serveStatic(app);
   }
 
