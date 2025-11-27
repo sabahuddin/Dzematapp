@@ -10,6 +10,7 @@ import type { User } from "@shared/schema";
 import { tenantContextMiddleware, DEFAULT_TENANT_ID } from "./tenant-context";
 import { seedSubscriptionPlans } from "./subscription-plans-seed";
 import { seedDemoData } from "./seed-demo-data";
+import { seedDefaultTenant } from "./seed-tenant";
 
 // Extend Express Request interface to include user
 declare global {
@@ -252,6 +253,7 @@ async function seedContributionPurposes() {
 // Call on startup
 ensureAdminUser();
 seedContributionPurposes();
+seedDefaultTenant();
 seedSubscriptionPlans();
 seedDemoData();
 

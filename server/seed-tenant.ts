@@ -20,7 +20,7 @@ import { eq } from 'drizzle-orm';
 
 const DEFAULT_TENANT_ID = 'default-tenant-demo';
 
-async function seedDefaultTenant() {
+export async function seedDefaultTenant() {
   console.log('🌱 Starting default tenant seed...\n');
 
   try {
