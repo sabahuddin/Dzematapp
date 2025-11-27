@@ -1,0 +1,99 @@
+import pkg from 'pg';
+const { Pool } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:177:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:260:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:543:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:116:5)
+
+Node.js v22.11.0
+file:///app/dist/index.js:1185
+import { Pool } from "pg";
+         ^^^^
+SyntaxError: Named export 'Pool' not found. The requested module 'pg' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'pg';
+const { Pool } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:177:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:260:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:543:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:116:5)
+
+Node.js v22.11.0
+file:///app/dist/index.js:1185
+import { Pool } from "pg";
+         ^^^^
+SyntaxError: Named export 'Pool' not found. The requested module 'pg' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'pg';
+const { Pool } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:177:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:260:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:543:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:116:5)
+
+Node.js v22.11.0
+file:///app/dist/index.js:1185
+import { Pool } from "pg";
+         ^^^^
+SyntaxError: Named export 'Pool' not found. The requested module 'pg' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'pg';
+const { Pool } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:177:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:260:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:543:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:116:5)
+
+Node.js v22.11.0
+file:///app/dist/index.js:1185
+import { Pool } from "pg";
+         ^^^^
+SyntaxError: Named export 'Pool' not found. The requested module 'pg' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'pg';
+const { Pool } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:177:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:260:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:543:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:116:5)
+
+Node.js v22.11.0
+file:///app/dist/index.js:1185
+import { Pool } from "pg";
+         ^^^^
+SyntaxError: Named export 'Pool' not found. The requested module 'pg' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'pg';
+const { Pool } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:177:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:260:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:543:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:116:5)
+
+Node.js v22.11.0
+file:///app/dist/index.js:1185
+import { Pool } from "pg";
+         ^^^^
+SyntaxError: Named export 'Pool' not found. The requested module 'pg' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'pg';
+const { Pool } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:177:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:260:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:543:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:116:5)
+
+Node.js v22.11.0
