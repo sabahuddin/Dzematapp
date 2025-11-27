@@ -428,29 +428,6 @@ export const insertShopProductSchema = createInsertSchema(shopProducts).omit({
       });
     }
   }
-  if (data.category === 'odjeća') {
-    if (!data.size) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Veličina je obavezna za kategoriju odjeća",
-        path: ['size']
-      });
-    }
-    if (!data.quantity) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Količina je obavezna za kategoriju odjeća",
-        path: ['quantity']
-      });
-    }
-    if (!data.color) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Boja je obavezna za kategoriju odjeća",
-        path: ['color']
-      });
-    }
-  }
 });
 
 export const insertMarketplaceItemSchema = createInsertSchema(marketplaceItems).omit({

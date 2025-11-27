@@ -67,9 +67,6 @@ export default function ShopPage() {
     category: "",
     weight: "",
     volume: "",
-    size: "",
-    quantity: 0,
-    color: "",
     notes: "",
     price: ""
   });
@@ -268,9 +265,6 @@ export default function ShopPage() {
         category: "",
         weight: "",
         volume: "",
-        size: "",
-        quantity: 0,
-        color: "",
         notes: "",
         price: ""
       });
@@ -310,9 +304,6 @@ export default function ShopPage() {
         category: "",
         weight: "",
         volume: "",
-        size: "",
-        quantity: 0,
-        color: "",
         notes: "",
         price: ""
       });
@@ -345,9 +336,6 @@ export default function ShopPage() {
         category: product.category,
         weight: product.weight,
         volume: product.volume,
-        size: product.size,
-        quantity: product.quantity,
-        color: product.color,
         notes: product.notes,
         price: product.price,
         createdById: user!.id
@@ -1398,35 +1386,6 @@ export default function ShopPage() {
             />
           )}
 
-          {productForm.category === "odjeća" && (
-            <>
-              <TextField
-                fullWidth
-                label={t('shop:labels.size')}
-                value={productForm.size}
-                onChange={(e) => setProductForm({ ...productForm, size: e.target.value })}
-                margin="normal"
-                data-testid="input-product-size"
-              />
-              <TextField
-                fullWidth
-                label={t('shop:labels.quantity')}
-                type="number"
-                value={productForm.quantity}
-                onChange={(e) => setProductForm({ ...productForm, quantity: parseInt(e.target.value) || 0 })}
-                margin="normal"
-                data-testid="input-product-quantity"
-              />
-              <TextField
-                fullWidth
-                label={t('shop:labels.color')}
-                value={productForm.color}
-                onChange={(e) => setProductForm({ ...productForm, color: e.target.value })}
-                margin="normal"
-                data-testid="input-product-color"
-              />
-            </>
-          )}
           
           <Box sx={{ mt: 2, mb: 2 }}>
             <Button
