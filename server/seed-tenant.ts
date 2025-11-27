@@ -130,14 +130,3 @@ export async function seedDefaultTenant() {
     throw error;
   }
 }
-
-// Run seed
-seedDefaultTenant()
-  .then(() => {
-    console.log('\n🎉 Seed complete!');
-    process.exit(0);
-  })
-  .catch((error) => {
-    console.error('\n💥 Seed error:', error);
-    process.exit(1);
-  });
