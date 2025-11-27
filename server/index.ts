@@ -42,13 +42,25 @@ const PostgresStore = pgSimple(session);
 const useDatabaseStore = !!process.env.DATABASE_URL;
 
 let store;
+let usePostgres = false;
+
 if (useDatabaseStore) {
-  store = new PostgresStore({
-    pool: pool,
-    tableName: 'session',
-    ttl: 24 * 60 * 60 // 24 hours
-  });
-  console.log('✅ Using PostgreSQL session store');
+  try {
+    store = new PostgresStore({
+      pool: pool,
+      tableName: 'session',
+      ttl: 24 * 60 * 60 // 24 hours
+    });
+    usePostgres = true;
+    console.log('✅ Using PostgreSQL session store');
+  } catch (error) {
+    console.error('⚠️ PostgreSQL session store initialization failed, using Memory store:', error);
+    const MemStore = MemoryStore(session);
+    store = new MemStore({
+      checkPeriod: 86400000 // Prune expired entries every 24h
+    });
+    console.log('✅ Fallback: Using Memory session store');
+  }
 } else {
   const MemStore = MemoryStore(session);
   store = new MemStore({
