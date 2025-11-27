@@ -1,0 +1,100 @@
+  _sender: null,
+    _socket: null,
+    _bufferedAmount: 0,
+    _isServer: false,
+    _redirects: 0,
+    _autoPong: true,
+    _url: 'wss://v8w8ww84scc8w8w4goo44s0o/v2',
+    _req: null,
+    [Symbol(shapeMode)]: false,
+    [Symbol(kCapture)]: false
+  },
+  [Symbol(kType)]: 'error',
+  [Symbol(kError)]: AggregateError [ECONNREFUSED]: 
+      at internalConnectMultiple (node:net:1121:18)
+      at afterConnectMultiple (node:net:1688:7) {
+    code: 'ECONNREFUSED',
+    [errors]: [ [Error], [Error] ]
+  },
+  [Symbol(kMessage)]: ''
+}
+[SUPERADMIN] ❌ FAILED - Not found in any tenant
+9:09:39 AM [express] POST /api/auth/superadmin/login 401 in 13ms :: {"message":"Invalid Super Admin …
+[SUPERADMIN LOGIN] getUserByUsername error for tenant default-tenant-demo : ErrorEvent {
+  [Symbol(kTarget)]: WebSocket {
+    _events: [Object: null prototype] {
+      error: [Function],
+      message: [Function],
+      close: [Function],
+      open: [Function]
+    },
+    _eventsCount: 4,
+    _maxListeners: undefined,
+    _binaryType: 'arraybuffer',
+    _closeCode: 1006,
+    _closeFrameReceived: false,
+    _closeFrameSent: false,
+    _closeMessage: <Buffer >,
+    _closeTimer: null,
+    _errorEmitted: true,
+    _extensions: {},
+    _paused: false,
+    _protocol: '',
+    _readyState: 3,
+    _receiver: null,
+    _sender: null,
+    _socket: null,
+    _bufferedAmount: 0,
+    _isServer: false,
+    _redirects: 0,
+    _autoPong: true,
+    _url: 'wss://v8w8ww84scc8w8w4goo44s0o/v2',
+    _req: null,
+    [Symbol(shapeMode)]: false,
+    [Symbol(kCapture)]: false
+  },
+  [Symbol(kType)]: 'error',
+  [Symbol(kError)]: AggregateError [ECONNREFUSED]: 
+      at internalConnectMultiple (node:net:1121:18)
+      at afterConnectMultiple (node:net:1688:7) {
+    code: 'ECONNREFUSED',
+    [errors]: [ [Error], [Error] ]
+  },
+  [Symbol(kMessage)]: ''
+}
+[getTenantByCode] Error: NeonDbError: Error connecting to database: fetch failed
+    at execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1549:24)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async DatabaseStorage.getTenantByCode (file:///app/dist/index.js:2882:22)
+    at async file:///app/dist/index.js:6500:22 {
+  severity: undefined,
+  code: undefined,
+  detail: undefined,
+9:10:13 AM [express] POST /api/tenants/verify-code 404 in 28ms :: {"message":"Neispravan kod organiz…
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: undefined,
+  line: undefined,
+  routine: undefined,
+  sourceError: TypeError: fetch failed
+      at node:internal/deps/undici/undici:13392:13
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async execute (file:///app/node_modules/@neondatabase/serverless/index.mjs:1548:15)
+      at async DatabaseStorage.getTenantByCode (file:///app/dist/index.js:2882:22)
+      at async file:///app/dist/index.js:6500:22 {
+    [cause]: AggregateError [ECONNREFUSED]: 
+        at internalConnectMultiple (node:net:1121:18)
+        at afterConnectMultiple (node:net:1688:7) {
+      code: 'ECONNREFUSED',
+      [errors]: [Array]
+    }
+  }
+}
