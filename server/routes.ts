@@ -381,18 +381,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       req.session.isSuperAdmin = true;
       req.session.tenantId = "default-tenant-demo"; // Set to default-tenant-demo for Super Admin
       
-      res.json({ 
-        user: { 
-          id: superAdminUser.id, 
-          firstName: superAdminUser.firstName, 
-          lastName: superAdminUser.lastName, 
-          email: superAdminUser.email,
-          roles: superAdminUser.roles || [],
-          isAdmin: true,
-          isSuperAdmin: true,
-          totalPoints: 0,
-          tenantId: "default-tenant-demo"
-        } 
+      req.session.save((err: any) => {
+        if (err) {
+          console.error('[SUPERADMIN LOGIN] Session save error:', err);
+          return res.status(500).json({ message: "Failed to save session" });
+        }
+        console.log('[SUPERADMIN LOGIN] ✅ Session saved successfully');
+        res.json({ 
+          user: { 
+            id: superAdminUser.id, 
+            firstName: superAdminUser.firstName, 
+            lastName: superAdminUser.lastName, 
+            email: superAdminUser.email,
+            roles: superAdminUser.roles || [],
+            isAdmin: true,
+            isSuperAdmin: true,
+            totalPoints: 0,
+            tenantId: "default-tenant-demo"
+          } 
+        });
       });
     } catch (error) {
       console.error('[SUPERADMIN LOGIN] Unexpected error:', error);

@@ -75,7 +75,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'dev-secret-key-change-in-production',
   store: store,
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true, // MUST be true - Express won't create Set-Cookie otherwise
   cookie: {
     secure: isReplitDeployment || isProduction, // true on Replit or production
     httpOnly: true,
