@@ -1,0 +1,44 @@
+ // Super Admin login (no tenant code required)
+  console.log('[INIT] Registering /api/auth/superadmin/login endpoint');
+  app.post("/api/auth/superadmin/login", async (req, res) => {
+    console.log('[ENDPOINT HIT] /api/auth/superadmin/login POST');
+    try {
+      const { username, password } = req.body;
+      console.log('[SUPERADMIN LOGIN] Body:', { username, password: password ? '***' : 'MISSING', bodyKeys: Object.keys(req.body) });
+      
+      if (!username || !password) {
+        return res.status(400).json({ message: "Username and password are required" });
+      }
+
+      // Get all users across all tenants and find the Super Admin
+      let allTenants = [];
+      try {
+        allTenants = await storage.getAllTenants();
+        console.log('[SUPERADMIN LOGIN] Searching in tenants:', allTenants.map(t => ({ id: t.id, name: t.name })));
+      } catch (tenantError) {
+        console.error('[SUPERADMIN LOGIN] getAllTenants error:', tenantError);
+        // Try default tenant if getAllTenants fails
+        allTenants = [{ id: 'default-tenant-demo', name: 'Default' }];
+        console.log('[SUPERADMIN LOGIN] Using fallback tenant:', allTenants);
+      }
+
+      let superAdminUser = null;
+      
+      for (const tenant of allTenants) {
+        try {
+          const user = await storage.getUserByUsername(username, tenant.id);
+          console.log('[SUPERADMIN LOGIN] Checking user:', { username, tenant: tenant.id, isSuperAdmin: user?.isSuperAdmin });
+          if (user && user.isSuperAdmin && user.password === password) {
+            superAdminUser = user;
+            console.log('[SUPERADMIN] ✅ FOUND in tenant:', tenant.id);
+            break;
+          }
+        } catch (userError) {
+          console.error('[SUPERADMIN LOGIN] getUserByUsername error for tenant', tenant.id, ':', userError);
+        }
+      }
+      
+      if (!superAdminUser) {
+        console.log('[SUPERADMIN] ❌ FAILED - Not found in any tenant');
+        return res.status(401).json({ message: "Invalid Super Admin credentials" });
+      
