@@ -9,6 +9,7 @@ import { pool } from "./db";
 import type { User } from "@shared/schema";
 import { tenantContextMiddleware, DEFAULT_TENANT_ID } from "./tenant-context";
 import { seedSubscriptionPlans } from "./subscription-plans-seed";
+import { seedDemoData } from "./seed-demo-data";
 
 // Extend Express Request interface to include user
 declare global {
@@ -252,6 +253,7 @@ async function seedContributionPurposes() {
 ensureAdminUser();
 seedContributionPurposes();
 seedSubscriptionPlans();
+seedDemoData();
 
 app.use((req, res, next) => {
   const start = Date.now();
