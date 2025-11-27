@@ -2,4 +2,4 @@
 cmd = "npm run build"
 
 [start]
-cmd = "node dist/index.js & caddy run --config /assets/Caddyfile --adapter caddyfile"
+cmd = "bash start.sh"
