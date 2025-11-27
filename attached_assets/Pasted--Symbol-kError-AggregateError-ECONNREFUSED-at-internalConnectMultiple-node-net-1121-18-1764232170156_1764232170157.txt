@@ -1,0 +1,100 @@
+[Symbol(kError)]: AggregateError [ECONNREFUSED]: 
+      at internalConnectMultiple (node:net:1121:18)
+      at afterConnectMultiple (node:net:1688:7) {
+    code: 'ECONNREFUSED',
+    [errors]: [ [Error], [Error] ]
+  },
+  [Symbol(kMessage)]: ''
+}
+❌ Error ensuring admin user: ErrorEvent {
+  [Symbol(kTarget)]: WebSocket {
+    _events: [Object: null prototype] {
+      error: [Function],
+      message: [Function],
+      close: [Function],
+      open: [Function]
+    },
+    _eventsCount: 4,
+    _maxListeners: undefined,
+    _binaryType: 'arraybuffer',
+    _closeCode: 1006,
+    _closeFrameReceived: false,
+    _closeFrameSent: false,
+    _closeMessage: <Buffer >,
+    _closeTimer: null,
+    _errorEmitted: true,
+    _extensions: {},
+    _paused: false,
+    _protocol: '',
+    _readyState: 3,
+    _receiver: null,
+    _sender: null,
+    _socket: null,
+    _bufferedAmount: 0,
+    _isServer: false,
+    _redirects: 0,
+    _autoPong: true,
+    _url: 'wss://v8w8ww84scc8w8w4goo44s0o/v2',
+    _req: null,
+    [Symbol(shapeMode)]: false,
+    [Symbol(kCapture)]: false
+  },
+  [Symbol(kType)]: 'error',
+  [Symbol(kError)]: AggregateError [ECONNREFUSED]: 
+      at internalConnectMultiple (node:net:1121:18)
+      at afterConnectMultiple (node:net:1688:7) {
+    code: 'ECONNREFUSED',
+    [errors]: [ [Error], [Error] ]
+  },
+  [Symbol(kMessage)]: ''
+}
+❌ Error seeding subscription plans: ErrorEvent {
+  [Symbol(kTarget)]: WebSocket {
+Starting Caddy...
+    _events: [Object: null prototype] {
+      error: [Function],
+      message: [Function],
+      close: [Function],
+      open: [Function]
+    },
+    _eventsCount: 4,
+    _maxListeners: undefined,
+    _binaryType: 'arraybuffer',
+    _closeCode: 1006,
+    _closeFrameReceived: false,
+    _closeFrameSent: false,
+    _closeMessage: <Buffer >,
+    _closeTimer: null,
+    _errorEmitted: true,
+    _extensions: {},
+    _paused: false,
+    _protocol: '',
+    _readyState: 3,
+    _receiver: null,
+    _sender: null,
+    _socket: null,
+    _bufferedAmount: 0,
+    _isServer: false,
+    _redirects: 0,
+    _autoPong: true,
+    _url: 'wss://v8w8ww84scc8w8w4goo44s0o/v2',
+    _req: null,
+    [Symbol(shapeMode)]: false,
+    [Symbol(kCapture)]: false
+  },
+  [Symbol(kType)]: 'error',
+  [Symbol(kError)]: AggregateError [ECONNREFUSED]: 
+      at internalConnectMultiple (node:net:1121:18)
+      at afterConnectMultiple (node:net:1688:7) {
+    code: 'ECONNREFUSED',
+    [errors]: [ [Error], [Error] ]
+  },
+  [Symbol(kMessage)]: ''
+}
+{"level":"info","ts":1764232127.8033073,"msg":"using config from file","file":"/assets/Caddyfile"}
+{"level":"info","ts":1764232127.8050447,"msg":"adapted config to JSON","adapter":"caddyfile"}
+{"level":"warn","ts":1764232127.8054357,"logger":"admin","msg":"admin endpoint disabled"}
+{"level":"info","ts":1764232127.8056087,"logger":"http.auto_https","msg":"automatic HTTPS is completely disabled for server","server_name":"srv0"}
+{"level":"info","ts":1764232127.8057547,"logger":"tls.cache.maintenance","msg":"started background certificate maintenance","cache":"0xc000590a80"}
+{"level":"info","ts":1764232127.8062015,"logger":"tls.cache.maintenance","msg":"stopped background certificate maintenance","cache":"0xc000590a80"}
+Error: loading initial config: loading new config: http app module: start: listening on :3000: listen tcp :3000: bind: address already in use
