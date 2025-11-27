@@ -2123,9 +2123,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/organization-settings", async (req, res) => {
     try {
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      console.log('[ORG-SETTINGS] Getting settings for tenant:', tenantId);
       const settings = await storage.getOrganizationSettings(tenantId);
+      console.log('[ORG-SETTINGS] ✅ Success:', settings?.id);
       res.json(settings);
     } catch (error) {
+      console.error('[ORG-SETTINGS] ❌ Error:', error);
       res.status(500).json({ message: "Failed to get organization settings" });
     }
   });

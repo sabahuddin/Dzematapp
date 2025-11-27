@@ -1261,30 +1261,43 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getOrganizationSettings(tenantId: string): Promise<OrganizationSettings> {
-    const result = await db.select().from(organizationSettings).where(eq(organizationSettings.tenantId, tenantId)).limit(1);
-    
-    if (!result[0]) {
-      // Auto-create default organization settings if not found
-      const [newSettings] = await db.insert(organizationSettings).values({
-        tenantId,
-        name: "Islamska Zajednica",
-        address: "Ulica Džemata 123",
-        phone: "+387 33 123 456",
-        email: "info@dzemat.ba",
-        currency: "CHF",
-        livestreamEnabled: false,
-        livestreamTitle: null,
-        livestreamUrl: null,
-        livestreamDescription: null,
-        facebookUrl: null,
-        instagramUrl: null,
-        youtubeUrl: null,
-        twitterUrl: null,
-      } as InsertOrganizationSettings).returning();
-      return newSettings;
+    try {
+      const result = await db.select().from(organizationSettings).where(eq(organizationSettings.tenantId, tenantId)).limit(1);
+      
+      if (!result[0]) {
+        console.log('[STORAGE] Creating default org settings for tenant:', tenantId);
+        // Auto-create default organization settings if not found
+        const insertResult = await db.insert(organizationSettings).values({
+          tenantId,
+          name: "Islamska Zajednica",
+          address: "Ulica Džemata 123",
+          phone: "+387 33 123 456",
+          email: "info@dzemat.ba",
+          currency: "CHF",
+          livestreamEnabled: false,
+          livestreamTitle: null,
+          livestreamUrl: null,
+          livestreamDescription: null,
+          facebookUrl: null,
+          instagramUrl: null,
+          youtubeUrl: null,
+          twitterUrl: null,
+        } as InsertOrganizationSettings).returning();
+        
+        if (!insertResult[0]) {
+          console.error('[STORAGE] ❌ Failed to create org settings - no result returned');
+          throw new Error('Failed to create organization settings');
+        }
+        console.log('[STORAGE] ✅ Created org settings:', insertResult[0].id);
+        return insertResult[0];
+      }
+      
+      console.log('[STORAGE] ✅ Found existing org settings:', result[0].id);
+      return result[0];
+    } catch (error) {
+      console.error('[STORAGE] ❌ getOrganizationSettings error:', error);
+      throw error;
     }
-    
-    return result[0];
   }
 
   async updateOrganizationSettings(tenantId: string, settings: Partial<InsertOrganizationSettings>): Promise<OrganizationSettings> {
