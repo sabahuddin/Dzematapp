@@ -39,8 +39,9 @@ ensurePublicPathSymlink();
 // In production, when bundled by esbuild, import.meta.dirname becomes "."
 // We need to override the working directory context for serveStatic to find public files
 if (process.env.NODE_ENV === 'production') {
-  // Set environment variable that serveStatic() can use
-  process.env.PUBLIC_PATH = path.resolve(process.cwd(), 'public');
+  // Set environment variable that serveStaticFiles() middleware can use
+  // dist/public is where Vite outputs build artifacts (HTML, CSS, JS, etc.)
+  process.env.PUBLIC_PATH = path.resolve(process.cwd(), 'dist', 'public');
 }
 
 // Trust proxy - Required for Replit deployment behind their reverse proxy
