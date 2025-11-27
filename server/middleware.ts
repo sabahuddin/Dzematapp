@@ -35,10 +35,22 @@ export function serveStaticFiles(app: Express) {
   }
 
   // Serve static files
-  app.use(express.static(foundPath));
+  app.use(express.static(foundPath, {
+    setHeaders: (res, path) => {
+      // Add cache headers for assets
+      if (path.includes('/assets/')) {
+        res.set('Cache-Control', 'public, max-age=31536000, immutable');
+      }
+    }
+  }));
 
-  // Fall through to index.html for SPA routing
-  app.use("*", (_req, res) => {
+  // Fall through to index.html for SPA routing (but NOT for /api/ or /assets/)
+  app.use("*", (req, res) => {
+    // For API and asset requests that reach here, they're 404
+    if (req.path.startsWith('/api/') || req.path.startsWith('/assets/')) {
+      return res.status(404).json({ message: 'Not found' });
+    }
+    // For everything else (SPA routes), serve index.html
     res.sendFile(path.resolve(foundPath!, "index.html"));
   });
 }
