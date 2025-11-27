@@ -2,5 +2,4 @@
 cmd = "npm run build"
 
 [start]
-run = "node dist/index.js &"
-processes.caddy = "caddy run --config /assets/Caddyfile --adapter caddyfile"
+cmd = "node dist/index.js & caddy run --config /assets/Caddyfile --adapter caddyfile"
