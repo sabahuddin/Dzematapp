@@ -65,7 +65,8 @@ if (useDatabaseStore) {
     store = new PostgresStore({
       pool: pool,
       tableName: 'session',
-      ttl: 24 * 60 * 60 // 24 hours
+      ttl: 24 * 60 * 60, // 24 hours
+      createTableIfMissing: true // Auto-create session table if not exists
     });
     usePostgres = true;
     console.log('✅ Using PostgreSQL session store');
