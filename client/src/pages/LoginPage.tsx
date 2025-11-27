@@ -260,7 +260,7 @@ export default function LoginPage() {
                   label="Kod organizacije"
                   value={tenantCode}
                   onChange={(e) => setTenantCode(e.target.value.toUpperCase())}
-                  placeholder="DEMO2024"
+                  placeholder="DEMO2025"
                   InputProps={{
                     startAdornment: <Business sx={{ mr: 1, color: 'text.secondary' }} />
                   }}
@@ -284,7 +284,7 @@ export default function LoginPage() {
                     Za demo pristup koristite:
                   </Typography>
                   <Typography variant="caption" color="text.secondary" sx={{ display: 'block', fontWeight: 600 }}>
-                    Kod: DEMO2024
+                    Kod: DEMO2025
                   </Typography>
                 </Box>
               </Box>

@@ -4223,7 +4223,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Super Admin has full access regardless of tenantId
       if (session.isSuperAdmin) {
         return res.json({
-          tenantId: "DEMO2024",
+          tenantId: "DEMO2025",
           tenantName: "Super Admin",
           subscriptionTier: "full",
           subscriptionStatus: "active",

@@ -104,7 +104,7 @@ async function seedDefaultTenant() {
         address: 'Džematlijska ulica 123',
         city: 'Sarajevo',
         country: 'Bosnia and Herzegovina',
-        tenantCode: 'DEMO2024',
+        tenantCode: 'DEMO2025',
         subscriptionTier: 'full', // Full access za demo
         subscriptionStatus: 'trial',
         trialEndsAt: trialEnd,
