@@ -286,17 +286,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Get all users across all tenants and find the Super Admin
-      const allTenants = await storage.getAllTenants();
-      console.log('[SUPERADMIN LOGIN] Searching in tenants:', allTenants.map(t => ({ id: t.id, name: t.name })));
+      let allTenants = [];
+      try {
+        allTenants = await storage.getAllTenants();
+        console.log('[SUPERADMIN LOGIN] Searching in tenants:', allTenants.map(t => ({ id: t.id, name: t.name })));
+      } catch (tenantError) {
+        console.error('[SUPERADMIN LOGIN] getAllTenants error:', tenantError);
+        // Try default tenant if getAllTenants fails
+        allTenants = [{ id: 'default-tenant-demo', name: 'Default' }];
+        console.log('[SUPERADMIN LOGIN] Using fallback tenant:', allTenants);
+      }
+
       let superAdminUser = null;
       
       for (const tenant of allTenants) {
-        const user = await storage.getUserByUsername(username, tenant.id);
-        console.log('[SUPERADMIN LOGIN] Checking user:', { username, tenant: tenant.id, isSuperAdmin: user?.isSuperAdmin });
-        if (user && user.isSuperAdmin && user.password === password) {
-          superAdminUser = user;
-          console.log('[SUPERADMIN] ✅ FOUND in tenant:', tenant.id);
-          break;
+        try {
+          const user = await storage.getUserByUsername(username, tenant.id);
+          console.log('[SUPERADMIN LOGIN] Checking user:', { username, tenant: tenant.id, isSuperAdmin: user?.isSuperAdmin });
+          if (user && user.isSuperAdmin && user.password === password) {
+            superAdminUser = user;
+            console.log('[SUPERADMIN] ✅ FOUND in tenant:', tenant.id);
+            break;
+          }
+        } catch (userError) {
+          console.error('[SUPERADMIN LOGIN] getUserByUsername error for tenant', tenant.id, ':', userError);
         }
       }
       
@@ -324,7 +337,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         } 
       });
     } catch (error) {
-      console.error('[SUPERADMIN LOGIN] Error:', error);
+      console.error('[SUPERADMIN LOGIN] Unexpected error:', error);
       res.status(500).json({ message: "Internal server error" });
     }
   });
