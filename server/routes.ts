@@ -383,8 +383,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       req.session.save((err: any) => {
         if (err) {
-          console.error('[SUPERADMIN LOGIN] Session save error:', err);
-          return res.status(500).json({ message: "Failed to save session" });
+          console.error('[SUPERADMIN LOGIN] Session save error - DETAILS:', err?.message, err?.stack);
+          console.error('[SUPERADMIN LOGIN] Full error:', JSON.stringify(err, null, 2));
+          return res.status(500).json({ message: "Failed to save session", details: err?.message });
         }
         console.log('[SUPERADMIN LOGIN] ✅ Session saved successfully');
         return res.json({ 
