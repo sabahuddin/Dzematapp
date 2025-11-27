@@ -36,9 +36,9 @@ export function serveStaticFiles(app: Express) {
 
   // Serve static files
   app.use(express.static(foundPath, {
-    setHeaders: (res, path) => {
+    setHeaders: (res, filePath) => {
       // Add cache headers for assets
-      if (path.includes('/assets/')) {
+      if (filePath.includes('/assets/')) {
         res.set('Cache-Control', 'public, max-age=31536000, immutable');
       }
     }
