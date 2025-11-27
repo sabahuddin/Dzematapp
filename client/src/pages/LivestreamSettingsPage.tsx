@@ -59,7 +59,8 @@ export default function LivestreamSettingsPage() {
       twitterUrl: settings.twitterUrl || "",
       livestreamUrl: settings.livestreamUrl || "",
       livestreamEnabled: settings.livestreamEnabled || false,
-      livestreamTitle: settings.livestreamTitle || ""
+      livestreamTitle: settings.livestreamTitle || "",
+      livestreamDescription: settings.livestreamDescription || ""
     } : undefined
   });
 
@@ -338,6 +339,29 @@ export default function LivestreamSettingsPage() {
                       </FormControl>
                       <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
                         {t("livestreamSettings.fields.livestreamUrlHelper")}
+                      </Typography>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="livestreamDescription"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Opis prenošenja ("Ovdje možete pratiti...")</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          {...field} 
+                          value={field.value || ""}
+                          placeholder="Unesite tekst koji će biti prikazan kao opis prenošenja"
+                          rows={3}
+                          data-testid="input-livestream-description"
+                        />
+                      </FormControl>
+                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
+                        Ovaj tekst će biti prikazan na stranici kada nema aktivnog prenošenja
                       </Typography>
                       <FormMessage />
                     </FormItem>

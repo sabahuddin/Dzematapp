@@ -179,7 +179,7 @@ export default function LivestreamPage() {
                   {t("noActiveStream.notActive")}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {t("noActiveStream.placeholder")}
+                  {settings?.livestreamDescription || t("noActiveStream.placeholder")}
                 </Typography>
               </Box>
             </Box>

@@ -202,6 +202,7 @@ export const organizationSettings = pgTable("organization_settings", {
   livestreamUrl: text("livestream_url"),
   livestreamEnabled: boolean("livestream_enabled").default(false).notNull(),
   livestreamTitle: text("livestream_title"),
+  livestreamDescription: text("livestream_description"),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
