@@ -30,7 +30,9 @@ The frontend is built using React with TypeScript, leveraging a component-based 
 The backend is an Express.js application built with TypeScript, following a REST API pattern. It uses Drizzle ORM for type-safe database operations with a PostgreSQL database backend. The application includes centralized error handling and persistent data storage.
 
 ## Data Storage Solutions
-The application uses a PostgreSQL database (Neon serverless) with Drizzle ORM for type-safe schema definitions. All data is stored permanently in the database and persists across application restarts.
+The application uses a PostgreSQL database (Hetzner production server) with Drizzle ORM for type-safe schema definitions. All data is stored permanently in the database and persists across application restarts.
+
+**Production Database Connection:** PostgreSQL TCP (using `pg` driver) hosted on Hetzner infrastructure for dzematapp.com deployment.
 
 ## Authentication and Authorization
 The system employs a simple session-based authentication using username/password. It supports guest access for public content. Role-based access control is implemented with four roles: Admin, Član IO (Executive Board Member), Član (Member - default for new users), and Član porodice (Family Member). Admins can also assign work group moderators.
@@ -73,7 +75,7 @@ The system employs a simple session-based authentication using username/password
 - **class-variance-authority**: Component variant styling.
 
 ## Database and Backend
-- **@neondatabase/serverless**: PostgreSQL driver.
+- **pg**: PostgreSQL TCP driver (for production Hetzner deployment)
 - **drizzle-orm**: Type-safe ORM.
 - **drizzle-kit**: Database migration tools.
 - **express**: Node.js web framework.
@@ -130,6 +132,18 @@ Detaljne uputstvo: `mobile/BUILD_INSTRUCTIONS.md`
 Svi fajlovi su organizovani za lakšu separaciju i deployment.
 
 # Recent Updates (November 2025)
+
+## Production Deployment - PostgreSQL Driver Migration (November 27, 2025)
+- **Fixed Database Driver Issue**: Replaced `@neondatabase/serverless` (Replit Neon WebSocket) with `pg` (standard PostgreSQL TCP driver)
+  - `server/db.ts`: Now uses `pg.Pool` for TCP connections to Hetzner PostgreSQL
+  - `server/storage.ts`: Removed `neonSql` import, now uses Drizzle ORM queries exclusively
+  - Reason: Replit's Neon driver uses WebSocket which doesn't work with standard PostgreSQL on Hetzner VPS
+- **Production Status**: dzematapp.com LIVE
+  - ✅ Frontend: HTTP 200 (Vite assets served from `dist/public/`)
+  - ✅ Backend API: Responding (minor session store optimization needed)
+  - ✅ PostgreSQL: Connected via TCP on Hetzner infrastructure
+  - ✅ Build: `npm run build` creates production bundle with esbuild
+- **Next**: Complete GitHub sync for storage.ts (API limit issue with large file) and test full login flow
 
 ## Production Deployment Path Resolution Fix (November 27, 2025)
 - **Created `server/middleware.ts`**: Custom static file serving middleware that intelligently locates the `public` directory
