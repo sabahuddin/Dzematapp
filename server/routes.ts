@@ -1360,7 +1360,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const { id } = req.params;
-      const taskData = insertTaskSchema.partial().parse(req.body);
+      const taskData = insertTaskSchema.partial().parse({
+        ...req.body,
+        tenantId
+      });
       
       // Get existing task to check work group
       const existingTask = await storage.getTask(id, tenantId);
