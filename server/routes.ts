@@ -387,7 +387,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return res.status(500).json({ message: "Failed to save session" });
         }
         console.log('[SUPERADMIN LOGIN] ✅ Session saved successfully');
-        res.json({ 
+        return res.json({ 
           user: { 
             id: superAdminUser.id, 
             firstName: superAdminUser.firstName, 
