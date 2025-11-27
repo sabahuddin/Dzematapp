@@ -12,6 +12,7 @@ import { tenantContextMiddleware, DEFAULT_TENANT_ID } from "./tenant-context";
 import { seedSubscriptionPlans } from "./subscription-plans-seed";
 import { seedDemoData } from "./seed-demo-data";
 import { seedDefaultTenant } from "./seed-tenant";
+import { ensurePublicPathSymlink } from "./public-path-fix";
 
 // Extend Express Request interface to include user
 declare global {
@@ -30,6 +31,9 @@ declare module "express-session" {
 }
 
 const app = express();
+
+// Fix production bundled code path resolution before anything else
+ensurePublicPathSymlink();
 
 // Trust proxy - Required for Replit deployment behind their reverse proxy
 app.set('trust proxy', 1);
@@ -327,13 +331,6 @@ app.use((req, res, next) => {
   if (isDevelopment) {
     await setupVite(app, server);
   } else {
-    // Fix for production bundled code: change working directory to dist
-    // This ensures import.meta.dirname path resolution works correctly in bundled code
-    const distPath = path.join(process.cwd(), 'dist');
-    if (process.cwd() !== distPath) {
-      process.chdir(distPath);
-      console.log(`📂 Changed working directory to: ${distPath}`);
-    }
     serveStatic(app);
   }
 
