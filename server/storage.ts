@@ -125,7 +125,7 @@ import {
   services,
   tenants
 } from "@shared/schema";
-import { db, pool, neonSql } from './db';
+import { db, pool } from './db';
 import { eq, and, or, desc, asc, gt, sql, inArray, ilike } from 'drizzle-orm';
 
 export interface IStorage {
@@ -2757,12 +2757,10 @@ export class DatabaseStorage implements IStorage {
 
   async getTenantByCode(tenantCode: string): Promise<Tenant | undefined> {
     try {
-      const result = await neonSql`
-        SELECT * FROM tenants 
-        WHERE UPPER(tenant_code) = UPPER(${tenantCode}) 
-        LIMIT 1
-      `;
-      return result?.[0] as Tenant | undefined;
+      const result = await db.select().from(tenants).where(
+        sql`UPPER(${tenants.tenantCode}) = UPPER(${tenantCode})`
+      ).limit(1);
+      return result?.[0];
     } catch (error) {
       console.error('[getTenantByCode] Error:', error);
       return undefined;

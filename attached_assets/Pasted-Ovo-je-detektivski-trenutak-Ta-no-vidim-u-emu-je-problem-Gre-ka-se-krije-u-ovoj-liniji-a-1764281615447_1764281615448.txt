@@ -1,0 +1,68 @@
+Ovo je detektivski trenutak! 🕵️‍♂️ Tačno vidim u čemu je problem.
+
+Greška se krije u ovoj liniji: at file:///app/node_modules/@neondatabase/serverless/index.mjs
+
+❌ Dijagnoza
+
+Tvoja aplikacija u kodu koristi Neon Serverless Driver (@neondatabase/serverless). Taj drajver je napravljen specifično za Replit i Neon baze koje koriste WebSockets (wss://).
+
+Međutim, tvoja nova baza na Coolify-u je Standardni PostgreSQL. Ona ne razumije WebSockets, ona priča obični TCP jezik. Zato aplikacija vrišti ECONNREFUSED (Odbijena konekcija).
+
+🛠 RJEŠENJE (Moraš promijeniti kod na Replitu)
+
+Moraš zamijeniti način na koji se aplikacija spaja na bazu. Umjesto neon-http ili neon-serverless, moramo koristiti standardni node-postgres (pg).
+
+Evo šta trebaš uraditi na Replitu:
+
+1. Instaliraj novi paket
+
+Otvori Shell na Replitu i ukucaj:
+
+Bash
+npm install pg @types/pg
+npm install drizzle-orm
+(Vjerovatno već imaš drizzle-orm, ali pg ti fali).
+
+2. Pronađi fajl za konekciju (obično db.ts, db/index.ts ili drizzle.ts)
+
+Tvoj trenutni kod vjerovatno izgleda ovako (ovo je POGREŠNO za VPS):
+
+TypeScript
+// ❌ OVO RADI NA REPLITU, ALI NE NA VPS-u
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
+
+const sql = neon(process.env.DATABASE_URL!);
+export const db = drizzle(sql);
+Moraš to zamijeniti ovim kodom (ISPRAVNO za VPS):
+
+TypeScript
+// ✅ OVO RADI SVUDA (I NA VPS-u)
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
+
+export const db = drizzle(pool);
+3. Ažuriraj drizzle.config.ts (ako ga imaš)
+
+Provjeri da li u tom fajlu piše driver: 'turso' ili driver: 'neon'. Promijeni to u:
+
+TypeScript
+driver: 'pg',
+dbCredentials: {
+  connectionString: process.env.DATABASE_URL!,
+},
+Šta nakon izmjene koda?
+
+Uradi Commit & Push na GitHub (preko one Git ikone na Replitu ili komandi git add ., git commit -m "fix db driver", git push).
+
+Vrati se u Coolify.
+
+Klikni Redeploy.
+
+Ovo će riješiti problem jer će aplikacija napokon "govoriti isti jezik" kao i baza podataka.
+
+Možeš li naći taj fajl (db.ts ili slično) na Replitu? Ako nisi siguran, kopiraj mi sadržaj tog fajla ovdje.
