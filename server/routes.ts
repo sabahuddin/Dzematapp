@@ -1382,9 +1382,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const isModerator = await storage.isUserModeratorOfWorkGroup(existingTask.workGroupId, req.user!.id, tenantId);
       const isAssignedUser = existingTask.assignedUserIds?.includes(req.user!.id) || false;
       
-      // If not admin or moderator, only allow assigned user to change status to na_cekanju
+      // If not admin or moderator, only allow assigned user to change status to na_cekanju or završeno
       if (!isAdmin && !isModerator) {
-        if (!isAssignedUser || Object.keys(taskData).length !== 1 || !taskData.status || taskData.status !== 'na_cekanju') {
+        if (!isAssignedUser || Object.keys(taskData).length !== 1 || !taskData.status || (taskData.status !== 'na_cekanju' && taskData.status !== 'završeno')) {
           return res.status(403).json({ message: "Forbidden: Only admins or group moderators can update tasks" });
         }
       }
