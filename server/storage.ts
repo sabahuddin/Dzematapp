@@ -1273,6 +1273,13 @@ export class DatabaseStorage implements IStorage {
         email: "info@dzemat.ba",
         currency: "CHF",
         livestreamEnabled: false,
+        livestreamTitle: null,
+        livestreamUrl: null,
+        livestreamDescription: null,
+        facebookUrl: null,
+        instagramUrl: null,
+        youtubeUrl: null,
+        twitterUrl: null,
       } as InsertOrganizationSettings).returning();
       return newSettings;
     }

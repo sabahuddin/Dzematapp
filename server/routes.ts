@@ -292,8 +292,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       for (const tenant of allTenants) {
         const user = await storage.getUserByUsername(username, tenant.id);
+        console.log('[SUPERADMIN LOGIN] Checking user:', { username, tenant: tenant.id, isSuperAdmin: user?.isSuperAdmin });
         if (user && user.isSuperAdmin && user.password === password) {
           superAdminUser = user;
+          console.log('[SUPERADMIN] ✅ FOUND in tenant:', tenant.id);
           break;
         }
       }
