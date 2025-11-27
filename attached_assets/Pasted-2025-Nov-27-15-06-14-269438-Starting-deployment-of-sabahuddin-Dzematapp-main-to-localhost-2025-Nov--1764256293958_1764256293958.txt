@@ -1,0 +1,88 @@
+2025-Nov-27 15:06:14.269438
+Starting deployment of sabahuddin/Dzematapp:main to localhost.
+2025-Nov-27 15:06:14.496903
+Preparing container with helper image: ghcr.io/coollabsio/coolify-helper:1.0.12
+2025-Nov-27 15:06:14.681884
+[CMD]: docker stop --time=30 uccskc84ggsskgsw0ogssos8
+2025-Nov-27 15:06:14.681884
+Error response from daemon: No such container: uccskc84ggsskgsw0ogssos8
+2025-Nov-27 15:06:14.848175
+[CMD]: docker rm -f uccskc84ggsskgsw0ogssos8
+2025-Nov-27 15:06:14.848175
+Error response from daemon: No such container: uccskc84ggsskgsw0ogssos8
+2025-Nov-27 15:06:15.100426
+[CMD]: docker run -d --network coolify --name uccskc84ggsskgsw0ogssos8  --rm -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/coollabsio/coolify-helper:1.0.12
+2025-Nov-27 15:06:15.100426
+9d91479850551bf1c5c09e40835511194813c0522accc5122c74efe33de2b412
+2025-Nov-27 15:06:17.291305
+[CMD]: docker exec uccskc84ggsskgsw0ogssos8 bash -c 'GIT_SSH_COMMAND="ssh -o ConnectTimeout=30 -p 22 -o Port=22 -o LogLevel=ERROR -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" git ls-remote https://x-access-token:<REDACTED>@github.com/sabahuddin/Dzematapp.git refs/heads/main'
+2025-Nov-27 15:06:17.291305
+9a2dd70bc2e5542b4b1b4189875a99ae4f9fa841	refs/heads/main
+2025-Nov-27 15:06:17.544106
+[CMD]: docker images -q ow8kskssg0cgoowggcsowk8c:9a2dd70bc2e5542b4b1b4189875a99ae4f9fa841 2>/dev/null
+2025-Nov-27 15:06:17.544106
+654b34c75b46
+2025-Nov-27 15:06:17.555703
+No configuration changed & image found (ow8kskssg0cgoowggcsowk8c:9a2dd70bc2e5542b4b1b4189875a99ae4f9fa841) with the same Git Commit SHA. Build step skipped.
+2025-Nov-27 15:06:18.297758
+Creating .env file with runtime variables for container.
+2025-Nov-27 15:06:18.756021
+[CMD]: docker exec uccskc84ggsskgsw0ogssos8 bash -c 'cat /artifacts/uccskc84ggsskgsw0ogssos8/.env'
+2025-Nov-27 15:06:18.756021
+SOURCE_COMMIT=9a2dd70bc2e5542b4b1b4189875a99ae4f9fa841
+2025-Nov-27 15:06:18.756021
+COOLIFY_URL=https://dzematapp.com
+2025-Nov-27 15:06:18.756021
+COOLIFY_FQDN=dzematapp.com
+2025-Nov-27 15:06:18.756021
+COOLIFY_BRANCH=main
+2025-Nov-27 15:06:18.756021
+COOLIFY_RESOURCE_UUID=ow8kskssg0cgoowggcsowk8c
+2025-Nov-27 15:06:18.756021
+COOLIFY_CONTAINER_NAME=ow8kskssg0cgoowggcsowk8c-150613472536
+2025-Nov-27 15:06:18.756021
+DATABASE_URL=postgres://postgres:GjdxqLtJob7Cn9JrvA5piAL6KR8lb7LtAHy62ojMk6Xjg7ZGEAdIqqYmJ7C8RNYo@v8w8ww84scc8w8w4goo44s0o:5432/postgres
+2025-Nov-27 15:06:18.756021
+PORT=3000
+2025-Nov-27 15:06:18.756021
+NODE_EV=production
+2025-Nov-27 15:06:18.756021
+HOST=0.0.0.0
+2025-Nov-27 15:06:18.923130
+----------------------------------------
+2025-Nov-27 15:06:18.932888
+Application has ports mapped to the host system, rolling update is not supported.
+2025-Nov-27 15:06:18.943416
+Removing old containers.
+2025-Nov-27 15:06:49.636655
+[CMD]: docker stop --time=30 ow8kskssg0cgoowggcsowk8c-150339497013
+2025-Nov-27 15:06:49.636655
+ow8kskssg0cgoowggcsowk8c-150339497013
+2025-Nov-27 15:06:49.788009
+[CMD]: docker rm -f ow8kskssg0cgoowggcsowk8c-150339497013
+2025-Nov-27 15:06:49.788009
+ow8kskssg0cgoowggcsowk8c-150339497013
+2025-Nov-27 15:06:50.335193
+[CMD]: docker exec uccskc84ggsskgsw0ogssos8 bash -c 'COOLIFY_URL=https://dzematapp.com COOLIFY_FQDN=dzematapp.com COOLIFY_BRANCH=main COOLIFY_RESOURCE_UUID=ow8kskssg0cgoowggcsowk8c  docker compose --project-name ow8kskssg0cgoowggcsowk8c --project-directory /artifacts/uccskc84ggsskgsw0ogssos8 -f /artifacts/uccskc84ggsskgsw0ogssos8/docker-compose.yaml up --build -d'
+2025-Nov-27 15:06:50.335193
+Container ow8kskssg0cgoowggcsowk8c-150613472536  Creating
+2025-Nov-27 15:06:50.381459
+ow8kskssg0cgoowggcsowk8c-150613472536 Your kernel does not support memory swappiness capabilities or the cgroup is not mounted. Memory swappiness discarded.
+2025-Nov-27 15:06:50.384872
+Container ow8kskssg0cgoowggcsowk8c-150613472536  Created
+2025-Nov-27 15:06:50.384872
+Container ow8kskssg0cgoowggcsowk8c-150613472536  Starting
+2025-Nov-27 15:06:50.767496
+Container ow8kskssg0cgoowggcsowk8c-150613472536  Started
+2025-Nov-27 15:06:50.802205
+New container started.
+2025-Nov-27 15:06:51.320918
+Gracefully shutting down build container: uccskc84ggsskgsw0ogssos8
+2025-Nov-27 15:06:51.622416
+[CMD]: docker stop --time=30 uccskc84ggsskgsw0ogssos8
+2025-Nov-27 15:06:51.622416
+uccskc84ggsskgsw0ogssos8
+2025-Nov-27 15:06:51.796868
+[CMD]: docker rm -f uccskc84ggsskgsw0ogssos8
+2025-Nov-27 15:06:51.796868
+Error response from daemon: No such container: uccskc84ggsskgsw0ogssos8
