@@ -74,15 +74,15 @@ if (useDatabaseStore) {
 app.use(session({
   secret: process.env.SESSION_SECRET || 'dev-secret-key-change-in-production',
   store: store,
-  resave: true, // Must be true - ensures session is saved even if unmodified
-  saveUninitialized: true, // Must be true - creates Set-Cookie header for new sessions
+  resave: true,
+  saveUninitialized: true,
   cookie: {
-    secure: isReplitDeployment || isProduction, // true on Replit or production
+    secure: false, // Allow HTTP for development and local testing
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    sameSite: 'lax' // Important for cookies to work properly
+    sameSite: 'lax'
   },
-  name: 'sessionId' // Name of the session cookie
+  name: 'sessionId'
 }));
 
 // Tenant Context Middleware - dodaje tenantId u svaki request
