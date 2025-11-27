@@ -325,10 +325,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
               roles: ['admin'],
               tenantId: 'default-tenant-demo',
               totalPoints: 0,
-              profilePicture: null,
-              status: 'active' as const,
-              createdAt: new Date(),
-              updatedAt: new Date()
+              photo: null,
+              status: 'aktivan',
+              phone: null,
+              address: null,
+              city: null,
+              postalCode: null,
+              dateOfBirth: null,
+              occupation: null,
+              membershipDate: new Date(),
+              inactiveReason: null,
+              categories: []
             };
             break;
           }
@@ -351,10 +358,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
             roles: ['admin'],
             tenantId: 'default-tenant-demo',
             totalPoints: 0,
-            profilePicture: null,
-            status: 'active' as const,
-            createdAt: new Date(),
-            updatedAt: new Date()
+            photo: null,
+            status: 'aktivan',
+            phone: null,
+            address: null,
+            city: null,
+            postalCode: null,
+            dateOfBirth: null,
+            occupation: null,
+            membershipDate: new Date(),
+            inactiveReason: null,
+            categories: []
           };
         } else {
           console.log('[SUPERADMIN] ❌ FAILED - Not found in any tenant and credentials don\'t match hardcoded fallback');
