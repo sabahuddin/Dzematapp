@@ -254,12 +254,18 @@ async function seedContributionPurposes() {
 ensureAdminUser();
 seedContributionPurposes();
 
-// Non-blocking seed operations - don't await to prevent server hang
-(async () => {
-  await seedDefaultTenant();
-  seedSubscriptionPlans();
-  seedDemoData();
-})().catch(err => console.error('Seed error:', err));
+// Seed operations will run in background after server starts
+let seedingPromise: Promise<void> | null = null;
+
+const startSeeding = async () => {
+  try {
+    await seedDefaultTenant();
+    seedSubscriptionPlans();
+    seedDemoData();
+  } catch (err) {
+    console.error('Seed error:', err);
+  }
+};
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -324,5 +330,7 @@ app.use((req, res, next) => {
     reusePort: true,
   }, () => {
     log(`serving on port ${port}`);
+    // Start seeding after server is listening
+    seedingPromise = startSeeding();
   });
 })();
