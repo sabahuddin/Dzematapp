@@ -414,8 +414,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       res.clearCookie('sessionId');
       res.json({ message: "Logged out successfully" });
-});
-});
+    });
+  });
 
   // Session check route
   app.get("/api/auth/session", (req, res) => {
