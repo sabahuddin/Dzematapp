@@ -13,6 +13,7 @@ import { seedSubscriptionPlans } from "./subscription-plans-seed";
 import { seedDemoData } from "./seed-demo-data";
 import { seedDefaultTenant } from "./seed-tenant";
 import { ensurePublicPathSymlink } from "./public-path-fix";
+import { serveStaticFiles } from "./middleware";
 
 // Extend Express Request interface to include user
 declare global {
@@ -34,6 +35,13 @@ const app = express();
 
 // Fix production bundled code path resolution before anything else
 ensurePublicPathSymlink();
+
+// In production, when bundled by esbuild, import.meta.dirname becomes "."
+// We need to override the working directory context for serveStatic to find public files
+if (process.env.NODE_ENV === 'production') {
+  // Set environment variable that serveStatic() can use
+  process.env.PUBLIC_PATH = path.resolve(process.cwd(), 'public');
+}
 
 // Trust proxy - Required for Replit deployment behind their reverse proxy
 app.set('trust proxy', 1);
@@ -331,7 +339,14 @@ app.use((req, res, next) => {
   if (isDevelopment) {
     await setupVite(app, server);
   } else {
-    serveStatic(app);
+    // In production, use custom static file middleware that handles bundled code path issues
+    try {
+      serveStaticFiles(app);
+    } catch (err) {
+      console.error('Failed to serve static files:', err);
+      // Fallback to original serveStatic (may fail)
+      serveStatic(app);
+    }
   }
 
   // ALWAYS serve the app on the port specified in the environment variable PORT

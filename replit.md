@@ -129,9 +129,24 @@ cd mobile
 Detaljne uputstvo: `mobile/BUILD_INSTRUCTIONS.md`
 Svi fajlovi su organizovani za lakšu separaciju i deployment.
 
-# Recent Updates (November 2024)
+# Recent Updates (November 2025)
 
-## Mobile Experience Improvements
+## Production Deployment Path Resolution Fix (November 27, 2025)
+- **Created `server/middleware.ts`**: Custom static file serving middleware that intelligently locates the `public` directory
+  - Supports multiple possible paths: environment variable, current dir, parent dir, dist subdirectory
+  - Gracefully handles bundled code path resolution issues
+  - Provides better error messages with checked paths if public directory not found
+- **Updated `server/index.ts`**: 
+  - Set `process.env.PUBLIC_PATH` in production mode for middleware to use
+  - Import and use custom `serveStaticFiles()` middleware in production instead of original `serveStatic()`
+  - Fallback to original `serveStatic()` if custom middleware fails
+- **Created `server/public-path-fix.ts`**: Helper module that ensures public directory symlink exists if needed
+- **Problem**: When esbuild bundles server code, `import.meta.dirname` becomes "." causing static file serving to fail with 500 errors
+- **Solution**: Custom middleware searches multiple possible paths and selects correct one at runtime, eliminating path resolution guesswork
+- **Build**: `npm run build` creates `dist/index.js` (bundled server) + `dist/public/` (frontend assets)
+- **Start**: `NODE_ENV=production node dist/index.js` now correctly serves static files
+
+## Mobile Experience Improvements (Previous)
 - Resolved iOS Safari bounce/overscroll effect using edge-offset clamping strategy
 - Implemented native-app-like scrolling with clean boundary stops
 - Added transparent SVG logo component for consistent branding
@@ -139,7 +154,7 @@ Svi fajlovi su organizovani za lakšu separaciju i deployment.
 - Established consistent spacing system throughout mobile layout
 - Increased BottomNavigation height to 88px to prevent icon clipping
 
-## Technical Implementation
+## Technical Implementation (Previous)
 - Created `useEdgeLockScroll` hook for iOS bounce prevention
 - Developed `DzematLogo.tsx` as reusable SVG component
 - Set up PWA manifest with all required icon sizes (72px-512px)
