@@ -435,6 +435,211 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // SuperAdmin Database Setup endpoint - creates tables and seeds data
+  app.post("/api/superadmin/setup-db", async (req, res) => {
+    try {
+      console.log('[SETUP-DB] 🔧 Starting database setup...');
+      
+      // Import db and run table creation
+      const { db, pool } = await import('./db');
+      const schema = await import('@shared/schema');
+      
+      // Create all tables using raw SQL from Drizzle schema
+      // This is a simplified approach - creates essential tables
+      const createTablesSQL = `
+        -- Subscription Plans
+        CREATE TABLE IF NOT EXISTS subscription_plans (
+          id VARCHAR(255) PRIMARY KEY,
+          name VARCHAR(255) NOT NULL,
+          slug VARCHAR(255) NOT NULL UNIQUE,
+          description TEXT,
+          price_monthly DECIMAL(10,2) DEFAULT 0,
+          price_yearly DECIMAL(10,2) DEFAULT 0,
+          currency VARCHAR(10) DEFAULT 'EUR',
+          enabled_modules TEXT[] DEFAULT '{}',
+          read_only_modules TEXT[] DEFAULT '{}',
+          max_users INTEGER,
+          max_storage INTEGER,
+          is_active BOOLEAN DEFAULT true,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        -- Tenants
+        CREATE TABLE IF NOT EXISTS tenants (
+          id VARCHAR(255) PRIMARY KEY,
+          name VARCHAR(255) NOT NULL,
+          slug VARCHAR(255) NOT NULL UNIQUE,
+          subdomain VARCHAR(255) UNIQUE,
+          custom_domain VARCHAR(255),
+          email VARCHAR(255),
+          phone VARCHAR(255),
+          address TEXT,
+          city VARCHAR(255),
+          postal_code VARCHAR(50),
+          country VARCHAR(100) DEFAULT 'Bosnia and Herzegovina',
+          website VARCHAR(255),
+          logo_url VARCHAR(500),
+          subscription_plan_id VARCHAR(255) REFERENCES subscription_plans(id),
+          subscription_tier VARCHAR(50) DEFAULT 'basic',
+          subscription_status VARCHAR(50) DEFAULT 'trial',
+          trial_ends_at TIMESTAMP,
+          subscription_ends_at TIMESTAMP,
+          is_active BOOLEAN DEFAULT true,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        -- Users
+        CREATE TABLE IF NOT EXISTS users (
+          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+          tenant_id VARCHAR(255) REFERENCES tenants(id),
+          username VARCHAR(255),
+          password VARCHAR(255),
+          first_name VARCHAR(255) NOT NULL,
+          last_name VARCHAR(255) NOT NULL,
+          email VARCHAR(255),
+          phone VARCHAR(50),
+          address TEXT,
+          city VARCHAR(255),
+          postal_code VARCHAR(50),
+          date_of_birth DATE,
+          occupation VARCHAR(255),
+          photo VARCHAR(500),
+          roles TEXT[] DEFAULT '{}',
+          categories TEXT[] DEFAULT '{}',
+          is_admin BOOLEAN DEFAULT false,
+          is_super_admin BOOLEAN DEFAULT false,
+          status VARCHAR(50) DEFAULT 'aktivan',
+          inactive_reason TEXT,
+          membership_date DATE DEFAULT CURRENT_DATE,
+          total_points INTEGER DEFAULT 0,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        -- Announcements
+        CREATE TABLE IF NOT EXISTS announcements (
+          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+          tenant_id VARCHAR(255) REFERENCES tenants(id),
+          title VARCHAR(500) NOT NULL,
+          content TEXT NOT NULL,
+          type VARCHAR(50) DEFAULT 'general',
+          priority VARCHAR(50) DEFAULT 'normal',
+          is_pinned BOOLEAN DEFAULT false,
+          author_id VARCHAR(255) REFERENCES users(id),
+          views INTEGER DEFAULT 0,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        -- Events
+        CREATE TABLE IF NOT EXISTS events (
+          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+          tenant_id VARCHAR(255) REFERENCES tenants(id),
+          title VARCHAR(500) NOT NULL,
+          description TEXT,
+          location VARCHAR(500),
+          start_date TIMESTAMP NOT NULL,
+          end_date TIMESTAMP,
+          is_all_day BOOLEAN DEFAULT false,
+          category VARCHAR(100),
+          organizer_id VARCHAR(255) REFERENCES users(id),
+          max_participants INTEGER,
+          is_public BOOLEAN DEFAULT true,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        -- Work Groups (Sekcije)
+        CREATE TABLE IF NOT EXISTS work_groups (
+          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+          tenant_id VARCHAR(255) REFERENCES tenants(id),
+          name VARCHAR(255) NOT NULL,
+          description TEXT,
+          color VARCHAR(50),
+          icon VARCHAR(100),
+          is_active BOOLEAN DEFAULT true,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        -- Activity Logs
+        CREATE TABLE IF NOT EXISTS activity_logs (
+          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+          tenant_id VARCHAR(255) REFERENCES tenants(id),
+          user_id VARCHAR(255) REFERENCES users(id),
+          action VARCHAR(255) NOT NULL,
+          entity_type VARCHAR(100),
+          entity_id VARCHAR(255),
+          details JSONB,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        -- Organization Settings
+        CREATE TABLE IF NOT EXISTS organization_settings (
+          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+          tenant_id VARCHAR(255) REFERENCES tenants(id) UNIQUE,
+          name VARCHAR(255),
+          address TEXT,
+          city VARCHAR(255),
+          phone VARCHAR(50),
+          email VARCHAR(255),
+          website VARCHAR(255),
+          logo_url VARCHAR(500),
+          settings JSONB DEFAULT '{}',
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        -- Prayer Times
+        CREATE TABLE IF NOT EXISTS prayer_times (
+          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+          tenant_id VARCHAR(255) REFERENCES tenants(id),
+          date DATE NOT NULL,
+          fajr VARCHAR(10),
+          sunrise VARCHAR(10),
+          dhuhr VARCHAR(10),
+          asr VARCHAR(10),
+          maghrib VARCHAR(10),
+          isha VARCHAR(10),
+          juma VARCHAR(10),
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        -- Contribution Purposes
+        CREATE TABLE IF NOT EXISTS contribution_purposes (
+          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+          tenant_id VARCHAR(255) REFERENCES tenants(id),
+          name VARCHAR(255) NOT NULL,
+          description TEXT,
+          created_by_id VARCHAR(255),
+          is_active BOOLEAN DEFAULT true,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `;
+
+      await pool.query(createTablesSQL);
+      console.log('[SETUP-DB] ✅ Tables created successfully');
+
+      // Now run seeds
+      await seedDefaultTenant();
+      await seedDemoData();
+      
+      console.log('[SETUP-DB] ✅ Database setup completed successfully');
+      
+      res.json({ 
+        success: true, 
+        message: "Database tables created and seeded successfully!" 
+      });
+    } catch (error: any) {
+      console.error('[SETUP-DB] ❌ Setup error:', error);
+      res.status(500).json({ 
+        message: "Failed to setup database", 
+        error: error.message,
+        stack: error.stack 
+      });
+    }
+  });
+
   // SuperAdmin Seed Database endpoint - triggers database seeding for fresh deployments
   app.post("/api/superadmin/seed", async (req, res) => {
     try {
