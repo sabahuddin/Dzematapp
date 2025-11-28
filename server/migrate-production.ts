@@ -181,12 +181,14 @@ async function createMissingTables(client: any): Promise<void> {
         id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
         tenant_id VARCHAR NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
         date TEXT NOT NULL,
+        hijri_date TEXT,
         fajr TEXT NOT NULL,
-        sunrise TEXT NOT NULL,
+        sunrise TEXT,
         dhuhr TEXT NOT NULL,
         asr TEXT NOT NULL,
         maghrib TEXT NOT NULL,
-        isha TEXT NOT NULL
+        isha TEXT NOT NULL,
+        events TEXT
       )
     `);
     console.log("  ✅ Created table: prayer_times");
@@ -198,10 +200,10 @@ async function createMissingTables(client: any): Promise<void> {
       CREATE TABLE important_dates (
         id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
         tenant_id VARCHAR NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+        name TEXT NOT NULL,
         date TEXT NOT NULL,
-        title TEXT NOT NULL,
-        description TEXT,
-        type TEXT NOT NULL DEFAULT 'holiday'
+        is_recurring BOOLEAN DEFAULT TRUE NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW() NOT NULL
       )
     `);
     console.log("  ✅ Created table: important_dates");
@@ -215,8 +217,10 @@ async function createMissingTables(client: any): Promise<void> {
         tenant_id VARCHAR NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
         name TEXT NOT NULL,
         description TEXT,
+        is_default BOOLEAN DEFAULT FALSE NOT NULL,
         is_active BOOLEAN NOT NULL DEFAULT TRUE,
-        created_at TIMESTAMP DEFAULT NOW()
+        created_at TIMESTAMP DEFAULT NOW() NOT NULL,
+        created_by_id VARCHAR
       )
     `);
     console.log("  ✅ Created table: contribution_purposes");
@@ -335,9 +339,17 @@ async function createMissingTables(client: any): Promise<void> {
         name TEXT NOT NULL,
         type TEXT NOT NULL,
         content TEXT NOT NULL,
+        template_image_path TEXT,
+        text_position_x INTEGER DEFAULT 400,
+        text_position_y INTEGER DEFAULT 300,
+        font_size INTEGER DEFAULT 48,
+        font_color TEXT DEFAULT '#000000',
+        font_family TEXT DEFAULT 'Arial',
+        text_align TEXT DEFAULT 'center',
         is_active BOOLEAN NOT NULL DEFAULT TRUE,
         created_at TIMESTAMP DEFAULT NOW(),
-        updated_at TIMESTAMP DEFAULT NOW()
+        updated_at TIMESTAMP DEFAULT NOW(),
+        created_by_id VARCHAR
       )
     `);
     console.log("  ✅ Created table: certificate_templates");
@@ -353,8 +365,11 @@ async function createMissingTables(client: any): Promise<void> {
         template_id VARCHAR NOT NULL REFERENCES certificate_templates(id),
         issued_by_id VARCHAR NOT NULL REFERENCES users(id),
         certificate_number TEXT,
+        recipient_name TEXT,
+        message TEXT,
+        certificate_image_path TEXT,
         issued_at TIMESTAMP DEFAULT NOW(),
-        is_viewed BOOLEAN NOT NULL DEFAULT FALSE,
+        viewed BOOLEAN NOT NULL DEFAULT FALSE,
         pdf_url TEXT
       )
     `);
@@ -454,13 +469,86 @@ async function createMissingTables(client: any): Promise<void> {
     `);
     console.log("  ✅ Created table: audit_logs");
   }
+  
+  // Documents table
+  if (!(await tableExists(client, 'documents'))) {
+    await client.query(`
+      CREATE TABLE documents (
+        id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
+        tenant_id VARCHAR NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+        title TEXT NOT NULL,
+        description TEXT,
+        file_name TEXT NOT NULL,
+        file_path TEXT NOT NULL,
+        file_size INTEGER NOT NULL,
+        uploaded_by_id VARCHAR NOT NULL REFERENCES users(id),
+        uploaded_at TIMESTAMP DEFAULT NOW() NOT NULL
+      )
+    `);
+    console.log("  ✅ Created table: documents");
+  }
+  
+  // Requests table
+  if (!(await tableExists(client, 'requests'))) {
+    await client.query(`
+      CREATE TABLE requests (
+        id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
+        tenant_id VARCHAR NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+        user_id VARCHAR NOT NULL REFERENCES users(id),
+        request_type TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'pending',
+        form_data TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW() NOT NULL,
+        reviewed_at TIMESTAMP,
+        reviewed_by_id VARCHAR REFERENCES users(id)
+      )
+    `);
+    console.log("  ✅ Created table: requests");
+  }
+  
+  // Event RSVPs table
+  if (!(await tableExists(client, 'event_rsvps'))) {
+    await client.query(`
+      CREATE TABLE event_rsvps (
+        id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
+        tenant_id VARCHAR NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+        event_id VARCHAR NOT NULL REFERENCES events(id),
+        user_id VARCHAR NOT NULL REFERENCES users(id),
+        adults_count INTEGER DEFAULT 1,
+        children_count INTEGER DEFAULT 0,
+        rsvp_date TIMESTAMP DEFAULT NOW()
+      )
+    `);
+    console.log("  ✅ Created table: event_rsvps");
+  }
+  
+  // Imam Questions table
+  if (!(await tableExists(client, 'imam_questions'))) {
+    await client.query(`
+      CREATE TABLE imam_questions (
+        id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
+        tenant_id VARCHAR NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+        user_id VARCHAR NOT NULL REFERENCES users(id),
+        subject TEXT NOT NULL,
+        question TEXT NOT NULL,
+        answer TEXT,
+        status TEXT NOT NULL DEFAULT 'pending',
+        answered_by_id VARCHAR REFERENCES users(id),
+        answered_at TIMESTAMP,
+        is_public BOOLEAN DEFAULT FALSE,
+        is_anonymous BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP DEFAULT NOW() NOT NULL
+      )
+    `);
+    console.log("  ✅ Created table: imam_questions");
+  }
 }
 
 async function addMissingColumns(client: any): Promise<void> {
   console.log("📋 Checking for missing columns...");
   
   const migrations = [
-    // Users table
+    // ==================== USERS TABLE ====================
     { table: "users", column: "last_viewed_shop", type: "TIMESTAMP" },
     { table: "users", column: "last_viewed_events", type: "TIMESTAMP" },
     { table: "users", column: "last_viewed_announcements", type: "TIMESTAMP" },
@@ -469,8 +557,17 @@ async function addMissingColumns(client: any): Promise<void> {
     { table: "users", column: "skills", type: "TEXT[]" },
     { table: "users", column: "total_points", type: "INTEGER DEFAULT 0" },
     { table: "users", column: "is_super_admin", type: "BOOLEAN DEFAULT FALSE" },
+    { table: "users", column: "categories", type: "TEXT[]" },
+    { table: "users", column: "phone", type: "TEXT" },
+    { table: "users", column: "address", type: "TEXT" },
+    { table: "users", column: "city", type: "TEXT" },
+    { table: "users", column: "postal_code", type: "TEXT" },
+    { table: "users", column: "date_of_birth", type: "TEXT" },
+    { table: "users", column: "profile_image", type: "TEXT" },
+    { table: "users", column: "status", type: "TEXT DEFAULT 'active'" },
+    { table: "users", column: "created_at", type: "TIMESTAMP DEFAULT NOW()" },
     
-    // Tenants table
+    // ==================== TENANTS TABLE ====================
     { table: "tenants", column: "currency", type: "TEXT DEFAULT 'CHF' NOT NULL" },
     { table: "tenants", column: "is_default", type: "BOOLEAN DEFAULT FALSE NOT NULL" },
     { table: "tenants", column: "stripe_customer_id", type: "TEXT" },
@@ -480,44 +577,79 @@ async function addMissingColumns(client: any): Promise<void> {
     { table: "tenants", column: "trial_ends_at", type: "TIMESTAMP" },
     { table: "tenants", column: "subscription_started_at", type: "TIMESTAMP" },
     { table: "tenants", column: "locale", type: "TEXT DEFAULT 'bs' NOT NULL" },
+    { table: "tenants", column: "slug", type: "TEXT" },
+    { table: "tenants", column: "subdomain", type: "TEXT" },
     
-    // Organization settings
+    // ==================== ORGANIZATION SETTINGS TABLE ====================
     { table: "organization_settings", column: "currency", type: "TEXT DEFAULT 'CHF' NOT NULL" },
     { table: "organization_settings", column: "facebook_url", type: "TEXT" },
     { table: "organization_settings", column: "instagram_url", type: "TEXT" },
     { table: "organization_settings", column: "youtube_url", type: "TEXT" },
     { table: "organization_settings", column: "twitter_url", type: "TEXT" },
-    { table: "organization_settings", column: "website_url", type: "TEXT" },
-    { table: "organization_settings", column: "prayer_times_enabled", type: "BOOLEAN DEFAULT TRUE" },
-    { table: "organization_settings", column: "vaktija_location", type: "TEXT" },
-    { table: "organization_settings", column: "show_guest_access", type: "BOOLEAN DEFAULT TRUE" },
+    { table: "organization_settings", column: "livestream_url", type: "TEXT" },
+    { table: "organization_settings", column: "livestream_enabled", type: "BOOLEAN DEFAULT FALSE NOT NULL" },
+    { table: "organization_settings", column: "livestream_title", type: "TEXT" },
+    { table: "organization_settings", column: "livestream_description", type: "TEXT" },
+    { table: "organization_settings", column: "updated_at", type: "TIMESTAMP DEFAULT NOW() NOT NULL" },
     
-    // Events table
+    // ==================== EVENTS TABLE ====================
     { table: "events", column: "points_value", type: "INTEGER DEFAULT 20" },
     { table: "events", column: "reminder_time", type: "TEXT" },
+    { table: "events", column: "rsvp_enabled", type: "BOOLEAN DEFAULT TRUE" },
+    { table: "events", column: "require_adults_children", type: "BOOLEAN DEFAULT FALSE" },
+    { table: "events", column: "max_attendees", type: "INTEGER" },
+    { table: "events", column: "categories", type: "TEXT[]" },
+    { table: "events", column: "created_by_id", type: "VARCHAR" },
+    { table: "events", column: "created_at", type: "TIMESTAMP DEFAULT NOW()" },
     
-    // Tasks table
+    // ==================== MESSAGES TABLE ====================
+    { table: "messages", column: "is_read", type: "BOOLEAN DEFAULT FALSE NOT NULL" },
+    { table: "messages", column: "thread_id", type: "VARCHAR" },
+    { table: "messages", column: "parent_message_id", type: "VARCHAR" },
+    { table: "messages", column: "category", type: "TEXT" },
+    { table: "messages", column: "subject", type: "TEXT" },
+    { table: "messages", column: "content", type: "TEXT" },
+    { table: "messages", column: "created_at", type: "TIMESTAMP DEFAULT NOW() NOT NULL" },
+    
+    // ==================== ACTIVITIES TABLE ====================
+    { table: "activities", column: "created_at", type: "TIMESTAMP DEFAULT NOW()" },
+    { table: "activities", column: "type", type: "TEXT" },
+    { table: "activities", column: "description", type: "TEXT" },
+    { table: "activities", column: "user_id", type: "VARCHAR" },
+    
+    // ==================== PRAYER TIMES TABLE ====================
+    { table: "prayer_times", column: "hijri_date", type: "TEXT" },
+    { table: "prayer_times", column: "sunrise", type: "TEXT" },
+    { table: "prayer_times", column: "events", type: "TEXT" },
+    
+    // ==================== TASKS TABLE ====================
     { table: "tasks", column: "points_value", type: "INTEGER DEFAULT 50" },
     { table: "tasks", column: "completed_at", type: "TIMESTAMP" },
+    { table: "tasks", column: "description_image", type: "TEXT" },
+    { table: "tasks", column: "estimated_cost", type: "TEXT" },
     
-    // Work groups table
+    // ==================== WORK GROUPS TABLE ====================
     { table: "work_groups", column: "archived", type: "BOOLEAN DEFAULT FALSE NOT NULL" },
     { table: "work_groups", column: "visibility", type: "TEXT DEFAULT 'javna' NOT NULL" },
+    { table: "work_groups", column: "created_at", type: "TIMESTAMP DEFAULT NOW()" },
     
-    // Contribution purposes table
+    // ==================== CONTRIBUTION PURPOSES TABLE ====================
     { table: "contribution_purposes", column: "is_default", type: "BOOLEAN DEFAULT FALSE NOT NULL" },
     { table: "contribution_purposes", column: "created_by_id", type: "VARCHAR" },
+    { table: "contribution_purposes", column: "is_active", type: "BOOLEAN DEFAULT TRUE NOT NULL" },
+    { table: "contribution_purposes", column: "created_at", type: "TIMESTAMP DEFAULT NOW() NOT NULL" },
     
-    // Important dates table
+    // ==================== IMPORTANT DATES TABLE ====================
     { table: "important_dates", column: "is_recurring", type: "BOOLEAN DEFAULT TRUE NOT NULL" },
+    { table: "important_dates", column: "created_at", type: "TIMESTAMP DEFAULT NOW() NOT NULL" },
     
-    // User certificates table - schema uses 'viewed' not 'is_viewed'
+    // ==================== USER CERTIFICATES TABLE ====================
     { table: "user_certificates", column: "viewed", type: "BOOLEAN DEFAULT FALSE" },
     { table: "user_certificates", column: "recipient_name", type: "TEXT" },
     { table: "user_certificates", column: "certificate_image_path", type: "TEXT" },
     { table: "user_certificates", column: "message", type: "TEXT" },
     
-    // Certificate templates - additional columns from schema
+    // ==================== CERTIFICATE TEMPLATES TABLE ====================
     { table: "certificate_templates", column: "template_image_path", type: "TEXT" },
     { table: "certificate_templates", column: "text_position_x", type: "INTEGER DEFAULT 400" },
     { table: "certificate_templates", column: "text_position_y", type: "INTEGER DEFAULT 300" },
@@ -527,10 +659,37 @@ async function addMissingColumns(client: any): Promise<void> {
     { table: "certificate_templates", column: "text_align", type: "TEXT DEFAULT 'center'" },
     { table: "certificate_templates", column: "created_by_id", type: "VARCHAR" },
     
-    // Messages table
-    { table: "messages", column: "is_read", type: "BOOLEAN DEFAULT FALSE NOT NULL" },
-    { table: "messages", column: "thread_id", type: "VARCHAR" },
-    { table: "messages", column: "parent_message_id", type: "VARCHAR" },
+    // ==================== ANNOUNCEMENTS TABLE ====================
+    { table: "announcements", column: "photo_url", type: "TEXT" },
+    { table: "announcements", column: "created_at", type: "TIMESTAMP DEFAULT NOW()" },
+    { table: "announcements", column: "pinned", type: "BOOLEAN DEFAULT FALSE" },
+    
+    // ==================== IMAM QUESTIONS TABLE ====================
+    { table: "imam_questions", column: "status", type: "TEXT DEFAULT 'pending'" },
+    { table: "imam_questions", column: "answered_by_id", type: "VARCHAR" },
+    { table: "imam_questions", column: "answered_at", type: "TIMESTAMP" },
+    { table: "imam_questions", column: "is_public", type: "BOOLEAN DEFAULT FALSE" },
+    { table: "imam_questions", column: "is_anonymous", type: "BOOLEAN DEFAULT FALSE" },
+    { table: "imam_questions", column: "created_at", type: "TIMESTAMP DEFAULT NOW() NOT NULL" },
+    
+    // ==================== ACTIVITY FEED TABLE ====================
+    { table: "activity_feed", column: "related_entity_id", type: "VARCHAR" },
+    { table: "activity_feed", column: "related_entity_type", type: "TEXT" },
+    { table: "activity_feed", column: "is_clickable", type: "BOOLEAN DEFAULT FALSE" },
+    
+    // ==================== SHOP PRODUCTS TABLE ====================
+    { table: "shop_products", column: "created_at", type: "TIMESTAMP DEFAULT NOW()" },
+    { table: "shop_products", column: "updated_at", type: "TIMESTAMP DEFAULT NOW()" },
+    
+    // ==================== MARKETPLACE ITEMS TABLE ====================
+    { table: "marketplace_items", column: "created_at", type: "TIMESTAMP DEFAULT NOW()" },
+    
+    // ==================== FINANCIAL CONTRIBUTIONS TABLE ====================
+    { table: "financial_contributions", column: "payment_date", type: "TIMESTAMP" },
+    { table: "financial_contributions", column: "purpose", type: "TEXT" },
+    { table: "financial_contributions", column: "period_start", type: "TIMESTAMP" },
+    { table: "financial_contributions", column: "period_end", type: "TIMESTAMP" },
+    { table: "financial_contributions", column: "receipt_url", type: "TEXT" },
   ];
   
   let addedColumns = 0;
@@ -566,5 +725,7 @@ async function addMissingColumns(client: any): Promise<void> {
   
   if (addedColumns > 0) {
     console.log(`  Added ${addedColumns} columns`);
+  } else {
+    console.log("  All columns already exist");
   }
 }
