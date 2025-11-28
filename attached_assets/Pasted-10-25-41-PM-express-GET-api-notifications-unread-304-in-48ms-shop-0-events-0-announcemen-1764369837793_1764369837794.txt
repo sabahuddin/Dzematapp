@@ -1,0 +1,100 @@
+10:25:41 PM [express] GET /api/notifications/unread 304 in 48ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+10:25:43 PM [express] POST /api/messages 400 in 17ms :: {"message":"Invalid message data"}
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+10:26:11 PM [express] GET /api/notifications/unread 304 in 38ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+10:26:27 PM [express] GET /api/certificates/unviewed-count 304 in 16ms :: {"count":0}
+10:26:27 PM [express] GET /api/messages/unread-count 500 in 34ms :: {"message":"Failed to fetch unrea…
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+10:26:34 PM [express] POST /api/documents 201 in 33ms :: {"id":"08aa57b7-350e-4a93-afdc-541579a6c2e9"…
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+10:26:34 PM [express] GET /api/documents 200 in 14ms :: [{"id":"08aa57b7-350e-4a93-afdc-541579a6c2e9"…
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+10:26:41 PM [express] GET /api/notifications/unread 304 in 41ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+10:26:46 PM [express] GET /api/services 500 in 12ms :: {"message":"Failed to get services"}
+10:26:46 PM [express] PUT /api/notifications/mark-viewed/shop 200 in 17ms :: {"success":true}
+10:26:46 PM [express] GET /api/marketplace/items 403 in 21ms :: {"message":"Feature \"marketplace\" n…
+10:26:46 PM [express] GET /api/subscription/current 304 in 17ms :: {"tenantId":"default-tenant-demo",…
+10:26:46 PM [express] GET /api/shop/products 500 in 24ms :: {"message":"Failed to get products"}
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+10:26:46 PM [express] GET /api/notifications/unread 304 in 29ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+10:26:57 PM [express] GET /api/certificates/unviewed-count 304 in 12ms :: {"count":0}
+10:26:57 PM [express] GET /api/messages/unread-count 500 in 15ms :: {"message":"Failed to fetch unrea…
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+10:27:01 PM [express] POST /api/upload/shop-photos 200 in 93ms :: {"message":"Photos uploaded success…
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+10:27:03 PM [express] POST /api/marketplace/items 403 in 9ms :: {"message":"Feature \"marketplace\" n…
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+10:27:16 PM [express] GET /api/notifications/unread 304 in 54ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+10:27:21 PM [express] POST /api/marketplace/items 403 in 14ms :: {"message":"Feature \"marketplace\" …
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+10:27:46 PM [express] GET /api/notifications/unread 304 in 45ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+10:27:57 PM [express] GET /api/certificates/unviewed-count 304 in 14ms :: {"count":0}
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+10:27:57 PM [express] GET /api/messages/unread-count 500 in 12ms :: {"message":"Failed to fetch unrea…
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+10:28:13 PM [express] POST /api/services 400 in 20ms :: {"message":"Invalid service data","details":"…
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+10:28:16 PM [express] GET /api/notifications/unread 304 in 57ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+10:28:18 PM [express] GET /api/subscription/current 304 in 10ms :: {"tenantId":"default-tenant-demo",…
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+10:28:27 PM [express] GET /api/certificates/unviewed-count 304 in 8ms :: {"count":0}
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+[SERVICE POST ERROR] column "photos" of relation "services" does not exist
+10:28:27 PM [express] GET /api/messages/unread-count 500 in 25ms :: {"message":"Failed to fetch unrea…
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+10:28:29 PM [express] GET /api/family-relationships/83e03f52-67e9-4ed5-9c7e-4f0864b3b34b 500 in 20ms …
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+10:28:46 PM [express] GET /api/notifications/unread 304 in 50ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+10:28:52 PM [express] GET /api/family-relationships/152bf68f-258e-4110-a6a5-f80048bbf675 500 in 7ms :…
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+10:28:57 PM [express] GET /api/certificates/unviewed-count 304 in 12ms :: {"count":0}
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+10:28:57 PM [express] GET /api/messages/unread-count 500 in 12ms :: {"message":"Failed to fetch unrea…
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+10:29:03 PM [express] PUT /api/users/152bf68f-258e-4110-a6a5-f80048bbf675 400 in 23ms :: {"message":"…
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: false
+10:29:16 PM [express] GET /api/notifications/unread 304 in 42ms :: {"shop":0,"events":0,"announcement…
+[ORG-SETTINGS] Getting settings for tenant: default-tenant-demo
+10:43:42 PM [express] GET /api/auth/session 401 in 3ms :: {"message":"Not authenticated"}
+[STORAGE] ✅ Found existing org settings: fe93405c-6d88-4363-8dec-75b45f796008
+[ORG-SETTINGS] ✅ Success: fe93405c-6d88-4363-8dec-75b45f796008
+10:43:42 PM [express] GET /api/organization-settings 200 in 9ms :: {"id":"fe93405c-6d88-4363-8dec-75b…
+User update error: error: relation "activity_log" does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.createActivityLog (file:///app/dist/index.js:2236:24)
+    at async file:///app/dist/index.js:4934:7 {
+  length: 111,
+  severity: 'ERROR',
+  code: '42P01',
+  detail: undefined,
+  hint: undefined,
+  position: '13',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '1449',
+  routine: 'parserOpenTable'
+}

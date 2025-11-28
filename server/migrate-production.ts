@@ -427,10 +427,13 @@ async function createMissingTables(client: any): Promise<void> {
         tenant_id VARCHAR NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
         name TEXT NOT NULL,
         description TEXT,
+        photos TEXT[],
         price TEXT,
+        duration TEXT,
         category TEXT,
-        is_active BOOLEAN NOT NULL DEFAULT TRUE,
-        created_at TIMESTAMP DEFAULT NOW()
+        status TEXT DEFAULT 'active',
+        user_id VARCHAR REFERENCES users(id),
+        created_at TIMESTAMP DEFAULT NOW() NOT NULL
       )
     `);
     console.log("  ✅ Created table: services");
@@ -468,6 +471,23 @@ async function createMissingTables(client: any): Promise<void> {
       )
     `);
     console.log("  ✅ Created table: audit_logs");
+  }
+  
+  // Activity Log table (gamification tracking)
+  if (!(await tableExists(client, 'activity_log'))) {
+    await client.query(`
+      CREATE TABLE activity_log (
+        id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
+        tenant_id VARCHAR NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+        user_id VARCHAR NOT NULL REFERENCES users(id),
+        activity_type TEXT NOT NULL,
+        description TEXT NOT NULL,
+        points INTEGER DEFAULT 0,
+        related_entity_id VARCHAR,
+        created_at TIMESTAMP DEFAULT NOW() NOT NULL
+      )
+    `);
+    console.log("  ✅ Created table: activity_log");
   }
   
   // Documents table
@@ -690,6 +710,12 @@ async function addMissingColumns(client: any): Promise<void> {
     { table: "financial_contributions", column: "period_start", type: "TIMESTAMP" },
     { table: "financial_contributions", column: "period_end", type: "TIMESTAMP" },
     { table: "financial_contributions", column: "receipt_url", type: "TEXT" },
+    
+    // ==================== SERVICES TABLE ====================
+    { table: "services", column: "photos", type: "TEXT[]" },
+    { table: "services", column: "user_id", type: "VARCHAR" },
+    { table: "services", column: "status", type: "TEXT DEFAULT 'active'" },
+    { table: "services", column: "duration", type: "TEXT" },
   ];
   
   let addedColumns = 0;
