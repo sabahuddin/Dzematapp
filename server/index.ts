@@ -14,6 +14,7 @@ import { seedDemoData } from "./seed-demo-data";
 import { seedDefaultTenant } from "./seed-tenant";
 import { ensurePublicPathSymlink } from "./public-path-fix";
 import { serveStaticFiles } from "./middleware";
+import { migrateProductionSchema } from "./migrate-production";
 
 // Extend Express Request interface to include user
 declare global {
@@ -322,6 +323,15 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Run schema migration before anything else in production
+  if (process.env.NODE_ENV === 'production') {
+    try {
+      await migrateProductionSchema();
+    } catch (error) {
+      console.error('❌ Schema migration failed, but continuing with startup:', error);
+    }
+  }
+  
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
