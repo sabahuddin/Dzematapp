@@ -275,15 +275,18 @@ async function seedContributionPurposes() {
   }
 }
 
-// Call on startup - non-blocking async operations
-ensureAdminUser();
-seedContributionPurposes();
-
 // Seed operations will run in background after server starts
 let seedingPromise: Promise<void> | null = null;
 
 const startSeeding = async () => {
   try {
+    // First ensure admin user exists
+    await ensureAdminUser();
+    
+    // Then seed contribution purposes (after migration has added required columns)
+    await seedContributionPurposes();
+    
+    // Then seed tenant and demo data
     await seedDefaultTenant();
     seedSubscriptionPlans();
     seedDemoData();

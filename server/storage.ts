@@ -2415,14 +2415,14 @@ export class DatabaseStorage implements IStorage {
       .from(userCertificates)
       .where(and(
         eq(userCertificates.userId, userId),
-        eq(userCertificates.isViewed, false)
+        eq(userCertificates.viewed, false)
       ));
     return Number(result[0]?.count || 0);
   }
 
   async markCertificateAsViewed(id: string, tenantId: string): Promise<UserCertificate | undefined> {
     const [c] = await db.update(userCertificates)
-      .set({ isViewed: true })
+      .set({ viewed: true })
       .where(and(eq(userCertificates.id, id), eq(userCertificates.tenantId, tenantId)))
       .returning();
     return c;
