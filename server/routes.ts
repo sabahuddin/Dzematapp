@@ -438,233 +438,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // SuperAdmin Database RESET endpoint - drops and recreates all tables (for fresh installs)
   app.get("/api/superadmin/reset-db", async (req, res) => {
     try {
-      console.log('[RESET-DB] 🔥 Starting FULL database reset...');
+      console.log('[RESET-DB] 🔥 Starting FULL database reset with COMPLETE schema...');
       
       const { db, pool } = await import('./db');
+      const fs = await import('fs');
+      const path = await import('path');
       
-      // Drop all tables in correct order (reverse dependency order)
-      const dropTablesSQL = `
-        DROP TABLE IF EXISTS audit_logs CASCADE;
-        DROP TABLE IF EXISTS tenant_features CASCADE;
-        DROP TABLE IF EXISTS activity_logs CASCADE;
-        DROP TABLE IF EXISTS contribution_purposes CASCADE;
-        DROP TABLE IF EXISTS prayer_times CASCADE;
-        DROP TABLE IF EXISTS organization_settings CASCADE;
-        DROP TABLE IF EXISTS work_groups CASCADE;
-        DROP TABLE IF EXISTS events CASCADE;
-        DROP TABLE IF EXISTS announcements CASCADE;
-        DROP TABLE IF EXISTS users CASCADE;
-        DROP TABLE IF EXISTS tenants CASCADE;
-        DROP TABLE IF EXISTS subscription_plans CASCADE;
-      `;
+      // Read complete schema SQL from file
+      const schemaPath = path.join(process.cwd(), 'server', 'complete-schema.sql');
+      let schemaSql: string;
       
-      await pool.query(dropTablesSQL);
-      console.log('[RESET-DB] ✅ All tables dropped');
+      try {
+        schemaSql = fs.readFileSync(schemaPath, 'utf-8');
+        console.log('[RESET-DB] ✅ Loaded complete-schema.sql');
+      } catch (err) {
+        console.log('[RESET-DB] ⚠️ Could not load SQL file, using inline schema');
+        // Fallback inline SQL if file doesn't exist
+        schemaSql = getCompleteSchemaSQL();
+      }
       
-      // Create all tables with correct schema
-      const createTablesSQL = `
-        -- Subscription Plans (complete schema matching Drizzle)
-        CREATE TABLE subscription_plans (
-          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
-          name TEXT NOT NULL,
-          slug TEXT NOT NULL UNIQUE,
-          description TEXT,
-          price_monthly TEXT NOT NULL DEFAULT '0',
-          price_yearly TEXT,
-          currency TEXT NOT NULL DEFAULT 'EUR',
-          stripe_price_id_monthly TEXT,
-          stripe_price_id_yearly TEXT,
-          stripe_product_id TEXT,
-          enabled_modules TEXT[],
-          read_only_modules TEXT[],
-          max_users INTEGER,
-          max_storage INTEGER,
-          is_active BOOLEAN NOT NULL DEFAULT true,
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-
-        -- Tenants (complete schema matching Drizzle exactly)
-        CREATE TABLE tenants (
-          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
-          name TEXT NOT NULL,
-          slug TEXT NOT NULL UNIQUE,
-          tenant_code TEXT NOT NULL UNIQUE,
-          subdomain TEXT UNIQUE,
-          email TEXT NOT NULL,
-          phone TEXT,
-          address TEXT,
-          city TEXT,
-          country TEXT NOT NULL DEFAULT 'Switzerland',
-          subscription_tier TEXT NOT NULL DEFAULT 'basic',
-          subscription_status TEXT NOT NULL DEFAULT 'trial',
-          trial_ends_at TIMESTAMP,
-          subscription_started_at TIMESTAMP,
-          stripe_customer_id TEXT UNIQUE,
-          stripe_subscription_id TEXT UNIQUE,
-          is_active BOOLEAN NOT NULL DEFAULT true,
-          locale TEXT NOT NULL DEFAULT 'bs',
-          currency TEXT NOT NULL DEFAULT 'CHF',
-          created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-        );
-
-        -- Users (complete schema)
-        CREATE TABLE users (
-          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
-          tenant_id VARCHAR(255) REFERENCES tenants(id),
-          username VARCHAR(255),
-          password VARCHAR(255),
-          first_name VARCHAR(255) NOT NULL,
-          last_name VARCHAR(255) NOT NULL,
-          email VARCHAR(255),
-          phone VARCHAR(50),
-          address TEXT,
-          city VARCHAR(255),
-          postal_code VARCHAR(50),
-          date_of_birth DATE,
-          occupation VARCHAR(255),
-          photo VARCHAR(500),
-          roles TEXT[] DEFAULT '{}',
-          categories TEXT[] DEFAULT '{}',
-          is_admin BOOLEAN DEFAULT false,
-          is_super_admin BOOLEAN DEFAULT false,
-          status VARCHAR(50) DEFAULT 'aktivan',
-          inactive_reason TEXT,
-          membership_date DATE DEFAULT CURRENT_DATE,
-          total_points INTEGER DEFAULT 0,
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-
-        -- Announcements
-        CREATE TABLE announcements (
-          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
-          tenant_id VARCHAR(255) REFERENCES tenants(id),
-          title VARCHAR(500) NOT NULL,
-          content TEXT NOT NULL,
-          type VARCHAR(50) DEFAULT 'general',
-          priority VARCHAR(50) DEFAULT 'normal',
-          is_pinned BOOLEAN DEFAULT false,
-          author_id VARCHAR(255) REFERENCES users(id),
-          views INTEGER DEFAULT 0,
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-
-        -- Events
-        CREATE TABLE events (
-          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
-          tenant_id VARCHAR(255) REFERENCES tenants(id),
-          title VARCHAR(500) NOT NULL,
-          description TEXT,
-          location VARCHAR(500),
-          start_date TIMESTAMP NOT NULL,
-          end_date TIMESTAMP,
-          is_all_day BOOLEAN DEFAULT false,
-          category VARCHAR(100),
-          organizer_id VARCHAR(255) REFERENCES users(id),
-          max_participants INTEGER,
-          is_public BOOLEAN DEFAULT true,
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-
-        -- Work Groups
-        CREATE TABLE work_groups (
-          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
-          tenant_id VARCHAR(255) REFERENCES tenants(id),
-          name VARCHAR(255) NOT NULL,
-          description TEXT,
-          color VARCHAR(50),
-          icon VARCHAR(100),
-          is_active BOOLEAN DEFAULT true,
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-
-        -- Activity Logs
-        CREATE TABLE activity_logs (
-          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
-          tenant_id VARCHAR(255) REFERENCES tenants(id),
-          user_id VARCHAR(255) REFERENCES users(id),
-          action VARCHAR(255) NOT NULL,
-          entity_type VARCHAR(100),
-          entity_id VARCHAR(255),
-          details JSONB,
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-
-        -- Organization Settings
-        CREATE TABLE organization_settings (
-          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
-          tenant_id VARCHAR(255) REFERENCES tenants(id) UNIQUE,
-          name VARCHAR(255),
-          address TEXT,
-          city VARCHAR(255),
-          phone VARCHAR(50),
-          email VARCHAR(255),
-          website VARCHAR(255),
-          logo_url VARCHAR(500),
-          settings JSONB DEFAULT '{}',
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-
-        -- Prayer Times
-        CREATE TABLE prayer_times (
-          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
-          tenant_id VARCHAR(255) REFERENCES tenants(id),
-          date DATE NOT NULL,
-          fajr VARCHAR(10),
-          sunrise VARCHAR(10),
-          dhuhr VARCHAR(10),
-          asr VARCHAR(10),
-          maghrib VARCHAR(10),
-          isha VARCHAR(10),
-          juma VARCHAR(10),
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-
-        -- Contribution Purposes
-        CREATE TABLE contribution_purposes (
-          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
-          tenant_id VARCHAR(255) REFERENCES tenants(id),
-          name VARCHAR(255) NOT NULL,
-          description TEXT,
-          created_by_id VARCHAR(255),
-          is_active BOOLEAN DEFAULT true,
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-
-        -- Tenant Features
-        CREATE TABLE tenant_features (
-          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
-          tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
-          module_id TEXT NOT NULL,
-          is_enabled BOOLEAN NOT NULL DEFAULT true,
-          is_read_only BOOLEAN NOT NULL DEFAULT false,
-          settings TEXT,
-          updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-        );
-
-        -- Audit Logs
-        CREATE TABLE audit_logs (
-          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
-          tenant_id VARCHAR(255) REFERENCES tenants(id) ON DELETE CASCADE,
-          user_id VARCHAR(255) REFERENCES users(id),
-          action TEXT NOT NULL,
-          resource_type TEXT NOT NULL,
-          resource_id VARCHAR(255),
-          data_before TEXT,
-          data_after TEXT,
-          ip_address TEXT,
-          user_agent TEXT,
-          description TEXT,
-          created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-        );
-      `;
-      
-      await pool.query(createTablesSQL);
-      console.log('[RESET-DB] ✅ All tables created with correct schema');
+      // Execute the complete schema SQL
+      await pool.query(schemaSql);
+      console.log('[RESET-DB] ✅ All 44 tables created with correct schema');
 
       // Now run seeds
       await seedDefaultTenant();
@@ -674,7 +469,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.json({ 
         success: true, 
-        message: "Database reset completed! All tables recreated and seeded." 
+        message: "Database reset completed! All 44 tables recreated and seeded." 
       });
     } catch (error: any) {
       console.error('[RESET-DB] ❌ Reset error:', error);
@@ -685,6 +480,498 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+  
+  // Helper function with complete inline SQL schema
+  function getCompleteSchemaSQL(): string {
+    return `
+-- Complete SQL Schema for DžematApp - All 44 Tables
+-- Drop all tables in reverse dependency order
+DROP TABLE IF EXISTS audit_logs CASCADE;
+DROP TABLE IF EXISTS tenant_features CASCADE;
+DROP TABLE IF EXISTS activity_feed CASCADE;
+DROP TABLE IF EXISTS services CASCADE;
+DROP TABLE IF EXISTS marriage_applications CASCADE;
+DROP TABLE IF EXISTS akika_applications CASCADE;
+DROP TABLE IF EXISTS membership_applications CASCADE;
+DROP TABLE IF EXISTS user_certificates CASCADE;
+DROP TABLE IF EXISTS certificate_templates CASCADE;
+DROP TABLE IF EXISTS receipts CASCADE;
+DROP TABLE IF EXISTS proposals CASCADE;
+DROP TABLE IF EXISTS user_preferences CASCADE;
+DROP TABLE IF EXISTS projects CASCADE;
+DROP TABLE IF EXISTS user_badges CASCADE;
+DROP TABLE IF EXISTS badges CASCADE;
+DROP TABLE IF EXISTS points_settings CASCADE;
+DROP TABLE IF EXISTS event_attendance CASCADE;
+DROP TABLE IF EXISTS activity_log CASCADE;
+DROP TABLE IF EXISTS financial_contributions CASCADE;
+DROP TABLE IF EXISTS contribution_purposes CASCADE;
+DROP TABLE IF EXISTS important_dates CASCADE;
+DROP TABLE IF EXISTS prayer_times CASCADE;
+DROP TABLE IF EXISTS product_purchase_requests CASCADE;
+DROP TABLE IF EXISTS marketplace_items CASCADE;
+DROP TABLE IF EXISTS shop_products CASCADE;
+DROP TABLE IF EXISTS requests CASCADE;
+DROP TABLE IF EXISTS documents CASCADE;
+DROP TABLE IF EXISTS imam_questions CASCADE;
+DROP TABLE IF EXISTS messages CASCADE;
+DROP TABLE IF EXISTS activities CASCADE;
+DROP TABLE IF EXISTS announcement_files CASCADE;
+DROP TABLE IF EXISTS task_comments CASCADE;
+DROP TABLE IF EXISTS access_requests CASCADE;
+DROP TABLE IF EXISTS tasks CASCADE;
+DROP TABLE IF EXISTS work_group_members CASCADE;
+DROP TABLE IF EXISTS work_groups CASCADE;
+DROP TABLE IF EXISTS event_rsvps CASCADE;
+DROP TABLE IF EXISTS events CASCADE;
+DROP TABLE IF EXISTS announcements CASCADE;
+DROP TABLE IF EXISTS family_relationships CASCADE;
+DROP TABLE IF EXISTS organization_settings CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS tenants CASCADE;
+DROP TABLE IF EXISTS subscription_plans CASCADE;
+
+-- 1. Subscription Plans
+CREATE TABLE subscription_plans (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  name TEXT NOT NULL, slug TEXT NOT NULL UNIQUE, description TEXT,
+  price_monthly TEXT NOT NULL, price_yearly TEXT, currency TEXT NOT NULL DEFAULT 'EUR',
+  stripe_price_id_monthly TEXT, stripe_price_id_yearly TEXT, stripe_product_id TEXT,
+  enabled_modules TEXT[], read_only_modules TEXT[], max_users INTEGER, max_storage INTEGER,
+  is_active BOOLEAN NOT NULL DEFAULT true, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2. Tenants
+CREATE TABLE tenants (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  name TEXT NOT NULL, slug TEXT NOT NULL UNIQUE, tenant_code TEXT NOT NULL UNIQUE,
+  subdomain TEXT UNIQUE, email TEXT NOT NULL, phone TEXT, address TEXT, city TEXT,
+  country TEXT NOT NULL DEFAULT 'Switzerland', subscription_tier TEXT NOT NULL DEFAULT 'basic',
+  subscription_status TEXT NOT NULL DEFAULT 'trial', trial_ends_at TIMESTAMP,
+  subscription_started_at TIMESTAMP, stripe_customer_id TEXT UNIQUE, stripe_subscription_id TEXT UNIQUE,
+  is_active BOOLEAN NOT NULL DEFAULT true, locale TEXT NOT NULL DEFAULT 'bs',
+  currency TEXT NOT NULL DEFAULT 'CHF', created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 3. Users (COMPLETE)
+CREATE TABLE users (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  first_name TEXT NOT NULL, last_name TEXT NOT NULL, username TEXT UNIQUE, email TEXT UNIQUE,
+  password TEXT, phone TEXT, photo TEXT, address TEXT, city TEXT, postal_code TEXT,
+  date_of_birth TEXT, occupation TEXT, membership_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  status TEXT NOT NULL DEFAULT 'aktivan', inactive_reason TEXT, categories TEXT[],
+  roles TEXT[] DEFAULT ARRAY['clan']::text[], is_admin BOOLEAN DEFAULT false,
+  is_super_admin BOOLEAN DEFAULT false, last_viewed_shop TIMESTAMP, last_viewed_events TIMESTAMP,
+  last_viewed_announcements TIMESTAMP, last_viewed_imam_questions TIMESTAMP,
+  last_viewed_tasks TIMESTAMP, skills TEXT[], total_points INTEGER DEFAULT 0
+);
+
+-- 4. Organization Settings
+CREATE TABLE organization_settings (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  name TEXT NOT NULL DEFAULT 'Islamska Zajednica', address TEXT NOT NULL DEFAULT 'Ulica Džemata 123',
+  phone TEXT NOT NULL DEFAULT '+387 33 123 456', email TEXT NOT NULL DEFAULT 'info@dzemat.ba',
+  currency TEXT NOT NULL DEFAULT 'CHF', facebook_url TEXT, instagram_url TEXT, youtube_url TEXT,
+  twitter_url TEXT, livestream_url TEXT, livestream_enabled BOOLEAN NOT NULL DEFAULT false,
+  livestream_title TEXT, livestream_description TEXT, updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 5. Family Relationships
+CREATE TABLE family_relationships (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  user_id VARCHAR(255) NOT NULL REFERENCES users(id),
+  related_user_id VARCHAR(255) NOT NULL REFERENCES users(id),
+  relationship TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 6. Announcements
+CREATE TABLE announcements (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  title TEXT NOT NULL, content TEXT NOT NULL, author_id VARCHAR(255) NOT NULL REFERENCES users(id),
+  publish_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, status TEXT NOT NULL DEFAULT 'published',
+  is_featured BOOLEAN DEFAULT false, categories TEXT[], photo_url TEXT
+);
+
+-- 7. Events
+CREATE TABLE events (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  name TEXT NOT NULL, description TEXT, location TEXT NOT NULL, date_time TIMESTAMP NOT NULL,
+  photo_url TEXT, rsvp_enabled BOOLEAN DEFAULT true, require_adults_children BOOLEAN DEFAULT false,
+  max_attendees INTEGER, reminder_time TEXT, categories TEXT[], points_value INTEGER DEFAULT 20,
+  created_by_id VARCHAR(255) NOT NULL REFERENCES users(id), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 8. Event RSVPs
+CREATE TABLE event_rsvps (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  event_id VARCHAR(255) NOT NULL REFERENCES events(id), user_id VARCHAR(255) NOT NULL REFERENCES users(id),
+  adults_count INTEGER DEFAULT 1, children_count INTEGER DEFAULT 0, rsvp_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 9. Work Groups
+CREATE TABLE work_groups (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  name TEXT NOT NULL, description TEXT, visibility TEXT NOT NULL DEFAULT 'javna',
+  archived BOOLEAN NOT NULL DEFAULT false, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 10. Work Group Members
+CREATE TABLE work_group_members (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  work_group_id VARCHAR(255) NOT NULL REFERENCES work_groups(id),
+  user_id VARCHAR(255) NOT NULL REFERENCES users(id), is_moderator BOOLEAN DEFAULT false,
+  joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 11. Tasks
+CREATE TABLE tasks (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  title TEXT NOT NULL, description TEXT, description_image TEXT,
+  work_group_id VARCHAR(255) NOT NULL REFERENCES work_groups(id),
+  assigned_user_ids TEXT[], status TEXT NOT NULL DEFAULT 'u_toku', due_date TIMESTAMP,
+  estimated_cost TEXT, points_value INTEGER DEFAULT 50, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  completed_at TIMESTAMP
+);
+
+-- 12. Access Requests
+CREATE TABLE access_requests (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  user_id VARCHAR(255) NOT NULL REFERENCES users(id),
+  work_group_id VARCHAR(255) NOT NULL REFERENCES work_groups(id),
+  status TEXT NOT NULL DEFAULT 'pending', request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 13. Task Comments
+CREATE TABLE task_comments (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  task_id VARCHAR(255) NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
+  user_id VARCHAR(255) NOT NULL REFERENCES users(id), content TEXT NOT NULL,
+  comment_image TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 14. Announcement Files
+CREATE TABLE announcement_files (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  announcement_id VARCHAR(255) NOT NULL REFERENCES announcements(id),
+  uploaded_by_id VARCHAR(255) NOT NULL REFERENCES users(id), file_name TEXT NOT NULL,
+  file_type TEXT NOT NULL, file_size INTEGER NOT NULL, file_path TEXT NOT NULL,
+  uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 15. Activities
+CREATE TABLE activities (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  type TEXT NOT NULL, description TEXT NOT NULL, user_id VARCHAR(255) REFERENCES users(id),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 16. Messages
+CREATE TABLE messages (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  sender_id VARCHAR(255) NOT NULL REFERENCES users(id), recipient_id VARCHAR(255) REFERENCES users(id),
+  category TEXT, subject TEXT NOT NULL, content TEXT NOT NULL, is_read BOOLEAN NOT NULL DEFAULT false,
+  thread_id VARCHAR(255), parent_message_id VARCHAR(255), created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 17. Imam Questions
+CREATE TABLE imam_questions (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  user_id VARCHAR(255) NOT NULL REFERENCES users(id), subject TEXT NOT NULL, question TEXT NOT NULL,
+  answer TEXT, is_answered BOOLEAN NOT NULL DEFAULT false, is_read BOOLEAN NOT NULL DEFAULT false,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, answered_at TIMESTAMP
+);
+
+-- 18. Documents
+CREATE TABLE documents (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  title TEXT NOT NULL, description TEXT, file_name TEXT NOT NULL, file_path TEXT NOT NULL,
+  file_size INTEGER NOT NULL, uploaded_by_id VARCHAR(255) NOT NULL REFERENCES users(id),
+  uploaded_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 19. Requests
+CREATE TABLE requests (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  user_id VARCHAR(255) NOT NULL REFERENCES users(id), request_type TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending', form_data TEXT NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, reviewed_at TIMESTAMP,
+  reviewed_by_id VARCHAR(255) REFERENCES users(id), admin_notes TEXT
+);
+
+-- 20. Shop Products
+CREATE TABLE shop_products (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  name TEXT NOT NULL, photos TEXT[], category TEXT, weight TEXT, volume TEXT, size TEXT,
+  quantity INTEGER DEFAULT 0, color TEXT, notes TEXT, price TEXT,
+  created_by_id VARCHAR(255) NOT NULL REFERENCES users(id),
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 21. Marketplace Items
+CREATE TABLE marketplace_items (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  name TEXT NOT NULL, description TEXT, photos TEXT[], type TEXT NOT NULL, price TEXT,
+  status TEXT NOT NULL DEFAULT 'active', user_id VARCHAR(255) NOT NULL REFERENCES users(id),
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 22. Product Purchase Requests
+CREATE TABLE product_purchase_requests (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  product_id VARCHAR(255) NOT NULL REFERENCES shop_products(id),
+  user_id VARCHAR(255) NOT NULL REFERENCES users(id), quantity INTEGER NOT NULL DEFAULT 1,
+  status TEXT NOT NULL DEFAULT 'pending', created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 23. Prayer Times
+CREATE TABLE prayer_times (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  date TEXT NOT NULL UNIQUE, hijri_date TEXT, fajr TEXT NOT NULL, sunrise TEXT,
+  dhuhr TEXT NOT NULL, asr TEXT NOT NULL, maghrib TEXT NOT NULL, isha TEXT NOT NULL, events TEXT
+);
+
+-- 24. Important Dates
+CREATE TABLE important_dates (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  name TEXT NOT NULL, date TEXT NOT NULL, is_recurring BOOLEAN NOT NULL DEFAULT true,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 25. Contribution Purposes
+CREATE TABLE contribution_purposes (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  name TEXT NOT NULL, description TEXT, is_default BOOLEAN NOT NULL DEFAULT false,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  created_by_id VARCHAR(255) NOT NULL REFERENCES users(id)
+);
+
+-- 26. Financial Contributions
+CREATE TABLE financial_contributions (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  user_id VARCHAR(255) NOT NULL REFERENCES users(id), amount TEXT NOT NULL,
+  payment_date TIMESTAMP NOT NULL, purpose TEXT NOT NULL, payment_method TEXT NOT NULL,
+  notes TEXT, project_id VARCHAR(255),
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  created_by_id VARCHAR(255) NOT NULL REFERENCES users(id)
+);
+
+-- 27. Activity Log
+CREATE TABLE activity_log (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  user_id VARCHAR(255) NOT NULL REFERENCES users(id), activity_type TEXT NOT NULL,
+  description TEXT NOT NULL, points INTEGER DEFAULT 0, related_entity_id VARCHAR(255),
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 28. Event Attendance
+CREATE TABLE event_attendance (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  event_id VARCHAR(255) NOT NULL REFERENCES events(id),
+  user_id VARCHAR(255) NOT NULL REFERENCES users(id), attended BOOLEAN NOT NULL DEFAULT true,
+  recorded_by_id VARCHAR(255) NOT NULL REFERENCES users(id),
+  recorded_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 29. Points Settings
+CREATE TABLE points_settings (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  points_per_chf INTEGER NOT NULL DEFAULT 1, points_per_task INTEGER NOT NULL DEFAULT 50,
+  points_per_event INTEGER NOT NULL DEFAULT 20, updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 30. Badges
+CREATE TABLE badges (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  name TEXT NOT NULL, description TEXT NOT NULL, icon TEXT, criteria_type TEXT NOT NULL,
+  criteria_value INTEGER NOT NULL, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 31. User Badges
+CREATE TABLE user_badges (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  user_id VARCHAR(255) NOT NULL REFERENCES users(id),
+  badge_id VARCHAR(255) NOT NULL REFERENCES badges(id),
+  earned_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 32. Projects
+CREATE TABLE projects (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  name TEXT NOT NULL, description TEXT NOT NULL, goal_amount TEXT NOT NULL,
+  current_amount TEXT NOT NULL DEFAULT '0', status TEXT NOT NULL DEFAULT 'active',
+  created_by_id VARCHAR(255) NOT NULL REFERENCES users(id),
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, completed_at TIMESTAMP
+);
+
+-- 33. User Preferences
+CREATE TABLE user_preferences (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  user_id VARCHAR(255) NOT NULL UNIQUE REFERENCES users(id),
+  quick_access_shortcuts TEXT[] DEFAULT ARRAY[]::text[],
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 34. Proposals
+CREATE TABLE proposals (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  work_group_id VARCHAR(255) NOT NULL REFERENCES work_groups(id),
+  created_by_id VARCHAR(255) NOT NULL REFERENCES users(id),
+  who TEXT, what TEXT NOT NULL, "where" TEXT, "when" TEXT, how TEXT, why TEXT, budget TEXT,
+  status TEXT NOT NULL DEFAULT 'pending', reviewed_by_id VARCHAR(255) REFERENCES users(id),
+  review_comment TEXT, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, reviewed_at TIMESTAMP
+);
+
+-- 35. Receipts
+CREATE TABLE receipts (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  task_id VARCHAR(255) REFERENCES tasks(id), proposal_id VARCHAR(255) REFERENCES proposals(id),
+  uploaded_by_id VARCHAR(255) NOT NULL REFERENCES users(id), file_name TEXT NOT NULL,
+  file_url TEXT NOT NULL, amount TEXT NOT NULL, description TEXT,
+  status TEXT NOT NULL DEFAULT 'pending', reviewed_by_id VARCHAR(255) REFERENCES users(id),
+  review_comment TEXT, uploaded_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, reviewed_at TIMESTAMP
+);
+
+-- 36. Certificate Templates
+CREATE TABLE certificate_templates (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  name TEXT NOT NULL, description TEXT, template_image_path TEXT NOT NULL,
+  text_position_x INTEGER DEFAULT 400, text_position_y INTEGER DEFAULT 300,
+  font_size INTEGER DEFAULT 48, font_color TEXT DEFAULT '#000000',
+  font_family TEXT DEFAULT 'Arial', text_align TEXT DEFAULT 'center',
+  created_by_id VARCHAR(255) NOT NULL REFERENCES users(id), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 37. User Certificates
+CREATE TABLE user_certificates (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  user_id VARCHAR(255) NOT NULL REFERENCES users(id),
+  template_id VARCHAR(255) NOT NULL REFERENCES certificate_templates(id),
+  recipient_name TEXT NOT NULL, certificate_image_path TEXT NOT NULL, message TEXT,
+  issued_by_id VARCHAR(255) NOT NULL REFERENCES users(id),
+  issued_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, viewed BOOLEAN DEFAULT false
+);
+
+-- 38. Membership Applications
+CREATE TABLE membership_applications (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  last_name TEXT NOT NULL, first_name TEXT NOT NULL, gender TEXT NOT NULL, photo TEXT,
+  date_of_birth TEXT NOT NULL, place_of_birth TEXT NOT NULL, country TEXT NOT NULL,
+  email TEXT, phone TEXT NOT NULL, street_address TEXT NOT NULL, postal_code TEXT NOT NULL,
+  city TEXT NOT NULL, employment_status TEXT NOT NULL, occupation TEXT, skills_hobbies TEXT,
+  marital_status TEXT NOT NULL, spouse_name TEXT, spouse_phone TEXT, children_info TEXT,
+  monthly_fee INTEGER NOT NULL, invoice_delivery TEXT NOT NULL, membership_start_date TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending', reviewed_by_id VARCHAR(255) REFERENCES users(id),
+  reviewed_at TIMESTAMP, review_notes TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 39. Akika Applications
+CREATE TABLE akika_applications (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  is_member BOOLEAN NOT NULL DEFAULT true, father_name TEXT NOT NULL, mother_name TEXT NOT NULL,
+  child_name TEXT NOT NULL, child_gender TEXT NOT NULL, child_date_of_birth TEXT NOT NULL,
+  child_place_of_birth TEXT NOT NULL, location TEXT NOT NULL, organize_catering BOOLEAN DEFAULT false,
+  custom_address TEXT, custom_city TEXT, custom_canton TEXT, custom_postal_code TEXT,
+  phone TEXT NOT NULL, email TEXT, notes TEXT, status TEXT NOT NULL DEFAULT 'pending',
+  is_archived BOOLEAN NOT NULL DEFAULT false, submitted_by VARCHAR(255) REFERENCES users(id),
+  reviewed_by_id VARCHAR(255) REFERENCES users(id), reviewed_at TIMESTAMP, review_notes TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 40. Marriage Applications
+CREATE TABLE marriage_applications (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  groom_last_name TEXT NOT NULL, groom_first_name TEXT NOT NULL, groom_date_of_birth TEXT NOT NULL,
+  groom_place_of_birth TEXT NOT NULL, groom_nationality TEXT NOT NULL, groom_street_address TEXT NOT NULL,
+  groom_postal_code TEXT NOT NULL, groom_city TEXT NOT NULL, groom_father_name TEXT NOT NULL,
+  groom_mother_name TEXT NOT NULL, bride_last_name TEXT NOT NULL, bride_first_name TEXT NOT NULL,
+  bride_date_of_birth TEXT NOT NULL, bride_place_of_birth TEXT NOT NULL, bride_nationality TEXT NOT NULL,
+  bride_street_address TEXT NOT NULL, bride_postal_code TEXT NOT NULL, bride_city TEXT NOT NULL,
+  bride_father_name TEXT NOT NULL, bride_mother_name TEXT NOT NULL, selected_last_name TEXT NOT NULL,
+  mahr TEXT NOT NULL, civil_marriage_date TEXT NOT NULL, civil_marriage_location TEXT NOT NULL,
+  witness1_name TEXT NOT NULL, witness2_name TEXT NOT NULL, witness3_name TEXT, witness4_name TEXT,
+  proposed_date_time TEXT NOT NULL, location TEXT NOT NULL, custom_address TEXT, custom_city TEXT,
+  custom_canton TEXT, custom_postal_code TEXT, phone TEXT NOT NULL, civil_marriage_proof TEXT,
+  notes TEXT, status TEXT NOT NULL DEFAULT 'pending', reviewed_by_id VARCHAR(255) REFERENCES users(id),
+  reviewed_at TIMESTAMP, review_notes TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 41. Services
+CREATE TABLE services (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  name TEXT NOT NULL, description TEXT NOT NULL, photos TEXT[], price TEXT, duration TEXT,
+  category TEXT, status TEXT NOT NULL DEFAULT 'active',
+  user_id VARCHAR(255) NOT NULL REFERENCES users(id),
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 42. Activity Feed
+CREATE TABLE activity_feed (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  type TEXT NOT NULL, title TEXT NOT NULL, description TEXT, related_entity_id VARCHAR(255),
+  related_entity_type TEXT, metadata TEXT, is_clickable BOOLEAN NOT NULL DEFAULT false,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 43. Tenant Features
+CREATE TABLE tenant_features (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  module_id TEXT NOT NULL, is_enabled BOOLEAN NOT NULL DEFAULT true,
+  is_read_only BOOLEAN NOT NULL DEFAULT false, settings TEXT,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 44. Audit Logs
+CREATE TABLE audit_logs (
+  id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  tenant_id VARCHAR(255) REFERENCES tenants(id) ON DELETE CASCADE,
+  user_id VARCHAR(255) REFERENCES users(id), action TEXT NOT NULL, resource_type TEXT NOT NULL,
+  resource_id VARCHAR(255), data_before TEXT, data_after TEXT, ip_address TEXT, user_agent TEXT,
+  description TEXT, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Add FK for financial_contributions -> projects
+ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (project_id) REFERENCES projects(id);
+    `;
+  }
 
   // SuperAdmin Database Setup endpoint - creates tables and seeds data (GET for browser access)
   app.get("/api/superadmin/setup-db", async (req, res) => {
