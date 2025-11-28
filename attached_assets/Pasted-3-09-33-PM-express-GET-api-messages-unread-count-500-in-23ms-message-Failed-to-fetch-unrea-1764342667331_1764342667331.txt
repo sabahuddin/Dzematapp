@@ -1,0 +1,100 @@
+3:09:33 PM [express] GET /api/messages/unread-count 500 in 23ms :: {"message":"Failed to fetch unrea…
+3:09:33 PM [express] GET /api/certificates/unviewed-count 500 in 20ms :: {"message":"Failed to get u…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected - userId: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] SuperAdmin user found in default-tenant-demo: true
+[AUTH MIDDLEWARE] ✅ SuperAdmin user loaded: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+3:09:33 PM [express] GET /api/notifications/unread 304 in 42ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected - userId: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] SuperAdmin user found in default-tenant-demo: true
+[AUTH MIDDLEWARE] ✅ SuperAdmin user loaded: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected - userId: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] SuperAdmin user found in default-tenant-demo: true
+[AUTH MIDDLEWARE] ✅ SuperAdmin user loaded: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+3:10:03 PM [express] GET /api/certificates/unviewed-count 500 in 23ms :: {"message":"Failed to get u…
+3:10:03 PM [express] GET /api/messages/unread-count 500 in 18ms :: {"message":"Failed to fetch unrea…
+  detail: undefined,
+  hint: 'Perhaps you meant to reference the column "user_certificates.is_viewed".',
+  position: '88',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3723',
+  routine: 'errorMissingColumn'
+}
+Error getting unviewed certificates count: error: column user_certificates.viewed does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.getUnviewedCertificatesCount (file:///app/dist/index.js:2657:20)
+    at async file:///app/dist/index.js:7434:21 {
+  length: 196,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: 'Perhaps you meant to reference the column "user_certificates.is_viewed".',
+  position: '88',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3723',
+  routine: 'errorMissingColumn'
+}
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected - userId: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] SuperAdmin user found in default-tenant-demo: true
+[AUTH MIDDLEWARE] ✅ SuperAdmin user loaded: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+3:10:03 PM [express] GET /api/notifications/unread 304 in 39ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected - userId: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected - userId: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] SuperAdmin user found in default-tenant-demo: true
+[AUTH MIDDLEWARE] ✅ SuperAdmin user loaded: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+[AUTH MIDDLEWARE] SuperAdmin user found in default-tenant-demo: true
+[AUTH MIDDLEWARE] ✅ SuperAdmin user loaded: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+Error getting unviewed certificates count: error: column user_certificates.viewed does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.getUnviewedCertificatesCount (file:///app/dist/index.js:2657:20)
+    at async file:///app/dist/index.js:7434:21 {
+  length: 196,
+  severity: 'ERROR',
+3:10:33 PM [express] GET /api/messages/unread-count 500 in 16ms :: {"message":"Failed to fetch unrea…
+3:10:33 PM [express] GET /api/certificates/unviewed-count 500 in 16ms :: {"message":"Failed to get u…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected - userId: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] SuperAdmin user found in default-tenant-demo: true
+[AUTH MIDDLEWARE] ✅ SuperAdmin user loaded: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+3:10:33 PM [express] GET /api/notifications/unread 304 in 31ms :: {"shop":0,"events":0,"announcement…
+  code: '42703',
+  detail: undefined,
+  hint: 'Perhaps you meant to reference the column "user_certificates.is_viewed".',
+  position: '88',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3723',
+  routine: 'errorMissingColumn'
+}
