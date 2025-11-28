@@ -512,7 +512,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllUsers(tenantId: string): Promise<User[]> {
-    return await db.select().from(users).where(eq(users.tenantId, tenantId));
+    return await db.select().from(users).where(
+      and(
+        eq(users.tenantId, tenantId),
+        sql`(${users.isSuperAdmin} IS NULL OR ${users.isSuperAdmin} = false)`
+      )
+    );
   }
 
   async getAnnouncement(id: string, tenantId: string): Promise<Announcement | undefined> {
@@ -566,6 +571,7 @@ export class DatabaseStorage implements IStorage {
     } else {
       // Create new feed item
       await this.createActivityFeedItem({
+        tenantId,
         type: "announcement",
         title: announcement.title,
         description: "",
@@ -1956,14 +1962,15 @@ export class DatabaseStorage implements IStorage {
       return existing[0];
     }
     
-    const [ub] = await db.insert(userBadges).values({ userId, badgeId }).returning();
+    const [ub] = await db.insert(userBadges).values({ userId, badgeId, tenantId }).returning();
     
     // Add to activity feed
     const badge = await this.getBadge(badgeId, tenantId);
-    const user = await this.getUser(userId);
+    const user = await this.getUser(userId, tenantId);
     if (badge && user) {
       const initials = `${user.firstName[0]}. ${user.lastName[0]}.`;
       await this.createActivityFeedItem({
+        tenantId,
         type: "badge_awarded",
         title: "Dodjeljena značka",
         description: `${badge.name} - ${initials}`,

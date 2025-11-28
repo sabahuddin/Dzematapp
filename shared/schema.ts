@@ -434,9 +434,9 @@ export const insertShopProductSchema = createInsertSchema(shopProducts).omit({
 export const insertMarketplaceItemSchema = createInsertSchema(marketplaceItems).omit({
   id: true,
   createdAt: true,
-  tenantId: true,
   userId: true,
 }).extend({
+  tenantId: z.string(),
   type: z.enum(["sale", "gift"]),
   status: z.enum(["active", "completed"]).default("active")
 });
@@ -669,6 +669,7 @@ export const userPreferences = pgTable("user_preferences", {
 // Moderator Proposals System
 export const proposals = pgTable("proposals", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   workGroupId: varchar("work_group_id").notNull().references(() => workGroups.id),
   createdById: varchar("created_by_id").notNull().references(() => users.id), // Moderator
   who: text("who"), // Who will do it (optional)
@@ -688,6 +689,7 @@ export const proposals = pgTable("proposals", {
 // Expense Receipts System
 export const receipts = pgTable("receipts", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   taskId: varchar("task_id").references(() => tasks.id), // Related task
   proposalId: varchar("proposal_id").references(() => proposals.id), // Related proposal
   uploadedById: varchar("uploaded_by_id").notNull().references(() => users.id), // Member who uploads
@@ -704,13 +706,15 @@ export const receipts = pgTable("receipts", {
 
 export const insertPrayerTimeSchema = createInsertSchema(prayerTimes).omit({
   id: true,
-  tenantId: true,
+}).extend({
+  tenantId: z.string()
 });
 
 export const insertImportantDateSchema = createInsertSchema(importantDates).omit({
   id: true,
-  tenantId: true,
   createdAt: true,
+}).extend({
+  tenantId: z.string()
 });
 
 export type PrayerTime = typeof prayerTimes.$inferSelect;
@@ -721,16 +725,17 @@ export type InsertImportantDate = z.infer<typeof insertImportantDateSchema>;
 // Feature 1: Contribution Tracking System
 export const insertContributionPurposeSchema = createInsertSchema(contributionPurposes).omit({
   id: true,
-  tenantId: true,
   createdAt: true,
   createdById: true,
+}).extend({
+  tenantId: z.string()
 });
 
 export const insertFinancialContributionSchema = createInsertSchema(financialContributions).omit({
   id: true,
-  tenantId: true,
   createdAt: true,
 }).extend({
+  tenantId: z.string(),
   paymentDate: z.union([
     z.date(),
     z.string().transform((str) => new Date(str))
@@ -739,47 +744,55 @@ export const insertFinancialContributionSchema = createInsertSchema(financialCon
 
 export const insertActivityLogSchema = createInsertSchema(activityLog).omit({
   id: true,
-  tenantId: true,
   createdAt: true,
+}).extend({
+  tenantId: z.string()
 });
 
 export const insertEventAttendanceSchema = createInsertSchema(eventAttendance).omit({
   id: true,
-  tenantId: true,
   recordedAt: true,
+}).extend({
+  tenantId: z.string()
 });
 
 // Feature 2: Gamification System
 export const insertPointsSettingsSchema = createInsertSchema(pointsSettings).omit({
   id: true,
-  tenantId: true,
   updatedAt: true,
+}).extend({
+  tenantId: z.string()
 });
 
 export const insertBadgeSchema = createInsertSchema(badges).omit({
   id: true,
-  tenantId: true,
   createdAt: true,
+}).extend({
+  tenantId: z.string()
 });
 
 export const insertUserBadgeSchema = createInsertSchema(userBadges).omit({
   id: true,
-  tenantId: true,
   earnedAt: true,
+}).extend({
+  tenantId: z.string()
 });
 
 // Feature 4: Projects Module
 export const insertProjectSchema = createInsertSchema(projects).omit({
   id: true,
-  tenantId: true,
   createdAt: true,
   completedAt: true,
   createdById: true,
+}).extend({
+  tenantId: z.string()
 });
 
 export const insertUserPreferencesSchema = createInsertSchema(userPreferences).omit({
   id: true,
   updatedAt: true,
+}).extend({
+  tenantId: z.string().optional()
 });
 
 // Moderator Proposals System
@@ -787,6 +800,8 @@ export const insertProposalSchema = createInsertSchema(proposals).omit({
   id: true,
   createdAt: true,
   reviewedAt: true,
+}).extend({
+  tenantId: z.string()
 });
 
 // Expense Receipts System
@@ -794,6 +809,8 @@ export const insertReceiptSchema = createInsertSchema(receipts).omit({
   id: true,
   uploadedAt: true,
   reviewedAt: true,
+}).extend({
+  tenantId: z.string()
 });
 
 // Types
@@ -884,8 +901,8 @@ export const userCertificates = pgTable("user_certificates", {
   viewed: boolean("viewed").default(false), // Da li je korisnik vidio certifikat
 });
 
-export const insertCertificateTemplateSchema = createInsertSchema(certificateTemplates).omit({ id: true, tenantId: true, createdAt: true });
-export const insertUserCertificateSchema = createInsertSchema(userCertificates).omit({ id: true, tenantId: true, issuedAt: true });
+export const insertCertificateTemplateSchema = createInsertSchema(certificateTemplates).omit({ id: true, createdAt: true }).extend({ tenantId: z.string() });
+export const insertUserCertificateSchema = createInsertSchema(userCertificates).omit({ id: true, issuedAt: true }).extend({ tenantId: z.string() });
 
 export type CertificateTemplate = typeof certificateTemplates.$inferSelect;
 export type InsertCertificateTemplate = z.infer<typeof insertCertificateTemplateSchema>;
@@ -943,9 +960,10 @@ export const membershipApplications = pgTable("membership_applications", {
 
 export const insertMembershipApplicationSchema = createInsertSchema(membershipApplications).omit({
   id: true,
-  tenantId: true,
   createdAt: true,
   reviewedAt: true,
+}).extend({
+  tenantId: z.string()
 });
 
 export type MembershipApplication = typeof membershipApplications.$inferSelect;
@@ -994,9 +1012,10 @@ export const akikaApplications = pgTable("akika_applications", {
 
 export const insertAkikaApplicationSchema = createInsertSchema(akikaApplications).omit({
   id: true,
-  tenantId: true,
   createdAt: true,
   reviewedAt: true,
+}).extend({
+  tenantId: z.string()
 });
 
 export type AkikaApplication = typeof akikaApplications.$inferSelect;
@@ -1067,9 +1086,10 @@ export const marriageApplications = pgTable("marriage_applications", {
 
 export const insertMarriageApplicationSchema = createInsertSchema(marriageApplications).omit({
   id: true,
-  tenantId: true,
   createdAt: true,
   reviewedAt: true,
+}).extend({
+  tenantId: z.string()
 });
 
 export type MarriageApplication = typeof marriageApplications.$inferSelect;
@@ -1099,8 +1119,9 @@ export const activityFeed = pgTable("activity_feed", {
 
 export const insertActivityFeedSchema = createInsertSchema(activityFeed).omit({
   id: true,
-  tenantId: true,
   createdAt: true,
+}).extend({
+  tenantId: z.string()
 });
 
 export type ActivityFeedItem = typeof activityFeed.$inferSelect;
@@ -1123,9 +1144,10 @@ export const services = pgTable("services", {
 
 export const insertServiceSchema = createInsertSchema(services).omit({
   id: true,
-  tenantId: true,
   userId: true,
   createdAt: true,
+}).extend({
+  tenantId: z.string()
 });
 
 export type Service = typeof services.$inferSelect;
