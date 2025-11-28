@@ -435,6 +435,257 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // SuperAdmin Database RESET endpoint - drops and recreates all tables (for fresh installs)
+  app.get("/api/superadmin/reset-db", async (req, res) => {
+    try {
+      console.log('[RESET-DB] 🔥 Starting FULL database reset...');
+      
+      const { db, pool } = await import('./db');
+      
+      // Drop all tables in correct order (reverse dependency order)
+      const dropTablesSQL = `
+        DROP TABLE IF EXISTS audit_logs CASCADE;
+        DROP TABLE IF EXISTS tenant_features CASCADE;
+        DROP TABLE IF EXISTS activity_logs CASCADE;
+        DROP TABLE IF EXISTS contribution_purposes CASCADE;
+        DROP TABLE IF EXISTS prayer_times CASCADE;
+        DROP TABLE IF EXISTS organization_settings CASCADE;
+        DROP TABLE IF EXISTS work_groups CASCADE;
+        DROP TABLE IF EXISTS events CASCADE;
+        DROP TABLE IF EXISTS announcements CASCADE;
+        DROP TABLE IF EXISTS users CASCADE;
+        DROP TABLE IF EXISTS tenants CASCADE;
+        DROP TABLE IF EXISTS subscription_plans CASCADE;
+      `;
+      
+      await pool.query(dropTablesSQL);
+      console.log('[RESET-DB] ✅ All tables dropped');
+      
+      // Create all tables with correct schema
+      const createTablesSQL = `
+        -- Subscription Plans (complete schema matching Drizzle)
+        CREATE TABLE subscription_plans (
+          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+          name TEXT NOT NULL,
+          slug TEXT NOT NULL UNIQUE,
+          description TEXT,
+          price_monthly TEXT NOT NULL DEFAULT '0',
+          price_yearly TEXT,
+          currency TEXT NOT NULL DEFAULT 'EUR',
+          stripe_price_id_monthly TEXT,
+          stripe_price_id_yearly TEXT,
+          stripe_product_id TEXT,
+          enabled_modules TEXT[],
+          read_only_modules TEXT[],
+          max_users INTEGER,
+          max_storage INTEGER,
+          is_active BOOLEAN NOT NULL DEFAULT true,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        -- Tenants (complete schema)
+        CREATE TABLE tenants (
+          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+          name TEXT NOT NULL,
+          slug TEXT NOT NULL UNIQUE,
+          subdomain TEXT UNIQUE,
+          custom_domain TEXT,
+          email TEXT NOT NULL,
+          phone TEXT,
+          address TEXT,
+          city TEXT,
+          country TEXT NOT NULL DEFAULT 'Switzerland',
+          subscription_tier TEXT NOT NULL DEFAULT 'basic',
+          subscription_status TEXT NOT NULL DEFAULT 'trial',
+          trial_ends_at TIMESTAMP,
+          subscription_started_at TIMESTAMP,
+          stripe_customer_id TEXT UNIQUE,
+          stripe_subscription_id TEXT UNIQUE,
+          is_active BOOLEAN NOT NULL DEFAULT true,
+          locale TEXT NOT NULL DEFAULT 'bs',
+          currency TEXT NOT NULL DEFAULT 'CHF',
+          created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
+
+        -- Users (complete schema)
+        CREATE TABLE users (
+          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+          tenant_id VARCHAR(255) REFERENCES tenants(id),
+          username VARCHAR(255),
+          password VARCHAR(255),
+          first_name VARCHAR(255) NOT NULL,
+          last_name VARCHAR(255) NOT NULL,
+          email VARCHAR(255),
+          phone VARCHAR(50),
+          address TEXT,
+          city VARCHAR(255),
+          postal_code VARCHAR(50),
+          date_of_birth DATE,
+          occupation VARCHAR(255),
+          photo VARCHAR(500),
+          roles TEXT[] DEFAULT '{}',
+          categories TEXT[] DEFAULT '{}',
+          is_admin BOOLEAN DEFAULT false,
+          is_super_admin BOOLEAN DEFAULT false,
+          status VARCHAR(50) DEFAULT 'aktivan',
+          inactive_reason TEXT,
+          membership_date DATE DEFAULT CURRENT_DATE,
+          total_points INTEGER DEFAULT 0,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        -- Announcements
+        CREATE TABLE announcements (
+          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+          tenant_id VARCHAR(255) REFERENCES tenants(id),
+          title VARCHAR(500) NOT NULL,
+          content TEXT NOT NULL,
+          type VARCHAR(50) DEFAULT 'general',
+          priority VARCHAR(50) DEFAULT 'normal',
+          is_pinned BOOLEAN DEFAULT false,
+          author_id VARCHAR(255) REFERENCES users(id),
+          views INTEGER DEFAULT 0,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        -- Events
+        CREATE TABLE events (
+          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+          tenant_id VARCHAR(255) REFERENCES tenants(id),
+          title VARCHAR(500) NOT NULL,
+          description TEXT,
+          location VARCHAR(500),
+          start_date TIMESTAMP NOT NULL,
+          end_date TIMESTAMP,
+          is_all_day BOOLEAN DEFAULT false,
+          category VARCHAR(100),
+          organizer_id VARCHAR(255) REFERENCES users(id),
+          max_participants INTEGER,
+          is_public BOOLEAN DEFAULT true,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        -- Work Groups
+        CREATE TABLE work_groups (
+          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+          tenant_id VARCHAR(255) REFERENCES tenants(id),
+          name VARCHAR(255) NOT NULL,
+          description TEXT,
+          color VARCHAR(50),
+          icon VARCHAR(100),
+          is_active BOOLEAN DEFAULT true,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        -- Activity Logs
+        CREATE TABLE activity_logs (
+          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+          tenant_id VARCHAR(255) REFERENCES tenants(id),
+          user_id VARCHAR(255) REFERENCES users(id),
+          action VARCHAR(255) NOT NULL,
+          entity_type VARCHAR(100),
+          entity_id VARCHAR(255),
+          details JSONB,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        -- Organization Settings
+        CREATE TABLE organization_settings (
+          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+          tenant_id VARCHAR(255) REFERENCES tenants(id) UNIQUE,
+          name VARCHAR(255),
+          address TEXT,
+          city VARCHAR(255),
+          phone VARCHAR(50),
+          email VARCHAR(255),
+          website VARCHAR(255),
+          logo_url VARCHAR(500),
+          settings JSONB DEFAULT '{}',
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        -- Prayer Times
+        CREATE TABLE prayer_times (
+          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+          tenant_id VARCHAR(255) REFERENCES tenants(id),
+          date DATE NOT NULL,
+          fajr VARCHAR(10),
+          sunrise VARCHAR(10),
+          dhuhr VARCHAR(10),
+          asr VARCHAR(10),
+          maghrib VARCHAR(10),
+          isha VARCHAR(10),
+          juma VARCHAR(10),
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        -- Contribution Purposes
+        CREATE TABLE contribution_purposes (
+          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+          tenant_id VARCHAR(255) REFERENCES tenants(id),
+          name VARCHAR(255) NOT NULL,
+          description TEXT,
+          created_by_id VARCHAR(255),
+          is_active BOOLEAN DEFAULT true,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        -- Tenant Features
+        CREATE TABLE tenant_features (
+          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+          tenant_id VARCHAR(255) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+          module_id TEXT NOT NULL,
+          is_enabled BOOLEAN NOT NULL DEFAULT true,
+          is_read_only BOOLEAN NOT NULL DEFAULT false,
+          settings TEXT,
+          updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
+
+        -- Audit Logs
+        CREATE TABLE audit_logs (
+          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+          tenant_id VARCHAR(255) REFERENCES tenants(id) ON DELETE CASCADE,
+          user_id VARCHAR(255) REFERENCES users(id),
+          action TEXT NOT NULL,
+          resource_type TEXT NOT NULL,
+          resource_id VARCHAR(255),
+          data_before TEXT,
+          data_after TEXT,
+          ip_address TEXT,
+          user_agent TEXT,
+          description TEXT,
+          created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
+      `;
+      
+      await pool.query(createTablesSQL);
+      console.log('[RESET-DB] ✅ All tables created with correct schema');
+
+      // Now run seeds
+      await seedDefaultTenant();
+      await seedDemoData();
+      
+      console.log('[RESET-DB] ✅ Database reset and seed completed successfully');
+      
+      res.json({ 
+        success: true, 
+        message: "Database reset completed! All tables recreated and seeded." 
+      });
+    } catch (error: any) {
+      console.error('[RESET-DB] ❌ Reset error:', error);
+      res.status(500).json({ 
+        message: "Failed to reset database", 
+        error: error.message,
+        stack: error.stack 
+      });
+    }
+  });
+
   // SuperAdmin Database Setup endpoint - creates tables and seeds data (GET for browser access)
   app.get("/api/superadmin/setup-db", async (req, res) => {
     try {
@@ -445,22 +696,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Create all tables using raw SQL from Drizzle schema
       const createTablesSQL = `
-        -- Subscription Plans
+        -- Subscription Plans (complete schema)
         CREATE TABLE IF NOT EXISTS subscription_plans (
-          id VARCHAR(255) PRIMARY KEY,
-          name VARCHAR(255) NOT NULL,
-          slug VARCHAR(255) NOT NULL UNIQUE,
+          id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+          name TEXT NOT NULL,
+          slug TEXT NOT NULL UNIQUE,
           description TEXT,
-          price_monthly DECIMAL(10,2) DEFAULT 0,
-          price_yearly DECIMAL(10,2) DEFAULT 0,
-          currency VARCHAR(10) DEFAULT 'EUR',
-          enabled_modules TEXT[] DEFAULT '{}',
-          read_only_modules TEXT[] DEFAULT '{}',
+          price_monthly TEXT NOT NULL DEFAULT '0',
+          price_yearly TEXT,
+          currency TEXT NOT NULL DEFAULT 'EUR',
+          stripe_price_id_monthly TEXT,
+          stripe_price_id_yearly TEXT,
+          stripe_product_id TEXT,
+          enabled_modules TEXT[],
+          read_only_modules TEXT[],
           max_users INTEGER,
           max_storage INTEGER,
-          is_active BOOLEAN DEFAULT true,
+          is_active BOOLEAN NOT NULL DEFAULT true,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
+        
+        -- Add missing columns to subscription_plans if they don't exist
+        DO $$ 
+        BEGIN 
+          IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='subscription_plans' AND column_name='stripe_price_id_monthly') THEN
+            ALTER TABLE subscription_plans ADD COLUMN stripe_price_id_monthly TEXT;
+          END IF;
+          IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='subscription_plans' AND column_name='stripe_price_id_yearly') THEN
+            ALTER TABLE subscription_plans ADD COLUMN stripe_price_id_yearly TEXT;
+          END IF;
+          IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='subscription_plans' AND column_name='stripe_product_id') THEN
+            ALTER TABLE subscription_plans ADD COLUMN stripe_product_id TEXT;
+          END IF;
+        END $$;
 
         -- Tenants
         CREATE TABLE IF NOT EXISTS tenants (
