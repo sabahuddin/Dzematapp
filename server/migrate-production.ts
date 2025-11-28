@@ -518,6 +518,11 @@ async function addMissingColumns(client: any): Promise<void> {
     { table: "certificate_templates", column: "font_family", type: "TEXT DEFAULT 'Arial'" },
     { table: "certificate_templates", column: "text_align", type: "TEXT DEFAULT 'center'" },
     { table: "certificate_templates", column: "created_by_id", type: "VARCHAR" },
+    
+    // Messages table
+    { table: "messages", column: "is_read", type: "BOOLEAN DEFAULT FALSE NOT NULL" },
+    { table: "messages", column: "thread_id", type: "VARCHAR" },
+    { table: "messages", column: "parent_message_id", type: "VARCHAR" },
   ];
   
   let addedColumns = 0;
