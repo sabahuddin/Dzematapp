@@ -495,6 +495,13 @@ async function addMissingColumns(client: any): Promise<void> {
     // Work groups table
     { table: "work_groups", column: "archived", type: "BOOLEAN DEFAULT FALSE NOT NULL" },
     { table: "work_groups", column: "visibility", type: "TEXT DEFAULT 'javna' NOT NULL" },
+    
+    // Contribution purposes table
+    { table: "contribution_purposes", column: "is_default", type: "BOOLEAN DEFAULT FALSE NOT NULL" },
+    { table: "contribution_purposes", column: "created_by_id", type: "VARCHAR" },
+    
+    // Important dates table
+    { table: "important_dates", column: "is_recurring", type: "BOOLEAN DEFAULT TRUE NOT NULL" },
   ];
   
   let addedColumns = 0;
