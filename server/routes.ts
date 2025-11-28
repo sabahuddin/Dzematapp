@@ -483,13 +483,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
 
-        -- Tenants (complete schema)
+        -- Tenants (complete schema matching Drizzle exactly)
         CREATE TABLE tenants (
           id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
           name TEXT NOT NULL,
           slug TEXT NOT NULL UNIQUE,
+          tenant_code TEXT NOT NULL UNIQUE,
           subdomain TEXT UNIQUE,
-          custom_domain TEXT,
           email TEXT NOT NULL,
           phone TEXT,
           address TEXT,
