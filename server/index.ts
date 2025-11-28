@@ -326,12 +326,18 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Run schema migration before anything else in production
-  if (process.env.NODE_ENV === 'production') {
-    try {
-      await migrateProductionSchema();
-    } catch (error) {
-      console.error('❌ Schema migration failed, but continuing with startup:', error);
+  // ALWAYS run schema migration before anything else - ensures database is in sync
+  // This runs on EVERY startup (both development and production)
+  try {
+    console.log('🔄 Starting database schema synchronization...');
+    await migrateProductionSchema();
+    console.log('✅ Database schema synchronized successfully!');
+  } catch (error) {
+    console.error('❌ Schema migration failed:', error);
+    // In production, we should fail fast if migration fails
+    if (process.env.NODE_ENV === 'production') {
+      console.error('🚨 CRITICAL: Cannot start without successful migration. Exiting...');
+      process.exit(1);
     }
   }
   

@@ -26,6 +26,9 @@ The backend is an Express.js application written in TypeScript, providing a REST
 ## Data Storage
 A PostgreSQL database, hosted on Hetzner, is used for all persistent data storage, managed via Drizzle ORM for type-safe schema definitions.
 
+### Automatic Schema Synchronization
+The application automatically synchronizes the database schema on every startup (both development and production). The `migrateProductionSchema()` function in `server/migrate-production.ts` runs before the server starts, ensuring all tables and columns exist. In production, if migration fails, the application will not start (fail-fast approach).
+
 ## Authentication and Authorization
 The system uses session-based authentication with username/password, supporting guest access. Role-based access control includes Admin, Executive Board Member, Member, and Family Member roles, with administrators capable of assigning work group moderators.
 
