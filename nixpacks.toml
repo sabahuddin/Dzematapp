@@ -1,5 +1,14 @@
-[build]
-cmd = "npm run build"
+# Nixpacks configuration for DžematApp
+# Database schema sync is handled in start.sh
+
+[phases.setup]
+nixPkgs = ['nodejs_22', 'npm-9_x', 'openssl']
+
+[phases.install]
+cmds = ['npm install']
+
+[phases.build]
+cmds = ['npm run build']
 
 [start]
-cmd = "bash start.sh"
+cmd = 'bash start.sh'
