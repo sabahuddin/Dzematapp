@@ -5344,6 +5344,59 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     }
 });
 
+  // SuperAdmin: Create user for any tenant
+  app.post("/api/superadmin/users", requireSuperAdmin, async (req, res) => {
+    try {
+      const { firstName, lastName, username, email, password, isAdmin, tenantId } = req.body;
+      
+      if (!tenantId) {
+        return res.status(400).json({ message: "Tenant ID je obavezan" });
+      }
+      
+      if (!firstName || !lastName || !username || !password) {
+        return res.status(400).json({ message: "Sva obavezna polja moraju biti popunjena" });
+      }
+      
+      // Check if tenant exists
+      const tenant = await storage.getTenant(tenantId);
+      if (!tenant) {
+        return res.status(404).json({ message: "Tenant nije pronađen" });
+      }
+      
+      // Check if username already exists in that tenant
+      const existingUser = await storage.getUserByUsername(username, tenantId);
+      if (existingUser) {
+        return res.status(400).json({ message: "Korisničko ime već postoji u ovom džematu" });
+      }
+      
+      // Create user with specified tenant
+      const userData = {
+        firstName,
+        lastName,
+        username,
+        email: email || null,
+        password,
+        role: isAdmin ? 'admin' : 'member',
+        isAdmin: isAdmin || false,
+        tenantId,
+        categories: [],
+        status: 'active'
+      };
+      
+      const user = await storage.createUser(userData);
+      console.log(`[SUPERADMIN] Created user ${username} for tenant ${tenant.name} (${tenantId})`);
+      
+      res.status(201).json({ 
+        ...user, 
+        password: undefined,
+        message: `Korisnik ${firstName} ${lastName} kreiran za ${tenant.name}`
+      });
+    } catch (error) {
+      console.error("Error creating user (SuperAdmin):", error);
+      res.status(500).json({ message: "Greška pri kreiranju korisnika" });
+    }
+  });
+
   // Create new tenant
   app.post("/api/tenants", requireSuperAdmin, async (req, res) => {
     try {

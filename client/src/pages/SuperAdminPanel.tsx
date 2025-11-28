@@ -56,7 +56,8 @@ export default function SuperAdminPanel() {
     username: "",
     email: "",
     password: "",
-    isAdmin: false
+    isAdmin: false,
+    tenantId: ""
   });
   const [usernameTaken, setUsernameTaken] = useState(false);
 
@@ -186,9 +187,9 @@ export default function SuperAdminPanel() {
     }
   });
 
-  // Create user mutation
+  // Create user mutation - uses SuperAdmin endpoint to create user for any tenant
   const createUserMutation = useMutation({
-    mutationFn: (data: any) => apiRequest("/api/users", "POST", data),
+    mutationFn: (data: any) => apiRequest("/api/superadmin/users", "POST", data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/users"] });
       toast({ title: "Korisnik kreiran uspješno!" });
@@ -198,7 +199,8 @@ export default function SuperAdminPanel() {
         username: "",
         email: "",
         password: "",
-        isAdmin: false
+        isAdmin: false,
+        tenantId: ""
       });
     },
     onError: (error: any) => {
@@ -523,6 +525,23 @@ export default function SuperAdminPanel() {
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
+                <FormControl fullWidth required>
+                  <InputLabel>Tenant (Džemat)</InputLabel>
+                  <Select
+                    value={userForm.tenantId}
+                    onChange={(e) => setUserForm({ ...userForm, tenantId: e.target.value })}
+                    label="Tenant (Džemat)"
+                    data-testid="select-tenant"
+                  >
+                    {tenants.map((tenant) => (
+                      <MenuItem key={tenant.id} value={tenant.id}>
+                        {tenant.name} ({tenant.tenantCode})
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
                 {usernameTaken && (
                   <Alert severity="error" sx={{ mb: 2 }} data-testid="alert-username-taken">
                     Korisničko ime je već zauzeto. Molimo odaberite drugo korisničko ime.
@@ -541,7 +560,7 @@ export default function SuperAdminPanel() {
                     }
                     createUserMutation.mutate(userForm);
                   }}
-                  disabled={createUserMutation.isPending || !userForm.firstName || !userForm.lastName || !userForm.username || !userForm.password || usernameTaken}
+                  disabled={createUserMutation.isPending || !userForm.firstName || !userForm.lastName || !userForm.username || !userForm.password || !userForm.tenantId || usernameTaken}
                   fullWidth
                   data-testid="button-create-user"
                 >
