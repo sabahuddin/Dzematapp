@@ -7,6 +7,8 @@ import * as XLSX from "xlsx";
 import { ZodError } from "zod";
 import { storage } from "./storage";
 import { requireAuth, requireAdmin, requireSuperAdmin, requireAuthOrSuperAdmin } from "./index";
+import { seedDefaultTenant } from "./seed-tenant";
+import { seedDemoData } from "./seed-demo-data";
 import { requireFeature, getTenantSubscriptionInfo } from "./feature-access";
 import { generateCertificate, saveCertificate } from "./certificateService";
 import { type User, insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema, insertContributionPurposeSchema, insertFinancialContributionSchema, insertActivityLogSchema, insertEventAttendanceSchema, insertPointsSettingsSchema, insertBadgeSchema, insertUserBadgeSchema, insertProjectSchema, insertProposalSchema, insertReceiptSchema, insertCertificateTemplateSchema, insertUserCertificateSchema, insertMembershipApplicationSchema, insertAkikaApplicationSchema, insertMarriageApplicationSchema, insertServiceSchema, insertTenantSchema } from "@shared/schema";
@@ -430,6 +432,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('[SUPERADMIN LOGIN] Unexpected error:', error);
       res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // SuperAdmin Seed Database endpoint - triggers database seeding for fresh deployments
+  app.post("/api/superadmin/seed", async (req, res) => {
+    try {
+      const session = req.session as any;
+      
+      // Only allow SuperAdmin to trigger seeding
+      if (!session.isSuperAdmin) {
+        return res.status(403).json({ message: "SuperAdmin access required" });
+      }
+      
+      console.log('[SEED] 🌱 Starting database seed triggered by SuperAdmin...');
+      
+      // Run seed functions
+      await seedDefaultTenant();
+      await seedDemoData();
+      
+      console.log('[SEED] ✅ Database seed completed successfully');
+      
+      res.json({ 
+        success: true, 
+        message: "Database seeded successfully. Demo tenant and users created." 
+      });
+    } catch (error) {
+      console.error('[SEED] ❌ Seed error:', error);
+      res.status(500).json({ message: "Failed to seed database", error: String(error) });
     }
   });
 
