@@ -502,6 +502,22 @@ async function addMissingColumns(client: any): Promise<void> {
     
     // Important dates table
     { table: "important_dates", column: "is_recurring", type: "BOOLEAN DEFAULT TRUE NOT NULL" },
+    
+    // User certificates table - schema uses 'viewed' not 'is_viewed'
+    { table: "user_certificates", column: "viewed", type: "BOOLEAN DEFAULT FALSE" },
+    { table: "user_certificates", column: "recipient_name", type: "TEXT" },
+    { table: "user_certificates", column: "certificate_image_path", type: "TEXT" },
+    { table: "user_certificates", column: "message", type: "TEXT" },
+    
+    // Certificate templates - additional columns from schema
+    { table: "certificate_templates", column: "template_image_path", type: "TEXT" },
+    { table: "certificate_templates", column: "text_position_x", type: "INTEGER DEFAULT 400" },
+    { table: "certificate_templates", column: "text_position_y", type: "INTEGER DEFAULT 300" },
+    { table: "certificate_templates", column: "font_size", type: "INTEGER DEFAULT 48" },
+    { table: "certificate_templates", column: "font_color", type: "TEXT DEFAULT '#000000'" },
+    { table: "certificate_templates", column: "font_family", type: "TEXT DEFAULT 'Arial'" },
+    { table: "certificate_templates", column: "text_align", type: "TEXT DEFAULT 'center'" },
+    { table: "certificate_templates", column: "created_by_id", type: "VARCHAR" },
   ];
   
   let addedColumns = 0;
