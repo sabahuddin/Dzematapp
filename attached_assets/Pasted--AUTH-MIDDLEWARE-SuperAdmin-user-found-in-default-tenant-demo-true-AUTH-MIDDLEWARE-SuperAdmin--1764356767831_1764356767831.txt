@@ -1,0 +1,100 @@
+[AUTH MIDDLEWARE] SuperAdmin user found in default-tenant-demo: true
+[AUTH MIDDLEWARE] ✅ SuperAdmin user loaded: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+6:30:20 PM [express] GET /api/users 200 in 7ms :: [{"id":"60572500-4eef-4282-a898-a33be6c3f6ba","ten…
+6:30:20 PM [express] GET /api/messages/unread-count 500 in 26ms :: {"message":"Failed to fetch unrea…
+6:30:20 PM [express] GET /api/organization-settings 500 in 26ms :: {"message":"Failed to get organiz…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected - userId: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected - userId: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] SuperAdmin user found in default-tenant-demo: true
+[AUTH MIDDLEWARE] ✅ SuperAdmin user loaded: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+[ORG-SETTINGS] Getting settings for tenant: default-tenant-demo
+[AUTH MIDDLEWARE] SuperAdmin user found in default-tenant-demo: true
+[AUTH MIDDLEWARE] ✅ SuperAdmin user loaded: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+6:30:34 PM [express] GET /api/organization-settings 500 in 23ms :: {"message":"Failed to get organiz…
+6:30:34 PM [express] GET /api/messages/unread-count 500 in 27ms :: {"message":"Failed to fetch unrea…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected - userId: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] SuperAdmin user found in default-tenant-demo: true
+[AUTH MIDDLEWARE] ✅ SuperAdmin user loaded: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected - userId: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] SuperAdmin user found in default-tenant-demo: true
+[AUTH MIDDLEWARE] ✅ SuperAdmin user loaded: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+6:31:04 PM [express] GET /api/certificates/unviewed-count 304 in 11ms :: {"count":0}
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected - userId: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] SuperAdmin user found in default-tenant-demo: true
+[AUTH MIDDLEWARE] ✅ SuperAdmin user loaded: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+6:31:04 PM [express] GET /api/messages/unread-count 500 in 11ms :: {"message":"Failed to fetch unrea…
+6:31:04 PM [express] GET /api/notifications/unread 304 in 45ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected - userId: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] SuperAdmin user found in default-tenant-demo: true
+[AUTH MIDDLEWARE] ✅ SuperAdmin user loaded: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+6:31:20 PM [express] POST /api/superadmin/users 500 in 31ms :: {"message":"Greška pri kreiranju kori…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected - userId: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected - userId: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] SuperAdmin user found in default-tenant-demo: true
+[AUTH MIDDLEWARE] ✅ SuperAdmin user loaded: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+[AUTH MIDDLEWARE] SuperAdmin user found in default-tenant-demo: true
+[AUTH MIDDLEWARE] ✅ SuperAdmin user loaded: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected - userId: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] SuperAdmin user found in default-tenant-demo: true
+[AUTH MIDDLEWARE] ✅ SuperAdmin user loaded: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+6:31:35 PM [express] GET /api/certificates/unviewed-count 304 in 16ms :: {"count":0}
+6:31:35 PM [express] GET /api/messages/unread-count 500 in 47ms :: {"message":"Failed to fetch unrea…
+6:31:35 PM [express] GET /api/notifications/unread 304 in 49ms :: {"shop":0,"events":0,"announcement…
+[STORAGE] ❌ getOrganizationSettings error: error: column "facebook_url" does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.getOrganizationSettings (file:///app/dist/index.js:1779:22)
+    at async file:///app/dist/index.js:6077:24 {
+  length: 112,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '76',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3716',
+  routine: 'errorMissingColumn'
+}
+[ORG-SETTINGS] ❌ Error: error: column "facebook_url" does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.getOrganizationSettings (file:///app/dist/index.js:1779:22)
+    at async file:///app/dist/index.js:6077:24 {
+  length: 112,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '76',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3716',
+  routine: 'errorMissingColumn'
+}

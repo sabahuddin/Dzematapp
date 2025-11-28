@@ -483,6 +483,14 @@ async function addMissingColumns(client: any): Promise<void> {
     
     // Organization settings
     { table: "organization_settings", column: "currency", type: "TEXT DEFAULT 'CHF' NOT NULL" },
+    { table: "organization_settings", column: "facebook_url", type: "TEXT" },
+    { table: "organization_settings", column: "instagram_url", type: "TEXT" },
+    { table: "organization_settings", column: "youtube_url", type: "TEXT" },
+    { table: "organization_settings", column: "twitter_url", type: "TEXT" },
+    { table: "organization_settings", column: "website_url", type: "TEXT" },
+    { table: "organization_settings", column: "prayer_times_enabled", type: "BOOLEAN DEFAULT TRUE" },
+    { table: "organization_settings", column: "vaktija_location", type: "TEXT" },
+    { table: "organization_settings", column: "show_guest_access", type: "BOOLEAN DEFAULT TRUE" },
     
     // Events table
     { table: "events", column: "points_value", type: "INTEGER DEFAULT 20" },
