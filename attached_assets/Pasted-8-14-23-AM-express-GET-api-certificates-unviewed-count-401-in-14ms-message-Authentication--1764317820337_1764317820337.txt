@@ -1,0 +1,100 @@
+8:14:23 AM [express] GET /api/certificates/unviewed-count 401 in 14ms :: {"message":"Authentication …
+8:14:23 AM [express] GET /api/notifications/unread 401 in 12ms :: {"message":"Authentication require…
+8:14:23 AM [express] GET /api/organization-settings 500 in 16ms :: {"message":"Failed to get organiz…
+8:14:23 AM [express] GET /api/statistics 500 in 13ms :: {"message":"Failed to fetch statistics"}
+8:14:23 AM [express] GET /api/events 500 in 7ms :: {"message":"Failed to fetch events"}
+8:14:23 AM [express] GET /api/activities 500 in 48ms :: {"message":"Failed to fetch activities"}
+8:14:30 AM [express] GET /api/certificates/unviewed-count 401 in 4ms :: {"message":"Authentication r…
+8:14:30 AM [express] GET /api/activity-logs/user/admin-fallback 401 in 6ms :: {"message":"Authentica…
+8:14:31 AM [express] GET /api/notifications/unread 401 in 8ms :: {"message":"Authentication required…
+8:14:31 AM [express] GET /api/prayer-times/today 500 in 8ms :: {"message":"Failed to get today's pra…
+8:14:31 AM [express] GET /api/announcements 500 in 6ms :: {"message":"Failed to fetch announcements"}
+8:14:31 AM [express] GET /api/messages/unread-count 401 in 5ms :: {"message":"Authentication require…
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '1449',
+  routine: 'parserOpenTable'
+}
+[FEATURE ACCESS] Error checking feature access: error: relation "tenants" does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async file:///app/dist/index.js:3186:24 {
+  length: 107,
+  severity: 'ERROR',
+  code: '42P01',
+  detail: undefined,
+  hint: undefined,
+  position: '309',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '1449',
+  routine: 'parserOpenTable'
+}
+[FEATURE ACCESS] Error checking feature access: error: relation "tenants" does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async file:///app/dist/index.js:3186:24 {
+  length: 107,
+  severity: 'ERROR',
+  code: '42P01',
+  detail: undefined,
+  hint: undefined,
+  position: '309',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '1449',
+  routine: 'parserOpenTable'
+}
+[FEATURE ACCESS] Error checking feature access: error: relation "tenants" does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+8:14:31 AM [express] GET /api/activity-feed 500 in 5ms :: {"message":"Failed to verify feature acces…
+8:15:01 AM [express] GET /api/notifications/unread 401 in 6ms :: {"message":"Authentication required…
+8:15:01 AM [express] GET /api/certificates/unviewed-count 401 in 8ms :: {"message":"Authentication r…
+8:15:01 AM [express] GET /api/messages/unread-count 401 in 7ms :: {"message":"Authentication require…
+8:15:01 AM [express] GET /api/activity-feed 500 in 10ms :: {"message":"Failed to verify feature acce…
+8:15:01 AM [express] GET /api/announcements 500 in 9ms :: {"message":"Failed to fetch announcements"}
+8:15:31 AM [express] GET /api/activity-logs/user/admin-fallback 401 in 3ms :: {"message":"Authentica…
+8:15:31 AM [express] GET /api/notifications/unread 401 in 3ms :: {"message":"Authentication required…
+8:15:31 AM [express] GET /api/messages/unread-count 401 in 2ms :: {"message":"Authentication require…
+8:15:31 AM [express] GET /api/certificates/unviewed-count 401 in 4ms :: {"message":"Authentication r…
+8:15:31 AM [express] GET /api/announcements 500 in 20ms :: {"message":"Failed to fetch announcements…
+    at async file:///app/dist/index.js:3186:24 {
+  length: 107,
+  severity: 'ERROR',
+  code: '42P01',
+  detail: undefined,
+  hint: undefined,
+  position: '309',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+8:15:31 AM [express] GET /api/activity-feed 500 in 5ms :: {"message":"Failed to verify feature acces…
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '1449',
+  routine: 'parserOpenTable'
+}
