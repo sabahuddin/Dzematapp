@@ -42,6 +42,7 @@ export async function migrateProductionSchema(): Promise<void> {
       
       // Work groups table
       { table: "work_groups", column: "archived", type: "BOOLEAN DEFAULT FALSE NOT NULL" },
+      { table: "work_groups", column: "visibility", type: "TEXT DEFAULT 'javna' NOT NULL" },
     ];
     
     let addedColumns = 0;
