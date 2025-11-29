@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp, boolean, integer } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, boolean, integer, unique } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -8,8 +8,8 @@ export const users = pgTable("users", {
   tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   firstName: text("first_name").notNull(),
   lastName: text("last_name").notNull(),
-  username: text("username").unique(),
-  email: text("email").unique(),
+  username: text("username"),
+  email: text("email"),
   password: text("password"),
   phone: text("phone"),
   photo: text("photo"), // URL/path to profile photo
@@ -32,7 +32,10 @@ export const users = pgTable("users", {
   lastViewedTasks: timestamp("last_viewed_tasks"),
   skills: text("skills").array(), // Member skills/talents (Feature 3)
   totalPoints: integer("total_points").default(0), // Gamification points (Feature 2)
-});
+}, (t) => ({
+  usernamePerTenant: unique("users_username_tenant_unique").on(t.username, t.tenantId),
+  emailPerTenant: unique("users_email_tenant_unique").on(t.email, t.tenantId),
+}));
 
 export const familyRelationships = pgTable("family_relationships", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),

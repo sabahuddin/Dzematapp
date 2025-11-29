@@ -229,6 +229,43 @@ async function createMissingTables(client: any): Promise<void> {
   
   console.log(`✅ Table creation complete: ${createdCount} processed, ${existingCount} already existed`);
   
+  // Migrate unique constraints: from global to per-tenant
+  console.log("📋 Migrating unique constraints to per-tenant...");
+  try {
+    // Drop old global unique constraints if they exist
+    await client.query(`
+      DO $$
+      BEGIN
+        IF EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'users_username_unique') THEN
+          ALTER TABLE users DROP CONSTRAINT users_username_unique;
+          RAISE NOTICE 'Dropped global username unique constraint';
+        END IF;
+        IF EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'users_email_unique') THEN
+          ALTER TABLE users DROP CONSTRAINT users_email_unique;
+          RAISE NOTICE 'Dropped global email unique constraint';
+        END IF;
+      END $$;
+    `);
+    
+    // Create new composite unique constraints (username + tenant, email + tenant)
+    await client.query(`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'users_username_tenant_unique') THEN
+          ALTER TABLE users ADD CONSTRAINT users_username_tenant_unique UNIQUE (username, tenant_id);
+          RAISE NOTICE 'Created per-tenant username unique constraint';
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'users_email_tenant_unique') THEN
+          ALTER TABLE users ADD CONSTRAINT users_email_tenant_unique UNIQUE (email, tenant_id);
+          RAISE NOTICE 'Created per-tenant email unique constraint';
+        END IF;
+      END $$;
+    `);
+    console.log("✅ Unique constraints migrated to per-tenant");
+  } catch (error: any) {
+    console.log("ℹ️  Constraint migration note:", error.message);
+  }
+  
   // Update usernames to new standard
   console.log("📋 Updating admin usernames to new standard...");
   try {
@@ -240,11 +277,11 @@ async function createMissingTables(client: any): Promise<void> {
       AND is_super_admin = true
     `);
     
-    // Update demo tenant admin username from 'demo-admin' to 'admin'
+    // Update demo tenant admin username to standard 'admin' (now safe with per-tenant uniqueness)
     await client.query(`
       UPDATE users SET username = 'admin', password = 'admin123'
       WHERE tenant_id = 'default-tenant-demo' 
-      AND (username = 'demo-admin' OR username = 'admindemo')
+      AND (username = 'demo-admin' OR username = 'admindemo' OR username LIKE 'admin-%')
       AND is_admin = true
     `);
     

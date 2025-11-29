@@ -5373,28 +5373,13 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       console.log('[TENANT CREATE] ✅ Tenant created:', newTenant.id);
       
       // Auto-create admin user for the new tenant
-      // Username must be globally unique, so we use normalized tenant slug as prefix
-      // Special chars that don't decompose with normalize() (đ, ł, ø, etc.)
-      const specialCharMap: Record<string, string> = {
-        'đ': 'd', 'Đ': 'd', 'ł': 'l', 'Ł': 'l', 'ø': 'o', 'Ø': 'o', 'ð': 'd', 'ß': 'ss'
-      };
-      const normalizedSlug = newTenant.slug
-        .split('')
-        .map(char => specialCharMap[char] || char)
-        .join('')
-        .normalize('NFKD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .toLowerCase()
-        .trim()
-        .replace(/\s+/g, '-')
-        .replace(/[^a-z0-9-]/g, '')
-        .replace(/-+/g, '-')
-        .replace(/^-+|-+$/g, '');
+      // Username is now unique per-tenant (composite constraint), so every tenant can have "admin"
+      // Try "admin" first, fallback to "tenant-admin" if conflict exists
+      let adminUsername = 'admin';
+      let adminUser = null;
       
-      // Fallback if slug normalizes to empty
-      const adminUsername = normalizedSlug ? `admin-${normalizedSlug}` : `admin-${newTenant.id.slice(0, 8)}`;
       try {
-        const adminUser = await storage.createUser({
+        adminUser = await storage.createUser({
           id: `admin-${newTenant.id}`,
           firstName: 'Admin',
           lastName: newTenant.name,
@@ -5408,8 +5393,36 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
           categories: [],
           status: 'active'
         });
-        console.log('[TENANT CREATE] ✅ Admin user created for tenant:', adminUser.username, '/ password: admin123');
-        // Return tenant with admin credentials info
+      } catch (firstError: any) {
+        // If "admin" conflicts, try fallback username
+        if (firstError.message?.includes('unique') || firstError.code === '23505') {
+          console.log('[TENANT CREATE] Username "admin" conflict, trying fallback...');
+          adminUsername = 'tenant-admin';
+          try {
+            adminUser = await storage.createUser({
+              id: `admin-${newTenant.id}`,
+              firstName: 'Admin',
+              lastName: newTenant.name,
+              username: adminUsername,
+              email: newTenant.email,
+              password: 'admin123',
+              role: 'admin',
+              roles: ['admin'],
+              isAdmin: true,
+              tenantId: newTenant.id,
+              categories: [],
+              status: 'active'
+            });
+          } catch (secondError) {
+            console.error('[TENANT CREATE] ⚠️ Fallback also failed:', secondError);
+          }
+        } else {
+          console.error('[TENANT CREATE] ⚠️ Failed to create admin user:', firstError);
+        }
+      }
+      
+      if (adminUser) {
+        console.log('[TENANT CREATE] ✅ Admin user created:', adminUser.username, '/ password: admin123');
         return res.status(201).json({
           ...newTenant,
           adminCredentials: {
@@ -5417,9 +5430,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
             password: 'admin123'
           }
         });
-      } catch (adminError) {
-        console.error('[TENANT CREATE] ⚠️ Failed to create admin user:', adminError);
-        // Return tenant without admin credentials
+      } else {
         return res.status(201).json({
           ...newTenant,
           adminCredentials: null,
