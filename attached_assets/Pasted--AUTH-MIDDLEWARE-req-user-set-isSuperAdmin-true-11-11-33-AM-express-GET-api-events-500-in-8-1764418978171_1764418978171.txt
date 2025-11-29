@@ -1,0 +1,100 @@
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+11:11:33 AM [express] GET /api/events 500 in 8ms :: {"message":"Failed to fetch events"}
+11:11:33 AM [express] GET /api/important-dates 500 in 6ms :: {"message":"Failed to get important date…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected - userId: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected - userId: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] SuperAdmin user found in default-tenant-demo: true
+[AUTH MIDDLEWARE] ✅ SuperAdmin user loaded: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+[AUTH MIDDLEWARE] SuperAdmin user found in default-tenant-demo: true
+[AUTH MIDDLEWARE] ✅ SuperAdmin user loaded: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+11:16:25 AM [express] POST /api/auth/logout 200 in 2ms :: {"message":"Logged out successfully"}
+11:16:25 AM [express] GET /api/certificates/unviewed-count 304 in 7ms :: {"count":0}
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected - userId: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] SuperAdmin user found in default-tenant-demo: true
+[AUTH MIDDLEWARE] ✅ SuperAdmin user loaded: 60572500-4eef-4282-a898-a33be6c3f6ba
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+11:16:25 AM [express] GET /api/messages/unread-count 500 in 5ms :: {"message":"Failed to fetch unread…
+11:16:37 AM [express] POST /api/tenants/verify-code 200 in 23ms :: {"tenantId":"default-tenant-demo",…
+[LOGIN] Received credentials: {
+  username: 'admindemo',
+  passwordLength: 8,
+  tenantCode: undefined,
+  tenantId: 'default-tenant-demo'
+}
+[LOGIN] User from DB: NOT FOUND
+[LOGIN] Authentication failed: User not found
+11:16:47 AM [express] POST /api/auth/login 401 in 6ms :: {"message":"Invalid credentials"}
+[LOGIN] Received credentials: {
+  username: 'admindemo',
+  passwordLength: 8,
+  tenantCode: undefined,
+  tenantId: 'default-tenant-demo'
+}
+[LOGIN] User from DB: NOT FOUND
+[LOGIN] Authentication failed: User not found
+11:16:54 AM [express] POST /api/auth/login 401 in 4ms :: {"message":"Invalid credentials"}
+[LOGIN] Received credentials: {
+  username: 'admindemo2025',
+  passwordLength: 8,
+  tenantCode: undefined,
+  tenantId: 'default-tenant-demo'
+}
+[LOGIN] User from DB: NOT FOUND
+[LOGIN] Authentication failed: User not found
+11:17:05 AM [express] POST /api/auth/login 401 in 3ms :: {"message":"Invalid credentials"}
+[LOGIN] Received credentials: {
+  username: 'admin2024',
+  passwordLength: 7,
+  tenantCode: undefined,
+  tenantId: 'default-tenant-demo'
+}
+[LOGIN] User from DB: NOT FOUND
+[LOGIN] Authentication failed: User not found
+11:23:44 AM [express] POST /api/auth/login 401 in 8ms :: {"message":"Invalid credentials"}
+[ORG-SETTINGS] Getting settings for tenant: default-tenant-demo
+[STORAGE] ✅ Found existing org settings: fe93405c-6d88-4363-8dec-75b45f796008
+[ORG-SETTINGS] ✅ Success: fe93405c-6d88-4363-8dec-75b45f796008
+11:24:03 AM [express] GET /api/organization-settings 304 in 7ms :: {"id":"fe93405c-6d88-4363-8dec-75b…
+11:24:03 AM [express] GET /api/auth/session 401 in 2ms :: {"message":"Not authenticated"}
+11:24:22 AM [express] POST /api/tenants/verify-code 404 in 12ms :: {"message":"Neispravan kod organiz…
+11:24:26 AM [express] POST /api/tenants/verify-code 200 in 4ms :: {"tenantId":"default-tenant-demo","…
+[LOGIN] Received credentials: {
+  username: 'admindemo',
+  passwordLength: 7,
+  tenantCode: undefined,
+  tenantId: 'default-tenant-demo'
+}
+[LOGIN] User from DB: NOT FOUND
+[LOGIN] Authentication failed: User not found
+11:24:34 AM [express] POST /api/auth/login 401 in 7ms :: {"message":"Invalid credentials"}
+[LOGIN] Received credentials: {
+  username: 'admin2025',
+  passwordLength: 7,
+  tenantCode: undefined,
+  tenantId: 'default-tenant-demo'
+}
+[LOGIN] User from DB: NOT FOUND
+[LOGIN] Authentication failed: User not found
+11:24:52 AM [express] POST /api/auth/login 401 in 10ms :: {"message":"Invalid credentials"}
+[LOGIN] Received credentials: {
+  username: 'admin2024',
+  passwordLength: 7,
+  tenantCode: undefined,
+  tenantId: 'default-tenant-demo'
+}
+[LOGIN] User from DB: NOT FOUND
+[LOGIN] Authentication failed: User not found
+11:24:56 AM [express] POST /api/auth/login 401 in 4ms :: {"message":"Invalid credentials"}
+[LOGIN] Received credentials: {
+  username: 'default-tenant-demo',
+  passwordLength: 7,
+  tenantCode: undefined,
+  tenantId: 'default-tenant-demo'
+}
+[LOGIN] User from DB: NOT FOUND
+[LOGIN] Authentication failed: User not found
+11:27:33 AM [express] POST /api/auth/login 401 in 8ms :: {"message":"Invalid credentials"}
+11:27:41 AM [express] POST /api/tenants/verify-code 404 in 7ms :: {"message":"Neispravan kod organiza…
+11:27:56 AM [express] POST /api/tenants/verify-code 404 in 6ms :: {"message":"Neispravan kod organiza…
