@@ -256,13 +256,6 @@ async function createMissingTables(client: any): Promise<void> {
       AND is_admin = true
     `);
     
-    // Fix admin2024 to have admin role
-    await client.query(`
-      UPDATE users SET roles = '{admin}', is_admin = true
-      WHERE tenant_id = 'default-tenant-demo' 
-      AND username = 'admin2024'
-    `);
-    
     console.log("✅ Admin usernames and names updated");
   } catch (error: any) {
     console.log("ℹ️  Username update skipped:", error.message);
