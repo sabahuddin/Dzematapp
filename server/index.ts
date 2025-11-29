@@ -14,7 +14,7 @@ import { seedDemoData } from "./seed-demo-data";
 import { seedDefaultTenant } from "./seed-tenant";
 import { ensurePublicPathSymlink } from "./public-path-fix";
 import { serveStaticFiles } from "./middleware";
-import { migrateProductionSchema } from "./migrate-production";
+import { migrateProductionSchema, verifyAllTablesExist } from "./migrate-production";
 
 // Extend Express Request interface to include user
 declare global {
@@ -331,6 +331,7 @@ app.use((req, res, next) => {
   try {
     console.log('🔄 Starting database schema synchronization...');
     await migrateProductionSchema();
+    await verifyAllTablesExist();
     console.log('✅ Database schema synchronized successfully!');
   } catch (error) {
     console.error('❌ Schema migration failed:', error);
