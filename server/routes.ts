@@ -1668,7 +1668,13 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       if (!tenantId) {
         tenantId = "default-tenant-demo";
       }
-      const userData = insertUserSchema.parse({ ...req.body, tenantId });
+      
+      // Add createdById (admin who created this user)
+      const userData = insertUserSchema.parse({ 
+        ...req.body, 
+        tenantId,
+        createdById: req.user!.id
+      });
       
       // Check if username already exists (only if username is provided)
       if (userData.username) {
