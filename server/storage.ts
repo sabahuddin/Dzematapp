@@ -137,6 +137,7 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   updateUser(id: string, tenantId: string, user: Partial<InsertUser>): Promise<User | undefined>;
   getAllUsers(tenantId: string): Promise<User[]>;
+  deleteUser(id: string, tenantId: string): Promise<boolean>;
   deleteAllTenantUsers(tenantId: string): Promise<number>;
   
   // Announcements
@@ -533,6 +534,31 @@ export class DatabaseStorage implements IStorage {
         sql`(${users.isSuperAdmin} IS NULL OR ${users.isSuperAdmin} = false)`
       )
     );
+  }
+
+  async deleteUser(id: string, tenantId: string): Promise<boolean> {
+    // Delete related data first (respecting foreign keys)
+    await db.delete(messages).where(
+      and(
+        eq(messages.tenantId, tenantId),
+        or(eq(messages.senderId, id), eq(messages.recipientId, id))
+      )
+    );
+    await db.delete(eventRsvps).where(and(eq(eventRsvps.userId, id), eq(eventRsvps.tenantId, tenantId)));
+    await db.delete(taskComments).where(and(eq(taskComments.userId, id), eq(taskComments.tenantId, tenantId)));
+    await db.delete(workGroupMembers).where(and(eq(workGroupMembers.userId, id), eq(workGroupMembers.tenantId, tenantId)));
+    await db.delete(userBadges).where(and(eq(userBadges.userId, id), eq(userBadges.tenantId, tenantId)));
+    await db.delete(userCertificates).where(and(eq(userCertificates.userId, id), eq(userCertificates.tenantId, tenantId)));
+    await db.delete(userPreferences).where(and(eq(userPreferences.userId, id), eq(userPreferences.tenantId, tenantId)));
+    await db.delete(financialContributions).where(and(eq(financialContributions.userId, id), eq(financialContributions.tenantId, tenantId)));
+    await db.delete(activityLog).where(and(eq(activityLog.userId, id), eq(activityLog.tenantId, tenantId)));
+    
+    // Now delete the user
+    const result = await db.delete(users).where(
+      and(eq(users.id, id), eq(users.tenantId, tenantId))
+    ).returning();
+    
+    return result.length > 0;
   }
 
   async deleteAllTenantUsers(tenantId: string): Promise<number> {

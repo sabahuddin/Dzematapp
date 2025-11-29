@@ -1769,6 +1769,40 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     }
 });
 
+  // Delete user (Admin only)
+  app.delete("/api/users/:id", requireAdmin, async (req, res) => {
+    try {
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      const { id } = req.params;
+      
+      // Prevent deleting the admin account
+      const userToDelete = await storage.getUser(id, tenantId);
+      if (!userToDelete) {
+        return res.status(404).json({ message: "Korisnik nije pronađen" });
+      }
+      
+      if (userToDelete.username === 'admin') {
+        return res.status(403).json({ message: "Nije dozvoljeno brisanje admin naloga" });
+      }
+      
+      // Prevent users from deleting themselves
+      if (req.user?.id === id) {
+        return res.status(403).json({ message: "Ne možete obrisati vlastiti nalog" });
+      }
+      
+      const success = await storage.deleteUser(id, tenantId);
+      if (!success) {
+        return res.status(404).json({ message: "Korisnik nije pronađen" });
+      }
+      
+      console.log('[USER DELETE] ✅ Deleted user:', id, 'from tenant:', tenantId);
+      res.json({ message: "Korisnik uspješno obrisan" });
+    } catch (error) {
+      console.error('[USER DELETE] Error:', error);
+      res.status(500).json({ message: "Greška pri brisanju korisnika" });
+    }
+  });
+
   // Announcements routes
   app.get("/api/announcements", async (req, res) => {
     try {
