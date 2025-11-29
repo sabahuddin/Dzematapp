@@ -1,0 +1,100 @@
+6:29:17 AM [express] GET /api/certificates/templates 500 in 13ms :: {"message":"Failed to get certif…
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+6:29:19 AM [express] PUT /api/notifications/mark-viewed/announcements 200 in 7ms :: {"success":true}
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+6:29:19 AM [express] GET /api/announcements 500 in 4ms :: {"message":"Failed to fetch announcements"}
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+  detail: undefined,
+  hint: undefined,
+  position: '35',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3716',
+  routine: 'errorMissingColumn'
+}
+6:29:19 AM [express] GET /api/notifications/unread 304 in 35ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+6:29:20 AM [express] GET /api/announcements 500 in 6ms :: {"message":"Failed to fetch announcements"}
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+6:29:21 AM [express] GET /api/events 500 in 13ms :: {"message":"Failed to fetch events"}
+6:29:21 AM [express] GET /api/important-dates 500 in 10ms :: {"message":"Failed to get important dat…
+6:29:21 AM [express] PUT /api/notifications/mark-viewed/events 200 in 14ms :: {"success":true}
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+6:29:21 AM [express] GET /api/notifications/unread 304 in 41ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+6:29:22 AM [express] GET /api/events 500 in 7ms :: {"message":"Failed to fetch events"}
+6:29:22 AM [express] GET /api/important-dates 500 in 7ms :: {"message":"Failed to get important date…
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+6:29:23 AM [express] PUT /api/notifications/mark-viewed/tasks 200 in 13ms :: {"success":true}
+6:29:23 AM [express] GET /api/proposals 500 in 9ms :: {"message":"Failed to get proposals"}
+6:29:23 AM [express] GET /api/access-requests 200 in 28ms :: []
+6:29:23 AM [express] GET /api/work-groups 200 in 51ms :: [{"id":"acc98c46-e2e2-4391-b38d-95d063398be…
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+6:29:24 AM [express] GET /api/proposals 500 in 4ms :: {"message":"Failed to get proposals"}
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+6:29:27 AM [express] GET /api/work-groups/acc98c46-e2e2-4391-b38d-95d063398be7/tasks 200 in 14ms :: …
+6:29:27 AM [express] GET /api/work-groups/acc98c46-e2e2-4391-b38d-95d063398be7/members 200 in 16ms :…
+[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin: true
+6:29:40 AM [express] POST /api/auth/logout 200 in 5ms :: {"message":"Logged out successfully"}
+Error getting proposals: error: syntax error at or near "="
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.getAllProposals (file:///app/dist/index.js:2535:12)
+    at async file:///app/dist/index.js:7157:22 {
+  length: 91,
+  severity: 'ERROR',
+  code: '42601',
+  detail: undefined,
+  hint: undefined,
+  position: '202',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'scan.l',
+  line: '1244',
+  routine: 'scanner_yyerror'
+}
+Error getting proposals: error: syntax error at or near "="
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.getAllProposals (file:///app/dist/index.js:2535:12)
+    at async file:///app/dist/index.js:7157:22 {
+  length: 91,
+  severity: 'ERROR',
+  code: '42601',
+  detail: undefined,
+  hint: undefined,
+  position: '202',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'scan.l',
+  line: '1244',
+  routine: 'scanner_yyerror'
+}
