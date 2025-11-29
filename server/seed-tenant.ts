@@ -158,7 +158,7 @@ export async function seedDefaultTenant() {
         tenantId: SUPERADMIN_TENANT_ID, // GLOBAL tenant, not demo!
         firstName: 'Super',
         lastName: 'Admin',
-        username: 'admin',
+        username: 'superadmin',
         email: 'superadmin@dzematapp.com',
         password: 'admin123',
         status: 'aktivan',
@@ -169,12 +169,12 @@ export async function seedDefaultTenant() {
         totalPoints: 0,
         membershipDate: new Date()
       });
-      console.log('✅ SuperAdmin user created (username: admin, password: admin123)\n');
+      console.log('✅ SuperAdmin user created (username: superadmin, password: admin123)\n');
     } else {
       console.log('ℹ️  SuperAdmin user already exists\n');
     }
 
-    // 5. Create regular admin for demo tenant
+    // 5. Create regular admin for demo tenant (each tenant gets admin/admin123)
     console.log('👤 Creating demo tenant admin...');
     
     const existingDemoAdmin = await db
@@ -187,10 +187,10 @@ export async function seedDefaultTenant() {
       await db.insert(users).values({
         tenantId: DEFAULT_TENANT_ID,
         firstName: 'Admin',
-        lastName: 'Demo',
-        username: 'demo-admin',
+        lastName: 'Džemat',
+        username: 'admin',
         email: 'admin@demo.local',
-        password: 'demo123',
+        password: 'admin123',
         status: 'aktivan',
         categories: ['Muškarci'],
         roles: ['admin'],
@@ -199,7 +199,7 @@ export async function seedDefaultTenant() {
         totalPoints: 0,
         membershipDate: new Date()
       });
-      console.log('✅ Demo admin user created (username: demo-admin, password: demo123)\n');
+      console.log('✅ Demo admin user created (username: admin, password: admin123)\n');
     } else {
       console.log('ℹ️  Demo admin user already exists\n');
     }

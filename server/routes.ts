@@ -304,15 +304,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.error('[SUPERADMIN LOGIN] Database error:', error);
       }
       
-      // Fallback for hardcoded admin if database unavailable
-      if (!superAdminUser && username === 'admin' && password === 'admin123') {
-        console.log('[SUPERADMIN LOGIN] Using fallback admin credentials');
+      // Fallback for hardcoded superadmin if database unavailable
+      if (!superAdminUser && username === 'superadmin' && password === 'admin123') {
+        console.log('[SUPERADMIN LOGIN] Using fallback superadmin credentials');
         superAdminUser = {
-          id: 'admin-fallback',
+          id: 'superadmin-fallback',
           firstName: 'Super',
           lastName: 'Admin',
           email: 'superadmin@dzematapp.com',
-          username: 'admin',
+          username: 'superadmin',
           password: 'admin123',
           isSuperAdmin: true,
           isAdmin: true,

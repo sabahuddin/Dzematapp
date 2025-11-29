@@ -42,9 +42,13 @@ DžematApp is a SaaS platform with strict tenant isolation:
 - **New Tenant Creation**: New tenants start empty with 0 users - no data inheritance from other tenants.
 
 ### SuperAdmin Access
-- **Login**: Use `/api/auth/superadmin/login` with `admin/admin123`
+- **Login**: Use `/superadmin` page with `superadmin/admin123`
 - **Scope**: Can manage all tenants via SuperAdmin Panel
 - **Visibility**: SuperAdmin users are NEVER shown in regular tenant user lists (filtered by `isSuperAdmin` check)
+
+### Tenant Admin Access
+- **Login**: Each tenant has an admin with `admin/admin123`
+- **Scope**: Full admin access within their own tenant only
 
 ### Key Implementation Files
 - `server/seed-tenant.ts`: Creates global SuperAdmin tenant and SuperAdmin user

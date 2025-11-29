@@ -228,6 +228,30 @@ async function createMissingTables(client: any): Promise<void> {
   }
   
   console.log(`✅ Table creation complete: ${createdCount} processed, ${existingCount} already existed`);
+  
+  // Update usernames to new standard
+  console.log("📋 Updating admin usernames to new standard...");
+  try {
+    // Update SuperAdmin username from 'admin' to 'superadmin' in global tenant
+    await client.query(`
+      UPDATE users SET username = 'superadmin' 
+      WHERE tenant_id = 'tenant-superadmin-global' 
+      AND username = 'admin' 
+      AND is_super_admin = true
+    `);
+    
+    // Update demo tenant admin username from 'demo-admin' to 'admin'
+    await client.query(`
+      UPDATE users SET username = 'admin', password = 'admin123'
+      WHERE tenant_id = 'default-tenant-demo' 
+      AND (username = 'demo-admin' OR username = 'admindemo')
+      AND is_admin = true
+    `);
+    
+    console.log("✅ Admin usernames updated");
+  } catch (error: any) {
+    console.log("ℹ️  Username update skipped:", error.message);
+  }
 }
 
 async function addMissingColumns(client: any): Promise<void> {
