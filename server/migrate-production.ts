@@ -253,6 +253,47 @@ async function createMissingTables(client: any): Promise<void> {
       "created_at" timestamp NOT NULL DEFAULT now()
     )`,
     
+    // events
+    `CREATE TABLE IF NOT EXISTS "events" (
+      "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+      "tenant_id" varchar NOT NULL REFERENCES "tenants"("id") ON DELETE CASCADE,
+      "name" text NOT NULL,
+      "description" text,
+      "location" text NOT NULL,
+      "date_time" timestamp NOT NULL,
+      "photo_url" text,
+      "rsvp_enabled" boolean DEFAULT true,
+      "require_adults_children" boolean DEFAULT false,
+      "max_attendees" integer,
+      "reminder_time" text,
+      "categories" text[],
+      "points_value" integer DEFAULT 20,
+      "created_by_id" varchar NOT NULL REFERENCES "users"("id"),
+      "created_at" timestamp DEFAULT now()
+    )`,
+    
+    // event_rsvps
+    `CREATE TABLE IF NOT EXISTS "event_rsvps" (
+      "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+      "tenant_id" varchar NOT NULL REFERENCES "tenants"("id") ON DELETE CASCADE,
+      "event_id" varchar NOT NULL REFERENCES "events"("id"),
+      "user_id" varchar NOT NULL REFERENCES "users"("id"),
+      "adults_count" integer DEFAULT 1,
+      "children_count" integer DEFAULT 0,
+      "rsvp_date" timestamp DEFAULT now(),
+      "created_at" timestamp DEFAULT now()
+    )`,
+    
+    // important_dates
+    `CREATE TABLE IF NOT EXISTS "important_dates" (
+      "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+      "tenant_id" varchar NOT NULL REFERENCES "tenants"("id") ON DELETE CASCADE,
+      "name" text NOT NULL,
+      "date" text NOT NULL,
+      "is_recurring" boolean DEFAULT true NOT NULL,
+      "created_at" timestamp DEFAULT now()
+    )`,
+    
     // proposals (ensure exists)
     `CREATE TABLE IF NOT EXISTS "proposals" (
       "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
