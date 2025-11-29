@@ -5359,47 +5359,56 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
 
   // Create new tenant
   app.post("/api/tenants", requireSuperAdmin, async (req, res) => {
+    console.log('[TENANT CREATE] Request received', { body: req.body, userId: req.user?.id });
     try {
       const data = req.body;
       // Convert empty subdomain to undefined (null in DB)
       if (data.subdomain === '') {
         data.subdomain = undefined;
       }
+      console.log('[TENANT CREATE] Validating data...');
       const validated = insertTenantSchema.parse(data);
+      console.log('[TENANT CREATE] Data validated, creating tenant...');
       const newTenant = await storage.createTenant(validated);
+      console.log('[TENANT CREATE] ✅ Tenant created:', newTenant.id);
       res.status(201).json(newTenant);
     } catch (error) {
       if (error instanceof ZodError) {
+        console.error('[TENANT CREATE] Validation error:', error.errors);
         return res.status(400).json({ 
           message: "Invalid tenant data", 
           errors: error.errors 
-});
+        });
       }
-      console.error('Error creating tenant:', error);
+      console.error('[TENANT CREATE] Error creating tenant:', error);
       res.status(500).json({ message: "Failed to create tenant" });
     }
-});
+  });
 
   // Update tenant
   app.patch("/api/tenants/:id", requireSuperAdmin, async (req, res) => {
+    console.log('[TENANT UPDATE] Request for:', req.params.id, { body: req.body, userId: req.user?.id });
     try {
       const validated = insertTenantSchema.partial().parse(req.body);
       const updated = await storage.updateTenant(req.params.id, validated);
       if (!updated) {
+        console.log('[TENANT UPDATE] Not found:', req.params.id);
         return res.status(404).json({ message: "Tenant not found" });
       }
+      console.log('[TENANT UPDATE] ✅ Updated:', req.params.id);
       res.json(updated);
     } catch (error) {
       if (error instanceof ZodError) {
+        console.error('[TENANT UPDATE] Validation error:', error.errors);
         return res.status(400).json({ 
           message: "Invalid tenant data", 
           errors: error.errors 
-});
+        });
       }
-      console.error('Error updating tenant:', error);
+      console.error('[TENANT UPDATE] Error:', error);
       res.status(500).json({ message: "Failed to update tenant" });
     }
-});
+  });
 
   // Update tenant status (activate/deactivate)
   app.patch("/api/tenants/:id/status", requireSuperAdmin, async (req, res) => {
