@@ -1,0 +1,100 @@
+11:03:52 PM [express] GET /api/notifications/unread 200 in 57ms :: {"shop":0,"events":0,"announcement…
+11:03:57 PM [express] PUT /api/announcements/f95b18e1-66c7-4475-94b1-a4c8142dd0ce 200 in 116ms :: {"i…
+11:03:57 PM [express] GET /api/announcements 200 in 55ms :: [{"id":"f95b18e1-66c7-4475-94b1-a4c8142dd…
+11:04:00 PM [express] GET /api/events 500 in 5ms :: {"message":"Failed to fetch events"}
+11:04:00 PM [express] GET /api/important-dates 500 in 6ms :: {"message":"Failed to get important date…
+11:04:00 PM [express] PUT /api/notifications/mark-viewed/events 404 in 6ms :: {"message":"User not fo…
+11:04:01 PM [express] GET /api/events 500 in 6ms :: {"message":"Failed to fetch events"}
+11:04:01 PM [express] GET /api/important-dates 500 in 4ms :: {"message":"Failed to get important date…
+11:04:01 PM [express] PUT /api/notifications/mark-viewed/announcements 404 in 4ms :: {"message":"User…
+11:04:18 PM [express] PUT /api/announcements/f95b18e1-66c7-4475-94b1-a4c8142dd0ce 200 in 98ms :: {"id…
+11:04:18 PM [express] GET /api/announcements 200 in 36ms :: [{"id":"f95b18e1-66c7-4475-94b1-a4c8142dd…
+11:04:22 PM [express] GET /api/messages/unread-count 200 in 16ms :: {"count":0}
+11:04:22 PM [express] GET /api/certificates/unviewed-count 200 in 13ms :: {"count":0}
+11:04:22 PM [express] GET /api/notifications/unread 200 in 39ms :: {"shop":0,"events":0,"announcement…
+11:04:34 PM [express] PUT /api/announcements/f95b18e1-66c7-4475-94b1-a4c8142dd0ce 200 in 105ms :: {"i…
+11:04:34 PM [express] GET /api/announcements 200 in 38ms :: [{"id":"f95b18e1-66c7-4475-94b1-a4c8142dd…
+11:04:52 PM [express] GET /api/messages/unread-count 200 in 16ms :: {"count":0}
+11:04:52 PM [express] GET /api/certificates/unviewed-count 200 in 12ms :: {"count":0}
+11:04:52 PM [express] GET /api/notifications/unread 200 in 37ms :: {"shop":0,"events":0,"announcement…
+11:04:55 PM [express] GET /api/events 500 in 10ms :: {"message":"Failed to fetch events"}
+11:04:55 PM [express] PUT /api/notifications/mark-viewed/events 404 in 6ms :: {"message":"User not fo…
+11:04:55 PM [express] GET /api/important-dates 500 in 6ms :: {"message":"Failed to get important date…
+11:04:56 PM [express] GET /api/events 500 in 4ms :: {"message":"Failed to fetch events"}
+11:04:56 PM [express] GET /api/important-dates 500 in 3ms :: {"message":"Failed to get important date…
+11:04:59 PM [express] GET /api/access-requests 200 in 10ms :: []
+11:04:59 PM [express] GET /api/subscription/current 200 in 15ms :: {"tenantId":"default-tenant-demo",…
+Error getting proposals: error: column "created_by_id" does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.getAllProposals (file:///app/dist/index.js:2630:12)
+    at async file:///app/dist/index.js:7299:22 {
+  length: 113,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '44',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+11:04:59 PM [express] GET /api/proposals 500 in 7ms :: {"message":"Failed to get proposals"}
+11:04:59 PM [express] PUT /api/notifications/mark-viewed/tasks 404 in 8ms :: {"message":"User not fou…
+11:04:59 PM [express] GET /api/work-groups 200 in 19ms :: [{"id":"3f36302f-df2d-45ed-a10e-0e097d6d555…
+11:05:00 PM [express] GET /api/proposals 500 in 5ms :: {"message":"Failed to get proposals"}
+11:05:09 PM [express] POST /api/work-groups 200 in 14ms :: {"id":"25821f42-73e7-41ae-9a4a-d1f6533fc70…
+11:05:09 PM [express] GET /api/work-groups 200 in 30ms :: [{"id":"3f36302f-df2d-45ed-a10e-0e097d6d555…
+11:05:16 PM [express] GET /api/work-groups/25821f42-73e7-41ae-9a4a-d1f6533fc702/members 200 in 14ms :…
+11:05:22 PM [express] GET /api/messages/unread-count 200 in 11ms :: {"count":0}
+11:05:22 PM [express] GET /api/certificates/unviewed-count 200 in 10ms :: {"count":0}
+11:05:22 PM [express] GET /api/notifications/unread 200 in 46ms :: {"shop":0,"events":0,"announcement…
+11:05:27 PM [express] GET /api/messages/conversations 200 in 14ms :: []
+11:05:28 PM [express] GET /api/imam-questions 403 in 8ms :: {"message":"Feature \"ask-imam\" not avai…
+11:05:28 PM [express] PUT /api/notifications/mark-viewed/imamQuestions 404 in 5ms :: {"message":"User…
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3716',
+  routine: 'errorMissingColumn'
+}
+Error getting proposals: error: column "created_by_id" does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.getAllProposals (file:///app/dist/index.js:2630:12)
+    at async file:///app/dist/index.js:7299:22 {
+  length: 113,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '44',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3716',
+  routine: 'errorMissingColumn'
+}
+11:05:29 PM [express] GET /api/documents 200 in 13ms :: []
+11:05:30 PM [express] PUT /api/notifications/mark-viewed/shop 404 in 7ms :: {"message":"User not foun…
+11:05:30 PM [express] GET /api/shop/products 500 in 15ms :: {"message":"Failed to get products"}
+11:05:30 PM [express] GET /api/services 200 in 10ms :: []
+11:05:30 PM [express] GET /api/marketplace/items 403 in 13ms :: {"message":"Feature \"marketplace\" n…
+11:05:36 PM [express] PUT /api/notifications/mark-viewed/shop 404 in 5ms :: {"message":"User not foun…
+11:05:36 PM [express] GET /api/marketplace/items 403 in 23ms :: {"message":"Feature \"marketplace\" n…
+11:05:36 PM [express] GET /api/shop/products 500 in 43ms :: {"message":"Failed to get products"}
+11:05:52 PM [express] GET /api/messages/unread-count 200 in 14ms :: {"count":0}
+11:05:52 PM [express] GET /api/certificates/unviewed-count 200 in 13ms :: {"count":0}
+11:05:53 PM [express] GET /api/notifications/unread 200 in 33ms :: {"shop":0,"events":0,"announcement…
+11:05:57 PM [express] POST /api/shop/products 400 in 8ms :: {"message":"Invalid product data"}
+11:06:03 PM [express] POST /api/shop/products 400 in 19ms :: {"message":"Invalid product data"}

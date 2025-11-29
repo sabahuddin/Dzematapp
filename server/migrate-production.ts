@@ -207,6 +207,71 @@ async function createMissingTables(client: any): Promise<void> {
       "reviewed_at" timestamp,
       "review_notes" text,
       "created_at" timestamp DEFAULT now()
+    )`,
+    
+    // shop_products
+    `CREATE TABLE IF NOT EXISTS "shop_products" (
+      "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+      "tenant_id" varchar NOT NULL REFERENCES "tenants"("id") ON DELETE CASCADE,
+      "name" text NOT NULL,
+      "photos" text[],
+      "category" text,
+      "weight" text,
+      "volume" text,
+      "size" text,
+      "quantity" integer DEFAULT 0,
+      "color" text,
+      "notes" text,
+      "price" text,
+      "created_by_id" varchar NOT NULL REFERENCES "users"("id"),
+      "created_at" timestamp NOT NULL DEFAULT now()
+    )`,
+    
+    // marketplace_items
+    `CREATE TABLE IF NOT EXISTS "marketplace_items" (
+      "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+      "tenant_id" varchar NOT NULL REFERENCES "tenants"("id") ON DELETE CASCADE,
+      "user_id" varchar NOT NULL REFERENCES "users"("id"),
+      "name" text NOT NULL,
+      "photos" text[],
+      "description" text,
+      "price" text,
+      "type" text NOT NULL DEFAULT 'prodaja',
+      "status" text NOT NULL DEFAULT 'aktivan',
+      "sold_to_user_id" varchar REFERENCES "users"("id"),
+      "created_at" timestamp NOT NULL DEFAULT now()
+    )`,
+    
+    // product_purchase_requests
+    `CREATE TABLE IF NOT EXISTS "product_purchase_requests" (
+      "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+      "tenant_id" varchar NOT NULL REFERENCES "tenants"("id") ON DELETE CASCADE,
+      "product_id" varchar NOT NULL REFERENCES "shop_products"("id"),
+      "user_id" varchar NOT NULL REFERENCES "users"("id"),
+      "quantity" integer NOT NULL DEFAULT 1,
+      "status" text NOT NULL DEFAULT 'pending',
+      "created_at" timestamp NOT NULL DEFAULT now()
+    )`,
+    
+    // proposals (ensure exists)
+    `CREATE TABLE IF NOT EXISTS "proposals" (
+      "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+      "tenant_id" varchar NOT NULL REFERENCES "tenants"("id") ON DELETE CASCADE,
+      "work_group_id" varchar REFERENCES "work_groups"("id"),
+      "created_by_id" varchar NOT NULL REFERENCES "users"("id"),
+      "title" text NOT NULL,
+      "who" text,
+      "what" text,
+      "where" text,
+      "when" text,
+      "how" text,
+      "why" text,
+      "budget" text,
+      "status" text NOT NULL DEFAULT 'pending',
+      "reviewed_by_id" varchar REFERENCES "users"("id"),
+      "review_comment" text,
+      "reviewed_at" timestamp,
+      "created_at" timestamp NOT NULL DEFAULT now()
     )`
   ];
   
@@ -333,6 +398,21 @@ async function addMissingColumns(client: any): Promise<void> {
     // EVENT_RSVPS - 1 missing column
     `ALTER TABLE "event_rsvps" ADD COLUMN IF NOT EXISTS "created_at" timestamp DEFAULT now()`,
     
+    // SHOP_PRODUCTS - all columns
+    `ALTER TABLE "shop_products" ADD COLUMN IF NOT EXISTS "tenant_id" varchar`,
+    `ALTER TABLE "shop_products" ADD COLUMN IF NOT EXISTS "name" text`,
+    `ALTER TABLE "shop_products" ADD COLUMN IF NOT EXISTS "photos" text[]`,
+    `ALTER TABLE "shop_products" ADD COLUMN IF NOT EXISTS "category" text`,
+    `ALTER TABLE "shop_products" ADD COLUMN IF NOT EXISTS "weight" text`,
+    `ALTER TABLE "shop_products" ADD COLUMN IF NOT EXISTS "volume" text`,
+    `ALTER TABLE "shop_products" ADD COLUMN IF NOT EXISTS "size" text`,
+    `ALTER TABLE "shop_products" ADD COLUMN IF NOT EXISTS "quantity" integer DEFAULT 0`,
+    `ALTER TABLE "shop_products" ADD COLUMN IF NOT EXISTS "color" text`,
+    `ALTER TABLE "shop_products" ADD COLUMN IF NOT EXISTS "notes" text`,
+    `ALTER TABLE "shop_products" ADD COLUMN IF NOT EXISTS "price" text`,
+    `ALTER TABLE "shop_products" ADD COLUMN IF NOT EXISTS "created_by_id" varchar`,
+    `ALTER TABLE "shop_products" ADD COLUMN IF NOT EXISTS "created_at" timestamp DEFAULT now()`,
+    
     // EVENT_ATTENDANCE - 3 missing columns
     `ALTER TABLE "event_attendance" ADD COLUMN IF NOT EXISTS "checked_in_by_id" varchar`,
     `ALTER TABLE "event_attendance" ADD COLUMN IF NOT EXISTS "points_awarded" integer DEFAULT 0`,
@@ -420,8 +500,13 @@ async function addMissingColumns(client: any): Promise<void> {
     `ALTER TABLE "projects" ADD COLUMN IF NOT EXISTS "end_date" timestamp`,
     `ALTER TABLE "projects" ADD COLUMN IF NOT EXISTS "budget" text`,
     
-    // PROPOSALS - ensure tenant_id exists + reserved keywords
+    // PROPOSALS - ensure tenant_id exists + reserved keywords + created_by_id
     `ALTER TABLE "proposals" ADD COLUMN IF NOT EXISTS "tenant_id" varchar`,
+    `ALTER TABLE "proposals" ADD COLUMN IF NOT EXISTS "created_by_id" varchar`,
+    `ALTER TABLE "proposals" ADD COLUMN IF NOT EXISTS "work_group_id" varchar`,
+    `ALTER TABLE "proposals" ADD COLUMN IF NOT EXISTS "title" text`,
+    `ALTER TABLE "proposals" ADD COLUMN IF NOT EXISTS "status" text DEFAULT 'pending'`,
+    `ALTER TABLE "proposals" ADD COLUMN IF NOT EXISTS "created_at" timestamp DEFAULT now()`,
     `ALTER TABLE "proposals" ADD COLUMN IF NOT EXISTS "who" text`,
     `ALTER TABLE "proposals" ADD COLUMN IF NOT EXISTS "what" text`,
     `ALTER TABLE "proposals" ADD COLUMN IF NOT EXISTS "where" text`,
