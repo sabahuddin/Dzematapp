@@ -1680,9 +1680,19 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       
       const user = await storage.createUser(userData);
       res.json({ ...user, password: undefined });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating user:", error);
-      res.status(400).json({ message: "Invalid user data" });
+      // Check for unique constraint violation
+      if (error.code === '23505') {
+        if (error.constraint?.includes('email')) {
+          return res.status(400).json({ message: "Email adresa već postoji" });
+        }
+        if (error.constraint?.includes('username')) {
+          return res.status(400).json({ message: "Korisničko ime već postoji" });
+        }
+        return res.status(400).json({ message: "Korisnik sa ovim podacima već postoji" });
+      }
+      res.status(400).json({ message: "Invalid user data", error: error.message || String(error) });
     }
 });
 
