@@ -324,6 +324,7 @@ export default function SuperAdminPanel() {
       <Tabs value={currentTab} onChange={(e, newValue) => setCurrentTab(newValue)} sx={{ mb: 3 }}>
         <Tab label="Upravljanje Tenant-ima" />
         <Tab label="Upravljanje Korisnicima" />
+        <Tab label="Sistem" />
       </Tabs>
 
       {currentTab === 0 ? (
@@ -569,6 +570,83 @@ export default function SuperAdminPanel() {
                 </Button>
               </Grid>
             </Grid>
+          </Card>
+        </Box>
+      )}
+
+      {currentTab === 2 && (
+        <Box>
+          <Typography variant="h5" sx={{ mb: 3 }}>
+            Sistemske postavke
+          </Typography>
+          
+          <Card sx={{ p: 3, mb: 3 }}>
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Inicijalizacija Demo Podataka
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              Ova akcija će kreirati demo tenant (DEMO2025) sa primjerima obavijesti, događaja, zadataka i korisnika.
+              Koristite ovo samo za nove instalacije ili testiranje.
+            </Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={async () => {
+                if (!window.confirm('Da li ste sigurni? Ovo će kreirati demo podatke u bazi.')) return;
+                try {
+                  const response = await fetch('/api/superadmin/seed', {
+                    method: 'POST',
+                    credentials: 'include'
+                  });
+                  const data = await response.json();
+                  if (response.ok) {
+                    toast({ title: "Uspješno!", description: data.message });
+                  } else {
+                    toast({ title: "Greška", description: data.message, variant: "destructive" });
+                  }
+                } catch (error) {
+                  toast({ title: "Greška", description: "Neuspjela inicijalizacija", variant: "destructive" });
+                }
+              }}
+              data-testid="button-seed-database"
+            >
+              Pokreni Inicijalizaciju
+            </Button>
+          </Card>
+
+          <Card sx={{ p: 3 }}>
+            <Typography variant="h6" sx={{ mb: 2, color: 'error.main' }}>
+              Reset Baze (Opasno!)
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              Ova akcija će OBRISATI SVE PODATKE i ponovo kreirati strukturu baze sa demo podacima.
+              Koristite SAMO ako je potreban potpuni reset.
+            </Typography>
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={async () => {
+                if (!window.confirm('UPOZORENJE: Ovo će OBRISATI SVE PODATKE! Da li ste apsolutno sigurni?')) return;
+                if (!window.confirm('Posljednja šansa: Svi podaci će biti izgubljeni. Nastaviti?')) return;
+                try {
+                  const response = await fetch('/api/superadmin/reset-db', {
+                    method: 'GET',
+                    credentials: 'include'
+                  });
+                  const data = await response.json();
+                  if (response.ok) {
+                    toast({ title: "Reset završen!", description: data.message });
+                  } else {
+                    toast({ title: "Greška", description: data.message, variant: "destructive" });
+                  }
+                } catch (error) {
+                  toast({ title: "Greška", description: "Neuspjeli reset", variant: "destructive" });
+                }
+              }}
+              data-testid="button-reset-database"
+            >
+              Reset Cijele Baze
+            </Button>
           </Card>
         </Box>
       )}
