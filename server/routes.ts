@@ -5433,18 +5433,29 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
 
   // Delete tenant
   app.delete("/api/tenants/:id", requireSuperAdmin, async (req, res) => {
+    console.log('[TENANT DELETE] Request for:', req.params.id);
     try {
+      // Check if tenant has users - cannot delete if it does
+      const tenantUsers = await storage.getUsersByTenant(req.params.id);
+      if (tenantUsers && tenantUsers.length > 0) {
+        console.log('[TENANT DELETE] Blocked - tenant has', tenantUsers.length, 'users');
+        return res.status(409).json({ 
+          message: `Ne možete obrisati tenant koji ima ${tenantUsers.length} korisnika. Prvo deaktivirajte tenant ili obrišite sve korisnike.` 
+        });
+      }
+
       const success = await storage.deleteTenant(req.params.id);
       if (!success) {
         return res.status(404).json({ message: "Tenant not found" });
       }
 
+      console.log('[TENANT DELETE] ✅ Deleted:', req.params.id);
       res.json({ message: "Tenant deleted successfully" });
     } catch (error) {
-      console.error('Error deleting tenant:', error);
+      console.error('[TENANT DELETE] Error:', error);
       res.status(500).json({ message: "Failed to delete tenant" });
     }
-});
+  });
 
   // Get tenant statistics
   app.get("/api/tenants/:id/stats", requireSuperAdmin, async (req, res) => {
