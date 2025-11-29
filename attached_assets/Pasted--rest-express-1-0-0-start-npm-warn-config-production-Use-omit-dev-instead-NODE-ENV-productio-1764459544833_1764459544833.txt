@@ -1,0 +1,97 @@
+> rest-express@1.0.0 start
+npm warn config production Use `--omit=dev` instead.
+> NODE_ENV=production node dist/index.js
+
+🔗 Created symlink: /app/server/public -> ../public
+✅ Using PostgreSQL session store
+🔄 Starting database schema synchronization...
+🔄 Running production schema migration...
+ℹ️  Tables already exist, applying column fixes...
+📋 Creating missing tables...
+✅ Table creation complete: 17 processed, 0 already existed
+📋 Migrating unique constraints to per-tenant...
+✅ Unique constraints migrated to per-tenant
+📋 Updating admin usernames to new standard...
+✅ Admin usernames and names updated
+📋 Adding missing columns to existing tables...
+✅ Processed 182 column fixes (0 skipped)
+✅ Schema migration complete
+📋 Verifying all schema tables exist...
+✅ All 44 tables verified
+✅ Database schema synchronized successfully!
+[INIT] Registering /api/auth/superadmin/login endpoint
+📂 Serving static files from: /app/dist/public
+11:37:41 PM [express] serving on port 3000
+✅ Admin user already exists
+✅ Contribution purposes already exist
+🌱 Starting default tenant seed...
+
+📋 Creating subscription plans...
+ℹ️  Subscription plans already exist
+
+🔐 Creating SuperAdmin global tenant...
+ℹ️  SuperAdmin global tenant already exists
+
+🏢 Creating default tenant...
+ℹ️  Default tenant already exists: Demo Džemat
+
+👤 Creating SuperAdmin user...
+ℹ️  SuperAdmin user already exists
+
+👤 Creating demo tenant admin...
+ℹ️  Demo admin user already exists
+
+✅ Seed completed successfully!
+
+📊 Default Tenant ID: default-tenant-demo
+   Name: Demo Džemat
+   Tier: full
+   Status: trial
+
+🌱 Seeding demo data for Demo Džemat...
+ℹ️ Demo users already exist
+ℹ️ Demo data already exists
+✅ Demo data seed completed!
+
+11:37:44 PM [express] POST /api/marketplace/items 403 in 24ms :: {"message":"Feature \"marketplace\" …
+11:37:45 PM [express] GET /api/certificates/unviewed-count 304 in 18ms :: {"count":0}
+11:37:45 PM [express] GET /api/messages/unread-count 304 in 13ms :: {"count":0}
+11:37:45 PM [express] GET /api/notifications/unread 304 in 40ms :: {"shop":0,"events":0,"announcement…
+11:38:04 PM [express] GET /api/auth/session 200 in 4ms :: {"user":{"id":"60572500-4eef-4282-a898-a33b…
+[ORG-SETTINGS] Getting settings for tenant: tenant-superadmin-global
+[STORAGE] ✅ Found existing org settings: 34a8a10f-2eeb-41e5-bfe3-89d9d12341a3
+[ORG-SETTINGS] ✅ Success: 34a8a10f-2eeb-41e5-bfe3-89d9d12341a3
+11:38:04 PM [express] GET /api/organization-settings 200 in 8ms :: {"id":"34a8a10f-2eeb-41e5-bfe3-89d…
+11:38:04 PM [express] GET /api/certificates/unviewed-count 304 in 22ms :: {"count":0}
+11:38:04 PM [express] GET /api/messages/unread-count 304 in 28ms :: {"count":0}
+11:38:04 PM [express] GET /api/users 304 in 7ms :: []
+11:38:04 PM [express] GET /api/services 304 in 12ms :: []
+11:38:04 PM [express] PUT /api/notifications/mark-viewed/shop 404 in 8ms :: {"message":"User not foun…
+11:38:04 PM [express] GET /api/shop/products 304 in 29ms :: []
+11:38:04 PM [express] GET /api/subscription/current 304 in 23ms :: {"tenantId":"default-tenant-demo",…
+11:38:04 PM [express] GET /api/marketplace/items 403 in 21ms :: {"message":"Feature \"marketplace\" n…
+11:38:04 PM [express] GET /api/notifications/unread 304 in 51ms :: {"shop":0,"events":0,"announcement…
+[DEBUG POST /api/users] Received body: {
+  firstName: 'Ali',
+  lastName: 'Alic',
+  username: 'ali.alic',
+  email: null,
+  password: '***',
+  phone: null,
+  photo: null,
+  address: null,
+  city: null,
+  postalCode: null,
+  dateOfBirth: '12.12.1987.',
+  membershipDate: '2000-01-01T00:00:00.000Z',
+  status: 'aktivan',
+  inactiveReason: null,
+  categories: [],
+  roles: [ 'clan' ],
+  skills: [],
+  isAdmin: false
+} tenantId: default-tenant-demo
+11:38:29 PM [express] POST /api/users 400 in 12ms :: {"message":"Korisničko ime već postoji"}
+11:38:34 PM [express] GET /api/certificates/unviewed-count 304 in 14ms :: {"count":0}
+11:38:34 PM [express] GET /api/messages/unread-count 304 in 12ms :: {"count":0}
+11:38:34 PM [express] GET /api/notifications/unread 304 in 33ms :: {"shop":0,"events":0,"announcement…
