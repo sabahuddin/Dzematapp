@@ -25,9 +25,7 @@ import {
   FormControl,
   InputLabel,
   Select,
-  MenuItem,
-  Tabs,
-  Tab
+  MenuItem
 } from '@mui/material';
 import { Add, Edit, Delete, Visibility, CheckCircle, Cancel, PersonOff } from '@mui/icons-material';
 import { useAuth } from "@/hooks/useAuth";
@@ -49,33 +47,6 @@ export default function SuperAdminPanel() {
   const [statsDialogOpen, setStatsDialogOpen] = useState(false);
   const [selectedTenantStats, setSelectedTenantStats] = useState<TenantStats | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [currentTab, setCurrentTab] = useState(0);
-  const [userForm, setUserForm] = useState({
-    firstName: "",
-    lastName: "",
-    username: "",
-    email: "",
-    password: "",
-    isAdmin: false,
-    tenantId: ""
-  });
-  const [usernameTaken, setUsernameTaken] = useState(false);
-
-  // Fetch all users to check for duplicates
-  const { data: allUsers = [] } = useQuery({
-    queryKey: ["/api/users"],
-    enabled: currentTab === 1 // Only fetch when on User Management tab
-  });
-
-  // Check if username exists
-  const checkUsername = (username: string) => {
-    if (!username) {
-      setUsernameTaken(false);
-      return;
-    }
-    const exists = allUsers.some((u: any) => u.username?.toLowerCase() === username.toLowerCase());
-    setUsernameTaken(exists);
-  };
 
   // Check if user is Super Admin
   if (!user?.isSuperAdmin) {
@@ -119,9 +90,20 @@ export default function SuperAdminPanel() {
   // Create tenant mutation
   const createMutation = useMutation({
     mutationFn: (data: any) => apiRequest("/api/tenants", "POST", data),
-    onSuccess: () => {
+    onSuccess: (data: any) => {
       queryClient.invalidateQueries({ queryKey: ["/api/tenants"] });
-      toast({ title: "Tenant kreiran uspješno!" });
+      if (data.adminCredentials) {
+        toast({ 
+          title: "Tenant kreiran uspješno!", 
+          description: `Admin login: ${data.adminCredentials.username} / ${data.adminCredentials.password}`,
+        });
+      } else {
+        toast({ 
+          title: "Tenant kreiran", 
+          description: data.adminError || "Admin korisnik nije kreiran",
+          variant: "destructive"
+        });
+      }
       setDialogOpen(false);
       resetForm();
     },
@@ -198,31 +180,6 @@ export default function SuperAdminPanel() {
       toast({ 
         title: "Greška", 
         description: error.message || "Neuspjelo brisanje korisnika",
-        variant: "destructive" 
-      });
-    }
-  });
-
-  // Create user mutation - uses SuperAdmin endpoint to create user for any tenant
-  const createUserMutation = useMutation({
-    mutationFn: (data: any) => apiRequest("/api/superadmin/users", "POST", data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/users"] });
-      toast({ title: "Korisnik kreiran uspješno!" });
-      setUserForm({
-        firstName: "",
-        lastName: "",
-        username: "",
-        email: "",
-        password: "",
-        isAdmin: false,
-        tenantId: ""
-      });
-    },
-    onError: (error: any) => {
-      toast({ 
-        title: "Greška", 
-        description: error.message || "Neuspjelo kreiranje korisnika",
         variant: "destructive" 
       });
     }
@@ -343,15 +300,8 @@ export default function SuperAdminPanel() {
         Super Admin Panel
       </Typography>
 
-      <Tabs value={currentTab} onChange={(e, newValue) => setCurrentTab(newValue)} sx={{ mb: 3 }}>
-        <Tab label="Upravljanje Tenant-ima" />
-        <Tab label="Upravljanje Korisnicima" />
-        <Tab label="Sistem" />
-      </Tabs>
-
-      {currentTab === 0 ? (
-        <>
-          <Box sx={{ mb: 3, display: 'flex', justifyContent: 'flex-end' }}>
+      {/* Tenant Management */}
+      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'flex-end' }}>
             <Button 
               variant="contained" 
               startIcon={<Add />} 
@@ -478,209 +428,7 @@ export default function SuperAdminPanel() {
             )}
           </TableBody>
         </Table>
-          </TableContainer>
-        </>
-      ) : (
-        /* Tab 1: User Management */
-        <Box>
-          <Card sx={{ p: 3, mb: 3 }}>
-            <Typography variant="h6" sx={{ mb: 3 }}>Dodaj novog korisnika</Typography>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Ime"
-                  value={userForm.firstName}
-                  onChange={(e) => setUserForm({ ...userForm, firstName: e.target.value })}
-                  required
-                  data-testid="input-firstName"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Prezime"
-                  value={userForm.lastName}
-                  onChange={(e) => setUserForm({ ...userForm, lastName: e.target.value })}
-                  required
-                  data-testid="input-lastName"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Korisničko ime"
-                  value={userForm.username}
-                  onChange={(e) => {
-                    setUserForm({ ...userForm, username: e.target.value });
-                    checkUsername(e.target.value);
-                  }}
-                  required
-                  error={usernameTaken}
-                  helperText={usernameTaken ? "Ovo korisničko ime je već zauzeto" : ""}
-                  data-testid="input-username"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Email (opciono)"
-                  type="email"
-                  value={userForm.email}
-                  onChange={(e) => setUserForm({ ...userForm, email: e.target.value })}
-                  data-testid="input-user-email"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Lozinka"
-                  type="password"
-                  value={userForm.password}
-                  onChange={(e) => setUserForm({ ...userForm, password: e.target.value })}
-                  required
-                  data-testid="input-password"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth>
-                  <InputLabel>Admin</InputLabel>
-                  <Select
-                    value={userForm.isAdmin ? "true" : "false"}
-                    onChange={(e) => setUserForm({ ...userForm, isAdmin: e.target.value === "true" })}
-                    label="Admin"
-                    data-testid="select-isAdmin"
-                  >
-                    <MenuItem value="false">Ne</MenuItem>
-                    <MenuItem value="true">Da</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
-                <FormControl fullWidth required>
-                  <InputLabel>Tenant (Džemat)</InputLabel>
-                  <Select
-                    value={userForm.tenantId}
-                    onChange={(e) => setUserForm({ ...userForm, tenantId: e.target.value })}
-                    label="Tenant (Džemat)"
-                    data-testid="select-tenant"
-                  >
-                    {tenants.map((tenant) => (
-                      <MenuItem key={tenant.id} value={tenant.id}>
-                        {tenant.name} ({tenant.tenantCode})
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
-                {usernameTaken && (
-                  <Alert severity="error" sx={{ mb: 2 }} data-testid="alert-username-taken">
-                    Korisničko ime je već zauzeto. Molimo odaberite drugo korisničko ime.
-                  </Alert>
-                )}
-                <Button 
-                  variant="contained" 
-                  onClick={() => {
-                    if (usernameTaken) {
-                      toast({ 
-                        title: "Greška", 
-                        description: "Korisničko ime je već zauzeto",
-                        variant: "destructive" 
-                      });
-                      return;
-                    }
-                    createUserMutation.mutate(userForm);
-                  }}
-                  disabled={createUserMutation.isPending || !userForm.firstName || !userForm.lastName || !userForm.username || !userForm.password || !userForm.tenantId || usernameTaken}
-                  fullWidth
-                  data-testid="button-create-user"
-                >
-                  {createUserMutation.isPending ? <CircularProgress size={20} sx={{ mr: 1 }} /> : null}
-                  Kreiraj Korisnika
-                </Button>
-              </Grid>
-            </Grid>
-          </Card>
-        </Box>
-      )}
-
-      {currentTab === 2 && (
-        <Box>
-          <Typography variant="h5" sx={{ mb: 3 }}>
-            Sistemske postavke
-          </Typography>
-          
-          <Card sx={{ p: 3, mb: 3 }}>
-            <Typography variant="h6" sx={{ mb: 2 }}>
-              Inicijalizacija Demo Podataka
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              Ova akcija će kreirati demo tenant (DEMO2025) sa primjerima obavijesti, događaja, zadataka i korisnika.
-              Koristite ovo samo za nove instalacije ili testiranje.
-            </Typography>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={async () => {
-                if (!window.confirm('Da li ste sigurni? Ovo će kreirati demo podatke u bazi.')) return;
-                try {
-                  const response = await fetch('/api/superadmin/seed', {
-                    method: 'POST',
-                    credentials: 'include'
-                  });
-                  const data = await response.json();
-                  if (response.ok) {
-                    toast({ title: "Uspješno!", description: data.message });
-                  } else {
-                    toast({ title: "Greška", description: data.message, variant: "destructive" });
-                  }
-                } catch (error) {
-                  toast({ title: "Greška", description: "Neuspjela inicijalizacija", variant: "destructive" });
-                }
-              }}
-              data-testid="button-seed-database"
-            >
-              Pokreni Inicijalizaciju
-            </Button>
-          </Card>
-
-          <Card sx={{ p: 3 }}>
-            <Typography variant="h6" sx={{ mb: 2, color: 'error.main' }}>
-              Reset Baze (Opasno!)
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              Ova akcija će OBRISATI SVE PODATKE i ponovo kreirati strukturu baze sa demo podacima.
-              Koristite SAMO ako je potreban potpuni reset.
-            </Typography>
-            <Button
-              variant="outlined"
-              color="error"
-              onClick={async () => {
-                if (!window.confirm('UPOZORENJE: Ovo će OBRISATI SVE PODATKE! Da li ste apsolutno sigurni?')) return;
-                if (!window.confirm('Posljednja šansa: Svi podaci će biti izgubljeni. Nastaviti?')) return;
-                try {
-                  const response = await fetch('/api/superadmin/reset-db', {
-                    method: 'GET',
-                    credentials: 'include'
-                  });
-                  const data = await response.json();
-                  if (response.ok) {
-                    toast({ title: "Reset završen!", description: data.message });
-                  } else {
-                    toast({ title: "Greška", description: data.message, variant: "destructive" });
-                  }
-                } catch (error) {
-                  toast({ title: "Greška", description: "Neuspjeli reset", variant: "destructive" });
-                }
-              }}
-              data-testid="button-reset-database"
-            >
-              Reset Cijele Baze
-            </Button>
-          </Card>
-        </Box>
-      )}
+      </TableContainer>
 
       {/* Create/Edit Dialog */}
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="md" fullWidth>

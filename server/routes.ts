@@ -5357,7 +5357,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     }
   });
 
-  // Create new tenant
+  // Create new tenant (automatically creates admin user)
   app.post("/api/tenants", requireSuperAdmin, async (req, res) => {
     console.log('[TENANT CREATE] Request received', { body: req.body, userId: req.user?.id });
     try {
@@ -5371,7 +5371,61 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       console.log('[TENANT CREATE] Data validated, creating tenant...');
       const newTenant = await storage.createTenant(validated);
       console.log('[TENANT CREATE] ✅ Tenant created:', newTenant.id);
-      res.status(201).json(newTenant);
+      
+      // Auto-create admin user for the new tenant
+      // Username must be globally unique, so we use normalized tenant slug as prefix
+      // Special chars that don't decompose with normalize() (đ, ł, ø, etc.)
+      const specialCharMap: Record<string, string> = {
+        'đ': 'd', 'Đ': 'd', 'ł': 'l', 'Ł': 'l', 'ø': 'o', 'Ø': 'o', 'ð': 'd', 'ß': 'ss'
+      };
+      const normalizedSlug = newTenant.slug
+        .split('')
+        .map(char => specialCharMap[char] || char)
+        .join('')
+        .normalize('NFKD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '')
+        .replace(/-+/g, '-')
+        .replace(/^-+|-+$/g, '');
+      
+      // Fallback if slug normalizes to empty
+      const adminUsername = normalizedSlug ? `admin-${normalizedSlug}` : `admin-${newTenant.id.slice(0, 8)}`;
+      try {
+        const adminUser = await storage.createUser({
+          id: `admin-${newTenant.id}`,
+          firstName: 'Admin',
+          lastName: newTenant.name,
+          username: adminUsername,
+          email: newTenant.email,
+          password: 'admin123',
+          role: 'admin',
+          roles: ['admin'],
+          isAdmin: true,
+          tenantId: newTenant.id,
+          categories: [],
+          status: 'active'
+        });
+        console.log('[TENANT CREATE] ✅ Admin user created for tenant:', adminUser.username, '/ password: admin123');
+        // Return tenant with admin credentials info
+        return res.status(201).json({
+          ...newTenant,
+          adminCredentials: {
+            username: adminUsername,
+            password: 'admin123'
+          }
+        });
+      } catch (adminError) {
+        console.error('[TENANT CREATE] ⚠️ Failed to create admin user:', adminError);
+        // Return tenant without admin credentials
+        return res.status(201).json({
+          ...newTenant,
+          adminCredentials: null,
+          adminError: 'Failed to create admin user'
+        });
+      }
     } catch (error) {
       if (error instanceof ZodError) {
         console.error('[TENANT CREATE] Validation error:', error.errors);
