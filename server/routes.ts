@@ -338,14 +338,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid Super Admin credentials" });
       }
 
-      // Create session WITH default-tenant-demo tenantId and isSuperAdmin flag
-      // Use async/await pattern instead of callback to avoid pg-simple timing issues
+      // Create session with global SuperAdmin tenant ID
+      // SuperAdmin is NOT associated with any regular tenant
+      const SUPERADMIN_TENANT_ID = 'tenant-superadmin-global';
+      
       try {
         req.session.userId = superAdminUser.id;
         req.session.isSuperAdmin = true;
-        req.session.tenantId = "default-tenant-demo";
+        req.session.tenantId = SUPERADMIN_TENANT_ID;
         
-        // Use new Promise to handle session.save() asynchronously
         await new Promise<void>((resolve, reject) => {
           req.session.save((err: any) => {
             if (err) {
@@ -368,12 +369,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
             isAdmin: true,
             isSuperAdmin: true,
             totalPoints: 0,
-            tenantId: "default-tenant-demo"
+            tenantId: SUPERADMIN_TENANT_ID
           } 
         });
       } catch (sessionErr) {
         console.error('[SUPERADMIN LOGIN] Session save error - DETAILS:', sessionErr);
-        // Fallback: return success anyway but session might not persist
         console.warn('[SUPERADMIN LOGIN] ⚠️ Session save failed but returning user data anyway');
         return res.json({ 
           user: { 
@@ -385,7 +385,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             isAdmin: true,
             isSuperAdmin: true,
             totalPoints: 0,
-            tenantId: "default-tenant-demo"
+            tenantId: SUPERADMIN_TENANT_ID
           } 
         });
       }

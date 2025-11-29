@@ -104,6 +104,9 @@ app.use(session({
 // Tenant Context Middleware - dodaje tenantId u svaki request
 app.use(tenantContextMiddleware);
 
+// Global tenant ID for SuperAdmin - NEVER visible to regular users
+const SUPERADMIN_TENANT_ID = 'tenant-superadmin-global';
+
 // Authentication middleware - checks session and sets req.user if authenticated
 app.use(async (req, res, next) => {
   const session = req.session as any;
@@ -112,30 +115,20 @@ app.use(async (req, res, next) => {
     try {
       let user;
       
-      // Super Admin: Find user across all tenants
+      // Super Admin: Find user in the global SuperAdmin tenant
       if (session.isSuperAdmin) {
-        console.log('[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected - userId:', session.userId);
-        // For SuperAdmin, load from default-tenant-demo tenant with admin privileges
-        let foundUser = await storage.getUser(session.userId, "default-tenant-demo");
-        console.log('[AUTH MIDDLEWARE] SuperAdmin user found in default-tenant-demo:', !!foundUser);
-        if (!foundUser) {
-          // Fallback to default-tenant-demo if DEMO2024 doesn't exist
-          foundUser = await storage.getUser(session.userId, "default-tenant-demo");
-          console.log('[AUTH MIDDLEWARE] SuperAdmin user fallback search:', !!foundUser);
-        }
-        if (foundUser) {
-          user = foundUser;
-          console.log('[AUTH MIDDLEWARE] ✅ SuperAdmin user loaded:', foundUser.id);
-        } else {
-          // Final fallback: search all tenants
-          console.log('[AUTH MIDDLEWARE] ⚠️ SuperAdmin not found - searching all tenants...');
+        console.log('[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected');
+        // SuperAdmin lives in the global tenant - NOT in any regular tenant
+        user = await storage.getUser(session.userId, SUPERADMIN_TENANT_ID);
+        
+        if (!user) {
+          // Fallback: check if it's a legacy SuperAdmin in old tenant
           const allTenants = await storage.getAllTenants();
-          console.log('[AUTH MIDDLEWARE] Found tenants:', allTenants.map(t => t.id));
           for (const tenant of allTenants) {
             const candidate = await storage.getUser(session.userId, tenant.id);
             if (candidate && candidate.isSuperAdmin) {
               user = candidate;
-              console.log('[AUTH MIDDLEWARE] ✅ SuperAdmin found in tenant:', tenant.id);
+              console.log('[AUTH MIDDLEWARE] ⚠️ Legacy SuperAdmin found in:', tenant.id);
               break;
             }
           }
@@ -146,18 +139,16 @@ app.use(async (req, res, next) => {
       }
       
       if (user) {
-        // Set isAdmin to true if user has "imam" or "admin" role
         const hasImamRole = user.roles?.includes('imam') || false;
         const isSuperAdmin = session.isSuperAdmin || user.isSuperAdmin || false;
         req.user = {
           ...user,
           isAdmin: isSuperAdmin ? true : (user.isAdmin || hasImamRole),
           isSuperAdmin: isSuperAdmin,
-          tenantId: isSuperAdmin ? "default-tenant-demo" : user.tenantId
+          // SuperAdmin uses global tenant ID - NOT a regular tenant
+          tenantId: isSuperAdmin ? SUPERADMIN_TENANT_ID : user.tenantId
         };
-        console.log('[AUTH MIDDLEWARE] ✅ req.user set - isSuperAdmin:', req.user.isSuperAdmin);
       } else {
-        // User no longer exists, clear the session
         console.log('[AUTH MIDDLEWARE] ❌ User not found - clearing session');
         session.userId = undefined;
         session.isSuperAdmin = undefined;
@@ -185,7 +176,8 @@ export const requireAdmin = (req: Request, res: Response, next: NextFunction) =>
     // Check for superadmin session
     const session = req.session as any;
     if (session?.isSuperAdmin) {
-      req.tenantId = req.tenantId || "default-tenant-demo";
+      // SuperAdmin can access any tenant - use request tenant or global
+      req.tenantId = req.tenantId || SUPERADMIN_TENANT_ID;
       return next();
     }
     return res.status(401).json({ message: "Authentication required" });

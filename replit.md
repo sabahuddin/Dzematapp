@@ -32,6 +32,25 @@ The application automatically synchronizes the database schema on every startup 
 ## Authentication and Authorization
 The system uses session-based authentication with username/password, supporting guest access. Role-based access control includes Admin, Executive Board Member, Member, and Family Member roles, with administrators capable of assigning work group moderators.
 
+## Multi-Tenancy Architecture
+DžematApp is a SaaS platform with strict tenant isolation:
+
+### Tenant Isolation Rules
+- **SuperAdmin Global Tenant** (`tenant-superadmin-global`): A hidden tenant exclusively for SuperAdmin users. Never visible in regular tenant listings.
+- **Regular Tenants**: Each organization (džemat) gets its own tenant with completely isolated data.
+- **User Isolation**: Users belong to exactly one tenant. SuperAdmin users live in the global tenant and can manage all tenants.
+- **New Tenant Creation**: New tenants start empty with 0 users - no data inheritance from other tenants.
+
+### SuperAdmin Access
+- **Login**: Use `/api/auth/superadmin/login` with `admin/admin123`
+- **Scope**: Can manage all tenants via SuperAdmin Panel
+- **Visibility**: SuperAdmin users are NEVER shown in regular tenant user lists (filtered by `isSuperAdmin` check)
+
+### Key Implementation Files
+- `server/seed-tenant.ts`: Creates global SuperAdmin tenant and SuperAdmin user
+- `server/storage.ts`: `getAllUsers()` excludes SuperAdmin users, `getAllTenants()` excludes global tenant
+- `server/index.ts`: Auth middleware resolves SuperAdmin to global tenant
+
 ## Key Features
 - **User & Profile Management**: CRUD operations, bulk upload, dynamic filtering.
 - **Announcements & Events**: Content management, event calendar, RSVP, guest-viewable.
