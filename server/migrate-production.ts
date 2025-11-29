@@ -35,6 +35,88 @@ async function tableExists(client: any, tableName: string): Promise<boolean> {
 async function createMissingTables(client: any): Promise<void> {
   console.log("📋 Checking for missing tables...");
   
+  // Announcements table (CRITICAL - must exist before other tables)
+  if (!(await tableExists(client, 'announcements'))) {
+    await client.query(`
+      CREATE TABLE announcements (
+        id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
+        tenant_id VARCHAR NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+        title TEXT NOT NULL,
+        content TEXT NOT NULL,
+        author_id VARCHAR NOT NULL REFERENCES users(id),
+        publish_date TIMESTAMP DEFAULT NOW(),
+        status TEXT NOT NULL DEFAULT 'published',
+        is_featured BOOLEAN DEFAULT FALSE,
+        categories TEXT[],
+        photo_url TEXT,
+        pinned BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
+    console.log("  ✅ Created table: announcements");
+  }
+  
+  // Events table (CRITICAL - must exist before other tables)
+  if (!(await tableExists(client, 'events'))) {
+    await client.query(`
+      CREATE TABLE events (
+        id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
+        tenant_id VARCHAR NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+        name TEXT NOT NULL,
+        description TEXT,
+        location TEXT NOT NULL,
+        date_time TIMESTAMP NOT NULL,
+        photo_url TEXT,
+        rsvp_enabled BOOLEAN DEFAULT TRUE,
+        require_adults_children BOOLEAN DEFAULT FALSE,
+        max_attendees INTEGER,
+        reminder_time TEXT,
+        categories TEXT[],
+        points_value INTEGER DEFAULT 20,
+        created_by_id VARCHAR NOT NULL REFERENCES users(id),
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
+    console.log("  ✅ Created table: events");
+  }
+  
+  // Messages table (CRITICAL - must exist before other tables)
+  if (!(await tableExists(client, 'messages'))) {
+    await client.query(`
+      CREATE TABLE messages (
+        id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
+        tenant_id VARCHAR NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+        sender_id VARCHAR NOT NULL REFERENCES users(id),
+        recipient_id VARCHAR REFERENCES users(id),
+        category TEXT,
+        subject TEXT NOT NULL,
+        content TEXT NOT NULL,
+        is_read BOOLEAN DEFAULT FALSE NOT NULL,
+        thread_id VARCHAR,
+        parent_message_id VARCHAR,
+        created_at TIMESTAMP DEFAULT NOW() NOT NULL
+      )
+    `);
+    console.log("  ✅ Created table: messages");
+  }
+  
+  // Announcement Files table
+  if (!(await tableExists(client, 'announcement_files'))) {
+    await client.query(`
+      CREATE TABLE announcement_files (
+        id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
+        tenant_id VARCHAR NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+        announcement_id VARCHAR NOT NULL REFERENCES announcements(id) ON DELETE CASCADE,
+        file_name TEXT NOT NULL,
+        file_path TEXT NOT NULL,
+        file_type TEXT NOT NULL,
+        file_size INTEGER NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW() NOT NULL
+      )
+    `);
+    console.log("  ✅ Created table: announcement_files");
+  }
+  
   // Work Groups table
   if (!(await tableExists(client, 'work_groups'))) {
     await client.query(`
