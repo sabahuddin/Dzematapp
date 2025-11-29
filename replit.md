@@ -47,8 +47,11 @@ DžematApp is a SaaS platform with strict tenant isolation:
 - **Visibility**: SuperAdmin users are NEVER shown in regular tenant user lists (filtered by `isSuperAdmin` check)
 
 ### Tenant Admin Access
-- **Login**: Each tenant has an admin with `admin/admin123`
+- **Auto-Provisioning**: When a new tenant is created, an admin user is automatically generated
+- **Login Format**: `admin-{normalized-slug}/admin123` (e.g., for "Demo Džemat" → `admin-demo-dzemat/admin123`)
+- **Slug Normalization**: Diacritics are transliterated (đ→d, ž→z, etc.), spaces become hyphens, lowercase only
 - **Scope**: Full admin access within their own tenant only
+- **Credentials Display**: SuperAdmin sees the admin credentials in a toast notification after tenant creation
 
 ### Key Implementation Files
 - `server/seed-tenant.ts`: Creates global SuperAdmin tenant and SuperAdmin user
