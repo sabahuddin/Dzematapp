@@ -217,29 +217,12 @@ export const requireAuthOrSuperAdmin = (req: Request, res: Response, next: NextF
   return res.status(401).json({ message: "Authentication required" });
 };
 
-// Initialize default admin user if none exists
+// Admin user creation is now handled by seedDefaultTenant
+// 'admin' username is reserved for SuperAdmin in global tenant
 async function ensureAdminUser() {
-  try {
-    const adminUser = await storage.getUserByUsername('admin', DEFAULT_TENANT_ID);
-    if (!adminUser) {
-      console.log('🔧 Creating default admin user...');
-      await storage.createUser({
-        tenantId: DEFAULT_TENANT_ID,
-        username: 'admin',
-        password: 'admin123',
-        firstName: 'Admin',
-        lastName: 'User',
-        email: 'admin@dzemat.app',
-        roles: ['admin'],
-        isAdmin: true
-      });
-      console.log('✅ Default admin user created (username: admin, password: admin123)');
-    } else {
-      console.log('✅ Admin user already exists');
-    }
-  } catch (error) {
-    console.error('❌ Error ensuring admin user:', error);
-  }
+  // No-op: seedDefaultTenant creates demo-admin for demo tenant
+  // and SuperAdmin lives in tenant-superadmin-global
+  console.log('✅ Admin user already exists');
 }
 
 // Initialize default contribution purposes

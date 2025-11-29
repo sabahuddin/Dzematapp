@@ -133,6 +133,7 @@ export interface IStorage {
   getUser(id: string, tenantId: string): Promise<User | undefined>;
   getUserByUsername(username: string, tenantId: string): Promise<User | undefined>;
   getUserByEmail(email: string, tenantId: string): Promise<User | undefined>;
+  getSuperAdminByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUser(id: string, tenantId: string, user: Partial<InsertUser>): Promise<User | undefined>;
   getAllUsers(tenantId: string): Promise<User[]>;
@@ -479,6 +480,19 @@ export class DatabaseStorage implements IStorage {
   async getUserByEmail(email: string, tenantId: string): Promise<User | undefined> {
     if (!email) return undefined;
     const result = await db.select().from(users).where(and(eq(users.email, email), eq(users.tenantId, tenantId))).limit(1);
+    return result[0];
+  }
+
+  // Get SuperAdmin user from the global SuperAdmin tenant
+  async getSuperAdminByUsername(username: string): Promise<User | undefined> {
+    const SUPERADMIN_TENANT_ID = 'tenant-superadmin-global';
+    const result = await db.select().from(users).where(
+      and(
+        eq(users.username, username),
+        eq(users.tenantId, SUPERADMIN_TENANT_ID),
+        eq(users.isSuperAdmin, true)
+      )
+    ).limit(1);
     return result[0];
   }
 
@@ -2754,7 +2768,11 @@ export class DatabaseStorage implements IStorage {
 
   // Tenant Management (Super Admin only)
   async getAllTenants(): Promise<Tenant[]> {
-    return await db.select().from(tenants).orderBy(tenants.createdAt);
+    // Exclude the global SuperAdmin tenant from regular tenant lists
+    const SUPERADMIN_TENANT_ID = 'tenant-superadmin-global';
+    return await db.select().from(tenants)
+      .where(sql`${tenants.id} != ${SUPERADMIN_TENANT_ID}`)
+      .orderBy(tenants.createdAt);
   }
 
   async getTenant(id: string): Promise<Tenant | undefined> {

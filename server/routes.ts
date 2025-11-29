@@ -276,106 +276,66 @@ export async function registerRoutes(app: Express): Promise<Server> {
 });
 
   // Super Admin login (no tenant code required)
+  // SuperAdmin lives in a GLOBAL tenant (tenant-superadmin-global) that's hidden from regular users
   console.log('[INIT] Registering /api/auth/superadmin/login endpoint');
   app.post("/api/auth/superadmin/login", async (req, res) => {
     console.log('[ENDPOINT HIT] /api/auth/superadmin/login POST');
     try {
       const { username, password } = req.body;
-      console.log('[SUPERADMIN LOGIN] Body:', { username, password: password ? '***' : 'MISSING', bodyKeys: Object.keys(req.body) });
+      console.log('[SUPERADMIN LOGIN] Attempting login for:', username);
       
       if (!username || !password) {
         return res.status(400).json({ message: "Username and password are required" });
       }
 
-      // Get all users across all tenants and find the Super Admin
-      let allTenants = [];
-      try {
-        allTenants = await storage.getAllTenants();
-        console.log('[SUPERADMIN LOGIN] Searching in tenants:', allTenants.map(t => ({ id: t.id, name: t.name })));
-      } catch (tenantError) {
-        console.error('[SUPERADMIN LOGIN] getAllTenants error:', tenantError);
-        // Try default tenant if getAllTenants fails
-        allTenants = [{ id: 'default-tenant-demo', name: 'Default' }];
-        console.log('[SUPERADMIN LOGIN] Using fallback tenant:', allTenants);
-      }
-
+      // Look for SuperAdmin in the global SuperAdmin tenant only
       let superAdminUser = null;
       
-      for (const tenant of allTenants) {
-        try {
-          const user = await storage.getUserByUsername(username, tenant.id);
-          console.log('[SUPERADMIN LOGIN] Checking user:', { username, tenant: tenant.id, isSuperAdmin: user?.isSuperAdmin });
-          if (user && user.isSuperAdmin && user.password === password) {
-            superAdminUser = user;
-            console.log('[SUPERADMIN] ✅ FOUND in tenant:', tenant.id);
-            break;
-          }
-        } catch (userError) {
-          console.error('[SUPERADMIN LOGIN] getUserByUsername error for tenant', tenant.id, ':', userError);
-          // Fallback: if database fails, check hardcoded credentials
-          if (username === 'admin' && password === 'admin123') {
-            console.log('[SUPERADMIN LOGIN] Database unavailable - using fallback admin credentials');
-            superAdminUser = {
-              id: 'admin-fallback',
-              firstName: 'Admin',
-              lastName: 'Superadmin',
-              email: 'admin@localhost',
-              username: 'admin',
-              password: 'admin123',
-              isSuperAdmin: true,
-              isAdmin: true,
-              roles: ['admin'],
-              tenantId: 'default-tenant-demo',
-              totalPoints: 0,
-              photo: null,
-              status: 'aktivan',
-              phone: null,
-              address: null,
-              city: null,
-              postalCode: null,
-              dateOfBirth: null,
-              occupation: null,
-              membershipDate: new Date(),
-              inactiveReason: null,
-              categories: []
-            };
-            break;
-          }
+      try {
+        superAdminUser = await storage.getSuperAdminByUsername(username);
+        
+        if (superAdminUser && superAdminUser.password === password) {
+          console.log('[SUPERADMIN] ✅ FOUND in global tenant');
+        } else if (superAdminUser) {
+          console.log('[SUPERADMIN] ❌ Password mismatch');
+          superAdminUser = null;
         }
+      } catch (error) {
+        console.error('[SUPERADMIN LOGIN] Database error:', error);
+      }
+      
+      // Fallback for hardcoded admin if database unavailable
+      if (!superAdminUser && username === 'admin' && password === 'admin123') {
+        console.log('[SUPERADMIN LOGIN] Using fallback admin credentials');
+        superAdminUser = {
+          id: 'admin-fallback',
+          firstName: 'Super',
+          lastName: 'Admin',
+          email: 'superadmin@dzematapp.com',
+          username: 'admin',
+          password: 'admin123',
+          isSuperAdmin: true,
+          isAdmin: true,
+          roles: ['admin'],
+          tenantId: 'tenant-superadmin-global',
+          totalPoints: 0,
+          photo: null,
+          status: 'aktivan',
+          phone: null,
+          address: null,
+          city: null,
+          postalCode: null,
+          dateOfBirth: null,
+          occupation: null,
+          membershipDate: new Date(),
+          inactiveReason: null,
+          categories: []
+        };
       }
       
       if (!superAdminUser) {
-        // Final fallback for hardcoded admin (database completely unavailable)
-        if (username === 'admin' && password === 'admin123') {
-          console.log('[SUPERADMIN LOGIN] Database unavailable - using fallback admin credentials (final fallback)');
-          superAdminUser = {
-            id: 'admin-fallback',
-            firstName: 'Admin',
-            lastName: 'Superadmin',
-            email: 'admin@localhost',
-            username: 'admin',
-            password: 'admin123',
-            isSuperAdmin: true,
-            isAdmin: true,
-            roles: ['admin'],
-            tenantId: 'default-tenant-demo',
-            totalPoints: 0,
-            photo: null,
-            status: 'aktivan',
-            phone: null,
-            address: null,
-            city: null,
-            postalCode: null,
-            dateOfBirth: null,
-            occupation: null,
-            membershipDate: new Date(),
-            inactiveReason: null,
-            categories: []
-          };
-        } else {
-          console.log('[SUPERADMIN] ❌ FAILED - Not found in any tenant and credentials don\'t match hardcoded fallback');
-          return res.status(401).json({ message: "Invalid Super Admin credentials" });
-        }
+        console.log('[SUPERADMIN] ❌ FAILED - Not found or invalid credentials');
+        return res.status(401).json({ message: "Invalid Super Admin credentials" });
       }
 
       // Create session WITH default-tenant-demo tenantId and isSuperAdmin flag
