@@ -27,12 +27,207 @@ export async function migrateProductionSchema(): Promise<void> {
       }
     }
 
+    // First create any missing tables
+    await createMissingTables(client);
+    
+    // Then add missing columns
     await addMissingColumns(client);
     console.log("✅ Schema migration complete");
   } finally {
     client.release();
     await pool.end();
   }
+}
+
+async function createMissingTables(client: any): Promise<void> {
+  console.log("📋 Creating missing tables...");
+  
+  const tableCreations = [
+    // family_relationships
+    `CREATE TABLE IF NOT EXISTS "family_relationships" (
+      "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+      "tenant_id" varchar NOT NULL REFERENCES "tenants"("id") ON DELETE CASCADE,
+      "user_id" varchar NOT NULL REFERENCES "users"("id"),
+      "related_user_id" varchar NOT NULL REFERENCES "users"("id"),
+      "relationship" text NOT NULL,
+      "created_at" timestamp DEFAULT now()
+    )`,
+    
+    // announcement_files
+    `CREATE TABLE IF NOT EXISTS "announcement_files" (
+      "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+      "tenant_id" varchar NOT NULL REFERENCES "tenants"("id") ON DELETE CASCADE,
+      "announcement_id" varchar NOT NULL REFERENCES "announcements"("id"),
+      "uploaded_by_id" varchar NOT NULL REFERENCES "users"("id"),
+      "file_name" text NOT NULL,
+      "file_type" text NOT NULL,
+      "file_size" integer NOT NULL,
+      "file_path" text NOT NULL,
+      "uploaded_at" timestamp DEFAULT now()
+    )`,
+    
+    // activities
+    `CREATE TABLE IF NOT EXISTS "activities" (
+      "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+      "tenant_id" varchar NOT NULL REFERENCES "tenants"("id") ON DELETE CASCADE,
+      "type" text NOT NULL,
+      "description" text NOT NULL,
+      "user_id" varchar REFERENCES "users"("id"),
+      "created_at" timestamp DEFAULT now()
+    )`,
+    
+    // messages
+    `CREATE TABLE IF NOT EXISTS "messages" (
+      "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+      "tenant_id" varchar NOT NULL REFERENCES "tenants"("id") ON DELETE CASCADE,
+      "sender_id" varchar NOT NULL REFERENCES "users"("id"),
+      "recipient_id" varchar REFERENCES "users"("id"),
+      "category" text,
+      "subject" text NOT NULL,
+      "content" text NOT NULL,
+      "is_read" boolean NOT NULL DEFAULT false,
+      "thread_id" varchar,
+      "parent_message_id" varchar,
+      "created_at" timestamp NOT NULL DEFAULT now()
+    )`,
+    
+    // activity_log
+    `CREATE TABLE IF NOT EXISTS "activity_log" (
+      "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+      "tenant_id" varchar NOT NULL REFERENCES "tenants"("id") ON DELETE CASCADE,
+      "user_id" varchar NOT NULL REFERENCES "users"("id"),
+      "activity_type" text NOT NULL,
+      "description" text NOT NULL,
+      "points" integer DEFAULT 0,
+      "related_entity_id" varchar,
+      "created_at" timestamp NOT NULL DEFAULT now()
+    )`,
+    
+    // event_attendance
+    `CREATE TABLE IF NOT EXISTS "event_attendance" (
+      "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+      "tenant_id" varchar NOT NULL REFERENCES "tenants"("id") ON DELETE CASCADE,
+      "event_id" varchar NOT NULL REFERENCES "events"("id"),
+      "user_id" varchar NOT NULL REFERENCES "users"("id"),
+      "attended" boolean NOT NULL DEFAULT true,
+      "recorded_by_id" varchar NOT NULL REFERENCES "users"("id"),
+      "recorded_at" timestamp NOT NULL DEFAULT now()
+    )`,
+    
+    // points_settings
+    `CREATE TABLE IF NOT EXISTS "points_settings" (
+      "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+      "tenant_id" varchar NOT NULL REFERENCES "tenants"("id") ON DELETE CASCADE,
+      "points_per_chf" integer NOT NULL DEFAULT 1,
+      "points_per_task" integer NOT NULL DEFAULT 50,
+      "points_per_event" integer NOT NULL DEFAULT 20,
+      "updated_at" timestamp NOT NULL DEFAULT now()
+    )`,
+    
+    // user_preferences
+    `CREATE TABLE IF NOT EXISTS "user_preferences" (
+      "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+      "user_id" varchar NOT NULL UNIQUE REFERENCES "users"("id"),
+      "quick_access_shortcuts" text[] DEFAULT ARRAY[]::text[],
+      "updated_at" timestamp NOT NULL DEFAULT now()
+    )`,
+    
+    // akika_applications
+    `CREATE TABLE IF NOT EXISTS "akika_applications" (
+      "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+      "tenant_id" varchar NOT NULL REFERENCES "tenants"("id") ON DELETE CASCADE,
+      "is_member" boolean NOT NULL DEFAULT true,
+      "father_name" text NOT NULL,
+      "mother_name" text NOT NULL,
+      "child_name" text NOT NULL,
+      "child_gender" text NOT NULL,
+      "child_date_of_birth" text NOT NULL,
+      "child_place_of_birth" text NOT NULL,
+      "location" text NOT NULL,
+      "organize_catering" boolean DEFAULT false,
+      "custom_address" text,
+      "custom_city" text,
+      "custom_canton" text,
+      "custom_postal_code" text,
+      "phone" text NOT NULL,
+      "email" text,
+      "notes" text,
+      "status" text NOT NULL DEFAULT 'pending',
+      "is_archived" boolean NOT NULL DEFAULT false,
+      "submitted_by" varchar REFERENCES "users"("id"),
+      "reviewed_by_id" varchar REFERENCES "users"("id"),
+      "reviewed_at" timestamp,
+      "review_notes" text,
+      "created_at" timestamp DEFAULT now()
+    )`,
+    
+    // marriage_applications
+    `CREATE TABLE IF NOT EXISTS "marriage_applications" (
+      "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+      "tenant_id" varchar NOT NULL REFERENCES "tenants"("id") ON DELETE CASCADE,
+      "groom_last_name" text NOT NULL,
+      "groom_first_name" text NOT NULL,
+      "groom_date_of_birth" text NOT NULL,
+      "groom_place_of_birth" text NOT NULL,
+      "groom_nationality" text NOT NULL,
+      "groom_street_address" text NOT NULL,
+      "groom_postal_code" text NOT NULL,
+      "groom_city" text NOT NULL,
+      "groom_father_name" text NOT NULL,
+      "groom_mother_name" text NOT NULL,
+      "bride_last_name" text NOT NULL,
+      "bride_first_name" text NOT NULL,
+      "bride_date_of_birth" text NOT NULL,
+      "bride_place_of_birth" text NOT NULL,
+      "bride_nationality" text NOT NULL,
+      "bride_street_address" text NOT NULL,
+      "bride_postal_code" text NOT NULL,
+      "bride_city" text NOT NULL,
+      "bride_father_name" text NOT NULL,
+      "bride_mother_name" text NOT NULL,
+      "selected_last_name" text NOT NULL,
+      "mahr" text NOT NULL,
+      "civil_marriage_date" text NOT NULL,
+      "civil_marriage_location" text NOT NULL,
+      "witness1_name" text NOT NULL,
+      "witness2_name" text NOT NULL,
+      "witness3_name" text,
+      "witness4_name" text,
+      "proposed_date_time" text NOT NULL,
+      "location" text NOT NULL,
+      "custom_address" text,
+      "custom_city" text,
+      "custom_canton" text,
+      "custom_postal_code" text,
+      "phone" text NOT NULL,
+      "civil_marriage_proof" text,
+      "notes" text,
+      "status" text NOT NULL DEFAULT 'pending',
+      "reviewed_by_id" varchar REFERENCES "users"("id"),
+      "reviewed_at" timestamp,
+      "review_notes" text,
+      "created_at" timestamp DEFAULT now()
+    )`
+  ];
+  
+  let createdCount = 0;
+  let existingCount = 0;
+  
+  for (const sql of tableCreations) {
+    try {
+      await client.query(sql);
+      // Check if table was actually created or already existed
+      createdCount++;
+    } catch (error: any) {
+      if (error.code === '42P07') { // table already exists
+        existingCount++;
+      } else {
+        console.error(`⚠️ Error creating table: ${error.message}`);
+      }
+    }
+  }
+  
+  console.log(`✅ Table creation complete: ${createdCount} processed, ${existingCount} already existed`);
 }
 
 async function addMissingColumns(client: any): Promise<void> {

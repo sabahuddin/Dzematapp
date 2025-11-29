@@ -1,0 +1,99 @@
+> rest-express@1.0.0 start
+> NODE_ENV=production node dist/index.js
+
+✅ Using PostgreSQL session store
+🔄 Starting database schema synchronization...
+🔄 Running production schema migration...
+ℹ️  Tables already exist, applying column fixes...
+📋 Adding missing columns to existing tables...
+✅ Processed 127 column fixes (0 skipped)
+✅ Schema migration complete
+📋 Verifying all schema tables exist...
+
+> rest-express@1.0.0 start
+> NODE_ENV=production node dist/index.js
+
+✅ Using PostgreSQL session store
+🔄 Starting database schema synchronization...
+🔄 Running production schema migration...
+ℹ️  Tables already exist, applying column fixes...
+📋 Adding missing columns to existing tables...
+✅ Processed 127 column fixes (0 skipped)
+✅ Schema migration complete
+📋 Verifying all schema tables exist...
+
+> rest-express@1.0.0 start
+> NODE_ENV=production node dist/index.js
+
+✅ Using PostgreSQL session store
+🔄 Starting database schema synchronization...
+🔄 Running production schema migration...
+ℹ️  Tables already exist, applying column fixes...
+📋 Adding missing columns to existing tables...
+✅ Processed 127 column fixes (0 skipped)
+✅ Schema migration complete
+📋 Verifying all schema tables exist...
+  'marriage_applications',
+  'messages',
+  'points_settings',
+  'user_preferences'
+]
+❌ Schema migration failed: Error: Missing tables: activities, activity_log, akika_applications, announcement_files, event_attendance, family_relationships, marriage_applications, messages, points_settings, user_preferences
+    at verifyAllTablesExist (file:///app/dist/index.js:8676:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/dist/index.js:8899:5
+🚨 CRITICAL: Cannot start without successful migration. Exiting...
+npm warn config production Use `--omit=dev` instead.
+❌ CRITICAL: Missing tables detected: [
+  'activities',
+  'activity_log',
+  'akika_applications',
+  'announcement_files',
+  'event_attendance',
+  'family_relationships',
+  'marriage_applications',
+  'messages',
+  'points_settings',
+  'user_preferences'
+]
+❌ Schema migration failed: Error: Missing tables: activities, activity_log, akika_applications, announcement_files, event_attendance, family_relationships, marriage_applications, messages, points_settings, user_preferences
+    at verifyAllTablesExist (file:///app/dist/index.js:8676:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/dist/index.js:8899:5
+🚨 CRITICAL: Cannot start without successful migration. Exiting...
+npm warn config production Use `--omit=dev` instead.
+❌ CRITICAL: Missing tables detected: [
+  'activities',
+  'activity_log',
+  'akika_applications',
+  'announcement_files',
+  'event_attendance',
+  'family_relationships',
+  'marriage_applications',
+  'messages',
+  'points_settings',
+  'user_preferences'
+]
+❌ Schema migration failed: Error: Missing tables: activities, activity_log, akika_applications, announcement_files, event_attendance, family_relationships, marriage_applications, messages, points_settings, user_preferences
+    at verifyAllTablesExist (file:///app/dist/index.js:8676:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/dist/index.js:8899:5
+🚨 CRITICAL: Cannot start without successful migration. Exiting...
+npm warn config production Use `--omit=dev` instead.
+❌ CRITICAL: Missing tables detected: [
+  'activities',
+  'activity_log',
+  'akika_applications',
+  'announcement_files',
+  'event_attendance',
+  'family_relationships',
+  'marriage_applications',
+  'messages',
+  'points_settings',
+  'user_preferences'
+]
+❌ Schema migration failed: Error: Missing tables: activities, activity_log, akika_applications, announcement_files, event_attendance, family_relationships, marriage_applications, messages, points_settings, user_preferences
+    at verifyAllTablesExist (file:///app/dist/index.js:8676:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/dist/index.js:8899:5
+🚨 CRITICAL: Cannot start without successful migration. Exiting...
