@@ -5431,16 +5431,29 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     }
 });
 
+  // Delete all users for a tenant (SuperAdmin only)
+  app.delete("/api/tenants/:id/users", requireSuperAdmin, async (req, res) => {
+    console.log('[TENANT DELETE USERS] Request for:', req.params.id);
+    try {
+      const count = await storage.deleteAllTenantUsers(req.params.id);
+      console.log('[TENANT DELETE USERS] ✅ Deleted', count, 'users from tenant:', req.params.id);
+      res.json({ message: `Obrisano ${count} korisnika iz tenant-a`, deletedCount: count });
+    } catch (error) {
+      console.error('[TENANT DELETE USERS] Error:', error);
+      res.status(500).json({ message: "Failed to delete tenant users" });
+    }
+  });
+
   // Delete tenant
   app.delete("/api/tenants/:id", requireSuperAdmin, async (req, res) => {
     console.log('[TENANT DELETE] Request for:', req.params.id);
     try {
       // Check if tenant has users - cannot delete if it does
-      const tenantUsers = await storage.getUsersByTenant(req.params.id);
+      const tenantUsers = await storage.getAllUsers(req.params.id);
       if (tenantUsers && tenantUsers.length > 0) {
         console.log('[TENANT DELETE] Blocked - tenant has', tenantUsers.length, 'users');
         return res.status(409).json({ 
-          message: `Ne možete obrisati tenant koji ima ${tenantUsers.length} korisnika. Prvo deaktivirajte tenant ili obrišite sve korisnike.` 
+          message: `Ne možete obrisati tenant koji ima ${tenantUsers.length} korisnika. Prvo obrišite sve korisnike.` 
         });
       }
 

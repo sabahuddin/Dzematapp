@@ -29,7 +29,7 @@ import {
   Tabs,
   Tab
 } from '@mui/material';
-import { Add, Edit, Delete, Visibility, CheckCircle, Cancel } from '@mui/icons-material';
+import { Add, Edit, Delete, Visibility, CheckCircle, Cancel, PersonOff } from '@mui/icons-material';
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
@@ -187,6 +187,22 @@ export default function SuperAdminPanel() {
     }
   });
 
+  // Delete all tenant users mutation
+  const deleteAllUsersMutation = useMutation({
+    mutationFn: (id: string) => apiRequest(`/api/tenants/${id}/users`, "DELETE", {}),
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/tenants"] });
+      toast({ title: data.message || "Svi korisnici obrisani!" });
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: "Greška", 
+        description: error.message || "Neuspjelo brisanje korisnika",
+        variant: "destructive" 
+      });
+    }
+  });
+
   // Create user mutation - uses SuperAdmin endpoint to create user for any tenant
   const createUserMutation = useMutation({
     mutationFn: (data: any) => apiRequest("/api/superadmin/users", "POST", data),
@@ -288,6 +304,12 @@ export default function SuperAdminPanel() {
   const handleDelete = (tenant: Tenant) => {
     if (window.confirm(`Da li ste sigurni da želite obrisati tenant "${tenant.name}"? Ova akcija je nepovratna.`)) {
       deleteMutation.mutate(tenant.id);
+    }
+  };
+
+  const handleDeleteAllUsers = (tenant: Tenant) => {
+    if (window.confirm(`Da li ste sigurni da želite obrisati SVE korisnike iz "${tenant.name}"? Ova akcija je nepovratna!`)) {
+      deleteAllUsersMutation.mutate(tenant.id);
     }
   };
 
@@ -434,10 +456,19 @@ export default function SuperAdminPanel() {
                     </IconButton>
                     <IconButton 
                       size="small" 
+                      onClick={() => handleDeleteAllUsers(tenant)}
+                      color="warning"
+                      data-testid={`button-delete-users-${tenant.id}`}
+                      title="Obriši sve korisnike"
+                    >
+                      <PersonOff />
+                    </IconButton>
+                    <IconButton 
+                      size="small" 
                       onClick={() => handleDelete(tenant)}
                       color="error"
                       data-testid={`button-delete-${tenant.id}`}
-                      title="Obriši"
+                      title="Obriši tenant"
                     >
                       <Delete />
                     </IconButton>

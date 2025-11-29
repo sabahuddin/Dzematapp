@@ -137,6 +137,7 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   updateUser(id: string, tenantId: string, user: Partial<InsertUser>): Promise<User | undefined>;
   getAllUsers(tenantId: string): Promise<User[]>;
+  deleteAllTenantUsers(tenantId: string): Promise<number>;
   
   // Announcements
   getAnnouncement(id: string, tenantId: string): Promise<Announcement | undefined>;
@@ -532,6 +533,45 @@ export class DatabaseStorage implements IStorage {
         sql`(${users.isSuperAdmin} IS NULL OR ${users.isSuperAdmin} = false)`
       )
     );
+  }
+
+  async deleteAllTenantUsers(tenantId: string): Promise<number> {
+    // First delete all related data that references users
+    const tenantUsers = await this.getAllUsers(tenantId);
+    const userIds = tenantUsers.map(u => u.id);
+    
+    if (userIds.length === 0) return 0;
+    
+    // Delete in order to respect foreign keys
+    await db.delete(messages).where(
+      and(
+        eq(messages.tenantId, tenantId),
+        or(
+          inArray(messages.senderId, userIds),
+          sql`${messages.recipientId} IN (${sql.join(userIds.map(id => sql`${id}`), sql`, `)})`
+        )
+      )
+    );
+    await db.delete(eventRsvps).where(eq(eventRsvps.tenantId, tenantId));
+    await db.delete(taskComments).where(eq(taskComments.tenantId, tenantId));
+    await db.delete(workGroupMembers).where(eq(workGroupMembers.tenantId, tenantId));
+    await db.delete(userBadges).where(eq(userBadges.tenantId, tenantId));
+    await db.delete(userCertificates).where(eq(userCertificates.tenantId, tenantId));
+    await db.delete(userPreferences).where(eq(userPreferences.tenantId, tenantId));
+    await db.delete(familyRelationships).where(eq(familyRelationships.tenantId, tenantId));
+    await db.delete(activityLog).where(eq(activityLog.tenantId, tenantId));
+    await db.delete(activities).where(eq(activities.tenantId, tenantId));
+    await db.delete(activityFeed).where(eq(activityFeed.tenantId, tenantId));
+    
+    // Now delete users
+    const result = await db.delete(users).where(
+      and(
+        eq(users.tenantId, tenantId),
+        sql`(${users.isSuperAdmin} IS NULL OR ${users.isSuperAdmin} = false)`
+      )
+    );
+    
+    return userIds.length;
   }
 
   async getAnnouncement(id: string, tenantId: string): Promise<Announcement | undefined> {
