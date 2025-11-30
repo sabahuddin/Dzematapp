@@ -665,26 +665,6 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
               </Grid>
             )}
             
-            {/* Admin Toggle - Only for superadmin */}
-            {currentUser?.isAdmin && !isMemberEditingSelf && (
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={formData.isAdmin}
-                      onChange={(e) => setFormData(prev => ({ ...prev, isAdmin: e.target.checked }))}
-                      color="primary"
-                      data-testid="switch-isAdmin"
-                    />
-                  }
-                  label={t('superadmin.label')}
-                  sx={{ mt: 1 }}
-                />
-                <Typography variant="caption" color="text.secondary" display="block" sx={{ ml: 4 }}>
-                  {t('superadmin.description')}
-                </Typography>
-              </Grid>
-            )}
             
             {/* Family Members Section */}
             {user && (

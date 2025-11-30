@@ -1695,11 +1695,17 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         }
       }
       
+      // Block attempts to set isSuperAdmin - SuperAdmin can only exist in global tenant
+      if (req.body.isSuperAdmin === true) {
+        return res.status(403).json({ message: "SuperAdmin access je samo za globalni tenant" });
+      }
+      
       // Add createdById (admin who created this user)
       const userData = insertUserSchema.parse({ 
         ...req.body, 
         tenantId,
-        createdById
+        createdById,
+        isSuperAdmin: false  // Force isSuperAdmin to false
       });
       
       // Check if username already exists (only if username is provided)
@@ -1742,7 +1748,13 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         return res.status(403).json({ message: "Admin privileges required" });
       }
       
+      // Block attempts to set isSuperAdmin - SuperAdmin can only exist in global tenant
+      if (req.body.isSuperAdmin === true) {
+        return res.status(403).json({ message: "SuperAdmin access je samo za globalni tenant" });
+      }
+      
       const userData = insertUserSchema.partial().parse(req.body);
+      userData.isSuperAdmin = false;  // Force isSuperAdmin to false
       
       // Don't update password if it's empty or not provided
       if (!userData.password) {
