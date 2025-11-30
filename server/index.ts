@@ -142,18 +142,33 @@ app.use(async (req, res, next) => {
       
       if (user) {
         const hasImamRole = user.roles?.includes('imam') || false;
-        const isSuperAdmin = session.isSuperAdmin || user.isSuperAdmin || false;
+        // ONLY trust session.isSuperAdmin - user.isSuperAdmin could be stale or wrong
+        const isSuperAdmin = session.isSuperAdmin === true;
+        
+        console.log('[AUTH MIDDLEWARE] User loaded:', {
+          userId: user.id,
+          username: user.username,
+          userTenantId: user.tenantId,
+          sessionTenantId: session.tenantId,
+          sessionIsSuperAdmin: session.isSuperAdmin,
+          userIsSuperAdmin: user.isSuperAdmin,
+          resolvedIsSuperAdmin: isSuperAdmin
+        });
+        
+        // CRITICAL: For regular users, ALWAYS use session.tenantId
+        // SuperAdmin only if explicitly logged in via /superadmin route
+        const resolvedTenantId = isSuperAdmin ? SUPERADMIN_TENANT_ID : (session.tenantId || user.tenantId);
+        
         req.user = {
           ...user,
           isAdmin: isSuperAdmin ? true : (user.isAdmin || hasImamRole),
           isSuperAdmin: isSuperAdmin,
-          // SuperAdmin uses global tenant ID - regular users use their session tenant
-          tenantId: isSuperAdmin ? SUPERADMIN_TENANT_ID : (session.tenantId || user.tenantId)
+          tenantId: resolvedTenantId
         };
-        // Update req.tenantId to match session for consistent behavior
-        if (!isSuperAdmin && session.tenantId) {
-          req.tenantId = session.tenantId;
-        }
+        // Update req.tenantId to match for consistent behavior
+        req.tenantId = resolvedTenantId;
+        
+        console.log('[AUTH MIDDLEWARE] Final tenantId:', resolvedTenantId);
       } else {
         console.log('[AUTH MIDDLEWARE] ❌ User not found - clearing session');
         session.userId = undefined;
