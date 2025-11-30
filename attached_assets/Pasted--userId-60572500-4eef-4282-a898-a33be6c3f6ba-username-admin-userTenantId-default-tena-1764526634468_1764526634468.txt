@@ -1,0 +1,100 @@
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+6:14:23 PM [express] POST /api/auth/logout 200 in 2ms :: {"message":"Logged out successfully"}
+6:14:31 PM [express] POST /api/tenants/verify-code 200 in 5ms :: {"tenantId":"eea4008b-809c-4c7e-924…
+[LOGIN] Received credentials: {
+  username: 'admin',
+  passwordLength: 8,
+  tenantCode: undefined,
+  tenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3'
+}
+[LOGIN] User from DB: {
+  username: 'admin',
+  hasPassword: true,
+  passwordLength: 8,
+  passwordMatch: true
+}
+[LOGIN] ✅ Session created and saved: {
+  userId: 'admin-eea4008b-809c-4c7e-9249-4148dcde22f3',
+  tenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  sessionId: '_-2_VeqnFGJGWflCXLRiN_khzIVx1aEs'
+}
+[LOGIN] ✅ Response sent for user: admin
+6:14:37 PM [express] POST /api/auth/login 200 in 7ms :: {"user":{"id":"admin-eea4008b-809c-4c7e-9249…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: 'admin-eea4008b-809c-4c7e-9249-4148dcde22f3',
+  username: 'admin',
+  userTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  sessionTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: eea4008b-809c-4c7e-9249-4148dcde22f3
+6:14:37 PM [express] GET /api/events 500 in 24ms :: {"message":"Failed to fetch events"}
+[AUTH MIDDLEWARE] User loaded: {
+  userId: 'admin-eea4008b-809c-4c7e-9249-4148dcde22f3',
+  username: 'admin',
+  userTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  sessionTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: eea4008b-809c-4c7e-9249-4148dcde22f3
+6:14:37 PM [express] GET /api/prayer-times/today 500 in 4ms :: {"message":"Failed to get today's pra…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: 'admin-eea4008b-809c-4c7e-9249-4148dcde22f3',
+  username: 'admin',
+  userTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  sessionTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: eea4008b-809c-4c7e-9249-4148dcde22f3
+[AUTH MIDDLEWARE] User loaded: {
+  userId: 'admin-eea4008b-809c-4c7e-9249-4148dcde22f3',
+  username: 'admin',
+  userTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  sessionTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: eea4008b-809c-4c7e-9249-4148dcde22f3
+[AUTH MIDDLEWARE] User loaded: {
+  userId: 'admin-eea4008b-809c-4c7e-9249-4148dcde22f3',
+  username: 'admin',
+  userTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  sessionTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: eea4008b-809c-4c7e-9249-4148dcde22f3
+6:16:07 PM [express] GET /api/messages/unread-count 304 in 29ms :: {"count":0}
+6:16:07 PM [express] GET /api/certificates/unviewed-count 403 in 32ms :: {"message":"Feature \"certi…
+6:16:07 PM [express] GET /api/notifications/unread 304 in 59ms :: {"shop":0,"events":0,"announcement…
+[ORG-SETTINGS] Getting settings for tenant: default-tenant-demo
+6:16:20 PM [express] GET /api/auth/session 401 in 3ms :: {"message":"Not authenticated"}
+[STORAGE] ✅ Found existing org settings: fe93405c-6d88-4363-8dec-75b45f796008
+[ORG-SETTINGS] ✅ Success: fe93405c-6d88-4363-8dec-75b45f796008
+6:16:20 PM [express] GET /api/organization-settings 200 in 8ms :: {"id":"fe93405c-6d88-4363-8dec-75b…
+6:16:28 PM [express] POST /api/tenants/verify-code 200 in 9ms :: {"tenantId":"68ea4628-ca8b-47bb-8cb…
+[LOGIN] Received credentials: {
+  username: 'admin',
+  passwordLength: 8,
+  tenantCode: undefined,
+  tenantId: '68ea4628-ca8b-47bb-8cb4-5ba234fbc23a'
+}
+[LOGIN] User from DB: NOT FOUND
+[LOGIN] Authentication failed: User not found
+6:16:35 PM [express] POST /api/auth/login 401 in 7ms :: {"message":"Invalid credentials"}
