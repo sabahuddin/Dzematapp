@@ -185,6 +185,26 @@ export default function SuperAdminPanel() {
     }
   });
 
+  // Clean duplicate admin users mutation
+  const cleanDuplicatesMutation = useMutation({
+    mutationFn: () => apiRequest("/api/tenants/clean-duplicates", "POST", {}),
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/tenants"] });
+      const count = data.results?.reduce((sum: number, r: any) => sum + (r.deleted || 0), 0) || 0;
+      toast({ 
+        title: "Čišćenje završeno!", 
+        description: `Obrisano ${count} duplikata admin korisnika.`
+      });
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: "Greška", 
+        description: error.message || "Neuspjelo čišćenje duplikata",
+        variant: "destructive" 
+      });
+    }
+  });
+
   const resetForm = () => {
     setFormData({
       name: "",
@@ -301,7 +321,16 @@ export default function SuperAdminPanel() {
       </Typography>
 
       {/* Tenant Management */}
-      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'flex-end' }}>
+      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+            <Button 
+              variant="outlined"
+              color="warning"
+              onClick={() => cleanDuplicatesMutation.mutate()}
+              disabled={cleanDuplicatesMutation.isPending}
+              data-testid="button-clean-duplicate-admins"
+            >
+              {cleanDuplicatesMutation.isPending ? <CircularProgress size={20} /> : 'Očisti duplikate'}
+            </Button>
             <Button 
               variant="contained" 
               startIcon={<Add />} 
