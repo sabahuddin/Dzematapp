@@ -1,0 +1,100 @@
+2:24:17 PM [express] GET /api/certificates/unviewed-count 304 in 10ms :: {"count":0}
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+2:24:17 PM [express] GET /api/messages/unread-count 304 in 24ms :: {"count":0}
+2:24:17 PM [express] GET /api/notifications/unread 304 in 62ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+2:24:47 PM [express] GET /api/certificates/unviewed-count 304 in 8ms :: {"count":0}
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+2:24:47 PM [express] GET /api/messages/unread-count 304 in 11ms :: {"count":0}
+2:24:47 PM [express] GET /api/notifications/unread 304 in 48ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+2:25:17 PM [express] GET /api/certificates/unviewed-count 304 in 6ms :: {"count":0}
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+2:25:17 PM [express] GET /api/messages/unread-count 304 in 9ms :: {"count":0}
+2:25:17 PM [express] GET /api/notifications/unread 304 in 46ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+2:25:47 PM [express] GET /api/certificates/unviewed-count 304 in 6ms :: {"count":0}
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+2:25:47 PM [express] GET /api/messages/unread-count 304 in 9ms :: {"count":0}
+2:25:47 PM [express] GET /api/notifications/unread 304 in 37ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[TENANT CREATE] Request received {
+  body: {
+    name: 'Džemat St. Grad',
+    slug: 'stgrad',
+    tenantCode: 'sg77245',
+    subdomain: 'sg77245',
+    email: 'info@dzematapp.com',
+    phone: '',
+    address: '',
+    city: '',
+    country: 'Switzerland',
+    subscriptionTier: 'standard',
+    subscriptionStatus: 'trial',
+    locale: 'bs',
+    currency: 'EUR',
+    isActive: true
+  },
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987'
+}
+[TENANT CREATE] Validating data...
+[TENANT CREATE] Data validated, creating tenant...
+[TENANT CREATE] ✅ Tenant created: eea4008b-809c-4c7e-9249-4148dcde22f3
+[TENANT CREATE] ⚠️ Failed to create admin user: error: column "metadata" of relation "activity_feed" does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.createActivityFeedItem (file:///app/dist/index.js:2973:24)
+    at async DatabaseStorage.createUser (file:///app/dist/index.js:1267:5)
+    at async file:///app/dist/index.js:8074:21 {
+  length: 135,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '125',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_target.c',
+2:25:50 PM [express] POST /api/tenants 201 in 29ms :: {"id":"eea4008b-809c-4c7e-9249-4148dcde22f3","…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+2:25:50 PM [express] GET /api/tenants 200 in 9ms :: [{"id":"default-tenant-demo","name":"Demo Džemat…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+2:26:06 PM [express] GET /api/tenants/eea4008b-809c-4c7e-9249-4148dcde22f3/stats 200 in 10ms :: {"us…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+2:26:15 PM [express] POST /api/auth/logout 200 in 3ms :: {"message":"Logged out successfully"}
+2:26:26 PM [express] POST /api/tenants/verify-code 200 in 25ms :: {"tenantId":"eea4008b-809c-4c7e-92…
+[LOGIN] Received credentials: {
+  username: 'admin',
+  passwordLength: 8,
+  tenantCode: undefined,
+  tenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3'
+}
+[LOGIN] User from DB: {
+  username: 'admin',
+  hasPassword: true,
+  passwordLength: 8,
+  passwordMatch: true
+}
+[LOGIN] ✅ Session created and saved: {
+  userId: 'admin-eea4008b-809c-4c7e-9249-4148dcde22f3',
+  tenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  sessionId: 'KG0upiFpFqfZrimZ9D0p5Ac2yCWDnbGH'
+}
+[LOGIN] ✅ Response sent for user: admin
+2:26:31 PM [express] POST /api/auth/login 200 in 11ms :: {"user":{"id":"admin-eea4008b-809c-4c7e-924…
+2:26:31 PM [express] GET /api/events 500 in 22ms :: {"message":"Failed to fetch events"}
+2:26:31 PM [express] GET /api/prayer-times/today 500 in 5ms :: {"message":"Failed to get today's pra…
+  line: '1065',
+  routine: 'checkInsertTargets'
+}
