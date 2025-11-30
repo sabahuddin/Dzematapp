@@ -5761,6 +5761,44 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     }
   });
 
+  // Clean duplicate admin users (SuperAdmin only)
+  app.post("/api/tenants/clean-duplicates", requireSuperAdmin, async (req, res) => {
+    console.log('[CLEAN DUPLICATES] Starting...');
+    try {
+      const tenants = await storage.getAllTenants();
+      const results: any[] = [];
+      
+      for (const tenant of tenants) {
+        const users = await storage.getAllUsers(tenant.id);
+        const admins = users.filter(u => u.username === 'admin');
+        
+        if (admins.length > 1) {
+          // Keep the one with Admin role, delete others
+          const adminWithRole = admins.find(a => a.roles && a.roles.includes('admin'));
+          const duplicates = admins.filter(a => a.id !== adminWithRole?.id);
+          
+          for (const dup of duplicates) {
+            await storage.deleteUser(dup.id, tenant.id);
+            console.log(`[CLEAN DUPLICATES] Deleted duplicate admin ${dup.id} from ${tenant.name}`);
+          }
+          
+          results.push({
+            tenantId: tenant.id,
+            tenantName: tenant.name,
+            deleted: duplicates.length,
+            kept: adminWithRole?.id
+          });
+        }
+      }
+      
+      console.log('[CLEAN DUPLICATES] Complete:', results);
+      res.json({ message: 'Cleanup complete', results });
+    } catch (error) {
+      console.error('[CLEAN DUPLICATES] Error:', error);
+      res.status(500).json({ message: 'Cleanup failed', error: String(error) });
+    }
+  });
+
   // Get tenant statistics
   app.get("/api/tenants/:id/stats", requireSuperAdmin, async (req, res) => {
     try {
