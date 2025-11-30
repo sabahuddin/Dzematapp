@@ -5537,10 +5537,10 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       const newTenant = await storage.createTenant(validated);
       console.log('[TENANT CREATE] ✅ Tenant created:', newTenant.id);
       
-      // Auto-create admin user for the new tenant
-      // Username is now unique per-tenant (composite constraint), so every tenant can have "admin"
-      // Try "admin" first, fallback to "tenant-admin" if conflict exists
-      let adminUsername = 'admin';
+      // Auto-create admin user for the new tenant with UNIQUE email
+      // Use tenant code in email to guarantee uniqueness
+      const adminUsername = 'admin';
+      const uniqueAdminEmail = `admin+${newTenant.tenantCode?.toLowerCase() || newTenant.id}@system.dzematapp`;
       let adminUser = null;
       
       try {
@@ -5549,7 +5549,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
           firstName: 'Admin',
           lastName: newTenant.name,
           username: adminUsername,
-          email: newTenant.email,
+          email: uniqueAdminEmail,
           password: 'admin123',
           role: 'admin',
           roles: ['admin'],
@@ -5558,32 +5558,20 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
           categories: [],
           status: 'active'
         });
-      } catch (firstError: any) {
-        // If "admin" conflicts, try fallback username
-        if (firstError.message?.includes('unique') || firstError.code === '23505') {
-          console.log('[TENANT CREATE] Username "admin" conflict, trying fallback...');
-          adminUsername = 'tenant-admin';
-          try {
-            adminUser = await storage.createUser({
-              id: `admin-${newTenant.id}`,
-              firstName: 'Admin',
-              lastName: newTenant.name,
-              username: adminUsername,
-              email: newTenant.email,
-              password: 'admin123',
-              role: 'admin',
-              roles: ['admin'],
-              isAdmin: true,
-              tenantId: newTenant.id,
-              categories: [],
-              status: 'active'
-            });
-          } catch (secondError) {
-            console.error('[TENANT CREATE] ⚠️ Fallback also failed:', secondError);
-          }
-        } else {
-          console.error('[TENANT CREATE] ⚠️ Failed to create admin user:', firstError);
+        console.log('[TENANT CREATE] ✅ Admin user created with email:', uniqueAdminEmail);
+      } catch (adminError: any) {
+        console.error('[TENANT CREATE] ❌ CRITICAL: Failed to create admin user:', adminError.message);
+        // Delete the tenant since we couldn't create the admin
+        try {
+          await storage.deleteTenant(newTenant.id);
+          console.log('[TENANT CREATE] ↩️ Rolled back tenant creation');
+        } catch (rollbackError) {
+          console.error('[TENANT CREATE] ❌ Rollback failed:', rollbackError);
         }
+        return res.status(500).json({ 
+          message: "Failed to create tenant: could not create admin user",
+          error: adminError.message
+        });
       }
       
       if (adminUser) {
@@ -5637,6 +5625,79 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       }
       console.error('[TENANT UPDATE] Error:', error);
       res.status(500).json({ message: "Failed to update tenant" });
+    }
+  });
+
+  // Backfill admin users for all tenants that don't have one
+  app.post("/api/tenants/backfill-admins", requireSuperAdmin, async (req, res) => {
+    try {
+      const allTenants = await storage.getAllTenants();
+      const results: { tenantId: string; tenantName: string; status: string; username?: string }[] = [];
+      
+      for (const tenant of allTenants) {
+        // Skip SuperAdmin global tenant
+        if (tenant.id === 'tenant-superadmin-global') {
+          continue;
+        }
+        
+        // Check if admin user exists
+        let adminUser = await storage.getUserByUsername('admin', tenant.id);
+        if (!adminUser) {
+          adminUser = await storage.getUserByUsername('tenant-admin', tenant.id);
+        }
+        
+        if (adminUser) {
+          results.push({
+            tenantId: tenant.id,
+            tenantName: tenant.name,
+            status: 'exists',
+            username: adminUser.username
+          });
+          continue;
+        }
+        
+        // Create admin user with unique email
+        const uniqueEmail = `admin+${tenant.tenantCode?.toLowerCase() || tenant.id}@system.dzematapp`;
+        try {
+          const newAdmin = await storage.createUser({
+            id: `admin-${tenant.id}`,
+            firstName: 'Admin',
+            lastName: tenant.name,
+            username: 'admin',
+            email: uniqueEmail,
+            password: 'admin123',
+            role: 'admin',
+            roles: ['admin'],
+            isAdmin: true,
+            tenantId: tenant.id,
+            categories: [],
+            status: 'active'
+          });
+          
+          results.push({
+            tenantId: tenant.id,
+            tenantName: tenant.name,
+            status: 'created',
+            username: 'admin'
+          });
+          console.log(`[BACKFILL] ✅ Created admin for ${tenant.name}`);
+        } catch (error: any) {
+          console.error(`[BACKFILL] ❌ Failed for ${tenant.name}:`, error.message);
+          results.push({
+            tenantId: tenant.id,
+            tenantName: tenant.name,
+            status: `error: ${error.message}`
+          });
+        }
+      }
+      
+      res.json({
+        message: 'Backfill complete',
+        results
+      });
+    } catch (error) {
+      console.error('[BACKFILL] Error:', error);
+      res.status(500).json({ message: 'Backfill failed' });
     }
   });
 
