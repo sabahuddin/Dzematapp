@@ -55,7 +55,14 @@ DžematApp is a SaaS platform with strict tenant isolation:
 ### Key Implementation Files
 - `server/seed-tenant.ts`: Creates global SuperAdmin tenant and SuperAdmin user
 - `server/storage.ts`: `getAllUsers()` excludes SuperAdmin users, `getAllTenants()` excludes global tenant
-- `server/index.ts`: Auth middleware resolves SuperAdmin to global tenant
+- `server/index.ts`: Auth middleware resolves SuperAdmin to global tenant, uses session.tenantId as authoritative source
+- `server/routes.ts`: All POST/PUT endpoints derive tenantId from `req.user?.tenantId` (session-based), never from request body
+
+### Tenant Isolation Security (Nov 2025)
+- **Session-based auth**: Auth middleware uses `session.tenantId` (set during login) as the authoritative tenant source, not request context
+- **POST/PUT endpoints**: All data mutation endpoints derive tenantId from authenticated user's session, preventing cross-tenant writes
+- **Guest applications**: Membership, marriage, and akika applications validate tenant existence before accepting guest submissions
+- **req.tenantId sync**: After authentication, `req.tenantId` is synchronized to `session.tenantId` for consistent downstream usage
 
 ## Key Features
 - **User & Profile Management**: CRUD operations, bulk upload, dynamic filtering.

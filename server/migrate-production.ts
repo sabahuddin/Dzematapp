@@ -668,6 +668,17 @@ async function addMissingColumns(client: any): Promise<void> {
     
     // IMPORTANT_DATES
     `ALTER TABLE "important_dates" ADD COLUMN IF NOT EXISTS "is_recurring" boolean DEFAULT true NOT NULL`,
+    
+    // BADGES - all columns from schema.ts (with defaults for safety)
+    `ALTER TABLE "badges" ADD COLUMN IF NOT EXISTS "name" text DEFAULT ''`,
+    `ALTER TABLE "badges" ADD COLUMN IF NOT EXISTS "description" text DEFAULT ''`,
+    `ALTER TABLE "badges" ADD COLUMN IF NOT EXISTS "icon" text`,
+    `ALTER TABLE "badges" ADD COLUMN IF NOT EXISTS "criteria_type" text DEFAULT 'points_total'`,
+    `ALTER TABLE "badges" ADD COLUMN IF NOT EXISTS "criteria_value" integer DEFAULT 0`,
+    `ALTER TABLE "badges" ADD COLUMN IF NOT EXISTS "created_at" timestamp DEFAULT now()`,
+    
+    // USER_BADGES - all columns from schema.ts
+    `ALTER TABLE "user_badges" ADD COLUMN IF NOT EXISTS "awarded_at" timestamp DEFAULT now()`,
   ];
 
   let addedCount = 0;

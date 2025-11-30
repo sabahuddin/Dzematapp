@@ -134,8 +134,10 @@ app.use(async (req, res, next) => {
           }
         }
       } else {
-        // Regular user: Find in their tenant
-        user = await storage.getUser(session.userId, req.tenantId);
+        // Regular user: Find in their tenant FROM SESSION (not from request context)
+        // session.tenantId is set during login and is the authoritative source
+        const userTenantId = session.tenantId || req.tenantId;
+        user = await storage.getUser(session.userId, userTenantId);
       }
       
       if (user) {
@@ -145,18 +147,24 @@ app.use(async (req, res, next) => {
           ...user,
           isAdmin: isSuperAdmin ? true : (user.isAdmin || hasImamRole),
           isSuperAdmin: isSuperAdmin,
-          // SuperAdmin uses global tenant ID - NOT a regular tenant
-          tenantId: isSuperAdmin ? SUPERADMIN_TENANT_ID : user.tenantId
+          // SuperAdmin uses global tenant ID - regular users use their session tenant
+          tenantId: isSuperAdmin ? SUPERADMIN_TENANT_ID : (session.tenantId || user.tenantId)
         };
+        // Update req.tenantId to match session for consistent behavior
+        if (!isSuperAdmin && session.tenantId) {
+          req.tenantId = session.tenantId;
+        }
       } else {
         console.log('[AUTH MIDDLEWARE] ❌ User not found - clearing session');
         session.userId = undefined;
         session.isSuperAdmin = undefined;
+        session.tenantId = undefined;
       }
     } catch (error) {
       console.error('[AUTH MIDDLEWARE] Error loading user from session:', error);
       session.userId = undefined;
       session.isSuperAdmin = undefined;
+      session.tenantId = undefined;
     }
   }
   next();
