@@ -1,0 +1,100 @@
+ℹ️ Demo users already exist
+ℹ️ Demo data already exists
+✅ Demo data seed completed!
+
+4:45:18 PM [express] GET /api/certificates/unviewed-count 200 in 26ms :: {"count":0}
+4:45:18 PM [express] GET /api/messages/unread-count 304 in 33ms :: {"count":0}
+4:45:18 PM [express] GET /api/notifications/unread 304 in 56ms :: {"shop":0,"events":0,"announcement…
+[ORG-SETTINGS] Getting settings for tenant: tenant-superadmin-global
+[STORAGE] ✅ Found existing org settings: 34a8a10f-2eeb-41e5-bfe3-89d9d12341a3
+[ORG-SETTINGS] ✅ Success: 34a8a10f-2eeb-41e5-bfe3-89d9d12341a3
+4:45:22 PM [express] GET /api/auth/session 200 in 3ms :: {"user":{"id":"60572500-4eef-4282-a898-a33b…
+4:45:22 PM [express] GET /api/organization-settings 200 in 10ms :: {"id":"34a8a10f-2eeb-41e5-bfe3-89…
+4:45:22 PM [express] GET /api/users 200 in 9ms :: []
+4:45:22 PM [express] GET /api/certificates/unviewed-count 304 in 27ms :: {"count":0}
+4:45:22 PM [express] GET /api/messages/unread-count 304 in 33ms :: {"count":0}
+4:45:22 PM [express] GET /api/notifications/unread 304 in 41ms :: {"shop":0,"events":0,"announcement…
+4:45:28 PM [express] POST /api/auth/logout 200 in 4ms :: {"message":"Logged out successfully"}
+4:45:36 PM [express] POST /api/tenants/verify-code 200 in 8ms :: {"tenantId":"default-tenant-demo","…
+[LOGIN] Received credentials: {
+  username: 'admin',
+  passwordLength: 8,
+  tenantCode: undefined,
+  tenantId: 'default-tenant-demo'
+}
+[LOGIN] User from DB: {
+  username: 'admin',
+  hasPassword: true,
+  passwordLength: 8,
+  passwordMatch: true
+}
+[LOGIN] ✅ Session created and saved: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  tenantId: 'default-tenant-demo',
+  sessionId: 'NZTKqKv1PY5lpjNu6jRlcqLAH2Z1-8ta'
+}
+[LOGIN] ✅ Response sent for user: admin
+4:45:48 PM [express] POST /api/auth/login 200 in 14ms :: {"user":{"id":"60572500-4eef-4282-a898-a33b…
+4:45:48 PM [express] GET /api/events 500 in 24ms :: {"message":"Failed to fetch events"}
+4:45:48 PM [express] GET /api/activities 304 in 8ms :: []
+4:45:48 PM [express] GET /api/prayer-times/today 500 in 10ms :: {"message":"Failed to get today's pr…
+4:45:48 PM [express] GET /api/statistics 500 in 24ms :: {"message":"Failed to fetch statistics"}
+[DEBUG POST /api/users] Using tenantId from session: tenant-superadmin-global user: admin
+4:46:08 PM [express] POST /api/users 200 in 23ms :: {"id":"b64b594b-abd8-436d-9752-8d565242df51","te…
+4:46:08 PM [express] GET /api/users 200 in 5ms :: [{"id":"b64b594b-abd8-436d-9752-8d565242df51","ten…
+4:46:12 PM [express] GET /api/family-relationships/b64b594b-abd8-436d-9752-8d565242df51 200 in 9ms :…
+4:46:18 PM [express] PUT /api/users/b64b594b-abd8-436d-9752-8d565242df51 400 in 32ms :: {"message":"…
+4:46:18 PM [express] GET /api/messages/unread-count 304 in 14ms :: {"count":0}
+4:46:18 PM [express] GET /api/certificates/unviewed-count 304 in 17ms :: {"count":0}
+4:46:18 PM [express] GET /api/notifications/unread 304 in 42ms :: {"shop":0,"events":0,"announcement…
+4:46:26 PM [express] POST /api/auth/logout 200 in 2ms :: {"message":"Logged out successfully"}
+4:46:34 PM [express] POST /api/tenants/verify-code 200 in 8ms :: {"tenantId":"eea4008b-809c-4c7e-924…
+[LOGIN] Received credentials: {
+  username: 'admin',
+  passwordLength: 8,
+  tenantCode: undefined,
+  tenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3'
+}
+[LOGIN] User from DB: {
+  username: 'admin',
+  hasPassword: true,
+  passwordLength: 8,
+  passwordMatch: true
+}
+[LOGIN] ✅ Session created and saved: {
+  userId: 'admin-eea4008b-809c-4c7e-9249-4148dcde22f3',
+  tenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  sessionId: 'ct015urQdH-UJ3HJt3Kw-jelOpWYdEDV'
+}
+[LOGIN] ✅ Response sent for user: admin
+4:46:39 PM [express] POST /api/auth/login 200 in 7ms :: {"user":{"id":"admin-eea4008b-809c-4c7e-9249…
+4:46:39 PM [express] GET /api/events 500 in 18ms :: {"message":"Failed to fetch events"}
+4:46:39 PM [express] GET /api/prayer-times/today 500 in 9ms :: {"message":"Failed to get today's pra…
+4:46:39 PM [express] GET /api/statistics 500 in 23ms :: {"message":"Failed to fetch statistics"}
+User update error: error: column "criteria_type" does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.getAllBadges (file:///app/dist/index.js:2404:12)
+    at async DatabaseStorage.checkAndAwardBadges (file:///app/dist/index.js:2453:23)
+    at async DatabaseStorage.recalculateUserPoints (file:///app/dist/index.js:2604:5)
+    at async DatabaseStorage.createActivityLog (file:///app/dist/index.js:2331:5)
+    at async file:///app/dist/index.js:5081:7 {
+  length: 113,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '58',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3716',
+  routine: 'errorMissingColumn'
+}

@@ -5012,7 +5012,31 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   // Membership Applications (Pristupnice)
   app.post("/api/membership-applications", requireFeature("applications"), async (req, res) => {
     try {
-      const validated = insertMembershipApplicationSchema.parse(req.body);
+      // Use session tenantId if authenticated, otherwise from body (for guest applications)
+      let tenantId = req.user?.tenantId || (req.session as any).tenantId;
+      
+      // For guest applications, validate the tenantId from body exists
+      if (!tenantId && req.body.tenantId) {
+        const tenant = await storage.getTenant(req.body.tenantId);
+        if (!tenant) {
+          return res.status(400).json({ message: "Invalid tenant" });
+        }
+        tenantId = req.body.tenantId;
+      }
+      
+      // Fallback to request context tenant
+      if (!tenantId) {
+        tenantId = req.tenantId;
+      }
+      
+      if (!tenantId) {
+        return res.status(400).json({ message: "Tenant ID is required" });
+      }
+      
+      const validated = insertMembershipApplicationSchema.parse({
+        ...req.body,
+        tenantId
+      });
       const application = await storage.createMembershipApplication(validated);
       res.status(201).json(application);
     } catch (error) {
@@ -5094,11 +5118,28 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   app.post("/api/akika-applications", requireFeature("applications"), async (req, res) => {
     try {
       const validated = insertAkikaApplicationSchema.parse(req.body);
-      // Add submittedBy if user is logged in
+      
+      // Use session tenantId if authenticated, otherwise validate from body
+      let tenantId = req.user?.tenantId || (req.session as any).tenantId;
+      
+      // For guest applications, validate the tenantId from body exists
+      if (!tenantId && req.body.tenantId) {
+        const tenant = await storage.getTenant(req.body.tenantId);
+        if (!tenant) {
+          return res.status(400).json({ message: "Invalid tenant" });
+        }
+        tenantId = req.body.tenantId;
+      }
+      
+      // Fallback to request context tenant
+      if (!tenantId) {
+        tenantId = req.tenantId;
+      }
+      
       const applicationData = {
         ...validated,
         submittedBy: req.user?.id || null,
-        tenantId: req.user?.id ? req.user.tenantId : (req.body.tenantId || 'guest')
+        tenantId: tenantId || 'guest'
       };
       const application = await storage.createAkikaApplication(applicationData);
       res.status(201).json(application);
@@ -5191,7 +5232,31 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   // Marriage Applications (Prijave šerijatskog vjenčanja)
   app.post("/api/marriage-applications", requireFeature("applications"), async (req, res) => {
     try {
-      const validated = insertMarriageApplicationSchema.parse(req.body);
+      // Use session tenantId if authenticated, otherwise from body (for guest applications)
+      let tenantId = req.user?.tenantId || (req.session as any).tenantId;
+      
+      // For guest applications, validate the tenantId from body exists
+      if (!tenantId && req.body.tenantId) {
+        const tenant = await storage.getTenant(req.body.tenantId);
+        if (!tenant) {
+          return res.status(400).json({ message: "Invalid tenant" });
+        }
+        tenantId = req.body.tenantId;
+      }
+      
+      // Fallback to request context tenant
+      if (!tenantId) {
+        tenantId = req.tenantId;
+      }
+      
+      if (!tenantId) {
+        return res.status(400).json({ message: "Tenant ID is required" });
+      }
+      
+      const validated = insertMarriageApplicationSchema.parse({
+        ...req.body,
+        tenantId
+      });
       const application = await storage.createMarriageApplication(validated);
       res.status(201).json(application);
     } catch (error) {
