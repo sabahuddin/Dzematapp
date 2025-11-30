@@ -1679,11 +1679,9 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
 
   app.post("/api/users", requireAuth, async (req, res) => {
     try {
-      let tenantId = req.body.tenantId || req.tenantId;
-      console.log("[DEBUG POST /api/users] Received body:", { ...req.body, password: "***" }, "tenantId:", tenantId);
-      if (!tenantId) {
-        tenantId = "default-tenant-demo";
-      }
+      // CRITICAL: Always use authenticated user's tenantId for tenant isolation
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      console.log("[DEBUG POST /api/users] Using tenantId from session:", tenantId, "user:", req.user?.username);
       
       // Get createdById - use current user or get admin from tenant
       let createdById = req.user?.id;
