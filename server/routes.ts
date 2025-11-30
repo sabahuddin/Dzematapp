@@ -1685,11 +1685,21 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         tenantId = "default-tenant-demo";
       }
       
+      // Get createdById - use current user or get admin from tenant
+      let createdById = req.user?.id;
+      if (!createdById) {
+        const admin = await storage.getUserByUsername("admin", tenantId);
+        createdById = admin?.id;
+        if (!createdById) {
+          return res.status(400).json({ message: "Admin user not found in tenant" });
+        }
+      }
+      
       // Add createdById (admin who created this user)
       const userData = insertUserSchema.parse({ 
         ...req.body, 
         tenantId,
-        createdById: req.user!.id
+        createdById
       });
       
       // Check if username already exists (only if username is provided)
