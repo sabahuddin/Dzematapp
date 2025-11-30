@@ -1,0 +1,99 @@
+[STORAGE] ✅ Found existing org settings: 34a8a10f-2eeb-41e5-bfe3-89d9d12341a3
+[ORG-SETTINGS] ✅ Success: 34a8a10f-2eeb-41e5-bfe3-89d9d12341a3
+3:58:25 PM [express] GET /api/organization-settings 200 in 7ms :: {"id":"34a8a10f-2eeb-41e5-bfe3-89d…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+3:58:25 PM [express] GET /api/certificates/unviewed-count 304 in 8ms :: {"count":0}
+3:58:25 PM [express] GET /api/messages/unread-count 304 in 8ms :: {"count":0}
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+3:58:25 PM [express] GET /api/subscription/plans 304 in 11ms :: [{"id":"plan-basic","name":"Basic","…
+3:58:25 PM [express] GET /api/tenants 304 in 15ms :: [{"id":"default-tenant-demo","name":"Demo Džema…
+3:58:25 PM [express] GET /api/notifications/unread 304 in 43ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+3:58:35 PM [express] GET /api/tenants/eea4008b-809c-4c7e-9249-4148dcde22f3/stats 304 in 9ms :: {"use…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+3:58:39 PM [express] GET /api/tenants/68ea4628-ca8b-47bb-8cb4-5ba234fbc23a/stats 304 in 5ms :: {"use…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+3:58:42 PM [express] GET /api/tenants/default-tenant-demo/stats 304 in 4ms :: {"userCount":10,"stora…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+3:58:49 PM [express] POST /api/auth/logout 200 in 3ms :: {"message":"Logged out successfully"}
+3:59:05 PM [express] POST /api/tenants/verify-code 200 in 24ms :: {"tenantId":"eea4008b-809c-4c7e-92…
+[LOGIN] Received credentials: {
+  username: 'admin',
+  passwordLength: 8,
+  tenantCode: undefined,
+  tenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3'
+}
+[LOGIN] User from DB: {
+  username: 'admin',
+  hasPassword: true,
+  passwordLength: 8,
+  passwordMatch: true
+}
+[LOGIN] ✅ Session created and saved: {
+  userId: 'admin-eea4008b-809c-4c7e-9249-4148dcde22f3',
+  tenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  sessionId: 'HSHI74SjLPn6hDslKMEo29NVaeFckUen'
+}
+[LOGIN] ✅ Response sent for user: admin
+3:59:09 PM [express] POST /api/auth/login 200 in 10ms :: {"user":{"id":"admin-eea4008b-809c-4c7e-924…
+3:59:09 PM [express] GET /api/events 500 in 24ms :: {"message":"Failed to fetch events"}
+3:59:09 PM [express] GET /api/prayer-times/today 500 in 7ms :: {"message":"Failed to get today's pra…
+3:59:09 PM [express] GET /api/activities 304 in 9ms :: []
+3:59:09 PM [express] GET /api/statistics 500 in 26ms :: {"message":"Failed to fetch statistics"}
+3:59:13 PM [express] GET /api/users 200 in 5ms :: [{"id":"admin-eea4008b-809c-4c7e-9249-4148dcde22f3…
+3:59:19 PM [express] GET /api/family-relationships/admin-eea4008b-809c-4c7e-9249-4148dcde22f3 200 in…
+3:59:39 PM [express] GET /api/certificates/unviewed-count 403 in 29ms :: {"message":"Feature \"certi…
+3:59:40 PM [express] GET /api/messages/unread-count 304 in 31ms :: {"count":0}
+3:59:40 PM [express] GET /api/notifications/unread 304 in 59ms :: {"shop":0,"events":0,"announcement…
+[DEBUG POST /api/users] Received body: {
+  firstName: 'Hazim',
+  lastName: 'Mehic',
+  username: 'hazim.mehic',
+  email: null,
+  password: '***',
+  phone: null,
+  photo: null,
+  address: null,
+  city: null,
+  postalCode: null,
+  dateOfBirth: '1.1.1999.',
+  membershipDate: '2020-01-01T00:00:00.000Z',
+  status: 'aktivan',
+  inactiveReason: null,
+  categories: [],
+  roles: [ 'clan' ],
+  skills: [],
+  isAdmin: false
+} tenantId: eea4008b-809c-4c7e-9249-4148dcde22f3
+3:59:54 PM [express] POST /api/users 400 in 39ms :: {"message":"Invalid user data","error":"column \…
+4:00:10 PM [express] GET /api/certificates/unviewed-count 403 in 19ms :: {"message":"Feature \"certi…
+4:00:10 PM [express] GET /api/messages/unread-count 304 in 20ms :: {"count":0}
+4:00:10 PM [express] GET /api/notifications/unread 304 in 35ms :: {"shop":0,"events":0,"announcement…
+Error creating user: error: column "metadata" of relation "activity_feed" does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.createActivityFeedItem (file:///app/dist/index.js:2973:24)
+    at async DatabaseStorage.createUser (file:///app/dist/index.js:1267:5)
+    at async file:///app/dist/index.js:5014:20 {
+  length: 135,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '125',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_target.c',
+  line: '1065',
+  routine: 'checkInsertTargets'

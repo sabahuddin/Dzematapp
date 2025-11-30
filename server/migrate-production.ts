@@ -634,6 +634,12 @@ async function addMissingColumns(client: any): Promise<void> {
     // ACTIVITY_LOG
     `ALTER TABLE "activity_log" ADD COLUMN IF NOT EXISTS "related_entity_id" varchar`,
     
+    // ACTIVITY_FEED - missing metadata column
+    `ALTER TABLE "activity_feed" ADD COLUMN IF NOT EXISTS "metadata" text`,
+    `ALTER TABLE "activity_feed" ADD COLUMN IF NOT EXISTS "is_clickable" boolean DEFAULT false`,
+    `ALTER TABLE "activity_feed" ADD COLUMN IF NOT EXISTS "related_entity_id" varchar`,
+    `ALTER TABLE "activity_feed" ADD COLUMN IF NOT EXISTS "related_entity_type" text`,
+    
     // USER_CERTIFICATES
     `ALTER TABLE "user_certificates" ADD COLUMN IF NOT EXISTS "message" text`,
     `ALTER TABLE "user_certificates" ADD COLUMN IF NOT EXISTS "viewed" boolean DEFAULT false`,
