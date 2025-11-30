@@ -254,22 +254,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
       req.session.userId = user.id;
       req.session.tenantId = tenantId;
       
-      // Check if user has Imam role for admin privileges
-      const hasImamRole = user.roles?.includes('imam') || false;
-      
-      res.json({ 
-        user: { 
-          id: user.id, 
-          firstName: user.firstName, 
-          lastName: user.lastName, 
-          email: user.email,
-          roles: user.roles || [],
-          isAdmin: user.isAdmin || hasImamRole,
-          isSuperAdmin: false,
-          totalPoints: user.totalPoints || 0,
-          tenantId: tenantId
-        } 
-});
+      // Save session explicitly
+      req.session.save((err) => {
+        if (err) {
+          console.error('[LOGIN] ❌ Session save error:', err);
+          return res.status(500).json({ message: "Session error" });
+        }
+        
+        console.log('[LOGIN] ✅ Session created and saved:', { 
+          userId: req.session.userId, 
+          tenantId: req.session.tenantId,
+          sessionId: req.sessionID 
+        });
+        
+        // Check if user has Imam role for admin privileges
+        const hasImamRole = user.roles?.includes('imam') || false;
+        
+        console.log('[LOGIN] ✅ Response sent for user:', user.username);
+        
+        res.json({ 
+          user: { 
+            id: user.id, 
+            firstName: user.firstName, 
+            lastName: user.lastName, 
+            email: user.email,
+            roles: user.roles || [],
+            isAdmin: user.isAdmin || hasImamRole,
+            isSuperAdmin: false,
+            totalPoints: user.totalPoints || 0,
+            tenantId: tenantId
+          } 
+        });
+      });
     } catch (error) {
       res.status(500).json({ message: "Internal server error" });
     }
