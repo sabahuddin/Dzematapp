@@ -1445,8 +1445,19 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   // Users routes
   app.get("/api/users", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
-      console.log("[GET /api/users] Fetching for tenantId:", tenantId, "user:", req.user?.username, "session.tenantId:", (req.session as any).tenantId);
+      const session = req.session as any;
+      console.log("[GET /api/users] DEBUG:", {
+        "req.user.tenantId": req.user?.tenantId,
+        "session.tenantId": session.tenantId,
+        "req.tenantId": req.tenantId,
+        "username": req.user?.username,
+        "userId": req.user?.id
+      });
+      
+      // CRITICAL: Use session.tenantId as authoritative source
+      const tenantId = session.tenantId || req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      console.log("[GET /api/users] Using tenantId:", tenantId);
+      
       const users = await storage.getAllUsers(tenantId);
       console.log("[GET /api/users] Found", users.length, "users for tenant:", tenantId);
       res.json(users.map(user => ({ ...user, password: undefined })));
