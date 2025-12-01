@@ -669,14 +669,16 @@ export class DatabaseStorage implements IStorage {
       await db.delete(activityFeed).where(eq(activityFeed.tenantId, tenantId));
     } catch (e) { /* ignore */ }
     
-    // Now delete users
+    // Now delete users (EXCLUDE admin users to protect tenant access)
     try {
       const result = await db.delete(users).where(
         and(
           eq(users.tenantId, tenantId),
-          sql`(${users.isSuperAdmin} IS NULL OR ${users.isSuperAdmin} = false)`
+          sql`(${users.isSuperAdmin} IS NULL OR ${users.isSuperAdmin} = false)`,
+          sql`${users.username} != 'admin'`
         )
       );
+      console.log('[DELETE ALL USERS] ✅ Deleted', result, 'users, PROTECTED admin user');
     } catch (e) {
       console.error('[DELETE ALL USERS] Error deleting users:', (e as any).message);
     }
