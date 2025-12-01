@@ -5799,6 +5799,61 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     }
   });
 
+  // Purge demo users from all tenants except demo tenant (SuperAdmin only)
+  app.post("/api/tenants/purge-demo-users", requireSuperAdmin, async (req, res) => {
+    console.log('[PURGE DEMO] Starting...');
+    try {
+      const DEMO_TENANT_ID = 'default-tenant-demo';
+      const DEMO_USER_NAMES = ['Iso', 'Elma', 'Hase', 'Mujo', 'Fata', 'Suljo', 'Haso', 'Admin'];
+      const DEMO_USER_LASTNAMES = ['Isic', 'Elmic', 'Hasic', 'Mujic', 'Fatic', 'Suljic', 'Hasovic', 'Demo'];
+      
+      const tenants = await storage.getAllTenants();
+      const results: any[] = [];
+      
+      for (const tenant of tenants) {
+        // Skip demo tenant - it should keep demo users
+        if (tenant.id === DEMO_TENANT_ID) {
+          results.push({ tenantId: tenant.id, tenantName: tenant.name, skipped: true, reason: 'Demo tenant' });
+          continue;
+        }
+        
+        const users = await storage.getAllUsers(tenant.id);
+        let deletedCount = 0;
+        
+        for (const user of users) {
+          // Check if this is a demo user (but NOT the tenant admin)
+          const isDemoUser = (
+            (DEMO_USER_NAMES.includes(user.firstName || '') && DEMO_USER_LASTNAMES.includes(user.lastName || '')) ||
+            user.email?.includes('@demo.local') ||
+            user.username === 'demo-admin'
+          ) && user.username !== 'admin'; // Never delete the real admin
+          
+          if (isDemoUser) {
+            try {
+              await storage.deleteUser(user.id, tenant.id);
+              deletedCount++;
+              console.log(`[PURGE DEMO] Deleted ${user.firstName} ${user.lastName} from ${tenant.name}`);
+            } catch (err) {
+              console.log(`[PURGE DEMO] Could not delete ${user.firstName}: ${err}`);
+            }
+          }
+        }
+        
+        results.push({
+          tenantId: tenant.id,
+          tenantName: tenant.name,
+          deleted: deletedCount
+        });
+      }
+      
+      console.log('[PURGE DEMO] Complete:', results);
+      res.json({ message: 'Demo user purge complete', results });
+    } catch (error) {
+      console.error('[PURGE DEMO] Error:', error);
+      res.status(500).json({ message: 'Purge failed', error: String(error) });
+    }
+  });
+
   // Get tenant statistics
   app.get("/api/tenants/:id/stats", requireSuperAdmin, async (req, res) => {
     try {

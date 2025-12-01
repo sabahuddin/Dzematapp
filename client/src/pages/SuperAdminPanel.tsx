@@ -205,6 +205,26 @@ export default function SuperAdminPanel() {
     }
   });
 
+  // Purge demo users from all tenants mutation
+  const purgeDemoUsersMutation = useMutation({
+    mutationFn: () => apiRequest("/api/tenants/purge-demo-users", "POST", {}),
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/tenants"] });
+      const count = data.results?.reduce((sum: number, r: any) => sum + (r.deleted || 0), 0) || 0;
+      toast({ 
+        title: "Čišćenje završeno!", 
+        description: `Obrisano ${count} demo korisnika iz svih tenanta.`
+      });
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: "Greška", 
+        description: error.message || "Neuspjelo čišćenje demo korisnika",
+        variant: "destructive" 
+      });
+    }
+  });
+
   const resetForm = () => {
     setFormData({
       name: "",
@@ -321,7 +341,20 @@ export default function SuperAdminPanel() {
       </Typography>
 
       {/* Tenant Management */}
-      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'flex-end', gap: 2, flexWrap: 'wrap' }}>
+            <Button 
+              variant="outlined"
+              color="error"
+              onClick={() => {
+                if (window.confirm('Obrisati sve demo korisnike (Iso, Elma, Hase...) iz svih tenanta osim Demo Džemata?')) {
+                  purgeDemoUsersMutation.mutate();
+                }
+              }}
+              disabled={purgeDemoUsersMutation.isPending}
+              data-testid="button-purge-demo-users"
+            >
+              {purgeDemoUsersMutation.isPending ? <CircularProgress size={20} /> : 'Obriši demo korisnike'}
+            </Button>
             <Button 
               variant="outlined"
               color="warning"
