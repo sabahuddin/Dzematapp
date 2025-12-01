@@ -21,6 +21,7 @@ import {
 import { CloudUpload, Download, CheckCircle, Error as ErrorIcon } from '@mui/icons-material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 import { apiRequest } from '@/lib/queryClient';
 
 interface BulkUploadModalProps {
@@ -38,6 +39,7 @@ interface UploadResult {
 }
 
 export default function BulkUploadModal({ open, onClose }: BulkUploadModalProps) {
+  const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -76,7 +78,7 @@ export default function BulkUploadModal({ open, onClose }: BulkUploadModalProps)
     },
     onSuccess: (data: UploadResult) => {
       setUploadResult(data);
-      queryClient.invalidateQueries({ queryKey: ['/api/users'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/users', user?.tenantId] });
       
       if (data.errorCount === 0) {
         toast({ 

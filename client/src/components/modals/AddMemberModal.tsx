@@ -19,6 +19,7 @@ import {
 import { Close, PersonAdd } from '@mui/icons-material';
 import { User, WorkGroup } from '@shared/schema';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 import { apiRequest } from '@/lib/queryClient';
 
 interface AddMemberModalProps {
@@ -29,12 +30,13 @@ interface AddMemberModalProps {
 
 export default function AddMemberModal({ open, onClose, workGroup }: AddMemberModalProps) {
   const [selectedUserId, setSelectedUserId] = useState('');
+  const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Fetch all users
+  // Fetch all users - SCOPED BY TENANT
   const usersQuery = useQuery({
-    queryKey: ['/api/users'],
+    queryKey: ['/api/users', user?.tenantId],
     enabled: open,
   });
 

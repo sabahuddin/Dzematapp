@@ -69,9 +69,9 @@ export default function UsersPage() {
     t('users:categories.youth')
   ];
 
-  // Fetch users
+  // Fetch users - SCOPED BY TENANT
   const usersQuery = useQuery({
-    queryKey: ['/api/users'],
+    queryKey: ['/api/users', currentUser?.tenantId],
     retry: 1,
   });
 
@@ -100,7 +100,7 @@ export default function UsersPage() {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/users'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/users', currentUser?.tenantId] });
       toast({ title: t('users:common.success'), description: t('users:messages.successCreate') });
     },
     onError: () => {
@@ -115,7 +115,7 @@ export default function UsersPage() {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/users'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/users', currentUser?.tenantId] });
       toast({ title: t('users:common.success'), description: t('users:messages.successUpdate') });
     },
     onError: () => {

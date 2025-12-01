@@ -56,7 +56,7 @@ export default function NewMessageModal({ isOpen, onClose, replyTo }: NewMessage
   const { t } = useTranslation(['messages', 'common']);
 
   const { data: users = [] } = useQuery<User[]>({
-    queryKey: ["/api/users"],
+    queryKey: ["/api/users", user?.tenantId],
     enabled: isOpen,
   });
 
