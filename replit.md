@@ -130,16 +130,14 @@ A complete React Native + Expo application for iOS and Android is available in t
   2. Protected admin users from deletion via endpoint: `app.delete("/api/users/:id")` checks `username !== 'admin'`
   3. Protected admin users from batch deletion via `deleteAllTenantUsers()` - added WHERE condition to exclude admin username
   4. DELETE endpoint returns 403 Forbidden if attempting to delete admin/admin123 or self
-- **Current Production Tenants** (verified):
-  - **DEMO2025** (Demo Džemat): 24 users ✅
-  - **GAM9000** (GAM): 1 admin user ✅
-  - **9008** (ghb): 1 admin user ✅
-  - **SUPERADMIN_ONLY** (Global): 1 superadmin user ✅
-  - Total: 27 users across 4 tenants
-  - All tenant admins are protected and functional
-  - SG77245: Does not exist (was never created in production)
+- **Current Production Tenants** (dzematapp.com verified):
+  - **DEMO2025** (Demo Džemat) ✅
+  - **GAM9000** (Džemat GAM) ✅
+  - **sg77245** (Džemat SL Grad) ✅
+  - **SUPERADMIN_ONLY** (Global SuperAdmin) ✅
+  - All tenant admins protected from deletion ✅
 - **Tenant Admin Access**:
-  - GAM9000: `admin/admin123` ✅
-  - 9008 (ghb): `admin/admin123` ✅
-  - DEMO2025: `admin/admin123` ✅
-  - SUPERADMIN_ONLY: `superadmin/admin123` ✅
+  - DEMO2025: `admin/admin123`
+  - GAM9000: `admin/admin123`
+  - sg77245: `admin/admin123`
+  - SUPERADMIN_ONLY (global): `superadmin/admin123`
