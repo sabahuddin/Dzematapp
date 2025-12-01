@@ -42,6 +42,10 @@ export async function migrateProductionSchema(): Promise<void> {
     
     // Then add missing columns
     await addMissingColumns(client);
+    
+    // Copy data from old 'title' column to new 'name' column if exists
+    await copyTitleToName(client);
+    
     console.log("✅ Schema migration complete");
   } finally {
     client.release();
@@ -436,7 +440,8 @@ async function addMissingColumns(client: any): Promise<void> {
     `ALTER TABLE "announcements" ADD COLUMN IF NOT EXISTS "photo_url" text`,
     `ALTER TABLE "announcements" ADD COLUMN IF NOT EXISTS "publish_date" timestamp DEFAULT now()`,
     
-    // EVENTS - ensure all columns exist
+    // EVENTS - ensure all columns exist (CRITICAL: add name column if missing - old tables may have 'title')
+    `ALTER TABLE "events" ADD COLUMN IF NOT EXISTS "name" text`,
     `ALTER TABLE "events" ADD COLUMN IF NOT EXISTS "photo_url" text`,
     `ALTER TABLE "events" ADD COLUMN IF NOT EXISTS "rsvp_enabled" boolean DEFAULT true`,
     `ALTER TABLE "events" ADD COLUMN IF NOT EXISTS "require_adults_children" boolean DEFAULT false`,
@@ -481,7 +486,8 @@ async function addMissingColumns(client: any): Promise<void> {
     `ALTER TABLE "prayer_times" ADD COLUMN IF NOT EXISTS "juma" text`,
     `ALTER TABLE "prayer_times" ADD COLUMN IF NOT EXISTS "juma_2" text`,
     
-    // CONTRIBUTION_PURPOSES - 1 missing column
+    // CONTRIBUTION_PURPOSES - ensure name column exists (CRITICAL: old tables may have 'title')
+    `ALTER TABLE "contribution_purposes" ADD COLUMN IF NOT EXISTS "name" text`,
     `ALTER TABLE "contribution_purposes" ADD COLUMN IF NOT EXISTS "target_amount" text`,
     
     // FINANCIAL_CONTRIBUTIONS - 4 missing columns
@@ -546,7 +552,8 @@ async function addMissingColumns(client: any): Promise<void> {
     `ALTER TABLE "services" ADD COLUMN IF NOT EXISTS "status" text DEFAULT 'aktivan'`,
     `ALTER TABLE "services" ADD COLUMN IF NOT EXISTS "duration" text`,
     
-    // PROJECTS - 3 missing columns
+    // PROJECTS - ensure name column exists (CRITICAL: old tables may have 'title')
+    `ALTER TABLE "projects" ADD COLUMN IF NOT EXISTS "name" text`,
     `ALTER TABLE "projects" ADD COLUMN IF NOT EXISTS "start_date" timestamp`,
     `ALTER TABLE "projects" ADD COLUMN IF NOT EXISTS "end_date" timestamp`,
     `ALTER TABLE "projects" ADD COLUMN IF NOT EXISTS "budget" text`,
@@ -774,6 +781,45 @@ async function addMissingColumns(client: any): Promise<void> {
     }
   }
   console.log(`✅ Migrated ${cascadeCount} foreign key constraints to CASCADE`);
+}
+
+// Copy data from old 'title' column to new 'name' column for legacy databases
+async function copyTitleToName(client: any): Promise<void> {
+  console.log("📋 Migrating title->name for legacy tables...");
+  
+  const tablesToMigrate = ['events', 'contribution_purposes', 'projects'];
+  let migratedCount = 0;
+  
+  for (const table of tablesToMigrate) {
+    try {
+      // Check if 'title' column exists in the table
+      const titleCheck = await client.query(`
+        SELECT column_name FROM information_schema.columns 
+        WHERE table_name = $1 AND column_name = 'title'
+      `, [table]);
+      
+      if (titleCheck.rows.length > 0) {
+        // 'title' column exists, copy data to 'name' where 'name' is null
+        await client.query(`
+          UPDATE "${table}" SET "name" = "title" 
+          WHERE "name" IS NULL AND "title" IS NOT NULL
+        `);
+        migratedCount++;
+        console.log(`  ✅ Migrated ${table}: copied title->name`);
+      }
+    } catch (error: any) {
+      // Silently skip if table or column doesn't exist
+      if (!error.message?.includes('does not exist')) {
+        console.log(`  ℹ️  ${table}: ${error.message?.substring(0, 50)}`);
+      }
+    }
+  }
+  
+  if (migratedCount > 0) {
+    console.log(`✅ Migrated ${migratedCount} tables (title->name)`);
+  } else {
+    console.log(`ℹ️  No title->name migration needed`);
+  }
 }
 
 export async function verifyAllTablesExist(): Promise<void> {
