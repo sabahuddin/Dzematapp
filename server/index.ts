@@ -251,37 +251,6 @@ async function ensureAdminUser() {
 }
 
 // Initialize default contribution purposes
-async function seedContributionPurposes() {
-  try {
-    const purposes = await storage.getContributionPurposes(DEFAULT_TENANT_ID);
-    if (purposes.length === 0) {
-      console.log('🔧 Seeding default contribution purposes...');
-      const defaultPurposes = [
-        { name: 'Članarina', description: 'Godišnja članarina' },
-        { name: 'Donacija', description: 'Slobodna donacija' },
-        { name: 'Žrtva (Kurbani)', description: 'Kurban - Bakrid' },
-        { name: 'Sadaka (Fitr)', description: 'Sadaka za Ramazan' },
-        { name: 'Hadž', description: 'Pomoc za hadž' },
-        { name: 'Džemat Fond', description: 'Doprinos Džemat fondu' },
-        { name: 'Projekti', description: 'Doprinos projektima' },
-        { name: 'Ostalo', description: 'Ostale namjene' }
-      ];
-
-      for (const purpose of defaultPurposes) {
-        await storage.createContributionPurpose({
-          ...purpose,
-          createdById: null,
-          tenantId: DEFAULT_TENANT_ID
-        });
-      }
-      console.log('✅ Default contribution purposes seeded');
-    } else {
-      console.log('✅ Contribution purposes already exist');
-    }
-  } catch (error) {
-    console.error('❌ Error seeding contribution purposes:', error);
-  }
-}
 
 // Seed operations will run in background after server starts
 let seedingPromise: Promise<void> | null = null;
@@ -291,10 +260,7 @@ const startSeeding = async () => {
     // First ensure admin user exists
     await ensureAdminUser();
     
-    // Then seed contribution purposes (after migration has added required columns)
-    await seedContributionPurposes();
-    
-    // Then seed tenant and demo data
+    // Seed tenant and demo data
     await seedDefaultTenant();
     seedSubscriptionPlans();
     seedDemoData();

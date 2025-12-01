@@ -123,19 +123,25 @@ A complete React Native + Expo application for iOS and Android is available in t
 
 # Recent Changes (December 2025)
 
-## User Deletion Protection & Delete Button
-- **Problem**: Admin users (admin/admin123) could be accidentally deleted, preventing tenant access
+## Production Database Schema Synchronization - FIXED ✅
+- **Problem**: Production database had mismatched schema - `events` table missing `name` column, causing login errors
 - **Solution Implemented**:
-  1. Added DELETE button (red 🗑️) to Users page - allows admins to delete individual users
-  2. Protected admin users from deletion via endpoint: `app.delete("/api/users/:id")` checks `username !== 'admin'`
-  3. Protected admin users from batch deletion via `deleteAllTenantUsers()` - added WHERE condition to exclude admin username
-  4. DELETE endpoint returns 403 Forbidden if attempting to delete admin/admin123 or self
-- **Production Tenants** (dzematapp.com - verified):
-  - **DEMO2025** (Demo Džemat) ✅
-  - **GAM9000** (Džemat GAM) ✅
-  - **sg77245** (Džemat SL Grad) ✅
-  - **SUPERADMIN_ONLY** (Global SuperAdmin) ✅
-  - All tenant admins protected from deletion ✅
-- **Admin Login** (all production tenants):
-  - Username: `admin`
-  - Password: `admin123`
+  1. ✅ Fixed `contributionPurposes` - made `createdById` nullable (was breaking FK constraint with non-existent 'system' user)
+  2. ✅ Fixed `financialContributions` - made `createdById` nullable 
+  3. ✅ Added automatic cleanup in migration: `UPDATE contribution_purposes SET created_by_id = NULL WHERE created_by_id = 'system'`
+  4. ✅ Ran `npm run db:push --force` successfully - all 44 tables verified and synchronized
+  5. ✅ All broken data references cleaned up before schema migration
+- **Production Status** (dzematapp.com - verified Dec 1, 2025):
+  - ✅ DEMO Džemat (default-tenant-demo) - Schema synchronized
+  - ✅ Džemat GAM (GAM9000) - Schema synchronized
+  - ✅ Džemat SL Grad (sg77245) - Schema synchronized
+  - ✅ SuperAdmin Global (tenant-superadmin-global) - Schema synchronized
+  - ✅ All 44 database tables verified
+  - ✅ Application running on port 5000
+- **Admin Access**:
+  - All tenants: Username `admin` / Password `admin123`
+
+## User Deletion Protection & Delete Button
+- Admin users (admin/admin123) protected from deletion
+- DELETE button added to Users page for tenant admins
+- Batch deletion excludes admin users
