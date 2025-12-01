@@ -6,8 +6,9 @@
  */
 
 import { db } from './db';
-import { workGroups, workGroupMembers, tasks, users } from '@shared/schema';
-import { eq, and } from 'drizzle-orm';
+import { workGroups, workGroupMembers, tasks, users, tenants } from '@shared/schema';
+import { eq, and, or } from 'drizzle-orm';
+import { storage } from './storage';
 
 const DEFAULT_TENANT_ID = 'default-tenant-demo';
 
@@ -144,6 +145,49 @@ export async function seedDemoData() {
       }
 
       console.log('✅ Demo data seed completed!\n');
+      
+      // AUTO-PURGE: Remove demo users from all non-demo tenants (after seeding completes)
+      setTimeout(async () => {
+        try {
+          console.log('\n🧹 [AUTO-PURGE] Starting automatic demo user cleanup...');
+          const allTenants = await db.select().from(tenants);
+          console.log(`[AUTO-PURGE] Found ${allTenants.length} tenants`);
+          
+          for (const tenant of allTenants) {
+            if (tenant.id === DEFAULT_TENANT_ID) {
+              console.log(`[AUTO-PURGE] Skipping demo tenant ${tenant.name}`);
+              continue;
+            }
+            
+            const tenantUsers = await db.select().from(users).where(
+              and(
+                eq(users.tenantId, tenant.id),
+                or(
+                  eq(users.firstName, 'Iso'), // Demo users: Iso, Elma, Hase
+                  eq(users.firstName, 'Elma'),
+                  eq(users.firstName, 'Hase'),
+                  eq(users.firstName, 'Mujo'),
+                  eq(users.firstName, 'Fata'),
+                  eq(users.firstName, 'Suljo'),
+                  eq(users.firstName, 'Haso')
+                )
+              )
+            );
+            
+            if (tenantUsers.length > 0) {
+              for (const demoUser of tenantUsers) {
+                await storage.deleteUser(demoUser.id, tenant.id);
+                console.log(`[AUTO-PURGE] ✅ Deleted ${demoUser.firstName} ${demoUser.lastName} from ${tenant.name}`);
+              }
+            }
+          }
+          
+          console.log('[AUTO-PURGE] ✅ Automatic demo user cleanup completed!\n');
+        } catch (error) {
+          console.error('[AUTO-PURGE] ❌ Cleanup failed:', error);
+        }
+      }, 1000); // Wait 1 second before running purge
+      
     } catch (error) {
       console.error('❌ Demo data seed failed:', error);
     }
