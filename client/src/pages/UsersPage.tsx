@@ -31,7 +31,8 @@ import {
   Groups,
   Upload,
   Visibility,
-  Download
+  Download,
+  Delete
 } from '@mui/icons-material';
 import { User } from '@shared/schema';
 import UserModal from '../components/modals/UserModal';
@@ -122,6 +123,27 @@ export default function UsersPage() {
       toast({ title: t('users:common.error'), description: t('users:messages.errorUpdate'), variant: 'destructive' });
     }
   });
+
+  // Delete user mutation
+  const deleteUserMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const response = await apiRequest(`/api/users/${id}`, 'DELETE', {});
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/users', currentUser?.tenantId] });
+      toast({ title: t('users:common.success'), description: 'Korisnik obrisan uspješno' });
+    },
+    onError: () => {
+      toast({ title: t('users:common.error'), description: 'Neuspjelo brisanje korisnika', variant: 'destructive' });
+    }
+  });
+
+  const handleDeleteUser = (user: User) => {
+    if (window.confirm(`Obrisati korisnika ${user.firstName} ${user.lastName}?`)) {
+      deleteUserMutation.mutate(user.id);
+    }
+  };
 
   const handleCreateUser = () => {
     setSelectedUser(null);
@@ -854,6 +876,16 @@ export default function UsersPage() {
                         title={t('users:actions.edit')}
                       >
                         <Edit fontSize="small" />
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        onClick={() => handleDeleteUser(user)}
+                        sx={{ color: 'hsl(0 100% 50%)' }}
+                        data-testid={`button-delete-user-${user.id}`}
+                        title="Obriši korisnika"
+                        disabled={deleteUserMutation.isPending}
+                      >
+                        <Delete fontSize="small" />
                       </IconButton>
                     </Box>
                   </TableCell>
