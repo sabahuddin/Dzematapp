@@ -1,0 +1,100 @@
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  username: 'superadmin',
+  userTenantId: 'tenant-superadmin-global',
+  sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+1:04:20 PM [express] GET /api/tenants/68ea4628-ca8b-47bb-8cb4-5ba234fbc23a/stats 200 in 6ms :: {"use…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  username: 'superadmin',
+  userTenantId: 'tenant-superadmin-global',
+  sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+1:04:24 PM [express] GET /api/tenants/eea4008b-809c-4c7e-9249-4148dcde22f3/stats 200 in 6ms :: {"use…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  username: 'superadmin',
+  userTenantId: 'tenant-superadmin-global',
+  sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+1:04:32 PM [express] POST /api/auth/logout 200 in 2ms :: {"message":"Logged out successfully"}
+1:04:40 PM [express] POST /api/tenants/verify-code 200 in 6ms :: {"tenantId":"default-tenant-demo","…
+[LOGIN] Received credentials: {
+  username: 'admin',
+  passwordLength: 8,
+  tenantCode: undefined,
+  tenantId: 'default-tenant-demo'
+}
+[LOGIN] User from DB: {
+  username: 'admin',
+  hasPassword: true,
+  passwordLength: 8,
+  passwordMatch: true
+}
+[LOGIN] ✅ Session created and saved: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  tenantId: 'default-tenant-demo',
+  sessionId: 'skql-NB5KvsVskxoE1LXwP-lyqB7Fjkh'
+}
+[LOGIN] ✅ Response sent for user: admin
+1:04:49 PM [express] POST /api/auth/login 200 in 5ms :: {"user":{"id":"60572500-4eef-4282-a898-a33be…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+1:04:49 PM [express] GET /api/events 500 in 15ms :: {"message":"Failed to fetch events"}
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+1:04:49 PM [express] GET /api/prayer-times/today 404 in 5ms :: {"message":"Prayer times not found fo…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+1:04:52 PM [express] GET /api/users/default-tenant-demo 404 in 4ms :: {"message":"User not found"}
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+1:04:53 PM [express] GET /api/users/default-tenant-demo 404 in 5ms :: {"message":"User not found"}
