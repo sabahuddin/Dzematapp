@@ -1,0 +1,100 @@
+ℹ️  Default tenant already exists: Demo Džemat
+
+👤 Creating SuperAdmin user...
+ℹ️  SuperAdmin user already exists
+
+👤 Creating demo tenant admin...
+ℹ️  Demo admin user already exists
+
+✅ Seed completed successfully!
+
+📊 Default Tenant ID: default-tenant-demo
+   Name: Demo Džemat
+   Tier: full
+   Status: trial
+
+🌱 Seeding demo data for Demo Džemat...
+ℹ️ Demo users already exist
+ℹ️ Demo data already exists
+✅ Demo data seed completed!
+
+[AUTH MIDDLEWARE] User loaded: {
+  userId: 'admin-eea4008b-809c-4c7e-9249-4148dcde22f3',
+  username: 'admin',
+  userTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  sessionTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: eea4008b-809c-4c7e-9249-4148dcde22f3
+[MESSAGES/UNREAD-COUNT] Debug: {
+  userId: 'admin-eea4008b-809c-4c7e-9249-4148dcde22f3',
+  sessionTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  userTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  reqTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  resolvedTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3'
+}
+[AUTH MIDDLEWARE] User loaded: {
+  userId: 'admin-eea4008b-809c-4c7e-9249-4148dcde22f3',
+  username: 'admin',
+  userTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  sessionTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: eea4008b-809c-4c7e-9249-4148dcde22f3
+[AUTH MIDDLEWARE] User loaded: {
+  userId: 'admin-eea4008b-809c-4c7e-9249-4148dcde22f3',
+  username: 'admin',
+  userTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  sessionTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: eea4008b-809c-4c7e-9249-4148dcde22f3
+2:25:09 PM [express] GET /api/messages/unread-count 304 in 45ms :: {"count":0}
+2:25:09 PM [express] GET /api/certificates/unviewed-count 403 in 40ms :: {"message":"Feature \"certi…
+2:25:09 PM [express] GET /api/notifications/unread 304 in 68ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: 'admin-eea4008b-809c-4c7e-9249-4148dcde22f3',
+  username: 'admin',
+  userTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  sessionTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: eea4008b-809c-4c7e-9249-4148dcde22f3
+[AUTH MIDDLEWARE] User loaded: {
+  userId: 'admin-eea4008b-809c-4c7e-9249-4148dcde22f3',
+  username: 'admin',
+  userTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  sessionTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: eea4008b-809c-4c7e-9249-4148dcde22f3
+[AUTH MIDDLEWARE] User loaded: {
+  userId: 'admin-eea4008b-809c-4c7e-9249-4148dcde22f3',
+  username: 'admin',
+  userTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  sessionTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: eea4008b-809c-4c7e-9249-4148dcde22f3
+[MESSAGES/UNREAD-COUNT] Debug: {
+  userId: 'admin-eea4008b-809c-4c7e-9249-4148dcde22f3',
+  sessionTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  userTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  reqTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3',
+  resolvedTenantId: 'eea4008b-809c-4c7e-9249-4148dcde22f3'
+}
+2:28:09 PM [express] GET /api/certificates/unviewed-count 403 in 26ms :: {"message":"Feature \"certi…
+2:28:09 PM [express] GET /api/messages/unread-count 304 in 28ms :: {"count":0}
+2:28:09 PM [express] GET /api/notifications/unread 304 in 56ms :: {"shop":0,"events":0,"announcement…
