@@ -1,0 +1,76 @@
+🔴 Novi Problem:
+violates foreign key constraint "activities_user_id_fkey" on table "activities"
+Korisnik ima aktivnosti u activities tabeli, pa ga ne možeš obrisati zbog foreign key zaštite!
+
+🔧 RJEŠENJE:
+Reci Replitu:
+Problem: deleteUser() pada jer korisnici imaju povezane zapise u drugim tabelama (activities, user_badges, itd.) sa foreign key constraint-ima.
+Rješenje: Umjesto kaskadnog brisanja svih zapisa, promijeni auto-purge da PREBACI korisnike u demo tenant, ne da ih briše!
+
+Promijeni auto-purge logiku:
+U server/seed-demo-data.ts, umjesto:
+typescriptawait storage.deleteUser(user.id, tenant.id);
+Koristi UPDATE da prebaci korisnika u demo tenant:
+typescript// Umjesto brisanja, prebaci demo korisnike u demo tenant
+await db.update(users)
+  .set({ tenantId: 'default-tenant-demo' })
+  .where(
+    and(
+      eq(users.id, user.id),
+      eq(users.tenantId, tenant.id),
+      inArray(users.username, demoUsernames) // samo demo korisnici
+    )
+  );
+
+Kompletan fix za seed-demo-data.ts:
+Nađi dio gdje poziva deleteUser i zamijeni sa:
+typescript🧹 [AUTO-PURGE] Starting automatic demo user cleanup...
+
+const demoUsernames = [
+  'Alma', 'Alja', 'Ali', 'Haris', 'Osman', 
+  'Mujo', 'Hazo', 'Mustafa', 'Zlata', 'Hase', 
+  'Alen', 'Iso', 'Elma'
+];
+
+const allTenants = await storage.getAllTenants();
+console.log(`[AUTO-PURGE] Found ${allTenants.length} tenants`);
+
+for (const tenant of allTenants) {
+  if (tenant.id === 'default-tenant-demo') {
+    console.log(`[AUTO-PURGE] Skipping demo tenant ${tenant.name}`);
+    continue;
+  }
+
+  console.log(`[AUTO-PURGE] Processing tenant: ${tenant.name}`);
+  
+  // Prebaci demo korisnike u demo tenant umjesto brisanja
+  const movedUsers = await db.update(users)
+    .set({ tenantId: 'default-tenant-demo' })
+    .where(
+      and(
+        eq(users.tenantId, tenant.id),
+        inArray(users.username, demoUsernames)
+      )
+    )
+    .returning({ username: users.username });
+
+  if (movedUsers.length > 0) {
+    console.log(`[AUTO-PURGE] ✅ Moved ${movedUsers.length} demo users from ${tenant.name} to demo tenant`);
+  }
+}
+
+console.log(`[AUTO-PURGE] ✅ Cleanup completed successfully!`);
+
+💡 Zašto ovo radi bolje:
+Prije (brisanje):
+
+Pokušava obrisati korisnika → pada na foreign key constraint ❌
+
+Poslije (prebacivanje):
+
+Prebacuje korisnika u demo tenant → foreign key ostaje validan ✅
+Svi povezani zapisi (activities, badges) ostaju netaknuti ✅
+Demo korisnici nestaju iz non-demo tenanta ✅
+
+
+Ovo je čistije i sigurnije rješenje! 🎯

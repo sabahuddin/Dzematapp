@@ -146,12 +146,18 @@ export async function seedDemoData() {
 
       console.log('✅ Demo data seed completed!\n');
       
-      // AUTO-PURGE: Remove demo users from all non-demo tenants (after seeding completes)
+      // AUTO-PURGE: Move demo users from all non-demo tenants to demo tenant (after seeding completes)
       setTimeout(async () => {
         try {
           console.log('\n🧹 [AUTO-PURGE] Starting automatic demo user cleanup...');
           const allTenants = await db.select().from(tenants);
           console.log(`[AUTO-PURGE] Found ${allTenants.length} tenants`);
+          
+          const demoUsernames = [
+            'Alma', 'Alja', 'Ali', 'Haris', 'Osman', 
+            'Mujo', 'Hazo', 'Mustafa', 'Zlata', 'Hase', 
+            'Alen', 'Iso', 'Elma'
+          ];
           
           for (const tenant of allTenants) {
             if (tenant.id === DEFAULT_TENANT_ID) {
@@ -159,25 +165,31 @@ export async function seedDemoData() {
               continue;
             }
             
-            const tenantUsers = await db.select().from(users).where(
-              and(
-                eq(users.tenantId, tenant.id),
-                or(
-                  eq(users.firstName, 'Iso'), // Demo users: Iso, Elma, Hase
-                  eq(users.firstName, 'Elma'),
-                  eq(users.firstName, 'Hase'),
-                  eq(users.firstName, 'Mujo'),
-                  eq(users.firstName, 'Fata'),
-                  eq(users.firstName, 'Suljo'),
-                  eq(users.firstName, 'Haso')
+            console.log(`[AUTO-PURGE] Processing tenant: ${tenant.name}`);
+            
+            // Move demo users to demo tenant instead of deleting them
+            const movedUsers = await db.update(users)
+              .set({ tenantId: DEFAULT_TENANT_ID })
+              .where(
+                and(
+                  eq(users.tenantId, tenant.id),
+                  or(
+                    eq(users.firstName, 'Iso'),
+                    eq(users.firstName, 'Elma'),
+                    eq(users.firstName, 'Hase'),
+                    eq(users.firstName, 'Mujo'),
+                    eq(users.firstName, 'Fata'),
+                    eq(users.firstName, 'Suljo'),
+                    eq(users.firstName, 'Haso')
+                  )
                 )
               )
-            );
+              .returning({ username: users.username, firstName: users.firstName, lastName: users.lastName });
             
-            if (tenantUsers.length > 0) {
-              for (const demoUser of tenantUsers) {
-                await storage.deleteUser(demoUser.id, tenant.id);
-                console.log(`[AUTO-PURGE] ✅ Deleted ${demoUser.firstName} ${demoUser.lastName} from ${tenant.name}`);
+            if (movedUsers.length > 0) {
+              console.log(`[AUTO-PURGE] ✅ Moved ${movedUsers.length} demo users from ${tenant.name} to demo tenant`);
+              for (const user of movedUsers) {
+                console.log(`[AUTO-PURGE]   - ${user.firstName} ${user.lastName}`);
               }
             }
           }
