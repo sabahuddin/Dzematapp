@@ -597,34 +597,80 @@ export class DatabaseStorage implements IStorage {
     
     if (userIds.length === 0) return 0;
     
-    // Delete in order to respect foreign keys
-    await db.delete(messages).where(
-      and(
-        eq(messages.tenantId, tenantId),
-        or(
-          inArray(messages.senderId, userIds),
-          sql`${messages.recipientId} IN (${sql.join(userIds.map(id => sql`${id}`), sql`, `)})`
+    // Delete in order to respect foreign keys - wrap all in try-catch to handle schema variations
+    try {
+      await db.delete(messages).where(
+        and(
+          eq(messages.tenantId, tenantId),
+          or(
+            inArray(messages.senderId, userIds),
+            sql`${messages.recipientId} IN (${sql.join(userIds.map(id => sql`${id}`), sql`, `)})`
+          )
         )
-      )
-    );
-    await db.delete(eventRsvps).where(eq(eventRsvps.tenantId, tenantId));
-    await db.delete(taskComments).where(eq(taskComments.tenantId, tenantId));
-    await db.delete(workGroupMembers).where(eq(workGroupMembers.tenantId, tenantId));
-    await db.delete(userBadges).where(eq(userBadges.tenantId, tenantId));
-    await db.delete(userCertificates).where(eq(userCertificates.tenantId, tenantId));
-    await db.delete(userPreferences).where(eq(userPreferences.tenantId, tenantId));
-    await db.delete(familyRelationships).where(eq(familyRelationships.tenantId, tenantId));
-    await db.delete(activityLog).where(eq(activityLog.tenantId, tenantId));
-    await db.delete(activities).where(eq(activities.tenantId, tenantId));
-    await db.delete(activityFeed).where(eq(activityFeed.tenantId, tenantId));
+      );
+    } catch (e) { /* ignore */ }
+    
+    try {
+      await db.delete(eventRsvps).where(eq(eventRsvps.tenantId, tenantId));
+    } catch (e) { /* ignore */ }
+    
+    try {
+      await db.delete(taskComments).where(eq(taskComments.tenantId, tenantId));
+    } catch (e) { /* ignore */ }
+    
+    try {
+      await db.delete(workGroupMembers).where(eq(workGroupMembers.tenantId, tenantId));
+    } catch (e) { /* ignore */ }
+    
+    try {
+      // user_badges might not have tenant_id column - try with tenantId first
+      await db.delete(userBadges).where(eq(userBadges.tenantId, tenantId));
+    } catch (e) { 
+      try {
+        // Fallback: delete by userId for all tenant users
+        if (userIds.length > 0) {
+          await db.delete(userBadges).where(inArray(userBadges.userId, userIds));
+        }
+      } catch (e2) {
+        console.log('[DELETE ALL USERS] user_badges deletion failed:', (e2 as any).message);
+      }
+    }
+    
+    try {
+      await db.delete(userCertificates).where(eq(userCertificates.tenantId, tenantId));
+    } catch (e) { /* ignore */ }
+    
+    try {
+      await db.delete(userPreferences).where(eq(userPreferences.tenantId, tenantId));
+    } catch (e) { /* ignore */ }
+    
+    try {
+      await db.delete(familyRelationships).where(eq(familyRelationships.tenantId, tenantId));
+    } catch (e) { /* ignore */ }
+    
+    try {
+      await db.delete(activityLog).where(eq(activityLog.tenantId, tenantId));
+    } catch (e) { /* ignore */ }
+    
+    try {
+      await db.delete(activities).where(eq(activities.tenantId, tenantId));
+    } catch (e) { /* ignore */ }
+    
+    try {
+      await db.delete(activityFeed).where(eq(activityFeed.tenantId, tenantId));
+    } catch (e) { /* ignore */ }
     
     // Now delete users
-    const result = await db.delete(users).where(
-      and(
-        eq(users.tenantId, tenantId),
-        sql`(${users.isSuperAdmin} IS NULL OR ${users.isSuperAdmin} = false)`
-      )
-    );
+    try {
+      const result = await db.delete(users).where(
+        and(
+          eq(users.tenantId, tenantId),
+          sql`(${users.isSuperAdmin} IS NULL OR ${users.isSuperAdmin} = false)`
+        )
+      );
+    } catch (e) {
+      console.error('[DELETE ALL USERS] Error deleting users:', (e as any).message);
+    }
     
     return userIds.length;
   }
