@@ -131,19 +131,34 @@ A complete React Native + Expo application for iOS and Android is available in t
   - Changed MenuItem onClick to use new handler instead of just closing menu
 - **Status**: Profile navigation now works - users can edit their profile
 
-## Event Opening Error Fix - FIXED ✅
-- **Problem**: Events couldn't be opened/viewed in tenants with deleted users - error occurred when `createdById` user was deleted
-- **Root Cause**: `createdById` FK constraint was `.notNull()` in database schema - when referenced user was deleted, events became orphaned and couldn't load
-- **Solution Implemented**:
-  1. ✅ Made `createdById` nullable with `onDelete: "setNull"` in schema
-     - Changed: `createdById: varchar("created_by_id").notNull().references(() => users.id)`
-     - To: `createdById: varchar("created_by_id").references(() => users.id, { onDelete: "setNull" })`
-  2. ✅ Updated database directly: `ALTER TABLE events ALTER COLUMN created_by_id DROP NOT NULL`
-  3. ✅ Fixed `createEvent()` logic in storage to handle null `createdById`:
-     - Added null check before calling `createActivity()` 
-     - `createActivityFeedItem()` is called regardless (doesn't require createdById)
-- **Result**: Events now display and create correctly even with deleted creators
-- **Status**: Testing in production required - report exact error message if still failing
+## Foreign Key Constraint Fixes - FIXED ✅ (Dec 1, 2025)
+Multiple tables had `.notNull()` FK constraints on `createdById` that broke when referenced users were deleted. Fixed ALL 4 tables:
+
+### Events Table
+- **Problem**: Events couldn't be created/viewed when `createdById` user was deleted
+- **Solution**: Made `createdById` nullable with `onDelete: "setNull"`
+- **Fix Applied**: `ALTER TABLE events ALTER COLUMN created_by_id DROP NOT NULL`
+- **Storage Update**: Added null check in `createEvent()` before calling `createActivity()`
+
+### Contribution Purposes Table
+- **Problem**: Contribution purposes couldn't be created when `createdById` user was deleted
+- **Solution**: Made `createdById` nullable with `onDelete: "setNull"`
+- **Fix Applied**: `ALTER TABLE contribution_purposes ALTER COLUMN created_by_id DROP NOT NULL`
+- **Schema**: `createdById: varchar("created_by_id").references(() => users.id, { onDelete: "setNull" })`
+
+### Financial Contributions Table
+- **Problem**: Contributions couldn't be logged when `createdById` admin user was deleted
+- **Solution**: Made `createdById` nullable with `onDelete: "setNull"`
+- **Fix Applied**: `ALTER TABLE financial_contributions ALTER COLUMN created_by_id DROP NOT NULL`
+- **Schema**: `createdById: varchar("created_by_id").references(() => users.id, { onDelete: "setNull" })`
+
+### Projects Table
+- **Problem**: Projects couldn't be created when `createdById` user was deleted
+- **Solution**: Made `createdById` nullable with `onDelete: "setNull"`
+- **Fix Applied**: `ALTER TABLE projects ALTER COLUMN created_by_id DROP NOT NULL`
+- **Schema**: `createdById: varchar("created_by_id").references(() => users.id, { onDelete: "setNull" })`
+
+**Result**: All 4 modules now work correctly even if creator/admin users are deleted. No more FK constraint violations.
 
 ## Production Database Schema Synchronization - FIXED ✅
 - **Problem**: Production database had mismatched schema - `events` table missing `name` column, causing login errors

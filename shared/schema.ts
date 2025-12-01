@@ -581,7 +581,7 @@ export const contributionPurposes = pgTable("contribution_purposes", {
   description: text("description"),
   isDefault: boolean("is_default").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-  createdById: varchar("created_by_id").references(() => users.id), // Admin who created it
+  createdById: varchar("created_by_id").references(() => users.id, { onDelete: "setNull" }), // Admin who created it
 });
 
 export const financialContributions = pgTable("financial_contributions", {
@@ -595,7 +595,7 @@ export const financialContributions = pgTable("financial_contributions", {
   notes: text("notes"),
   projectId: varchar("project_id").references((): any => projects.id), // Optional link to project (Feature 4)
   createdAt: timestamp("created_at").defaultNow().notNull(),
-  createdById: varchar("created_by_id").references(() => users.id), // Admin who logged it
+  createdById: varchar("created_by_id").references(() => users.id, { onDelete: "setNull" }), // Admin who logged it
 });
 
 export const activityLog = pgTable("activity_log", {
@@ -657,7 +657,7 @@ export const projects = pgTable("projects", {
   goalAmount: text("goal_amount").notNull(), // decimal as text, in CHF
   currentAmount: text("current_amount").default("0").notNull(), // decimal as text, in CHF
   status: text("status").notNull().default("active"), // active, completed
-  createdById: varchar("created_by_id").notNull().references(() => users.id),
+  createdById: varchar("created_by_id").references(() => users.id, { onDelete: "setNull" }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   completedAt: timestamp("completed_at"),
 });
