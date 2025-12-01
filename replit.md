@@ -141,6 +141,19 @@ A complete React Native + Expo application for iOS and Android is available in t
 - **Admin Access**:
   - All tenants: Username `admin` / Password `admin123`
 
+## Admin User Auto-Creation Fix - FIXED ✅
+- **Problem**: When creating new tenants via SuperAdmin panel, admin users were NOT being auto-created
+- **Root Cause**: Code was passing explicit `id` to `createUser()`, but schema has `.omit({ id: true })` - ID must auto-generate
+- **Solution**:
+  - Removed explicit `id: admin-${tenantId}` from admin creation
+  - Removed invalid fields: `categories: []`, `role: 'admin'`
+  - Let database auto-generate UUID for admin user
+  - Admin will be created automatically when new tenant is created
+- **New Tenant Credentials**:
+  - Username: `admin` (auto-generated per tenant)
+  - Password: `admin123` (hardcoded default)
+  - Email: `admin+{tenantCode}@system.dzematapp` (unique per tenant)
+
 ## User Deletion Protection & Delete Button
 - Admin users (admin/admin123) protected from deletion
 - DELETE button added to Users page for tenant admins

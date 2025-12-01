@@ -5583,17 +5583,14 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       
       try {
         adminUser = await storage.createUser({
-          id: `admin-${newTenant.id}`,
           firstName: 'Admin',
           lastName: newTenant.name,
           username: adminUsername,
           email: uniqueAdminEmail,
           password: 'admin123',
-          role: 'admin',
           roles: ['admin'],
           isAdmin: true,
           tenantId: newTenant.id,
-          categories: [],
           status: 'active'
         });
         console.log('[TENANT CREATE] ✅ Admin user created with email:', uniqueAdminEmail);
