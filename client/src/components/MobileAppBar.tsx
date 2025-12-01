@@ -6,6 +6,7 @@ import { useLocation } from 'wouter';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DzematLogo } from './DzematLogo';
+import { queryClient } from '@/lib/queryClient';
 
 export const MOBILE_APP_BAR_HEIGHT = 64;
 
@@ -79,7 +80,6 @@ export function MobileAppBar({ title = 'DžematApp', showBack }: MobileAppBarPro
   };
 
   const handleLogout = async () => {
-    const { queryClient } = await import('../../lib/queryClient');
     queryClient.clear(); // Clear all cache to prevent data leakage between tenants
     await logout();
     handleMenuClose();
