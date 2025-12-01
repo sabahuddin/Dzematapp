@@ -19,6 +19,7 @@ import {
 } from '@mui/icons-material';
 import { useAuth } from '../../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
+import { queryClient } from '../../lib/queryClient';
 
 interface AppBarProps {
   onMenuClick: () => void;
@@ -39,6 +40,7 @@ export default function AppBar({ onMenuClick }: AppBarProps) {
   };
 
   const handleLogout = () => {
+    queryClient.clear(); // Clear all cache to prevent data leakage between tenants
     logout();
     handleProfileMenuClose();
   };

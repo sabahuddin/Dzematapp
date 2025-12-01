@@ -79,6 +79,8 @@ export function MobileAppBar({ title = 'DžematApp', showBack }: MobileAppBarPro
   };
 
   const handleLogout = async () => {
+    const { queryClient } = await import('../../lib/queryClient');
+    queryClient.clear(); // Clear all cache to prevent data leakage between tenants
     await logout();
     handleMenuClose();
   };
