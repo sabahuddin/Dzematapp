@@ -1,0 +1,100 @@
+sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+11:28:12 AM [express] GET /api/statistics 304 in 5ms :: {"userCount":0,"newAnnouncementsCount":0,"upc…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  username: 'superadmin',
+  userTenantId: 'tenant-superadmin-global',
+  sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+11:28:12 AM [express] GET /api/prayer-times/today 404 in 9ms :: {"message":"Prayer times not found fo…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  username: 'superadmin',
+  userTenantId: 'tenant-superadmin-global',
+  sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+11:28:12 AM [express] GET /api/messages/unread-count 304 in 14ms :: {"count":0}
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  username: 'superadmin',
+  userTenantId: 'tenant-superadmin-global',
+  sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+11:28:12 AM [express] GET /api/certificates/unviewed-count 304 in 11ms :: {"count":0}
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  username: 'superadmin',
+  userTenantId: 'tenant-superadmin-global',
+  sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+11:28:12 AM [express] GET /api/notifications/unread 304 in 11ms :: {"shop":0,"events":0,"announcement…
+11:28:12 AM [express] GET /api/events 500 in 5ms :: {"message":"Failed to fetch events"}
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  username: 'superadmin',
+  userTenantId: 'tenant-superadmin-global',
+  sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  username: 'superadmin',
+  userTenantId: 'tenant-superadmin-global',
+  sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+11:28:15 AM [express] GET /api/subscription/plans 304 in 6ms :: [{"id":"plan-basic","name":"Basic","s…
+11:28:15 AM [express] GET /api/tenants 200 in 10ms :: [{"id":"default-tenant-demo","name":"Demo Džema…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  username: 'superadmin',
+  userTenantId: 'tenant-superadmin-global',
+  sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+[GET /api/users] DEBUG: {
+  'req.user.tenantId': 'tenant-superadmin-global',
+  'session.tenantId': 'tenant-superadmin-global',
+  'req.tenantId': 'tenant-superadmin-global',
+  username: 'superadmin',
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987'
+}
+[GET /api/users] Using tenantId: tenant-superadmin-global
+[GET /api/users] Found 3 users for tenant: tenant-superadmin-global
+11:28:17 AM [express] GET /api/users 200 in 5ms :: [{"id":"b64b594b-abd8-436d-9752-8d565242df51","ten…
