@@ -123,17 +123,23 @@ A complete React Native + Expo application for iOS and Android is available in t
 
 # Recent Changes (December 2025)
 
-## Tenant Isolation Fix - Demo User Cleanup
-- **Problem**: Demo users (Iso Isic, Elma Elmic, Hase Hasic) were appearing in all tenants instead of only Demo Džemat
-- **Root Cause**: Duplicate admins created during backfill operation, combined with data leakage from demo seed
+## User Deletion Protection & Delete Button
+- **Problem**: Admin users (admin/admin123) could be accidentally deleted, preventing tenant access
 - **Solution Implemented**:
-  1. Created `POST /api/tenants/purge-demo-users` endpoint to remove demo users from non-demo tenants
-  2. Added SuperAdmin UI buttons: "Očisti duplikate" and "Obriši demo korisnike" to SuperAdmin Panel
-  3. Executed purge which removed all demo users from GAM9000 and SG77245
-  4. Verified database integrity - all tenants now have correct user isolation
-- **Current State**:
-  - Total 27 users in production: 24 in Demo Džemat + 1 SuperAdmin + 1 admin GAM + 1 admin SG77245
-  - Demo users exist ONLY in Demo Džemat where they belong
-  - All other tenants have only their assigned admin user
-  - Tenant isolation is now strict and operational
-  - Ready for deployment to production dzematapp.com
+  1. Added DELETE button (red 🗑️) to Users page - allows admins to delete individual users
+  2. Protected admin users from deletion via endpoint: `app.delete("/api/users/:id")` checks `username !== 'admin'`
+  3. Protected admin users from batch deletion via `deleteAllTenantUsers()` - added WHERE condition to exclude admin username
+  4. DELETE endpoint returns 403 Forbidden if attempting to delete admin/admin123 or self
+- **Current Production Tenants** (verified):
+  - **DEMO2025** (Demo Džemat): 24 users ✅
+  - **GAM9000** (GAM): 1 admin user ✅
+  - **9008** (ghb): 1 admin user ✅
+  - **SUPERADMIN_ONLY** (Global): 1 superadmin user ✅
+  - Total: 27 users across 4 tenants
+  - All tenant admins are protected and functional
+  - SG77245: Does not exist (was never created in production)
+- **Tenant Admin Access**:
+  - GAM9000: `admin/admin123` ✅
+  - 9008 (ghb): `admin/admin123` ✅
+  - DEMO2025: `admin/admin123` ✅
+  - SUPERADMIN_ONLY: `superadmin/admin123` ✅
