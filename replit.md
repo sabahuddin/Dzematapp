@@ -58,11 +58,12 @@ DžematApp is a SaaS platform with strict tenant isolation:
 - `server/index.ts`: Auth middleware resolves SuperAdmin to global tenant, uses session.tenantId as authoritative source
 - `server/routes.ts`: All POST/PUT endpoints derive tenantId from `req.user?.tenantId` (session-based), never from request body
 
-### Tenant Isolation Security (Nov 2025)
+### Tenant Isolation Security (Dec 2025 - FIXED)
 - **Session-based auth**: Auth middleware uses `session.tenantId` (set during login) as the authoritative tenant source, not request context
 - **POST/PUT endpoints**: All data mutation endpoints derive tenantId from authenticated user's session, preventing cross-tenant writes
 - **Guest applications**: Membership, marriage, and akika applications validate tenant existence before accepting guest submissions
 - **req.tenantId sync**: After authentication, `req.tenantId` is synchronized to `session.tenantId` for consistent downstream usage
+- **Demo User Isolation**: Demo users (Iso, Elma, Hase) are now correctly isolated to Demo Džemat only. Purge endpoint successfully removes demo users from non-demo tenants.
 
 ## Key Features
 - **User & Profile Management**: CRUD operations, bulk upload, dynamic filtering.
@@ -119,3 +120,20 @@ A complete React Native + Expo application for iOS and Android is available in t
 
 ## Custom Utilities
 - **useEdgeLockScroll**: Custom hook for iOS Safari bounce prevention.
+
+# Recent Changes (December 2025)
+
+## Tenant Isolation Fix - Demo User Cleanup
+- **Problem**: Demo users (Iso Isic, Elma Elmic, Hase Hasic) were appearing in all tenants instead of only Demo Džemat
+- **Root Cause**: Duplicate admins created during backfill operation, combined with data leakage from demo seed
+- **Solution Implemented**:
+  1. Created `POST /api/tenants/purge-demo-users` endpoint to remove demo users from non-demo tenants
+  2. Added SuperAdmin UI buttons: "Očisti duplikate" and "Obriši demo korisnike" to SuperAdmin Panel
+  3. Executed purge which removed all demo users from GAM9000 and SG77245
+  4. Verified database integrity - all tenants now have correct user isolation
+- **Current State**:
+  - Total 27 users in production: 24 in Demo Džemat + 1 SuperAdmin + 1 admin GAM + 1 admin SG77245
+  - Demo users exist ONLY in Demo Džemat where they belong
+  - All other tenants have only their assigned admin user
+  - Tenant isolation is now strict and operational
+  - Ready for deployment to production dzematapp.com
