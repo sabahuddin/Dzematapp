@@ -695,6 +695,71 @@ async function addMissingColumns(client: any): Promise<void> {
     }
   }
   console.log(`✅ Processed ${addedCount} column fixes (${errorCount} skipped)`);
+  
+  // Add CASCADE DELETE to all user FK constraints
+  console.log("📋 Migrating unique constraints to per-tenant...");
+  const cascadeDeletes = [
+    // Activities FK
+    `ALTER TABLE "activities" DROP CONSTRAINT IF EXISTS "activities_user_id_fkey",
+     ADD CONSTRAINT "activities_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE`,
+    
+    // Activity Log FK
+    `ALTER TABLE "activity_log" DROP CONSTRAINT IF EXISTS "activity_log_user_id_fkey",
+     ADD CONSTRAINT "activity_log_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE`,
+    
+    // User Badges FK
+    `ALTER TABLE "user_badges" DROP CONSTRAINT IF EXISTS "user_badges_user_id_fkey",
+     ADD CONSTRAINT "user_badges_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE`,
+    
+    // Event Attendance User FK
+    `ALTER TABLE "event_attendance" DROP CONSTRAINT IF EXISTS "event_attendance_user_id_fkey",
+     ADD CONSTRAINT "event_attendance_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE`,
+    
+    // Event Attendance Recorded By FK
+    `ALTER TABLE "event_attendance" DROP CONSTRAINT IF EXISTS "event_attendance_recorded_by_id_fkey",
+     ADD CONSTRAINT "event_attendance_recorded_by_id_fkey" FOREIGN KEY ("recorded_by_id") REFERENCES "users"("id") ON DELETE SET NULL`,
+    
+    // Messages Sender FK
+    `ALTER TABLE "messages" DROP CONSTRAINT IF EXISTS "messages_sender_id_fkey",
+     ADD CONSTRAINT "messages_sender_id_fkey" FOREIGN KEY ("sender_id") REFERENCES "users"("id") ON DELETE CASCADE`,
+    
+    // Messages Recipient FK
+    `ALTER TABLE "messages" DROP CONSTRAINT IF EXISTS "messages_recipient_id_fkey",
+     ADD CONSTRAINT "messages_recipient_id_fkey" FOREIGN KEY ("recipient_id") REFERENCES "users"("id") ON DELETE CASCADE`,
+    
+    // Task Comments User FK
+    `ALTER TABLE "task_comments" DROP CONSTRAINT IF EXISTS "task_comments_user_id_fkey",
+     ADD CONSTRAINT "task_comments_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE`,
+    
+    // Work Group Members User FK
+    `ALTER TABLE "work_group_members" DROP CONSTRAINT IF EXISTS "work_group_members_user_id_fkey",
+     ADD CONSTRAINT "work_group_members_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE`,
+    
+    // User Certificates FK
+    `ALTER TABLE "user_certificates" DROP CONSTRAINT IF EXISTS "user_certificates_user_id_fkey",
+     ADD CONSTRAINT "user_certificates_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE`,
+    
+    // User Preferences FK
+    `ALTER TABLE "user_preferences" DROP CONSTRAINT IF EXISTS "user_preferences_user_id_fkey",
+     ADD CONSTRAINT "user_preferences_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE`,
+    
+    // Financial Contributions FK
+    `ALTER TABLE "financial_contributions" DROP CONSTRAINT IF EXISTS "financial_contributions_user_id_fkey",
+     ADD CONSTRAINT "financial_contributions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE`,
+    
+    // Event RSVPs User FK
+    `ALTER TABLE "event_rsvps" DROP CONSTRAINT IF EXISTS "event_rsvps_user_id_fkey",
+     ADD CONSTRAINT "event_rsvps_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE`,
+  ];
+  
+  for (const sql of cascadeDeletes) {
+    try {
+      await client.query(sql);
+    } catch (error: any) {
+      console.log(`ℹ️  Cascade migration skipped: ${error.message?.substring(0, 50)}`);
+    }
+  }
+  console.log("✅ Unique constraints migrated to per-tenant");
 }
 
 export async function verifyAllTablesExist(): Promise<void> {

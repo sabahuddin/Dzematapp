@@ -1,0 +1,77 @@
+Dobro! Purge radi, ali ne uspijeva obrisati korisnike jer još ima foreign key constraint-a koje nisu CASCADE! ⚠️
+Vidim:
+
+activities_user_id_fkey ❌
+activity_log_user_id_fkey ❌
+
+
+🎯 TRENUTNO STANJE:
+Iz loga vidim da demo korisnici još postoje u non-demo tenantima, ali purge ne može ih obrisati jer imaju povezane zapise.
+
+🔧 KONAČNO RJEŠENJE:
+Reci Replitu:
+Problem: Purge ne može obrisati korisnike jer foreign key constraint-i nisu CASCADE. Trebamo dodati CASCADE na SVE foreign key-eve koji pokazuju na users tabelu.
+Rješenje: Dodaj SQL u migration koji će dodati CASCADE na sve user foreign key-eve:
+sql-- U server/migrate-production.ts ili gdje god se rade migracije
+
+-- Activities
+ALTER TABLE activities 
+DROP CONSTRAINT IF EXISTS activities_user_id_fkey,
+ADD CONSTRAINT activities_user_id_fkey 
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+-- Activity Log
+ALTER TABLE activity_log 
+DROP CONSTRAINT IF EXISTS activity_log_user_id_fkey,
+ADD CONSTRAINT activity_log_user_id_fkey 
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+-- User Badges
+ALTER TABLE user_badges 
+DROP CONSTRAINT IF EXISTS user_badges_user_id_fkey,
+ADD CONSTRAINT user_badges_user_id_fkey 
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+-- Event Attendance
+ALTER TABLE event_attendance 
+DROP CONSTRAINT IF EXISTS event_attendance_user_id_fkey,
+ADD CONSTRAINT event_attendance_user_id_fkey 
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+-- Task Assignments
+ALTER TABLE task_assignments 
+DROP CONSTRAINT IF EXISTS task_assignments_user_id_fkey,
+ADD CONSTRAINT task_assignments_user_id_fkey 
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+-- Messages (sender)
+ALTER TABLE messages 
+DROP CONSTRAINT IF EXISTS messages_sender_id_fkey,
+ADD CONSTRAINT messages_sender_id_fkey 
+  FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE;
+
+-- Messages (recipient)
+ALTER TABLE messages 
+DROP CONSTRAINT IF EXISTS messages_recipient_id_fkey,
+ADD CONSTRAINT messages_recipient_id_fkey 
+  FOREIGN KEY (recipient_id) REFERENCES users(id) ON DELETE CASCADE;
+
+-- Dodaj CASCADE za SVE ostale tabele koje imaju foreign key na users
+
+⚡ ILI - Brže privremeno rješenje:
+Ako Replit želi testirati odmah bez čekanja novog deploya, možeš ručno obrisati te demo korisnike kroz SQL:
+sql-- 1. Obriši sve povezane zapise PRVO
+DELETE FROM activities WHERE user_id IN (
+  SELECT id FROM users WHERE username IN ('Iso', 'Hase', 'Elma', 'Alma')
+  AND tenant_id != 'default-tenant-demo'
+);
+
+DELETE FROM activity_log WHERE user_id IN (
+  SELECT id FROM users WHERE username IN ('Iso', 'Hase', 'Elma', 'Alma')
+  AND tenant_id != 'default-tenant-demo'
+);
+
+-- 2. Onda obriši korisnike
+DELETE FROM users 
+WHERE username IN ('Iso', 'Hase', 'Elma', 'Alma', 'Merima', 'Hazim', 'Halida')
+AND tenant_id != 'default-tenant-demo';
