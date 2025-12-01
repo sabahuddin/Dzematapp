@@ -1,0 +1,82 @@
+> rest-express@1.0.0 start
+> NODE_ENV=production node dist/index.js
+
+🔗 Created symlink: /app/server/public -> ../public
+✅ Using PostgreSQL session store
+🔄 Starting database schema synchronization...
+🔄 Running production schema migration...
+ℹ️  Tables already exist, applying column fixes...
+📋 Creating missing tables...
+✅ Table creation complete: 17 processed, 0 already existed
+📋 Migrating unique constraints to per-tenant...
+✅ Unique constraints migrated to per-tenant
+📋 Updating admin usernames to new standard...
+✅ Admin usernames and names updated
+📋 Adding missing columns to existing tables...
+✅ Processed 193 column fixes (0 skipped)
+✅ Schema migration complete
+📋 Verifying all schema tables exist...
+✅ All 44 tables verified
+✅ Database schema synchronized successfully!
+[INIT] Registering /api/auth/superadmin/login endpoint
+📂 Serving static files from: /app/dist/public
+3:22:05 PM [express] serving on port 3000
+✅ Admin user already exists
+✅ Contribution purposes already exist
+🌱 Starting default tenant seed...
+
+📋 Creating subscription plans...
+ℹ️  Subscription plans already exist
+
+🔐 Creating SuperAdmin global tenant...
+ℹ️  SuperAdmin global tenant already exists
+
+🏢 Creating default tenant...
+ℹ️  Default tenant already exists: Demo Džemat
+
+👤 Creating SuperAdmin user...
+ℹ️  SuperAdmin user already exists
+
+👤 Creating demo tenant admin...
+ℹ️  Demo admin user already exists
+
+✅ Seed completed successfully!
+
+📊 Default Tenant ID: default-tenant-demo
+   Name: Demo Džemat
+   Tier: full
+   Status: trial
+
+🌱 Seeding demo data for Demo Džemat...
+ℹ️ Demo users already exist
+ℹ️ Demo data already exists
+✅ Demo data seed completed!
+
+
+🧹 [AUTO-PURGE] Starting automatic demo user cleanup...
+[AUTO-PURGE] Found 4 tenants
+[AUTO-PURGE] Skipping demo tenant Demo Džemat
+npm warn config production Use `--omit=dev` instead.
+[AUTO-PURGE] ❌ Cleanup failed: error: column user_badges.tenant_id does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async DatabaseStorage.deleteUser (file:///app/dist/index.js:1300:5)
+    at async Timeout._onTimeout (file:///app/dist/index.js:3349:17) {
+  length: 119,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '67',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3716',
+  routine: 'errorMissingColumn'
+}
