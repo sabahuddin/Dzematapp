@@ -582,12 +582,21 @@ export class DatabaseStorage implements IStorage {
       await db.delete(activityLog).where(and(eq(activityLog.userId, id), eq(activityLog.tenantId, tenantId)));
     } catch (e) { /* ignore */ }
     
-    // Now delete the user
-    const result = await db.delete(users).where(
-      and(eq(users.id, id), eq(users.tenantId, tenantId))
-    ).returning();
+    try {
+      // Delete activities that reference this user
+      await db.delete(activities).where(and(eq(activities.userId, id), eq(activities.tenantId, tenantId)));
+    } catch (e) { /* ignore */ }
     
-    return result.length > 0;
+    // Now delete the user
+    try {
+      const result = await db.delete(users).where(
+        and(eq(users.id, id), eq(users.tenantId, tenantId))
+      ).returning();
+      return result.length > 0;
+    } catch (e) {
+      console.error('[DELETE USER] Error deleting user:', (e as any).message);
+      return false;
+    }
   }
 
   async deleteAllTenantUsers(tenantId: string): Promise<number> {
