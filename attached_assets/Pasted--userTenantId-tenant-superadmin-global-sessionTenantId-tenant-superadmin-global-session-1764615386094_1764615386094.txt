@@ -1,0 +1,100 @@
+  userTenantId: 'tenant-superadmin-global',
+  sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+[STORAGE] ✅ Found existing org settings: 34a8a10f-2eeb-41e5-bfe3-89d9d12341a3
+[ORG-SETTINGS] ✅ Success: 34a8a10f-2eeb-41e5-bfe3-89d9d12341a3
+6:47:39 PM [express] GET /api/events 500 in 15ms :: {"message":"Failed to fetch events","error":"col…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  username: 'superadmin',
+  userTenantId: 'tenant-superadmin-global',
+  sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+6:47:39 PM [express] GET /api/certificates/unviewed-count 304 in 23ms :: {"count":0}
+6:47:39 PM [express] GET /api/organization-settings 304 in 22ms :: {"id":"34a8a10f-2eeb-41e5-bfe3-89…
+6:47:39 PM [express] GET /api/activities 304 in 8ms :: []
+6:47:39 PM [express] GET /api/notifications/unread 304 in 45ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  username: 'superadmin',
+  userTenantId: 'tenant-superadmin-global',
+  sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+[GET /api/users] DEBUG: {
+  'req.user.tenantId': 'tenant-superadmin-global',
+  'session.tenantId': 'tenant-superadmin-global',
+  'req.tenantId': 'tenant-superadmin-global',
+  username: 'superadmin',
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987'
+}
+[GET /api/users] Using tenantId: tenant-superadmin-global
+[GET /api/users] Found 0 users for tenant: tenant-superadmin-global
+6:48:08 PM [express] GET /api/users 304 in 5ms :: []
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  username: 'superadmin',
+  userTenantId: 'tenant-superadmin-global',
+  sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+[MESSAGES/UNREAD-COUNT] Debug: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  sessionTenantId: 'tenant-superadmin-global',
+  userTenantId: 'tenant-superadmin-global',
+  reqTenantId: 'tenant-superadmin-global',
+  resolvedTenantId: 'tenant-superadmin-global'
+}
+6:48:09 PM [express] GET /api/messages/unread-count 304 in 8ms :: {"count":0}
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  username: 'superadmin',
+  userTenantId: 'tenant-superadmin-global',
+  sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+6:48:09 PM [express] GET /api/certificates/unviewed-count 304 in 4ms :: {"count":0}
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  username: 'superadmin',
+  userTenantId: 'tenant-superadmin-global',
+  sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+6:48:09 PM [express] GET /api/notifications/unread 304 in 31ms :: {"shop":0,"events":0,"announcement…
+[ORG-SETTINGS] Getting settings for tenant: default-tenant-demo
+6:53:56 PM [express] GET /api/auth/session 401 in 2ms :: {"message":"Not authenticated"}
+[STORAGE] ✅ Found existing org settings: fe93405c-6d88-4363-8dec-75b45f796008
+[ORG-SETTINGS] ✅ Success: fe93405c-6d88-4363-8dec-75b45f796008
+6:53:56 PM [express] GET /api/organization-settings 200 in 7ms :: {"id":"fe93405c-6d88-4363-8dec-75b…
+6:53:57 PM [express] GET /api/auth/session 401 in 2ms :: {"message":"Not authenticated"}
+[ORG-SETTINGS] Getting settings for tenant: default-tenant-demo
+[STORAGE] ✅ Found existing org settings: fe93405c-6d88-4363-8dec-75b45f796008
+[ORG-SETTINGS] ✅ Success: fe93405c-6d88-4363-8dec-75b45f796008
+6:53:57 PM [express] GET /api/organization-settings 304 in 4ms :: {"id":"fe93405c-6d88-4363-8dec-75b…
+    at async DatabaseStorage.getAllEvents (file:///app/dist/index.js:1511:12)
+    at async file:///app/dist/index.js:5375:23
