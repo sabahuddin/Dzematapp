@@ -15,6 +15,16 @@ export async function migrateProductionSchema(): Promise<void> {
   const client = await pool.connect();
 
   try {
+    // First cleanup broken data (created_by_id='system' references)
+    console.log("🧹 Cleaning up broken data references...");
+    try {
+      await client.query("UPDATE contribution_purposes SET created_by_id = NULL WHERE created_by_id = 'system'");
+      await client.query("UPDATE financial_contributions SET created_by_id = NULL WHERE created_by_id = 'system'");
+      console.log("✅ Cleaned up broken data references");
+    } catch (error: any) {
+      console.log("ℹ️  No broken data to clean up");
+    }
+
     const db = drizzle(pool, { schema });
     try {
       await migrate(db, { migrationsFolder: "./migrations" });
