@@ -5609,22 +5609,14 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         });
       }
       
-      if (adminUser) {
-        console.log('[TENANT CREATE] ✅ Admin user created:', adminUser.username, '/ password: admin123');
-        return res.status(201).json({
-          ...newTenant,
-          adminCredentials: {
-            username: adminUsername,
-            password: 'admin123'
-          }
-        });
-      } else {
-        return res.status(201).json({
-          ...newTenant,
-          adminCredentials: null,
-          adminError: 'Failed to create admin user'
-        });
-      }
+      console.log('[TENANT CREATE] ✅ Tenant with admin created successfully');
+      return res.status(201).json({
+        ...newTenant,
+        adminCredentials: {
+          username: adminUsername,
+          password: 'admin123'
+        }
+      });
     } catch (error) {
       if (error instanceof ZodError) {
         console.error('[TENANT CREATE] Validation error:', error.errors);
