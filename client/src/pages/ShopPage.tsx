@@ -98,9 +98,9 @@ export default function ShopPage() {
     queryKey: ['/api/marketplace/items'],
   });
 
-  // Fetch users for displaying names
+  // Fetch users for displaying names - SCOPED BY TENANT
   const { data: users } = useQuery<User[]>({
-    queryKey: ['/api/users'],
+    queryKey: ['/api/users', user?.tenantId],
   });
 
   // Fetch services

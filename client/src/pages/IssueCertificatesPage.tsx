@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/select";
 import { Award, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/hooks/useAuth";
 
 interface User {
   id: string;
@@ -55,14 +56,15 @@ interface IssueCertificatesPageProps {
 export default function IssueCertificatesPage({ hideHeader = false }: IssueCertificatesPageProps = {}) {
   const { t } = useTranslation();
   const { toast } = useToast();
+  const { user: currentUser } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
   const [selectedTemplate, setSelectedTemplate] = useState<string>("");
   const [customMessage, setCustomMessage] = useState("");
 
-  // Fetch users
+  // Fetch users - SCOPED BY TENANT
   const { data: users = [], isLoading: usersLoading } = useQuery<User[]>({
-    queryKey: ['/api/users'],
+    queryKey: ['/api/users', currentUser?.tenantId],
   });
 
   // Fetch templates

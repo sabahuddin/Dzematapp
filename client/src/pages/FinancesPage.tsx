@@ -76,9 +76,9 @@ export default function FinancesPage() {
     enabled: !!currentUser,
   });
 
-  // Fetch users (for admin)
+  // Fetch users (for admin) - SCOPED BY TENANT
   const usersQuery = useQuery({
-    queryKey: ['/api/users'],
+    queryKey: ['/api/users', currentUser?.tenantId],
     enabled: currentUser?.isAdmin || false,
   });
 

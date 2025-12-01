@@ -1,0 +1,85 @@
+🔧 RJEŠENJE - 3 FAJLA:
+1. Fajl: client/src/lib/queryClient.ts
+Dodaj tenantId u sve query keys:
+typescriptimport { QueryClient } from '@tanstack/react-query';
+
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      queryKeyHashFn: (queryKey) => {
+        // Include tenantId in cache key to separate tenant data
+        const key = JSON.stringify(queryKey);
+        return key;
+      },
+      staleTime: 0, // Force fresh data on tenant switch
+      cacheTime: 5 * 60 * 1000, // Keep in cache for 5 min
+    },
+  },
+});
+
+2. Fajl: client/src/pages/UsersPage.tsx (ili gdje god se koristi /api/users)
+Promijeni query key da uključi tenantId:
+Nađi:
+typescriptconst { data: users } = useQuery({
+  queryKey: ['/api/users'],
+  queryFn: () => fetch('/api/users').then(r => r.json())
+});
+Zamijeni sa:
+typescriptconst { data: users } = useQuery({
+  queryKey: ['/api/users', user?.tenantId], // Dodaj tenantId!
+  queryFn: () => fetch('/api/users').then(r => r.json())
+});
+
+3. Fajl: client/src/components/modals/AddMemberModal.tsx (ili gdje se invalidira cache)
+Promijeni invalidateQueries:
+Nađi:
+typescriptqueryClient.invalidateQueries({ queryKey: ['/api/users'] });
+Zamijeni sa:
+typescriptqueryClient.invalidateQueries({ 
+  queryKey: ['/api/users', user?.tenantId] // Dodaj tenantId!
+});
+
+ISTI PATTERN primijeni na SVE endpoint-e koji su tenant-specific:
+typescript// Events
+queryKey: ['/api/events', user?.tenantId]
+
+// Messages  
+queryKey: ['/api/messages', user?.tenantId]
+
+// Announcements
+queryKey: ['/api/announcements', user?.tenantId]
+
+// Tasks
+queryKey: ['/api/tasks', user?.tenantId]
+
+// itd...
+
+🎯 Zašto ovo radi:
+PRIJE:
+
+GAM9000 login → cache key: ['/api/users'] → 1 korisnik
+DEMO2025 login → cache key: ['/api/users'] → React Query kaže "već imam" → pokazuje GAM9000 podatke ❌
+
+POSLIJE:
+
+GAM9000 login → cache key: ['/api/users', 'GAM9000'] → 1 korisnik
+DEMO2025 login → cache key: ['/api/users', 'default-tenant-demo'] → novi request → 24 korisnika ✅
+
+
+📋 DODATNO - Očisti cache pri logout-u:
+U logout funkciji, dodaj:
+typescriptconst handleLogout = async () => {
+  await fetch('/api/auth/logout', { method: 'POST' });
+  queryClient.clear(); // Očisti SVE cache podatke!
+  // redirect to login
+};
+
+🚀 Nakon deployment-a:
+
+Obriši browser cache (Ctrl+Shift+Del) ili Incognito mode
+Login u DEMO2025 → trebao bi vidjeti 24 korisnika ✅
+Logout → Login u GAM9000 → trebao bi vidjeti 1 korisnika ✅
+Logout → Login u SG77245 → trebao bi vidjeti 1 korisnika ✅
+
+
+Ovo je bio FRONTEND problem, ne backend! Backend je radio savršeno cijelo vrijeme. 🎯

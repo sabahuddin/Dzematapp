@@ -529,7 +529,7 @@ export default function TaskManagerPage() {
   const isIOOrAdminCheck = user?.isAdmin || user?.roles?.includes('clan_io');
 
   const usersQuery = useQuery<User[]>({
-    queryKey: ['/api/users'],
+    queryKey: ['/api/users', user?.tenantId],
     retry: 1,
     enabled: isIOOrAdminCheck,
   });

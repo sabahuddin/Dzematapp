@@ -120,7 +120,7 @@ export default function ActivityLogPage() {
   });
 
   const usersQuery = useQuery({
-    queryKey: ['/api/users'],
+    queryKey: ['/api/users', currentUser?.tenantId],
     enabled: currentUser?.isAdmin || false,
   });
 

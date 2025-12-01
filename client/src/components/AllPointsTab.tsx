@@ -48,9 +48,9 @@ export default function AllPointsTab() {
     );
   }
 
-  // Fetch users
+  // Fetch users - SCOPED BY TENANT
   const usersQuery = useQuery<User[]>({
-    queryKey: ['/api/users'],
+    queryKey: ['/api/users', currentUser?.tenantId],
     enabled: !!currentUser?.isAdmin,
   });
 

@@ -16,10 +16,10 @@ export default function MyProfilePage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
 
-  // Fetch full user data from API
+  // Fetch full user data from API - SCOPED BY TENANT
   const { data: user, isLoading } = useQuery<any>({
-    queryKey: ['/api/users', currentUser?.id],
-    enabled: !!currentUser?.id,
+    queryKey: ['/api/users', currentUser?.tenantId],
+    enabled: !!currentUser?.tenantId,
     select: (data: any[]) => data.find((u: any) => u.id === currentUser?.id),
   });
 
@@ -39,7 +39,7 @@ export default function MyProfilePage() {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/users', currentUser?.id] });
+      queryClient.invalidateQueries({ queryKey: ['/api/users', currentUser?.tenantId] });
       queryClient.invalidateQueries({ queryKey: ['/api/auth/session'] });
       toast({ title: 'Uspješno', description: 'Profil je uspješno ažuriran' });
       setModalOpen(false);
