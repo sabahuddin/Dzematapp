@@ -136,7 +136,17 @@ app.use(async (req, res, next) => {
       } else {
         // Regular user: Find in their tenant FROM SESSION (not from request context)
         // session.tenantId is set during login and is the authoritative source
-        const userTenantId = session.tenantId || req.tenantId;
+        // STRICT: Do NOT fallback to req.tenantId - that enables cross-tenant access!
+        const userTenantId = session.tenantId;
+        
+        if (!userTenantId) {
+          console.log('[AUTH MIDDLEWARE] ⚠️ Missing session.tenantId - clearing session');
+          session.userId = undefined;
+          session.isSuperAdmin = undefined;
+          session.tenantId = undefined;
+          return next();
+        }
+        
         user = await storage.getUser(session.userId, userTenantId);
       }
       

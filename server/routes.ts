@@ -3026,7 +3026,17 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
 
   app.get("/api/messages/unread-count", requireAuth, requireFeature("messages"), async (req, res) => {
     try {
-      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      const session = req.session as any;
+      const tenantId = session.tenantId || req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      
+      console.log('[MESSAGES/UNREAD-COUNT] Debug:', {
+        userId: req.user.id,
+        sessionTenantId: session.tenantId,
+        userTenantId: req.user?.tenantId,
+        reqTenantId: req.tenantId,
+        resolvedTenantId: tenantId
+      });
+      
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
       }
@@ -3034,7 +3044,12 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       const count = await storage.getUnreadCount(req.user.id, tenantId);
       res.json({ count });
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch unread count" });
+      console.error('❌ [MESSAGES/UNREAD-COUNT] Error:', error);
+      console.error('Stack trace:', error instanceof Error ? error.stack : 'N/A');
+      res.status(500).json({ 
+        message: "Failed to fetch unread count", 
+        error: error instanceof Error ? error.message : String(error) 
+      });
     }
 });
 
