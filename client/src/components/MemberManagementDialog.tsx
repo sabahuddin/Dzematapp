@@ -226,6 +226,7 @@ export default function MemberManagementDialog({
                 {(membersQuery.data as any[]).map((member: any, index: number) => {
                   const user = member.user || member; // Handle different response structures
                   const isModerator = member.isModerator || false;
+                  const userName = user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : (user?.email || `Korisnik ${member.userId}`);
                   return (
                     <ListItem 
                       key={member.id || index}
@@ -236,13 +237,13 @@ export default function MemberManagementDialog({
                           bgcolor: 'action.hover'
                         }
                       }}
-                      data-testid={`member-item-${user.id || index}`}
+                      data-testid={`member-item-${user?.id || index}`}
                     >
                       <ListItemText
                         primary={
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                             <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
-                              {user.firstName} {user.lastName}
+                              {userName}
                             </Typography>
                             {isModerator && (
                               <Chip 
@@ -261,7 +262,7 @@ export default function MemberManagementDialog({
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                               <Email sx={{ fontSize: 14, color: 'text.secondary' }} />
                               <Typography variant="body2" color="text.secondary">
-                                {user.email}
+                                {user?.email || 'Email nije dostupan'}
                               </Typography>
                             </Box>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
@@ -277,7 +278,7 @@ export default function MemberManagementDialog({
                         <Box sx={{ display: 'flex', gap: 1 }}>
                           {currentUser?.isAdmin && (
                             <IconButton
-                              onClick={() => handleToggleModerator(user.id, isModerator, `${user.firstName} ${user.lastName}`)}
+                              onClick={() => handleToggleModerator(user?.id || member.userId, isModerator, userName)}
                               disabled={toggleModeratorMutation.isPending}
                               sx={{ 
                                 color: isModerator ? 'warning.main' : 'text.secondary',
@@ -285,7 +286,7 @@ export default function MemberManagementDialog({
                                   bgcolor: isModerator ? 'warning.light' : 'action.hover'
                                 }
                               }}
-                              data-testid={`button-toggle-moderator-${user.id}`}
+                              data-testid={`button-toggle-moderator-${user?.id || member.userId}`}
                               title={isModerator ? 'Ukloni moderator status' : 'Postavi kao moderatora'}
                             >
                               {toggleModeratorMutation.isPending ? (
@@ -299,7 +300,7 @@ export default function MemberManagementDialog({
                           )}
                           <IconButton
                             edge="end"
-                            onClick={() => handleRemoveMember(user.id, `${user.firstName} ${user.lastName}`)}
+                            onClick={() => handleRemoveMember(user?.id || member.userId, userName)}
                             disabled={removeMemberMutation.isPending}
                             sx={{ 
                               color: 'error.main',
@@ -308,7 +309,7 @@ export default function MemberManagementDialog({
                                 color: 'error.contrastText'
                               }
                             }}
-                            data-testid={`button-remove-member-${user.id}`}
+                            data-testid={`button-remove-member-${user?.id || member.userId}`}
                           >
                             {removeMemberMutation.isPending ? (
                               <CircularProgress size={20} />

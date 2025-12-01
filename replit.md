@@ -1,6 +1,6 @@
 # Overview
 
-DžematApp is a mobile-first Progressive Web App (PWA) for mosque community management. It provides a comprehensive system for administrators to manage users, announcements, events, work groups ("Sekcije"), and tasks. The application aims to enhance community engagement and administrative efficiency, offering a robust platform accessible on various devices with a native-app-like experience, offline support, and a clean, light-green themed design. Key features include user management, event scheduling, a task manager with role-based interfaces, expense tracking, a shop module, prayer times, and a robust notification system.
+DžematApp is a mobile-first Progressive Web App (PWA) designed for mosque community management. It aims to enhance community engagement and administrative efficiency by providing a comprehensive platform for managing users, announcements, events, work groups ("Sekcije"), and tasks. Key capabilities include user management, event scheduling, a task manager with role-based interfaces, expense tracking, a shop module, prayer times, and a robust notification system. The application offers a native-app-like experience with offline support and a consistent light-green themed design.
 
 # User Preferences
 
@@ -12,66 +12,32 @@ DžematApp is a mobile-first Progressive Web App (PWA) for mosque community mana
 # System Architecture
 
 ## Frontend
-The frontend is a React with TypeScript application, employing a component-based, mobile-first design. It uses Vite, Material-UI (MUI), shadcn/ui, and Tailwind CSS. Wouter is used for routing, React Query for server state management, and context-based authentication with localStorage.
-
-### Mobile-First Design
-Features a fixed layout system with a 64px TopBar and 88px BottomNavigation, preventing iOS Safari bounce with a custom `useEdgeLockScroll` hook. It utilizes a consistent 16px padding system and automatically resets scroll positions on route changes. The PWA is configured for offline support and installability with optimized app icons.
-
-### Branding
-The application uses a custom transparent SVG logo (crescent moon and book symbol in blue #2196F3), a complete suite of app icons, and a light-green Material-UI based theme.
+The frontend is a React with TypeScript application, built with Vite, Material-UI (MUI), shadcn/ui, and Tailwind CSS. It uses Wouter for routing, React Query for server state management, and context-based authentication with localStorage. The design is mobile-first, featuring a fixed layout with a 64px TopBar and 88px BottomNavigation, using a custom `useEdgeLockScroll` hook for iOS bounce prevention. The PWA is configured for offline support and installability, utilizing a custom transparent SVG logo (crescent moon and book symbol in blue #2196F3) and a light-green Material-UI based theme.
 
 ## Backend
-The backend is an Express.js application written in TypeScript, providing a REST API. It uses Drizzle ORM for type-safe database interactions with PostgreSQL. It includes centralized error handling and persistent data storage.
+The backend is an Express.js application written in TypeScript, providing a REST API. It uses Drizzle ORM for type-safe database interactions with PostgreSQL. It includes centralized error handling.
 
 ## Data Storage
-A PostgreSQL database, hosted on Hetzner, is used for all persistent data storage, managed via Drizzle ORM for type-safe schema definitions.
-
-### Automatic Schema Synchronization
-The application automatically synchronizes the database schema on every startup (both development and production). The `migrateProductionSchema()` function in `server/migrate-production.ts` runs before the server starts, ensuring all tables and columns exist. In production, if migration fails, the application will not start (fail-fast approach).
+A PostgreSQL database, hosted on Hetzner, is used for all persistent data storage, managed via Drizzle ORM. The application automatically synchronizes the database schema on every startup, ensuring all tables and columns exist, with a fail-fast approach if migration fails in production.
 
 ## Authentication and Authorization
-The system uses session-based authentication with username/password, supporting guest access. Role-based access control includes Admin, Executive Board Member, Member, and Family Member roles, with administrators capable of assigning work group moderators.
+The system employs session-based authentication with username/password, supporting guest access. Role-based access control includes Admin, Executive Board Member, Member, and Family Member roles.
 
 ## Multi-Tenancy Architecture
-DžematApp is a SaaS platform with strict tenant isolation:
-
-### Tenant Isolation Rules
-- **SuperAdmin Global Tenant** (`tenant-superadmin-global`): A hidden tenant exclusively for SuperAdmin users. Never visible in regular tenant listings.
-- **Regular Tenants**: Each organization (džemat) gets its own tenant with completely isolated data.
-- **User Isolation**: Users belong to exactly one tenant. SuperAdmin users live in the global tenant and can manage all tenants.
-- **New Tenant Creation**: New tenants start empty with 0 users - no data inheritance from other tenants.
-
-### SuperAdmin Access
-- **Login**: Use `/superadmin` page with `superadmin/admin123`
-- **Scope**: Can manage all tenants via SuperAdmin Panel
-- **Visibility**: SuperAdmin users are NEVER shown in regular tenant user lists (filtered by `isSuperAdmin` check)
-
-### Tenant Admin Access
-- **Auto-Provisioning**: When a new tenant is created, an admin user is automatically generated
-- **Login Format**: `admin/admin123` (same for all tenants - username is unique per-tenant, not globally)
-- **Scope**: Full admin access within their own tenant only
-- **Credentials Display**: SuperAdmin sees the admin credentials in a toast notification after tenant creation
-
-### Key Implementation Files
-- `server/seed-tenant.ts`: Creates global SuperAdmin tenant and SuperAdmin user
-- `server/storage.ts`: `getAllUsers()` excludes SuperAdmin users, `getAllTenants()` excludes global tenant
-- `server/index.ts`: Auth middleware resolves SuperAdmin to global tenant, uses session.tenantId as authoritative source
-- `server/routes.ts`: All POST/PUT endpoints derive tenantId from `req.user?.tenantId` (session-based), never from request body
-
-### Tenant Isolation Security (Dec 2025 - FIXED)
-- **Session-based auth**: Auth middleware uses `session.tenantId` (set during login) as the authoritative tenant source, not request context
-- **POST/PUT endpoints**: All data mutation endpoints derive tenantId from authenticated user's session, preventing cross-tenant writes
-- **Guest applications**: Membership, marriage, and akika applications validate tenant existence before accepting guest submissions
-- **req.tenantId sync**: After authentication, `req.tenantId` is synchronized to `session.tenantId` for consistent downstream usage
-- **Demo User Isolation**: Demo users (Iso, Elma, Hase) are now correctly isolated to Demo Džemat only. Purge endpoint successfully removes demo users from non-demo tenants.
+DžematApp operates as a SaaS platform with strict tenant isolation:
+- **SuperAdmin Global Tenant** (`tenant-superadmin-global`): A hidden tenant for SuperAdmin users with global management scope.
+- **Regular Tenants**: Each organization receives a dedicated, isolated tenant with no data inheritance.
+- **User Isolation**: Users belong to a single tenant; SuperAdmins can manage all tenants.
+- **Tenant Creation**: New tenants are provisioned empty, with an automatically generated admin user (`admin/admin123`).
+- **Security**: Session-based authentication uses `session.tenantId` for authoritative tenant sourcing, preventing cross-tenant data manipulation in all POST/PUT operations.
 
 ## Key Features
 - **User & Profile Management**: CRUD operations, bulk upload, dynamic filtering.
 - **Announcements & Events**: Content management, event calendar, RSVP, guest-viewable.
-- **Task Manager**: Multi-user task assignments, work group management ("Sekcije"), role-based interfaces, and archiving.
-- **Expense Tracking**: Members can upload receipts with estimated costs.
-- **Shop Module**: DžematShop with categorized products and a marketplace for general listings (sale/gift/services).
-- **Prayer Times (Vaktija)**: Full calendar with CSV upload.
+- **Task Manager**: Multi-user task assignments, work group management ("Sekcije"), role-based interfaces.
+- **Expense Tracking**: Members can upload receipts.
+- **Shop Module**: DžematShop for products and marketplace listings.
+- **Prayer Times (Vaktija)**: Calendar with CSV upload.
 - **Internationalization (i18n)**: Multi-language support (Bosnian, German, English, Albanian).
 - **Guest Access**: Public interfaces for announcements, events, prayer times, and membership applications.
 - **Notification System**: Displays unread content counts and application status messages.
@@ -83,8 +49,8 @@ DžematApp is a SaaS platform with strict tenant isolation:
 - **Documents**: Upload and management system.
 - **Activity Feed**: Real-time display of community activities.
 
-## Mobile App (React Native + Expo)
-A complete React Native + Expo application for iOS and Android is available in the `mobile/` directory, featuring Expo Router, login/authentication, dashboard, tab navigation, and a robust API client with token management, all built with TypeScript.
+## Mobile App
+A companion React Native + Expo application for iOS and Android is located in the `mobile/` directory, featuring Expo Router, login/authentication, dashboard, tab navigation, and a robust API client, all built with TypeScript.
 
 # External Dependencies
 
@@ -101,7 +67,7 @@ A complete React Native + Expo application for iOS and Android is available in t
 - **class-variance-authority**: Component variant styling.
 
 ## Database and Backend
-- **pg**: PostgreSQL TCP driver (for production Hetzner deployment).
+- **pg**: PostgreSQL TCP driver.
 - **drizzle-orm**: Type-safe ORM.
 - **drizzle-kit**: Database migration tools.
 - **express**: Node.js web framework.
@@ -120,106 +86,3 @@ A complete React Native + Expo application for iOS and Android is available in t
 
 ## Custom Utilities
 - **useEdgeLockScroll**: Custom hook for iOS Safari bounce prevention.
-
-# Recent Changes (December 2025)
-
-## Profile Navigation Fix - FIXED ✅
-- **Problem**: Clicking "Moj profil" (My Profile) in AppBar menu did nothing
-- **Solution**: Added navigation using wouter's `setLocation()` in AppBar.tsx
-  - Import: `import { useLocation } from 'wouter'`
-  - Added function: `handleGoToProfile()` that navigates to `/my-profile`
-  - Changed MenuItem onClick to use new handler instead of just closing menu
-- **Status**: Profile navigation now works - users can edit their profile
-
-## Foreign Key Constraint Fixes - FIXED ✅ (Dec 1, 2025)
-Multiple tables had `.notNull()` FK constraints on `createdById` that broke when referenced users were deleted. Fixed ALL 4 tables:
-
-### Events Table
-- **Problem**: Events couldn't be created/viewed when `createdById` user was deleted
-- **Solution**: Made `createdById` nullable with `onDelete: "setNull"`
-- **Fix Applied**: `ALTER TABLE events ALTER COLUMN created_by_id DROP NOT NULL`
-- **Storage Update**: Added null check in `createEvent()` before calling `createActivity()`
-
-### Contribution Purposes Table
-- **Problem**: Contribution purposes couldn't be created when `createdById` user was deleted
-- **Solution**: Made `createdById` nullable with `onDelete: "setNull"`
-- **Fix Applied**: `ALTER TABLE contribution_purposes ALTER COLUMN created_by_id DROP NOT NULL`
-- **Schema**: `createdById: varchar("created_by_id").references(() => users.id, { onDelete: "setNull" })`
-
-### Financial Contributions Table
-- **Problem**: Contributions couldn't be logged when `createdById` admin user was deleted
-- **Solution**: Made `createdById` nullable with `onDelete: "setNull"`
-- **Fix Applied**: `ALTER TABLE financial_contributions ALTER COLUMN created_by_id DROP NOT NULL`
-- **Schema**: `createdById: varchar("created_by_id").references(() => users.id, { onDelete: "setNull" })`
-
-### Projects Table
-- **Problem**: Projects couldn't be created when `createdById` user was deleted
-- **Solution**: Made `createdById` nullable with `onDelete: "setNull"`
-- **Fix Applied**: `ALTER TABLE projects ALTER COLUMN created_by_id DROP NOT NULL`
-- **Schema**: `createdById: varchar("created_by_id").references(() => users.id, { onDelete: "setNull" })`
-
-**Result**: All 4 modules now work correctly even if creator/admin users are deleted. No more FK constraint violations.
-
-## Error Logging Enhancement - ADDED ✅ (Dec 1, 2025)
-Added detailed error logging with stack traces to three critical endpoints for better debugging:
-
-### Enhanced Endpoints:
-1. **POST /api/events** - Event creation endpoint
-2. **POST /api/contribution-purposes** - Contribution purpose creation (Financije)
-3. **POST /api/projects** - Project creation endpoint
-
-### Changes Made:
-Each endpoint now logs:
-- Full error object with message
-- Complete stack trace
-- Original request body
-- Returns error details in API response for frontend debugging
-
-**Pattern Applied**:
-```typescript
-catch (error: any) {
-  console.error('❌ [ENDPOINT NAME] Error:', error);
-  console.error('Stack trace:', error instanceof Error ? error.stack : 'N/A');
-  console.error('Request body:', req.body);
-  const errorMsg = error?.errors?.[0]?.message || error?.message || String(error);
-  res.status(500).json({ message: "Failed...", error: errorMsg });
-}
-```
-
-**Benefit**: When 500 errors occur, complete error details now appear in server logs for troubleshooting.
-
-## Production Database Schema Synchronization - FIXED ✅
-- **Problem**: Production database had mismatched schema - `events` table missing `name` column, causing login errors
-- **Solution Implemented**:
-  1. ✅ Fixed `contributionPurposes` - made `createdById` nullable (was breaking FK constraint with non-existent 'system' user)
-  2. ✅ Fixed `financialContributions` - made `createdById` nullable 
-  3. ✅ Added automatic cleanup in migration: `UPDATE contribution_purposes SET created_by_id = NULL WHERE created_by_id = 'system'`
-  4. ✅ Ran `npm run db:push --force` successfully - all 44 tables verified and synchronized
-  5. ✅ All broken data references cleaned up before schema migration
-- **Production Status** (dzematapp.com - verified Dec 1, 2025):
-  - ✅ DEMO Džemat (default-tenant-demo) - Schema synchronized
-  - ✅ Džemat GAM (GAM9000) - Schema synchronized
-  - ✅ Džemat SL Grad (sg77245) - Schema synchronized
-  - ✅ SuperAdmin Global (tenant-superadmin-global) - Schema synchronized
-  - ✅ All 44 database tables verified
-  - ✅ Application running on port 5000
-- **Admin Access**:
-  - All tenants: Username `admin` / Password `admin123`
-
-## Admin User Auto-Creation Fix - FIXED ✅
-- **Problem**: When creating new tenants via SuperAdmin panel, admin users were NOT being auto-created
-- **Root Cause**: Code was passing explicit `id` to `createUser()`, but schema has `.omit({ id: true })` - ID must auto-generate
-- **Solution**:
-  - Removed explicit `id: admin-${tenantId}` from admin creation
-  - Removed invalid fields: `categories: []`, `role: 'admin'`
-  - Let database auto-generate UUID for admin user
-  - Admin will be created automatically when new tenant is created
-- **New Tenant Credentials**:
-  - Username: `admin` (auto-generated per tenant)
-  - Password: `admin123` (hardcoded default)
-  - Email: `admin+{tenantCode}@system.dzematapp` (unique per tenant)
-
-## User Deletion Protection & Delete Button
-- Admin users (admin/admin123) protected from deletion
-- DELETE button added to Users page for tenant admins
-- Batch deletion excludes admin users
