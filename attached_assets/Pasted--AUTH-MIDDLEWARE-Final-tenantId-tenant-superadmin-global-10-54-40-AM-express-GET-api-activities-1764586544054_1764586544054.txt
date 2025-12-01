@@ -1,0 +1,100 @@
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+10:54:40 AM [express] GET /api/activities 304 in 13ms :: []
+10:54:40 AM [express] GET /api/notifications/unread 304 in 60ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  username: 'superadmin',
+  userTenantId: 'tenant-superadmin-global',
+  sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+[GET /api/users] DEBUG: {
+  'req.user.tenantId': 'tenant-superadmin-global',
+  'session.tenantId': 'tenant-superadmin-global',
+  'req.tenantId': 'tenant-superadmin-global',
+  username: 'superadmin',
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987'
+}
+[GET /api/users] Using tenantId: tenant-superadmin-global
+[GET /api/users] Found 3 users for tenant: tenant-superadmin-global
+10:54:43 AM [express] GET /api/users 304 in 6ms :: [{"id":"b64b594b-abd8-436d-9752-8d565242df51","ten…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  username: 'superadmin',
+  userTenantId: 'tenant-superadmin-global',
+  sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  username: 'superadmin',
+  userTenantId: 'tenant-superadmin-global',
+  sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+10:54:44 AM [express] GET /api/tenants 304 in 8ms :: [{"id":"default-tenant-demo","name":"Demo Džemat…
+10:54:44 AM [express] GET /api/subscription/plans 304 in 6ms :: [{"id":"plan-basic","name":"Basic","s…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  username: 'superadmin',
+  userTenantId: 'tenant-superadmin-global',
+  sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+[CLEAN DUPLICATES] Starting...
+[CLEAN DUPLICATES] Complete: []
+10:54:47 AM [express] POST /api/tenants/clean-duplicates 200 in 19ms :: {"message":"Cleanup complete"…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  username: 'superadmin',
+  userTenantId: 'tenant-superadmin-global',
+  sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+10:54:47 AM [express] GET /api/tenants 304 in 5ms :: [{"id":"default-tenant-demo","name":"Demo Džemat…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  username: 'superadmin',
+  userTenantId: 'tenant-superadmin-global',
+  sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+[PURGE DEMO] Starting...
+[PURGE DEMO] Complete. Total deleted: 0
+10:54:51 AM [express] POST /api/tenants/purge-demo-users 200 in 9ms :: {"message":"Demo user purge co…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  username: 'superadmin',
+  userTenantId: 'tenant-superadmin-global',
+  sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+10:54:51 AM [express] GET /api/tenants 304 in 3ms :: [{"id":"default-tenant-demo","name":"Demo Džemat…
