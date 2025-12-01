@@ -771,12 +771,15 @@ export class DatabaseStorage implements IStorage {
   async createEvent(insertEvent: InsertEvent): Promise<Event> {
     const [event] = await db.insert(events).values({...insertEvent, tenantId: insertEvent.tenantId}).returning();
     
-    await this.createActivity({
-      type: "event",
-      description: `Događaj kreiran: ${event.name}`,
-      userId: event.createdById,
-      tenantId: event.tenantId
-    });
+    // Only create activity if createdById is available (not null)
+    if (event.createdById) {
+      await this.createActivity({
+        type: "event",
+        description: `Događaj kreiran: ${event.name}`,
+        userId: event.createdById,
+        tenantId: event.tenantId
+      });
+    }
     
     // Add to activity feed with photoUrl from event
     await this.createActivityFeedItem({

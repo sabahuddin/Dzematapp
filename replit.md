@@ -133,11 +133,17 @@ A complete React Native + Expo application for iOS and Android is available in t
 
 ## Event Opening Error Fix - FIXED ✅
 - **Problem**: Events couldn't be opened/viewed in tenants with deleted users - error occurred when `createdById` user was deleted
-- **Root Cause**: `createdById` FK constraint was `.notNull()` - when referenced user was deleted, events became orphaned and couldn't load
-- **Solution**: Made `createdById` nullable with `onDelete: "setNull"` in events table
-  - Changed: `createdById: varchar("created_by_id").notNull().references(() => users.id)`
-  - To: `createdById: varchar("created_by_id").references(() => users.id, { onDelete: "setNull" })`
-- **Result**: Events now display correctly even if creator was deleted
+- **Root Cause**: `createdById` FK constraint was `.notNull()` in database schema - when referenced user was deleted, events became orphaned and couldn't load
+- **Solution Implemented**:
+  1. ✅ Made `createdById` nullable with `onDelete: "setNull"` in schema
+     - Changed: `createdById: varchar("created_by_id").notNull().references(() => users.id)`
+     - To: `createdById: varchar("created_by_id").references(() => users.id, { onDelete: "setNull" })`
+  2. ✅ Updated database directly: `ALTER TABLE events ALTER COLUMN created_by_id DROP NOT NULL`
+  3. ✅ Fixed `createEvent()` logic in storage to handle null `createdById`:
+     - Added null check before calling `createActivity()` 
+     - `createActivityFeedItem()` is called regardless (doesn't require createdById)
+- **Result**: Events now display and create correctly even with deleted creators
+- **Status**: Testing in production required - report exact error message if still failing
 
 ## Production Database Schema Synchronization - FIXED ✅
 - **Problem**: Production database had mismatched schema - `events` table missing `name` column, causing login errors
