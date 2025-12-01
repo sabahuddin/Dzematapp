@@ -5806,22 +5806,28 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       const DEMO_TENANT_ID = 'default-tenant-demo';
       
       const tenants = await storage.getAllTenants();
+      console.log(`[PURGE DEMO] Found ${tenants.length} tenants`);
       const results: any[] = [];
       
       for (const tenant of tenants) {
+        console.log(`[PURGE DEMO] Processing tenant: ${tenant.name} (${tenant.id})`);
+        
         // Skip demo tenant - it should keep demo users
         if (tenant.id === DEMO_TENANT_ID) {
+          console.log(`[PURGE DEMO] Skipping demo tenant`);
           results.push({ tenantId: tenant.id, tenantName: tenant.name, skipped: true, reason: 'Demo tenant' });
           continue;
         }
         
         const users = await storage.getAllUsers(tenant.id);
+        console.log(`[PURGE DEMO] Found ${users.length} users in ${tenant.name}`);
         let deletedCount = 0;
         const deletedNames: string[] = [];
         
         for (const user of users) {
           // Never delete the real tenant admin
           if (user.username === 'admin') {
+            console.log(`[PURGE DEMO] Skipping admin user: ${user.firstName} ${user.lastName}`);
             continue;
           }
           
@@ -5846,14 +5852,16 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
             firstName === 'test' ||
             lastName === 'test';
           
+          console.log(`[PURGE DEMO] User ${user.firstName} ${user.lastName}: isDemoUser=${isDemoUser}`);
+          
           if (isDemoUser) {
             try {
               await storage.deleteUser(user.id, tenant.id);
               deletedCount++;
               deletedNames.push(`${user.firstName} ${user.lastName}`);
-              console.log(`[PURGE DEMO] Deleted ${user.firstName} ${user.lastName} from ${tenant.name}`);
+              console.log(`[PURGE DEMO] ✅ Deleted ${user.firstName} ${user.lastName} from ${tenant.name}`);
             } catch (err) {
-              console.log(`[PURGE DEMO] Could not delete ${user.firstName}: ${err}`);
+              console.log(`[PURGE DEMO] ❌ Could not delete ${user.firstName}: ${err}`);
             }
           }
         }
@@ -5867,10 +5875,10 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       }
       
       const totalDeleted = results.reduce((sum, r) => sum + (r.deleted || 0), 0);
-      console.log('[PURGE DEMO] Complete. Total deleted:', totalDeleted);
+      console.log('[PURGE DEMO] ✅ Complete. Total deleted:', totalDeleted);
       res.json({ message: 'Demo user purge complete', totalDeleted, results });
     } catch (error) {
-      console.error('[PURGE DEMO] Error:', error);
+      console.error('[PURGE DEMO] ❌ Error:', error);
       res.status(500).json({ message: 'Purge failed', error: String(error) });
     }
   });
