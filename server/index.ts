@@ -270,7 +270,7 @@ async function seedContributionPurposes() {
       for (const purpose of defaultPurposes) {
         await storage.createContributionPurpose({
           ...purpose,
-          createdById: 'system',
+          createdById: null,
           tenantId: DEFAULT_TENANT_ID
         });
       }
