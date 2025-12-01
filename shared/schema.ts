@@ -73,7 +73,7 @@ export const events = pgTable("events", {
   reminderTime: text("reminder_time"), // null, "7_days", "24_hours", "2_hours"
   categories: text("categories").array(), // Iftar, Mevlud, Edukacija, Sport, Humanitarno, Omladina, custom
   pointsValue: integer("points_value").default(20), // Variable points for event attendance
-  createdById: varchar("created_by_id").notNull().references(() => users.id),
+  createdById: varchar("created_by_id").references(() => users.id, { onDelete: "setNull" }),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

@@ -131,10 +131,13 @@ A complete React Native + Expo application for iOS and Android is available in t
   - Changed MenuItem onClick to use new handler instead of just closing menu
 - **Status**: Profile navigation now works - users can edit their profile
 
-## Event Creation Error Investigation
-- **Problem**: Error message appears when creating events (mentioned as "kod 9000")
-- **Status**: Requires frontend test on production to verify exact error and fix
-- **Next Steps**: Test event creation on dzematapp.com to see exact error message and HTTP code
+## Event Opening Error Fix - FIXED ✅
+- **Problem**: Events couldn't be opened/viewed in tenants with deleted users - error occurred when `createdById` user was deleted
+- **Root Cause**: `createdById` FK constraint was `.notNull()` - when referenced user was deleted, events became orphaned and couldn't load
+- **Solution**: Made `createdById` nullable with `onDelete: "setNull"` in events table
+  - Changed: `createdById: varchar("created_by_id").notNull().references(() => users.id)`
+  - To: `createdById: varchar("created_by_id").references(() => users.id, { onDelete: "setNull" })`
+- **Result**: Events now display correctly even if creator was deleted
 
 ## Production Database Schema Synchronization - FIXED ✅
 - **Problem**: Production database had mismatched schema - `events` table missing `name` column, causing login errors
