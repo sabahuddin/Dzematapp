@@ -5804,8 +5804,6 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     console.log('[PURGE DEMO] Starting...');
     try {
       const DEMO_TENANT_ID = 'default-tenant-demo';
-      const DEMO_USER_NAMES = ['Iso', 'Elma', 'Hase', 'Mujo', 'Fata', 'Suljo', 'Haso', 'Admin'];
-      const DEMO_USER_LASTNAMES = ['Isic', 'Elmic', 'Hasic', 'Mujic', 'Fatic', 'Suljic', 'Hasovic', 'Demo'];
       
       const tenants = await storage.getAllTenants();
       const results: any[] = [];
@@ -5819,19 +5817,40 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         
         const users = await storage.getAllUsers(tenant.id);
         let deletedCount = 0;
+        const deletedNames: string[] = [];
         
         for (const user of users) {
-          // Check if this is a demo user (but NOT the tenant admin)
-          const isDemoUser = (
-            (DEMO_USER_NAMES.includes(user.firstName || '') && DEMO_USER_LASTNAMES.includes(user.lastName || '')) ||
-            user.email?.includes('@demo.local') ||
-            user.username === 'demo-admin'
-          ) && user.username !== 'admin'; // Never delete the real admin
+          // Never delete the real tenant admin
+          if (user.username === 'admin') {
+            continue;
+          }
+          
+          // Check if this is a demo user by various criteria
+          const firstName = (user.firstName || '').toLowerCase();
+          const lastName = (user.lastName || '').toLowerCase();
+          const email = (user.email || '').toLowerCase();
+          const username = (user.username || '').toLowerCase();
+          
+          const isDemoUser = 
+            // Demo names (case insensitive)
+            ['iso', 'elma', 'hase', 'mujo', 'fata', 'suljo', 'haso'].includes(firstName) ||
+            ['isic', 'elmic', 'hasic', 'mujic', 'fatic', 'suljic', 'hasovic'].includes(lastName) ||
+            // Demo email patterns
+            email.includes('@demo.local') ||
+            email.includes('demo@') ||
+            // Demo usernames
+            username === 'demo-admin' ||
+            username.includes('demo') ||
+            // Generic test patterns
+            firstName === 'admin' && lastName === 'demo' ||
+            firstName === 'test' ||
+            lastName === 'test';
           
           if (isDemoUser) {
             try {
               await storage.deleteUser(user.id, tenant.id);
               deletedCount++;
+              deletedNames.push(`${user.firstName} ${user.lastName}`);
               console.log(`[PURGE DEMO] Deleted ${user.firstName} ${user.lastName} from ${tenant.name}`);
             } catch (err) {
               console.log(`[PURGE DEMO] Could not delete ${user.firstName}: ${err}`);
@@ -5842,12 +5861,14 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         results.push({
           tenantId: tenant.id,
           tenantName: tenant.name,
-          deleted: deletedCount
+          deleted: deletedCount,
+          deletedUsers: deletedNames
         });
       }
       
-      console.log('[PURGE DEMO] Complete:', results);
-      res.json({ message: 'Demo user purge complete', results });
+      const totalDeleted = results.reduce((sum, r) => sum + (r.deleted || 0), 0);
+      console.log('[PURGE DEMO] Complete. Total deleted:', totalDeleted);
+      res.json({ message: 'Demo user purge complete', totalDeleted, results });
     } catch (error) {
       console.error('[PURGE DEMO] Error:', error);
       res.status(500).json({ message: 'Purge failed', error: String(error) });
