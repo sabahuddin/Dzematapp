@@ -1,0 +1,95 @@
+Problem:
+duplicate key value violates unique constraint "users_username_tenant_unique"
+Key (username, tenant_id)=(hase.hasic, default-tenant-demo) already exists.
+Znači: Pokušava prebaciti korisnika hase.hasic u default-tenant-demo, ali tamo već postoji korisnik sa tim username-om!
+
+🔧 RJEŠENJE:
+Reci Replitu:
+Problem: Prebacivanje korisnika pada jer korisnik sa tim username-om već postoji u demo tenantu. Umjesto prebacivanja, treba obrisati duplikate iz non-demo tenanta.
+
+Promijeni auto-purge logiku:
+typescript🧹 [AUTO-PURGE] Starting automatic demo user cleanup...
+
+const demoUsernames = [
+  'alma', 'alja', 'ali', 'haris', 'osman', 
+  'mujo', 'hazo', 'mustafa', 'zlata', 'hase', 
+  'alen', 'iso', 'elma', 'hase.hasic', 'merima'
+];
+
+const allTenants = await storage.getAllTenants();
+console.log(`[AUTO-PURGE] Found ${allTenants.length} tenants`);
+
+for (const tenant of allTenants) {
+  if (tenant.id === 'default-tenant-demo') {
+    console.log(`[AUTO-PURGE] Skipping demo tenant ${tenant.name}`);
+    continue;
+  }
+
+  console.log(`[AUTO-PURGE] Processing tenant: ${tenant.name}`);
+  
+  // Prvo obriši sve foreign key zapise
+  const demoUsers = await db.select()
+    .from(users)
+    .where(
+      and(
+        eq(users.tenantId, tenant.id),
+        or(
+          inArray(users.username, demoUsernames),
+          inArray(sql`LOWER(${users.firstName})`, demoUsernames)
+        )
+      )
+    );
+
+  for (const user of demoUsers) {
+    try {
+      // Obriši sve povezane zapise PRVO
+      await db.delete(activities).where(eq(activities.userId, user.id));
+      await db.delete(userBadges).where(eq(userBadges.userId, user.id));
+      await db.delete(eventAttendance).where(eq(eventAttendance.userId, user.id));
+      await db.delete(taskAssignments).where(eq(taskAssignments.userId, user.id));
+      await db.delete(messages).where(
+        or(
+          eq(messages.senderId, user.id),
+          eq(messages.recipientId, user.id)
+        )
+      );
+      // ... dodaj ostale tabele koje imaju foreign key na users
+      
+      // Sada obriši korisnika
+      await db.delete(users).where(
+        and(
+          eq(users.id, user.id),
+          eq(users.tenantId, tenant.id)
+        )
+      );
+      
+      console.log(`[AUTO-PURGE] ✅ Deleted demo user: ${user.username} from ${tenant.name}`);
+    } catch (err) {
+      console.log(`[AUTO-PURGE] ⚠️ Could not delete user ${user.username}: ${err.message}`);
+    }
+  }
+}
+
+console.log(`[AUTO-PURGE] ✅ Cleanup completed!`);
+
+💡 Ili jednostavnije rješenje:
+Koristi CASCADE DELETE u foreign key constraint-ima da automatski obriše sve povezane zapise:
+sql-- Dodaj CASCADE na foreign key constraint-e (u migraciji)
+ALTER TABLE activities 
+DROP CONSTRAINT IF EXISTS activities_user_id_fkey,
+ADD CONSTRAINT activities_user_id_fkey 
+  FOREIGN KEY (user_id) 
+  REFERENCES users(id) 
+  ON DELETE CASCADE;
+
+-- Isto za sve ostale tabele
+Onda možeš jednostavno:
+typescriptawait db.delete(users).where(
+  and(
+    eq(users.tenantId, tenant.id),
+    inArray(users.username, demoUsernames)
+  )
+);
+
+🎯 Preporuka:
+Koristi CASCADE DELETE u bazi - to je najčistije rješenje! Dodaj CASCADE u migration, zatim purge će raditi automatski.
