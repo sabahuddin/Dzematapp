@@ -123,6 +123,19 @@ A complete React Native + Expo application for iOS and Android is available in t
 
 # Recent Changes (December 2025)
 
+## Profile Navigation Fix - FIXED ✅
+- **Problem**: Clicking "Moj profil" (My Profile) in AppBar menu did nothing
+- **Solution**: Added navigation using wouter's `setLocation()` in AppBar.tsx
+  - Import: `import { useLocation } from 'wouter'`
+  - Added function: `handleGoToProfile()` that navigates to `/my-profile`
+  - Changed MenuItem onClick to use new handler instead of just closing menu
+- **Status**: Profile navigation now works - users can edit their profile
+
+## Event Creation Error Investigation
+- **Problem**: Error message appears when creating events (mentioned as "kod 9000")
+- **Status**: Requires frontend test on production to verify exact error and fix
+- **Next Steps**: Test event creation on dzematapp.com to see exact error message and HTTP code
+
 ## Production Database Schema Synchronization - FIXED ✅
 - **Problem**: Production database had mismatched schema - `events` table missing `name` column, causing login errors
 - **Solution Implemented**:

@@ -20,6 +20,7 @@ import {
 import { useAuth } from '../../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
 import { queryClient } from '../../lib/queryClient';
+import { useLocation } from 'wouter';
 
 interface AppBarProps {
   onMenuClick: () => void;
@@ -28,6 +29,7 @@ interface AppBarProps {
 export default function AppBar({ onMenuClick }: AppBarProps) {
   const { user, logout } = useAuth();
   const { t } = useTranslation(['navigation', 'dashboard']);
+  const [, setLocation] = useLocation();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isMobile = window.innerWidth < 900;
 
@@ -37,6 +39,11 @@ export default function AppBar({ onMenuClick }: AppBarProps) {
 
   const handleProfileMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleGoToProfile = () => {
+    setAnchorEl(null);
+    setLocation('/my-profile');
   };
 
   const handleLogout = () => {
@@ -124,7 +131,7 @@ export default function AppBar({ onMenuClick }: AppBarProps) {
             }
           }}
         >
-          <MenuItem onClick={handleProfileMenuClose} data-testid="menu-profile">
+          <MenuItem onClick={handleGoToProfile} data-testid="menu-profile">
             <ListItemIcon>
               <Person fontSize="small" />
             </ListItemIcon>
