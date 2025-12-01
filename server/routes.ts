@@ -1666,6 +1666,19 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     }
   });
 
+  app.get("/api/users/me", requireAuth, async (req, res) => {
+    try {
+      const user = req.user!;
+      res.json({ ...user, password: undefined });
+    } catch (error) {
+      console.error('❌ [GET CURRENT USER] Error:', error);
+      res.status(500).json({ 
+        message: "Failed to fetch current user",
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
   app.get("/api/users/:id", requireAuth, async (req, res) => {
     try {
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
@@ -1687,9 +1700,14 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       
       res.json({ ...user, password: undefined });
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch user" });
+      console.error('❌ [GET USER BY ID] Error:', error);
+      console.error('Stack trace:', error instanceof Error ? error.stack : 'N/A');
+      res.status(500).json({ 
+        message: "Failed to fetch user",
+        error: error instanceof Error ? error.message : String(error)
+      });
     }
-});
+  });
 
   app.post("/api/users", requireAuth, async (req, res) => {
     try {
@@ -1955,9 +1973,14 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       
       res.json(eventsWithRsvpCount);
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch events" });
+      console.error('❌ [EVENTS] Error:', error);
+      console.error('Stack trace:', error instanceof Error ? error.stack : 'N/A');
+      res.status(500).json({
+        message: "Failed to fetch events",
+        error: error instanceof Error ? error.message : String(error)
+      });
     }
-});
+  });
 
   app.get("/api/events/locations", async (req, res) => {
     try {
