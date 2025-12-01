@@ -160,6 +160,34 @@ Multiple tables had `.notNull()` FK constraints on `createdById` that broke when
 
 **Result**: All 4 modules now work correctly even if creator/admin users are deleted. No more FK constraint violations.
 
+## Error Logging Enhancement - ADDED ✅ (Dec 1, 2025)
+Added detailed error logging with stack traces to three critical endpoints for better debugging:
+
+### Enhanced Endpoints:
+1. **POST /api/events** - Event creation endpoint
+2. **POST /api/contribution-purposes** - Contribution purpose creation (Financije)
+3. **POST /api/projects** - Project creation endpoint
+
+### Changes Made:
+Each endpoint now logs:
+- Full error object with message
+- Complete stack trace
+- Original request body
+- Returns error details in API response for frontend debugging
+
+**Pattern Applied**:
+```typescript
+catch (error: any) {
+  console.error('❌ [ENDPOINT NAME] Error:', error);
+  console.error('Stack trace:', error instanceof Error ? error.stack : 'N/A');
+  console.error('Request body:', req.body);
+  const errorMsg = error?.errors?.[0]?.message || error?.message || String(error);
+  res.status(500).json({ message: "Failed...", error: errorMsg });
+}
+```
+
+**Benefit**: When 500 errors occur, complete error details now appear in server logs for troubleshooting.
+
 ## Production Database Schema Synchronization - FIXED ✅
 - **Problem**: Production database had mismatched schema - `events` table missing `name` column, causing login errors
 - **Solution Implemented**:

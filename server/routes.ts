@@ -2003,8 +2003,10 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       const event = await storage.createEvent(eventData);
       res.json(event);
     } catch (error: any) {
+      console.error('❌ [CREATE EVENT] Error:', error);
+      console.error('Stack trace:', error instanceof Error ? error.stack : 'N/A');
+      console.error('Request body:', req.body);
       const errorMsg = error?.errors?.[0]?.message || error?.message || JSON.stringify(error);
-      console.error("[EVENT CREATE ERROR]", errorMsg, error);
       res.status(400).json({ message: "Invalid event data", details: errorMsg });
     }
   });
@@ -3982,8 +3984,12 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         tenantId
       });
       res.status(201).json(purpose);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to create contribution purpose" });
+    } catch (error: any) {
+      console.error('❌ [CREATE CONTRIBUTION PURPOSE] Error:', error);
+      console.error('Stack trace:', error instanceof Error ? error.stack : 'N/A');
+      console.error('Request body:', req.body);
+      const errorMsg = error?.errors?.[0]?.message || error?.message || String(error);
+      res.status(500).json({ message: "Failed to create contribution purpose", error: errorMsg });
     }
   });
 
@@ -4482,8 +4488,12 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         tenantId
 });
       res.status(201).json(project);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to create project" });
+    } catch (error: any) {
+      console.error('❌ [CREATE PROJECT] Error:', error);
+      console.error('Stack trace:', error instanceof Error ? error.stack : 'N/A');
+      console.error('Request body:', req.body);
+      const errorMsg = error?.errors?.[0]?.message || error?.message || String(error);
+      res.status(500).json({ message: "Failed to create project", error: errorMsg });
     }
 });
 
