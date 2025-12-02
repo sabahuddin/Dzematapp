@@ -170,7 +170,6 @@ export default function FinancesPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/contribution-purposes'] });
-      setPurposeDialogOpen(false);
       setNewPurposeName('');
       setNewPurposeDesc('');
       toast({ title: 'Uspjeh', description: 'Svrha je kreirana' });
@@ -179,6 +178,26 @@ export default function FinancesPage() {
       toast({ title: 'Greška', description: 'Greška pri kreiranju svrhe', variant: 'destructive' });
     }
   });
+
+  // Delete purpose mutation
+  const deletePurposeMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return await apiRequest(`/api/contribution-purposes/${id}`, 'DELETE');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/contribution-purposes'] });
+      toast({ title: 'Uspjeh', description: 'Svrha je obrisana' });
+    },
+    onError: () => {
+      toast({ title: 'Greška', description: 'Greška pri brisanju svrhe', variant: 'destructive' });
+    }
+  });
+
+  const handleDeletePurpose = (id: string) => {
+    if (window.confirm('Jeste li sigurni da želite obrisati ovu svrhu?')) {
+      deletePurposeMutation.mutate(id);
+    }
+  };
 
 
   const handleOpenDialog = (contribution?: FinancialContribution) => {
