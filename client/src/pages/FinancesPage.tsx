@@ -505,16 +505,71 @@ export default function FinancesPage() {
         </TableContainer>
       </Card>
 
-      {/* Create New Purpose Dialog */}
+      {/* Manage Purposes Dialog */}
       <Dialog open={purposeDialogOpen} onClose={() => setPurposeDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Dodaj novu svrhu</DialogTitle>
+        <DialogTitle>Upravljanje svrhama uplata</DialogTitle>
         <DialogContent sx={{ pt: 3, px: 3 }}>
+          {/* Existing purposes list */}
+          {purposesQuery.data && purposesQuery.data.length > 0 && (
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
+                Postojeće svrhe:
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                {purposesQuery.data.map((purpose: ContributionPurpose) => (
+                  <Box 
+                    key={purpose.id} 
+                    sx={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'space-between',
+                      p: 1.5,
+                      borderRadius: 1,
+                      bgcolor: 'grey.50',
+                      border: '1px solid',
+                      borderColor: 'grey.200'
+                    }}
+                  >
+                    <Box>
+                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                        {purpose.name}
+                      </Typography>
+                      {purpose.description && (
+                        <Typography variant="caption" color="text.secondary">
+                          {purpose.description}
+                        </Typography>
+                      )}
+                    </Box>
+                    <IconButton
+                      size="small"
+                      onClick={() => handleDeletePurpose(purpose.id)}
+                      sx={{ color: 'error.main' }}
+                      disabled={deletePurposeMutation.isPending}
+                      data-testid={`button-delete-purpose-${purpose.id}`}
+                    >
+                      <Delete fontSize="small" />
+                    </IconButton>
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+          )}
+
+          {/* Divider */}
+          {purposesQuery.data && purposesQuery.data.length > 0 && (
+            <Box sx={{ borderBottom: '1px solid', borderColor: 'grey.200', mb: 3 }} />
+          )}
+
+          {/* Add new purpose form */}
+          <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600 }}>
+            Dodaj novu svrhu:
+          </Typography>
           <TextField
             fullWidth
             label="Naziv svrhe"
             value={newPurposeName}
             onChange={(e) => setNewPurposeName(e.target.value)}
-            sx={{ mb: 2, mt: 4 }}
+            sx={{ mb: 2 }}
             data-testid="input-new-purpose-name"
           />
           <TextField
@@ -529,7 +584,7 @@ export default function FinancesPage() {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setPurposeDialogOpen(false)} data-testid="button-cancel-purpose">
-            Otkaži
+            Zatvori
           </Button>
           <Button
             variant="contained"
@@ -537,7 +592,7 @@ export default function FinancesPage() {
             disabled={createPurposeMutation.isPending || !newPurposeName}
             data-testid="button-save-purpose"
           >
-            {createPurposeMutation.isPending ? 'Kreiram...' : 'Kreiraj'}
+            {createPurposeMutation.isPending ? 'Kreiram...' : 'Dodaj svrhu'}
           </Button>
         </DialogActions>
       </Dialog>
