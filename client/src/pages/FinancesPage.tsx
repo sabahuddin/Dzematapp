@@ -236,9 +236,15 @@ export default function FinancesPage() {
     form.reset();
   };
 
-  const handleSubmit = form.handleSubmit((data) => {
-    saveContributionMutation.mutate(data);
-  });
+  const handleSubmit = form.handleSubmit(
+    (data) => {
+      console.log('[CONTRIBUTION FORM] Valid data:', data);
+      saveContributionMutation.mutate(data);
+    },
+    (errors) => {
+      console.error('[CONTRIBUTION FORM] Validation errors:', errors);
+    }
+  );
 
   const handleDelete = (id: string) => {
     if (window.confirm(t('finances:messages.confirmDelete'))) {

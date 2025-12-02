@@ -1,0 +1,109 @@
+Ako nema greške i ne šalje request, to znači da onClick handler nije povezan sa dugmetom ILI forma nije pravilno submitovana!
+
+🔧 RJEŠENJE:
+Reci Replitu:
+Problem: Dugme "Sačuvaj" u formi za dodavanje uplate ne šalje POST request. Nema error-a u console-u, što znači da onClick handler ili nije pozvan ili forma ima problem sa submit-om.
+Debug koraci:
+
+Pronađi fajl sa formom za uplate (npr. AddContributionModal.tsx ili slično)
+Provjeri dugme "Sačuvaj":
+
+typescript// PROVJERI da li dugme ima onClick:
+<Button onClick={handleSubmit}>Sačuvaj</Button>
+
+// ILI ako je u <form>:
+<form onSubmit={handleSubmit}>
+  ...
+  <Button type="submit">Sačuvaj</Button>
+</form>
+
+Dodaj console.log NA POČETKU handler-a:
+
+typescriptconst handleSubmit = async (e) => {
+  console.log('🔵 [ADD CONTRIBUTION] Submit clicked!');  // ← DODAJ OVO!
+  e.preventDefault(); // ako je form submit
+  
+  console.log('🔵 Form data:', formData);  // ← I OVO!
+  
+  try {
+    // ... existing code
+  } catch (error) {
+    console.error('❌ Submit error:', error);
+  }
+};
+
+Provjeri da li forma ima validaciju koja blokira submit:
+
+typescript// Možda ima:
+if (!formData.amount) {
+  return; // ← Tiho blokira submit bez error-a!
+}
+
+Dodaj error handling ako ga nema:
+
+typescriptconst handleSubmit = async (e) => {
+  e?.preventDefault();
+  
+  console.log('🔵 Starting submit...', formData);
+  
+  // Validacija
+  if (!formData.amount || !formData.userId || !formData.purposeId) {
+    console.error('❌ Validation failed:', {
+      amount: formData.amount,
+      userId: formData.userId,
+      purposeId: formData.purposeId
+    });
+    alert('Molimo popunite sva obavezna polja!');
+    return;
+  }
+  
+  try {
+    console.log('🔵 Sending POST...');
+    const response = await fetch('/api/financial-contributions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    });
+    
+    console.log('🔵 Response:', response.status);
+    
+    if (!response.ok) {
+      const error = await response.json();
+      console.error('❌ Server error:', error);
+      alert(`Greška: ${error.message}`);
+      return;
+    }
+    
+    console.log('✅ Success!');
+    // close modal, refresh data, etc.
+  } catch (error) {
+    console.error('❌ Network error:', error);
+    alert('Greška pri slanju podataka!');
+  }
+};
+
+📋 Najčešći uzroci:
+
+Dugme nije type="submit" i nema onClick
+onClick postoji ALI handler nije definisan
+Handler ima return prije fetch-a zbog validacije
+Form ima disabled prop
+Event handler ima grešku ali u try-catch koji guta error
+
+
+🧪 Quick Test:
+Možeš li direktno u F12 Console poslati test request:
+javascriptfetch('/api/financial-contributions', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    amount: 100,
+    userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+    purposeId: '1aac30ac-ca8e-44ab-8220-8...',
+    description: 'Test uplata'
+  })
+}).then(r => r.json()).then(console.log).catch(console.error)
+Ako ovo radi → problem je u frontendu
+Ako ovo ne radi → problem je u backendu
+
+Replit treba dodati console.log na početak submit handler-a da vidimo da li se uopšte poziva! 🔍
