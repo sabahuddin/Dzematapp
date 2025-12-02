@@ -265,8 +265,16 @@ export default function AnnouncementsPage() {
         />
       </Stack>
 
-      {/* Announcements Cards */}
-      <Stack spacing={1.5}>
+      {/* Announcements Cards - Grid Layout */}
+      <Box sx={{ 
+        display: 'grid',
+        gridTemplateColumns: {
+          xs: '1fr',           // 1 column on mobile
+          sm: 'repeat(2, 1fr)', // 2 columns on tablet
+          md: 'repeat(3, 1fr)'  // 3 columns on desktop
+        },
+        gap: 2
+      }}>
         {sortedAnnouncements.map((announcement) => (
           <Card
             key={announcement.id}
@@ -278,6 +286,7 @@ export default function AnnouncementsPage() {
               display: 'flex',
               flexDirection: 'column',
               overflow: 'hidden',
+              height: '100%',
               '&:hover': {
                 boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
               }
@@ -388,7 +397,8 @@ export default function AnnouncementsPage() {
               borderRadius: '12px',
               backgroundColor: '#f1f8f6',
               p: 4,
-              textAlign: 'center'
+              textAlign: 'center',
+              gridColumn: { xs: '1', sm: '1 / -1', md: '1 / -1' }
             }}
           >
             <Typography color="text.secondary">
@@ -396,7 +406,7 @@ export default function AnnouncementsPage() {
             </Typography>
           </Card>
         )}
-      </Stack>
+      </Box>
 
       {/* Delete Confirmation Dialog */}
       <Dialog
