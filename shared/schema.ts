@@ -238,6 +238,7 @@ export const shopProducts = pgTable("shop_products", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
+  title: text("title").notNull(),
   photos: text("photos").array(), // array of photo URLs (max 10)
   category: text("category"), // hrana, piće, odjeća
   weight: text("weight"), // For food: kilogram or KG
@@ -1138,6 +1139,7 @@ export const services = pgTable("services", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
+  title: text("title").notNull(),
   description: text("description").notNull(),
   photos: text("photos").array(), // array of photo URLs (max 3)
   price: text("price"), // Optional - može biti besplatno
