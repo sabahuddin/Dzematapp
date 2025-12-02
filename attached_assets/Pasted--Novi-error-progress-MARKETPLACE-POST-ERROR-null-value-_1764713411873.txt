@@ -1,0 +1,99 @@
+😅 **Novi error - progress!**
+
+```
+[MARKETPLACE POST ERROR] null value in column "user_id" of relation "marketplace_items" violates not-null constraint
+```
+
+**Problem**: Baza očekuje `user_id`, ali backend ga ne šalje!
+
+---
+
+## 🔍 **Analiza:**
+
+Backend koristi `sellerId` u kodu, ali baza ima kolonu `user_id`!
+
+---
+
+## 🔧 **RJEŠENJE:**
+
+### **Reci Replitu:**
+
+**Problem**: POST `/api/marketplace/items` pada jer baza očekuje `user_id`, ali backend šalje `sellerId`. Treba mapirati field name.
+
+---
+
+### **Fix - Mapiranje field-a:**
+
+```typescript
+app.post("/api/marketplace/items", requireAuth, async (req, res) => {
+  try {
+    const tenantId = req.user?.tenantId || req.tenantId;
+    const userId = req.user!.id;
+    
+    // Mapiraj type
+    let itemType = req.body.type || req.body.category;
+    if (itemType === 'sale') itemType = 'sell';
+    if (itemType === 'donate') itemType = 'gift';
+    
+    const dataToValidate = {
+      ...req.body,
+      tenantId: tenantId,
+      userId: userId,              // ← Umjesto sellerId!
+      // ILI ako schema koristi sellerId:
+      sellerId: userId,            // ← A storage mapira na user_id
+      type: itemType,
+      title: req.body.name || req.body.title
+    };
+    
+    console.log('[CREATE MARKETPLACE ITEM] Data:', dataToValidate);
+    
+    const validatedData = insertMarketplaceItemSchema.parse(dataToValidate);
+    
+    const item = await storage.createMarketplaceItem(validatedData);
+    res.json(item);
+  } catch (error) {
+    if (error.code === '23502') {  // NOT NULL constraint
+      console.error('[MARKETPLACE POST ERROR]', error.message);
+      console.error('Column:', error.column);
+      return res.status(400).json({ 
+        message: "Nedostaje obavezno polje",
+        details: `Kolona ${error.column} ne može biti prazna`
+      });
+    }
+    // ... other error handling
+  }
+});
+```
+
+---
+
+## 📋 **ILI - Provjeri Drizzle schema:**
+
+U `db/schema.ts` provjeri kako je definirana marketplace_items tabela:
+
+```typescript
+// Ako ima:
+export const marketplaceItems = pgTable('marketplace_items', {
+  userId: text('user_id').notNull(),  // ← Ovo!
+  // ...
+});
+
+// Onda u insert schema treba:
+userId: z.string(),  // ← Ne sellerId!
+```
+
+---
+
+## 🎯 **Brz test - Provjeri column names:**
+
+```sql
+SELECT column_name, data_type, is_nullable 
+FROM information_schema.columns 
+WHERE table_name = 'marketplace_items';
+```
+
+Onda ćemo vidjeti **tačna imena kolona** u bazi!
+
+---
+
+**Replit treba mapirati `sellerId` → `userId` ili obrnuto, ovisno što baza očekuje!** 🔧
