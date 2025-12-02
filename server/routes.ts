@@ -3350,7 +3350,10 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   app.put("/api/organization-settings", requireAdmin, async (req, res) => {
     try {
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
-      const settingsData = insertOrganizationSettingsSchema.parse(req.body);
+      const settingsData = insertOrganizationSettingsSchema.parse({
+        ...req.body,
+        tenantId
+      });
       const updatedSettings = await storage.updateOrganizationSettings(tenantId, settingsData);
       res.json(updatedSettings);
     } catch (error) {
@@ -4453,8 +4456,12 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
 
   app.post("/api/badges", requireAdmin, requireFeature("badges"), async (req, res) => {
     try {
-      const validated = insertBadgeSchema.parse(req.body);
-      const badge = await storage.createBadge({...validated, tenantId: req.user!.tenantId});
+      const tenantId = req.user!.tenantId;
+      const validated = insertBadgeSchema.parse({
+        ...req.body,
+        tenantId
+      });
+      const badge = await storage.createBadge(validated);
       res.status(201).json(badge);
     } catch (error) {
       console.error('Error creating badge:', error);
@@ -5272,8 +5279,6 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   // Akika Applications (Prijave akike)
   app.post("/api/akika-applications", requireFeature("applications"), async (req, res) => {
     try {
-      const validated = insertAkikaApplicationSchema.parse(req.body);
-      
       // Use session tenantId if authenticated, otherwise validate from body
       let tenantId = req.user?.tenantId || (req.session as any).tenantId;
       
@@ -5288,13 +5293,17 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       
       // Fallback to request context tenant
       if (!tenantId) {
-        tenantId = req.tenantId;
+        tenantId = req.tenantId || 'guest';
       }
+      
+      const validated = insertAkikaApplicationSchema.parse({
+        ...req.body,
+        tenantId
+      });
       
       const applicationData = {
         ...validated,
-        submittedBy: req.user?.id || null,
-        tenantId: tenantId || 'guest'
+        submittedBy: req.user?.id || null
       };
       const application = await storage.createAkikaApplication(applicationData);
       res.status(201).json(application);
