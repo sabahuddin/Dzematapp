@@ -3223,7 +3223,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
 });
 
   // Imam Questions routes
-  app.get("/api/imam-questions", requireAuth, requireFeature("ask-imam"), async (req, res) => {
+  app.get("/api/imam-questions", requireAuth, async (req, res) => {
     try {
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
@@ -3252,7 +3252,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     }
 });
 
-  app.post("/api/imam-questions", requireAuth, requireFeature("ask-imam"), async (req, res) => {
+  app.post("/api/imam-questions", requireAuth, async (req, res) => {
     try {
       if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });

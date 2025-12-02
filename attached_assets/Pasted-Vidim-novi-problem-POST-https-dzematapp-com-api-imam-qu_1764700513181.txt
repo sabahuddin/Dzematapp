@@ -1,0 +1,115 @@
+Vidim **novi problem**! 🔴
+
+```
+❌ POST https://dzematapp.com/api/imam-questions 403 (Forbidden)
+❌ Failed to load resource: 403 (imam-questions:1)
+```
+
+**403 Forbidden** znači da **korisnik nema permisiju** da šalje imam pitanja!
+
+---
+
+## 🔍 **Problem:**
+
+Backend endpoint `/api/imam-questions` ima **feature check** ili **permission check** koji blokira korisnika.
+
+---
+
+## 🔧 **RJEŠENJE:**
+
+### **Reci Replitu:**
+
+**Problem**: POST `/api/imam-questions` vraća 403 Forbidden. Korisnik ne može poslati pitanje imamu.
+
+**Mogući uzroci:**
+
+1. **Feature nije omogućen** za tenant
+2. **requireFeature("imam-questions")** blokira
+3. **requireAdmin** middleware blokira (ne bi trebao!)
+4. **Subscription plan** ne dozvoljava ovu feature
+
+---
+
+### **Provjeri u backend-u:**
+
+Nađi `/api/imam-questions` POST endpoint i provjeri middleware:
+
+```typescript
+// MOŽDA ima:
+app.post("/api/imam-questions", requireAuth, requireFeature("imam-questions"), ...)
+
+// ILI čak:
+app.post("/api/imam-questions", requireAuth, requireAdmin, ...)  // ❌ Ne treba admin!
+```
+
+---
+
+### **Fix 1: Ukloni feature check (ako nije potreban):**
+
+```typescript
+app.post("/api/imam-questions", requireAuth, async (req, res) => {
+  // Svi authenticated korisnici mogu slati pitanja
+  ...
+});
+```
+
+---
+
+### **Fix 2: Dodaj feature u subscription plan:**
+
+Ako feature check treba ostati, onda dodaj feature u subscription plan:
+
+```sql
+-- Provjeri da li feature postoji
+SELECT features FROM subscription_plans 
+WHERE id = (SELECT subscription_plan_id FROM tenants WHERE id = 'default-tenant-demo');
+
+-- Ako nema "imam-questions", dodaj:
+UPDATE subscription_plans 
+SET features = jsonb_set(
+  features, 
+  '{imam_questions}', 
+  'true'::jsonb
+)
+WHERE ...;
+```
+
+---
+
+### **Fix 3: Dodaj error logging u endpoint:**
+
+```typescript
+app.post("/api/imam-questions", requireAuth, requireFeature("imam-questions"), async (req, res) => {
+  try {
+    console.log('[IMAM QUESTION] Request:', {
+      userId: req.user?.id,
+      tenantId: req.user?.tenantId,
+      body: req.body
+    });
+    
+    // ... existing code
+  } catch (error) {
+    console.error('❌ [IMAM QUESTION] Error:', error);
+    res.status(500).json({ 
+      message: "Failed to submit question",
+      error: error instanceof Error ? error.message : String(error)
+    });
+  }
+});
+```
+
+---
+
+## 🎯 **Najbrže rješenje:**
+
+Ukloni `requireFeature("imam-questions")` jer svaki korisnik bi trebao moći pitati imama!
+
+```typescript
+app.post("/api/imam-questions", requireAuth, async (req, res) => {
+  // Svi authenticated mogu slati pitanja
+});
+```
+
+---
+
+**Replit treba provjeriti middleware na `/api/imam-questions` POST endpoint-u i ukloniti/popraviti feature check!** 🔧
