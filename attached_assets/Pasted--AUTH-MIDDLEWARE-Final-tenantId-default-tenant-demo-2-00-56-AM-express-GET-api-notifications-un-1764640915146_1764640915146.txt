@@ -1,0 +1,46 @@
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+2:00:56 AM [express] GET /api/notifications/unread 304 in 40ms :: {"shop":0,"events":0,"announcement…
+❌ [CREATE EVENT] Error: error: null value in column "title" of relation "events" violates not-null constraint
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.createEvent (file:///app/dist/index.js:1483:21)
+    at async file:///app/dist/index.js:5430:21 {
+  length: 481,
+  severity: 'ERROR',
+  code: '23502',
+  detail: 'Failing row contains (d9465710-0b1a-4e27-9039-123d92b349e0, default-tenant-demo, null, <p>opis</p>, GAM, null, null, f, null, null, null, t, 2025-12-02 02:00:50.805392, 2025-12-02 02:00:50.805392, 50, null, f, f, null, {Džemat}, 60572500-4eef-4282-a898-a33be6c3f6ba, null, Džematska večera, 2025-12-19 02:00:00).',
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: 'public',
+  table: 'events',
+  column: 'title',
+  dataType: undefined,
+  constraint: undefined,
+  file: 'execMain.c',
+  line: '2022',
+  routine: 'ExecConstraints'
+}
+Stack trace: error: null value in column "title" of relation "events" violates not-null constraint
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.createEvent (file:///app/dist/index.js:1483:21)
+    at async file:///app/dist/index.js:5430:21
+Request body: {
+  name: 'Džematska večera',
+  description: '<p>opis</p>',
+  location: 'GAM',
+  dateTime: '2025-12-19T02:00:00.000Z',
+  rsvpEnabled: false,
+  requireAdultsChildren: false,
+  maxAttendees: null,
+  categories: [ 'Džemat' ],
+  pointsValue: 50,
+  createdById: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  photoUrl: null
+}
+TenantId: default-tenant-demo

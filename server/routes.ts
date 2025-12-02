@@ -4051,7 +4051,8 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   app.post("/api/financial-contributions", requireAdmin, requireFeature("finances"), async (req, res) => {
     try {
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
-      const validated = insertFinancialContributionSchema.parse(req.body);
+      console.log("[CREATE FINANCIAL CONTRIBUTION] Request:", { tenantId, userId: req.user?.id, body: req.body });
+      const validated = insertFinancialContributionSchema.parse({ ...req.body, tenantId });
       const contribution = await storage.createFinancialContribution({
         ...validated,
         createdById: req.user!.id,

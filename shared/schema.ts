@@ -737,6 +737,7 @@ export const insertContributionPurposeSchema = createInsertSchema(contributionPu
 export const insertFinancialContributionSchema = createInsertSchema(financialContributions).omit({
   id: true,
   createdAt: true,
+  createdById: true,
 }).extend({
   tenantId: z.string(),
   paymentDate: z.union([

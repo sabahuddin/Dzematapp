@@ -733,6 +733,25 @@ async function addMissingColumns(client: any): Promise<void> {
   }
   console.log(`✅ Fixed ${constraintCount} NOT NULL constraints`);
   
+  // Fix NOT NULL constraints on legacy 'title' columns (production has title, schema uses name)
+  console.log("📋 Fixing NOT NULL constraints on legacy 'title' columns...");
+  const legacyTitleConstraints = [
+    `ALTER TABLE "events" ALTER COLUMN "title" DROP NOT NULL`,
+    `ALTER TABLE "contribution_purposes" ALTER COLUMN "title" DROP NOT NULL`,
+    `ALTER TABLE "projects" ALTER COLUMN "title" DROP NOT NULL`,
+  ];
+  
+  let titleConstraintCount = 0;
+  for (const sql of legacyTitleConstraints) {
+    try {
+      await client.query(sql);
+      titleConstraintCount++;
+    } catch (error: any) {
+      // Ignore if column doesn't exist
+    }
+  }
+  console.log(`✅ Fixed ${titleConstraintCount} legacy 'title' NOT NULL constraints`);
+  
   // Add CASCADE DELETE to all user FK constraints
   console.log("📋 Migrating user foreign key constraints to CASCADE...");
   const cascadeDeletes = [
