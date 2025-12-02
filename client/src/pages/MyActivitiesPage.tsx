@@ -90,7 +90,8 @@ export default function MyActivitiesPage() {
     return { ...badge, earnedAt: ub.earnedAt };
   }).filter(Boolean);
 
-  const totalPoints = activities.reduce((sum, a) => sum + (a.points || 0), 0);
+  const totalPoints = activities.reduce((sum, a) => sum + (a.points || 0), 0) + 
+                     contributions.reduce((sum, c) => sum + (c.pointsValue || 0), 0);
 
   const getActivityIcon = (type: string) => {
     switch (type) {
@@ -185,7 +186,6 @@ export default function MyActivitiesPage() {
           scrollButtons="auto"
         >
           <Tab label="Sve" icon={<Timeline />} iconPosition="start" />
-          <Tab label="Aktivnosti" icon={<CheckCircle />} iconPosition="start" />
           <Tab label="Uplate" icon={<AttachMoney />} iconPosition="start" />
           <Tab label="Bodovi" icon={<EmojiEvents />} iconPosition="start" />
           <Tab label="Značke" icon={<BadgeOutlined />} iconPosition="start" />
@@ -290,52 +290,6 @@ export default function MyActivitiesPage() {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Tip</TableCell>
-                  <TableCell>Opis</TableCell>
-                  <TableCell>Bodovi</TableCell>
-                  <TableCell>Datum</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {activities.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={4} sx={{ textAlign: 'center', py: 4 }}>
-                      <Typography color="text.secondary">Nema aktivnosti</Typography>
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  activities.map((activity) => (
-                    <TableRow key={activity.id}>
-                      <TableCell>
-                        <Chip 
-                          icon={getActivityIcon(activity.activityType)} 
-                          label={getActivityLabel(activity.activityType)} 
-                          color={getActivityColor(activity.activityType) as any}
-                          size="small" 
-                        />
-                      </TableCell>
-                      <TableCell>{activity.description}</TableCell>
-                      <TableCell>
-                        {activity.points && activity.points > 0 ? (
-                          <Chip icon={<EmojiEvents />} label={`+${activity.points}`} color="warning" size="small" />
-                        ) : '-'}
-                      </TableCell>
-                      <TableCell>{new Date(activity.createdAt).toLocaleDateString('hr-HR')}</TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Card>
-      </TabPanel>
-
-      <TabPanel value={activeTab} index={2}>
-        <Card>
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
                   <TableCell>Iznos</TableCell>
                   <TableCell>Svrha</TableCell>
                   <TableCell>Bodovi</TableCell>
@@ -371,7 +325,7 @@ export default function MyActivitiesPage() {
         </Card>
       </TabPanel>
 
-      <TabPanel value={activeTab} index={3}>
+      <TabPanel value={activeTab} index={2}>
         <Card sx={{ p: 3 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
             <EmojiEvents sx={{ fontSize: 48, color: 'hsl(14 100% 45%)' }} />
@@ -388,23 +342,35 @@ export default function MyActivitiesPage() {
           </Typography>
           
           <Stack spacing={1}>
-            {activities.filter(a => a.points && a.points > 0).map((activity) => (
-              <Box key={activity.id} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 1, bgcolor: 'grey.50', borderRadius: 1 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  {getActivityIcon(activity.activityType)}
-                  <Typography variant="body2">{activity.description}</Typography>
-                </Box>
-                <Chip icon={<EmojiEvents />} label={`+${activity.points}`} color="warning" size="small" />
-              </Box>
-            ))}
-            {activities.filter(a => a.points && a.points > 0).length === 0 && (
+            {activities.length === 0 ? (
               <Alert severity="info">Još niste zaradili bodove</Alert>
+            ) : (
+              <>
+                {activities.filter(a => a.points && a.points > 0).map((activity) => (
+                  <Box key={activity.id} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 1, bgcolor: 'grey.50', borderRadius: 1 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      {getActivityIcon(activity.activityType)}
+                      <Typography variant="body2">{activity.description}</Typography>
+                    </Box>
+                    <Chip icon={<EmojiEvents />} label={`+${activity.points}`} color="warning" size="small" />
+                  </Box>
+                ))}
+                {contributions.filter(c => c.pointsValue && c.pointsValue > 0).map((contrib) => (
+                  <Box key={`contrib-${contrib.id}`} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 1, bgcolor: 'grey.50', borderRadius: 1 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <AttachMoney sx={{ fontSize: 20 }} />
+                      <Typography variant="body2">{contrib.purpose} - {formatPrice(contrib.amount)}</Typography>
+                    </Box>
+                    <Chip icon={<EmojiEvents />} label={`+${contrib.pointsValue}`} color="warning" size="small" />
+                  </Box>
+                ))}
+              </>
             )}
           </Stack>
         </Card>
       </TabPanel>
 
-      <TabPanel value={activeTab} index={4}>
+      <TabPanel value={activeTab} index={3}>
         <Card sx={{ p: 3 }}>
           {earnedBadges.length === 0 ? (
             <Alert severity="info">Još niste osvojili nijednu značku</Alert>
@@ -429,7 +395,7 @@ export default function MyActivitiesPage() {
         </Card>
       </TabPanel>
 
-      <TabPanel value={activeTab} index={5}>
+      <TabPanel value={activeTab} index={4}>
         <Card sx={{ p: 3 }}>
           {certificates.length === 0 ? (
             <Alert severity="info">Još nemate primljenih zahvalnica</Alert>
