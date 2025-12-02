@@ -219,7 +219,7 @@ export default function FinancesPage() {
         userId: currentUser?.id || '',
         amount: '0',
         paymentDate: new Date().toISOString().split('T')[0],
-        purpose: t('finances:purposes.membership'),
+        purpose: '',
         paymentMethod: t('finances:paymentMethods.cash'),
         notes: '',
         projectId: undefined,
@@ -665,8 +665,9 @@ export default function FinancesPage() {
                   SelectProps={{ native: true }}
                   data-testid="select-purpose"
                 >
+                  <option value="">{t('finances:selectPurpose') || 'Odaberi svrhu...'}</option>
                   {purposesQuery.data?.map((purpose: ContributionPurpose) => (
-                    <option key={purpose.id} value={purpose.name}>{purpose.name}</option>
+                    <option key={purpose.id} value={purpose.name || (purpose as any).title || ''}>{purpose.name || (purpose as any).title || 'N/A'}</option>
                   ))}
                 </TextField>
               </Grid>
