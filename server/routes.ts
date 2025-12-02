@@ -4018,13 +4018,19 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         userId: req.user?.id,
         body: req.body
       });
-      const validated = insertContributionPurposeSchema.parse({
-        ...req.body,
+      
+      // Production DB has 'title' NOT NULL, schema uses 'name' - use production-compatible method
+      const dataWithTitle = {
         tenantId,
-        createdById: req.user!.id
-      });
-      console.log('[CREATE CONTRIBUTION PURPOSE] Validated:', validated);
-      const purpose = await storage.createContributionPurpose(validated);
+        name: req.body.name,
+        title: req.body.name, // Map name -> title for prod DB
+        description: req.body.description,
+        createdById: req.user!.id,
+        isDefault: req.body.isDefault ?? false
+      };
+      
+      console.log('[CREATE CONTRIBUTION PURPOSE] Data with title:', dataWithTitle);
+      const purpose = await storage.createContributionPurposeWithTitle(dataWithTitle);
       console.log('[CREATE CONTRIBUTION PURPOSE] Success:', purpose.id);
       res.status(201).json(purpose);
     } catch (error: any) {

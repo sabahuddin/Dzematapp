@@ -314,6 +314,7 @@ export interface IStorage {
   // Contribution Purposes (Feature 1)
   getContributionPurposes(tenantId: string): Promise<ContributionPurpose[]>;
   createContributionPurpose(purpose: InsertContributionPurpose & { createdById: string; tenantId: string }): Promise<ContributionPurpose>;
+  createContributionPurposeWithTitle(data: { tenantId: string; name?: string; title?: string; description?: string; createdById?: string; isDefault?: boolean }): Promise<ContributionPurpose>;
   deleteContributionPurpose(id: string, tenantId: string): Promise<boolean>;
 
   // Financial Contributions (Feature 1)
@@ -2026,6 +2027,30 @@ export class DatabaseStorage implements IStorage {
   async createContributionPurpose(purpose: InsertContributionPurpose & { createdById: string; tenantId: string }): Promise<ContributionPurpose> {
     const [newPurpose] = await db.insert(contributionPurposes).values(purpose).returning();
     return newPurpose;
+  }
+
+  // Production DB compatibility: handles 'title' column that exists in prod but not in schema
+  async createContributionPurposeWithTitle(data: { tenantId: string; name?: string; title?: string; description?: string; createdById?: string; isDefault?: boolean }): Promise<ContributionPurpose> {
+    const titleValue = data.name || data.title || '';
+    const nameValue = data.name || data.title || '';
+    
+    // Use raw SQL to insert with both 'name' AND 'title' columns for production compatibility
+    const result = await db.execute(sql`
+      INSERT INTO contribution_purposes (tenant_id, name, title, description, is_default, created_by_id, created_at)
+      VALUES (${data.tenantId}, ${nameValue}, ${titleValue}, ${data.description || null}, ${data.isDefault ?? false}, ${data.createdById || null}, now())
+      RETURNING *
+    `);
+    
+    const row = result.rows[0] as any;
+    return {
+      id: row.id,
+      tenantId: row.tenant_id,
+      name: row.name || row.title,
+      description: row.description,
+      isDefault: row.is_default,
+      createdById: row.created_by_id,
+      createdAt: row.created_at,
+    };
   }
 
   async deleteContributionPurpose(id: string, tenantId: string): Promise<boolean> {
