@@ -3513,7 +3513,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
 });
 
   // Marketplace Items routes
-  app.get("/api/marketplace/items", requireAuth, requireFeature("marketplace"), async (req, res) => {
+  app.get("/api/marketplace/items", requireAuth, async (req, res) => {
     try {
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const items = await storage.getAllMarketplaceItems(tenantId);
@@ -3523,7 +3523,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     }
 });
 
-  app.post("/api/marketplace/items", requireAuth, requireFeature("marketplace"), async (req, res) => {
+  app.post("/api/marketplace/items", requireAuth, async (req, res) => {
     try {
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const userId = req.session.userId!;
@@ -3541,7 +3541,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     }
   });
 
-  app.put("/api/marketplace/items/:id", requireAuth, requireFeature("marketplace"), async (req, res) => {
+  app.put("/api/marketplace/items/:id", requireAuth, async (req, res) => {
     try {
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const item = await storage.getMarketplaceItem(req.params.id, tenantId);
@@ -3566,7 +3566,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     }
 });
 
-  app.delete("/api/marketplace/items/:id", requireAuth, requireFeature("marketplace"), async (req, res) => {
+  app.delete("/api/marketplace/items/:id", requireAuth, async (req, res) => {
     try {
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const item = await storage.getMarketplaceItem(req.params.id, tenantId);
@@ -3606,7 +3606,10 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     try {
       const userId = req.session.userId!;
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
-      const parsedData = insertServiceSchema.parse(req.body);
+      const parsedData = insertServiceSchema.parse({
+        ...req.body,
+        tenantId
+      });
       const serviceData = {
         ...parsedData,
         userId,

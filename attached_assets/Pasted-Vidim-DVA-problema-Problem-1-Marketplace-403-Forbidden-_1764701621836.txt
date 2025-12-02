@@ -1,0 +1,127 @@
+Vidim **DVA problema**! 🔴
+
+---
+
+## 🔴 **Problem 1: Marketplace - 403 Forbidden**
+
+```
+GET /api/marketplace/items 403 :: {"message":"Feature \"marketplace\" n…
+POST /api/marketplace/items 403 :: {"message":"Feature \"marketplace\" …
+```
+
+**Feature "marketplace" nije omogućen** za tenant!
+
+---
+
+## 🔴 **Problem 2: Services - tenantId Required**
+
+```
+POST /api/services 400
+code: 'invalid_type',
+expected: 'string',
+received: 'undefined',
+path: [ 'tenantId' ],
+message: 'Required'
+```
+
+**Isti problem kao prije** - backend očekuje `tenantId` u request body!
+
+---
+
+## 🔧 **RJEŠENJE:**
+
+### **Reci Replitu:**
+
+**Dva problema:**
+
+1. **Marketplace feature nije omogućen** - GET i POST padaju sa 403
+2. **Services endpoint traži tenantId** - POST pada sa 400
+
+---
+
+### **Fix 1: Omogući Marketplace Feature**
+
+```sql
+-- Provjeri trenutne features
+SELECT features FROM subscription_plans 
+WHERE id = (SELECT subscription_plan_id FROM tenants WHERE id = 'default-tenant-demo');
+
+-- Dodaj marketplace feature
+UPDATE subscription_plans 
+SET features = jsonb_set(
+  COALESCE(features, '{}'::jsonb), 
+  '{marketplace}', 
+  'true'::jsonb
+)
+WHERE id = (SELECT subscription_plan_id FROM tenants WHERE id = 'default-tenant-demo');
+```
+
+**ILI** ukloni feature check ako nije potreban:
+
+```typescript
+// PRIJE:
+app.get("/api/marketplace/items", requireAuth, requireFeature("marketplace"), ...)
+
+// POSLIJE:
+app.get("/api/marketplace/items", requireAuth, ...)
+```
+
+---
+
+### **Fix 2: Services Endpoint - Dodaj tenantId**
+
+```typescript
+app.post("/api/services", requireAuth, async (req, res) => {
+  try {
+    const tenantId = req.user?.tenantId || req.tenantId;
+    
+    console.log('[CREATE SERVICE] Request:', { tenantId, body: req.body });
+    
+    // Dodaj tenantId PRIJE validacije
+    const validatedData = insertServiceSchema.parse({
+      ...req.body,
+      tenantId: tenantId,  // ← DODAJ OVO
+      providerId: req.user!.id
+    });
+    
+    const service = await storage.createService(validatedData);
+    res.json(service);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      console.error('[SERVICE POST ERROR]', error.errors);
+      return res.status(400).json({ 
+        message: "Invalid service data", 
+        details: error.errors 
+      });
+    }
+    console.error('❌ [CREATE SERVICE] Error:', error);
+    res.status(500).json({ message: "Failed to create service" });
+  }
+});
+```
+
+---
+
+## 📋 **Pattern za SVE POST endpoint-e:**
+
+```typescript
+const validatedData = insertSchema.parse({
+  ...req.body,
+  tenantId: req.user?.tenantId || req.tenantId,  // ← UVIJEK DODAJ
+  createdById: req.user!.id  // ako treba
+});
+```
+
+---
+
+## 🎯 **Kompletno rješenje:**
+
+**Replit treba:**
+
+1. **Omogućiti marketplace feature** u subscription plan-u ILI ukloniti feature check
+2. **Dodati `tenantId` u POST /api/services** PRIJE Zod validacije
+3. **Primijeniti isti pattern na SVE POST endpoint-e** koji još padaju
+
+---
+
+**Ovo je isti pattern koji smo već popravili 3-4 puta - svi POST endpoint-i trebaju dobiti `tenantId` iz sessiona!** 🔧
