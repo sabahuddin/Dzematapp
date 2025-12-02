@@ -1,0 +1,100 @@
+sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[CREATE CONTRIBUTION PURPOSE] Request: {
+  tenantId: 'default-tenant-demo',
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  body: { name: 'Dženaza fond', description: 'Fond za dženazu ' }
+}
+[CREATE CONTRIBUTION PURPOSE] Data with title: {
+  tenantId: 'default-tenant-demo',
+  name: 'Dženaza fond',
+  title: 'Dženaza fond',
+  description: 'Fond za dženazu ',
+  createdById: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  isDefault: false
+}
+[CREATE CONTRIBUTION PURPOSE] Success: 2d759cb1-8daf-4d80-a0be-14796c11cd76
+3:15:09 PM [express] POST /api/contribution-purposes 201 in 20ms :: {"id":"2d759cb1-8daf-4d80-a0be-1…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+3:15:10 PM [express] GET /api/contribution-purposes 200 in 9ms :: [{"id":"1aac30ac-ca8e-44ab-8220-8b…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+3:15:10 PM [express] GET /api/certificates/unviewed-count 304 in 8ms :: {"count":0}
+[MESSAGES/UNREAD-COUNT] Debug: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  sessionTenantId: 'default-tenant-demo',
+  userTenantId: 'default-tenant-demo',
+  reqTenantId: 'default-tenant-demo',
+  resolvedTenantId: 'default-tenant-demo'
+}
+3:15:10 PM [express] GET /api/messages/unread-count 304 in 13ms :: {"count":0}
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+3:15:39 PM [express] GET /api/notifications/unread 304 in 44ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+3:15:40 PM [express] GET /api/certificates/unviewed-count 304 in 13ms :: {"count":0}
+[MESSAGES/UNREAD-COUNT] Debug: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  sessionTenantId: 'default-tenant-demo',
+  userTenantId: 'default-tenant-demo',
+  reqTenantId: 'default-tenant-demo',
+  resolvedTenantId: 'default-tenant-demo'
+}
+3:15:40 PM [express] GET /api/messages/unread-count 304 in 14ms :: {"count":0}
