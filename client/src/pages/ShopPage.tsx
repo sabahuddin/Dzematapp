@@ -75,7 +75,7 @@ export default function ShopPage() {
     name: "",
     description: "",
     photos: [] as string[],
-    type: "sale" as "sale" | "gift",
+    type: "sell" as "sell" | "gift",
     price: "",
     status: "active"
   });
@@ -364,7 +364,7 @@ export default function ShopPage() {
         name: "",
         description: "",
         photos: [],
-        type: "sale",
+        type: "sell",
         price: "",
         status: "active"
       });
@@ -388,7 +388,7 @@ export default function ShopPage() {
         name: "",
         description: "",
         photos: [],
-        type: "sale",
+        type: "sell",
         price: "",
         status: "active"
       });
@@ -560,10 +560,10 @@ export default function ShopPage() {
   const handleEditMarketplaceItem = (item: MarketplaceItemWithUser) => {
     setEditingMarketplaceItem(item);
     setMarketplaceForm({
-      name: item.name,
+      name: item.title,
       description: item.description || "",
       photos: item.photos || [],
-      type: item.type as "sale" | "gift",
+      type: item.type as "sell" | "gift",
       price: item.price || "",
       status: item.status || "active"
     });
@@ -666,7 +666,7 @@ export default function ShopPage() {
     return users?.find(u => u.id === userId);
   };
 
-  const saleItems = marketplaceItems?.filter(item => item.type === "sale" && item.status === "active") || [];
+  const sellItems = marketplaceItems?.filter(item => item.type === "sell" && item.status === "active") || [];
   const giftItems = marketplaceItems?.filter(item => item.type === "gift" && item.status === "active") || [];
   const archivedItems = marketplaceItems?.filter(item => item.status === "completed") || [];
 
@@ -916,11 +916,11 @@ export default function ShopPage() {
             startIcon={<Add />}
             onClick={() => {
               setEditingMarketplaceItem(null);
-              setMarketplaceForm({ name: "", description: "", photos: [], type: "sale", price: "", status: "active" });
+              setMarketplaceForm({ name: "", description: "", photos: [], type: "sell", price: "", status: "active" });
               setMarketplaceModalOpen(true);
             }}
             sx={{ mb: 3 }}
-            data-testid="button-add-sale-item"
+            data-testid="button-add-sell-item"
           >
             {t('shop:buttons.addListing')}
           </Button>
@@ -929,18 +929,18 @@ export default function ShopPage() {
             <Typography>{t('shop:display.loading')}</Typography>
           ) : (
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 3 }}>
-              {saleItems.map((item) => {
+              {sellItems.map((item) => {
                 const itemUser = getUserById(item.userId);
                 const canEdit = item.userId === user?.id || isAdmin;
                 return (
                   <Box key={item.id}>
-                    <Card data-testid={`card-sale-${item.id}`}>
+                    <Card data-testid={`card-sell-${item.id}`}>
                       {item.photos && item.photos.length > 0 && (
                         item.photos.length === 1 ? (
                           <CardMedia
                             component="img"
                             image={item.photos[0]}
-                            alt={item.name}
+                            alt={item.title}
                             sx={{ 
                               cursor: 'pointer',
                               aspectRatio: '4/3',
@@ -955,7 +955,7 @@ export default function ShopPage() {
                               <ImageListItem key={idx} sx={{ cursor: 'pointer' }} onClick={() => openFullscreenImage(photo)}>
                                 <img 
                                   src={photo} 
-                                  alt={`${item.name} ${idx + 1}`}
+                                  alt={`${item.title} ${idx + 1}`}
                                   style={{ objectFit: 'cover', width: '100%', height: '100%' }}
                                 />
                               </ImageListItem>
@@ -964,8 +964,8 @@ export default function ShopPage() {
                         )
                       )}
                       <CardContent>
-                        <Typography variant="h6" gutterBottom data-testid={`text-sale-name-${item.id}`}>
-                          {item.name}
+                        <Typography variant="h6" gutterBottom data-testid={`text-sell-name-${item.id}`}>
+                          {item.title}
                         </Typography>
                         {item.description && (
                           <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
@@ -973,7 +973,7 @@ export default function ShopPage() {
                           </Typography>
                         )}
                         {item.price && (
-                          <Typography variant="h6" color="primary" sx={{ mb: 1 }} data-testid={`text-sale-price-${item.id}`}>
+                          <Typography variant="h6" color="primary" sx={{ mb: 1 }} data-testid={`text-sell-price-${item.id}`}>
                             {formatPrice(item.price)}
                           </Typography>
                         )}
@@ -983,7 +983,7 @@ export default function ShopPage() {
                             <Button
                               variant="contained"
                               size="small"
-                              onClick={() => handleContactUser(itemUser, item.name)}
+                              onClick={() => handleContactUser(itemUser, item.title)}
                               data-testid={`button-contact-${item.id}`}
                             >
                               {t('shop:buttons.contactOwner')}
@@ -994,14 +994,14 @@ export default function ShopPage() {
                               <IconButton
                                 color="primary"
                                 onClick={() => handleEditMarketplaceItem(item)}
-                                data-testid={`button-edit-sale-${item.id}`}
+                                data-testid={`button-edit-sell-${item.id}`}
                               >
                                 <Edit />
                               </IconButton>
                               <IconButton
                                 color="error"
                                 onClick={() => deleteMarketplaceItemMutation.mutate(item.id)}
-                                data-testid={`button-delete-sale-${item.id}`}
+                                data-testid={`button-delete-sell-${item.id}`}
                               >
                                 <Delete />
                               </IconButton>
@@ -1010,7 +1010,7 @@ export default function ShopPage() {
                                 size="small"
                                 color="success"
                                 onClick={() => completeMarketplaceItemMutation.mutate(item.id)}
-                                data-testid={`button-complete-sale-${item.id}`}
+                                data-testid={`button-complete-sell-${item.id}`}
                               >
                                 {t('shop:buttons.complete')}
                               </Button>
@@ -1059,7 +1059,7 @@ export default function ShopPage() {
                           <CardMedia
                             component="img"
                             image={item.photos[0]}
-                            alt={item.name}
+                            alt={item.title}
                             sx={{ 
                               cursor: 'pointer',
                               aspectRatio: '4/3',
@@ -1074,7 +1074,7 @@ export default function ShopPage() {
                               <ImageListItem key={idx} sx={{ cursor: 'pointer' }} onClick={() => openFullscreenImage(photo)}>
                                 <img 
                                   src={photo} 
-                                  alt={`${item.name} ${idx + 1}`}
+                                  alt={`${item.title} ${idx + 1}`}
                                   style={{ objectFit: 'cover', width: '100%', height: '100%' }}
                                 />
                               </ImageListItem>
@@ -1084,7 +1084,7 @@ export default function ShopPage() {
                       )}
                       <CardContent>
                         <Typography variant="h6" gutterBottom data-testid={`text-gift-name-${item.id}`}>
-                          {item.name}
+                          {item.title}
                         </Typography>
                         {item.description && (
                           <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
@@ -1097,7 +1097,7 @@ export default function ShopPage() {
                             <Button
                               variant="contained"
                               size="small"
-                              onClick={() => handleContactUser(itemUser, item.name)}
+                              onClick={() => handleContactUser(itemUser, item.title)}
                               data-testid={`button-contact-gift-${item.id}`}
                             >
                               {t('shop:buttons.contactOwner')}
@@ -1270,7 +1270,7 @@ export default function ShopPage() {
                           <CardMedia
                             component="img"
                             image={item.photos[0]}
-                            alt={item.name}
+                            alt={item.title}
                             sx={{ 
                               cursor: 'pointer',
                               aspectRatio: '4/3',
@@ -1285,7 +1285,7 @@ export default function ShopPage() {
                               <ImageListItem key={idx} sx={{ cursor: 'pointer' }} onClick={() => openFullscreenImage(photo)}>
                                 <img 
                                   src={photo} 
-                                  alt={`${item.name} ${idx + 1}`}
+                                  alt={`${item.title} ${idx + 1}`}
                                   style={{ objectFit: 'cover', width: '100%', height: '100%' }}
                                 />
                               </ImageListItem>
@@ -1295,7 +1295,7 @@ export default function ShopPage() {
                       )}
                       <CardContent>
                         <Typography variant="h6" gutterBottom data-testid={`text-archived-name-${item.id}`}>
-                          {item.name}
+                          {item.title}
                         </Typography>
                         {item.description && (
                           <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
@@ -1308,7 +1308,7 @@ export default function ShopPage() {
                           </Typography>
                         )}
                         <Chip 
-                          label={item.type === "sale" ? t('shop:display.sold') : t('shop:display.gifted')} 
+                          label={item.type === "sell" ? t('shop:display.sold') : t('shop:display.gifted')} 
                           color="default" 
                           size="small" 
                           sx={{ mb: 1 }} 
@@ -1450,7 +1450,7 @@ export default function ShopPage() {
 
       {/* Add/Edit Marketplace Item Dialog */}
       <Dialog open={marketplaceModalOpen} onClose={() => { setMarketplaceModalOpen(false); setEditingMarketplaceItem(null); }} maxWidth="sm" fullWidth>
-        <DialogTitle>{editingMarketplaceItem ? t('shop:dialogs.editListing') : (marketplaceForm.type === "sale" ? t('shop:dialogs.addSaleListing') : t('shop:dialogs.addGiftListing'))}</DialogTitle>
+        <DialogTitle>{editingMarketplaceItem ? t('shop:dialogs.editListing') : (marketplaceForm.type === "sell" ? t('shop:dialogs.addSaleListing') : t('shop:dialogs.addGiftListing'))}</DialogTitle>
         <DialogContent>
           <TextField
             fullWidth
@@ -1472,7 +1472,7 @@ export default function ShopPage() {
             data-testid="input-marketplace-description"
           />
 
-          {marketplaceForm.type === "sale" && (
+          {marketplaceForm.type === "sell" && (
             <TextField
               fullWidth
               label={t('shop:labels.price')}
