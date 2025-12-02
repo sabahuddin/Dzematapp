@@ -1,0 +1,100 @@
+ sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: cdede0a0-ae2f-46ff-bc8b-ce564797f974
+10:38:30 AM [express] GET /api/certificates/unviewed-count 304 in 15ms :: {"count":0}
+[MESSAGES/UNREAD-COUNT] Debug: {
+  userId: 'admin-cdede0a0-ae2f-46ff-bc8b-ce564797f974',
+  sessionTenantId: 'cdede0a0-ae2f-46ff-bc8b-ce564797f974',
+  userTenantId: 'cdede0a0-ae2f-46ff-bc8b-ce564797f974',
+  reqTenantId: 'cdede0a0-ae2f-46ff-bc8b-ce564797f974',
+  resolvedTenantId: 'cdede0a0-ae2f-46ff-bc8b-ce564797f974'
+}
+10:38:30 AM [express] GET /api/messages/unread-count 304 in 15ms :: {"count":0}
+[AUTH MIDDLEWARE] User loaded: {
+  userId: 'admin-cdede0a0-ae2f-46ff-bc8b-ce564797f974',
+  username: 'admin',
+  userTenantId: 'cdede0a0-ae2f-46ff-bc8b-ce564797f974',
+  sessionTenantId: 'cdede0a0-ae2f-46ff-bc8b-ce564797f974',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: cdede0a0-ae2f-46ff-bc8b-ce564797f974
+[CREATE EVENT] Request: {
+  tenantId: 'cdede0a0-ae2f-46ff-bc8b-ce564797f974',
+  userId: 'admin-cdede0a0-ae2f-46ff-bc8b-ce564797f974',
+  body: {
+    name: 'Večera',
+    description: '<p>opis</p>',
+    location: 'GAM',
+    dateTime: '2025-12-07T15:00:00.000Z',
+    rsvpEnabled: true,
+    requireAdultsChildren: true,
+    maxAttendees: 70,
+    categories: [ 'Večera' ],
+    pointsValue: 10,
+    createdById: 'admin-cdede0a0-ae2f-46ff-bc8b-ce564797f974',
+    photoUrl: null
+  }
+}
+[CREATE EVENT] Validated: {
+  tenantId: 'cdede0a0-ae2f-46ff-bc8b-ce564797f974',
+  name: 'Večera',
+  description: '<p>opis</p>',
+  location: 'GAM',
+  dateTime: 2025-12-07T15:00:00.000Z,
+  photoUrl: null,
+  rsvpEnabled: true,
+  requireAdultsChildren: true,
+  maxAttendees: 70,
+  categories: [ 'Večera' ],
+  pointsValue: 10,
+  createdById: 'admin-cdede0a0-ae2f-46ff-bc8b-ce564797f974'
+}
+❌ [CREATE EVENT] Error: error: null value in column "start_date" of relation "events" violates not-null constraint
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.createEvent (file:///app/dist/index.js:1484:21)
+    at async file:///app/dist/index.js:5431:21 {
+  length: 501,
+  severity: 'ERROR',
+  code: '23502',
+  detail: 'Failing row contains (754a047a-f14a-469e-b1c9-53e042a5aec7, cdede0a0-ae2f-46ff-bc8b-ce564797f974, null, <p>opis</p>, GAM, null, null, f, null, null, null, t, 2025-12-02 10:38:41.771234, 2025-12-02 10:38:41.771234, 10, null, t, t, 70, {Večera}, admin-cdede0a0-ae2f-46ff-bc8b-ce564797f974, null, Večera, 2025-12-07 15:00:00).',
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: 'public',
+  table: 'events',
+  column: 'start_date',
+  dataType: undefined,
+  constraint: undefined,
+  file: 'execMain.c',
+  line: '2022',
+  routine: 'ExecConstraints'
+10:38:41 AM [express] POST /api/events 400 in 28ms :: {"message":"Invalid event data","details":"null…
+}
+Stack trace: error: null value in column "start_date" of relation "events" violates not-null constraint
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.createEvent (file:///app/dist/index.js:1484:21)
+    at async file:///app/dist/index.js:5431:21
+Request body: {
+  name: 'Večera',
+  description: '<p>opis</p>',
+  location: 'GAM',
+  dateTime: '2025-12-07T15:00:00.000Z',
+  rsvpEnabled: true,
+  requireAdultsChildren: true,
+  maxAttendees: 70,
+  categories: [ 'Večera' ],
+  pointsValue: 10,
+  createdById: 'admin-cdede0a0-ae2f-46ff-bc8b-ce564797f974',
+  photoUrl: null
+}
+TenantId: cdede0a0-ae2f-46ff-bc8b-ce564797f974

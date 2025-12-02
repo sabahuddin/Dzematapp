@@ -741,6 +741,22 @@ async function addMissingColumns(client: any): Promise<void> {
     `ALTER TABLE "projects" ALTER COLUMN "title" DROP NOT NULL`,
   ];
   
+  // Fix NOT NULL on legacy 'start_date' column (production uses start_date, schema uses date_time)
+  try {
+    await client.query(`ALTER TABLE "events" ALTER COLUMN "start_date" DROP NOT NULL`);
+    console.log("✅ Fixed events.start_date NOT NULL constraint");
+  } catch (e: any) {
+    // Column may not exist
+  }
+  
+  // Copy date_time to start_date if start_date is null
+  try {
+    await client.query(`UPDATE "events" SET "start_date" = "date_time" WHERE "start_date" IS NULL AND "date_time" IS NOT NULL`);
+    console.log("✅ Synced events.date_time → start_date");
+  } catch (e: any) {
+    // Ignore
+  }
+  
   let titleConstraintCount = 0;
   for (const sql of legacyTitleConstraints) {
     try {
