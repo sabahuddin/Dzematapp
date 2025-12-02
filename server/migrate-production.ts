@@ -684,6 +684,8 @@ async function addMissingColumns(client: any): Promise<void> {
     `ALTER TABLE "work_groups" ADD COLUMN IF NOT EXISTS "archived" boolean DEFAULT false NOT NULL`,
     
     // IMPORTANT_DATES
+    `ALTER TABLE "important_dates" ADD COLUMN IF NOT EXISTS "name" text`,
+    `ALTER TABLE "important_dates" ADD COLUMN IF NOT EXISTS "date" text`,
     `ALTER TABLE "important_dates" ADD COLUMN IF NOT EXISTS "is_recurring" boolean DEFAULT true NOT NULL`,
     
     // BADGES - all columns from schema.ts (with defaults for safety)

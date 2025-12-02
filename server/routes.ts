@@ -11,7 +11,7 @@ import { seedDefaultTenant } from "./seed-tenant";
 import { seedDemoData } from "./seed-demo-data";
 import { requireFeature, getTenantSubscriptionInfo } from "./feature-access";
 import { generateCertificate, saveCertificate } from "./certificateService";
-import { type User, insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema, insertContributionPurposeSchema, insertFinancialContributionSchema, insertActivityLogSchema, insertEventAttendanceSchema, insertPointsSettingsSchema, insertBadgeSchema, insertUserBadgeSchema, insertProjectSchema, insertProposalSchema, insertReceiptSchema, insertCertificateTemplateSchema, insertUserCertificateSchema, insertMembershipApplicationSchema, insertAkikaApplicationSchema, insertMarriageApplicationSchema, insertServiceSchema, insertTenantSchema } from "@shared/schema";
+import { type User, insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema, insertImportantDateSchema, insertContributionPurposeSchema, insertFinancialContributionSchema, insertActivityLogSchema, insertEventAttendanceSchema, insertPointsSettingsSchema, insertBadgeSchema, insertUserBadgeSchema, insertProjectSchema, insertProposalSchema, insertReceiptSchema, insertCertificateTemplateSchema, insertUserCertificateSchema, insertMembershipApplicationSchema, insertAkikaApplicationSchema, insertMarriageApplicationSchema, insertServiceSchema, insertTenantSchema } from "@shared/schema";
 
 // Configure multer for photo uploads
 const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'photos');
@@ -3940,10 +3940,18 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
 
   app.post("/api/important-dates", requireAdmin, async (req, res) => {
     try {
-      const date = await storage.createImportantDate({...req.body, tenantId: req.user!.tenantId});
+      const tenantId = req.user!.tenantId;
+      console.log('[CREATE IMPORTANT DATE] Request:', { tenantId, body: req.body });
+      const validated = insertImportantDateSchema.parse({ ...req.body, tenantId });
+      console.log('[CREATE IMPORTANT DATE] Validated:', validated);
+      const date = await storage.createImportantDate(validated);
+      console.log('[CREATE IMPORTANT DATE] Success:', date.id);
       res.status(201).json(date);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to create important date" });
+    } catch (error: any) {
+      console.error('❌ [CREATE IMPORTANT DATE] Error:', error);
+      console.error('Stack trace:', error?.stack);
+      console.error('Request body:', req.body);
+      res.status(500).json({ message: "Failed to create important date", details: error?.message });
     }
 });
 
