@@ -1,0 +1,100 @@
+
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[CREATE CONTRIBUTION PURPOSE] Request: {
+  tenantId: 'default-tenant-demo',
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  body: { name: 'Mekteb', description: 'Podrška mektebskoj pouci' }
+}
+[CREATE CONTRIBUTION PURPOSE] Data with title: {
+  tenantId: 'default-tenant-demo',
+  name: 'Mekteb',
+  title: 'Mekteb',
+  description: 'Podrška mektebskoj pouci',
+  createdById: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  isDefault: false
+}
+❌ [CREATE CONTRIBUTION PURPOSE] Error: error: column "title" of relation "contribution_purposes" does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async DatabaseStorage.createContributionPurposeWithTitle (file:///app/dist/index.js:2433:20)
+    at async file:///app/dist/index.js:7114:23 {
+  length: 139,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '64',
+2:58:01 PM [express] POST /api/contribution-purposes 500 in 18ms :: {"message":"Failed to create con…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[CREATE CONTRIBUTION PURPOSE] Request: {
+  tenantId: 'default-tenant-demo',
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  body: { name: 'Mekteb', description: 'Podrška mektebskoj pouci' }
+}
+[CREATE CONTRIBUTION PURPOSE] Data with title: {
+  tenantId: 'default-tenant-demo',
+  name: 'Mekteb',
+  title: 'Mekteb',
+  description: 'Podrška mektebskoj pouci',
+  createdById: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  isDefault: false
+}
+2:58:07 PM [express] POST /api/contribution-purposes 500 in 27ms :: {"message":"Failed to create con…
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_target.c',
+  line: '1065',
+  routine: 'checkInsertTargets'
+}
+Stack trace: error: column "title" of relation "contribution_purposes" does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async DatabaseStorage.createContributionPurposeWithTitle (file:///app/dist/index.js:2433:20)
+    at async file:///app/dist/index.js:7114:23
+Request body: { name: 'Mekteb', description: 'Podrška mektebskoj pouci' }
+TenantId: default-tenant-demo
+❌ [CREATE CONTRIBUTION PURPOSE] Error: error: column "title" of relation "contribution_purposes" does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async DatabaseStorage.createContributionPurposeWithTitle (file:///app/dist/index.js:2433:20)
+    at async file:///app/dist/index.js:7114:23 {
+  length: 139,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '64',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_target.c',
+  line: '1065',
+  routine: 'checkInsertTargets'
+}
+Stack trace: error: column "title" of relation "contribution_purposes" does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async DatabaseStorage.createContributionPurposeWithTitle (file:///app/dist/index.js:2433:20)
+    at async file:///app/dist/index.js:7114:23
+Request body: { name: 'Mekteb', description: 'Podrška mektebskoj pouci' }
+TenantId: default-tenant-demo

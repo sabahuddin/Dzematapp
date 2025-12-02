@@ -1893,28 +1893,48 @@ export class DatabaseStorage implements IStorage {
     return date;
   }
 
-  // Production DB compatibility: handles 'title' column that exists in prod but not in schema
+  // Production DB compatibility: handles both cases - with or without 'title' column
   async createImportantDateWithTitle(data: { tenantId: string; name?: string; title?: string; date: string; isRecurring?: boolean }): Promise<ImportantDate> {
-    const titleValue = data.name || data.title || '';
     const nameValue = data.name || data.title || '';
     
-    // Use raw SQL to insert with both 'name' AND 'title' columns for production compatibility
-    // Also explicitly generate UUID for id since prod DB may not have default
-    const result = await db.execute(sql`
-      INSERT INTO important_dates (id, tenant_id, name, title, date, is_recurring, created_at)
-      VALUES (gen_random_uuid(), ${data.tenantId}, ${nameValue}, ${titleValue}, ${data.date}, ${data.isRecurring ?? true}, now())
-      RETURNING *
-    `);
-    
-    const row = result.rows[0] as any;
-    return {
-      id: row.id,
-      tenantId: row.tenant_id,
-      name: row.name || row.title,
-      date: row.date,
-      isRecurring: row.is_recurring,
-      createdAt: row.created_at,
-    };
+    // Try with 'title' column first, fallback to without if it doesn't exist
+    try {
+      const result = await db.execute(sql`
+        INSERT INTO important_dates (id, tenant_id, name, title, date, is_recurring, created_at)
+        VALUES (gen_random_uuid(), ${data.tenantId}, ${nameValue}, ${nameValue}, ${data.date}, ${data.isRecurring ?? true}, now())
+        RETURNING *
+      `);
+      
+      const row = result.rows[0] as any;
+      return {
+        id: row.id,
+        tenantId: row.tenant_id,
+        name: row.name || row.title,
+        date: row.date,
+        isRecurring: row.is_recurring,
+        createdAt: row.created_at,
+      };
+    } catch (error: any) {
+      // If 'title' column doesn't exist, insert without it
+      if (error?.code === '42703' && error?.message?.includes('title')) {
+        const result = await db.execute(sql`
+          INSERT INTO important_dates (id, tenant_id, name, date, is_recurring, created_at)
+          VALUES (gen_random_uuid(), ${data.tenantId}, ${nameValue}, ${data.date}, ${data.isRecurring ?? true}, now())
+          RETURNING *
+        `);
+        
+        const row = result.rows[0] as any;
+        return {
+          id: row.id,
+          tenantId: row.tenant_id,
+          name: row.name,
+          date: row.date,
+          isRecurring: row.is_recurring,
+          createdAt: row.created_at,
+        };
+      }
+      throw error;
+    }
   }
 
   async getImportantDate(id: string, tenantId: string): Promise<ImportantDate | undefined> {
@@ -2030,29 +2050,50 @@ export class DatabaseStorage implements IStorage {
     return newPurpose;
   }
 
-  // Production DB compatibility: handles 'title' column that exists in prod but not in schema
+  // Production DB compatibility: handles both cases - with or without 'title' column
   async createContributionPurposeWithTitle(data: { tenantId: string; name?: string; title?: string; description?: string; createdById?: string; isDefault?: boolean }): Promise<ContributionPurpose> {
-    const titleValue = data.name || data.title || '';
     const nameValue = data.name || data.title || '';
     
-    // Use raw SQL to insert with both 'name' AND 'title' columns for production compatibility
-    // Also explicitly generate UUID for id since prod DB may not have default
-    const result = await db.execute(sql`
-      INSERT INTO contribution_purposes (id, tenant_id, name, title, description, is_default, created_by_id, created_at)
-      VALUES (gen_random_uuid(), ${data.tenantId}, ${nameValue}, ${titleValue}, ${data.description || null}, ${data.isDefault ?? false}, ${data.createdById || null}, now())
-      RETURNING *
-    `);
-    
-    const row = result.rows[0] as any;
-    return {
-      id: row.id,
-      tenantId: row.tenant_id,
-      name: row.name || row.title,
-      description: row.description,
-      isDefault: row.is_default,
-      createdById: row.created_by_id,
-      createdAt: row.created_at,
-    };
+    // Try with 'title' column first, fallback to without if it doesn't exist
+    try {
+      const result = await db.execute(sql`
+        INSERT INTO contribution_purposes (id, tenant_id, name, title, description, is_default, created_by_id, created_at)
+        VALUES (gen_random_uuid(), ${data.tenantId}, ${nameValue}, ${nameValue}, ${data.description || null}, ${data.isDefault ?? false}, ${data.createdById || null}, now())
+        RETURNING *
+      `);
+      
+      const row = result.rows[0] as any;
+      return {
+        id: row.id,
+        tenantId: row.tenant_id,
+        name: row.name || row.title,
+        description: row.description,
+        isDefault: row.is_default,
+        createdById: row.created_by_id,
+        createdAt: row.created_at,
+      };
+    } catch (error: any) {
+      // If 'title' column doesn't exist, insert without it
+      if (error?.code === '42703' && error?.message?.includes('title')) {
+        const result = await db.execute(sql`
+          INSERT INTO contribution_purposes (id, tenant_id, name, description, is_default, created_by_id, created_at)
+          VALUES (gen_random_uuid(), ${data.tenantId}, ${nameValue}, ${data.description || null}, ${data.isDefault ?? false}, ${data.createdById || null}, now())
+          RETURNING *
+        `);
+        
+        const row = result.rows[0] as any;
+        return {
+          id: row.id,
+          tenantId: row.tenant_id,
+          name: row.name,
+          description: row.description,
+          isDefault: row.is_default,
+          createdById: row.created_by_id,
+          createdAt: row.created_at,
+        };
+      }
+      throw error;
+    }
   }
 
   async deleteContributionPurpose(id: string, tenantId: string): Promise<boolean> {
