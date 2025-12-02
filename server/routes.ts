@@ -167,14 +167,23 @@ function prepareDataForValidation(req: any, additionalFields: Record<string, any
 /**
  * GLOBAL HELPER: Maps name/title fields for legacy tables that have both columns
  * Call this for marketplace_items, services, shop_products to avoid NOT NULL violations
+ * Also maps "sale" -> "sell" for marketplace type field (legacy frontend compatibility)
  */
 function mapNameTitleFields(data: Record<string, any>): Record<string, any> {
   const name = data.name || data.title;
   const title = data.title || data.name;
+  
+  // Fix legacy "sale" -> "sell" enum mapping
+  let type = data.type;
+  if (type === 'sale') {
+    type = 'sell';
+  }
+  
   return {
     ...data,
     name: name,
-    title: title
+    title: title,
+    ...(type && { type })
   };
 }
 
