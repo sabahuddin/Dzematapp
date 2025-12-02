@@ -56,10 +56,6 @@ export default function FinancesPage() {
   const [categoryFilter, setCategoryFilter] = useState<string>('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedContribution, setSelectedContribution] = useState<FinancialContribution | null>(null);
-  const [projectDialogOpen, setProjectDialogOpen] = useState(false);
-  const [newProjectName, setNewProjectName] = useState('');
-  const [newProjectDescription, setNewProjectDescription] = useState('');
-  const [newProjectGoal, setNewProjectGoal] = useState('');
   const [purposeDialogOpen, setPurposeDialogOpen] = useState(false);
   const [newPurposeName, setNewPurposeName] = useState('');
   const [newPurposeDesc, setNewPurposeDesc] = useState('');
@@ -184,32 +180,6 @@ export default function FinancesPage() {
     }
   });
 
-  // Create new project mutation
-  const createProjectMutation = useMutation<Project, Error, void>({
-    mutationFn: async () => {
-      return await apiRequest('/api/projects', 'POST', {
-        name: newProjectName,
-        description: newProjectDescription,
-        goalAmount: newProjectGoal,
-        currentAmount: '0',
-        status: 'active'
-      }) as unknown as Project;
-    },
-    onSuccess: async (newProject: Project) => {
-      // Wait for query to be refetched to ensure new project appears immediately
-      await queryClient.refetchQueries({ queryKey: ['/api/projects'] });
-      // Set the newly created project as selected in the contribution form
-      form.setValue('projectId', newProject.id);
-      toast({ title: t('common:common.success'), description: 'Projekat kreiram uspješno' });
-      setProjectDialogOpen(false);
-      setNewProjectName('');
-      setNewProjectDescription('');
-      setNewProjectGoal('');
-    },
-    onError: () => {
-      toast({ title: t('common:common.error'), description: 'Greška pri kreiranju projekta', variant: 'destructive' });
-    }
-  });
 
   const handleOpenDialog = (contribution?: FinancialContribution) => {
     if (contribution) {
@@ -378,14 +348,6 @@ export default function FinancesPage() {
               data-testid="button-add-purpose"
             >
               Svrha
-            </Button>
-            <Button
-              variant="contained"
-              startIcon={<Add />}
-              onClick={() => setProjectDialogOpen(true)}
-              data-testid="button-add-project"
-            >
-              Projekat
             </Button>
             <Button
               variant="contained"
@@ -561,51 +523,6 @@ export default function FinancesPage() {
         </DialogActions>
       </Dialog>
 
-      {/* Create New Project Dialog */}
-      <Dialog open={projectDialogOpen} onClose={() => setProjectDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Dodaj novi projekat</DialogTitle>
-        <DialogContent sx={{ pt: 3, px: 3 }}>
-          <TextField
-            fullWidth
-            label="Naziv projekta"
-            value={newProjectName}
-            onChange={(e) => setNewProjectName(e.target.value)}
-            sx={{ mb: 2, mt: 4 }}
-            data-testid="input-new-project-name"
-          />
-          <TextField
-            fullWidth
-            label="Opis"
-            multiline
-            rows={3}
-            value={newProjectDescription}
-            onChange={(e) => setNewProjectDescription(e.target.value)}
-            sx={{ mb: 2 }}
-            data-testid="input-new-project-description"
-          />
-          <TextField
-            fullWidth
-            label={`Ciljni iznos (${currency})`}
-            type="number"
-            value={newProjectGoal}
-            onChange={(e) => setNewProjectGoal(e.target.value)}
-            data-testid="input-new-project-goal"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setProjectDialogOpen(false)} data-testid="button-cancel-project">
-            Otkaži
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => createProjectMutation.mutate()}
-            disabled={createProjectMutation.isPending || !newProjectName || !newProjectGoal}
-            data-testid="button-save-project"
-          >
-            {createProjectMutation.isPending ? 'Kreiram...' : 'Kreiraj'}
-          </Button>
-        </DialogActions>
-      </Dialog>
 
       {/* Add/Edit Dialog */}
       <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
