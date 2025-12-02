@@ -3991,13 +3991,13 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         userId: req.user?.id,
         body: req.body
       });
-      const validated = insertContributionPurposeSchema.parse(req.body);
-      console.log('[CREATE CONTRIBUTION PURPOSE] Validated:', validated);
-      const purpose = await storage.createContributionPurpose({
-        ...validated,
-        createdById: req.user!.id,
-        tenantId
+      const validated = insertContributionPurposeSchema.parse({
+        ...req.body,
+        tenantId,
+        createdById: req.user!.id
       });
+      console.log('[CREATE CONTRIBUTION PURPOSE] Validated:', validated);
+      const purpose = await storage.createContributionPurpose(validated);
       console.log('[CREATE CONTRIBUTION PURPOSE] Success:', purpose.id);
       res.status(201).json(purpose);
     } catch (error: any) {
@@ -4503,13 +4503,13 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         userId: req.user?.id,
         body: req.body
       });
-      const validated = insertProjectSchema.parse(req.body);
-      console.log('[CREATE PROJECT] Validated:', validated);
-      const project = await storage.createProject({
-        ...validated,
-        createdById: req.user!.id,
-        tenantId
+      const validated = insertProjectSchema.parse({
+        ...req.body,
+        tenantId,
+        createdById: req.user!.id
       });
+      console.log('[CREATE PROJECT] Validated:', validated);
+      const project = await storage.createProject(validated);
       console.log('[CREATE PROJECT] Success:', project.id);
       res.status(201).json(project);
     } catch (error: any) {
