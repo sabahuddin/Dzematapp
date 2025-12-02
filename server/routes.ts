@@ -3968,9 +3968,10 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const purposes = await storage.getContributionPurposes(tenantId);
       res.json(purposes);
-    } catch (error) {
-      console.error("Error fetching contribution purposes:", error);
-      res.status(500).json({ message: "Failed to get contribution purposes" });
+    } catch (error: any) {
+      console.error("❌ [GET CONTRIBUTION PURPOSES] Error:", error);
+      console.error("Stack:", error?.stack);
+      res.status(500).json({ message: "Failed to get contribution purposes", error: error?.message });
     }
   });
 
