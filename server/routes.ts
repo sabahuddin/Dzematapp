@@ -1948,21 +1948,25 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const events = await storage.getAllEvents(tenantId);
       
-      // Add RSVP count to each event
+      // Add RSVP count and normalize field names for frontend compatibility
+      // Production DB may have 'start_date' instead of 'date_time', 'title' instead of 'name'
       const eventsWithRsvpCount = await Promise.all(
-        events.map(async (event) => {
-          if (event.rsvpEnabled) {
-            const rsvpStats = await storage.getEventRsvps(event.id, tenantId);
-            console.log(`Event ${event.name}: rsvpCount = ${rsvpStats.totalAttendees}`);
-            return {
-              ...event,
-              rsvpCount: rsvpStats.totalAttendees
-            };
-          }
-          return {
+        events.map(async (event: any) => {
+          const eventData = {
             ...event,
+            // Normalize field names for frontend compatibility
+            name: event.name || event.title,
+            dateTime: event.dateTime || event.startDate || event.start_date || event.date_time,
             rsvpCount: 0
           };
+          
+          if (event.rsvpEnabled) {
+            const rsvpStats = await storage.getEventRsvps(event.id, tenantId);
+            console.log(`Event ${eventData.name}: rsvpCount = ${rsvpStats.totalAttendees}`);
+            eventData.rsvpCount = rsvpStats.totalAttendees;
+          }
+          
+          return eventData;
         })
       );
       
@@ -3942,11 +3946,21 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     try {
       const tenantId = req.user!.tenantId;
       console.log('[CREATE IMPORTANT DATE] Request:', { tenantId, body: req.body });
+      
+      // Production DB has 'title' NOT NULL, schema uses 'name' - map for compatibility
+      const dataWithTitle = {
+        ...req.body,
+        tenantId,
+        title: req.body.name || req.body.title, // Map name -> title for prod DB
+      };
+      
       const validated = insertImportantDateSchema.parse({ ...req.body, tenantId });
       console.log('[CREATE IMPORTANT DATE] Validated:', validated);
-      const date = await storage.createImportantDate(validated);
-      console.log('[CREATE IMPORTANT DATE] Success:', date.id);
-      res.status(201).json(date);
+      
+      // Use raw SQL insert to handle title column in production
+      const result = await storage.createImportantDateWithTitle(dataWithTitle);
+      console.log('[CREATE IMPORTANT DATE] Success:', result.id);
+      res.status(201).json(result);
     } catch (error: any) {
       console.error('❌ [CREATE IMPORTANT DATE] Error:', error);
       console.error('Stack trace:', error?.stack);

@@ -1,0 +1,100 @@
+ userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+11:09:54 AM [express] GET /api/important-dates 304 in 9ms :: []
+Event Promocija knjige: rsvpCount = 0
+11:09:54 AM [express] PUT /api/notifications/mark-viewed/events 200 in 15ms :: {"success":true}
+11:09:54 AM [express] GET /api/events 200 in 15ms :: [{"id":"89543993-0bb9-4baf-b70a-da449f717b73","t…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+11:09:54 AM [express] GET /api/notifications/unread 304 in 37ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[MESSAGES/UNREAD-COUNT] Debug: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  sessionTenantId: 'default-tenant-demo',
+  userTenantId: 'default-tenant-demo',
+  reqTenantId: 'default-tenant-demo',
+  resolvedTenantId: 'default-tenant-demo'
+}
+11:10:04 AM [express] GET /api/messages/unread-count 304 in 15ms :: {"count":1}
+11:10:04 AM [express] GET /api/certificates/unviewed-count 304 in 15ms :: {"count":0}
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[CREATE IMPORTANT DATE] Request: {
+  tenantId: 'default-tenant-demo',
+  body: { name: 'Dan državnosti', date: '25.11', isRecurring: true }
+}
+[CREATE IMPORTANT DATE] Validated: {
+  tenantId: 'default-tenant-demo',
+  name: 'Dan državnosti',
+  date: '25.11',
+  isRecurring: true
+}
+11:10:09 AM [express] POST /api/important-dates 500 in 11ms :: {"message":"Failed to create important…
+❌ [CREATE IMPORTANT DATE] Error: error: null value in column "title" of relation "important_dates" violates not-null constraint
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.createImportantDate (file:///app/dist/index.js:2330:20)
+    at async file:///app/dist/index.js:7003:20 {
+  length: 341,
+  severity: 'ERROR',
+  code: '23502',
+  detail: 'Failing row contains (bb5cc8b6-103e-44e1-9473-e9d25b37bcbd, default-tenant-demo, 25.11, null, null, holiday, t, 2025-12-02 11:10:09.190321, Dan državnosti).',
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: 'public',
+  table: 'important_dates',
+  column: 'title',
+  dataType: undefined,
+  constraint: undefined,
+  file: 'execMain.c',
+  line: '2022',
+  routine: 'ExecConstraints'
+}
+Stack trace: error: null value in column "title" of relation "important_dates" violates not-null constraint
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.createImportantDate (file:///app/dist/index.js:2330:20)
+    at async file:///app/dist/index.js:7003:20
+Request body: { name: 'Dan državnosti', date: '25.11', isRecurring: true }

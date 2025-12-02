@@ -305,6 +305,7 @@ export interface IStorage {
 
   // Important Dates
   createImportantDate(importantDate: InsertImportantDate): Promise<ImportantDate>;
+  createImportantDateWithTitle(data: { tenantId: string; name?: string; title?: string; date: string; isRecurring?: boolean }): Promise<ImportantDate>;
   getImportantDate(id: string, tenantId: string): Promise<ImportantDate | undefined>;
   getAllImportantDates(tenantId: string): Promise<ImportantDate[]>;
   updateImportantDate(id: string, tenantId: string, updates: Partial<InsertImportantDate>): Promise<ImportantDate | undefined>;
@@ -1889,6 +1890,29 @@ export class DatabaseStorage implements IStorage {
   async createImportantDate(importantDate: InsertImportantDate & { tenantId: string }): Promise<ImportantDate> {
     const [date] = await db.insert(importantDates).values({...importantDate, tenantId: importantDate.tenantId}).returning();
     return date;
+  }
+
+  // Production DB compatibility: handles 'title' column that exists in prod but not in schema
+  async createImportantDateWithTitle(data: { tenantId: string; name?: string; title?: string; date: string; isRecurring?: boolean }): Promise<ImportantDate> {
+    const titleValue = data.name || data.title || '';
+    const nameValue = data.name || data.title || '';
+    
+    // Use raw SQL to insert with both 'name' AND 'title' columns for production compatibility
+    const result = await db.execute(sql`
+      INSERT INTO important_dates (tenant_id, name, title, date, is_recurring, created_at)
+      VALUES (${data.tenantId}, ${nameValue}, ${titleValue}, ${data.date}, ${data.isRecurring ?? true}, now())
+      RETURNING *
+    `);
+    
+    const row = result.rows[0] as any;
+    return {
+      id: row.id,
+      tenantId: row.tenant_id,
+      name: row.name || row.title,
+      date: row.date,
+      isRecurring: row.is_recurring,
+      createdAt: row.created_at,
+    };
   }
 
   async getImportantDate(id: string, tenantId: string): Promise<ImportantDate | undefined> {
