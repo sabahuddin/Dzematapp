@@ -1995,17 +1995,25 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   app.post("/api/events", requireAuth, async (req, res) => {
     try {
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      console.log('[CREATE EVENT] Request:', {
+        tenantId,
+        userId: req.user?.id,
+        body: req.body
+      });
       const eventData = insertEventSchema.parse({
         ...req.body,
         createdById: req.user!.id,
         tenantId
       });
+      console.log('[CREATE EVENT] Validated:', eventData);
       const event = await storage.createEvent(eventData);
+      console.log('[CREATE EVENT] Success:', event.id);
       res.json(event);
     } catch (error: any) {
       console.error('❌ [CREATE EVENT] Error:', error);
       console.error('Stack trace:', error instanceof Error ? error.stack : 'N/A');
       console.error('Request body:', req.body);
+      console.error('TenantId:', req.user?.tenantId);
       const errorMsg = error?.errors?.[0]?.message || error?.message || JSON.stringify(error);
       res.status(400).json({ message: "Invalid event data", details: errorMsg });
     }
@@ -3978,17 +3986,25 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   app.post("/api/contribution-purposes", requireAdmin, requireFeature("finances"), async (req, res) => {
     try {
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      console.log('[CREATE CONTRIBUTION PURPOSE] Request:', {
+        tenantId,
+        userId: req.user?.id,
+        body: req.body
+      });
       const validated = insertContributionPurposeSchema.parse(req.body);
+      console.log('[CREATE CONTRIBUTION PURPOSE] Validated:', validated);
       const purpose = await storage.createContributionPurpose({
         ...validated,
         createdById: req.user!.id,
         tenantId
       });
+      console.log('[CREATE CONTRIBUTION PURPOSE] Success:', purpose.id);
       res.status(201).json(purpose);
     } catch (error: any) {
       console.error('❌ [CREATE CONTRIBUTION PURPOSE] Error:', error);
       console.error('Stack trace:', error instanceof Error ? error.stack : 'N/A');
       console.error('Request body:', req.body);
+      console.error('TenantId:', req.user?.tenantId);
       const errorMsg = error?.errors?.[0]?.message || error?.message || String(error);
       res.status(500).json({ message: "Failed to create contribution purpose", error: errorMsg });
     }
@@ -4482,21 +4498,29 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   app.post("/api/projects", requireAdmin, async (req, res) => {
     try {
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      console.log('[CREATE PROJECT] Request:', {
+        tenantId,
+        userId: req.user?.id,
+        body: req.body
+      });
       const validated = insertProjectSchema.parse(req.body);
+      console.log('[CREATE PROJECT] Validated:', validated);
       const project = await storage.createProject({
         ...validated,
         createdById: req.user!.id,
         tenantId
-});
+      });
+      console.log('[CREATE PROJECT] Success:', project.id);
       res.status(201).json(project);
     } catch (error: any) {
       console.error('❌ [CREATE PROJECT] Error:', error);
       console.error('Stack trace:', error instanceof Error ? error.stack : 'N/A');
       console.error('Request body:', req.body);
+      console.error('TenantId:', req.user?.tenantId);
       const errorMsg = error?.errors?.[0]?.message || error?.message || String(error);
       res.status(500).json({ message: "Failed to create project", error: errorMsg });
     }
-});
+  });
 
   app.patch("/api/projects/:id", requireAdmin, async (req, res) => {
     try {
