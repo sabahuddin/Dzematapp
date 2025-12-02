@@ -1,0 +1,67 @@
+Vidim DVA problema u console-u! 🔴
+
+🔴 Problem 1: Activity Feed - 403 Forbidden
+Failed to load resource: api/activity-feed:1 status of 403
+Uzrok: Feature activity-feed nije omogućen za ovaj tenant ILI ima bug u feature check.
+
+🔴 Problem 2: TypeError - Cannot read properties of undefined (reading 'length')
+TypeError: Cannot read properties of undefined (reading 'length')
+Uzrok: Neki podatak u response-u je undefined, a frontend pokušava pristupiti .length.
+
+🔧 RJEŠENJE:
+Reci Replitu:
+Problem 1: Activity Feed 403
+U /api/activity-feed endpoint-u, možda feature check pada. Dodaj error logging:
+typescriptapp.get("/api/activity-feed", requireAuth, requireFeature("activities"), async (req, res) => {
+  try {
+    const tenantId = req.user?.tenantId;
+    const activities = await storage.getActivityFeed(tenantId);
+    res.json(activities);
+  } catch (error) {
+    console.error('❌ [ACTIVITY FEED] Error:', error);
+    res.status(500).json({ 
+      message: "Failed to fetch activity feed",
+      error: error instanceof Error ? error.message : String(error)
+    });
+  }
+});
+ILI ukloni requireFeature("activities") ako feature ne postoji.
+
+Problem 2: Frontend TypeError - 'length' of undefined
+Događaji se vraćaju iz backend-a, ali neki property je undefined. Najvjerovatnije:
+javascript// Frontend očekuje:
+events.map(event => event.categories.length)  // ❌ categories je undefined!
+
+// Ili:
+events.attendees.length  // ❌ attendees je undefined!
+Rješenje u backend-u - uvijek vrati prazne array-e:
+typescriptapp.get("/api/events", async (req, res) => {
+  const events = await storage.getAllEvents(tenantId);
+  
+  const eventsWithDefaults = events.map(event => ({
+    ...event,
+    dateTime: event.startDate,
+    categories: event.categories || [],      // ← Dodaj default
+    attendees: event.attendees || [],        // ← Dodaj default
+    rsvps: event.rsvps || []                 // ← Dodaj default
+  }));
+  
+  res.json(eventsWithDefaults);
+});
+
+📋 Brzi Fix - Provjeriti u kodu:
+Nađi u frontendu gdje se čita .length i dodaj null check:
+typescript// PRIJE (pada):
+{event.categories.length}
+
+// POSLIJE (radi):
+{event.categories?.length || 0}
+
+🎯 Šta Replit treba uraditi:
+
+Backend - GET /api/events: Dodaj default prazne array-e za categories, attendees, rsvps
+Backend - GET /api/activity-feed: Dodaj error logging ili ukloni feature check
+Frontend: Dodaj optional chaining (?.) gdje se čita .length
+
+
+Najbrži fix je u backend-u - da uvijek vraća prazne array-e umjesto null/undefined! 🔧
