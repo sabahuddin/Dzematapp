@@ -1,0 +1,69 @@
+Reci Replitu:
+Problem: Frontend pada sa Cannot read properties of undefined (reading 'length') kada prikazuje događaje. Neki property je undefined umjesto praznog array-a.
+Najvjerovatniji uzroci:
+
+event.categories je undefined umjesto []
+event.attendees je undefined umjesto []
+event.rsvps je undefined umjesto []
+
+
+Fix u Backend - GET /api/events:
+typescriptapp.get("/api/events", async (req, res) => {
+  try {
+    const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+    const events = await storage.getAllEvents(tenantId);
+    
+    // DODAJ defaults za SVE array property-je
+    const eventsWithDefaults = await Promise.all(
+      events.map(async (event) => {
+        const rsvpStats = event.rsvpEnabled 
+          ? await storage.getEventRsvps(event.id, tenantId)
+          : { totalAttendees: 0, attendees: [] };
+        
+        return {
+          ...event,
+          // Dodaj dateTime za backwards compatibility
+          dateTime: event.startDate,
+          // Osiguraj da su svi array-i definirani
+          categories: event.categories || [],           // ← FIX
+          attendees: rsvpStats.attendees || [],         // ← FIX
+          rsvps: rsvpStats.attendees || [],             // ← FIX
+          rsvpCount: rsvpStats.totalAttendees || 0
+        };
+      })
+    );
+    
+    res.json(eventsWithDefaults);
+  } catch (error) {
+    console.error('❌ [GET EVENTS] Error:', error);
+    res.status(500).json({ 
+      message: "Failed to fetch events",
+      error: error instanceof Error ? error.message : String(error)
+    });
+  }
+});
+
+Ili - Fix u storage.getAllEvents():
+Ako je problem u storage layer-u, dodaj defaults tamo:
+typescriptasync getAllEvents(tenantId: string): Promise<Event[]> {
+  const events = await db.select().from(eventsTable)
+    .where(eq(eventsTable.tenantId, tenantId));
+  
+  // Osiguraj defaults za sve array property-je
+  return events.map(event => ({
+    ...event,
+    categories: event.categories || [],
+    // dodaj ostale defaults
+  }));
+}
+
+🎯 Alternativa - Frontend fix:
+Ako Replit ne može brzo fiksati backend, može dodati null check u frontendu:
+typescript// PRIJE (pada):
+{event.categories.length}
+
+// POSLIJE (radi):
+{event.categories?.length || 0}
+{(event.categories || []).map(...)}
+
+Ali najčistije rješenje je u backend-u - da uvijek vraća prazne array-e umjesto null/undefined! 🔧
