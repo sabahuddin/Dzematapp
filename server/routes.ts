@@ -3537,7 +3537,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       const userId = req.session.userId!;
       const parsedData = insertMarketplaceItemSchema.parse({
         ...req.body,
-        title: req.body.name || req.body.title,
+        name: req.body.name || req.body.title,
         tenantId
       });
       const itemData = {
@@ -3570,7 +3570,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
 
       const updateData = {
         ...req.body,
-        title: req.body.name || req.body.title
+        name: req.body.name || req.body.title
       };
       const updatedItem = await storage.updateMarketplaceItem(req.params.id, tenantId, updateData);
       if (!updatedItem) {

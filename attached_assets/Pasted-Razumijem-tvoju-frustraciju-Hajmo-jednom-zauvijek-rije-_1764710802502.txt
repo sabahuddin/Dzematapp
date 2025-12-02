@@ -1,0 +1,156 @@
+Razumijem tvoju frustraciju! 😤 Hajmo **jednom zauvijek riješiti sve POST endpoint-e**!
+
+---
+
+## 🎯 **SISTEMATSKO RJEŠENJE:**
+
+### **Reci Replitu:**
+
+**Problem**: Svi POST endpoint-i imaju isti problem - `tenantId` validation error. Umjesto fixanja jednog po jednog, trebamo **globalno rješenje**.
+
+---
+
+## 📋 **Kompletna lista endpoint-a koji trebaju fix:**
+
+```typescript
+// SVE OVO TREBA POPRAVITI U routes.ts:
+
+POST /api/financial-contributions
+POST /api/contribution-purposes  
+POST /api/projects
+POST /api/events
+POST /api/marketplace/items
+POST /api/services
+POST /api/shop/products
+POST /api/imam-questions
+POST /api/announcements
+POST /api/tasks
+POST /api/work-groups
+POST /api/important-dates
+POST /api/badges
+POST /api/certificates
+POST /api/messages
+```
+
+---
+
+## 🔧 **UNIVERZALNI PATTERN:**
+
+**Svaki POST endpoint treba ovaj pattern:**
+
+```typescript
+app.post("/api/ENDPOINT", requireAuth, async (req, res) => {
+  try {
+    // 1. Izvuci tenantId iz sessiona
+    const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+    const userId = req.user!.id;
+    
+    // 2. LOG request
+    console.log(`[CREATE ENDPOINT] Request:`, {
+      tenantId,
+      userId,
+      body: req.body
+    });
+    
+    // 3. Dodaj server-side podatke PRIJE validacije
+    const dataToValidate = {
+      ...req.body,
+      tenantId: tenantId,           // ← Uvijek dodaj
+      createdById: userId,          // ← Ako treba
+      sellerId: userId,             // ← Za marketplace
+      providerId: userId,           // ← Za services
+      senderId: userId,             // ← Za messages
+      // ... ovisno o endpoint-u
+    };
+    
+    // 4. Validacija
+    const validatedData = insertSchema.parse(dataToValidate);
+    
+    // 5. LOG validated
+    console.log(`[CREATE ENDPOINT] Validated:`, validatedData);
+    
+    // 6. Create
+    const result = await storage.createEndpoint(validatedData);
+    
+    // 7. Success
+    res.json(result);
+    
+  } catch (error) {
+    // Error handling
+    if (error instanceof z.ZodError) {
+      console.error(`[CREATE ENDPOINT ERROR]`, error.errors);
+      return res.status(400).json({ 
+        message: "Nevažeći podaci", 
+        details: error.errors 
+      });
+    }
+    
+    if (error.code === '23502' || error.code === '23505') {
+      console.error(`[CREATE ENDPOINT ERROR]`, error.message);
+      return res.status(400).json({ 
+        message: "Greška u bazi podataka",
+        details: error.message
+      });
+    }
+    
+    console.error(`❌ [CREATE ENDPOINT] Error:`, error);
+    res.status(500).json({ 
+      message: "Greška pri kreiranju",
+      error: error instanceof Error ? error.message : String(error)
+    });
+  }
+});
+```
+
+---
+
+## 🚀 **Akcija za Replit:**
+
+**Napravi search & replace script:**
+
+1. Pronađi SVE POST endpoint-e u `server/routes.ts`
+2. Za svaki POST endpoint koji ima Zod validation
+3. Dodaj ovaj pattern PRIJE `.parse()` poziva:
+
+```typescript
+const dataToValidate = {
+  ...req.body,
+  tenantId: req.user?.tenantId || req.tenantId,
+  // + relevantni userId field
+};
+```
+
+---
+
+## 🎯 **Ili napravi helper funkciju:**
+
+```typescript
+// Na početku routes.ts
+function prepareDataForValidation(req: Request, additionalFields: any = {}) {
+  return {
+    ...req.body,
+    tenantId: req.user?.tenantId || req.tenantId || "default-tenant-demo",
+    ...additionalFields
+  };
+}
+
+// Onda u svakom endpoint-u:
+app.post("/api/marketplace/items", requireAuth, async (req, res) => {
+  try {
+    const dataToValidate = prepareDataForValidation(req, {
+      sellerId: req.user!.id
+    });
+    
+    const validatedData = insertMarketplaceItemSchema.parse(dataToValidate);
+    // ...
+  } catch (error) {
+    // ...
+  }
+});
+```
+
+---
+
+**Replit treba napraviti SISTEMATSKI fix za SVE POST endpoint-e odjednom, ne jedan po jedan!** 🔧
+
+Želiš li da ti napravim kompletan fajl sa svim fixanim endpoint-ima?
