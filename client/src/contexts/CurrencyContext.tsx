@@ -1,6 +1,4 @@
-import { createContext, useContext, ReactNode } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import type { OrganizationSettings } from '@shared/schema';
+import { createContext, useContext, ReactNode, useState, useEffect } from 'react';
 
 interface CurrencyContextType {
   currency: string;
@@ -11,14 +9,20 @@ interface CurrencyContextType {
 const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
 
 export function CurrencyProvider({ children }: { children: ReactNode }) {
-  const { data: settings, isLoading, error } = useQuery({
-    queryKey: ['/api/organization-settings'],
-    retry: 2,
-    staleTime: 5 * 60 * 1000, // 5 minutes - reduce re-fetching
-  }) as { data: OrganizationSettings | undefined; isLoading: boolean; error: Error | null };
+  const [currency, setCurrency] = useState('CHF');
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Always provide fallback currency to avoid undefined states
-  const currency = settings?.currency || 'CHF';
+  useEffect(() => {
+    fetch('/api/organization-settings')
+      .then(res => res.ok ? res.json() : null)
+      .then(settings => {
+        if (settings?.currency) {
+          setCurrency(settings.currency);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setIsLoading(false));
+  }, []);
 
   const formatPrice = (amount: number | string): string => {
     const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
@@ -33,8 +37,6 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
     })} ${currency}`;
   };
 
-  // Even during loading/error, provide stable currency context with fallback
-  // This prevents flickering and undefined states in downstream components
   return (
     <CurrencyContext.Provider value={{ currency, isLoading, formatPrice }}>
       {children}
