@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import { Switch, Route, Redirect } from "wouter";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
@@ -190,7 +191,7 @@ const theme = createTheme({
 });
 
 // Protected Route Component
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
+function ProtectedRoute({ children }: { children: ReactNode }) {
   const { user, isLoading } = useAuth();
 
   if (isLoading) {
@@ -205,7 +206,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 // Admin-Only Route Component
-function AdminRoute({ children }: { children: React.ReactNode }) {
+function AdminRoute({ children }: { children: ReactNode }) {
   const { user, isLoading } = useAuth();
 
   if (isLoading) {
@@ -224,7 +225,7 @@ function AdminRoute({ children }: { children: React.ReactNode }) {
 }
 
 // Super Admin-Only Route Component (Global tenant management)
-function SuperAdminRoute({ children }: { children: React.ReactNode }) {
+function SuperAdminRoute({ children }: { children: ReactNode }) {
   const { user, isLoading } = useAuth();
 
   if (isLoading) {
