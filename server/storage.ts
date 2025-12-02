@@ -1899,9 +1899,10 @@ export class DatabaseStorage implements IStorage {
     const nameValue = data.name || data.title || '';
     
     // Use raw SQL to insert with both 'name' AND 'title' columns for production compatibility
+    // Also explicitly generate UUID for id since prod DB may not have default
     const result = await db.execute(sql`
-      INSERT INTO important_dates (tenant_id, name, title, date, is_recurring, created_at)
-      VALUES (${data.tenantId}, ${nameValue}, ${titleValue}, ${data.date}, ${data.isRecurring ?? true}, now())
+      INSERT INTO important_dates (id, tenant_id, name, title, date, is_recurring, created_at)
+      VALUES (gen_random_uuid(), ${data.tenantId}, ${nameValue}, ${titleValue}, ${data.date}, ${data.isRecurring ?? true}, now())
       RETURNING *
     `);
     
@@ -2035,9 +2036,10 @@ export class DatabaseStorage implements IStorage {
     const nameValue = data.name || data.title || '';
     
     // Use raw SQL to insert with both 'name' AND 'title' columns for production compatibility
+    // Also explicitly generate UUID for id since prod DB may not have default
     const result = await db.execute(sql`
-      INSERT INTO contribution_purposes (tenant_id, name, title, description, is_default, created_by_id, created_at)
-      VALUES (${data.tenantId}, ${nameValue}, ${titleValue}, ${data.description || null}, ${data.isDefault ?? false}, ${data.createdById || null}, now())
+      INSERT INTO contribution_purposes (id, tenant_id, name, title, description, is_default, created_by_id, created_at)
+      VALUES (gen_random_uuid(), ${data.tenantId}, ${nameValue}, ${titleValue}, ${data.description || null}, ${data.isDefault ?? false}, ${data.createdById || null}, now())
       RETURNING *
     `);
     
