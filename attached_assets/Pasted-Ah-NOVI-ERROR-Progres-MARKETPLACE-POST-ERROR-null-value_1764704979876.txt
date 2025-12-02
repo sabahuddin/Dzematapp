@@ -1,0 +1,100 @@
+Ah! **NOVI ERROR**! 🎯 Progres!
+
+```
+[MARKETPLACE POST ERROR] null value in column "title" of relation "marketplace_items" violates not-null constraint
+```
+
+**`tenantId` problem je riješen!** Sada je problem da **`title` je null**!
+
+---
+
+## 🔍 **Problem:**
+
+Frontend šalje **neko drugo polje** (npr. `name`), ali baza očekuje **`title`**!
+
+---
+
+## 🔧 **RJEŠENJE:**
+
+### **Reci Replitu:**
+
+**Problem**: POST `/api/marketplace/items` sada prolazi `tenantId` validaciju, ali pada jer `title` je null. Frontend vjerovatno šalje `name` umjesto `title`.
+
+**Rješenje**: Mapiraj frontend field na database field.
+
+---
+
+### **Fix - Mapiranje field-ova:**
+
+```typescript
+app.post("/api/marketplace/items", requireAuth, async (req, res) => {
+  try {
+    const tenantId = req.user?.tenantId || req.tenantId;
+    
+    console.log('[CREATE MARKETPLACE ITEM] Request body:', req.body);
+    
+    // Mapiraj frontend fields na database fields
+    const validatedData = insertMarketplaceItemSchema.parse({
+      tenantId: tenantId,
+      sellerId: req.user!.id,
+      title: req.body.name || req.body.title,  // ← Prihvati oba
+      description: req.body.description,
+      category: req.body.category,
+      price: req.body.price,
+      // ... ostala polja
+    });
+    
+    console.log('[CREATE MARKETPLACE ITEM] Validated:', validatedData);
+    
+    const item = await storage.createMarketplaceItem(validatedData);
+    res.json(item);
+  } catch (error) {
+    if (error.code === '23502') {  // NOT NULL constraint
+      console.error('[MARKETPLACE POST ERROR]', error.message);
+      return res.status(400).json({ 
+        message: "Molimo popunite sva obavezna polja",
+        details: error.message
+      });
+    }
+    // ... other error handling
+  }
+});
+```
+
+---
+
+## 📋 **ILI - Provjeri frontend šta šalje:**
+
+Dodaj console.log u backend da vidiš **tačno šta frontend šalje**:
+
+```typescript
+console.log('[CREATE MARKETPLACE ITEM] Raw request body:', JSON.stringify(req.body, null, 2));
+```
+
+Onda ćemo vidjeti:
+```json
+{
+  "name": "asadas",  // ← frontend šalje "name"
+  "description": "asdasd",
+  "price": 20
+}
+```
+
+A baza očekuje `title`!
+
+---
+
+## 🎯 **Najbrže rješenje:**
+
+```typescript
+const validatedData = insertMarketplaceItemSchema.parse({
+  ...req.body,
+  tenantId: tenantId,
+  title: req.body.name || req.body.title,  // ← Mapiranje
+  sellerId: req.user!.id
+});
+```
+
+---
+
+**Ovo je klasičan frontend/backend mismatch - jedno polje ima različita imena!** 🔧

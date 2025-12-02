@@ -254,7 +254,7 @@ export const shopProducts = pgTable("shop_products", {
 export const marketplaceItems = pgTable("marketplace_items", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
-  name: text("name").notNull(),
+  title: text("title").notNull(),
   description: text("description"),
   photos: text("photos").array(), // array of photo URLs (max 3)
   type: text("type").notNull(), // sell, gift
