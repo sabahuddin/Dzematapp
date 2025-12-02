@@ -1,0 +1,100 @@
+Tamo je! **ISTI PROBLEM**! 🔴
+
+```
+[MARKETPLACE POST ERROR] [
+  {
+    code: 'invalid_type',
+    expected: 'string',
+    received: 'undefined',
+    path: [ 'tenantId' ],
+    message: 'Required'
+  }
+]
+```
+
+**Backend očekuje `tenantId`, ali ga ne dobija!**
+
+---
+
+## 🔧 **RJEŠENJE:**
+
+### **Reci Replitu:**
+
+**Problem**: POST `/api/marketplace/items` pada jer backend ne dobija `tenantId`. Greška je `tenantId: undefined`.
+
+**Rješenje**: Dodaj `tenantId` iz sessiona PRIJE Zod validacije.
+
+---
+
+### **Fix u backend-u:**
+
+```typescript
+app.post("/api/marketplace/items", requireAuth, async (req, res) => {
+  try {
+    const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+    
+    console.log('[CREATE MARKETPLACE ITEM] Request:', {
+      tenantId,
+      userId: req.user?.id,
+      body: req.body
+    });
+    
+    // DODAJ tenantId PRIJE validacije
+    const validatedData = insertMarketplaceItemSchema.parse({
+      ...req.body,
+      tenantId: tenantId,  // ← KLJUČNA LINIJA!
+      sellerId: req.user!.id
+    });
+    
+    console.log('[CREATE MARKETPLACE ITEM] Validated:', validatedData);
+    
+    const item = await storage.createMarketplaceItem(validatedData);
+    res.json(item);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      console.error('[MARKETPLACE POST ERROR]', error.errors);
+      return res.status(400).json({ 
+        message: "Invalid item data", 
+        details: error.errors 
+      });
+    }
+    console.error('❌ [CREATE MARKETPLACE ITEM] Error:', error);
+    res.status(500).json({ 
+      message: "Failed to create marketplace item",
+      error: error instanceof Error ? error.message : String(error)
+    });
+  }
+});
+```
+
+---
+
+## 📋 **Isti problem u SVIM endpoint-ima:**
+
+Replit mora primijeniti **isti pattern** na:
+
+✅ `POST /api/financial-contributions` (već urađeno)  
+✅ `POST /api/contribution-purposes` (već urađeno)  
+✅ `POST /api/projects` (već urađeno)  
+✅ `POST /api/events` (već urađeno)  
+❌ `POST /api/marketplace/items` (treba fix)  
+❌ `POST /api/services` (treba fix)  
+❌ `POST /api/imam-questions` (treba fix)  
+❌ **SVE ostale POST endpoint-e!**
+
+---
+
+## 🎯 **Globalno rješenje:**
+
+**Replit treba napraviti GLOBAL SEARCH** u `server/routes.ts`:
+
+```bash
+# Pronađi SVE POST endpoint-e koji imaju Zod validaciju
+grep -n "insertSchema.parse\|insertMarketplaceItemSchema.parse\|insertServiceSchema.parse" server/routes.ts
+```
+
+I dodati **`tenantId: req.user?.tenantId`** u svaki parse() poziv!
+
+---
+
+**Ovo je sistematski problem - SVAKI POST endpoint ima istu grešku!** 🔧

@@ -3527,7 +3527,10 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     try {
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const userId = req.session.userId!;
-      const parsedData = insertMarketplaceItemSchema.parse(req.body);
+      const parsedData = insertMarketplaceItemSchema.parse({
+        ...req.body,
+        tenantId
+      });
       const itemData = {
         ...parsedData,
         tenantId,
