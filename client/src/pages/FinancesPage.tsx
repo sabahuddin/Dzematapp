@@ -109,7 +109,8 @@ export default function FinancesPage() {
       purpose: '',
       paymentMethod: t('finances:paymentMethods.cash'),
       notes: '',
-      createdById: currentUser?.id || ''
+      createdById: currentUser?.id || '',
+      pointsValue: 0
     }
   });
 
@@ -212,7 +213,8 @@ export default function FinancesPage() {
         paymentMethod: contribution.paymentMethod,
         notes: contribution.notes || '',
         projectId: contribution.projectId || undefined,
-        createdById: contribution.createdById
+        createdById: contribution.createdById,
+        pointsValue: contribution.pointsValue || 0
       });
     } else {
       setSelectedContribution(null);
@@ -224,7 +226,8 @@ export default function FinancesPage() {
         paymentMethod: t('finances:paymentMethods.cash'),
         notes: '',
         projectId: undefined,
-        createdById: currentUser?.id || ''
+        createdById: currentUser?.id || '',
+        pointsValue: 0
       });
     }
     setDialogOpen(true);
@@ -711,6 +714,16 @@ export default function FinancesPage() {
                       </option>
                     ))}
                 </TextField>
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <TextField
+                  fullWidth
+                  label={t('finances:pointsValue') || 'Bodovi'}
+                  type="number"
+                  {...form.register('pointsValue', { valueAsNumber: true })}
+                  helperText={t('finances:pointsValueHelper') || 'Unesite broj bodova za ovu uplatu (0 = bez bodova)'}
+                  data-testid="input-points"
+                />
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <TextField

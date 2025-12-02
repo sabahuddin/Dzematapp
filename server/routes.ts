@@ -4106,13 +4106,13 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         }
       }
 
-      // Log activity with 1:1 ratio (1 CHF = 1 point)
-      const points = Math.floor(parseFloat(validated.amount));
+      // Log activity with admin-set points (or 0 if not set)
+      const points = validated.pointsValue || 0;
       
       await storage.createActivityLog({
         userId: validated.userId,
         activityType: 'contribution_made',
-        description: `Uplata: ${validated.amount} CHF (${validated.purpose})`,
+        description: `Uplata: ${validated.amount} CHF (${validated.purpose})${points > 0 ? ` - ${points} bodova` : ''}`,
         points,
         relatedEntityId: contribution.id,
         tenantId
@@ -4200,12 +4200,12 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         }
       }
 
-      // Recreate activity log entry with updated amount
-      const pointsFromContribution = Math.floor(newAmount);
+      // Recreate activity log entry with updated amount and admin-set points
+      const pointsFromContribution = validated.pointsValue ?? contribution.pointsValue ?? 0;
       await storage.createActivityLog({
         userId: userId,
         activityType: 'contribution_made',
-        description: `Finansijski doprinos: ${newAmount} CHF`,
+        description: `Uplata: ${newAmount} CHF (${contribution.purpose})${pointsFromContribution > 0 ? ` - ${pointsFromContribution} bodova` : ''}`,
         points: pointsFromContribution,
         relatedEntityId: req.params.id,
         tenantId: req.user!.tenantId
@@ -4287,6 +4287,37 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
           await storage.updateProject(newProjectId, req.user!.tenantId, { currentAmount: updatedAmount });
         }
       }
+
+      // Delete old activity log entries and recreate with new points
+      await storage.deleteActivityLogByRelatedEntity(req.params.id, req.user!.tenantId);
+      
+      const pointsFromContribution = validated.pointsValue ?? contribution.pointsValue ?? 0;
+      await storage.createActivityLog({
+        userId: contribution.userId,
+        activityType: 'contribution_made',
+        description: `Uplata: ${newAmount} CHF (${contribution.purpose})${pointsFromContribution > 0 ? ` - ${pointsFromContribution} bodova` : ''}`,
+        points: pointsFromContribution,
+        relatedEntityId: req.params.id,
+        tenantId: req.user!.tenantId
+      });
+
+      // If contribution is for a project, create additional activity log
+      if (newProjectId) {
+        const project = await storage.getProject(newProjectId, req.user!.tenantId);
+        if (project) {
+          await storage.createActivityLog({
+            userId: contribution.userId,
+            activityType: 'project_contribution',
+            description: `Doprinos projektu: ${project.name} (${newAmount} CHF)`,
+            points: 0,
+            relatedEntityId: req.params.id,
+            tenantId: req.user!.tenantId
+          });
+        }
+      }
+
+      // Recalculate user's total points
+      await storage.recalculateUserPoints(contribution.userId, req.user!.tenantId);
 
       res.json(contribution);
     } catch (error) {

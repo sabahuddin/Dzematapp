@@ -594,6 +594,7 @@ export const financialContributions = pgTable("financial_contributions", {
   paymentMethod: text("payment_method").notNull(), // Gotovina, Banka
   notes: text("notes"),
   projectId: varchar("project_id").references((): any => projects.id), // Optional link to project (Feature 4)
+  pointsValue: integer("points_value").default(0), // Points awarded for this contribution (admin-set)
   createdAt: timestamp("created_at").defaultNow().notNull(),
   createdById: varchar("created_by_id").references(() => users.id, { onDelete: "set null" }), // Admin who logged it
 });

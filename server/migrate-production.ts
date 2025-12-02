@@ -490,11 +490,12 @@ async function addMissingColumns(client: any): Promise<void> {
     `ALTER TABLE "contribution_purposes" ADD COLUMN IF NOT EXISTS "name" text`,
     `ALTER TABLE "contribution_purposes" ADD COLUMN IF NOT EXISTS "target_amount" text`,
     
-    // FINANCIAL_CONTRIBUTIONS - 4 missing columns
+    // FINANCIAL_CONTRIBUTIONS - 5 missing columns
     `ALTER TABLE "financial_contributions" ADD COLUMN IF NOT EXISTS "purpose_id" varchar`,
     `ALTER TABLE "financial_contributions" ADD COLUMN IF NOT EXISTS "contribution_date" timestamp DEFAULT now()`,
     `ALTER TABLE "financial_contributions" ADD COLUMN IF NOT EXISTS "recorded_by_id" varchar`,
     `ALTER TABLE "financial_contributions" ADD COLUMN IF NOT EXISTS "receipt_number" text`,
+    `ALTER TABLE "financial_contributions" ADD COLUMN IF NOT EXISTS "points_value" integer DEFAULT 0`,
     
     // DOCUMENTS - 4 missing columns
     `ALTER TABLE "documents" ADD COLUMN IF NOT EXISTS "name" text`,
