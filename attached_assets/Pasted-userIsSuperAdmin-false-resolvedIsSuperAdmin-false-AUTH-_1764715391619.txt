@@ -1,0 +1,100 @@
+userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+10:42:13 PM [express] GET /api/marketplace/items 200 in 12ms :: []
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '6cdf91ab-d510-4183-9392-5ccae311c14f',
+  username: 'ali.alic',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[GET /api/users] DEBUG: {
+  'req.user.tenantId': 'default-tenant-demo',
+  'session.tenantId': 'default-tenant-demo',
+  'req.tenantId': 'default-tenant-demo',
+  username: 'ali.alic',
+  userId: '6cdf91ab-d510-4183-9392-5ccae311c14f'
+}
+[GET /api/users] Using tenantId: default-tenant-demo
+[GET /api/users] Found 10 users for tenant: default-tenant-demo
+10:42:13 PM [express] GET /api/users 200 in 6ms :: [{"id":"0adf0cb6-6f66-44c3-8bc0-b47aa38c1fe7","ten…
+10:42:13 PM [express] GET /api/services 200 in 10ms :: [{"id":"600d1a6b-d613-46bb-9fea-4a23dcc08a1e",…
+10:42:13 PM [express] GET /api/shop/products 200 in 17ms :: []
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '6cdf91ab-d510-4183-9392-5ccae311c14f',
+  username: 'ali.alic',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+10:42:13 PM [express] GET /api/notifications/unread 200 in 10ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '6cdf91ab-d510-4183-9392-5ccae311c14f',
+  username: 'ali.alic',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+10:42:34 PM [express] POST /api/upload/shop-photos 200 in 178ms :: {"message":"Photos uploaded succes…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '6cdf91ab-d510-4183-9392-5ccae311c14f',
+  username: 'ali.alic',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '6cdf91ab-d510-4183-9392-5ccae311c14f',
+  username: 'ali.alic',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+10:42:36 PM [express] POST /api/marketplace/items 400 in 20ms :: {"message":"Invalid item data","deta…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '6cdf91ab-d510-4183-9392-5ccae311c14f',
+  username: 'ali.alic',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[MESSAGES/UNREAD-COUNT] Debug: {
+  userId: '6cdf91ab-d510-4183-9392-5ccae311c14f',
+  sessionTenantId: 'default-tenant-demo',
+  userTenantId: 'default-tenant-demo',
+  reqTenantId: 'default-tenant-demo',
+  resolvedTenantId: 'default-tenant-demo'
+}
+10:42:38 PM [express] GET /api/messages/unread-count 200 in 16ms :: {"count":0}
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '6cdf91ab-d510-4183-9392-5ccae311c14f',
+  username: 'ali.alic',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+10:42:38 PM [express] GET /api/certificates/unviewed-count 200 in 9ms :: {"count":0}
+[MARKETPLACE POST ERROR] null value in column "title" of relation "marketplace_items" violates not-null constraint
