@@ -1149,10 +1149,10 @@ export const services = pgTable("services", {
 
 export const insertServiceSchema = createInsertSchema(services).omit({
   id: true,
-  userId: true,
   createdAt: true,
 }).extend({
-  tenantId: z.string()
+  tenantId: z.string(),
+  userId: z.string()
 });
 
 export type Service = typeof services.$inferSelect;
