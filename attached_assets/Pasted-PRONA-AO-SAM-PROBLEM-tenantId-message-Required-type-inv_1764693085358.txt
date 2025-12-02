@@ -1,0 +1,69 @@
+PRONAŠAO SAM PROBLEM!
+tenantId: {message: "Required", type: "invalid_type", ref: undefined}
+Frontend validacija traži tenantId u formi, ali korisnik ga ne može unijeti (to je server-side podatak)!
+
+🔧 RJEŠENJE:
+Reci Replitu:
+Problem: Frontend forma za uplate ima validaciju koja traži tenantId field, ali korisnik ne može/ne treba unositi tenantId (to dolazi iz sessiona).
+Rješenje: Ukloni tenantId iz frontend validacije i dodaj ga tek pri slanju na backend.
+
+U frontend validation schema:
+typescript// PRIJE (pada):
+const contributionSchema = z.object({
+  amount: z.number(),
+  userId: z.string(),
+  purposeId: z.string(),
+  tenantId: z.string(),  // ❌ UKLONI OVO
+  description: z.string().optional()
+});
+
+// POSLIJE (radi):
+const contributionSchema = z.object({
+  amount: z.number(),
+  userId: z.string(),
+  purposeId: z.string(),
+  description: z.string().optional()
+  // tenantId se ne validira - dodaje se pri submit-u
+});
+
+U submit handler:
+typescriptconst handleSubmit = async () => {
+  // Validacija SAMO forme (bez tenantId)
+  const result = contributionSchema.safeParse(formData);
+  
+  if (!result.success) {
+    console.error('[CONTRIBUTION FORM] Validation errors:', result.error.format());
+    return;
+  }
+  
+  // Dodaj tenantId NAKON validacije
+  const dataToSend = {
+    ...result.data,
+    tenantId: user?.tenantId  // ← Dodaj ovdje!
+  };
+  
+  try {
+    const response = await fetch('/api/financial-contributions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dataToSend)
+    });
+    
+    if (!response.ok) {
+      const error = await response.json();
+      console.error('❌ Server error:', error);
+      return;
+    }
+    
+    console.log('✅ Contribution saved!');
+    // close modal, refresh data
+  } catch (error) {
+    console.error('❌ Network error:', error);
+  }
+};
+
+📋 Alternativa - Hidden field:
+Ako želiš zadržati validaciju, dodaj hidden field:
+typescript<input type="hidden" name="tenantId" value={user?.tenantId} />
+
+Replit treba ukloniti tenantId iz frontend validation schema-e i dodati ga tek pri slanju na backend! 🔧

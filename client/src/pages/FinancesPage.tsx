@@ -90,8 +90,8 @@ export default function FinancesPage() {
     enabled: currentUser?.isAdmin || false,
   });
 
-  // Extended schema for client-side form
-  const formSchema = insertFinancialContributionSchema.extend({
+  // Extended schema for client-side form - omit tenantId as it comes from session
+  const formSchema = insertFinancialContributionSchema.omit({ tenantId: true }).extend({
     userId: currentUser?.isAdmin 
       ? z.string().min(1, t('finances:validation.userRequired'))
       : z.string().optional(),
