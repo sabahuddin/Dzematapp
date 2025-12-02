@@ -2000,6 +2000,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         userId: req.user?.id,
         body: req.body
       });
+      
       const eventData = insertEventSchema.parse({
         ...req.body,
         createdById: req.user!.id,

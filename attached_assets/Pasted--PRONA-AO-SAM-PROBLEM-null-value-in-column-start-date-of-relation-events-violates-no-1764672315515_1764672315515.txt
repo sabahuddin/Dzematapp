@@ -1,0 +1,105 @@
+🎯 **PRONAŠAO SAM PROBLEM!**
+
+```
+null value in column "start_date" of relation "events" violates not-null constraint
+```
+
+**Problem**: Frontend šalje `dateTime`, ali baza očekuje `start_date`!
+
+---
+
+## 🔍 **Analiza:**
+
+**Frontend šalje:**
+```javascript
+{
+  dateTime: '2025-12-07T15:00:00.000Z',  // ← OVO
+  ...
+}
+```
+
+**Baza očekuje:**
+```sql
+start_date NOT NULL  -- ← MORA biti popunjeno!
+```
+
+**Backend ne mapira** `dateTime` → `start_date`!
+
+---
+
+## 🔧 **RJEŠENJE:**
+
+### **Reci Replitu:**
+
+**Problem**: Frontend šalje `dateTime`, ali `storage.createEvent()` očekuje `start_date` i `end_date`. Treba mapirati podatke prije slanja u storage.
+
+**Rješenje**: U POST /api/events endpoint-u, mapiraj `dateTime` na `start_date`:
+
+```typescript
+app.post("/api/events", requireAuth, requireFeature("events"), eventUpload.single('photo'), async (req, res) => {
+  try {
+    const tenantId = req.user?.tenantId || req.tenantId;
+    
+    // ... existing validation code ...
+    
+    // DODAJ MAPIRANJE:
+    const eventData = {
+      ...validatedData,
+      startDate: validatedData.dateTime,  // ← DODAJ OVO
+      endDate: validatedData.dateTime,    // ← I OVO (ako nema poseban endDate)
+    };
+    
+    // Ukloni dateTime ako ga storage ne očekuje
+    delete eventData.dateTime;
+    
+    const event = await storage.createEvent(eventData);
+    res.json(event);
+  } catch (error) {
+    // ... error handling
+  }
+});
+```
+
+---
+
+## 📝 **ILI - Promijeni Zod schema:**
+
+Ako schema još dozvoljava `dateTime` umjesto `startDate`, promijeni validaciju:
+
+```typescript
+const validatedData = insertEventSchema.parse({
+  ...req.body,
+  tenantId,
+  startDate: req.body.dateTime,  // ← Mapiraj ovdje
+  endDate: req.body.dateTime,    // ← I ovdje
+  createdById: req.user!.id
+});
+
+// Ukloni dateTime iz objekta
+delete validatedData.dateTime;
+```
+
+---
+
+## 🎯 **Zašto ovo radi:**
+
+**PRIJE (pada):**
+```typescript
+{
+  dateTime: '2025-12-07T15:00:00.000Z',
+  // start_date: null ❌ NOT NULL constraint violation!
+}
+```
+
+**POSLIJE (radi):**
+```typescript
+{
+  startDate: '2025-12-07T15:00:00.000Z',  // ✅
+  endDate: '2025-12-07T15:00:00.000Z',    // ✅
+  // dateTime više ne postoji
+}
+```
+
+---
+
+**Replit treba mapirati `dateTime` → `startDate` i `endDate` u events endpoint-u!** 🔧
