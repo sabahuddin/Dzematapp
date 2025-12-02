@@ -1,4 +1,3 @@
-import React from 'react';
 import { Switch, Route, Redirect } from "wouter";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
