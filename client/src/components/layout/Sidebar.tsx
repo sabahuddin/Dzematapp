@@ -84,7 +84,8 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     { path: '/dashboard', label: t('navigation:menu.dashboard'), icon: Dashboard },
     { path: '/super-admin/panel', label: 'Super Admin Panel', icon: AdminPanelSettings, superAdminOnly: true },
     { path: '/feed', label: 'Feed', icon: DynamicFeed },
-    { path: '/users', label: t('navigation:menu.users'), labelForMember: t('navigation:menu.profile'), icon: People },
+    { path: '/users', label: t('navigation:menu.users'), icon: People, adminOnly: true },
+    { path: '/my-activities', label: 'Moje aktivnosti', icon: Timeline, memberOnly: true },
     { path: '/finances', label: t('navigation:menu.finances'), icon: AttachMoney, adminOnly: true },
     { path: '/activity-log', label: t('navigation:menu.activityLog'), icon: Timeline, adminOnly: true },
     { path: '/announcements', label: t('navigation:menu.announcements'), icon: Campaign, showBadge: true },
@@ -204,8 +205,8 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
             return null;
           }
 
-          // Hide member-only items from non-logged-in users or guests
-          if (item.memberOnly && !user) {
+          // Hide member-only items from admins or non-logged-in users
+          if (item.memberOnly && (!user || user.isAdmin)) {
             return null;
           }
 
