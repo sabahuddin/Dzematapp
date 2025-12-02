@@ -3477,15 +3477,20 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     try {
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const createdById = req.session.userId!;
+      console.log('[SHOP POST] Request:', { tenantId, createdById, body: req.body });
       const productData = insertShopProductSchema.parse({
         ...req.body,
+        name: req.body.name || req.body.title,
         createdById,
         tenantId
       });
+      console.log('[SHOP POST] Validated:', productData);
       const product = await storage.createShopProduct(productData);
+      console.log('[SHOP POST] Created:', product.id);
       res.status(201).json(product);
-    } catch (error) {
-      res.status(400).json({ message: "Invalid product data" });
+    } catch (error: any) {
+      console.error('[SHOP POST ERROR]', error.errors || error.message || error);
+      res.status(400).json({ message: "Invalid product data", details: error.errors || error.message });
     }
 });
 
@@ -3617,8 +3622,10 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     try {
       const userId = req.session.userId!;
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      console.log('[SERVICE POST] Request:', { tenantId, userId, body: req.body });
       const parsedData = insertServiceSchema.parse({
         ...req.body,
+        name: req.body.name || req.body.title,
         tenantId
       });
       const serviceData = {
@@ -3626,7 +3633,9 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         userId,
         tenantId
       };
+      console.log('[SERVICE POST] Validated:', serviceData);
       const service = await storage.createService(serviceData);
+      console.log('[SERVICE POST] Created:', service.id);
       res.status(201).json(service);
     } catch (error: any) {
       console.error("[SERVICE POST ERROR]", error.errors || error.message || error);
