@@ -238,29 +238,37 @@ export const shopProducts = pgTable("shop_products", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
-  photos: text("photos").array(), // array of photo URLs (max 10)
-  category: text("category"), // hrana, piće, odjeća
-  weight: text("weight"), // For food: kilogram or KG
-  volume: text("volume"), // For drinks: litar
+  photos: text("photos").array(),
+  category: text("category"),
+  weight: text("weight"),
+  volume: text("volume"),
   size: text("size"),
   quantity: integer("quantity").default(0),
   color: text("color"),
   notes: text("notes"),
-  price: text("price"), // stored as text to support various formats
+  price: text("price"),
   createdById: varchar("created_by_id").notNull().references(() => users.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  description: text("description"),
+  imageUrl: text("image_url"),
+  status: text("status"),
+  reservedById: varchar("reserved_by_id").references(() => users.id),
+  reservedAt: timestamp("reserved_at"),
+  soldToId: varchar("sold_to_id").references(() => users.id),
+  soldAt: timestamp("sold_at"),
+  deletedAt: timestamp("deleted_at"),
 });
 
 export const marketplaceItems = pgTable("marketplace_items", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
-  title: text("title").notNull(), // Legacy column - production DB requires both name and title
+  title: text("title"), // Nullable in production
   description: text("description"),
-  photos: text("photos").array(), // array of photo URLs (max 3)
+  photos: text("photos").array(),
   type: text("type").notNull(), // sell, gift
-  price: text("price"), // price in CHF (only for sale items)
-  status: text("status").notNull().default("active"), // active, completed
+  price: text("price"),
+  status: text("status").notNull().default("active"),
   userId: varchar("user_id").notNull().references(() => users.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
@@ -1139,13 +1147,15 @@ export const services = pgTable("services", {
   tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
   description: text("description").notNull(),
-  photos: text("photos").array(), // array of photo URLs (max 3)
-  price: text("price"), // Optional - može biti besplatno
-  duration: text("duration"), // "1 sat", "30 min", etc.
-  category: text("category"), // "Porodica", "Obrazovanje", "Zdravlje", etc.
-  status: text("status").notNull().default("active"), // active, completed
+  photos: text("photos").array(),
+  price: text("price"),
+  duration: text("duration"),
+  category: text("category"),
+  status: text("status").notNull().default("active"),
   userId: varchar("user_id").notNull().references(() => users.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  contactInfo: text("contact_info"),
+  priceRange: text("price_range"),
 });
 
 export const insertServiceSchema = createInsertSchema(services).omit({
