@@ -149,6 +149,35 @@ const certificateUpload = multer({
   }
 });
 
+/**
+ * GLOBAL HELPER: Prepares data for Zod validation by injecting tenantId and other server-side fields
+ * This ensures ALL POST endpoints have consistent tenant isolation and field mapping
+ */
+function prepareDataForValidation(req: any, additionalFields: Record<string, any> = {}): Record<string, any> {
+  const tenantId = req.user?.tenantId || req.tenantId || req.session?.tenantId || "default-tenant-demo";
+  const userId = req.user?.id || req.session?.userId;
+  
+  return {
+    ...req.body,
+    tenantId,
+    ...additionalFields
+  };
+}
+
+/**
+ * GLOBAL HELPER: Maps name/title fields for legacy tables that have both columns
+ * Call this for marketplace_items, services, shop_products to avoid NOT NULL violations
+ */
+function mapNameTitleFields(data: Record<string, any>): Record<string, any> {
+  const name = data.name || data.title;
+  const title = data.title || data.name;
+  return {
+    ...data,
+    name: name,
+    title: title
+  };
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Serve uploads directory as static files
   const uploadsPath = path.join(process.cwd(), 'public', 'uploads');
@@ -3475,18 +3504,10 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
 
   app.post("/api/shop/products", requireAdmin, async (req, res) => {
     try {
-      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const createdById = req.session.userId!;
-      console.log('[SHOP POST] Request:', { tenantId, createdById, body: req.body });
-      const productData = insertShopProductSchema.parse({
-        ...req.body,
-        name: req.body.name || req.body.title,
-        createdById,
-        tenantId
-      });
-      console.log('[SHOP POST] Validated:', productData);
+      const dataToValidate = mapNameTitleFields(prepareDataForValidation(req, { createdById }));
+      const productData = insertShopProductSchema.parse(dataToValidate);
       const product = await storage.createShopProduct(productData);
-      console.log('[SHOP POST] Created:', product.id);
       res.status(201).json(product);
     } catch (error: any) {
       console.error('[SHOP POST ERROR]', error.errors || error.message || error);
@@ -3533,19 +3554,10 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
 
   app.post("/api/marketplace/items", requireAuth, async (req, res) => {
     try {
-      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const userId = req.session.userId!;
-      const parsedData = insertMarketplaceItemSchema.parse({
-        ...req.body,
-        name: req.body.name || req.body.title,
-        tenantId
-      });
-      const itemData = {
-        ...parsedData,
-        tenantId,
-        userId
-      };
-      const item = await storage.createMarketplaceItem(itemData);
+      const dataToValidate = mapNameTitleFields(prepareDataForValidation(req, { userId }));
+      const parsedData = insertMarketplaceItemSchema.parse(dataToValidate);
+      const item = await storage.createMarketplaceItem(parsedData);
       res.status(201).json(item);
     } catch (error: any) {
       console.error("[MARKETPLACE POST ERROR]", error.errors || error.message || error);
@@ -3561,17 +3573,13 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         return res.status(404).json({ message: "Item not found" });
       }
       
-      // Allow update only by owner or admin
       const user = await storage.getUser(req.session.userId!, tenantId);
       const isAdmin = user?.isAdmin || false;
       if (item.userId !== req.session.userId && !isAdmin) {
         return res.status(403).json({ message: "Not authorized" });
       }
 
-      const updateData = {
-        ...req.body,
-        name: req.body.name || req.body.title
-      };
+      const updateData = mapNameTitleFields(req.body);
       const updatedItem = await storage.updateMarketplaceItem(req.params.id, tenantId, updateData);
       if (!updatedItem) {
         return res.status(404).json({ message: "Item not found" });
@@ -3621,21 +3629,9 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   app.post("/api/services", requireAuth, async (req, res) => {
     try {
       const userId = req.session.userId!;
-      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
-      console.log('[SERVICE POST] Request:', { tenantId, userId, body: req.body });
-      const parsedData = insertServiceSchema.parse({
-        ...req.body,
-        name: req.body.name || req.body.title,
-        tenantId
-      });
-      const serviceData = {
-        ...parsedData,
-        userId,
-        tenantId
-      };
-      console.log('[SERVICE POST] Validated:', serviceData);
-      const service = await storage.createService(serviceData);
-      console.log('[SERVICE POST] Created:', service.id);
+      const dataToValidate = mapNameTitleFields(prepareDataForValidation(req, { userId }));
+      const parsedData = insertServiceSchema.parse(dataToValidate);
+      const service = await storage.createService(parsedData);
       res.status(201).json(service);
     } catch (error: any) {
       console.error("[SERVICE POST ERROR]", error.errors || error.message || error);
