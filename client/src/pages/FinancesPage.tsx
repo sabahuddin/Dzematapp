@@ -96,6 +96,7 @@ export default function FinancesPage() {
       ? z.string().min(1, t('finances:validation.userRequired'))
       : z.string().optional(),
     paymentDate: z.string().min(1, t('finances:validation.dateRequired')),
+    purpose: z.string().min(1, t('finances:validation.purposeRequired') || 'Odaberite svrhu'),
     projectId: z.string().transform(val => val || null).nullable().optional(),
   });
 
@@ -105,7 +106,7 @@ export default function FinancesPage() {
       userId: currentUser?.id || '',
       amount: '0',
       paymentDate: new Date().toISOString().split('T')[0],
-      purpose: t('finances:purposes.membership'),
+      purpose: '',
       paymentMethod: t('finances:paymentMethods.cash'),
       notes: '',
       createdById: currentUser?.id || ''
