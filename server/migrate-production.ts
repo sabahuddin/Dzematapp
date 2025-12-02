@@ -713,6 +713,26 @@ async function addMissingColumns(client: any): Promise<void> {
   }
   console.log(`✅ Processed ${addedCount} column fixes (${errorCount} skipped)`);
   
+  // Fix NOT NULL constraints on created_by_id columns (should be nullable per schema)
+  console.log("📋 Fixing NOT NULL constraints on created_by_id columns...");
+  const nullableConstraints = [
+    `ALTER TABLE "contribution_purposes" ALTER COLUMN "created_by_id" DROP NOT NULL`,
+    `ALTER TABLE "financial_contributions" ALTER COLUMN "created_by_id" DROP NOT NULL`,
+    `ALTER TABLE "events" ALTER COLUMN "created_by_id" DROP NOT NULL`,
+    `ALTER TABLE "projects" ALTER COLUMN "created_by_id" DROP NOT NULL`,
+  ];
+  
+  let constraintCount = 0;
+  for (const sql of nullableConstraints) {
+    try {
+      await client.query(sql);
+      constraintCount++;
+    } catch (error: any) {
+      // Ignore if already nullable or column doesn't exist
+    }
+  }
+  console.log(`✅ Fixed ${constraintCount} NOT NULL constraints`);
+  
   // Add CASCADE DELETE to all user FK constraints
   console.log("📋 Migrating user foreign key constraints to CASCADE...");
   const cascadeDeletes = [

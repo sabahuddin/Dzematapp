@@ -1,0 +1,100 @@
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+1:30:31 AM [express] GET /api/projects 304 in 13ms :: []
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[CREATE CONTRIBUTION PURPOSE] Request: {
+  tenantId: 'default-tenant-demo',
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  body: { name: 'Projekt', description: '' }
+}
+[CREATE CONTRIBUTION PURPOSE] Validated: { tenantId: 'default-tenant-demo', name: 'Projekt', description: '' }
+1:30:46 AM [express] POST /api/contribution-purposes 500 in 32ms :: {"message":"Failed to create con…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+1:30:46 AM [express] GET /api/certificates/unviewed-count 304 in 11ms :: {"count":0}
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[MESSAGES/UNREAD-COUNT] Debug: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  sessionTenantId: 'default-tenant-demo',
+  userTenantId: 'default-tenant-demo',
+  reqTenantId: 'default-tenant-demo',
+  resolvedTenantId: 'default-tenant-demo'
+}
+1:30:46 AM [express] GET /api/messages/unread-count 304 in 10ms :: {"count":0}
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+1:30:51 AM [express] GET /api/notifications/unread 304 in 41ms :: {"shop":0,"events":0,"announcement…
+❌ [CREATE CONTRIBUTION PURPOSE] Error: error: null value in column "created_by_id" of relation "contribution_purposes" violates not-null constraint
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.createContributionPurpose (file:///app/dist/index.js:2406:26)
+    at async file:///app/dist/index.js:7051:23 {
+  length: 349,
+  severity: 'ERROR',
+  code: '23502',
+  detail: 'Failing row contains (251f9549-5c81-49b4-ba16-24fb13ee566d, default-tenant-demo, Projekt, , null, t, 2025-12-02 01:30:46.18156, f, null).',
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: 'public',
+  table: 'contribution_purposes',
+  column: 'created_by_id',
+  dataType: undefined,
+  constraint: undefined,
+  file: 'execMain.c',
+  line: '2022',
+  routine: 'ExecConstraints'
+}
+Stack trace: error: null value in column "created_by_id" of relation "contribution_purposes" violates not-null constraint
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.createContributionPurpose (file:///app/dist/index.js:2406:26)
+    at async file:///app/dist/index.js:7051:23
+Request body: { name: 'Projekt', description: '' }
+TenantId: default-tenant-demo
