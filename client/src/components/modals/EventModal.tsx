@@ -191,7 +191,7 @@ export default function EventModal({
       createdById,
       dateTime: new Date(formData.dateTime).toISOString(),
       maxAttendees: formData.maxAttendees ? parseInt(formData.maxAttendees, 10) : null,
-      categories: formData.categories.length > 0 ? formData.categories : null,
+      categories: (formData.categories?.length || 0) > 0 ? formData.categories : null,
       pointsValue: formData.pointsValue,
       photoUrl: finalPhotoUrl
     });
@@ -442,7 +442,7 @@ export default function EventModal({
                   
                   {rsvpQuery.isLoading ? (
                     <Typography>{t('common:common.loading')}</Typography>
-                  ) : rsvpQuery.data && rsvpQuery.data.rsvps.length > 0 ? (
+                  ) : rsvpQuery.data && rsvpQuery.data.rsvps && rsvpQuery.data.rsvps.length > 0 ? (
                     <>
                       <TableContainer component={Paper} variant="outlined">
                         <Table size="small">
