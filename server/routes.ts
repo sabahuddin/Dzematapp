@@ -5032,6 +5032,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       console.log(`✅ Certificate template saved: ${Math.round(file.size / 1024)}KB -> WebP (tenant: ${tenantId})`);
       const validated = insertCertificateTemplateSchema.parse({
         ...req.body,
+        tenantId: tenantId,
         templateImagePath: templateImagePath,
         textPositionX: parseInt(req.body.textPositionX),
         textPositionY: parseInt(req.body.textPositionY),
