@@ -1537,82 +1537,328 @@ i18n.changeLanguage('de');
 
 ## Deployment
 
+### Preporučeni Stack za Produkciju
+
+| Komponenta | Preporuči |
+|------------|-----------|
+| **Server** | Hetzner VPS (CX21 ili veći) |
+| **Container Orchestration** | Coolify (self-hosted) |
+| **Database** | PostgreSQL (Hetzner ili Neon) |
+| **Domain** | Cloudflare (DNS + SSL) |
+| **Storage** | Persistent Volume + Cloudflare R2 (opciono) |
+
+---
+
+### Coolify Deployment (Preporučeno)
+
+[Coolify](https://coolify.io) je open-source, self-hosted alternativa Vercel/Netlify platformama. Idealan je za DžematApp jer podržava Docker, automatske deploy-e, SSL i persistent storage.
+
+#### 1. Priprema servera (Hetzner)
+
+```bash
+# Kreirajte Hetzner VPS (Ubuntu 22.04, minimum CX21)
+# SSH na server
+ssh root@your-server-ip
+
+# Instalirajte Coolify (jednokratna instalacija)
+curl -fsSL https://cdn.coollabs.io/coolify/install.sh | bash
+```
+
+#### 2. GitHub Repository
+
+Aplikacija mora biti na GitHub-u:
+
+```bash
+# Na lokalnom računaru ili u Replit-u
+git remote add origin https://github.com/your-username/dzematapp.git
+git push -u origin main
+```
+
+#### 3. Coolify Konfiguracija
+
+1. **Kreirajte novi projekt** u Coolify dashboard-u
+2. **Dodajte novu aplikaciju** → izaberite "GitHub" source
+3. **Povežite GitHub** repository
+
+**Nixpacks Build Settings:**
+- Build Pack: **Nixpacks** (automatski detektuje Node.js)
+- Build Command: `npm run build`
+- Start Command: `bash start.sh`
+
+#### 4. Environment Varijable
+
+U Coolify → Application → Environment:
+
+```env
+# Baza podataka (PostgreSQL)
+DATABASE_URL=postgresql://user:password@host:5432/database?sslmode=require
+PGHOST=your-db-host
+PGPORT=5432
+PGUSER=your-db-user
+PGPASSWORD=your-db-password
+PGDATABASE=dzematapp
+
+# Node okruženje
+NODE_ENV=production
+PORT=5000
+
+# Session secret (generirajte random string)
+SESSION_SECRET=your-super-secret-key-min-32-chars
+```
+
+#### 5. Persistent Storage za Slike (KRITIČNO!)
+
+**Problem:** Docker kontejneri gube upload-ovane slike pri svakom deploy-u.
+
+**Rješenje:** Persistent Volume u Coolify
+
+1. Idite na **Storages** tab u Coolify
+2. Dodajte novi volume:
+
+| Polje | Vrijednost |
+|-------|------------|
+| Volume Name | `dzematapp-uploads` |
+| Source Path | `/data/dzematapp/uploads` |
+| Destination Path | `/app/public/uploads` |
+
+3. **Sačuvajte** i **Redeploy**
+
+#### 6. Domain i SSL
+
+1. U Coolify → Application → Settings
+2. Dodajte custom domain: `app.dzematapp.com`
+3. SSL certifikat se automatski generira (Let's Encrypt)
+
+**Cloudflare DNS:**
+```
+Type: A
+Name: app
+Value: your-server-ip
+Proxy: OFF (za početak, kasnije ON)
+```
+
+#### 7. Deploy Workflow
+
+```
+Replit (development) → GitHub → Coolify (production)
+```
+
+**Push na produkciju:**
+```bash
+git add -A
+git commit -m "Your commit message"
+git push origin main
+```
+
+Coolify automatski detektuje push i deploy-a novu verziju.
+
+---
+
+### Troubleshooting Coolify Deploy-a
+
+#### Build Failures - npm install
+
+**Problem:** `npm install` timeout ili memory error
+
+**Rješenje:**
+```bash
+# SSH na Coolify server
+docker builder prune -af  # Očistite Docker cache
+```
+
+U Coolify:
+- Povećajte Build Timeout na **600 sekundi**
+- Koristite **Force Deploy (without cache)**
+
+#### Slike nestaju nakon deploy-a
+
+**Problem:** Upload-ovane slike nisu vidljive
+
+**Rješenje:** Provjerite persistent volume:
+```bash
+# Na serveru
+ls -la /data/dzematapp/uploads/
+```
+
+Ako je prazno, volume nije pravilno konfigurisan.
+
+#### "Address already in use" error
+
+**Problem:** Port 5000 zauzet
+
+**Rješenje:** Ovo se obično riješi samo. Ako ne:
+1. Stop service u Coolify
+2. Čekajte 30 sekundi
+3. Start service
+
+#### Database Connection Refused
+
+**Problem:** Aplikacija ne može spojiti na bazu
+
+**Rješenje:**
+1. Provjerite `DATABASE_URL` format
+2. Provjerite da je baza dostupna izvana (firewall, SSL)
+3. Testirajte konekciju:
+```bash
+psql $DATABASE_URL
+```
+
+---
+
 ### Replit Deployment
 
-Aplikacija je optimizovana za deployment na **Replit** platformi.
+Aplikacija je optimizovana za development na **Replit** platformi.
 
 #### Konfiguracija
 
-**.replit:**
+**nixpacks.toml:**
 ```toml
-run = "npm run dev"
-entrypoint = "server/index.ts"
+[phases.setup]
+nixPkgs = ['nodejs_22', 'npm-9_x', 'openssl']
 
-[deployment]
-build = ["npm", "run", "build"]
-run = ["npm", "start"]
+[phases.install]
+cmds = ['npm install']
+
+[phases.build]
+cmds = ['npm run build']
+
+[start]
+cmd = 'bash start.sh'
 ```
 
-**package.json scripts:**
-```json
-{
-  "scripts": {
-    "dev": "NODE_ENV=development tsx server/index.ts",
-    "build": "vite build",
-    "start": "NODE_ENV=production node --loader tsx server/index.ts"
-  }
-}
-```
-
-#### Environment Setup
-
-1. PostgreSQL baza automatski dostupna kroz Replit
-2. Environment varijable automatski postavljene
-3. Persistent storage za upload-ovane fajlove
-
-#### Publishing
+#### Publishing na Replit
 
 1. Kliknite **"Publish"** u Replit-u
 2. Odaberite naziv domena
 3. Aplikacija će biti dostupna na `https://your-app.replit.app`
 
-### Alternativni Deployment
+**Napomena:** Za produkciju preporučujemo Coolify jer:
+- Bolja kontrola nad serverom
+- Persistent storage
+- Niža cijena za veći traffic
 
-#### Vercel / Netlify
+---
 
-Za deployment na druge platforme:
-
-1. **Build frontend:**
-   ```bash
-   npm run build
-   ```
-
-2. **Environment varijable:**
-   ```env
-   DATABASE_URL=your_postgres_url
-   NODE_ENV=production
-   PORT=5000
-   ```
-
-3. **Start server:**
-   ```bash
-   npm start
-   ```
-
-#### Docker
+### Docker Manual Deployment
 
 ```dockerfile
-FROM node:18
+FROM node:22-alpine
 
 WORKDIR /app
+
+# Kopiraj package files
 COPY package*.json ./
-RUN npm install
+RUN npm ci --only=production
+
+# Kopiraj source
 COPY . .
+
+# Build
 RUN npm run build
 
+# Expose port
 EXPOSE 5000
-CMD ["npm", "start"]
+
+# Start
+CMD ["bash", "start.sh"]
 ```
+
+**docker-compose.yml:**
+```yaml
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - NODE_ENV=production
+    volumes:
+      - uploads:/app/public/uploads
+    restart: unless-stopped
+
+volumes:
+  uploads:
+```
+
+---
+
+### Database Setup
+
+#### PostgreSQL na Hetzner
+
+1. Kreirajte managed PostgreSQL (Hetzner Database)
+2. Ili instalirajte na VPS:
+
+```bash
+sudo apt install postgresql postgresql-contrib
+sudo -u postgres createuser dzematapp
+sudo -u postgres createdb dzematapp -O dzematapp
+sudo -u postgres psql -c "ALTER USER dzematapp PASSWORD 'your-secure-password';"
+```
+
+#### Neon Serverless (Alternativa)
+
+1. Kreirajte account na [neon.tech](https://neon.tech)
+2. Kreirajte novi projekt
+3. Kopirajte connection string
+
+**Prednosti Neon:**
+- Serverless (scale-to-zero)
+- Automatski backups
+- Branching za development
+
+---
+
+### Multi-Tenancy Arhitektura
+
+DžematApp je SaaS aplikacija sa strogom izolacijom tenanta:
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    SuperAdmin Tenant                     │
+│              (tenant-superadmin-global)                  │
+│   - Globalni pristup svim tenantima                     │
+│   - Upravljanje subscription planovima                   │
+└─────────────────────────────────────────────────────────┘
+          │
+          ▼
+┌─────────────────────────────────────────────────────────┐
+│                   Regular Tenants                        │
+│  ┌───────────┐  ┌───────────┐  ┌───────────┐           │
+│  │ Džemat A  │  │ Džemat B  │  │ Džemat C  │           │
+│  │           │  │           │  │           │           │
+│  │ Users     │  │ Users     │  │ Users     │           │
+│  │ Events    │  │ Events    │  │ Events    │           │
+│  │ Tasks     │  │ Tasks     │  │ Tasks     │           │
+│  │ ...       │  │ ...       │  │ ...       │           │
+│  └───────────┘  └───────────┘  └───────────┘           │
+│                                                          │
+│  Svaki tenant ima:                                       │
+│  - Izolované podatke (tenant_id na svakoj tabeli)       │
+│  - Svog admin korisnika (admin/admin123)                │
+│  - Svoje module i postavke                               │
+└─────────────────────────────────────────────────────────┘
+```
+
+#### Kreiranje novog tenanta
+
+```sql
+-- Automatski kroz SuperAdmin panel
+-- Ili ručno:
+INSERT INTO tenants (id, name, slug, tenant_code, email, status)
+VALUES ('tenant-xyz', 'Novi Džemat', 'novi-dzemat', 'NOVIJD2024', 'admin@novidzemat.com', 'active');
+
+-- Admin korisnik se automatski kreira
+```
+
+#### Tenant izolacija
+
+Svaki API request prolazi kroz middleware koji:
+1. Čita `tenantId` iz session-a
+2. Dodaje `tenantId` na sve database upite
+3. Sprječava cross-tenant pristup
 
 ---
 
