@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -28,6 +28,7 @@ import {
 import { Close, Search, Person, Link as LinkIcon, PersonAdd } from '@mui/icons-material';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
+import { useAuth } from '@/hooks/useAuth';
 
 interface FamilySelectionDialogProps {
   open: boolean;
@@ -51,7 +52,12 @@ function TabPanel(props: TabPanelProps) {
 }
 
 export default function FamilySelectionDialog({ open, onClose, userId }: FamilySelectionDialogProps) {
-  const [tabValue, setTabValue] = useState(0);
+  const { user: currentUser } = useAuth();
+  const isAdmin = currentUser?.isAdmin || currentUser?.isSuperAdmin || false;
+  
+  // For non-admins, always show create tab (index 0 in their view)
+  // For admins, tab 0 = link existing, tab 1 = create new
+  const [tabValue, setTabValue] = useState(isAdmin ? 0 : 0);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedExistingUser, setSelectedExistingUser] = useState<any>(null);
   const [existingUserRelationship, setExistingUserRelationship] = useState('');
@@ -67,10 +73,10 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
 
   const queryClient = useQueryClient();
 
-  // Fetch all users for linking
+  // Fetch all users for linking - ONLY for admins
   const { data: allUsers = [], isLoading: loadingUsers } = useQuery({
     queryKey: ['/api/users'],
-    enabled: open && tabValue === 0,
+    enabled: open && isAdmin && tabValue === 0,
   });
 
   // Fetch existing family relationships to exclude already linked users
@@ -262,25 +268,28 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
       </DialogTitle>
       
       <DialogContent>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
-          <Tabs value={tabValue} onChange={(_, v) => setTabValue(v)}>
-            <Tab 
-              icon={<LinkIcon />} 
-              iconPosition="start" 
-              label="Poveži postojećeg člana" 
-              data-testid="tab-link-existing"
-            />
-            <Tab 
-              icon={<PersonAdd />} 
-              iconPosition="start" 
-              label="Kreiraj novog člana" 
-              data-testid="tab-create-new"
-            />
-          </Tabs>
-        </Box>
+        {/* Only show tabs for admins - non-admins only see create new form */}
+        {isAdmin && (
+          <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
+            <Tabs value={tabValue} onChange={(_, v) => setTabValue(v)}>
+              <Tab 
+                icon={<LinkIcon />} 
+                iconPosition="start" 
+                label="Poveži postojećeg člana" 
+                data-testid="tab-link-existing"
+              />
+              <Tab 
+                icon={<PersonAdd />} 
+                iconPosition="start" 
+                label="Kreiraj novog člana" 
+                data-testid="tab-create-new"
+              />
+            </Tabs>
+          </Box>
+        )}
 
-        {/* Tab 0: Link Existing Member */}
-        <TabPanel value={tabValue} index={0}>
+        {/* Tab 0: Link Existing Member - ADMIN ONLY */}
+        {isAdmin && <TabPanel value={tabValue} index={0}>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
             Pretražite postojeće članove i povežite ih kao porodicu.
           </Typography>
@@ -374,96 +383,187 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
               </FormControl>
             </Box>
           )}
-        </TabPanel>
+        </TabPanel>}
 
-        {/* Tab 1: Create New Member */}
-        <TabPanel value={tabValue} index={1}>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            Kreirajte novog člana koji će automatski biti dodan kao član porodice.
-          </Typography>
-          
-          <Grid container spacing={2}>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                fullWidth
-                variant="outlined"
-                label="Ime"
-                value={newUserData.firstName}
-                onChange={handleNewUserChange('firstName')}
-                required
-                data-testid="input-new-firstName"
-              />
-            </Grid>
+        {/* Create New Member Form - For admins wrapped in TabPanel, for members shown directly */}
+        {isAdmin ? (
+          <TabPanel value={tabValue} index={1}>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              Kreirajte novog člana koji će automatski biti dodan kao član porodice.
+            </Typography>
             
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                fullWidth
-                variant="outlined"
-                label="Prezime"
-                value={newUserData.lastName}
-                onChange={handleNewUserChange('lastName')}
-                required
-                data-testid="input-new-lastName"
-              />
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  label="Ime"
+                  value={newUserData.firstName}
+                  onChange={handleNewUserChange('firstName')}
+                  required
+                  data-testid="input-new-firstName"
+                />
+              </Grid>
+              
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  label="Prezime"
+                  value={newUserData.lastName}
+                  onChange={handleNewUserChange('lastName')}
+                  required
+                  data-testid="input-new-lastName"
+                />
+              </Grid>
+              
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  label="Korisničko ime"
+                  value={newUserData.username}
+                  onChange={handleNewUserChange('username')}
+                  helperText="Opciono"
+                  data-testid="input-new-username"
+                />
+              </Grid>
+              
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  label="Email"
+                  type="email"
+                  value={newUserData.email}
+                  onChange={handleNewUserChange('email')}
+                  helperText="Opciono"
+                  data-testid="input-new-email"
+                />
+              </Grid>
+              
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  label="Šifra"
+                  type="password"
+                  value={newUserData.password}
+                  onChange={handleNewUserChange('password')}
+                  helperText="Opciono"
+                  data-testid="input-new-password"
+                />
+              </Grid>
+              
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <FormControl fullWidth required>
+                  <InputLabel>Tip odnosa</InputLabel>
+                  <Select
+                    value={newUserData.relationship}
+                    label="Tip odnosa"
+                    onChange={(e) => setNewUserData(prev => ({ ...prev, relationship: e.target.value }))}
+                    data-testid="select-new-relationship"
+                  >
+                    {relationshipOptions.map(option => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
             </Grid>
+          </TabPanel>
+        ) : (
+          /* Non-admin: Show create form directly without TabPanel */
+          <Box>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              Kreirajte novog člana koji će automatski biti dodan kao član vaše porodice.
+            </Typography>
             
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                fullWidth
-                variant="outlined"
-                label="Korisničko ime"
-                value={newUserData.username}
-                onChange={handleNewUserChange('username')}
-                helperText="Opciono"
-                data-testid="input-new-username"
-              />
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  label="Ime"
+                  value={newUserData.firstName}
+                  onChange={handleNewUserChange('firstName')}
+                  required
+                  data-testid="input-new-firstName"
+                />
+              </Grid>
+              
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  label="Prezime"
+                  value={newUserData.lastName}
+                  onChange={handleNewUserChange('lastName')}
+                  required
+                  data-testid="input-new-lastName"
+                />
+              </Grid>
+              
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  label="Korisničko ime"
+                  value={newUserData.username}
+                  onChange={handleNewUserChange('username')}
+                  helperText="Opciono"
+                  data-testid="input-new-username"
+                />
+              </Grid>
+              
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  label="Email"
+                  type="email"
+                  value={newUserData.email}
+                  onChange={handleNewUserChange('email')}
+                  helperText="Opciono"
+                  data-testid="input-new-email"
+                />
+              </Grid>
+              
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  label="Šifra"
+                  type="password"
+                  value={newUserData.password}
+                  onChange={handleNewUserChange('password')}
+                  helperText="Opciono"
+                  data-testid="input-new-password"
+                />
+              </Grid>
+              
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <FormControl fullWidth required>
+                  <InputLabel>Tip odnosa</InputLabel>
+                  <Select
+                    value={newUserData.relationship}
+                    label="Tip odnosa"
+                    onChange={(e) => setNewUserData(prev => ({ ...prev, relationship: e.target.value }))}
+                    data-testid="select-new-relationship"
+                  >
+                    {relationshipOptions.map(option => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
             </Grid>
-            
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                fullWidth
-                variant="outlined"
-                label="Email"
-                type="email"
-                value={newUserData.email}
-                onChange={handleNewUserChange('email')}
-                helperText="Opciono"
-                data-testid="input-new-email"
-              />
-            </Grid>
-            
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                fullWidth
-                variant="outlined"
-                label="Šifra"
-                type="password"
-                value={newUserData.password}
-                onChange={handleNewUserChange('password')}
-                helperText="Opciono"
-                data-testid="input-new-password"
-              />
-            </Grid>
-            
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <FormControl fullWidth required>
-                <InputLabel>Tip odnosa</InputLabel>
-                <Select
-                  value={newUserData.relationship}
-                  label="Tip odnosa"
-                  onChange={(e) => setNewUserData(prev => ({ ...prev, relationship: e.target.value }))}
-                  data-testid="select-new-relationship"
-                >
-                  {relationshipOptions.map(option => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-          </Grid>
-        </TabPanel>
+          </Box>
+        )}
       </DialogContent>
       
       <DialogActions sx={{ p: 3 }}>
@@ -475,7 +575,9 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
           Odustani
         </Button>
         
-        {tabValue === 0 ? (
+        {/* For admins: show link button on tab 0, create button on tab 1 */}
+        {/* For non-admins: only show create button */}
+        {isAdmin && tabValue === 0 ? (
           <Button 
             onClick={handleLinkExistingUser}
             variant="contained"
