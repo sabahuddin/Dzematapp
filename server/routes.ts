@@ -2893,7 +2893,8 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
 
   app.get("/api/access-requests/my", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
-      const requests = await storage.getUserAccessRequests(req.user!.id);
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      const requests = await storage.getUserAccessRequests(req.user!.id, tenantId);
       res.json(requests);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch user access requests" });
@@ -2918,18 +2919,20 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     try {
       const { id } = req.params;
       const { status } = req.body;
-      const request = await storage.updateAccessRequest(id, status);
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      const request = await storage.updateAccessRequest(id, tenantId, status);
       if (!request) {
         return res.status(404).json({ message: "Request not found" });
       }
       
       // If approved, add the user as a member to the work group
       if (status === 'approved') {
-        await storage.addMemberToWorkGroup(request.workGroupId, request.userId);
+        await storage.addMemberToWorkGroup(request.workGroupId, request.userId, tenantId);
       }
       
       res.json(request);
     } catch (error) {
+      console.error("[ACCESS REQUEST UPDATE ERROR]", error);
       res.status(400).json({ message: "Invalid request status" });
     }
 });
