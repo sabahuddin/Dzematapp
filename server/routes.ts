@@ -3618,14 +3618,20 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     try {
       const userId = req.session.userId!;
       const dataToValidate = mapNameTitleFields(prepareDataForValidation(req, { userId }));
+      
+      // Debug logging for photos
+      console.log(`[SERVICE CREATE] Name: ${dataToValidate.name}, Photos received: ${JSON.stringify(dataToValidate.photos || [])}`);
+      
       const parsedData = insertServiceSchema.parse(dataToValidate);
       const service = await storage.createService(parsedData);
+      
+      console.log(`✅ Service created: ${service.name}, Photos saved: ${JSON.stringify(service.photos || [])}`);
       res.status(201).json(service);
     } catch (error: any) {
       console.error("[SERVICE POST ERROR]", error.errors || error.message || error);
       res.status(400).json({ message: "Invalid service data", details: error.errors || error.message });
     }
-});
+  });
 
   app.put("/api/services/:id", requireAuth, async (req, res) => {
     try {
@@ -3643,12 +3649,19 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       }
 
       const updateData = mapNameTitleFields(req.body);
+      
+      // Debug logging for photos update
+      console.log(`[SERVICE UPDATE] ID: ${req.params.id}, Photos received: ${JSON.stringify(updateData.photos || [])}`);
+      
       const updated = await storage.updateService(req.params.id, tenantId, updateData);
+      
+      console.log(`✅ Service updated: ${updated?.name}, Photos saved: ${JSON.stringify(updated?.photos || [])}`);
       res.json(updated);
     } catch (error) {
+      console.error("[SERVICE UPDATE ERROR]", error);
       res.status(500).json({ message: "Failed to update service" });
     }
-});
+  });
 
   app.delete("/api/services/:id", requireAuth, async (req, res) => {
     try {
