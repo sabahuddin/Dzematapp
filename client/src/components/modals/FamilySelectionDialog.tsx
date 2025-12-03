@@ -39,20 +39,51 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
 
   const createUserMutation = useMutation({
     mutationFn: async (userData: any) => {
-      const response = await apiRequest('/api/users', 'POST', userData);
-      return response.json();
-    },
-    onSuccess: async (newUser) => {
-      // Create family relationship with the new user
-      await apiRequest('/api/family-relationships', 'POST', {
+      // Extract relationship from userData before sending to /api/users
+      const { _relationship, ...userDataToSend } = userData;
+      const relationship = _relationship;
+      
+      if (!relationship) {
+        throw new Error('Tip odnosa je obavezan');
+      }
+      
+      const response = await apiRequest('/api/users', 'POST', userDataToSend);
+      const newUser = await response.json();
+      console.log('[FamilyDialog] New user created:', newUser);
+      
+      if (!newUser || !newUser.id) {
+        throw new Error('Failed to create user - no ID returned');
+      }
+      
+      // Create family relationship with the new user using the extracted relationship
+      console.log('[FamilyDialog] Creating relationship:', {
         userId: userId,
         relatedUserId: newUser.id,
-        relationship: newUserData.relationship
+        relationship: relationship
       });
+      
+      const relationshipResponse = await apiRequest('/api/family-relationships', 'POST', {
+        userId: userId,
+        relatedUserId: newUser.id,
+        relationship: relationship
+      });
+      
+      const relationshipResult = await relationshipResponse.json();
+      console.log('[FamilyDialog] Relationship created:', relationshipResult);
+      
+      return { user: newUser, relationship: relationshipResult };
+    },
+    onSuccess: async (result) => {
+      console.log('[FamilyDialog] Success:', result);
       
       // Invalidate and refetch all family-relationships queries to ensure UI updates
       await queryClient.invalidateQueries({ 
         queryKey: ['/api/family-relationships']
+      });
+      
+      // Also invalidate users query
+      await queryClient.invalidateQueries({
+        queryKey: ['/api/users']
       });
       
       // Force a complete refetch of family relationships
@@ -63,6 +94,10 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
       
       handleClose();
     },
+    onError: (error) => {
+      console.error('[FamilyDialog] Error:', error);
+      alert('Greška pri kreiranju člana porodice: ' + (error instanceof Error ? error.message : String(error)));
+    }
   });
 
   const relationshipOptions = [
@@ -95,7 +130,8 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
         email: userData.email || null,
         password: userData.password || null,
         status: 'član porodice',
-        roles: ['clan_porodice']
+        roles: ['clan_porodice'],
+        _relationship: rel // Pass relationship explicitly to mutation
       };
       createUserMutation.mutate(cleanedUserData);
     }

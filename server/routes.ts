@@ -88,11 +88,11 @@ const certificateUpload = multer({
     files: 1
   },
   fileFilter: (req, file, cb) => {
-    const allowedMimes = ['image/png'];
+    const allowedMimes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
     if (allowedMimes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error('Only PNG files are allowed for certificate templates'));
+      cb(new Error('Only PNG, JPEG or WebP files are allowed for certificate templates'));
     }
   }
 });
@@ -2845,9 +2845,22 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
 
 
   // Access Requests routes
-  app.get("/api/access-requests", requireAdmin, requireFeature("tasks"), async (req, res) => {
+  // Note: Both admin users AND users with 'imam' role can view access requests
+  // Security: We check for both username='imam' AND roles includes 'imam' to prevent privilege escalation
+  app.get("/api/access-requests", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
-      const requests = await storage.getAllAccessRequests(req.user!.tenantId);
+      const user = req.user!;
+      const isAdmin = user.isAdmin;
+      // Check if user has imam role - more secure than just username check
+      const hasImamRole = user.roles?.includes('imam') || false;
+      const isImamByUsername = user.username === 'imam';
+      const isImam = hasImamRole || isImamByUsername;
+      
+      if (!isAdmin && !isImam) {
+        return res.status(403).json({ message: "Samo admin ili imam mogu pregledati zahtjeve" });
+      }
+      
+      const requests = await storage.getAllAccessRequests(user.tenantId);
       res.json(requests);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch access requests" });
@@ -2878,11 +2891,24 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     }
 });
 
-  app.put("/api/access-requests/:id", requireAdmin, requireFeature("tasks"), async (req, res) => {
+  // Note: Both admin users AND users with 'imam' role can approve/reject access requests
+  // Security: We check for both username='imam' AND roles includes 'imam' to prevent privilege escalation
+  app.put("/api/access-requests/:id", requireAuth, requireFeature("tasks"), async (req, res) => {
     try {
+      const user = req.user!;
+      const isAdmin = user.isAdmin;
+      // Check if user has imam role - more secure than just username check
+      const hasImamRole = user.roles?.includes('imam') || false;
+      const isImamByUsername = user.username === 'imam';
+      const isImam = hasImamRole || isImamByUsername;
+      
+      if (!isAdmin && !isImam) {
+        return res.status(403).json({ message: "Samo admin ili imam mogu odobriti/odbiti zahtjeve" });
+      }
+      
       const { id } = req.params;
       const { status } = req.body;
-      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      const tenantId = user.tenantId;
       const request = await storage.updateAccessRequest(id, tenantId, status);
       if (!request) {
         return res.status(404).json({ message: "Request not found" });
@@ -2983,14 +3009,37 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   app.post("/api/family-relationships", requireAuth, async (req, res) => {
     try {
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      console.log('[FAMILY RELATIONSHIP] Creating relationship:', {
+        body: req.body,
+        tenantId
+      });
+      
+      // Validate required fields
+      if (!req.body.userId) {
+        console.error('[FAMILY RELATIONSHIP] Missing userId');
+        return res.status(400).json({ message: "userId is required" });
+      }
+      if (!req.body.relatedUserId) {
+        console.error('[FAMILY RELATIONSHIP] Missing relatedUserId');
+        return res.status(400).json({ message: "relatedUserId is required" });
+      }
+      if (!req.body.relationship) {
+        console.error('[FAMILY RELATIONSHIP] Missing relationship type');
+        return res.status(400).json({ message: "relationship type is required" });
+      }
+      
       const relationshipData = insertFamilyRelationshipSchema.parse({
         ...req.body,
         tenantId
       });
+      
+      console.log('[FAMILY RELATIONSHIP] Parsed data:', relationshipData);
       const relationship = await storage.createFamilyRelationship(relationshipData);
+      console.log('[FAMILY RELATIONSHIP] ✅ Created successfully:', relationship.id);
       res.json(relationship);
     } catch (error) {
-      res.status(400).json({ message: "Invalid family relationship data" });
+      console.error('[FAMILY RELATIONSHIP] ❌ Error:', error);
+      res.status(400).json({ message: "Invalid family relationship data", error: error instanceof Error ? error.message : String(error) });
     }
 });
 
