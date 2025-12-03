@@ -52,7 +52,7 @@ export default function MemberManagementDialog({
 
   // Fetch work group members
   const membersQuery = useQuery<Array<WorkGroupMember & { user: User }>>({
-    queryKey: ['/api/work-groups', workGroup.id, 'members'],
+    queryKey: [`/api/work-groups/${workGroup.id}/members`],
     enabled: open,
   });
 
@@ -63,7 +63,7 @@ export default function MemberManagementDialog({
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/work-groups', workGroup.id, 'members'] });
+      queryClient.invalidateQueries({ queryKey: [`/api/work-groups/${workGroup.id}/members`] });
       queryClient.invalidateQueries({ queryKey: ['/api/work-groups'] });
       toast({ 
         title: 'Uspjeh', 
@@ -88,7 +88,7 @@ export default function MemberManagementDialog({
       return response.json();
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['/api/work-groups', workGroup.id, 'members'] });
+      queryClient.invalidateQueries({ queryKey: [`/api/work-groups/${workGroup.id}/members`] });
       queryClient.invalidateQueries({ queryKey: ['/api/work-groups'] });
       const action = variables.isModerator ? 'postavljen' : 'uklonjen';
       toast({ 

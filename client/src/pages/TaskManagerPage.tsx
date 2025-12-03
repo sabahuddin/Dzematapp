@@ -1443,7 +1443,7 @@ export default function TaskManagerPage() {
           isModeratorOrAdmin={user?.isAdmin || false}
           members={[]}
           onTaskUpdated={() => {
-            queryClient.invalidateQueries({ queryKey: ['/api/work-groups', selectedTask.workGroupId, 'tasks'] });
+            queryClient.invalidateQueries({ queryKey: [`/api/work-groups/${selectedTask.workGroupId}/tasks`] });
           }}
         />
       )}
@@ -2101,7 +2101,7 @@ function TaskDetailDialog({
   }, [task]);
 
   const commentsQuery = useQuery({
-    queryKey: ['/api/tasks', task?.id, 'comments'],
+    queryKey: [`/api/tasks/${task?.id}/comments`],
     enabled: open && !!task?.id,
     retry: 1,
   });
@@ -2112,7 +2112,7 @@ function TaskDetailDialog({
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/tasks', task?.id, 'comments'] });
+      queryClient.invalidateQueries({ queryKey: [`/api/tasks/${task?.id}/comments`] });
       toast({ title: t('common:success'), description: t('toasts.commentAdded') });
       setNewComment('');
       setCommentImage(null);
@@ -2128,7 +2128,7 @@ function TaskDetailDialog({
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/work-groups', workGroup?.id, 'tasks'] });
+      queryClient.invalidateQueries({ queryKey: [`/api/work-groups/${workGroup?.id}/tasks`] });
       toast({ title: t('common:success'), description: t('toasts.taskStatusUpdated') });
       onTaskUpdated();
       setIsEditing(false);
@@ -2144,7 +2144,7 @@ function TaskDetailDialog({
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/work-groups', workGroup?.id, 'tasks'] });
+      queryClient.invalidateQueries({ queryKey: [`/api/work-groups/${workGroup?.id}/tasks`] });
       toast({ title: t('common:success'), description: t('toasts.taskDeleted') });
       onClose();
       onTaskUpdated();
@@ -3024,13 +3024,13 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
   const [archiveTab, setArchiveTab] = useState(0);
 
   const tasksQuery = useQuery({
-    queryKey: ['/api/work-groups', workGroup?.id, 'tasks'],
+    queryKey: [`/api/work-groups/${workGroup?.id}/tasks`],
     enabled: !!workGroup?.id,
     retry: 1,
   });
 
   const membersQuery = useQuery({
-    queryKey: ['/api/work-groups', workGroup?.id, 'members'],
+    queryKey: [`/api/work-groups/${workGroup?.id}/members`],
     enabled: !!workGroup?.id,
     retry: 1,
   });
@@ -3064,7 +3064,7 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/work-groups', workGroup?.id, 'tasks'] });
+      queryClient.invalidateQueries({ queryKey: [`/api/work-groups/${workGroup?.id}/tasks`] });
       toast({ title: t('common:success'), description: t('toasts.taskCreated') });
       setCreateTaskOpen(false);
     },
@@ -3079,7 +3079,7 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/work-groups', workGroup?.id, 'tasks'] });
+      queryClient.invalidateQueries({ queryKey: [`/api/work-groups/${workGroup?.id}/tasks`] });
       toast({ title: t('common:success'), description: t('toasts.taskStatusUpdated') });
     },
     onError: () => {
@@ -3271,7 +3271,7 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
         isModeratorOrAdmin={isModeratorOrAdmin()}
         members={Array.isArray(membersQuery.data) ? membersQuery.data : []}
         onTaskUpdated={() => {
-          queryClient.invalidateQueries({ queryKey: ['/api/work-groups', workGroup?.id, 'tasks'] });
+          queryClient.invalidateQueries({ queryKey: [`/api/work-groups/${workGroup?.id}/tasks`] });
         }}
       />
     </Box>

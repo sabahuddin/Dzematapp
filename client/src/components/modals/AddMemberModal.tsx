@@ -42,7 +42,7 @@ export default function AddMemberModal({ open, onClose, workGroup }: AddMemberMo
 
   // Fetch current work group members
   const membersQuery = useQuery({
-    queryKey: ['/api/work-groups', workGroup.id, 'members'],
+    queryKey: [`/api/work-groups/${workGroup.id}/members`],
     enabled: open,
   });
 
@@ -55,7 +55,7 @@ export default function AddMemberModal({ open, onClose, workGroup }: AddMemberMo
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/work-groups', workGroup.id, 'members'] });
+      queryClient.invalidateQueries({ queryKey: [`/api/work-groups/${workGroup.id}/members`] });
       queryClient.invalidateQueries({ queryKey: ['/api/work-groups'] });
       toast({ 
         title: 'Uspjeh', 
