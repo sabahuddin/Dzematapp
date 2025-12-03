@@ -399,7 +399,7 @@ export interface IStorage {
   rejectReceipt(id: string, tenantId: string, reviewedById: string, reviewComment: string): Promise<Receipt | undefined>;
 
   // Certificate Templates (Zahvalnice)
-  createCertificateTemplate(template: InsertCertificateTemplate): Promise<CertificateTemplate>;
+  createCertificateTemplate(template: InsertCertificateTemplate, tenantId: string): Promise<CertificateTemplate>;
   getCertificateTemplate(id: string, tenantId: string): Promise<CertificateTemplate | undefined>;
   getAllCertificateTemplates(tenantId: string): Promise<CertificateTemplate[]>;
   updateCertificateTemplate(id: string, tenantId: string, updates: Partial<InsertCertificateTemplate>): Promise<CertificateTemplate | undefined>;

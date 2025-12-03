@@ -36,8 +36,8 @@ interface EventRSVPModalProps {
 export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalProps) {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [adultsCount, setAdultsCount] = useState(1);
-  const [childrenCount, setChildrenCount] = useState(0);
+  const [adultsCount, setAdultsCount] = useState<string>('1');
+  const [childrenCount, setChildrenCount] = useState<string>('0');
 
   // For admins: fetch all RSVPs for the event
   const { data: allRsvps, isLoading: isLoadingAllRsvps } = useQuery<{ rsvps: any[], totalAdults: number, totalChildren: number, totalAttendees: number }>({
@@ -69,11 +69,11 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
 
   useEffect(() => {
     if (userRsvp) {
-      setAdultsCount(userRsvp.adultsCount || 1);
-      setChildrenCount(userRsvp.childrenCount || 0);
+      setAdultsCount(String(userRsvp.adultsCount || 1));
+      setChildrenCount(String(userRsvp.childrenCount || 0));
     } else {
-      setAdultsCount(1);
-      setChildrenCount(0);
+      setAdultsCount('1');
+      setChildrenCount('0');
     }
   }, [userRsvp, open]);
 
@@ -151,10 +151,13 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
   });
 
   const handleSubmit = () => {
+    const adults = Math.max(0, parseInt(adultsCount) || 0);
+    const children = Math.max(0, parseInt(childrenCount) || 0);
+    
     if (userRsvp) {
-      updateRsvpMutation.mutate({ adultsCount, childrenCount });
+      updateRsvpMutation.mutate({ adultsCount: adults, childrenCount: children });
     } else {
-      createRsvpMutation.mutate({ adultsCount, childrenCount });
+      createRsvpMutation.mutate({ adultsCount: adults, childrenCount: children });
     }
   };
 
@@ -346,7 +349,11 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
               type="number"
               label="Broj Odraslih"
               value={adultsCount}
-              onChange={(e) => setAdultsCount(Math.max(0, parseInt(e.target.value) || 0))}
+              onChange={(e) => setAdultsCount(e.target.value)}
+              onBlur={(e) => {
+                const val = parseInt(e.target.value) || 0;
+                setAdultsCount(String(Math.max(0, val)));
+              }}
               InputProps={{ inputProps: { min: 0 } }}
               required
               data-testid="input-adults-count"
@@ -357,7 +364,11 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
               type="number"
               label="Broj Djece"
               value={childrenCount}
-              onChange={(e) => setChildrenCount(Math.max(0, parseInt(e.target.value) || 0))}
+              onChange={(e) => setChildrenCount(e.target.value)}
+              onBlur={(e) => {
+                const val = parseInt(e.target.value) || 0;
+                setChildrenCount(String(Math.max(0, val)));
+              }}
               InputProps={{ inputProps: { min: 0 } }}
               data-testid="input-children-count"
             />
