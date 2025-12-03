@@ -31,6 +31,8 @@ export default function ShopPage() {
   const { isEnabled, upgradeRequired, currentPlan, requiredPlan, isLoading: featureLoading } = useFeatureAccess("shop");
   
   const [activeTab, setActiveTab] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchCategory, setSearchCategory] = useState<"all" | "sell" | "gift" | "services">("all");
   const [productModalOpen, setProductModalOpen] = useState(false);
   const [marketplaceModalOpen, setMarketplaceModalOpen] = useState(false);
   const [purchaseModalOpen, setPurchaseModalOpen] = useState(false);
@@ -58,16 +60,13 @@ export default function ShopPage() {
     photos: [] as string[],
     price: "",
     duration: "",
-    category: ""
+    type: "offer" as "offer" | "need"
   });
   
   const [productForm, setProductForm] = useState({
     name: "",
+    description: "",
     photos: [] as string[],
-    category: "",
-    weight: "",
-    volume: "",
-    notes: "",
     price: ""
   });
   
@@ -261,11 +260,8 @@ export default function ShopPage() {
       setProductModalOpen(false);
       setProductForm({
         name: "",
+        description: "",
         photos: [],
-        category: "",
-        weight: "",
-        volume: "",
-        notes: "",
         price: ""
       });
     },
@@ -300,11 +296,8 @@ export default function ShopPage() {
       setEditingProduct(null);
       setProductForm({
         name: "",
+        description: "",
         photos: [],
-        category: "",
-        weight: "",
-        volume: "",
-        notes: "",
         price: ""
       });
     },
@@ -332,11 +325,8 @@ export default function ShopPage() {
     mutationFn: async (product: ShopProductWithUser) => {
       return await apiRequest('/api/shop/products', 'POST', {
         name: product.name,
+        description: product.description || "",
         photos: product.photos || [],
-        category: product.category,
-        weight: product.weight,
-        volume: product.volume,
-        notes: product.notes,
         price: product.price,
         createdById: user!.id
       });
@@ -429,13 +419,14 @@ export default function ShopPage() {
   // Service mutations
   const createServiceMutation = useMutation({
     mutationFn: async (data: typeof serviceForm) => {
-      return await apiRequest('/api/services', 'POST', data);
+      const { type, ...rest } = data;
+      return await apiRequest('/api/services', 'POST', { ...rest, category: type });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/services'] });
       toast({ title: "Usluga dodana" });
       setServiceModalOpen(false);
-      setServiceForm({ name: "", description: "", photos: [], price: "", duration: "", category: "" });
+      setServiceForm({ name: "", description: "", photos: [], price: "", duration: "", type: "offer" });
     },
     onError: () => {
       toast({ title: "Greška pri dodavanju usluge", variant: "destructive" });
@@ -444,14 +435,15 @@ export default function ShopPage() {
 
   const updateServiceMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string; data: typeof serviceForm }) => {
-      return await apiRequest(`/api/services/${id}`, 'PUT', data);
+      const { type, ...rest } = data;
+      return await apiRequest(`/api/services/${id}`, 'PUT', { ...rest, category: type });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/services'] });
       toast({ title: "Usluga ažurirana" });
       setServiceModalOpen(false);
       setEditingService(null);
-      setServiceForm({ name: "", description: "", photos: [], price: "", duration: "", category: "" });
+      setServiceForm({ name: "", description: "", photos: [], price: "", duration: "", type: "offer" });
     },
     onError: () => {
       toast({ title: "Greška pri ažuriranju usluge", variant: "destructive" });
@@ -531,14 +523,8 @@ export default function ShopPage() {
     setEditingProduct(product);
     setProductForm({
       name: product.name,
+      description: product.description || "",
       photos: product.photos || [],
-      category: product.category || "",
-      weight: product.weight || "",
-      volume: product.volume || "",
-      size: product.size || "",
-      quantity: product.quantity || 0,
-      color: product.color || "",
-      notes: product.notes || "",
       price: product.price || ""
     });
     setProductModalOpen(true);
@@ -570,17 +556,6 @@ export default function ShopPage() {
     setMarketplaceModalOpen(true);
   };
 
-  const handleProductCategoryChange = (newCategory: string) => {
-    setProductForm({
-      ...productForm,
-      category: newCategory,
-      weight: "",
-      volume: "",
-      size: "",
-      quantity: 0,
-      color: ""
-    });
-  };
 
   const handleOpenPurchaseModal = (product: ShopProductWithUser) => {
     setSelectedProduct(product);
@@ -666,8 +641,23 @@ export default function ShopPage() {
     return users?.find(u => u.id === userId);
   };
 
-  const sellItems = marketplaceItems?.filter(item => item.type === "sell" && item.status === "active") || [];
-  const giftItems = marketplaceItems?.filter(item => item.type === "gift" && item.status === "active") || [];
+  // Filter function for search
+  const filterBySearch = (name: string | null, description?: string | null) => {
+    if (!searchQuery.trim()) return true;
+    const query = searchQuery.toLowerCase();
+    return (name?.toLowerCase().includes(query) || false) || 
+           (description?.toLowerCase().includes(query) || false);
+  };
+
+  // Filtered data based on search
+  const filteredProducts = shopProducts?.filter(p => filterBySearch(p.name, p.description)) || [];
+  const sellItems = marketplaceItems?.filter(item => 
+    item.type === "sell" && item.status === "active" && filterBySearch(item.title, item.description)
+  ) || [];
+  const giftItems = marketplaceItems?.filter(item => 
+    item.type === "gift" && item.status === "active" && filterBySearch(item.title, item.description)
+  ) || [];
+  const filteredServices = services?.filter(s => filterBySearch(s.name, s.description)) || [];
   const archivedItems = marketplaceItems?.filter(item => item.status === "completed") || [];
 
   // Show upgrade CTA if feature is locked
@@ -695,6 +685,40 @@ export default function ShopPage() {
           {t('shop:title')}
         </Typography>
       </Box>
+
+      {/* Search Bar */}
+      <Paper sx={{ p: 2, mb: 3 }}>
+        <Box sx={{ display: 'flex', gap: 2, flexDirection: { xs: 'column', sm: 'row' } }}>
+          <TextField
+            fullWidth
+            size="small"
+            placeholder="Pretraži..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            data-testid="input-search"
+          />
+          <FormControl size="small" sx={{ minWidth: 150 }}>
+            <InputLabel>Kategorija</InputLabel>
+            <Select
+              value={searchCategory}
+              label="Kategorija"
+              onChange={(e) => {
+                const value = e.target.value as typeof searchCategory;
+                setSearchCategory(value);
+                if (value === "sell") setActiveTab(1);
+                else if (value === "gift") setActiveTab(2);
+                else if (value === "services") setActiveTab(3);
+              }}
+              data-testid="select-search-category"
+            >
+              <MenuItem value="all">Sve</MenuItem>
+              <MenuItem value="sell">Prodajem</MenuItem>
+              <MenuItem value="gift">Poklanjam</MenuItem>
+              <MenuItem value="services">Usluge</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+      </Paper>
 
       <Paper sx={{ mb: 3 }}>
         <Tabs 
@@ -751,8 +775,127 @@ export default function ShopPage() {
         </Tabs>
       </Paper>
 
+      {/* Global Search Results - when searching with "all" category */}
+      {searchQuery.trim() && searchCategory === "all" && (
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="h6" sx={{ mb: 2 }}>Rezultati pretrage: "{searchQuery}"</Typography>
+          
+          {/* Džemat Shop Products Results */}
+          {filteredProducts.length > 0 && (
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Store fontSize="small" /> Džemat Shop ({filteredProducts.length})
+              </Typography>
+              <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 2 }}>
+                {filteredProducts.slice(0, 6).map((product) => (
+                  <Card key={product.id} sx={{ cursor: 'pointer' }} onClick={() => { setSearchCategory("all"); setActiveTab(0); }}>
+                    {product.photos && product.photos.length > 0 && (
+                      <CardMedia component="img" height="120" image={product.photos[0]} alt={product.name} sx={{ objectFit: 'cover' }} />
+                    )}
+                    <CardContent sx={{ py: 1 }}>
+                      <Typography variant="subtitle2" noWrap>{product.name}</Typography>
+                      {product.price && <Typography variant="body2" color="primary">{formatPrice(product.price)}</Typography>}
+                    </CardContent>
+                  </Card>
+                ))}
+              </Box>
+              {filteredProducts.length > 6 && (
+                <Button size="small" onClick={() => { setSearchCategory("all"); setActiveTab(0); }}>
+                  Prikaži sve ({filteredProducts.length})
+                </Button>
+              )}
+            </Box>
+          )}
+
+          {/* Sell Items Results */}
+          {sellItems.length > 0 && (
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
+                <ShoppingCart fontSize="small" /> Prodajem ({sellItems.length})
+              </Typography>
+              <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 2 }}>
+                {sellItems.slice(0, 6).map((item) => (
+                  <Card key={item.id} sx={{ cursor: 'pointer' }} onClick={() => { setSearchCategory("sell"); setActiveTab(1); }}>
+                    {item.photos && item.photos.length > 0 && (
+                      <CardMedia component="img" height="120" image={item.photos[0]} alt={item.title || ''} sx={{ objectFit: 'cover' }} />
+                    )}
+                    <CardContent sx={{ py: 1 }}>
+                      <Typography variant="subtitle2" noWrap>{item.title}</Typography>
+                      {item.price && <Typography variant="body2" color="primary">{formatPrice(item.price)}</Typography>}
+                    </CardContent>
+                  </Card>
+                ))}
+              </Box>
+              {sellItems.length > 6 && (
+                <Button size="small" onClick={() => { setSearchCategory("sell"); setActiveTab(1); }}>
+                  Prikaži sve ({sellItems.length})
+                </Button>
+              )}
+            </Box>
+          )}
+
+          {/* Gift Items Results */}
+          {giftItems.length > 0 && (
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
+                <CardGiftcard fontSize="small" /> Poklanjam ({giftItems.length})
+              </Typography>
+              <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 2 }}>
+                {giftItems.slice(0, 6).map((item) => (
+                  <Card key={item.id} sx={{ cursor: 'pointer' }} onClick={() => { setSearchCategory("gift"); setActiveTab(2); }}>
+                    {item.photos && item.photos.length > 0 && (
+                      <CardMedia component="img" height="120" image={item.photos[0]} alt={item.title || ''} sx={{ objectFit: 'cover' }} />
+                    )}
+                    <CardContent sx={{ py: 1 }}>
+                      <Typography variant="subtitle2" noWrap>{item.title}</Typography>
+                    </CardContent>
+                  </Card>
+                ))}
+              </Box>
+              {giftItems.length > 6 && (
+                <Button size="small" onClick={() => { setSearchCategory("gift"); setActiveTab(2); }}>
+                  Prikaži sve ({giftItems.length})
+                </Button>
+              )}
+            </Box>
+          )}
+
+          {/* Services Results */}
+          {filteredServices.length > 0 && (
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Build fontSize="small" /> Usluge ({filteredServices.length})
+              </Typography>
+              <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 2 }}>
+                {filteredServices.slice(0, 6).map((service) => (
+                  <Card key={service.id} sx={{ cursor: 'pointer' }} onClick={() => { setSearchCategory("services"); setActiveTab(3); }}>
+                    {service.photos && service.photos.length > 0 && (
+                      <CardMedia component="img" height="120" image={service.photos[0]} alt={service.name} sx={{ objectFit: 'cover' }} />
+                    )}
+                    <CardContent sx={{ py: 1 }}>
+                      <Typography variant="subtitle2" noWrap>{service.name}</Typography>
+                      {service.price && <Typography variant="body2" color="primary">{formatPrice(service.price)}</Typography>}
+                    </CardContent>
+                  </Card>
+                ))}
+              </Box>
+              {filteredServices.length > 6 && (
+                <Button size="small" onClick={() => { setSearchCategory("services"); setActiveTab(3); }}>
+                  Prikaži sve ({filteredServices.length})
+                </Button>
+              )}
+            </Box>
+          )}
+
+          {/* No results message */}
+          {filteredProducts.length === 0 && sellItems.length === 0 && giftItems.length === 0 && filteredServices.length === 0 && (
+            <Typography color="text.secondary">Nema rezultata za "{searchQuery}"</Typography>
+          )}
+        </Box>
+      )}
+
       {/* DžematShop Tab */}
-      {activeTab === 0 && (
+      {activeTab === 0 && !(searchQuery.trim() && searchCategory === "all") && (
         <Box>
           {isAdmin && (
             <Button
@@ -762,14 +905,8 @@ export default function ShopPage() {
                 setEditingProduct(null);
                 setProductForm({
                   name: "",
+                  description: "",
                   photos: [],
-                  category: "",
-                  weight: "",
-                  volume: "",
-                  size: "",
-                  quantity: 0,
-                  color: "",
-                  notes: "",
                   price: ""
                 });
                 setProductModalOpen(true);
@@ -785,7 +922,7 @@ export default function ShopPage() {
             <Typography>{t('shop:display.loading')}</Typography>
           ) : (
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 3 }}>
-              {shopProducts?.map((product) => (
+              {filteredProducts.map((product) => (
                 <Box key={product.id}>
                   <Card data-testid={`card-product-${product.id}`}>
                     {product.photos && product.photos.length > 0 && (
@@ -825,38 +962,9 @@ export default function ShopPage() {
                           {formatPrice(product.price)}
                         </Typography>
                       )}
-                      {product.category === "hrana" && product.weight && (
-                        <Typography variant="body2" color="text.secondary">
-                          {t('shop:display.weight', { weight: product.weight })}
-                        </Typography>
-                      )}
-                      {product.category === "piće" && product.volume && (
-                        <Typography variant="body2" color="text.secondary">
-                          {t('shop:display.volume', { volume: product.volume })}
-                        </Typography>
-                      )}
-                      {product.category === "odjeća" && (
-                        <>
-                          {product.size && (
-                            <Typography variant="body2" color="text.secondary">
-                              {t('shop:display.size', { size: product.size })}
-                            </Typography>
-                          )}
-                          {product.color && (
-                            <Typography variant="body2" color="text.secondary">
-                              {t('shop:display.color', { color: product.color })}
-                            </Typography>
-                          )}
-                          {product.quantity !== null && product.quantity !== undefined && (
-                            <Typography variant="body2" color="text.secondary">
-                              {t('shop:display.inStock', { quantity: product.quantity })}
-                            </Typography>
-                          )}
-                        </>
-                      )}
-                      {product.notes && (
-                        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                          {product.notes}
+                      {product.description && (
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                          {product.description}
                         </Typography>
                       )}
                       <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
@@ -909,7 +1017,7 @@ export default function ShopPage() {
       )}
 
       {/* Prodajem Tab */}
-      {activeTab === 1 && (
+      {activeTab === 1 && !(searchQuery.trim() && searchCategory === "all") && (
         <Box>
           <Button
             variant="contained"
@@ -1028,7 +1136,7 @@ export default function ShopPage() {
       )}
 
       {/* Poklanjam Tab */}
-      {activeTab === 2 && (
+      {activeTab === 2 && !(searchQuery.trim() && searchCategory === "all") && (
         <Box>
           <Button
             variant="contained"
@@ -1142,7 +1250,7 @@ export default function ShopPage() {
       )}
 
       {/* Services Tab */}
-      {activeTab === 3 && (
+      {activeTab === 3 && !(searchQuery.trim() && searchCategory === "all") && (
         <Box>
           <Box sx={{ mb: 3 }}>
             <Button
@@ -1150,7 +1258,7 @@ export default function ShopPage() {
               startIcon={<Add />}
               onClick={() => {
                 setEditingService(null);
-                setServiceForm({ name: "", description: "", photos: [], price: "", duration: "", category: "" });
+                setServiceForm({ name: "", description: "", photos: [], price: "", duration: "", type: "offer" });
                 setServiceModalOpen(true);
               }}
               data-testid="button-add-service"
@@ -1161,9 +1269,9 @@ export default function ShopPage() {
 
           {loadingServices ? (
             <Typography>{t('shop:display.loading')}</Typography>
-          ) : services && services.length > 0 ? (
+          ) : filteredServices.length > 0 ? (
             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 3 }}>
-              {services.map((service) => {
+              {filteredServices.map((service) => {
                 const serviceUser = users?.find(u => u.id === service.userId);
                 
                 return (
@@ -1194,7 +1302,11 @@ export default function ShopPage() {
                         <Chip label={service.duration} size="small" sx={{ mr: 1 }} />
                       )}
                       {service.category && (
-                        <Chip label={service.category} size="small" variant="outlined" />
+                        <Chip 
+                          label={service.category === 'need' ? 'Tražim' : 'Nudim'} 
+                          color={service.category === 'need' ? 'warning' : 'success'}
+                          size="small" 
+                        />
                       )}
                       
                       <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
@@ -1220,7 +1332,7 @@ export default function ShopPage() {
                                 photos: service.photos || [],
                                 price: service.price || "",
                                 duration: service.duration || "",
-                                category: service.category || ""
+                                type: (service.category as "offer" | "need") || "offer"
                               });
                               setServiceModalOpen(true);
                             }}
@@ -1337,7 +1449,7 @@ export default function ShopPage() {
         </Box>
       )}
 
-      {/* Add/Edit Product Dialog (Admin only) */}
+      {/* Add/Edit Product Dialog (Admin only) - Simplified form */}
       <Dialog open={productModalOpen} onClose={() => { setProductModalOpen(false); setEditingProduct(null); }} maxWidth="sm" fullWidth>
         <DialogTitle>{editingProduct ? t('shop:dialogs.editProduct') : t('shop:dialogs.addProduct')}</DialogTitle>
         <DialogContent>
@@ -1350,42 +1462,25 @@ export default function ShopPage() {
             data-testid="input-product-name"
           />
           
-          <FormControl fullWidth margin="normal">
-            <InputLabel>{t('shop:labels.category')}</InputLabel>
-            <Select
-              value={productForm.category}
-              label={t('shop:labels.category')}
-              onChange={(e) => handleProductCategoryChange(e.target.value)}
-              data-testid="select-product-category"
-            >
-              <MenuItem value="hrana">{t('shop:categories.hrana')}</MenuItem>
-              <MenuItem value="piće">{t('shop:categories.piće')}</MenuItem>
-              <MenuItem value="odjeća">{t('shop:categories.odjeća')}</MenuItem>
-            </Select>
-          </FormControl>
+          <TextField
+            fullWidth
+            label={t('shop:labels.description')}
+            value={productForm.description}
+            onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
+            margin="normal"
+            multiline
+            rows={3}
+            data-testid="input-product-description"
+          />
 
-          {productForm.category === "hrana" && (
-            <TextField
-              fullWidth
-              label={t('shop:labels.weight')}
-              value={productForm.weight}
-              onChange={(e) => setProductForm({ ...productForm, weight: e.target.value })}
-              margin="normal"
-              data-testid="input-product-weight"
-            />
-          )}
-
-          {productForm.category === "piće" && (
-            <TextField
-              fullWidth
-              label={t('shop:labels.volume')}
-              value={productForm.volume}
-              onChange={(e) => setProductForm({ ...productForm, volume: e.target.value })}
-              margin="normal"
-              data-testid="input-product-volume"
-            />
-          )}
-
+          <TextField
+            fullWidth
+            label={t('shop:labels.price')}
+            value={productForm.price}
+            onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
+            margin="normal"
+            data-testid="input-product-price"
+          />
           
           <Box sx={{ mt: 2, mb: 2 }}>
             <Button
@@ -1422,25 +1517,6 @@ export default function ShopPage() {
               </ImageList>
             )}
           </Box>
-
-          <TextField
-            fullWidth
-            label={t('shop:labels.price')}
-            value={productForm.price}
-            onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
-            margin="normal"
-            data-testid="input-product-price"
-          />
-          <TextField
-            fullWidth
-            label={t('shop:labels.notes')}
-            value={productForm.notes}
-            onChange={(e) => setProductForm({ ...productForm, notes: e.target.value })}
-            margin="normal"
-            multiline
-            rows={3}
-            data-testid="input-product-notes"
-          />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setProductModalOpen(false)} data-testid="button-cancel-product">{t('shop:buttons.cancel')}</Button>
@@ -1698,12 +1774,18 @@ export default function ShopPage() {
               onChange={(e) => setServiceForm({ ...serviceForm, duration: e.target.value })}
               fullWidth
             />
-            <TextField
-              label={t('shop:labels.serviceCategory')}
-              value={serviceForm.category}
-              onChange={(e) => setServiceForm({ ...serviceForm, category: e.target.value })}
-              fullWidth
-            />
+            <FormControl fullWidth>
+              <InputLabel>Vrsta usluge</InputLabel>
+              <Select
+                value={serviceForm.type}
+                label="Vrsta usluge"
+                onChange={(e) => setServiceForm({ ...serviceForm, type: e.target.value as "offer" | "need" })}
+                data-testid="select-service-type"
+              >
+                <MenuItem value="offer">Nudim</MenuItem>
+                <MenuItem value="need">Tražim</MenuItem>
+              </Select>
+            </FormControl>
 
             <Box sx={{ mt: 2 }}>
               <Button
