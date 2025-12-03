@@ -5023,14 +5023,28 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       const user = req.user as User;
       const file = req.file;
       
+      console.log('[CERT TEMPLATE] Starting upload:', {
+        hasFile: !!file,
+        fileName: file?.originalname,
+        fileSize: file?.size,
+        mimeType: file?.mimetype,
+        userId: user?.id,
+        tenantId: user?.tenantId,
+        body: req.body
+      });
+      
       if (!file) {
+        console.log('[CERT TEMPLATE] ERROR: No file uploaded');
         return res.status(400).json({ message: "Template image is required" });
       }
       
       const tenantId = user.tenantId;
+      console.log('[CERT TEMPLATE] Processing image for tenant:', tenantId);
+      
       const templateImagePath = await processAndSaveToFolder(file.buffer, 'certificates', 'certificate-template', IMAGE_CONFIGS.certificate, tenantId);
-      console.log(`✅ Certificate template saved: ${Math.round(file.size / 1024)}KB -> WebP (tenant: ${tenantId})`);
-      const validated = insertCertificateTemplateSchema.parse({
+      console.log(`✅ Certificate template saved: ${Math.round(file.size / 1024)}KB -> WebP (tenant: ${tenantId}), path: ${templateImagePath}`);
+      
+      const dataToValidate = {
         ...req.body,
         tenantId: tenantId,
         templateImagePath: templateImagePath,
@@ -5041,13 +5055,24 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         fontFamily: req.body.fontFamily || "Arial",
         textAlign: req.body.textAlign || "center",
         createdById: user.id
-      });
+      };
+      
+      console.log('[CERT TEMPLATE] Data to validate:', dataToValidate);
+      
+      const validated = insertCertificateTemplateSchema.parse(dataToValidate);
+      console.log('[CERT TEMPLATE] Validation passed, inserting into DB');
       
       const template = await storage.createCertificateTemplate(validated, tenantId);
+      console.log('[CERT TEMPLATE] SUCCESS - Template created:', template.id);
       res.status(201).json(template);
-    } catch (error) {
-      console.error('Error creating certificate template:', error);
-      res.status(500).json({ message: "Failed to create certificate template" });
+    } catch (error: any) {
+      console.error('[CERT TEMPLATE] ERROR:', error);
+      console.error('[CERT TEMPLATE] Error name:', error?.name);
+      console.error('[CERT TEMPLATE] Error message:', error?.message);
+      if (error?.issues) {
+        console.error('[CERT TEMPLATE] Zod issues:', JSON.stringify(error.issues, null, 2));
+      }
+      res.status(500).json({ message: error?.message || "Failed to create certificate template" });
     }
   });
 
