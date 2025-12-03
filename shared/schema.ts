@@ -739,17 +739,17 @@ export type InsertImportantDate = z.infer<typeof insertImportantDateSchema>;
 export const insertContributionPurposeSchema = createInsertSchema(contributionPurposes).omit({
   id: true,
   createdAt: true,
-  createdById: true,
 }).extend({
-  tenantId: z.string()
+  tenantId: z.string(),
+  createdById: z.string().optional()
 });
 
 export const insertFinancialContributionSchema = createInsertSchema(financialContributions).omit({
   id: true,
   createdAt: true,
-  createdById: true,
 }).extend({
   tenantId: z.string(),
+  createdById: z.string().optional(),
   paymentDate: z.union([
     z.date(),
     z.string().transform((str) => new Date(str))
@@ -797,9 +797,9 @@ export const insertProjectSchema = createInsertSchema(projects).omit({
   id: true,
   createdAt: true,
   completedAt: true,
-  createdById: true,
 }).extend({
-  tenantId: z.string()
+  tenantId: z.string(),
+  createdById: z.string().optional()
 });
 
 export const insertUserPreferencesSchema = createInsertSchema(userPreferences).omit({

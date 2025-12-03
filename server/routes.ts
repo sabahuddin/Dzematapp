@@ -3530,7 +3530,8 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   app.put("/api/shop/products/:id", requireAdmin, async (req, res) => {
     try {
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
-      const product = await storage.updateShopProduct(req.params.id, tenantId, req.body);
+      const updateData = mapNameTitleFields(req.body);
+      const product = await storage.updateShopProduct(req.params.id, tenantId, updateData);
       if (!product) {
         return res.status(404).json({ message: "Product not found" });
       }
@@ -3666,7 +3667,8 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         return res.status(403).json({ message: "Not authorized" });
       }
 
-      const updated = await storage.updateService(req.params.id, tenantId, req.body);
+      const updateData = mapNameTitleFields(req.body);
+      const updated = await storage.updateService(req.params.id, tenantId, updateData);
       res.json(updated);
     } catch (error) {
       res.status(500).json({ message: "Failed to update service" });
@@ -4115,13 +4117,11 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   app.post("/api/financial-contributions", requireAdmin, requireFeature("finances"), async (req, res) => {
     try {
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
-      console.log("[CREATE FINANCIAL CONTRIBUTION] Request:", { tenantId, userId: req.user?.id, body: req.body });
-      const validated = insertFinancialContributionSchema.parse({ ...req.body, tenantId });
-      const contribution = await storage.createFinancialContribution({
-        ...validated,
-        createdById: req.user!.id,
-        tenantId
-});
+      const createdById = req.user!.id;
+      console.log("[CREATE FINANCIAL CONTRIBUTION] Request:", { tenantId, createdById, body: req.body });
+      const dataToValidate = prepareDataForValidation(req, { createdById });
+      const validated = insertFinancialContributionSchema.parse(dataToValidate);
+      const contribution = await storage.createFinancialContribution(validated);
 
       // If contribution is for a project, update project's currentAmount
       if (validated.projectId) {
@@ -4597,17 +4597,14 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
 
   app.post("/api/projects", requireAdmin, async (req, res) => {
     try {
-      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      const createdById = req.user!.id;
       console.log('[CREATE PROJECT] Request:', {
-        tenantId,
-        userId: req.user?.id,
+        tenantId: req.user?.tenantId,
+        createdById,
         body: req.body
       });
-      const validated = insertProjectSchema.parse({
-        ...req.body,
-        tenantId,
-        createdById: req.user!.id
-      });
+      const dataToValidate = prepareDataForValidation(req, { createdById });
+      const validated = insertProjectSchema.parse(dataToValidate);
       console.log('[CREATE PROJECT] Validated:', validated);
       const project = await storage.createProject(validated);
       console.log('[CREATE PROJECT] Success:', project.id);
