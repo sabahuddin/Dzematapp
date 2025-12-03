@@ -176,7 +176,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
   }, [user, open]);
 
   const { data: familyRelationships = [] } = useQuery({
-    queryKey: ['/api/family-relationships', user?.id],
+    queryKey: [`/api/family-relationships/${user?.id}`],
     enabled: !!user?.id,
     staleTime: 0,
     gcTime: 0,
@@ -706,7 +706,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                                 // Handle delete family relationship
                                 apiRequest('/api/family-relationships/' + rel.id, 'DELETE')
                                   .then(() => {
-                                    queryClient.invalidateQueries({ queryKey: ['/api/family-relationships', user.id] });
+                                    queryClient.invalidateQueries({ queryKey: [`/api/family-relationships/${user.id}`] });
                                   });
                               }}
                               data-testid={`button-delete-family-${rel.id}`}
@@ -754,7 +754,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
             setShowFamilyDialog(false);
             // Force refetch instead of just invalidate - ensures fresh data from server
             queryClient.refetchQueries({ 
-              queryKey: ['/api/family-relationships', user.id],
+              queryKey: [`/api/family-relationships/${user.id}`],
               type: 'all'
             });
           }}
