@@ -1,6 +1,9 @@
 import sharp from 'sharp';
 import path from 'path';
 import fs from 'fs/promises';
+import { ObjectStorageService } from '../objectStorage';
+
+const objectStorageService = new ObjectStorageService();
 
 export interface ImageConfig {
   width: number;
@@ -91,4 +94,44 @@ export function generateImageFilename(prefix: string, extension: string = 'webp'
   const timestamp = Date.now();
   const random = Math.random().toString(36).substring(2, 8);
   return `${prefix}-${timestamp}-${random}.${extension}`;
+}
+
+export async function processAndUploadImage(
+  inputBuffer: Buffer,
+  folder: string,
+  prefix: string,
+  config: ImageConfig
+): Promise<string> {
+  try {
+    const processedBuffer = await processImage(inputBuffer, config);
+    const filename = generateImageFilename(prefix, config.format || 'webp');
+    
+    const objectUrl = await objectStorageService.uploadBuffer({
+      buffer: processedBuffer,
+      contentType: `image/${config.format || 'webp'}`,
+      folder,
+      filename,
+    });
+    
+    console.log(`✅ Image uploaded to Object Storage: ${objectUrl}`);
+    
+    return objectUrl;
+  } catch (error) {
+    console.error('❌ Upload to Object Storage error:', error);
+    throw new Error('Failed to upload image to Object Storage');
+  }
+}
+
+export async function processAndUploadMultipleImages(
+  inputBuffers: Buffer[],
+  folder: string,
+  prefix: string,
+  config: ImageConfig
+): Promise<string[]> {
+  const urls: string[] = [];
+  for (const buffer of inputBuffers) {
+    const url = await processAndUploadImage(buffer, folder, prefix, config);
+    urls.push(url);
+  }
+  return urls;
 }
