@@ -3191,7 +3191,7 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
                     </Box>
                   </Box>
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                    {!isArchive && task.status !== 'završeno' && task.status !== 'na_cekanju' && task.assignedUserIds?.includes(currentUser?.id) && (
+                    {!isArchive && task.status !== 'završeno' && task.status !== 'na_cekanju' && isModeratorOrAdmin() && (
                       <Button
                         size="small"
                         variant="outlined"
