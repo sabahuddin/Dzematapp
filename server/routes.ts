@@ -2439,7 +2439,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
               id: user.id, 
               firstName: user.firstName, 
               lastName: user.lastName, 
-              email: user.email 
+              phone: user.phone
             } : null
           };
         })

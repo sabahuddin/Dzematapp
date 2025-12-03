@@ -23,7 +23,7 @@ import {
   People, 
   PersonAdd, 
   PersonRemove,
-  Email,
+  Phone,
   CalendarMonth,
   Star,
   StarBorder
@@ -260,9 +260,9 @@ export default function MemberManagementDialog({
                         secondary={
                           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, mt: 0.5 }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                              <Email sx={{ fontSize: 14, color: 'text.secondary' }} />
+                              <Phone sx={{ fontSize: 14, color: 'text.secondary' }} />
                               <Typography variant="body2" color="text.secondary">
-                                {user?.email || 'Email nije dostupan'}
+                                {user?.phone || 'Mobitel nije dostupan'}
                               </Typography>
                             </Box>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
