@@ -97,20 +97,23 @@ export async function processAndSaveToFolder(
   inputBuffer: Buffer,
   folder: string,
   prefix: string,
-  config: ImageConfig
+  config: ImageConfig,
+  tenantId?: string
 ): Promise<string> {
   try {
     const processedBuffer = await processImage(inputBuffer, config);
     const filename = generateImageFilename(prefix, config.format || 'webp');
     
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads', folder);
+    // Include tenantId in path for multi-tenancy support
+    const tenant = tenantId || 'shared';
+    const uploadDir = path.join(process.cwd(), 'public', 'uploads', tenant, folder);
     await fs.mkdir(uploadDir, { recursive: true });
     
     const filePath = path.join(uploadDir, filename);
     await fs.writeFile(filePath, processedBuffer);
     
-    const publicUrl = `/uploads/${folder}/${filename}`;
-    console.log(`✅ Image saved to filesystem: ${publicUrl}`);
+    const publicUrl = `/uploads/${tenant}/${folder}/${filename}`;
+    console.log(`✅ Image saved to filesystem: ${publicUrl} (tenant: ${tenant})`);
     
     return publicUrl;
   } catch (error) {
@@ -123,11 +126,12 @@ export async function processAndSaveMultipleToFolder(
   inputBuffers: Buffer[],
   folder: string,
   prefix: string,
-  config: ImageConfig
+  config: ImageConfig,
+  tenantId?: string
 ): Promise<string[]> {
   const urls: string[] = [];
   for (const buffer of inputBuffers) {
-    const url = await processAndSaveToFolder(buffer, folder, prefix, config);
+    const url = await processAndSaveToFolder(buffer, folder, prefix, config, tenantId);
     urls.push(url);
   }
   return urls;

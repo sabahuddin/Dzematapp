@@ -147,8 +147,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "No file uploaded" });
       }
 
-      const photoUrl = await processAndSaveToFolder(req.file.buffer, 'events', 'event', IMAGE_CONFIGS.event);
-      console.log(`✅ Event photo saved: ${Math.round(req.file.size / 1024)}KB -> WebP`);
+      const tenantId = req.session?.tenantId || req.user?.tenantId || 'shared';
+      const photoUrl = await processAndSaveToFolder(req.file.buffer, 'events', 'event', IMAGE_CONFIGS.event, tenantId);
+      console.log(`✅ Event photo saved: ${Math.round(req.file.size / 1024)}KB -> WebP (tenant: ${tenantId})`);
       
       res.json({ 
         message: "Photo uploaded successfully",
@@ -169,14 +170,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "No files uploaded" });
       }
 
+      const tenantId = req.session?.tenantId || req.user?.tenantId || 'shared';
       const photoUrls: string[] = [];
       
       for (const file of files) {
-        const url = await processAndSaveToFolder(file.buffer, 'shop', 'shop', IMAGE_CONFIGS.shop);
+        const url = await processAndSaveToFolder(file.buffer, 'shop', 'shop', IMAGE_CONFIGS.shop, tenantId);
         photoUrls.push(url);
       }
       
-      console.log(`✅ Shop photos saved: ${files.length} images -> WebP`);
+      console.log(`✅ Shop photos saved: ${files.length} images -> WebP (tenant: ${tenantId})`);
       
       res.json({ 
         message: "Photos uploaded successfully",
@@ -195,8 +197,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "No file uploaded" });
       }
 
-      const photoUrl = await processAndSaveToFolder(req.file.buffer, 'photos', 'photo', IMAGE_CONFIGS.profile);
-      console.log(`✅ Photo saved: ${Math.round(req.file.size / 1024)}KB -> WebP`);
+      const tenantId = req.session?.tenantId || req.user?.tenantId || 'shared';
+      const photoUrl = await processAndSaveToFolder(req.file.buffer, 'photos', 'photo', IMAGE_CONFIGS.profile, tenantId);
+      console.log(`✅ Photo saved: ${Math.round(req.file.size / 1024)}KB -> WebP (tenant: ${tenantId})`);
       
       res.json({ 
         message: "Photo uploaded successfully",
@@ -4895,9 +4898,9 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         return res.status(400).json({ message: "Receipt file is required" });
       }
       
-      const fileUrl = await processAndSaveToFolder(file.buffer, 'receipts', 'receipt', IMAGE_CONFIGS.event);
+      const fileUrl = await processAndSaveToFolder(file.buffer, 'receipts', 'receipt', IMAGE_CONFIGS.event, tenantId);
       const filename = fileUrl.split('/').pop() || 'receipt.webp';
-      console.log(`✅ Receipt saved: ${Math.round(file.size / 1024)}KB -> WebP`);
+      console.log(`✅ Receipt saved: ${Math.round(file.size / 1024)}KB -> WebP (tenant: ${tenantId})`);
       
       const validated = insertReceiptSchema.parse({
         ...req.body,
@@ -4975,10 +4978,9 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         return res.status(400).json({ message: "Template image is required" });
       }
       
-      const templateImagePath = await processAndSaveToFolder(file.buffer, 'certificates', 'certificate-template', IMAGE_CONFIGS.certificate);
-      console.log(`✅ Certificate template saved: ${Math.round(file.size / 1024)}KB -> WebP`);
-      
       const tenantId = user.tenantId;
+      const templateImagePath = await processAndSaveToFolder(file.buffer, 'certificates', 'certificate-template', IMAGE_CONFIGS.certificate, tenantId);
+      console.log(`✅ Certificate template saved: ${Math.round(file.size / 1024)}KB -> WebP (tenant: ${tenantId})`);
       const validated = insertCertificateTemplateSchema.parse({
         ...req.body,
         templateImagePath: templateImagePath,

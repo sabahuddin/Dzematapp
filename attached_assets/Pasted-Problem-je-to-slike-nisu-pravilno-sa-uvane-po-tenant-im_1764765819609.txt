@@ -1,0 +1,172 @@
+Problem je što **slike nisu pravilno sačuvane po tenant-ima**! 🔴
+
+Iz HTML-a vidim:
+```html
+src="/uploads/shop/shop-1764760298125-tiyl9a.webp"
+```
+
+**Problem**: Nema `tenantId` u path-u! Trebalo bi biti:
+```html
+src="/uploads/default-tenant-demo/shop/shop-1764760298125-tiyl9a.webp"
+```
+
+---
+
+## 🔍 **Dijagnoza:**
+
+1. **Slike se sačuvaju** - možeš ih vidjeti odmah
+2. **Poslije nestanu** - jer nisu u pravom folderu
+
+Najvjerovatnije:
+- Slike se sačuvaju u `/uploads/shop/` umjesto `/uploads/{tenantId}/shop/`
+- Kada se promijeni korisnik, traži `/uploads/{newTenantId}/shop/` gdje nema ništa
+
+---
+
+## 🔧 **RJEŠENJE:**
+
+### **Reci Replitu:**
+
+**Problem**: Slike se gube poslije logout/login jer nisu organizovane po tenant-ima. Path ne uključuje `tenantId`.
+
+**Trenutno (pogrešno)**:
+```
+/uploads/shop/image.webp
+```
+
+**Treba biti**:
+```
+/uploads/{tenantId}/shop/image.webp
+```
+
+---
+
+### **Fix za SVE upload endpoint-e:**
+
+**Pattern koji treba primijeniti:**
+
+```typescript
+app.post("/api/upload/shop-photos", requireAuth, upload.array('photos', 5), async (req, res) => {
+  try {
+    const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+    
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ message: "No files uploaded" });
+    }
+    
+    const photoUrls: string[] = [];
+    
+    for (const file of req.files as Express.Multer.File[]) {
+      const filename = `shop-${Date.now()}-${Math.random().toString(36).substring(7)}`;
+      
+      // ✅ VAŽNO: Dodaj tenantId u path!
+      const outputPath = path.join(
+        __dirname, 
+        '../uploads', 
+        tenantId,        // ← DODAJ OVO!
+        'shop', 
+        filename
+      );
+      
+      const processedPath = await processAndSaveImage(
+        file.buffer,
+        outputPath,
+        IMAGE_CONFIGS.marketplace
+      );
+      
+      // URL path sa tenantId
+      const urlPath = `/uploads/${tenantId}/shop/${path.basename(processedPath)}`;
+      photoUrls.push(urlPath);
+    }
+    
+    res.json({ 
+      message: "Photos uploaded successfully", 
+      urls: photoUrls 
+    });
+  } catch (error) {
+    console.error('❌ [UPLOAD SHOP PHOTOS] Error:', error);
+    res.status(500).json({ message: "Failed to upload photos" });
+  }
+});
+```
+
+---
+
+### **Provjeri i popravi SVE ove endpoint-e:**
+
+```typescript
+// 1. Events
+POST /api/events (photo)
+Path: /uploads/{tenantId}/events/{filename}.webp
+
+// 2. Announcements  
+POST /api/announcements (photo)
+Path: /uploads/{tenantId}/announcements/{filename}.webp
+
+// 3. Marketplace
+POST /api/marketplace/items (photos)
+Path: /uploads/{tenantId}/marketplace/{filename}.webp
+
+// 4. Shop Products
+POST /api/shop/products (photos)
+Path: /uploads/{tenantId}/shop/{filename}.webp
+
+// 5. Shop Photos upload
+POST /api/upload/shop-photos
+Path: /uploads/{tenantId}/shop/{filename}.webp
+
+// 6. Profile Photo
+POST /api/upload/profile-photo
+Path: /uploads/{tenantId}/profiles/{filename}.webp
+
+// 7. Organization Logo
+POST /api/upload/organization-logo
+Path: /uploads/{tenantId}/org/{filename}.webp
+```
+
+---
+
+### **Dodatno - Provjeri da li postoji folder:**
+
+U `processAndSaveImage` funkciji već ima:
+
+```typescript
+// Ensure directory exists
+const dir = path.dirname(outputPath);
+await fs.mkdir(dir, { recursive: true });  // ✅ Ovo je OK
+```
+
+**Ali** osiguraj da se poziva sa PUNIM path-om sa `tenantId`!
+
+---
+
+### **Quick Check - Provjeri trenutnu strukturu:**
+
+```bash
+# Otvori shell i vidi šta postoji:
+ls -la uploads/
+ls -la uploads/shop/
+ls -la uploads/default-tenant-demo/
+```
+
+Vjerovatno ćeš vidjeti:
+```
+uploads/
+  shop/
+    ├── shop-1764760298125-tiyl9a.webp  ← Ovdje je (pogrešno!)
+  default-tenant-demo/
+    (prazno)  ← Trebalo bi ovdje!
+```
+
+---
+
+## 🎯 **Ukratko:**
+
+Replit treba u **SVAKOM upload endpoint-u** osigurati da path uključuje `tenantId`:
+
+```typescript
+const outputPath = path.join(__dirname, '../uploads', tenantId, 'category', filename);
+const urlPath = `/uploads/${tenantId}/category/${filename}.webp`;
+```
+
+**Ovo je KRITIČNO za multi-tenancy!** Bez ovoga, svi tenanti dijele iste slike! 🚨
