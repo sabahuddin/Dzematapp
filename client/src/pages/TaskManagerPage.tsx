@@ -567,6 +567,19 @@ export default function TaskManagerPage() {
     return { memberWorkGroups: member, otherWorkGroups: other, publicWorkGroups: publicSections };
   }, [workGroupsQuery.data, user]);
 
+  // Helper function to check if current user is moderator or admin for a given work group
+  const isModeratorOrAdminForWorkGroup = (workGroupId: string): boolean => {
+    if (!user) return false;
+    if (user.isAdmin) return true;
+    
+    const workGroupWithMembers = workGroupsQuery.data as (WorkGroup & { members?: WorkGroupMember[] })[] | undefined;
+    const workGroup = workGroupWithMembers?.find(wg => wg.id === workGroupId);
+    if (!workGroup?.members) return false;
+    
+    const userMembership = workGroup.members.find((m: WorkGroupMember) => m.userId === user.id);
+    return userMembership?.isModerator || false;
+  };
+
   const createWorkGroupMutation = useMutation({
     mutationFn: async (workGroupData: any) => {
       const response = await apiRequest('/api/work-groups', 'POST', workGroupData);
@@ -1252,7 +1265,7 @@ export default function TaskManagerPage() {
       <MemberManagementDialog
         open={memberManagementDialogOpen && selectedWorkGroup !== null}
         onClose={() => setMemberManagementDialogOpen(false)}
-        workGroup={selectedWorkGroup || { id: '', name: '', description: '', createdAt: new Date(), visibility: 'public', archived: false }}
+        workGroup={selectedWorkGroup || { id: '', name: '', description: '', createdAt: new Date(), visibility: 'public', archived: false, tenantId: '' }}
       />
 
       <Dialog 
@@ -1440,8 +1453,8 @@ export default function TaskManagerPage() {
           task={selectedTask}
           workGroup={workGroupsQuery.data?.find((wg: WorkGroup) => wg.id === selectedTask.workGroupId) || null}
           currentUser={user}
-          isModeratorOrAdmin={user?.isAdmin || false}
-          members={[]}
+          isModeratorOrAdmin={isModeratorOrAdminForWorkGroup(selectedTask.workGroupId)}
+          members={(workGroupsQuery.data as (WorkGroup & { members?: WorkGroupMember[] })[] | undefined)?.find(wg => wg.id === selectedTask.workGroupId)?.members || []}
           onTaskUpdated={() => {
             queryClient.invalidateQueries({ queryKey: [`/api/work-groups/${selectedTask.workGroupId}/tasks`] });
           }}
