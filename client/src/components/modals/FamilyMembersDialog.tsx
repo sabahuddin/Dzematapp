@@ -1,3 +1,4 @@
+import { useState, Fragment } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -11,10 +12,13 @@ import {
   ListItemText,
   Avatar,
   Divider,
-  CircularProgress
+  CircularProgress,
+  Button
 } from '@mui/material';
-import { Close, Person } from '@mui/icons-material';
-import { useQuery } from '@tanstack/react-query';
+import { Close, Person, Add, Delete } from '@mui/icons-material';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { apiRequest } from '@/lib/queryClient';
+import FamilySelectionDialog from './FamilySelectionDialog';
 
 interface FamilyMembersDialogProps {
   open: boolean;
@@ -24,10 +28,20 @@ interface FamilyMembersDialogProps {
 }
 
 export default function FamilyMembersDialog({ open, onClose, userId, userName }: FamilyMembersDialogProps) {
+  const [showAddDialog, setShowAddDialog] = useState(false);
+  const queryClient = useQueryClient();
+  
   const { data: familyRelationships, isLoading } = useQuery({
-    queryKey: ['/api/family-relationships', userId],
+    queryKey: [`/api/family-relationships/${userId}`],
     enabled: open && !!userId,
   });
+
+  const handleDeleteRelationship = async (relationshipId: string) => {
+    if (confirm('Da li ste sigurni da želite ukloniti ovog člana porodice?')) {
+      await apiRequest(`/api/family-relationships/${relationshipId}`, 'DELETE');
+      queryClient.invalidateQueries({ queryKey: [`/api/family-relationships/${userId}`] });
+    }
+  };
 
   const getRelationshipLabel = (relationship: string) => {
     const labels: Record<string, string> = {
@@ -52,10 +66,23 @@ export default function FamilyMembersDialog({ open, onClose, userId, userName }:
       }}
     >
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        Članovi porodice - {userName}
-        <IconButton onClick={onClose} data-testid="close-family-members-dialog">
-          <Close />
-        </IconButton>
+        <Box>
+          Članovi porodice - {userName}
+        </Box>
+        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+          <Button
+            variant="outlined"
+            size="small"
+            startIcon={<Add />}
+            onClick={() => setShowAddDialog(true)}
+            data-testid="button-add-family-member"
+          >
+            Dodaj
+          </Button>
+          <IconButton onClick={onClose} data-testid="close-family-members-dialog">
+            <Close />
+          </IconButton>
+        </Box>
       </DialogTitle>
       
       <DialogContent>
@@ -63,7 +90,7 @@ export default function FamilyMembersDialog({ open, onClose, userId, userName }:
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
             <CircularProgress />
           </Box>
-        ) : !familyRelationships || familyRelationships.length === 0 ? (
+        ) : !familyRelationships || (familyRelationships as any[]).length === 0 ? (
           <Box sx={{ textAlign: 'center', py: 4 }}>
             <Typography variant="body2" color="text.secondary">
               Nema članova porodice
@@ -71,10 +98,22 @@ export default function FamilyMembersDialog({ open, onClose, userId, userName }:
           </Box>
         ) : (
           <List>
-            {familyRelationships.map((relationship: any, index: number) => (
-              <React.Fragment key={relationship.id}>
+            {(familyRelationships as any[]).map((relationship: any, index: number) => (
+              <Fragment key={relationship.id}>
                 {index > 0 && <Divider />}
-                <ListItem data-testid={`family-member-${relationship.id}`}>
+                <ListItem 
+                  data-testid={`family-member-${relationship.id}`}
+                  secondaryAction={
+                    <IconButton 
+                      edge="end" 
+                      size="small"
+                      onClick={() => handleDeleteRelationship(relationship.id)}
+                      data-testid={`button-delete-family-${relationship.id}`}
+                    >
+                      <Delete fontSize="small" />
+                    </IconButton>
+                  }
+                >
                   <ListItemAvatar>
                     <Avatar src={relationship.relatedUser?.photo || undefined}>
                       <Person />
@@ -101,11 +140,21 @@ export default function FamilyMembersDialog({ open, onClose, userId, userName }:
                     }
                   />
                 </ListItem>
-              </React.Fragment>
+              </Fragment>
             ))}
           </List>
         )}
       </DialogContent>
+      
+      {/* Add Family Member Dialog with tabs */}
+      <FamilySelectionDialog
+        open={showAddDialog}
+        onClose={() => {
+          setShowAddDialog(false);
+          queryClient.invalidateQueries({ queryKey: [`/api/family-relationships/${userId}`] });
+        }}
+        userId={userId}
+      />
     </Dialog>
   );
 }
