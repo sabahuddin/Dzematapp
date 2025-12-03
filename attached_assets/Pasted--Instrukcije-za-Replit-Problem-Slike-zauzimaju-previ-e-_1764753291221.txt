@@ -1,0 +1,262 @@
+## 📝 **Instrukcije za Replit:**
+
+---
+
+### **Problem:**
+
+Slike zauzimaju previše prostora na serveru. Korisnici upload-uju velike fotografije (2-5MB) u različitim formatima i dimenzijama, što usporava aplikaciju i troši storage.
+
+---
+
+### **Rješenje:**
+
+Implementirati automatski image processing sa:
+- Auto-resize na optimalne dimenzije
+- Auto-crop iz centra slike
+- WebP compression
+- Quality optimization
+
+---
+
+### **Korak 1: Instalacija**
+
+```bash
+npm install sharp
+```
+
+---
+
+### **Korak 2: Kreiraj fajl `server/utils/image-processor.ts`**
+
+```typescript
+import sharp from 'sharp';
+import path from 'path';
+import fs from 'fs/promises';
+
+export interface ImageConfig {
+  width: number;
+  height: number;
+  quality?: number; // 1-100
+  format?: 'webp' | 'jpeg' | 'png';
+}
+
+export const IMAGE_CONFIGS = {
+  event: { width: 1200, height: 675, quality: 85, format: 'webp' as const },
+  announcement: { width: 1200, height: 675, quality: 85, format: 'webp' as const },
+  marketplace: { width: 800, height: 800, quality: 80, format: 'webp' as const },
+  profile: { width: 400, height: 400, quality: 85, format: 'webp' as const },
+  thumbnail: { width: 300, height: 169, quality: 75, format: 'webp' as const },
+};
+
+export async function processImage(
+  inputBuffer: Buffer,
+  config: ImageConfig
+): Promise<Buffer> {
+  try {
+    const processed = await sharp(inputBuffer)
+      .resize(config.width, config.height, {
+        fit: 'cover',           // Crop to exact dimensions
+        position: 'center',     // Center crop
+      })
+      .toFormat(config.format || 'webp', {
+        quality: config.quality || 80,
+      })
+      .toBuffer();
+
+    console.log(`✅ Image processed: ${config.width}x${config.height}, ${processed.length} bytes`);
+    
+    return processed;
+  } catch (error) {
+    console.error('❌ Image processing error:', error);
+    throw new Error('Failed to process image');
+  }
+}
+
+export async function processAndSaveImage(
+  inputBuffer: Buffer,
+  outputPath: string,
+  config: ImageConfig
+): Promise<string> {
+  try {
+    // Process image
+    const processedBuffer = await processImage(inputBuffer, config);
+    
+    // Ensure directory exists
+    const dir = path.dirname(outputPath);
+    await fs.mkdir(dir, { recursive: true });
+    
+    // Change extension to .webp if format is webp
+    let finalPath = outputPath;
+    if (config.format === 'webp' && !outputPath.endsWith('.webp')) {
+      finalPath = outputPath.replace(/\.(jpg|jpeg|png)$/i, '.webp');
+    }
+    
+    // Save to disk
+    await fs.writeFile(finalPath, processedBuffer);
+    
+    console.log(`✅ Image saved: ${finalPath}`);
+    
+    return finalPath;
+  } catch (error) {
+    console.error('❌ Save image error:', error);
+    throw new Error('Failed to save image');
+  }
+}
+
+// Generate multiple sizes (thumbnail + full)
+export async function processImageMultiSize(
+  inputBuffer: Buffer,
+  basePath: string,
+  type: keyof typeof IMAGE_CONFIGS
+): Promise<{ full: string; thumbnail: string }> {
+  const config = IMAGE_CONFIGS[type];
+  const thumbnailConfig = IMAGE_CONFIGS.thumbnail;
+  
+  const fullPath = `${basePath}-full.webp`;
+  const thumbPath = `${basePath}-thumb.webp`;
+  
+  await Promise.all([
+    processAndSaveImage(inputBuffer, fullPath, config),
+    processAndSaveImage(inputBuffer, thumbPath, thumbnailConfig),
+  ]);
+  
+  return {
+    full: fullPath,
+    thumbnail: thumbPath,
+  };
+}
+```
+
+---
+
+### **Korak 3: Update Multer config za memory storage**
+
+U `server/routes.ts` ili gdje god su upload endpoint-i, promijeni Multer sa disk storage na memory storage:
+
+```typescript
+import multer from 'multer';
+
+// PRIJE (disk storage):
+const storage = multer.diskStorage({
+  destination: './uploads/',
+  filename: (req, file, cb) => { ... }
+});
+
+// POSLIJE (memory storage):
+const upload = multer({
+  storage: multer.memoryStorage(),  // ← Drži u memoriji
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB max
+  },
+  fileFilter: (req, file, cb) => {
+    if (!file.mimetype.startsWith('image/')) {
+      return cb(new Error('Only images allowed'));
+    }
+    cb(null, true);
+  },
+});
+```
+
+---
+
+### **Korak 4: Update upload endpoint-a**
+
+**Primjer za Events (POST /api/events):**
+
+```typescript
+import { processAndSaveImage, IMAGE_CONFIGS } from './utils/image-processor';
+
+app.post("/api/events", requireAuth, upload.single('photo'), async (req, res) => {
+  try {
+    const tenantId = req.user?.tenantId || req.tenantId;
+    let photoUrl = null;
+    
+    // Process uploaded image
+    if (req.file) {
+      const filename = `event-${Date.now()}-${Math.random().toString(36).substring(7)}`;
+      const outputPath = path.join(__dirname, '../uploads', tenantId, 'events', filename);
+      
+      const processedPath = await processAndSaveImage(
+        req.file.buffer,        // ← Memory buffer
+        outputPath,
+        IMAGE_CONFIGS.event     // ← 1200x675 WebP
+      );
+      
+      // URL path for frontend
+      photoUrl = `/uploads/${tenantId}/events/${path.basename(processedPath)}`;
+    }
+    
+    // ... rest of event creation
+    
+    const validatedData = insertEventSchema.parse({
+      ...req.body,
+      tenantId: tenantId,
+      photoUrl: photoUrl,
+      // ... other fields
+    });
+    
+    const event = await storage.createEvent(validatedData);
+    res.json(event);
+  } catch (error) {
+    console.error('❌ [CREATE EVENT] Error:', error);
+    res.status(500).json({ message: "Failed to create event" });
+  }
+});
+```
+
+---
+
+### **Korak 5: Primijeni isti pattern na SVE upload endpoint-e:**
+
+```
+✅ POST /api/events (photo)
+✅ POST /api/announcements (photo)
+✅ POST /api/marketplace/items (multiple photos)
+✅ POST /api/shop/products (multiple photos)
+✅ POST /api/upload/profile-photo
+✅ POST /api/upload/organization-logo
+✅ POST /api/upload/shop-photos
+```
+
+**Za svaki endpoint:**
+1. Promijeni na `multer.memoryStorage()`
+2. Koristi `processAndSaveImage(req.file.buffer, ...)`
+3. Odaberi odgovarajući `IMAGE_CONFIGS` (event, marketplace, profile, itd.)
+
+---
+
+### **Korak 6: Ensure static file serving**
+
+U `server/index.ts`, osiguraj da je ovo prisutno:
+
+```typescript
+import express from 'express';
+import path from 'path';
+
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+```
+
+---
+
+### **Rezultat:**
+
+✅ Sve slike automatski resize-ovane na optimalne dimenzije  
+✅ Auto-crop iz centra (fit: 'cover', position: 'center')  
+✅ WebP format (30-50% manja veličina)  
+✅ Konzistentan UI (sve slike istih proporcija)  
+✅ Brže učitavanje stranica  
+✅ Manje storage prostora (95%+ uštede)  
+
+**Veličine fajlova:**
+- Original iPhone photo: 3-5MB ❌
+- Processed WebP: 80-150KB ✅
+
+---
+
+### **Napomena:**
+
+Nemoj brinuti za frontend - on samo šalje File objekt kao i prije. Sav processing je na backend-u i potpuno je transparentan za korisnika.
+
+---
+
+**To je sve! Deploy i testiraj.** 🚀

@@ -11,96 +11,60 @@ import { seedDefaultTenant } from "./seed-tenant";
 import { seedDemoData } from "./seed-demo-data";
 import { requireFeature, getTenantSubscriptionInfo } from "./feature-access";
 import { generateCertificate, saveCertificate } from "./certificateService";
+import { processAndSaveImage, IMAGE_CONFIGS, generateImageFilename } from "./utils/image-processor";
 import { type User, insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema, insertImportantDateSchema, insertContributionPurposeSchema, insertFinancialContributionSchema, insertActivityLogSchema, insertEventAttendanceSchema, insertPointsSettingsSchema, insertBadgeSchema, insertUserBadgeSchema, insertProjectSchema, insertProposalSchema, insertReceiptSchema, insertCertificateTemplateSchema, insertUserCertificateSchema, insertMembershipApplicationSchema, insertAkikaApplicationSchema, insertMarriageApplicationSchema, insertServiceSchema, insertTenantSchema } from "@shared/schema";
 
-// Configure multer for photo uploads
+// Upload directories
 const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'photos');
-
-const upload = multer({
-  storage: multer.diskStorage({
-    destination: async (req, file, cb) => {
-      try {
-        await fs.mkdir(uploadDir, { recursive: true });
-        cb(null, uploadDir);
-      } catch (error) {
-        cb(error as Error, '');
-      }
-    },
-    filename: (req, file, cb) => {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-      const extension = path.extname(file.originalname);
-      cb(null, `user-photo-${uniqueSuffix}${extension}`);
-    }
-  }),
-  limits: {
-    fileSize: 5 * 1024 * 1024,
-    files: 1
-  }
-});
-
-// Configure multer for shop photos (multiple files)
 const shopUploadDir = path.join(process.cwd(), 'public', 'uploads', 'shop');
-
-const shopUpload = multer({
-  storage: multer.diskStorage({
-    destination: async (req, file, cb) => {
-      try {
-        await fs.mkdir(shopUploadDir, { recursive: true });
-        cb(null, shopUploadDir);
-      } catch (error) {
-        cb(error as Error, '');
-      }
-    },
-    filename: (req, file, cb) => {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-      const extension = path.extname(file.originalname);
-      cb(null, `shop-${uniqueSuffix}${extension}`);
-    }
-  }),
-  limits: {
-    fileSize: 5 * 1024 * 1024,
-    files: 10
-  }
-});
-
-// Configure multer for event photos
 const eventUploadDir = path.join(process.cwd(), 'public', 'uploads', 'events');
+const certificateUploadDir = path.join(process.cwd(), 'public', 'uploads', 'certificates');
 
-const eventUpload = multer({
-  storage: multer.diskStorage({
-    destination: async (req, file, cb) => {
-      try {
-        await fs.mkdir(eventUploadDir, { recursive: true });
-        cb(null, eventUploadDir);
-      } catch (error) {
-        cb(error as Error, '');
-      }
-    },
-    filename: (req, file, cb) => {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-      const extension = path.extname(file.originalname);
-      cb(null, `event-${uniqueSuffix}${extension}`);
-    }
-  }),
+// Image file filter
+const imageFileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+  const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/bmp'];
+  if (allowedMimes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error('Only image files (JPEG, PNG, GIF, WebP) are allowed'));
+  }
+};
+
+// Configure multer with MEMORY storage for image processing
+const upload = multer({
+  storage: multer.memoryStorage(),
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB limit
+    fileSize: 10 * 1024 * 1024, // 10MB max input
     files: 1
   },
-  fileFilter: (req, file, cb) => {
-    const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    if (allowedMimes.includes(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(new Error('Only image files (JPEG, PNG, GIF, WebP) are allowed'));
-    }
-  }
+  fileFilter: imageFileFilter
 });
 
-// Configure multer for CSV uploads
+// Configure multer for shop photos (multiple files) with MEMORY storage
+const shopUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 10 * 1024 * 1024,
+    files: 10
+  },
+  fileFilter: imageFileFilter
+});
+
+// Configure multer for event photos with MEMORY storage
+const eventUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 10 * 1024 * 1024,
+    files: 1
+  },
+  fileFilter: imageFileFilter
+});
+
+// Configure multer for CSV uploads (keep memory storage)
 const csvUpload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 1 * 1024 * 1024, // 1MB limit for CSV
+    fileSize: 1 * 1024 * 1024,
     files: 1
   },
   fileFilter: (req, file, cb) => {
@@ -116,27 +80,11 @@ const csvUpload = multer({
   }
 });
 
-// Configure multer for certificate template uploads
-const certificateUploadDir = path.join(process.cwd(), 'public', 'uploads', 'certificates');
-
+// Configure multer for certificate template uploads with MEMORY storage
 const certificateUpload = multer({
-  storage: multer.diskStorage({
-    destination: async (req, file, cb) => {
-      try {
-        await fs.mkdir(certificateUploadDir, { recursive: true });
-        cb(null, certificateUploadDir);
-      } catch (error) {
-        cb(error as Error, '');
-      }
-    },
-    filename: (req, file, cb) => {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-      const extension = path.extname(file.originalname);
-      cb(null, `template-${uniqueSuffix}${extension}`);
-    }
-  }),
+  storage: multer.memoryStorage(),
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB limit for templates
+    fileSize: 10 * 1024 * 1024,
     files: 1
   },
   fileFilter: (req, file, cb) => {
@@ -192,25 +140,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const uploadsPath = path.join(process.cwd(), 'public', 'uploads');
   app.use('/uploads', express.static(uploadsPath));
   
-  // Event photo upload route
+  // Event photo upload route - with WebP compression
   app.post("/api/upload/event-photo", requireAuth, eventUpload.single('photo'), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ message: "No file uploaded" });
       }
 
-      const photoUrl = `/uploads/events/${req.file.filename}`;
+      const filename = generateImageFilename('event');
+      const outputPath = path.join(eventUploadDir, filename);
+      
+      await processAndSaveImage(req.file.buffer, outputPath, IMAGE_CONFIGS.event);
+      
+      const photoUrl = `/uploads/events/${filename}`;
+      
+      console.log(`✅ Event photo processed: ${Math.round(req.file.size / 1024)}KB -> WebP`);
       
       res.json({ 
         message: "Photo uploaded successfully",
         photoUrl: photoUrl 
-});
+      });
     } catch (error) {
+      console.error('❌ Event photo upload error:', error);
       res.status(500).json({ message: "Failed to upload photo" });
     }
-});
+  });
 
-  // Shop photos upload route (multiple files)
+  // Shop photos upload route (multiple files) - with WebP compression
   app.post("/api/upload/shop-photos", requireAuth, shopUpload.array('photos', 10), async (req, res) => {
     try {
       const files = req.files as Express.Multer.File[];
@@ -219,34 +175,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "No files uploaded" });
       }
 
-      const photoUrls = files.map(file => `/uploads/shop/${file.filename}`);
+      const photoUrls: string[] = [];
+      
+      for (const file of files) {
+        const filename = generateImageFilename('shop');
+        const outputPath = path.join(shopUploadDir, filename);
+        
+        await processAndSaveImage(file.buffer, outputPath, IMAGE_CONFIGS.shop);
+        photoUrls.push(`/uploads/shop/${filename}`);
+      }
+      
+      console.log(`✅ Shop photos processed: ${files.length} images -> WebP`);
       
       res.json({ 
         message: "Photos uploaded successfully",
         photoUrls: photoUrls 
-});
+      });
     } catch (error) {
+      console.error('❌ Shop photos upload error:', error);
       res.status(500).json({ message: "Failed to upload photos" });
     }
-});
+  });
 
-  // Photo upload route
+  // Photo upload route (profile/general) - with WebP compression
   app.post("/api/upload/photo", requireAuth, upload.single('photo'), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ message: "No file uploaded" });
       }
 
-      const photoUrl = `/uploads/photos/${req.file.filename}`;
+      const filename = generateImageFilename('photo');
+      const outputPath = path.join(uploadDir, filename);
+      
+      await processAndSaveImage(req.file.buffer, outputPath, IMAGE_CONFIGS.profile);
+      
+      const photoUrl = `/uploads/photos/${filename}`;
+      
+      console.log(`✅ Photo processed: ${Math.round(req.file.size / 1024)}KB -> WebP`);
       
       res.json({ 
         message: "Photo uploaded successfully",
         photoUrl: photoUrl 
-});
+      });
     } catch (error) {
+      console.error('❌ Photo upload error:', error);
       res.status(500).json({ message: "Failed to upload photo" });
     }
-});
+  });
 
   // Authentication routes
   // Regular user login (requires tenant code)
@@ -4922,11 +4897,20 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         return res.status(400).json({ message: "Receipt file is required" });
       }
       
+      // Process receipt image to WebP
+      const receiptUploadDir = path.join(process.cwd(), 'public', 'uploads', 'receipts');
+      const filename = generateImageFilename('receipt');
+      const outputPath = path.join(receiptUploadDir, filename);
+      
+      await processAndSaveImage(file.buffer, outputPath, IMAGE_CONFIGS.event);
+      
+      console.log(`✅ Receipt processed: ${Math.round(file.size / 1024)}KB -> WebP`);
+      
       const validated = insertReceiptSchema.parse({
         ...req.body,
         uploadedById: user.id,
-        fileName: file.filename,
-        fileUrl: `/uploads/${file.filename}`,
+        fileName: filename,
+        fileUrl: `/uploads/receipts/${filename}`,
         tenantId
       });
       
@@ -4936,7 +4920,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       console.error('Error uploading receipt:', error);
       res.status(500).json({ message: "Failed to upload receipt" });
     }
-});
+  });
 
   app.patch("/api/receipts/:id/approve", requireAuth, async (req, res) => {
     try {
@@ -4998,10 +4982,18 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         return res.status(400).json({ message: "Template image is required" });
       }
       
+      // Process certificate template - keep as WebP for optimization
+      const filename = generateImageFilename('certificate-template');
+      const outputPath = path.join(certificateUploadDir, filename);
+      
+      await processAndSaveImage(file.buffer, outputPath, IMAGE_CONFIGS.certificate);
+      
+      console.log(`✅ Certificate template processed: ${Math.round(file.size / 1024)}KB -> WebP`);
+      
       const tenantId = user.tenantId;
       const validated = insertCertificateTemplateSchema.parse({
         ...req.body,
-        templateImagePath: `/uploads/certificates/${file.filename}`,
+        templateImagePath: `/uploads/certificates/${filename}`,
         textPositionX: parseInt(req.body.textPositionX),
         textPositionY: parseInt(req.body.textPositionY),
         fontSize: parseInt(req.body.fontSize),
@@ -5017,7 +5009,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       console.error('Error creating certificate template:', error);
       res.status(500).json({ message: "Failed to create certificate template" });
     }
-});
+  });
 
   app.put("/api/certificates/templates/:id", requireAdmin, requireFeature("certificates"), async (req, res) => {
     try {
