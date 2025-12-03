@@ -11,8 +11,7 @@ import { seedDefaultTenant } from "./seed-tenant";
 import { seedDemoData } from "./seed-demo-data";
 import { requireFeature, getTenantSubscriptionInfo } from "./feature-access";
 import { generateCertificate, saveCertificate } from "./certificateService";
-import { processAndSaveImage, processAndUploadImage, IMAGE_CONFIGS, generateImageFilename } from "./utils/image-processor";
-import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
+import { processAndSaveToFolder, IMAGE_CONFIGS, generateImageFilename } from "./utils/image-processor";
 import { type User, insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema, insertImportantDateSchema, insertContributionPurposeSchema, insertFinancialContributionSchema, insertActivityLogSchema, insertEventAttendanceSchema, insertPointsSettingsSchema, insertBadgeSchema, insertUserBadgeSchema, insertProjectSchema, insertProposalSchema, insertReceiptSchema, insertCertificateTemplateSchema, insertUserCertificateSchema, insertMembershipApplicationSchema, insertAkikaApplicationSchema, insertMarriageApplicationSchema, insertServiceSchema, insertTenantSchema } from "@shared/schema";
 
 // Upload directories
@@ -137,46 +136,19 @@ function mapNameTitleFields(data: Record<string, any>): Record<string, any> {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Serve uploads directory as static files (legacy local storage)
+  // Serve uploads directory as static files
   const uploadsPath = path.join(process.cwd(), 'public', 'uploads');
   app.use('/uploads', express.static(uploadsPath));
   
-  // Serve public objects from Object Storage (production persistent storage)
-  const objectStorageService = new ObjectStorageService();
-  
-  app.get("/public-objects/:filePath(*)", async (req, res) => {
-    const filePath = req.params.filePath;
-    try {
-      const file = await objectStorageService.searchPublicObject(filePath);
-      if (!file) {
-        return res.status(404).json({ error: "File not found" });
-      }
-      await objectStorageService.downloadObject(file, res);
-    } catch (error) {
-      console.error("Error serving public object:", error);
-      return res.status(500).json({ error: "Internal server error" });
-    }
-  });
-  
-  // Event photo upload route - with WebP compression and Object Storage
+  // Event photo upload route - with WebP compression
   app.post("/api/upload/event-photo", requireAuth, eventUpload.single('photo'), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ message: "No file uploaded" });
       }
 
-      let photoUrl: string;
-      
-      try {
-        photoUrl = await processAndUploadImage(req.file.buffer, 'events', 'event', IMAGE_CONFIGS.event);
-        console.log(`✅ Event photo uploaded to Object Storage: ${Math.round(req.file.size / 1024)}KB -> WebP`);
-      } catch (storageError) {
-        console.log('⚠️ Object Storage unavailable, falling back to local storage');
-        const filename = generateImageFilename('event');
-        const outputPath = path.join(eventUploadDir, filename);
-        await processAndSaveImage(req.file.buffer, outputPath, IMAGE_CONFIGS.event);
-        photoUrl = `/uploads/events/${filename}`;
-      }
+      const photoUrl = await processAndSaveToFolder(req.file.buffer, 'events', 'event', IMAGE_CONFIGS.event);
+      console.log(`✅ Event photo saved: ${Math.round(req.file.size / 1024)}KB -> WebP`);
       
       res.json({ 
         message: "Photo uploaded successfully",
@@ -188,7 +160,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Shop photos upload route (multiple files) - with WebP compression and Object Storage
+  // Shop photos upload route (multiple files) - with WebP compression
   app.post("/api/upload/shop-photos", requireAuth, shopUpload.array('photos', 10), async (req, res) => {
     try {
       const files = req.files as Express.Multer.File[];
@@ -200,19 +172,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const photoUrls: string[] = [];
       
       for (const file of files) {
-        try {
-          const url = await processAndUploadImage(file.buffer, 'shop', 'shop', IMAGE_CONFIGS.shop);
-          photoUrls.push(url);
-        } catch (storageError) {
-          console.log('⚠️ Object Storage unavailable, falling back to local storage');
-          const filename = generateImageFilename('shop');
-          const outputPath = path.join(shopUploadDir, filename);
-          await processAndSaveImage(file.buffer, outputPath, IMAGE_CONFIGS.shop);
-          photoUrls.push(`/uploads/shop/${filename}`);
-        }
+        const url = await processAndSaveToFolder(file.buffer, 'shop', 'shop', IMAGE_CONFIGS.shop);
+        photoUrls.push(url);
       }
       
-      console.log(`✅ Shop photos uploaded: ${files.length} images -> WebP`);
+      console.log(`✅ Shop photos saved: ${files.length} images -> WebP`);
       
       res.json({ 
         message: "Photos uploaded successfully",
@@ -224,25 +188,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Photo upload route (profile/general) - with WebP compression and Object Storage
+  // Photo upload route (profile/general) - with WebP compression
   app.post("/api/upload/photo", requireAuth, upload.single('photo'), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ message: "No file uploaded" });
       }
 
-      let photoUrl: string;
-      
-      try {
-        photoUrl = await processAndUploadImage(req.file.buffer, 'photos', 'photo', IMAGE_CONFIGS.profile);
-        console.log(`✅ Photo uploaded to Object Storage: ${Math.round(req.file.size / 1024)}KB -> WebP`);
-      } catch (storageError) {
-        console.log('⚠️ Object Storage unavailable, falling back to local storage');
-        const filename = generateImageFilename('photo');
-        const outputPath = path.join(uploadDir, filename);
-        await processAndSaveImage(req.file.buffer, outputPath, IMAGE_CONFIGS.profile);
-        photoUrl = `/uploads/photos/${filename}`;
-      }
+      const photoUrl = await processAndSaveToFolder(req.file.buffer, 'photos', 'photo', IMAGE_CONFIGS.profile);
+      console.log(`✅ Photo saved: ${Math.round(req.file.size / 1024)}KB -> WebP`);
       
       res.json({ 
         message: "Photo uploaded successfully",
@@ -4941,21 +4895,9 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         return res.status(400).json({ message: "Receipt file is required" });
       }
       
-      let fileUrl: string;
-      let filename: string;
-      
-      try {
-        fileUrl = await processAndUploadImage(file.buffer, 'receipts', 'receipt', IMAGE_CONFIGS.event);
-        filename = fileUrl.split('/').pop() || 'receipt.webp';
-        console.log(`✅ Receipt uploaded to Object Storage: ${Math.round(file.size / 1024)}KB -> WebP`);
-      } catch (storageError) {
-        console.log('⚠️ Object Storage unavailable, falling back to local storage');
-        const receiptUploadDir = path.join(process.cwd(), 'public', 'uploads', 'receipts');
-        filename = generateImageFilename('receipt');
-        const outputPath = path.join(receiptUploadDir, filename);
-        await processAndSaveImage(file.buffer, outputPath, IMAGE_CONFIGS.event);
-        fileUrl = `/uploads/receipts/${filename}`;
-      }
+      const fileUrl = await processAndSaveToFolder(file.buffer, 'receipts', 'receipt', IMAGE_CONFIGS.event);
+      const filename = fileUrl.split('/').pop() || 'receipt.webp';
+      console.log(`✅ Receipt saved: ${Math.round(file.size / 1024)}KB -> WebP`);
       
       const validated = insertReceiptSchema.parse({
         ...req.body,
@@ -5033,18 +4975,8 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         return res.status(400).json({ message: "Template image is required" });
       }
       
-      let templateImagePath: string;
-      
-      try {
-        templateImagePath = await processAndUploadImage(file.buffer, 'certificates', 'certificate-template', IMAGE_CONFIGS.certificate);
-        console.log(`✅ Certificate template uploaded to Object Storage: ${Math.round(file.size / 1024)}KB -> WebP`);
-      } catch (storageError) {
-        console.log('⚠️ Object Storage unavailable, falling back to local storage');
-        const filename = generateImageFilename('certificate-template');
-        const outputPath = path.join(certificateUploadDir, filename);
-        await processAndSaveImage(file.buffer, outputPath, IMAGE_CONFIGS.certificate);
-        templateImagePath = `/uploads/certificates/${filename}`;
-      }
+      const templateImagePath = await processAndSaveToFolder(file.buffer, 'certificates', 'certificate-template', IMAGE_CONFIGS.certificate);
+      console.log(`✅ Certificate template saved: ${Math.round(file.size / 1024)}KB -> WebP`);
       
       const tenantId = user.tenantId;
       const validated = insertCertificateTemplateSchema.parse({

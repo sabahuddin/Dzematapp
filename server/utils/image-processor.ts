@@ -1,9 +1,6 @@
 import sharp from 'sharp';
 import path from 'path';
 import fs from 'fs/promises';
-import { ObjectStorageService } from '../objectStorage';
-
-const objectStorageService = new ObjectStorageService();
 
 export interface ImageConfig {
   width: number;
@@ -96,7 +93,7 @@ export function generateImageFilename(prefix: string, extension: string = 'webp'
   return `${prefix}-${timestamp}-${random}.${extension}`;
 }
 
-export async function processAndUploadImage(
+export async function processAndSaveToFolder(
   inputBuffer: Buffer,
   folder: string,
   prefix: string,
@@ -106,23 +103,23 @@ export async function processAndUploadImage(
     const processedBuffer = await processImage(inputBuffer, config);
     const filename = generateImageFilename(prefix, config.format || 'webp');
     
-    const objectUrl = await objectStorageService.uploadBuffer({
-      buffer: processedBuffer,
-      contentType: `image/${config.format || 'webp'}`,
-      folder,
-      filename,
-    });
+    const uploadDir = path.join(process.cwd(), 'public', 'uploads', folder);
+    await fs.mkdir(uploadDir, { recursive: true });
     
-    console.log(`✅ Image uploaded to Object Storage: ${objectUrl}`);
+    const filePath = path.join(uploadDir, filename);
+    await fs.writeFile(filePath, processedBuffer);
     
-    return objectUrl;
+    const publicUrl = `/uploads/${folder}/${filename}`;
+    console.log(`✅ Image saved to filesystem: ${publicUrl}`);
+    
+    return publicUrl;
   } catch (error) {
-    console.error('❌ Upload to Object Storage error:', error);
-    throw new Error('Failed to upload image to Object Storage');
+    console.error('❌ Save image error:', error);
+    throw new Error('Failed to save image');
   }
 }
 
-export async function processAndUploadMultipleImages(
+export async function processAndSaveMultipleToFolder(
   inputBuffers: Buffer[],
   folder: string,
   prefix: string,
@@ -130,7 +127,7 @@ export async function processAndUploadMultipleImages(
 ): Promise<string[]> {
   const urls: string[] = [];
   for (const buffer of inputBuffers) {
-    const url = await processAndUploadImage(buffer, folder, prefix, config);
+    const url = await processAndSaveToFolder(buffer, folder, prefix, config);
     urls.push(url);
   }
   return urls;
