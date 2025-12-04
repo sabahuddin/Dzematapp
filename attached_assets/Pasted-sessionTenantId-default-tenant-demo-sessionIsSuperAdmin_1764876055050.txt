@@ -1,0 +1,100 @@
+sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[GET /api/users] DEBUG: {
+  'req.user.tenantId': 'default-tenant-demo',
+  'session.tenantId': 'default-tenant-demo',
+  'req.tenantId': 'default-tenant-demo',
+  username: 'admin',
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba'
+}
+[GET /api/users] Using tenantId: default-tenant-demo
+[GET /api/users] Found 11 users for tenant: default-tenant-demo
+7:19:39 PM [express] GET /api/activity-logs 403 in 47ms :: {"message":"Feature \"activity-log\" not …
+7:19:39 PM [express] GET /api/subscription/current 304 in 33ms :: {"tenantId":"default-tenant-demo",…
+7:19:39 PM [express] GET /api/users 200 in 20ms :: [{"id":"0adf0cb6-6f66-44c3-8bc0-b47aa38c1fe7","te…
+7:19:39 PM [express] GET /api/badges 304 in 41ms :: []
+7:19:39 PM [express] GET /api/user-badges 200 in 40ms
+7:19:39 PM [express] GET /api/financial-contributions 200 in 56ms :: [{"id":"b93689d0-fb6c-49d0-b6bd…
+7:19:39 PM [express] GET /api/certificates/all 200 in 40ms :: [{"id":"29d1b2ac-0dd8-4588-99b0-8eb7be…
+7:19:39 PM [express] GET /api/certificates/templates 200 in 46ms :: [{"id":"2ac247fc-3538-4d6c-8c54-…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[Certificates] Processing certificate for user f4f96f4a-5c7a-4589-bec6-e300978b986d: Alija Alic
+[Certificate] ===== STARTING CERTIFICATE GENERATION =====
+[Certificate] Options received: {
+  "templateImagePath": "/uploads/default-tenant-demo/certificates/certificate-template-1764861467279-c2hnzg.webp",
+  "recipientName": "Alija Alic",
+  "textPositionX": 512,
+  "textPositionY": 385,
+  "fontSize": 130,
+  "fontColor": "#8B6F47",
+  "textAlign": "center"
+}
+7:19:55 PM [express] POST /api/certificates/issue 500 in 17ms :: {"message":"Failed to issue certifi…
+Error issuing certificates: ReferenceError: __dirname is not defined
+    at registerFont (file:///app/dist/index.js:3691:15)
+    at generateCertificate (file:///app/dist/index.js:3728:3)
+    at file:///app/dist/index.js:8168:41
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)

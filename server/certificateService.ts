@@ -3,6 +3,7 @@ import { createCanvas, GlobalFonts } from '@napi-rs/canvas';
 import path from 'path';
 import { promises as fs } from 'fs';
 import { existsSync } from 'fs';
+import { fileURLToPath } from 'url';
 
 // Register custom font for certificate text rendering
 let fontRegistered = false;
@@ -10,17 +11,23 @@ let fontRegistered = false;
 function registerFont() {
   if (fontRegistered) return true;
   
+  // Get current file's directory (ESM compatible)
+  const currentFileUrl = import.meta.url;
+  const currentFilePath = fileURLToPath(currentFileUrl);
+  const currentDir = path.dirname(currentFilePath);
+  
   // Try multiple possible paths for the font file
   const possiblePaths = [
     path.join(process.cwd(), 'server', 'fonts', 'DejaVuSans-Bold.ttf'),
-    path.join(__dirname, 'fonts', 'DejaVuSans-Bold.ttf'),
+    path.join(currentDir, 'fonts', 'DejaVuSans-Bold.ttf'),
     '/app/server/fonts/DejaVuSans-Bold.ttf',
+    '/app/dist/fonts/DejaVuSans-Bold.ttf',
     './server/fonts/DejaVuSans-Bold.ttf'
   ];
   
   console.log('[Certificate] Attempting to register font...');
   console.log('[Certificate] Current working directory:', process.cwd());
-  console.log('[Certificate] __dirname:', __dirname);
+  console.log('[Certificate] Current file directory:', currentDir);
   
   for (const fontPath of possiblePaths) {
     console.log(`[Certificate] Trying font path: ${fontPath}`);
