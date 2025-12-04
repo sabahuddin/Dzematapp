@@ -18,6 +18,10 @@ function registerFont() {
   
   // Try multiple possible paths for the font file
   const possiblePaths = [
+    // Public folder paths (preferred - gets copied during build)
+    path.join(process.cwd(), 'public', 'fonts', 'DejaVuSans-Bold.ttf'),
+    '/app/public/fonts/DejaVuSans-Bold.ttf',
+    // Server folder paths (development)
     path.join(process.cwd(), 'server', 'fonts', 'DejaVuSans-Bold.ttf'),
     path.join(currentDir, 'fonts', 'DejaVuSans-Bold.ttf'),
     '/app/server/fonts/DejaVuSans-Bold.ttf',

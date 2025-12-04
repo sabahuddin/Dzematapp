@@ -1,0 +1,100 @@
+"textAlign": "center"
+}
+[Certificate] Reading template from: /app/public/uploads/default-tenant-demo/certificates/certificate-template-1764861467279-c2hnzg.webp
+[Certificate] Template file exists
+[Certificate] Template buffer size: 71600 bytes
+[Certificate] Image dimensions: 1200x800
+[Certificate] Drawing text: "Ali Alic"
+[Certificate] Position: (512, 385)
+[Certificate] Font: bold 130px DejaVuSans, sans-serif
+[Certificate] Color: #8B6F47, Align: center
+[Certificate] Text metrics - width: 0px
+[Certificate] Text overlay buffer size: 3830 bytes
+[Certificate] Final image buffer size: 364129 bytes
+[Certificate] ===== CERTIFICATE GENERATION COMPLETE =====
+[Certificates] Saved certificate for Ali Alic to /uploads/default-tenant-demo/certificates/generated/certificate-6cdf91ab-d510-4183-9392-5ccae311c14f-1764877832743-196656313.png
+[Certificates] Created DB record for Ali Alic: certId=0472e08d-8352-4f45-9146-a6a44403b29a, userId=6cdf91ab-d510-4183-9392-5ccae311c14f, imageUrl=/uploads/default-tenant-demo/certificates/generated/certificate-6cdf91ab-d510-4183-9392-5ccae311c14f-1764877832743-196656313.png
+7:50:32 PM [express] POST /api/certificates/issue 201 in 212ms :: {"message":"Certificates issued su…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+7:50:32 PM [express] GET /api/certificates/all 200 in 11ms :: [{"id":"0472e08d-8352-4f45-9146-a6a444…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[MESSAGES/UNREAD-COUNT] Debug: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  sessionTenantId: 'default-tenant-demo',
+  userTenantId: 'default-tenant-demo',
+  reqTenantId: 'default-tenant-demo',
+  resolvedTenantId: 'default-tenant-demo'
+}
+7:50:32 PM [express] GET /api/messages/unread-count 200 in 24ms :: {"count":0}
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+7:50:32 PM [express] GET /api/certificates/unviewed-count 200 in 18ms :: {"count":0}
+7:50:32 PM [express] GET /api/notifications/unread 200 in 47ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+7:50:40 PM [express] PATCH /api/certificates/0472e08d-8352-4f45-9146-a6a44403b29a/viewed 200 in 13ms…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+7:50:40 PM [express] GET /api/certificates/unviewed-count 200 in 6ms :: {"count":0}
