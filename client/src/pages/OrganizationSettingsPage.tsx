@@ -94,6 +94,7 @@ export default function OrganizationSettingsPage({ hideHeader = false }: Organiz
   const onSubmit = (data: InsertOrganizationSettings) => {
     console.log('[ORG-SETTINGS-FRONTEND] Form submitted');
     console.log('[ORG-SETTINGS-FRONTEND] Data:', JSON.stringify(data, null, 2));
+    console.log('[ORG-SETTINGS-FRONTEND] Form errors:', JSON.stringify(form.formState.errors, null, 2));
     
     // Convert empty strings to null for URLs
     const sanitizedData = {
@@ -107,6 +108,11 @@ export default function OrganizationSettingsPage({ hideHeader = false }: Organiz
     };
     console.log('[ORG-SETTINGS-FRONTEND] Sanitized data:', JSON.stringify(sanitizedData, null, 2));
     updateMutation.mutate(sanitizedData);
+  };
+
+  // Debug handler to catch form errors
+  const onSubmitError = (errors: any) => {
+    console.error('[ORG-SETTINGS-FRONTEND] Form validation errors:', JSON.stringify(errors, null, 2));
   };
 
   if (isLoading) {
@@ -136,7 +142,7 @@ export default function OrganizationSettingsPage({ hideHeader = false }: Organiz
 
       <Paper sx={{ p: 3 }}>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit, onSubmitError)} className="space-y-6">
             {/* Basic Information */}
             <Box sx={{ mb: 3 }}>
               <Typography variant="h6" sx={{ mb: 2, display: "flex", alignItems: "center", gap: 1 }}>
