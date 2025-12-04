@@ -1,0 +1,100 @@
+1:50:17 PM [express] GET /api/certificates/unviewed-count 304 in 12ms :: {"count":0}
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[MESSAGES/UNREAD-COUNT] Debug: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  sessionTenantId: 'default-tenant-demo',
+  userTenantId: 'default-tenant-demo',
+  reqTenantId: 'default-tenant-demo',
+  resolvedTenantId: 'default-tenant-demo'
+}
+1:50:17 PM [express] GET /api/messages/unread-count 304 in 13ms :: {"count":0}
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+1:50:17 PM [express] GET /api/notifications/unread 304 in 28ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[CERT TEMPLATE] Starting upload: {
+  hasFile: true,
+  fileName: '02.png',
+  fileSize: 442457,
+  mimeType: 'image/png',
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  tenantId: 'default-tenant-demo',
+  body: [Object: null prototype] {
+    name: 'Mekteb',
+    textPositionX: '512',
+    textPositionY: '385',
+    fontSize: '150',
+    fontColor: '#8B6F47',
+    textAlign: 'center'
+  }
+}
+[CERT TEMPLATE] Processing image for tenant: default-tenant-demo
+✅ Image processed: 1200x800, 70KB (84% savings)
+✅ Image saved to filesystem: /uploads/default-tenant-demo/certificates/certificate-template-1764856232467-32xq17.webp (tenant: default-tenant-demo)
+✅ Certificate template saved: 432KB -> WebP (tenant: default-tenant-demo), path: /uploads/default-tenant-demo/certificates/certificate-template-1764856232467-32xq17.webp
+[CERT TEMPLATE] Data to validate: {
+  name: 'Mekteb',
+  textPositionX: 512,
+  textPositionY: 385,
+  fontSize: 150,
+  fontColor: '#8B6F47',
+  textAlign: 'center',
+  tenantId: 'default-tenant-demo',
+  templateImagePath: '/uploads/default-tenant-demo/certificates/certificate-template-1764856232467-32xq17.webp',
+  fontFamily: 'Arial',
+  createdById: '60572500-4eef-4282-a898-a33be6c3f6ba'
+}
+[CERT TEMPLATE] Validation passed, inserting into DB
+1:50:32 PM [express] POST /api/certificates/templates 500 in 421ms :: {"message":"null value in colu…
+[CERT TEMPLATE] ERROR: error: null value in column "type" of relation "certificate_templates" violates not-null constraint
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.createCertificateTemplate (file:///app/dist/index.js:2869:17)
+    at async file:///app/dist/index.js:8020:24 {
+  length: 604,
+  severity: 'ERROR',
+  code: '23502',
+  detail: 'Failing row contains (854f5330-93ac-4ad5-9d4d-9a912d219094, default-tenant-demo, Mekteb, null, null, t, 2025-12-04 13:50:32.475926, 2025-12-04 13:50:32.475926, /uploads/default-tenant-demo/certificates/certificate-template-1..., 512, 385, 150, #8B6F47, Arial, center, 60572500-4eef-4282-a898-a33be6c3f6ba, null, {"x": 50, "y": 20}, {"x": 50, "y": 45}, {"x": 50, "y": 60}, {"x": 50, "y": 85}, #000000, f, null).',
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: 'public',
+  table: 'certificate_templates',
+  column: 'type',
+  dataType: undefined,
+  constraint: undefined,
+  file: 'execMain.c',
+  line: '2022',
+  routine: 'ExecConstraints'
+}
+[CERT TEMPLATE] Error name: error
+[CERT TEMPLATE] Error message: null value in column "type" of relation "certificate_templates" violates not-null constraint
