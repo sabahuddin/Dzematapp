@@ -1,0 +1,100 @@
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+11:02:44 PM [express] GET /api/messages/unread-count 304 in 48ms :: {"count":0}
+11:02:44 PM [express] GET /api/prayer-times/today 304 in 30ms :: {"id":"c3c602c0-325b-4e59-b722-80ffb…
+11:02:44 PM [express] GET /api/certificates/unviewed-count 304 in 33ms :: {"count":0}
+11:02:44 PM [express] GET /api/statistics 304 in 24ms :: {"userCount":12,"newAnnouncementsCount":2,"u…
+11:02:44 PM [express] GET /api/activities 304 in 13ms :: []
+11:02:44 PM [express] GET /api/notifications/unread 304 in 36ms :: {"shop":0,"events":0,"announcement…
+Event Promocija knjige: rsvpCount = 17
+11:02:44 PM [express] GET /api/events 200 in 43ms :: [{"id":"89543993-0bb9-4baf-b70a-da449f717b73","t…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+11:02:44 PM [express] GET /api/tasks/dashboard 304 in 12ms :: []
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[ORG-SETTINGS] Getting settings for tenant: default-tenant-demo
+[MESSAGES/UNREAD-COUNT] Debug: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  sessionTenantId: 'default-tenant-demo',
+  userTenantId: 'default-tenant-demo',
+  reqTenantId: 'default-tenant-demo',
+  resolvedTenantId: 'default-tenant-demo'
+}
+[STORAGE] ✅ Found existing org settings: fe93405c-6d88-4363-8dec-75b45f796008
+[ORG-SETTINGS] ✅ Success: fe93405c-6d88-4363-8dec-75b45f796008
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+11:03:07 PM [express] GET /api/organization-settings 304 in 16ms :: {"id":"fe93405c-6d88-4363-8dec-75…
+11:03:07 PM [express] GET /api/messages/unread-count 304 in 29ms :: {"count":0}
+11:03:07 PM [express] GET /api/certificates/unviewed-count 304 in 29ms :: {"count":0}
+11:03:07 PM [express] GET /api/notifications/unread 304 in 40ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[ORG-SETTINGS] Getting settings for tenant: default-tenant-demo
+[STORAGE] ✅ Found existing org settings: fe93405c-6d88-4363-8dec-75b45f796008
+[ORG-SETTINGS] ✅ Success: fe93405c-6d88-4363-8dec-75b45f796008
+11:03:08 PM [express] GET /api/organization-settings 304 in 7ms :: {"id":"fe93405c-6d88-4363-8dec-75b…
