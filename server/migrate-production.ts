@@ -653,6 +653,7 @@ async function addMissingColumns(client: any): Promise<void> {
     `ALTER TABLE "tenant_features" ADD COLUMN IF NOT EXISTS "created_at" timestamp DEFAULT now()`,
     
     // CERTIFICATE_TEMPLATES
+    `ALTER TABLE "certificate_templates" ADD COLUMN IF NOT EXISTS "type" text NOT NULL DEFAULT 'certificate'`,
     `ALTER TABLE "certificate_templates" ADD COLUMN IF NOT EXISTS "background_image_path" text`,
     `ALTER TABLE "certificate_templates" ADD COLUMN IF NOT EXISTS "title_position" text DEFAULT '{"x": 50, "y": 20}'`,
     `ALTER TABLE "certificate_templates" ADD COLUMN IF NOT EXISTS "recipient_position" text DEFAULT '{"x": 50, "y": 45}'`,
