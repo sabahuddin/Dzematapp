@@ -33,12 +33,22 @@ function registerFont() {
   console.log('[Certificate] Current working directory:', process.cwd());
   console.log('[Certificate] Current file directory:', currentDir);
   
+  // Log all currently registered font families
+  const existingFonts = GlobalFonts.families;
+  console.log('[Certificate] Already registered fonts:', JSON.stringify(existingFonts));
+  
   for (const fontPath of possiblePaths) {
     console.log(`[Certificate] Trying font path: ${fontPath}`);
     if (existsSync(fontPath)) {
       try {
-        GlobalFonts.registerFromPath(fontPath, 'DejaVuSans');
-        console.log(`[Certificate] Font registered successfully from: ${fontPath}`);
+        // Register with a simple family name
+        GlobalFonts.registerFromPath(fontPath, 'CertificateFont');
+        console.log(`[Certificate] Font registered as 'CertificateFont' from: ${fontPath}`);
+        
+        // Log fonts after registration
+        const fontsAfter = GlobalFonts.families;
+        console.log('[Certificate] Fonts after registration:', JSON.stringify(fontsAfter));
+        
         fontRegistered = true;
         return true;
       } catch (error) {
@@ -112,7 +122,8 @@ export async function generateCertificate(options: CertificateGenerationOptions)
   ctx.clearRect(0, 0, imageWidth, imageHeight);
 
   // Set up text rendering with template settings - use registered font
-  const fontSpec = `bold ${fontSize}px DejaVuSans, sans-serif`;
+  // Try the registered font name directly without 'bold' modifier first
+  const fontSpec = `${fontSize}px CertificateFont`;
   ctx.font = fontSpec;
   ctx.fillStyle = fontColor;
   ctx.textAlign = textAlign;
@@ -120,7 +131,8 @@ export async function generateCertificate(options: CertificateGenerationOptions)
 
   console.log(`[Certificate] Drawing text: "${recipientName}"`);
   console.log(`[Certificate] Position: (${textPositionX}, ${textPositionY})`);
-  console.log(`[Certificate] Font: ${fontSpec}`);
+  console.log(`[Certificate] Font spec set: ${fontSpec}`);
+  console.log(`[Certificate] Actual ctx.font: ${ctx.font}`);
   console.log(`[Certificate] Color: ${fontColor}, Align: ${textAlign}`);
 
   // Draw text at the configured position from template
