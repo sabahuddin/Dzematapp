@@ -3403,14 +3403,18 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   app.put("/api/organization-settings", requireAdmin, async (req, res) => {
     try {
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      console.log('[ORG-SETTINGS] PUT request:', JSON.stringify(req.body, null, 2));
       const settingsData = insertOrganizationSettingsSchema.parse({
         ...req.body,
         tenantId
       });
+      console.log('[ORG-SETTINGS] Parsed:', JSON.stringify(settingsData, null, 2));
       const updatedSettings = await storage.updateOrganizationSettings(tenantId, settingsData);
+      console.log('[ORG-SETTINGS] ✅ Updated:', updatedSettings.id);
       res.json(updatedSettings);
     } catch (error) {
-      res.status(400).json({ message: "Invalid organization settings data" });
+      console.error('[ORG-SETTINGS] ❌ Error:', error);
+      res.status(400).json({ message: error instanceof Error ? error.message : "Invalid organization settings data" });
     }
 });
 

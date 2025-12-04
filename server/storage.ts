@@ -1478,18 +1478,30 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateOrganizationSettings(tenantId: string, settings: Partial<InsertOrganizationSettings>): Promise<OrganizationSettings> {
-    const existing = await this.getOrganizationSettings(tenantId);
-    
-    if (!existing) {
-      const [newSettings] = await db.insert(organizationSettings).values({ ...settings, tenantId } as InsertOrganizationSettings).returning();
-      return newSettings;
+    try {
+      const existing = await this.getOrganizationSettings(tenantId);
+      
+      if (!existing) {
+        const [newSettings] = await db.insert(organizationSettings).values({ ...settings, tenantId } as InsertOrganizationSettings).returning();
+        if (!newSettings) {
+          throw new Error('Failed to create organization settings');
+        }
+        return newSettings;
+      }
+      
+      const [updated] = await db.update(organizationSettings)
+        .set({ ...settings, updatedAt: new Date() })
+        .where(and(eq(organizationSettings.id, existing.id), eq(organizationSettings.tenantId, tenantId)))
+        .returning();
+      
+      if (!updated) {
+        throw new Error('Failed to update organization settings - no result returned');
+      }
+      return updated;
+    } catch (error) {
+      console.error('[STORAGE] ❌ updateOrganizationSettings error:', error);
+      throw error;
     }
-    
-    const [updated] = await db.update(organizationSettings)
-      .set({ ...settings, updatedAt: new Date() })
-      .where(and(eq(organizationSettings.id, existing.id), eq(organizationSettings.tenantId, tenantId)))
-      .returning();
-    return updated;
   }
 
   async createDocument(document: InsertDocument): Promise<Document> {
