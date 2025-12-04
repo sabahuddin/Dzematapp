@@ -25,6 +25,19 @@ export async function migrateProductionSchema(): Promise<void> {
       console.log("ℹ️  No broken data to clean up");
     }
 
+    // Fix certificate_templates type column (production has it as NOT NULL without default)
+    console.log("🔧 Fixing certificate_templates type column...");
+    try {
+      // First add default value to the column if it exists
+      await client.query("ALTER TABLE certificate_templates ALTER COLUMN type SET DEFAULT 'certificate'");
+      // Then update any NULL values
+      await client.query("UPDATE certificate_templates SET type = 'certificate' WHERE type IS NULL");
+      console.log("✅ Fixed certificate_templates type column");
+    } catch (error: any) {
+      // Column might not exist yet or table might not exist - that's OK
+      console.log("ℹ️  certificate_templates type fix skipped (table/column may not exist yet)");
+    }
+
     const db = drizzle(pool, { schema });
     try {
       await migrate(db, { migrationsFolder: "./migrations" });
