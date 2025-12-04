@@ -61,6 +61,7 @@ import { exportToExcel } from '../utils/excelExport';
 import { useFeatureAccess } from '../hooks/useFeatureAccess';
 import { UpgradeCTA } from '../components/UpgradeCTA';
 import { useCurrency } from '../contexts/CurrencyContext';
+import CertificateTemplatesPage from './CertificateTemplatesPage';
 import { queryClient, apiRequest } from '@/lib/queryClient';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -727,52 +728,7 @@ export default function ActivityLogPage() {
 
       {/* Certificate Templates Tab */}
       {activeTab === 'templates' && currentUser?.isAdmin && (
-        <Card>
-          <Box sx={{ p: 3 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-              <Typography variant="h6" sx={{ fontWeight: 600 }}>Šabloni zahvalnica</Typography>
-              <Button variant="contained" startIcon={<Add />} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} data-testid="button-manage-templates">
-                Upravljaj šablonima
-              </Button>
-            </Box>
-
-            {(templatesQuery.data as CertificateTemplate[])?.length === 0 ? (
-              <Alert severity="info">Nema kreiranih šablona zahvalnica</Alert>
-            ) : (
-              <TableContainer>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <SortableHeaderCell sortKey="name" onSort={templatesSort.handleSort} currentSortKey={templatesSort.sortKey} currentSortDirection={templatesSort.sortDirection}>Naziv</SortableHeaderCell>
-                      <SortableHeaderCell sortKey="description" onSort={templatesSort.handleSort} currentSortKey={templatesSort.sortKey} currentSortDirection={templatesSort.sortDirection}>Opis</SortableHeaderCell>
-                      <SortableHeaderCell sortKey="fontSize" onSort={templatesSort.handleSort} currentSortKey={templatesSort.sortKey} currentSortDirection={templatesSort.sortDirection}>Font</SortableHeaderCell>
-                      <TableCell>Akcije</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {templatesSort.sortedData?.map((template: CertificateTemplate) => (
-                      <TableRow key={template.id}>
-                        <TableCell>{template.name}</TableCell>
-                        <TableCell><Typography variant="body2" color="text.secondary">{template.description || '-'}</Typography></TableCell>
-                        <TableCell>{template.fontSize}px {template.fontColor}</TableCell>
-                        <TableCell>
-                          <Box sx={{ display: 'flex', gap: 0.5 }}>
-                            <IconButton size="small" href={`/certificate-templates?edit=${template.id}`} target="_blank" sx={{ color: '#1976d2' }} data-testid={`button-edit-template-${template.id}`}>
-                              <Edit fontSize="small" />
-                            </IconButton>
-                            <IconButton size="small" onClick={() => deleteTemplateMutation.mutate(template.id)} sx={{ color: '#d32f2f' }} data-testid={`button-delete-template-${template.id}`}>
-                              <Delete fontSize="small" />
-                            </IconButton>
-                          </Box>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            )}
-          </Box>
-        </Card>
+        <CertificateTemplatesPage hideHeader={true} />
       )}
 
       {/* Issue Certificates Tab */}
