@@ -2,14 +2,44 @@ import sharp from 'sharp';
 import { createCanvas, GlobalFonts } from '@napi-rs/canvas';
 import path from 'path';
 import { promises as fs } from 'fs';
+import { existsSync } from 'fs';
 
 // Register custom font for certificate text rendering
-const fontPath = path.join(process.cwd(), 'server', 'fonts', 'DejaVuSans-Bold.ttf');
-try {
-  GlobalFonts.registerFromPath(fontPath, 'DejaVuSans');
-  console.log('[Certificate] Font registered successfully: DejaVuSans');
-} catch (error) {
-  console.error('[Certificate] Failed to register font:', error);
+let fontRegistered = false;
+
+function registerFont() {
+  if (fontRegistered) return true;
+  
+  // Try multiple possible paths for the font file
+  const possiblePaths = [
+    path.join(process.cwd(), 'server', 'fonts', 'DejaVuSans-Bold.ttf'),
+    path.join(__dirname, 'fonts', 'DejaVuSans-Bold.ttf'),
+    '/app/server/fonts/DejaVuSans-Bold.ttf',
+    './server/fonts/DejaVuSans-Bold.ttf'
+  ];
+  
+  console.log('[Certificate] Attempting to register font...');
+  console.log('[Certificate] Current working directory:', process.cwd());
+  console.log('[Certificate] __dirname:', __dirname);
+  
+  for (const fontPath of possiblePaths) {
+    console.log(`[Certificate] Trying font path: ${fontPath}`);
+    if (existsSync(fontPath)) {
+      try {
+        GlobalFonts.registerFromPath(fontPath, 'DejaVuSans');
+        console.log(`[Certificate] Font registered successfully from: ${fontPath}`);
+        fontRegistered = true;
+        return true;
+      } catch (error) {
+        console.error(`[Certificate] Failed to register font from ${fontPath}:`, error);
+      }
+    } else {
+      console.log(`[Certificate] Font file not found at: ${fontPath}`);
+    }
+  }
+  
+  console.error('[Certificate] WARNING: Could not register font from any path!');
+  return false;
 }
 
 export interface CertificateGenerationOptions {
@@ -35,6 +65,9 @@ export async function generateCertificate(options: CertificateGenerationOptions)
 
   console.log(`[Certificate] ===== STARTING CERTIFICATE GENERATION =====`);
   console.log(`[Certificate] Options received:`, JSON.stringify(options, null, 2));
+  
+  // Register font before generating certificate
+  registerFont();
 
   // Normalize path - strip leading '/' to avoid path.join issues
   const relPath = templateImagePath.replace(/^\//, '');
