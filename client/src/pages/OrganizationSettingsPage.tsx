@@ -68,16 +68,21 @@ export default function OrganizationSettingsPage({ hideHeader = false }: Organiz
 
   const updateMutation = useMutation({
     mutationFn: async (data: InsertOrganizationSettings) => {
-      return await apiRequest("/api/organization-settings", "PUT", data) as OrganizationSettings;
+      console.log('[ORG-SETTINGS-FRONTEND] Sending PUT request:', JSON.stringify(data, null, 2));
+      const response = await apiRequest("/api/organization-settings", "PUT", data) as OrganizationSettings;
+      console.log('[ORG-SETTINGS-FRONTEND] PUT response:', JSON.stringify(response, null, 2));
+      return response;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log('[ORG-SETTINGS-FRONTEND] ✅ Update successful');
       queryClient.invalidateQueries({ queryKey: ["/api/organization-settings"] });
       toast({
         title: t("organization.toast.success"),
         description: t("organization.toast.successDescription")
       });
     },
-    onError: () => {
+    onError: (error) => {
+      console.error('[ORG-SETTINGS-FRONTEND] ❌ Update failed:', error);
       toast({
         title: t("organization.toast.error"),
         description: t("organization.toast.errorDescription"),
