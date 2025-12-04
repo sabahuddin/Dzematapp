@@ -24,17 +24,32 @@ export async function generateCertificate(options: CertificateGenerationOptions)
     textAlign
   } = options;
 
+  console.log(`[Certificate] ===== STARTING CERTIFICATE GENERATION =====`);
+  console.log(`[Certificate] Options received:`, JSON.stringify(options, null, 2));
+
   // Normalize path - strip leading '/' to avoid path.join issues
   const relPath = templateImagePath.replace(/^\//, '');
   const templatePath = path.join(process.cwd(), 'public', relPath);
   
   console.log(`[Certificate] Reading template from: ${templatePath}`);
+  
+  // Check if template file exists
+  try {
+    await fs.access(templatePath);
+    console.log(`[Certificate] Template file exists`);
+  } catch (e) {
+    console.error(`[Certificate] ERROR: Template file not found at ${templatePath}`);
+    throw new Error(`Template file not found: ${templatePath}`);
+  }
+  
   const templateBuffer = await fs.readFile(templatePath);
+  console.log(`[Certificate] Template buffer size: ${templateBuffer.length} bytes`);
   
   // Get template image metadata
   const metadata = await sharp(templateBuffer).metadata();
   const imageWidth = metadata.width || 1200;
   const imageHeight = metadata.height || 800;
+  console.log(`[Certificate] Image dimensions: ${imageWidth}x${imageHeight}`);
 
   // Create canvas for text overlay
   const canvas = createCanvas(imageWidth, imageHeight);
@@ -44,18 +59,27 @@ export async function generateCertificate(options: CertificateGenerationOptions)
   ctx.clearRect(0, 0, imageWidth, imageHeight);
 
   // Set up text rendering with template settings
-  ctx.font = `bold ${fontSize}px "Times New Roman", "DejaVu Serif", "Liberation Serif", serif`;
+  const fontSpec = `bold ${fontSize}px "DejaVu Sans", "Arial", sans-serif`;
+  ctx.font = fontSpec;
   ctx.fillStyle = fontColor;
   ctx.textAlign = textAlign;
   ctx.textBaseline = 'middle';
 
-  console.log(`[Certificate] Image size: ${imageWidth}x${imageHeight}, drawing "${recipientName}" at (${textPositionX}, ${textPositionY}), align: ${textAlign}, font: ${fontSize}px, color: ${fontColor}`);
+  console.log(`[Certificate] Drawing text: "${recipientName}"`);
+  console.log(`[Certificate] Position: (${textPositionX}, ${textPositionY})`);
+  console.log(`[Certificate] Font: ${fontSpec}`);
+  console.log(`[Certificate] Color: ${fontColor}, Align: ${textAlign}`);
 
   // Draw text at the configured position from template
   ctx.fillText(recipientName, textPositionX, textPositionY);
+  
+  // Measure text to verify it was drawn
+  const textMetrics = ctx.measureText(recipientName);
+  console.log(`[Certificate] Text metrics - width: ${textMetrics.width}px`);
 
   // Convert canvas to buffer
   const textBuffer = canvas.toBuffer('image/png');
+  console.log(`[Certificate] Text overlay buffer size: ${textBuffer.length} bytes`);
 
   // Composite the text over the template
   const finalImage = await sharp(templateBuffer)
@@ -67,6 +91,9 @@ export async function generateCertificate(options: CertificateGenerationOptions)
     ])
     .png()
     .toBuffer();
+
+  console.log(`[Certificate] Final image buffer size: ${finalImage.length} bytes`);
+  console.log(`[Certificate] ===== CERTIFICATE GENERATION COMPLETE =====`);
 
   return finalImage;
 }
