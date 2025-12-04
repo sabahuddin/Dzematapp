@@ -891,6 +891,7 @@ export const certificateTemplates = pgTable("certificate_templates", {
   name: text("name").notNull(), // Naziv template-a (npr. "Zahvala za doprinos", "Priznanje za volontiranje")
   description: text("description"),
   type: text("type").notNull().default("certificate"), // Tip template-a (certificate, zahvalnica, etc.)
+  content: text("content").notNull().default(""), // Sadržaj/tekst template-a
   templateImagePath: text("template_image_path").notNull(), // Path do PNG slike
   textPositionX: integer("text_position_x").default(400), // X koordinata gdje će se dodati ime
   textPositionY: integer("text_position_y").default(300), // Y koordinata gdje će se dodati ime
