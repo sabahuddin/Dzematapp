@@ -51,7 +51,9 @@ import {
   TrendingUp,
   MoreVert,
   ExpandLess,
-  ExpandMore
+  ExpandMore,
+  Visibility,
+  Close
 } from '@mui/icons-material';
 import { ActivityLog, User, UserCertificate, FinancialContribution, Badge, insertBadgeSchema } from '@shared/schema';
 import { useAuth } from '../hooks/useAuth';
@@ -93,6 +95,10 @@ export default function ActivityLogPage() {
   const [badgeDialogOpen, setBadgeDialogOpen] = useState(false);
   const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null);
   const [userSearchTerm, setUserSearchTerm] = useState<string>('');
+  const [viewCertificateOpen, setViewCertificateOpen] = useState(false);
+  const [selectedCertificate, setSelectedCertificate] = useState<UserCertificate | null>(null);
+  const [deleteCertificateOpen, setDeleteCertificateOpen] = useState(false);
+  const [certificateToDelete, setCertificateToDelete] = useState<UserCertificate | null>(null);
 
   if (featureAccess.upgradeRequired && !currentUser?.isAdmin) {
     return <UpgradeCTA moduleId="activity-log" requiredPlan={featureAccess.requiredPlan || 'full'} currentPlan={featureAccess.currentPlan || 'standard'} />;
@@ -247,6 +253,55 @@ export default function ActivityLogPage() {
       toast({ title: "Greška", description: error.message, variant: "destructive" });
     },
   });
+
+  const deleteCertificateMutation = useMutation({
+    mutationFn: async (id: string) => {
+      await apiRequest(`/api/certificates/${id}`, 'DELETE');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/certificates/all'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/certificates/user'] });
+      setDeleteCertificateOpen(false);
+      setCertificateToDelete(null);
+      toast({ title: "Uspješno", description: "Zahvalnica obrisana" });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Greška", description: error.message, variant: "destructive" });
+    },
+  });
+
+  const markViewedMutation = useMutation({
+    mutationFn: async (id: string) => {
+      await apiRequest(`/api/certificates/${id}/viewed`, 'PATCH');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/certificates/user'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/certificates/unviewed-count'] });
+    },
+  });
+
+  const handleViewCertificate = (cert: UserCertificate) => {
+    setSelectedCertificate(cert);
+    setViewCertificateOpen(true);
+    if (!cert.viewed) {
+      markViewedMutation.mutate(cert.id);
+    }
+  };
+
+  const handleDownloadCertificate = (cert: UserCertificate) => {
+    const link = document.createElement('a');
+    link.href = cert.certificateImagePath;
+    link.download = `zahvalnica-${cert.recipientName}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast({ title: "Preuzimanje", description: "Zahvalnica je preuzeta" });
+  };
+
+  const handleDeleteCertificateClick = (cert: UserCertificate) => {
+    setCertificateToDelete(cert);
+    setDeleteCertificateOpen(true);
+  };
 
   // Helpers
   const getUserName = (userId: string) => {
@@ -825,6 +880,7 @@ export default function ActivityLogPage() {
                 <Table>
                   <TableHead>
                     <TableRow>
+                      <TableCell sx={{ width: 80 }}>Pregled</TableCell>
                       <SortableHeaderCell sortKey="userId" onSort={certificatesSort.handleSort} currentSortKey={certificatesSort.sortKey} currentSortDirection={certificatesSort.sortDirection}>Korisnik</SortableHeaderCell>
                       <SortableHeaderCell sortKey="recipientName" onSort={certificatesSort.handleSort} currentSortKey={certificatesSort.sortKey} currentSortDirection={certificatesSort.sortDirection}>Primatelj</SortableHeaderCell>
                       <SortableHeaderCell sortKey="issuedAt" onSort={certificatesSort.handleSort} currentSortKey={certificatesSort.sortKey} currentSortDirection={certificatesSort.sortDirection}>Datum izdavanja</SortableHeaderCell>
@@ -833,14 +889,58 @@ export default function ActivityLogPage() {
                   </TableHead>
                   <TableBody>
                     {certificatesSort.sortedData?.map((cert: UserCertificate) => (
-                      <TableRow key={cert.id}>
+                      <TableRow key={cert.id} hover>
+                        <TableCell>
+                          <Box 
+                            component="img" 
+                            src={cert.certificateImagePath} 
+                            alt="Zahvalnica"
+                            sx={{ 
+                              width: 60, 
+                              height: 40, 
+                              objectFit: 'cover', 
+                              borderRadius: 1, 
+                              cursor: 'pointer',
+                              border: '1px solid',
+                              borderColor: 'divider'
+                            }}
+                            onClick={() => handleViewCertificate(cert)}
+                            data-testid={`img-thumbnail-${cert.id}`}
+                          />
+                        </TableCell>
                         <TableCell><Typography variant="body2">{getUserName(cert.userId)}</Typography></TableCell>
                         <TableCell>{cert.recipientName}</TableCell>
                         <TableCell>{cert.issuedAt ? new Date(cert.issuedAt).toLocaleDateString('hr-HR') : '-'}</TableCell>
                         <TableCell>
-                          <Button size="small" href={cert.certificateImagePath} download variant="outlined" data-testid={`button-download-${cert.id}`}>
-                            Preuzmi
-                          </Button>
+                          <Box sx={{ display: 'flex', gap: 0.5 }}>
+                            <IconButton 
+                              size="small" 
+                              onClick={() => handleViewCertificate(cert)}
+                              sx={{ color: 'primary.main' }}
+                              title="Pogledaj"
+                              data-testid={`button-view-${cert.id}`}
+                            >
+                              <Visibility fontSize="small" />
+                            </IconButton>
+                            <IconButton 
+                              size="small" 
+                              onClick={() => handleDownloadCertificate(cert)}
+                              sx={{ color: 'success.main' }}
+                              title="Preuzmi"
+                              data-testid={`button-download-${cert.id}`}
+                            >
+                              <Download fontSize="small" />
+                            </IconButton>
+                            <IconButton 
+                              size="small" 
+                              onClick={() => handleDeleteCertificateClick(cert)}
+                              sx={{ color: 'error.main' }}
+                              title="Obriši"
+                              data-testid={`button-delete-${cert.id}`}
+                            >
+                              <Delete fontSize="small" />
+                            </IconButton>
+                          </Box>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -875,6 +975,7 @@ export default function ActivityLogPage() {
                 <Table>
                   <TableHead>
                     <TableRow>
+                      <TableCell sx={{ width: 80 }}>Pregled</TableCell>
                       <SortableHeaderCell sortKey="recipientName" onSort={certificatesSort.handleSort} currentSortKey={certificatesSort.sortKey} currentSortDirection={certificatesSort.sortDirection}>Primatelj</SortableHeaderCell>
                       <SortableHeaderCell sortKey="issuedAt" onSort={certificatesSort.handleSort} currentSortKey={certificatesSort.sortKey} currentSortDirection={certificatesSort.sortDirection}>Datum izdavanja</SortableHeaderCell>
                       <TableCell>Akcije</TableCell>
@@ -883,12 +984,55 @@ export default function ActivityLogPage() {
                   <TableBody>
                     {certificatesSort.sortedData?.map((cert: UserCertificate) => (
                       <TableRow key={cert.id} hover>
+                        <TableCell>
+                          <Box 
+                            component="img" 
+                            src={cert.certificateImagePath} 
+                            alt="Zahvalnica"
+                            sx={{ 
+                              width: 60, 
+                              height: 40, 
+                              objectFit: 'cover', 
+                              borderRadius: 1, 
+                              cursor: 'pointer',
+                              border: '1px solid',
+                              borderColor: 'divider'
+                            }}
+                            onClick={() => handleViewCertificate(cert)}
+                            data-testid={`img-thumbnail-${cert.id}`}
+                          />
+                          {!cert.viewed && (
+                            <Chip 
+                              label="Novo" 
+                              size="small" 
+                              color="primary" 
+                              sx={{ ml: 1, fontSize: '0.65rem', height: 18 }}
+                            />
+                          )}
+                        </TableCell>
                         <TableCell>{cert.recipientName}</TableCell>
                         <TableCell>{cert.issuedAt ? new Date(cert.issuedAt).toLocaleDateString('hr-HR') : '-'}</TableCell>
                         <TableCell>
-                          <Button size="small" href={cert.certificateImagePath} download variant="outlined" data-testid={`button-download-${cert.id}`}>
-                            Preuzmi
-                          </Button>
+                          <Box sx={{ display: 'flex', gap: 0.5 }}>
+                            <IconButton 
+                              size="small" 
+                              onClick={() => handleViewCertificate(cert)}
+                              sx={{ color: 'primary.main' }}
+                              title="Pogledaj"
+                              data-testid={`button-view-${cert.id}`}
+                            >
+                              <Visibility fontSize="small" />
+                            </IconButton>
+                            <IconButton 
+                              size="small" 
+                              onClick={() => handleDownloadCertificate(cert)}
+                              sx={{ color: 'success.main' }}
+                              title="Preuzmi"
+                              data-testid={`button-download-${cert.id}`}
+                            >
+                              <Download fontSize="small" />
+                            </IconButton>
+                          </Box>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -956,6 +1100,93 @@ export default function ActivityLogPage() {
         <DialogActions>
           <Button onClick={() => { setBadgeDialogOpen(false); setSelectedBadge(null); badgeForm.reset(); }}>Otkaži</Button>
           <Button variant="contained" onClick={badgeForm.handleSubmit((data) => saveBadgeMutation.mutate(data))} data-testid="button-save-badge">Spremi</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* View Certificate Dialog */}
+      <Dialog 
+        open={viewCertificateOpen} 
+        onClose={() => setViewCertificateOpen(false)}
+        maxWidth="lg"
+        fullWidth
+      >
+        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography variant="h6">Zahvalnica - {selectedCertificate?.recipientName}</Typography>
+          <IconButton onClick={() => setViewCertificateOpen(false)}>
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          {selectedCertificate && (
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, pt: 2 }}>
+              <Box
+                component="img"
+                src={selectedCertificate.certificateImagePath}
+                alt={`Zahvalnica za ${selectedCertificate.recipientName}`}
+                sx={{ 
+                  width: '100%', 
+                  maxHeight: '70vh',
+                  objectFit: 'contain',
+                  borderRadius: 2,
+                  border: '1px solid',
+                  borderColor: 'divider'
+                }}
+                data-testid="img-certificate-full"
+              />
+              {selectedCertificate.message && (
+                <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
+                  {selectedCertificate.message}
+                </Typography>
+              )}
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions sx={{ justifyContent: 'center', pb: 3 }}>
+          <Button 
+            variant="contained" 
+            startIcon={<Download />}
+            onClick={() => selectedCertificate && handleDownloadCertificate(selectedCertificate)}
+            data-testid="button-download-full"
+          >
+            Preuzmi
+          </Button>
+          <Button 
+            variant="outlined"
+            onClick={() => {
+              if (selectedCertificate) {
+                const printWindow = window.open(selectedCertificate.certificateImagePath, '_blank');
+                printWindow?.print();
+              }
+            }}
+            data-testid="button-print"
+          >
+            Ispiši
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Delete Certificate Confirmation Dialog */}
+      <Dialog
+        open={deleteCertificateOpen}
+        onClose={() => setDeleteCertificateOpen(false)}
+      >
+        <DialogTitle>Obriši zahvalnicu</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Jeste li sigurni da želite obrisati zahvalnicu za "{certificateToDelete?.recipientName}"?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteCertificateOpen(false)}>Otkaži</Button>
+          <Button 
+            variant="contained" 
+            color="error"
+            onClick={() => certificateToDelete && deleteCertificateMutation.mutate(certificateToDelete.id)}
+            disabled={deleteCertificateMutation.isPending}
+            data-testid="button-confirm-delete"
+          >
+            {deleteCertificateMutation.isPending ? 'Brisanje...' : 'Obriši'}
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
