@@ -87,6 +87,9 @@ export default function OrganizationSettingsPage({ hideHeader = false }: Organiz
   });
 
   const onSubmit = (data: InsertOrganizationSettings) => {
+    console.log('[ORG-SETTINGS-FRONTEND] Form submitted');
+    console.log('[ORG-SETTINGS-FRONTEND] Data:', JSON.stringify(data, null, 2));
+    
     // Convert empty strings to null for URLs
     const sanitizedData = {
       ...data,
@@ -97,6 +100,7 @@ export default function OrganizationSettingsPage({ hideHeader = false }: Organiz
       livestreamUrl: data.livestreamUrl?.trim() || null,
       livestreamTitle: data.livestreamTitle?.trim() || null
     };
+    console.log('[ORG-SETTINGS-FRONTEND] Sanitized data:', JSON.stringify(sanitizedData, null, 2));
     updateMutation.mutate(sanitizedData);
   };
 
