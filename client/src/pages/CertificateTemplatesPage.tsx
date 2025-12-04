@@ -712,10 +712,14 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
               Otkaži
             </Button>
             <Button
-              type="submit"
+              type="button"
               variant="contained"
               disabled={createMutation.isPending || updateMutation.isPending}
               data-testid="button-save"
+              onClick={() => {
+                console.log('[CERT FORM] Button clicked directly');
+                handleFormSubmitWithValidation();
+              }}
             >
               {createMutation.isPending || updateMutation.isPending
                 ? "Čuvanje..."
