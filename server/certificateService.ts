@@ -24,8 +24,11 @@ export async function generateCertificate(options: CertificateGenerationOptions)
     textAlign
   } = options;
 
-  // Read the template image
-  const templatePath = path.join(process.cwd(), 'public', templateImagePath);
+  // Normalize path - strip leading '/' to avoid path.join issues
+  const relPath = templateImagePath.replace(/^\//, '');
+  const templatePath = path.join(process.cwd(), 'public', relPath);
+  
+  console.log(`[Certificate] Reading template from: ${templatePath}`);
   const templateBuffer = await fs.readFile(templatePath);
   
   // Get template image metadata
@@ -40,23 +43,16 @@ export async function generateCertificate(options: CertificateGenerationOptions)
   // Clear the canvas to ensure transparency
   ctx.clearRect(0, 0, imageWidth, imageHeight);
 
-  // Set up text rendering with multiple font fallbacks
+  // Set up text rendering with template settings
   ctx.font = `bold ${fontSize}px "Times New Roman", "DejaVu Serif", "Liberation Serif", serif`;
   ctx.fillStyle = fontColor;
-  ctx.textAlign = 'center';
+  ctx.textAlign = textAlign;
   ctx.textBaseline = 'middle';
 
-  // Calculate exact center position
-  const centerX = imageWidth / 2;
-  const centerY = imageHeight / 2;
+  console.log(`[Certificate] Image size: ${imageWidth}x${imageHeight}, drawing "${recipientName}" at (${textPositionX}, ${textPositionY}), align: ${textAlign}, font: ${fontSize}px, color: ${fontColor}`);
 
-  console.log(`[Certificate] Image size: ${imageWidth}x${imageHeight}, centering text "${recipientName}" at (${centerX}, ${centerY}), font: ${fontSize}px`);
-
-  // Translate to center and draw text at origin (0,0) which is now the center
-  ctx.save();
-  ctx.translate(centerX, centerY);
-  ctx.fillText(recipientName, 0, 0);
-  ctx.restore();
+  // Draw text at the configured position from template
+  ctx.fillText(recipientName, textPositionX, textPositionY);
 
   // Convert canvas to buffer
   const textBuffer = canvas.toBuffer('image/png');
