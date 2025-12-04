@@ -11,56 +11,29 @@ let fontRegistered = false;
 function registerFont() {
   if (fontRegistered) return true;
   
-  // Get current file's directory (ESM compatible)
-  const currentFileUrl = import.meta.url;
-  const currentFilePath = fileURLToPath(currentFileUrl);
-  const currentDir = path.dirname(currentFilePath);
-  
-  // Try multiple possible paths for the font file
+  // Try to register custom font
   const possiblePaths = [
-    // Public folder paths (preferred - gets copied during build)
     path.join(process.cwd(), 'public', 'fonts', 'DejaVuSans-Bold.ttf'),
     '/app/public/fonts/DejaVuSans-Bold.ttf',
-    // Server folder paths (development)
     path.join(process.cwd(), 'server', 'fonts', 'DejaVuSans-Bold.ttf'),
-    path.join(currentDir, 'fonts', 'DejaVuSans-Bold.ttf'),
-    '/app/server/fonts/DejaVuSans-Bold.ttf',
-    '/app/dist/fonts/DejaVuSans-Bold.ttf',
-    './server/fonts/DejaVuSans-Bold.ttf'
   ];
   
-  console.log('[Certificate] Attempting to register font...');
-  console.log('[Certificate] Current working directory:', process.cwd());
-  console.log('[Certificate] Current file directory:', currentDir);
-  
-  // Log all currently registered font families
-  const existingFonts = GlobalFonts.families;
-  console.log('[Certificate] Already registered fonts:', JSON.stringify(existingFonts));
-  
   for (const fontPath of possiblePaths) {
-    console.log(`[Certificate] Trying font path: ${fontPath}`);
     if (existsSync(fontPath)) {
       try {
-        // Register with a simple family name
-        GlobalFonts.registerFromPath(fontPath, 'CertificateFont');
-        console.log(`[Certificate] Font registered as 'CertificateFont' from: ${fontPath}`);
-        
-        // Log fonts after registration
-        const fontsAfter = GlobalFonts.families;
-        console.log('[Certificate] Fonts after registration:', JSON.stringify(fontsAfter));
-        
+        GlobalFonts.registerFromPath(fontPath, 'CustomFont');
+        console.log(`[Certificate] Custom font registered from: ${fontPath}`);
         fontRegistered = true;
         return true;
       } catch (error) {
-        console.error(`[Certificate] Failed to register font from ${fontPath}:`, error);
+        console.error(`[Certificate] Failed to register custom font:`, error);
       }
-    } else {
-      console.log(`[Certificate] Font file not found at: ${fontPath}`);
     }
   }
   
-  console.error('[Certificate] WARNING: Could not register font from any path!');
-  return false;
+  console.log('[Certificate] Using system fonts (custom font not found)');
+  fontRegistered = true;
+  return true;
 }
 
 export interface CertificateGenerationOptions {
@@ -121,18 +94,23 @@ export async function generateCertificate(options: CertificateGenerationOptions)
   // Clear the canvas to ensure transparency
   ctx.clearRect(0, 0, imageWidth, imageHeight);
 
-  // Set up text rendering with template settings - use registered font
-  // Try the registered font name directly without 'bold' modifier first
-  const fontSpec = `${fontSize}px CertificateFont`;
+  // Set up text rendering - try custom font first, fallback to system fonts
+  let fontSpec = `bold ${fontSize}px CustomFont`;
   ctx.font = fontSpec;
+  
+  // If custom font didn't work, fallback to Arial or system fonts
+  if (!ctx.font.includes('CustomFont')) {
+    fontSpec = `bold ${fontSize}px Arial, sans-serif`;
+    ctx.font = fontSpec;
+  }
+  
   ctx.fillStyle = fontColor;
   ctx.textAlign = textAlign;
   ctx.textBaseline = 'middle';
 
   console.log(`[Certificate] Drawing text: "${recipientName}"`);
   console.log(`[Certificate] Position: (${textPositionX}, ${textPositionY})`);
-  console.log(`[Certificate] Font spec set: ${fontSpec}`);
-  console.log(`[Certificate] Actual ctx.font: ${ctx.font}`);
+  console.log(`[Certificate] Font spec: ${fontSpec}`);
   console.log(`[Certificate] Color: ${fontColor}, Align: ${textAlign}`);
 
   // Draw text at the configured position from template
