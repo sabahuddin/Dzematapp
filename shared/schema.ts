@@ -397,8 +397,7 @@ export const insertImamQuestionSchema = createInsertSchema(imamQuestions).omit({
 export const insertOrganizationSettingsSchema = createInsertSchema(organizationSettings).omit({
   id: true,
   updatedAt: true,
-}).extend({
-  tenantId: z.string()
+  tenantId: true  // Tenant is set server-side from session
 });
 
 export const insertDocumentSchema = createInsertSchema(documents).omit({
