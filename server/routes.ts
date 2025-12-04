@@ -5184,7 +5184,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         // Save certificate image
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         const filename = `certificate-${userId}-${uniqueSuffix}.png`;
-        const certificateUrl = await saveCertificate(certificateBuffer, filename);
+        const certificateUrl = await saveCertificate(certificateBuffer, filename, tenantId);
         console.log(`[Certificates] Saved certificate for ${recipientName} to ${certificateUrl}`);
         
         // Create user certificate record

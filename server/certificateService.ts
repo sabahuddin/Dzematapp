@@ -75,12 +75,12 @@ export async function generateCertificate(options: CertificateGenerationOptions)
   return finalImage;
 }
 
-export async function saveCertificate(certificateBuffer: Buffer, filename: string): Promise<string> {
-  const certificatesDir = path.join(process.cwd(), 'public', 'uploads', 'certificates', 'generated');
+export async function saveCertificate(certificateBuffer: Buffer, filename: string, tenantId: string): Promise<string> {
+  const certificatesDir = path.join(process.cwd(), 'public', 'uploads', tenantId, 'certificates', 'generated');
   await fs.mkdir(certificatesDir, { recursive: true });
   
   const filePath = path.join(certificatesDir, filename);
   await fs.writeFile(filePath, certificateBuffer);
   
-  return `/uploads/certificates/generated/${filename}`;
+  return `/uploads/${tenantId}/certificates/generated/${filename}`;
 }
