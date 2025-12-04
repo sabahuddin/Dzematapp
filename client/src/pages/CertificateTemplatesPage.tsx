@@ -100,33 +100,6 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
     },
   });
 
-  const handleFormSubmitWithValidation = hookFormSubmit(
-    (data) => {
-      if (!selectedFile && !selectedTemplate) {
-        toast({
-          title: "Greška",
-          description: "Morate odabrati sliku za template",
-          variant: "destructive",
-        });
-        return;
-      }
-      if (selectedTemplate) {
-        updateMutation.mutate({ id: selectedTemplate.id, data, file: selectedFile });
-      } else {
-        createMutation.mutate(data);
-      }
-    },
-    (formErrors) => {
-      console.log('Form validation errors:', formErrors);
-      const errorMessages = Object.values(formErrors).map(e => e?.message).filter(Boolean).join(', ');
-      toast({
-        title: "Greška u formi",
-        description: errorMessages || "Provjerite sva polja",
-        variant: "destructive",
-      });
-    }
-  );
-
   const { data: templates = [], isLoading } = useQuery<CertificateTemplate[]>({
     queryKey: ['/api/certificates/templates'],
   });
@@ -244,6 +217,37 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
       });
     },
   });
+
+  const handleFormSubmitWithValidation = hookFormSubmit(
+    (data) => {
+      console.log('[CERT FORM] Submit clicked, data:', data);
+      console.log('[CERT FORM] selectedFile:', selectedFile);
+      console.log('[CERT FORM] selectedTemplate:', selectedTemplate);
+      
+      if (!selectedFile && !selectedTemplate) {
+        toast({
+          title: "Greška",
+          description: "Morate odabrati sliku za template",
+          variant: "destructive",
+        });
+        return;
+      }
+      if (selectedTemplate) {
+        updateMutation.mutate({ id: selectedTemplate.id, data, file: selectedFile });
+      } else {
+        createMutation.mutate(data);
+      }
+    },
+    (formErrors) => {
+      console.log('[CERT FORM] Validation errors:', formErrors);
+      const errorMessages = Object.values(formErrors).map(e => e?.message).filter(Boolean).join(', ');
+      toast({
+        title: "Greška u formi",
+        description: errorMessages || "Provjerite sva polja",
+        variant: "destructive",
+      });
+    }
+  );
 
   const handleOpenModal = (template?: CertificateTemplate) => {
     if (template) {
