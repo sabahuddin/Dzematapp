@@ -33,7 +33,7 @@ import {
   Delete,
   Upload
 } from '@mui/icons-material';
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
@@ -87,7 +87,7 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [templateToDelete, setTemplateToDelete] = useState<string | null>(null);
 
-  const { register, handleSubmit: hookFormSubmit, reset, watch, formState: { errors } } = useForm<TemplateFormData>({
+  const { register, handleSubmit: hookFormSubmit, reset, watch, control, formState: { errors } } = useForm<TemplateFormData>({
     resolver: zodResolver(templateFormSchema),
     defaultValues: {
       name: "",
@@ -99,6 +99,33 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
       textAlign: "center",
     },
   });
+
+  const handleFormSubmitWithValidation = hookFormSubmit(
+    (data) => {
+      if (!selectedFile && !selectedTemplate) {
+        toast({
+          title: "Greška",
+          description: "Morate odabrati sliku za template",
+          variant: "destructive",
+        });
+        return;
+      }
+      if (selectedTemplate) {
+        updateMutation.mutate({ id: selectedTemplate.id, data, file: selectedFile });
+      } else {
+        createMutation.mutate(data);
+      }
+    },
+    (formErrors) => {
+      console.log('Form validation errors:', formErrors);
+      const errorMessages = Object.values(formErrors).map(e => e?.message).filter(Boolean).join(', ');
+      toast({
+        title: "Greška u formi",
+        description: errorMessages || "Provjerite sva polja",
+        variant: "destructive",
+      });
+    }
+  );
 
   const { data: templates = [], isLoading } = useQuery<CertificateTemplate[]>({
     queryKey: ['/api/certificates/templates'],
@@ -268,13 +295,6 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
     }
   };
 
-  const handleFormSubmit = (data: TemplateFormData) => {
-    if (selectedTemplate) {
-      updateMutation.mutate({ id: selectedTemplate.id, data, file: selectedFile });
-    } else {
-      createMutation.mutate(data);
-    }
-  };
 
   const handleDeleteClick = (id: string) => {
     setTemplateToDelete(id);
@@ -409,7 +429,7 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
 
       {/* Template Modal */}
       <Dialog open={modalOpen} onClose={handleCloseModal} maxWidth="md" fullWidth>
-        <form onSubmit={hookFormSubmit(handleFormSubmit)}>
+        <form onSubmit={handleFormSubmitWithValidation}>
           <DialogTitle data-testid="text-modal-title">
             {selectedTemplate ? "Uredi template" : "Dodaj novi template"}
           </DialogTitle>
@@ -621,52 +641,63 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
                     required
                     data-testid="input-font-size"
                   />
-                  <FormControl fullWidth error={!!errors.fontColor} required>
-                    <InputLabel>Boja fonta</InputLabel>
-                    <Select
-                      label="Boja fonta"
-                      {...register('fontColor')}
-                      data-testid="select-font-color"
-                    >
-                      {FONT_COLORS.map((colorOption) => (
-                        <MenuItem key={colorOption.value} value={colorOption.value} data-testid={`option-color-${colorOption.value.replace('#', '')}`}>
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <Box 
-                              sx={{ 
-                                width: 20, 
-                                height: 20, 
-                                backgroundColor: colorOption.color, 
-                                border: '1px solid hsl(0 0% 88%)',
-                                borderRadius: '2px'
-                              }} 
-                            />
-                            {colorOption.label}
-                          </Box>
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                  <Controller
+                    name="fontColor"
+                    control={control}
+                    render={({ field }) => (
+                      <FormControl fullWidth error={!!errors.fontColor} required>
+                        <InputLabel>Boja fonta</InputLabel>
+                        <Select
+                          {...field}
+                          label="Boja fonta"
+                          data-testid="select-font-color"
+                        >
+                          {FONT_COLORS.map((colorOption) => (
+                            <MenuItem key={colorOption.value} value={colorOption.value} data-testid={`option-color-${colorOption.value.replace('#', '')}`}>
+                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <Box 
+                                  sx={{ 
+                                    width: 20, 
+                                    height: 20, 
+                                    backgroundColor: colorOption.color, 
+                                    border: '1px solid hsl(0 0% 88%)',
+                                    borderRadius: '2px'
+                                  }} 
+                                />
+                                {colorOption.label}
+                              </Box>
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    )}
+                  />
                 </Stack>
                 <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
                   💡 Preporučeno: Font 64-80px za dobru čitljivost
                 </Typography>
               </Box>
 
-              <TextField
-                select
-                fullWidth
-                label="Poravnanje teksta"
-                {...register('textAlign')}
-                error={!!errors.textAlign}
-                helperText={errors.textAlign?.message}
-                defaultValue="center"
-                required
-                data-testid="select-text-align"
-              >
-                <MenuItem value="left">Lijevo</MenuItem>
-                <MenuItem value="center">Centar</MenuItem>
-                <MenuItem value="right">Desno</MenuItem>
-              </TextField>
+              <Controller
+                name="textAlign"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    select
+                    fullWidth
+                    label="Poravnanje teksta"
+                    error={!!errors.textAlign}
+                    helperText={errors.textAlign?.message}
+                    required
+                    data-testid="select-text-align"
+                  >
+                    <MenuItem value="left">Lijevo</MenuItem>
+                    <MenuItem value="center">Centar</MenuItem>
+                    <MenuItem value="right">Desno</MenuItem>
+                  </TextField>
+                )}
+              />
             </Box>
           </DialogContent>
           <DialogActions>
