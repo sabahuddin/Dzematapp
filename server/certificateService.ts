@@ -1,7 +1,16 @@
 import sharp from 'sharp';
-import { createCanvas } from '@napi-rs/canvas';
+import { createCanvas, GlobalFonts } from '@napi-rs/canvas';
 import path from 'path';
 import { promises as fs } from 'fs';
+
+// Register custom font for certificate text rendering
+const fontPath = path.join(process.cwd(), 'server', 'fonts', 'DejaVuSans-Bold.ttf');
+try {
+  GlobalFonts.registerFromPath(fontPath, 'DejaVuSans');
+  console.log('[Certificate] Font registered successfully: DejaVuSans');
+} catch (error) {
+  console.error('[Certificate] Failed to register font:', error);
+}
 
 export interface CertificateGenerationOptions {
   templateImagePath: string;
@@ -58,8 +67,8 @@ export async function generateCertificate(options: CertificateGenerationOptions)
   // Clear the canvas to ensure transparency
   ctx.clearRect(0, 0, imageWidth, imageHeight);
 
-  // Set up text rendering with template settings
-  const fontSpec = `bold ${fontSize}px "DejaVu Sans", "Arial", sans-serif`;
+  // Set up text rendering with template settings - use registered font
+  const fontSpec = `bold ${fontSize}px DejaVuSans, sans-serif`;
   ctx.font = fontSpec;
   ctx.fillStyle = fontColor;
   ctx.textAlign = textAlign;

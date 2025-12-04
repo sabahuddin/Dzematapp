@@ -1,0 +1,100 @@
+5:52:58 PM [express] GET /api/certificates/unviewed-count 304 in 15ms :: {"count":0}
+5:52:58 PM [express] GET /api/messages/unread-count 304 in 14ms :: {"count":0}
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+5:52:59 PM [express] GET /api/notifications/unread 304 in 46ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[Certificates] Processing certificate for user 0adf0cb6-6f66-44c3-8bc0-b47aa38c1fe7: Alma Almic
+[Certificate] ===== STARTING CERTIFICATE GENERATION =====
+[Certificate] Options received: {
+  "templateImagePath": "/uploads/default-tenant-demo/certificates/certificate-template-1764861467279-c2hnzg.webp",
+  "recipientName": "Alma Almic",
+  "textPositionX": 512,
+  "textPositionY": 385,
+  "fontSize": 130,
+  "fontColor": "#8B6F47",
+  "textAlign": "center"
+}
+[Certificate] Reading template from: /app/public/uploads/default-tenant-demo/certificates/certificate-template-1764861467279-c2hnzg.webp
+[Certificate] Template file exists
+[Certificate] Template buffer size: 71600 bytes
+[Certificate] Image dimensions: 1200x800
+[Certificate] Drawing text: "Alma Almic"
+[Certificate] Position: (512, 385)
+[Certificate] Font: bold 130px "DejaVu Sans", "Arial", sans-serif
+[Certificate] Color: #8B6F47, Align: center
+[Certificate] Text metrics - width: 0px
+[Certificate] Text overlay buffer size: 3830 bytes
+[Certificate] Final image buffer size: 364129 bytes
+[Certificate] ===== CERTIFICATE GENERATION COMPLETE =====
+[Certificates] Saved certificate for Alma Almic to /uploads/default-tenant-demo/certificates/generated/certificate-0adf0cb6-6f66-44c3-8bc0-b47aa38c1fe7-1764870807001-479204846.png
+[Certificates] Created DB record for Alma Almic: certId=fa3c5220-4960-4ada-8c6c-5c3d2a7b7464, userId=0adf0cb6-6f66-44c3-8bc0-b47aa38c1fe7, imageUrl=/uploads/default-tenant-demo/certificates/generated/certificate-0adf0cb6-6f66-44c3-8bc0-b47aa38c1fe7-1764870807001-479204846.png
+5:53:27 PM [express] POST /api/certificates/issue 201 in 208ms :: {"message":"Certificates issued su…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+5:53:27 PM [express] GET /api/certificates/all 200 in 8ms :: [{"id":"fa3c5220-4960-4ada-8c6c-5c3d2a7…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+5:53:29 PM [express] GET /api/certificates/unviewed-count 304 in 7ms :: {"count":0}
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[MESSAGES/UNREAD-COUNT] Debug: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  sessionTenantId: 'default-tenant-demo',
+  userTenantId: 'default-tenant-demo',
+  reqTenantId: 'default-tenant-demo',
+  resolvedTenantId: 'default-tenant-demo'
+}
+5:53:29 PM [express] GET /api/messages/unread-count 304 in 13ms :: {"count":0}
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+5:53:29 PM [express] GET /api/notifications/unread 304 in 33ms :: {"shop":0,"events":0,"announcement…
