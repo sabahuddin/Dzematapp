@@ -10,13 +10,14 @@ import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { normalizeImageUrl } from '@/lib/imageUtils';
 
-// Default placeholder images from public folder
-const announcementImg = '/images/mosque_announcement__5fa54614.jpg';
-const eventImg = '/images/islamic_community_ev_6ebc00b7.jpg';
-const taskImg = '/images/mosque_task_work_vol_d0885b38.jpg';
-const messageImg = '/images/message_envelope_let_edf65931.jpg';
-const dateImg = '/images/important_date_calen_8295ac6d.jpg';
-const mediaImg = '/images/video_camera_media_l_00904efa.jpg';
+// App logo as fallback for all content types
+const appLogo = '/logo-v3.png';
+const announcementImg = appLogo;
+const eventImg = appLogo;
+const taskImg = appLogo;
+const messageImg = appLogo;
+const dateImg = appLogo;
+const mediaImg = appLogo;
 
 export default function MobileDashboard() {
   const [, setLocation] = useLocation();
