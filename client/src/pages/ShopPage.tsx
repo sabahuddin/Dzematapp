@@ -107,7 +107,10 @@ export default function ShopPage() {
     queryKey: ['/api/services'],
   });
 
-  // Deep linking - navigate to the correct tab and show the item (don't open contact form)
+  // State for deep link scroll target
+  const [scrollTargetId, setScrollTargetId] = useState<string | null>(null);
+
+  // Deep linking - navigate to the correct tab and scroll to item
   useEffect(() => {
     const deepLinkItemId = getDeepLinkItemId();
     if (deepLinkItemId && shopProducts && marketplaceItems && services) {
@@ -116,6 +119,7 @@ export default function ShopPage() {
       
       if (shopProduct) {
         setActiveTab(0);
+        setScrollTargetId(deepLinkItemId);
         window.history.replaceState({}, '', window.location.pathname);
       } else {
         // Check marketplace items (Tab 1 for sell/sale, Tab 2 for gift)
@@ -123,18 +127,40 @@ export default function ShopPage() {
         if (marketplaceItem) {
           // Tab 1 = Prodajem (sell/sale), Tab 2 = Poklanjam (gift)
           setActiveTab((marketplaceItem.type === 'sell' || marketplaceItem.type === 'sale') ? 1 : 2);
+          setScrollTargetId(deepLinkItemId);
           window.history.replaceState({}, '', window.location.pathname);
         } else {
           // Check services (Tab 3)
           const service = services.find(s => s.id === deepLinkItemId);
           if (service) {
             setActiveTab(3);
+            setScrollTargetId(deepLinkItemId);
             window.history.replaceState({}, '', window.location.pathname);
           }
         }
       }
     }
   }, [shopProducts, marketplaceItems, services]);
+
+  // Scroll to target element after tab change
+  useEffect(() => {
+    if (scrollTargetId) {
+      // Small delay to let the DOM render the element
+      const timer = setTimeout(() => {
+        const element = document.getElementById(`item-${scrollTargetId}`);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Highlight the element briefly
+          element.style.boxShadow = '0 0 0 3px var(--primary)';
+          setTimeout(() => {
+            element.style.boxShadow = '';
+          }, 2000);
+        }
+        setScrollTargetId(null);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [scrollTargetId, activeTab]);
 
   // Service photo upload handler
   const handleServicePhotoUpload = async (files: FileList | null) => {
@@ -949,7 +975,7 @@ export default function ShopPage() {
           ) : (
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 3 }}>
               {filteredProducts.map((product) => (
-                <Box key={product.id}>
+                <Box key={product.id} id={`item-${product.id}`}>
                   <Card data-testid={`card-product-${product.id}`}>
                     {product.photos && product.photos.length > 0 && (
                       product.photos.length === 1 ? (
@@ -1067,7 +1093,7 @@ export default function ShopPage() {
                 const itemUser = getUserById(item.userId);
                 const canEdit = item.userId === user?.id || isAdmin;
                 return (
-                  <Box key={item.id}>
+                  <Box key={item.id} id={`item-${item.id}`}>
                     <Card data-testid={`card-sell-${item.id}`}>
                       {item.photos && item.photos.length > 0 && (
                         item.photos.length === 1 ? (
@@ -1186,7 +1212,7 @@ export default function ShopPage() {
                 const itemUser = getUserById(item.userId);
                 const canEdit = item.userId === user?.id || isAdmin;
                 return (
-                  <Box key={item.id}>
+                  <Box key={item.id} id={`item-${item.id}`}>
                     <Card data-testid={`card-gift-${item.id}`}>
                       {item.photos && item.photos.length > 0 && (
                         item.photos.length === 1 ? (
@@ -1301,7 +1327,8 @@ export default function ShopPage() {
                 const serviceUser = users?.find(u => u.id === service.userId);
                 
                 return (
-                  <Card key={service.id} sx={{ display: 'flex', flexDirection: 'column' }}>
+                  <Box key={service.id} id={`item-${service.id}`}>
+                    <Card sx={{ display: 'flex', flexDirection: 'column' }}>
                     {service.photos && service.photos.length > 0 && (
                       <CardMedia
                         component="img"
@@ -1378,7 +1405,8 @@ export default function ShopPage() {
                       )}
                     </Box>
                   </CardContent>
-                </Card>
+                  </Card>
+                  </Box>
               );
               })}
             </Box>
