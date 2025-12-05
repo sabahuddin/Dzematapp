@@ -257,7 +257,7 @@ export default function LoginPage() {
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label="Kod organizacije"
+                  label="Kod džemata"
                   value={tenantCode}
                   onChange={(e) => setTenantCode(e.target.value.toUpperCase())}
                   placeholder="DEMO2025"

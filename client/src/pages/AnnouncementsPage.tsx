@@ -170,12 +170,7 @@ export default function AnnouncementsPage() {
     );
   }
 
-  const predefinedCategories = [
-    t('announcements:categories.predefined.dzemat'),
-    t('announcements:categories.predefined.izbch'),
-    t('announcements:categories.predefined.iz'),
-    t('announcements:categories.predefined.other')
-  ];
+  const predefinedCategories: string[] = [];
   
   const filteredAnnouncements = (announcementsQuery.data || []).filter((announcement: Announcement) => {
     const matchesSearch = announcement.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -225,8 +220,8 @@ export default function AnnouncementsPage() {
         )}
       </Box>
 
-      {/* Search and Filter */}
-      <Stack spacing={1.5}>
+      {/* Search and Filter - 50%:50% layout */}
+      <Box sx={{ display: 'flex', gap: 1 }}>
         <TextField
           placeholder={t('announcements:searchPlaceholder')}
           value={searchTerm}
@@ -234,6 +229,7 @@ export default function AnnouncementsPage() {
           size="small"
           data-testid="input-search-announcements"
           sx={{ 
+            flex: 1,
             '& .MuiOutlinedInput-root': {
               borderRadius: '12px',
               border: '1px solid #c8e6c9',
@@ -244,9 +240,10 @@ export default function AnnouncementsPage() {
         
         <Autocomplete
           multiple
+          freeSolo
           options={predefinedCategories}
           value={selectedCategories}
-          onChange={(_, value) => setSelectedCategories(value)}
+          onChange={(_, value) => setSelectedCategories(value as string[])}
           renderInput={(params) => (
             <TextField
               {...params}
@@ -262,8 +259,9 @@ export default function AnnouncementsPage() {
               }}
             />
           )}
+          sx={{ flex: 1 }}
         />
-      </Stack>
+      </Box>
 
       {/* Announcements Cards - Grid Layout */}
       <Box sx={{ 
@@ -292,19 +290,19 @@ export default function AnnouncementsPage() {
               }
             }}
           >
-            {/* Photo */}
-            {(announcement as any).photoUrl && (
-              <Box
-                sx={{
-                  width: '100%',
-                  height: '200px',
-                  backgroundImage: `url(${(announcement as any).photoUrl})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  borderRadius: '12px 12px 0 0'
-                }}
-              />
-            )}
+            {/* Photo or Logo Placeholder */}
+            <Box
+              sx={{
+                width: '100%',
+                height: '200px',
+                backgroundImage: `url(${(announcement as any).photoUrl || '/logo-placeholder.png'})`,
+                backgroundSize: (announcement as any).photoUrl ? 'cover' : 'contain',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                backgroundColor: (announcement as any).photoUrl ? 'transparent' : '#f5f5f5',
+                borderRadius: '12px 12px 0 0'
+              }}
+            />
             <CardContent sx={{ p: 2, flex: 1 }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 2 }}>
                 <Box sx={{ flex: 1 }}>

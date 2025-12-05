@@ -116,7 +116,7 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
       case 'announcement': return 'Obavještenje';
       case 'event': return 'Događaj';
       case 'shop_item': return 'Shop';
-      case 'new_member': return 'Novi član';
+      case 'new_member': return 'Novost';
       case 'badge_awarded': return 'Značka';
       case 'certificate_issued': return 'Zahvalnica';
       case 'task': return 'Zadatak';
@@ -261,7 +261,9 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
                   whiteSpace: 'nowrap',
                 }}
               >
-                {currentItem.title}
+                {currentItem.type === 'new_member' 
+                  ? `Novi član: ${currentItem.title?.split(' ').map(n => n[0]).join('').toUpperCase() || ''}`
+                  : currentItem.title}
               </Typography>
               
               {currentItem.description && (

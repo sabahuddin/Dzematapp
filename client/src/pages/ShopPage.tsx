@@ -32,7 +32,7 @@ export default function ShopPage() {
   
   const [activeTab, setActiveTab] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchCategory, setSearchCategory] = useState<"all" | "sell" | "gift" | "services">("all");
+  const [searchCategory, setSearchCategory] = useState<"all" | "sell" | "gift" | "need" | "offer">("all");
   const [productModalOpen, setProductModalOpen] = useState(false);
   const [marketplaceModalOpen, setMarketplaceModalOpen] = useState(false);
   const [purchaseModalOpen, setPurchaseModalOpen] = useState(false);
@@ -707,14 +707,16 @@ export default function ShopPage() {
                 setSearchCategory(value);
                 if (value === "sell") setActiveTab(1);
                 else if (value === "gift") setActiveTab(2);
-                else if (value === "services") setActiveTab(3);
+                else if (value === "need") setActiveTab(3);
+                else if (value === "offer") setActiveTab(3);
               }}
               data-testid="select-search-category"
             >
               <MenuItem value="all">Sve</MenuItem>
               <MenuItem value="sell">Prodajem</MenuItem>
               <MenuItem value="gift">Poklanjam</MenuItem>
-              <MenuItem value="services">Usluge</MenuItem>
+              <MenuItem value="need">Tražim</MenuItem>
+              <MenuItem value="offer">Nudim</MenuItem>
             </Select>
           </FormControl>
         </Box>
@@ -868,7 +870,7 @@ export default function ShopPage() {
               </Typography>
               <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 2 }}>
                 {filteredServices.slice(0, 6).map((service) => (
-                  <Card key={service.id} sx={{ cursor: 'pointer' }} onClick={() => { setSearchCategory("services"); setActiveTab(3); }}>
+                  <Card key={service.id} sx={{ cursor: 'pointer' }} onClick={() => { setSearchCategory("offer"); setActiveTab(3); }}>
                     {service.photos && service.photos.length > 0 && (
                       <CardMedia component="img" height="120" image={service.photos[0]} alt={service.name} sx={{ objectFit: 'cover' }} />
                     )}
@@ -880,7 +882,7 @@ export default function ShopPage() {
                 ))}
               </Box>
               {filteredServices.length > 6 && (
-                <Button size="small" onClick={() => { setSearchCategory("services"); setActiveTab(3); }}>
+                <Button size="small" onClick={() => { setSearchCategory("offer"); setActiveTab(3); }}>
                   Prikaži sve ({filteredServices.length})
                 </Button>
               )}

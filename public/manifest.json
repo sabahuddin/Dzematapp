@@ -6,9 +6,15 @@
   "display": "standalone",
   "orientation": "portrait-primary",
   "scope": "/",
-  "theme_color": "#e8f5e9",
+  "theme_color": "#2196F3",
   "background_color": "#ffffff",
   "icons": [
+    {
+      "src": "/logo-placeholder.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
     {
       "src": "/icons/icon-72x72.png",
       "sizes": "72x72",
