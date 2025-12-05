@@ -10,13 +10,13 @@ import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { normalizeImageUrl } from '@/lib/imageUtils';
 
-// Import default placeholder images
-import announcementImg from '@assets/stock_images/mosque_announcement__5fa54614.jpg';
-import eventImg from '@assets/stock_images/islamic_community_ev_6ebc00b7.jpg';
-import taskImg from '@assets/stock_images/mosque_task_work_vol_d0885b38.jpg';
-import messageImg from '@assets/stock_images/message_envelope_let_edf65931.jpg';
-import dateImg from '@assets/stock_images/important_date_calen_8295ac6d.jpg';
-import mediaImg from '@assets/stock_images/video_camera_media_l_00904efa.jpg';
+// Default placeholder images from public folder
+const announcementImg = '/images/mosque_announcement__5fa54614.jpg';
+const eventImg = '/images/islamic_community_ev_6ebc00b7.jpg';
+const taskImg = '/images/mosque_task_work_vol_d0885b38.jpg';
+const messageImg = '/images/message_envelope_let_edf65931.jpg';
+const dateImg = '/images/important_date_calen_8295ac6d.jpg';
+const mediaImg = '/images/video_camera_media_l_00904efa.jpg';
 
 export default function MobileDashboard() {
   const [, setLocation] = useLocation();
