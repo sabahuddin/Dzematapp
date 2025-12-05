@@ -252,9 +252,9 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
 
             {/* Content on Right */}
             <Box sx={{ flex: 1, minWidth: 0, p: 2, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              {/* Entity Type Badge */}
+              {/* Entity Type Badge - for shop_item use title which contains proper label */}
               <Chip
-                label={getEntityTypeBadgeLabel(currentItem.type)}
+                label={currentItem.type === 'shop_item' ? currentItem.title : getEntityTypeBadgeLabel(currentItem.type)}
                 size="small"
                 sx={{
                   height: '20px',
@@ -281,10 +281,13 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
               >
                 {currentItem.type === 'new_member' 
                   ? `Novi član: ${currentItem.title?.split(' ').map(n => n[0]).join('').toUpperCase() || ''}`
-                  : currentItem.title}
+                  : currentItem.type === 'shop_item' 
+                    ? currentItem.description 
+                    : currentItem.title}
               </Typography>
               
-              {currentItem.description && (
+              {/* Show description for non-shop items */}
+              {currentItem.type !== 'shop_item' && currentItem.type !== 'new_member' && currentItem.description && (
                 <Typography 
                   variant="body2" 
                   sx={{ 

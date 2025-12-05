@@ -1563,6 +1563,22 @@ export class DatabaseStorage implements IStorage {
 
   async createShopProduct(product: InsertShopProduct): Promise<ShopProduct> {
     const [prod] = await db.insert(shopProducts).values({...product, tenantId: product.tenantId}).returning();
+    
+    // Add to activity feed - shop products are always for sale (Džemat shop)
+    await this.createActivityFeedItem({
+      tenantId: prod.tenantId,
+      type: "shop_item",
+      title: "Prodaje se",
+      description: prod.name,
+      relatedEntityId: prod.id,
+      relatedEntityType: "shop_item",
+      isClickable: true,
+      metadata: JSON.stringify({ 
+        imageUrl: prod.photos?.[0] || prod.imageUrl || null,
+        listingType: 'sell'
+      })
+    });
+    
     return prod;
   }
 
@@ -1588,17 +1604,21 @@ export class DatabaseStorage implements IStorage {
   async createMarketplaceItem(item: InsertMarketplaceItem): Promise<MarketplaceItem> {
     const [marketItem] = await db.insert(marketplaceItems).values({...item, tenantId: item.tenantId}).returning();
     
-    // Add to activity feed
+    // Add to activity feed with listingType for proper label mapping
     const typeText = marketItem.type === 'sale' ? 'Prodaje se' : 'Poklanja se';
+    const listingType = marketItem.type === 'sale' ? 'sell' : 'gift';
     await this.createActivityFeedItem({
       tenantId: marketItem.tenantId,
       type: "shop_item",
       title: typeText,
       description: marketItem.name,
       relatedEntityId: marketItem.id,
-      relatedEntityType: "shop_item",
+      relatedEntityType: "marketplace",
       isClickable: true,
-      metadata: JSON.stringify({ imageUrl: marketItem.photos?.[0] || null })
+      metadata: JSON.stringify({ 
+        imageUrl: marketItem.photos?.[0] || null,
+        listingType: listingType
+      })
     });
     
     return marketItem;
@@ -1632,7 +1652,7 @@ export class DatabaseStorage implements IStorage {
   async createService(service: InsertService): Promise<Service> {
     const [newService] = await db.insert(services).values({...service, tenantId: service.tenantId}).returning();
     
-    // Add to activity feed
+    // Add to activity feed with service listingType
     await this.createActivityFeedItem({
       tenantId: newService.tenantId,
       type: "shop_item",
@@ -1641,7 +1661,10 @@ export class DatabaseStorage implements IStorage {
       relatedEntityId: newService.id,
       relatedEntityType: "service",
       isClickable: true,
-      metadata: JSON.stringify({ imageUrl: newService.photos?.[0] || null })
+      metadata: JSON.stringify({ 
+        imageUrl: newService.photos?.[0] || null,
+        listingType: 'service'
+      })
     });
     
     return newService;

@@ -372,9 +372,9 @@ export default function MobileDashboard() {
 
                       {/* Content on Right */}
                       <Box sx={{ flex: 1, minWidth: 0, p: 1.5, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                        {/* Entity Type Badge */}
+                        {/* Entity Type Badge - for shop_item use title which contains proper label */}
                         <Chip
-                          label={getEntityTypeBadgeLabel(item.type)}
+                          label={item.type === 'shop_item' ? item.title : getEntityTypeBadgeLabel(item.type)}
                           size="small"
                           sx={{
                             height: '18px',
@@ -399,10 +399,12 @@ export default function MobileDashboard() {
                             whiteSpace: 'nowrap',
                           }}
                         >
-                          {item.title}
+                          {/* For shop_item, description contains the product name, title is the label */}
+                          {item.type === 'shop_item' ? item.description : item.title}
                         </Typography>
                         
-                        {item.description && (
+                        {/* Show description for non-shop items */}
+                        {item.type !== 'shop_item' && item.description && (
                           <Typography 
                             variant="body2" 
                             sx={{ 
