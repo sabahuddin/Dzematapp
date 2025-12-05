@@ -1,0 +1,100 @@
+userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+8:42:21 AM [express] GET /api/prayer-times/today 304 in 35ms :: {"id":"f4a06d93-5b1f-44bf-8aa1-e575b…
+8:42:21 AM [express] GET /api/messages/unread-count 304 in 44ms :: {"count":0}
+8:42:21 AM [express] GET /api/certificates/unviewed-count 304 in 38ms :: {"count":0}
+8:42:21 AM [express] GET /api/activity-logs/user 304 in 41ms
+8:42:21 AM [express] GET /api/notifications/unread 304 in 41ms :: {"shop":0,"events":0,"announcement…
+8:42:21 AM [express] GET /api/activity-feed 304 in 48ms :: [{"id":"34063e38-00ca-4bca-a099-dc9516372…
+8:42:21 AM [express] GET /api/announcements 304 in 147ms :: [{"id":"b7494c12-27ff-4bb5-a91f-2f7fb386…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '6cdf91ab-d510-4183-9392-5ccae311c14f',
+  username: 'ali.alic',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '6cdf91ab-d510-4183-9392-5ccae311c14f',
+  username: 'ali.alic',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '6cdf91ab-d510-4183-9392-5ccae311c14f',
+  username: 'ali.alic',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[GET /api/users] DEBUG: {
+  'req.user.tenantId': 'default-tenant-demo',
+  'session.tenantId': 'default-tenant-demo',
+  'req.tenantId': 'default-tenant-demo',
+  username: 'ali.alic',
+  userId: '6cdf91ab-d510-4183-9392-5ccae311c14f'
+}
+[GET /api/users] Using tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '6cdf91ab-d510-4183-9392-5ccae311c14f',
+  username: 'ali.alic',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[GET /api/users] Found 11 users for tenant: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '6cdf91ab-d510-4183-9392-5ccae311c14f',
+  username: 'ali.alic',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '6cdf91ab-d510-4183-9392-5ccae311c14f',
+  username: 'ali.alic',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+8:42:26 AM [express] GET /api/users 200 in 13ms :: [{"id":"0adf0cb6-6f66-44c3-8bc0-b47aa38c1fe7","te…
+8:42:26 AM [express] GET /api/subscription/current 304 in 18ms :: {"tenantId":"default-tenant-demo",…
+8:42:26 AM [express] PUT /api/notifications/mark-viewed/shop 200 in 31ms :: {"success":true}
+8:42:26 AM [express] GET /api/marketplace/items 304 in 12ms :: [{"id":"02c3c6d5-3fad-497e-a4c3-75141…
+8:42:26 AM [express] GET /api/shop/products 304 in 19ms :: [{"id":"6972d571-0baf-4328-851f-82508ffe8…
+8:42:26 AM [express] GET /api/services 304 in 13ms :: [{"id":"5950fe9a-9408-4b52-a376-fc89b6802665",…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '6cdf91ab-d510-4183-9392-5ccae311c14f',
+  username: 'ali.alic',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+8:42:26 AM [express] GET /api/notifications/unread 304 in 8ms :: {"shop":0,"events":0,"announcements…
