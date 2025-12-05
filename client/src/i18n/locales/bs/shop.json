@@ -123,7 +123,8 @@
     "messageError": "Greška pri slanju poruke",
     "messageRequired": "Molimo unesite sadržaj poruke",
     "nameRequired": "Naziv je obavezan",
-    "error": "Greška"
+    "error": "Greška",
+    "ownerNotFound": "Vlasnik nije pronađen"
   },
   "messages": {
     "newOrder": "Nova narudžba iz DžematShop",

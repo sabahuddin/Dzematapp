@@ -1606,8 +1606,10 @@ export class DatabaseStorage implements IStorage {
     const [marketItem] = await db.insert(marketplaceItems).values({...item, tenantId: item.tenantId}).returning();
     
     // Add to activity feed with listingType for proper label mapping
-    const typeText = marketItem.type === 'sale' ? 'Prodaje se' : 'Poklanja se';
-    const listingType = marketItem.type === 'sale' ? 'sell' : 'gift';
+    // Support both "sell" (new) and "sale" (legacy) types as "Prodaje se"
+    const isSellType = marketItem.type === 'sell' || marketItem.type === 'sale';
+    const typeText = isSellType ? 'Prodaje se' : 'Poklanja se';
+    const listingType = isSellType ? 'sell' : 'gift';
     await this.createActivityFeedItem({
       tenantId: marketItem.tenantId,
       type: "shop_item",

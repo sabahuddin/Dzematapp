@@ -107,50 +107,34 @@ export default function ShopPage() {
     queryKey: ['/api/services'],
   });
 
-  // Deep linking - open specific product modal when itemId is in URL
+  // Deep linking - navigate to the correct tab and show the item (don't open contact form)
   useEffect(() => {
     const deepLinkItemId = getDeepLinkItemId();
-    if (deepLinkItemId && shopProducts && !purchaseModalOpen && !contactDialogOpen) {
-      // Search in shop products first
+    if (deepLinkItemId && shopProducts && marketplaceItems && services) {
+      // Search in shop products first (Tab 0)
       const shopProduct = shopProducts.find(p => p.id === deepLinkItemId);
       
       if (shopProduct) {
-        // Open contact dialog for shop products (same as marketplace)
-        const creatorUser = users?.find(u => u.id === shopProduct.createdById);
-        if (creatorUser) {
-          setContactUserId(creatorUser.id);
-          setContactItemName(shopProduct.name);
-          setContactDialogOpen(true);
-        }
+        setActiveTab(0);
         window.history.replaceState({}, '', window.location.pathname);
-      } else if (marketplaceItems) {
-        // Check marketplace items
+      } else {
+        // Check marketplace items (Tab 1 for sell/sale, Tab 2 for gift)
         const marketplaceItem = marketplaceItems.find(m => m.id === deepLinkItemId);
         if (marketplaceItem) {
-          // Open contact dialog for marketplace items
-          setActiveTab(1);
-          if (marketplaceItem.userId) {
-            setContactUserId(marketplaceItem.userId);
-            setContactItemName(marketplaceItem.name);
-            setContactDialogOpen(true);
-          }
+          // Tab 1 = Prodajem (sell/sale), Tab 2 = Poklanjam (gift)
+          setActiveTab((marketplaceItem.type === 'sell' || marketplaceItem.type === 'sale') ? 1 : 2);
           window.history.replaceState({}, '', window.location.pathname);
-        } else if (services) {
-          // Check services
+        } else {
+          // Check services (Tab 3)
           const service = services.find(s => s.id === deepLinkItemId);
           if (service) {
-            setActiveTab(2);
-            if (service.userId) {
-              setContactUserId(service.userId);
-              setContactItemName(service.name);
-              setContactDialogOpen(true);
-            }
+            setActiveTab(3);
             window.history.replaceState({}, '', window.location.pathname);
           }
         }
       }
     }
-  }, [shopProducts, marketplaceItems, services, users, purchaseModalOpen, contactDialogOpen]);
+  }, [shopProducts, marketplaceItems, services]);
 
   // Service photo upload handler
   const handleServicePhotoUpload = async (files: FileList | null) => {
@@ -625,6 +609,12 @@ export default function ShopPage() {
       setContactItemName(itemName || "");
       setContactMessage("");
       setContactDialogOpen(true);
+    } else {
+      toast({ 
+        title: t('shop:toast.error'), 
+        description: t('shop:toast.ownerNotFound', 'Vlasnik nije pronađen'), 
+        variant: "destructive" 
+      });
     }
   };
 
@@ -683,10 +673,10 @@ export default function ShopPage() {
            (description?.toLowerCase().includes(query) || false);
   };
 
-  // Filtered data based on search
+  // Filtered data based on search (support both "sell" and legacy "sale" types)
   const filteredProducts = shopProducts?.filter(p => filterBySearch(p.name, p.description)) || [];
   const sellItems = marketplaceItems?.filter(item => 
-    item.type === "sell" && item.status === "active" && filterBySearch(item.title, item.description)
+    (item.type === "sell" || item.type === "sale") && item.status === "active" && filterBySearch(item.title, item.description)
   ) || [];
   const giftItems = marketplaceItems?.filter(item => 
     item.type === "gift" && item.status === "active" && filterBySearch(item.title, item.description)
