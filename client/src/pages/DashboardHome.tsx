@@ -421,7 +421,7 @@ export default function DashboardHome() {
           const progress = nextThreshold > 0 ? Math.min((currentPoints / nextThreshold) * 100, 100) : 0;
           
           return (
-            <Card sx={{ mb: 3, bgcolor: 'hsl(36 100% 94%)', cursor: 'pointer', '&:hover': { boxShadow: 4 } }} onClick={() => setLocation('/my-points')}>
+            <Card sx={{ mb: 3, bgcolor: 'hsl(36 100% 94%)', cursor: 'pointer', '&:hover': { boxShadow: 4 } }} onClick={() => setLocation('/my-activities')}>
               <Box sx={{ p: 2, borderBottom: '1px solid hsl(35 100% 66%)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                   <EmojiEvents sx={{ color: 'hsl(14 100% 45%)' }} />

@@ -62,6 +62,7 @@
     "inStock": "Në stok: {{quantity}}",
     "forSale": "Për shitje",
     "giftLabel": "Dhuratë",
+    "serviceLabel": "Shërbim",
     "sold": "Shitur",
     "gifted": "Dhuruar",
     "owner": "Pronari: {{name}}",

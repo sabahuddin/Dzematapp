@@ -62,6 +62,7 @@
     "inStock": "Auf Lager: {{quantity}}",
     "forSale": "Zu verkaufen",
     "giftLabel": "Geschenk",
+    "serviceLabel": "Dienstleistung",
     "sold": "Verkauft",
     "gifted": "Verschenkt",
     "owner": "Besitzer: {{name}}",

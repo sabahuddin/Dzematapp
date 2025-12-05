@@ -1300,6 +1300,7 @@ export default function ShopPage() {
                           {formatPrice(service.price)}
                         </Typography>
                       )}
+                      <Chip label={t('shop:display.serviceLabel')} color="info" size="small" sx={{ mb: 1, mr: 1 }} />
                       {service.duration && (
                         <Chip label={service.duration} size="small" sx={{ mr: 1 }} />
                       )}

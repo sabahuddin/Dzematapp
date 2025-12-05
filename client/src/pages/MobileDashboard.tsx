@@ -209,7 +209,7 @@ export default function MobileDashboard() {
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
               {announcements.slice(0, 3).map((announcement, index) => {
                 const isLast = index === announcements.length - 1 || index === 2;
-                const imageUrl = announcementImg;
+                const imageUrl = normalizeImageUrl((announcement as any).photoUrl) || announcementImg;
                 return (
                   <Box
                     key={announcement.id}
