@@ -4,14 +4,14 @@ import { ArrowForward } from '@mui/icons-material';
 import { type ActivityFeedItem } from '@shared/schema';
 import { useLocation } from 'wouter';
 import { normalizeImageUrl } from '@/lib/imageUtils';
-// App logo as fallback for all content types
-const appLogo = '/logo-v3.png';
-const announcementImg = appLogo;
-const eventImg = appLogo;
-const taskImg = appLogo;
-const messageImg = appLogo;
-const mediaImg = appLogo;
-const dateImg = appLogo;
+// Green placeholder image for content without photos
+const placeholderImg = '/placeholder.png';
+const announcementImg = placeholderImg;
+const eventImg = placeholderImg;
+const taskImg = placeholderImg;
+const messageImg = placeholderImg;
+const mediaImg = placeholderImg;
+const dateImg = placeholderImg;
 
 interface FeedSlideshowProps {
   items: ActivityFeedItem[];

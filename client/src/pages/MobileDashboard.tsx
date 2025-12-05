@@ -10,14 +10,14 @@ import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { normalizeImageUrl } from '@/lib/imageUtils';
 
-// App logo as fallback for all content types
-const appLogo = '/logo-v3.png';
-const announcementImg = appLogo;
-const eventImg = appLogo;
-const taskImg = appLogo;
-const messageImg = appLogo;
-const dateImg = appLogo;
-const mediaImg = appLogo;
+// Green placeholder image for content without photos
+const placeholderImg = '/placeholder.png';
+const announcementImg = placeholderImg;
+const eventImg = placeholderImg;
+const taskImg = placeholderImg;
+const messageImg = placeholderImg;
+const dateImg = placeholderImg;
+const mediaImg = placeholderImg;
 
 export default function MobileDashboard() {
   const [, setLocation] = useLocation();

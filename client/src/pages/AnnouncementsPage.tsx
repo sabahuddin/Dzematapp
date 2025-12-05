@@ -302,7 +302,7 @@ export default function AnnouncementsPage() {
                   sx={{
                     width: '100%',
                     height: '200px',
-                    backgroundImage: `url(${imageUrl || '/logo-v3.png'})`,
+                    backgroundImage: `url(${imageUrl || '/placeholder.png'})`,
                     backgroundSize: imageUrl ? 'cover' : 'contain',
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
