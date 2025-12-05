@@ -33,7 +33,7 @@ export default function BottomNavigation() {
       <MuiBottomNavigation
         value={getActiveTab()}
         onChange={handleChange}
-        showLabels={true}
+        showLabels={false}
         sx={{
           backgroundColor: 'transparent',
           height: 'auto',

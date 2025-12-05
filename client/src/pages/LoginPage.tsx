@@ -350,7 +350,7 @@ export default function LoginPage() {
                     sx={{ cursor: 'pointer' }}
                     data-testid="link-change-tenant"
                   >
-                    Promijenite organizaciju
+                    Unesi kod (drugoga) džemata
                   </MuiLink>
                 </Box>
 

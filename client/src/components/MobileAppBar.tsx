@@ -110,7 +110,7 @@ export function MobileAppBar({ title = 'DžematApp', showBack }: MobileAppBarPro
       elevation={0}
       sx={{
         bgcolor: 'var(--card)',
-        borderBottom: '1px solid var(--border)',
+        borderBottom: 'none',
         color: 'var(--card-foreground)',
         borderRadius: 0,
       }}

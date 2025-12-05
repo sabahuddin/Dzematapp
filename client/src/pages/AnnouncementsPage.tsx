@@ -277,6 +277,7 @@ export default function AnnouncementsPage() {
           <Card
             key={announcement.id}
             data-testid={`card-announcement-${announcement.id}`}
+            onClick={() => window.location.href = `/announcements?id=${announcement.id}`}
             sx={{
               border: '1px solid #c8e6c9',
               borderRadius: '12px',
@@ -285,8 +286,10 @@ export default function AnnouncementsPage() {
               flexDirection: 'column',
               overflow: 'hidden',
               height: '100%',
+              cursor: 'pointer',
               '&:hover': {
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                borderColor: '#81c784'
               }
             }}
           >
