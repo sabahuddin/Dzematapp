@@ -132,10 +132,15 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
 
 
   const handleItemClick = (item: ActivityFeedItem) => {
+    // Early return if item is not clickable
     if (!item.isClickable) return;
-
+    
     const id = item.relatedEntityId;
-    const type = item.relatedEntityType?.toLowerCase();
+    const entityType = item.relatedEntityType?.toLowerCase();
+    const itemType = item.type?.toLowerCase();
+    
+    // Use itemType as fallback if entityType doesn't match known types
+    const type = entityType || itemType;
     
     switch (type) {
       case 'announcement': 
@@ -150,8 +155,14 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
       case 'media': 
         setLocation('/media'); 
         break;
-      case 'shop_item': 
-        setLocation(id ? `/shop?id=${id}` : '/shop'); 
+      case 'shop_item':
+      case 'service':
+      case 'marketplace':
+        if (id) {
+          setLocation(`/shop?itemId=${id}`);
+        } else {
+          setLocation('/shop');
+        }
         break;
       case 'badge': 
         setLocation('/badges'); 
@@ -171,7 +182,12 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
       case 'important_date_reminder': 
         setLocation('/events'); 
         break;
-      default: break;
+      default: 
+        // For shop_item type without specific entityType, go to shop
+        if (itemType === 'shop_item') {
+          setLocation(id ? `/shop?itemId=${id}` : '/shop');
+        }
+        break;
     }
   };
 

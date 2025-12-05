@@ -1,11 +1,11 @@
 import { Box, Typography, Card, CardContent, CircularProgress, Alert, Chip, Avatar } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
-import { type ActivityFeedItem, type PrayerTime, type Announcement } from '@shared/schema';
+import { type ActivityFeedItem, type PrayerTime, type Announcement, type Message } from '@shared/schema';
 import { HeroPrayerCard } from '../components/HeroPrayerCard';
 import { SectionCard } from '../components/SectionCard';
 import FeedSlideshow from '../components/FeedSlideshow';
-import { ArrowForward, Article, Campaign } from '@mui/icons-material';
+import { ArrowForward, Article, Campaign, Mail } from '@mui/icons-material';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { normalizeImageUrl } from '@/lib/imageUtils';
@@ -39,6 +39,12 @@ export default function MobileDashboard() {
     refetchInterval: 30000,
   });
 
+  // Fetch messages for current user (returns messages with sender info)
+  const { data: messages = [], isLoading: messagesLoading } = useQuery<(Message & { sender?: { firstName: string; lastName: string } })[]>({
+    queryKey: ['/api/messages'],
+    refetchInterval: 30000,
+  });
+
   // Get user-specific activities (events, shop, tasks, messages, etc.)
   const userActivities = feedItems
     .filter(item => 
@@ -52,10 +58,15 @@ export default function MobileDashboard() {
     .slice(0, 5);
 
   const handleItemClick = (item: ActivityFeedItem) => {
+    // Early return if item is not clickable
     if (!item.isClickable) return;
-
+    
     const id = item.relatedEntityId;
-    const type = item.relatedEntityType?.toLowerCase();
+    const entityType = item.relatedEntityType?.toLowerCase();
+    const itemType = item.type?.toLowerCase();
+    
+    // Use itemType as fallback if entityType doesn't match known types
+    const type = entityType || itemType;
     
     switch (type) {
       case 'announcement': 
@@ -70,9 +81,10 @@ export default function MobileDashboard() {
       case 'media': 
         setLocation('/media'); 
         break;
-      case 'shop_item': 
+      case 'shop_item':
+      case 'service':
+      case 'marketplace':
         if (id) {
-          // Open shop page with query param to show specific item
           setLocation(`/shop?itemId=${id}`);
         } else {
           setLocation('/shop');
@@ -96,7 +108,12 @@ export default function MobileDashboard() {
       case 'important_date_reminder': 
         setLocation('/events'); 
         break;
-      default: break;
+      default: 
+        // For shop_item type without specific entityType, go to shop
+        if (itemType === 'shop_item') {
+          setLocation(id ? `/shop?itemId=${id}` : '/shop');
+        }
+        break;
     }
   };
 
@@ -426,6 +443,113 @@ export default function MobileDashboard() {
                           />
                         </Box>
                       )}
+                    </Box>
+                  </Box>
+                );
+              })}
+            </Box>
+          )}
+        </SectionCard>
+
+        {/* Messages Section */}
+        <SectionCard 
+          title={t('dashboard:myMessages', 'Moje poruke')}
+          icon={<Mail />}
+          linkTo="/messages"
+          linkText={t('common.viewAll', 'Vidi sve')}
+        >
+          {messagesLoading && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+              <CircularProgress />
+            </Box>
+          )}
+
+          {!messagesLoading && messages.length === 0 && (
+            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
+              {t('dashboard:messages.empty', 'Nema poruka')}
+            </Typography>
+          )}
+
+          {!messagesLoading && messages.length > 0 && (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+              {messages.slice(0, 3).map((message, index) => {
+                const isLast = index === messages.length - 1 || index === 2;
+                return (
+                  <Box
+                    key={message.id}
+                    onClick={() => setLocation('/messages')}
+                    data-testid={`message-${message.id}`}
+                    sx={{
+                      cursor: 'pointer',
+                      bgcolor: 'var(--card)',
+                      borderBottom: isLast ? 'none' : '1px solid var(--border)',
+                      transition: 'all 0.2s ease',
+                      '&:hover': {
+                        bgcolor: 'var(--accent)',
+                      },
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 1.5 }}>
+                      <Avatar 
+                        sx={{ 
+                          width: 40, 
+                          height: 40,
+                          bgcolor: 'var(--primary)',
+                          fontSize: '0.9rem',
+                        }}
+                      >
+                        {message.sender?.firstName?.charAt(0) || 'P'}
+                      </Avatar>
+
+                      <Box sx={{ flex: 1, minWidth: 0 }}>
+                        <Typography 
+                          variant="subtitle2" 
+                          sx={{ 
+                            fontWeight: message.isRead ? 400 : 600,
+                            fontSize: '0.9rem',
+                            mb: 0.25,
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {message.subject || 'Poruka'}
+                        </Typography>
+
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            color: 'var(--muted-foreground)',
+                            fontSize: '0.8rem',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {message.sender ? `${message.sender.firstName} ${message.sender.lastName}` : 'Nepoznat pošiljalac'}
+                        </Typography>
+
+                        <Typography 
+                          variant="caption" 
+                          sx={{ 
+                            color: 'var(--muted-foreground)',
+                            fontSize: '0.7rem',
+                            display: 'block',
+                          }}
+                        >
+                          {formatDate(message.createdAt)}
+                        </Typography>
+                      </Box>
+                      
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <ArrowForward 
+                          sx={{ 
+                            color: 'var(--primary)',
+                            fontSize: '20px',
+                            flexShrink: 0,
+                          }} 
+                        />
+                      </Box>
                     </Box>
                   </Box>
                 );
