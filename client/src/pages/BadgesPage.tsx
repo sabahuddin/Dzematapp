@@ -83,9 +83,9 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
     defaultValues: {
       name: '',
       description: '',
-      criteriaType: '',
+      criteriaType: 'points_total',
       criteriaValue: 0,
-      icon: null,
+      icon: '🏅',
     }
   });
 
@@ -181,9 +181,9 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
       form.reset({
         name: '',
         description: '',
-        criteriaType: '',
+        criteriaType: 'points_total',
         criteriaValue: 0,
-        icon: null,
+        icon: '🏅',
       });
     }
     setDialogOpen(true);
@@ -394,9 +394,9 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
                 data-testid="select-criteria-type"
               >
                 <option value="">{t('badges:selectType')}</option>
-                <option value="points">{t('badges:criteriaTypes.points')}</option>
+                <option value="points_total">{t('badges:criteriaTypes.points')}</option>
                 <option value="tasks_completed">{t('badges:criteriaTypes.tasks_completed')}</option>
-                <option value="contributions_amount">{t('badges:criteriaTypes.contributions_amount')}</option>
+                <option value="donation_total">{t('badges:criteriaTypes.contributions_amount')}</option>
                 <option value="events_attended">{t('badges:criteriaTypes.events_attended')}</option>
               </TextField>
               <TextField
