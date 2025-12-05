@@ -31,6 +31,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/use-toast';
 import { useMarkAsViewed } from '../hooks/useMarkAsViewed';
 import { apiRequest } from '../lib/queryClient';
+import { normalizeImageUrl } from '@/lib/imageUtils';
 
 const stripHtmlTags = (html: string): string => {
   if (!html) return '';
@@ -294,18 +295,23 @@ export default function AnnouncementsPage() {
             }}
           >
             {/* Photo or Logo Placeholder */}
-            <Box
-              sx={{
-                width: '100%',
-                height: '200px',
-                backgroundImage: `url(${(announcement as any).photoUrl || '/logo-placeholder.png'})`,
-                backgroundSize: (announcement as any).photoUrl ? 'cover' : 'contain',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat',
-                backgroundColor: (announcement as any).photoUrl ? 'transparent' : '#f5f5f5',
-                borderRadius: '12px 12px 0 0'
-              }}
-            />
+            {(() => {
+              const imageUrl = normalizeImageUrl(announcement.photoUrl);
+              return (
+                <Box
+                  sx={{
+                    width: '100%',
+                    height: '200px',
+                    backgroundImage: `url(${imageUrl || '/logo-v3.png'})`,
+                    backgroundSize: imageUrl ? 'cover' : 'contain',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundColor: imageUrl ? 'transparent' : '#f5f5f5',
+                    borderRadius: '12px 12px 0 0'
+                  }}
+                />
+              );
+            })()}
             <CardContent sx={{ p: 2, flex: 1 }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 2 }}>
                 <Box sx={{ flex: 1 }}>
@@ -357,7 +363,7 @@ export default function AnnouncementsPage() {
               <Box sx={{ display: 'flex', gap: 0.5, mt: 1.5, justifyContent: 'flex-end' }}>
                 <IconButton
                   size="small"
-                  onClick={() => handleViewAnnouncement(announcement)}
+                  onClick={(e) => { e.stopPropagation(); handleViewAnnouncement(announcement); }}
                   data-testid={`button-view-announcement-${announcement.id}`}
                   title={t('announcements:view')}
                   sx={{ color: '#81c784' }}
@@ -367,7 +373,7 @@ export default function AnnouncementsPage() {
                 {user?.isAdmin && (
                   <IconButton
                     size="small"
-                    onClick={() => handleEditAnnouncement(announcement)}
+                    onClick={(e) => { e.stopPropagation(); handleEditAnnouncement(announcement); }}
                     data-testid={`button-edit-announcement-${announcement.id}`}
                     title={t('announcements:edit')}
                     sx={{ color: '#ff9800' }}
@@ -378,7 +384,7 @@ export default function AnnouncementsPage() {
                 {user?.isAdmin && (
                   <IconButton
                     size="small"
-                    onClick={() => handleDeleteClick(announcement)}
+                    onClick={(e) => { e.stopPropagation(); handleDeleteClick(announcement); }}
                     data-testid={`button-delete-announcement-${announcement.id}`}
                     title={t('announcements:delete')}
                     sx={{ color: '#f44336' }}
