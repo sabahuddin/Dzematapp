@@ -67,6 +67,20 @@ export default function MessagesPage() {
     queryKey: ["/api/messages/conversations"],
   });
 
+  // Deep linking - open specific conversation when ?threadId= is in URL
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const threadId = params.get('threadId');
+    if (threadId && conversations.length > 0 && !selectedConversation) {
+      const conversation = conversations.find(c => c.threadId === threadId);
+      if (conversation) {
+        setSelectedConversation(conversation);
+        // Clear URL after opening conversation
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+    }
+  }, [conversations, selectedConversation]);
+
   const { data: threadMessages = [] } = useQuery<MessageWithDetails[]>({
     queryKey: ["/api/messages/thread", selectedConversation?.threadId],
     queryFn: async () => {

@@ -110,25 +110,47 @@ export default function ShopPage() {
   // Deep linking - open specific product modal when itemId is in URL
   useEffect(() => {
     const deepLinkItemId = getDeepLinkItemId();
-    if (deepLinkItemId && shopProducts && !purchaseModalOpen) {
-      // Search in both shop products and marketplace items
+    if (deepLinkItemId && shopProducts && !purchaseModalOpen && !contactDialogOpen) {
+      // Search in shop products first
       const shopProduct = shopProducts.find(p => p.id === deepLinkItemId);
       
       if (shopProduct) {
-        handleOpenPurchaseModal(shopProduct);
-        // Clear URL after opening modal
+        // Open contact dialog for shop products (same as marketplace)
+        const creatorUser = users?.find(u => u.id === shopProduct.createdById);
+        if (creatorUser) {
+          setContactUserId(creatorUser.id);
+          setContactItemName(shopProduct.name);
+          setContactDialogOpen(true);
+        }
         window.history.replaceState({}, '', window.location.pathname);
       } else if (marketplaceItems) {
-        // If not found in shop products, check marketplace items
+        // Check marketplace items
         const marketplaceItem = marketplaceItems.find(m => m.id === deepLinkItemId);
         if (marketplaceItem) {
-          // For marketplace items, just navigate to marketplace tab
+          // Open contact dialog for marketplace items
           setActiveTab(1);
+          if (marketplaceItem.userId) {
+            setContactUserId(marketplaceItem.userId);
+            setContactItemName(marketplaceItem.name);
+            setContactDialogOpen(true);
+          }
           window.history.replaceState({}, '', window.location.pathname);
+        } else if (services) {
+          // Check services
+          const service = services.find(s => s.id === deepLinkItemId);
+          if (service) {
+            setActiveTab(2);
+            if (service.userId) {
+              setContactUserId(service.userId);
+              setContactItemName(service.name);
+              setContactDialogOpen(true);
+            }
+            window.history.replaceState({}, '', window.location.pathname);
+          }
         }
       }
     }
-  }, [shopProducts, marketplaceItems, purchaseModalOpen]);
+  }, [shopProducts, marketplaceItems, services, users, purchaseModalOpen, contactDialogOpen]);
 
   // Service photo upload handler
   const handleServicePhotoUpload = async (files: FileList | null) => {
@@ -558,6 +580,18 @@ export default function ShopPage() {
 
 
   const handleOpenPurchaseModal = (product: ShopProductWithUser) => {
+    // Use contact dialog instead of purchase form (same as Prodajem/Poklanjam)
+    const creatorUser = users?.find(u => u.id === product.createdById);
+    if (creatorUser) {
+      setContactUserId(creatorUser.id);
+      setContactItemName(product.name);
+      setContactDialogOpen(true);
+    } else {
+      toast({ title: t('shop:toast.ownerNotFound'), variant: "destructive" });
+    }
+  };
+
+  const handleOpenPurchaseModalLegacy = (product: ShopProductWithUser) => {
     setSelectedProduct(product);
     setPurchaseDetails({
       size: product.size || "",

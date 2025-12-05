@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -61,6 +61,21 @@ export default function AnnouncementsPage() {
     queryKey: ['/api/announcements'],
     retry: 1,
   });
+
+  // Deep linking - open specific announcement when ?id= is in URL
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const announcementId = params.get('id');
+    if (announcementId && announcementsQuery.data && !modalOpen) {
+      const announcement = announcementsQuery.data.find(a => a.id === announcementId);
+      if (announcement) {
+        setSelectedAnnouncement(announcement);
+        setModalOpen(true);
+        // Clear URL after opening modal
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+    }
+  }, [announcementsQuery.data, modalOpen]);
 
   const createAnnouncementMutation = useMutation({
     mutationFn: async (announcementData: any) => {

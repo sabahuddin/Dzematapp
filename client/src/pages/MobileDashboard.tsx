@@ -479,7 +479,7 @@ export default function MobileDashboard() {
                 return (
                   <Box
                     key={message.id}
-                    onClick={() => setLocation('/messages')}
+                    onClick={() => message.threadId ? setLocation(`/messages?threadId=${message.threadId}`) : setLocation('/messages')}
                     data-testid={`message-${message.id}`}
                     sx={{
                       cursor: 'pointer',

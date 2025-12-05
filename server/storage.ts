@@ -510,11 +510,12 @@ export class DatabaseStorage implements IStorage {
       tenantId: user.tenantId
     });
     
-    // Add to activity feed
+    // Add to activity feed with initials only (privacy)
+    const initials = `${user.firstName?.[0] || ''}. ${user.lastName?.[0] || ''}.`;
     await this.createActivityFeedItem({
       type: "new_member",
       title: "Novi član džemata",
-      description: `${user.firstName} ${user.lastName}`,
+      description: initials,
       relatedEntityId: user.id,
       relatedEntityType: "user",
       isClickable: false,

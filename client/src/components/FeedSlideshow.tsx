@@ -280,7 +280,7 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
                 }}
               >
                 {currentItem.type === 'new_member' 
-                  ? `Novi član: ${currentItem.title?.split(' ').map(n => n[0]).join('').toUpperCase() || ''}`
+                  ? `${currentItem.title} ${currentItem.description || ''}`
                   : currentItem.type === 'shop_item' 
                     ? currentItem.description 
                     : currentItem.title}
