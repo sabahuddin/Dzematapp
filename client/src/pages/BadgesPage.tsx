@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
@@ -196,7 +196,10 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
   };
 
   const handleSubmit = form.handleSubmit((data) => {
+    console.log('Form submitted with data:', data);
     saveBadgeMutation.mutate(data);
+  }, (errors) => {
+    console.log('Form validation errors:', errors);
   });
 
   const handleDelete = (id: string) => {
@@ -382,32 +385,46 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
                 required
                 data-testid="input-description"
               />
-              <TextField
-                select
-                fullWidth
-                label={t('badges:criteriaType')}
-                {...form.register('criteriaType')}
-                error={!!form.formState.errors.criteriaType}
-                helperText={form.formState.errors.criteriaType?.message || t('badges:helperTexts.criteriaType')}
-                SelectProps={{ native: true }}
-                required
-                data-testid="select-criteria-type"
-              >
-                <option value="">{t('badges:selectType')}</option>
-                <option value="points_total">{t('badges:criteriaTypes.points')}</option>
-                <option value="tasks_completed">{t('badges:criteriaTypes.tasks_completed')}</option>
-                <option value="donation_total">{t('badges:criteriaTypes.contributions_amount')}</option>
-                <option value="events_attended">{t('badges:criteriaTypes.events_attended')}</option>
-              </TextField>
-              <TextField
-                fullWidth
-                label={t('badges:criteriaValue')}
-                type="number"
-                {...form.register('criteriaValue', { valueAsNumber: true })}
-                error={!!form.formState.errors.criteriaValue}
-                helperText={form.formState.errors.criteriaValue?.message || t('badges:helperTexts.criteriaValue')}
-                required
-                data-testid="input-criteria-value"
+              <Controller
+                name="criteriaType"
+                control={form.control}
+                render={({ field }) => (
+                  <TextField
+                    select
+                    fullWidth
+                    label={t('badges:criteriaType')}
+                    {...field}
+                    error={!!form.formState.errors.criteriaType}
+                    helperText={form.formState.errors.criteriaType?.message || t('badges:helperTexts.criteriaType')}
+                    SelectProps={{ native: true }}
+                    required
+                    data-testid="select-criteria-type"
+                  >
+                    <option value="">{t('badges:selectType')}</option>
+                    <option value="points_total">{t('badges:criteriaTypes.points')}</option>
+                    <option value="tasks_completed">{t('badges:criteriaTypes.tasks_completed')}</option>
+                    <option value="donation_total">{t('badges:criteriaTypes.contributions_amount')}</option>
+                    <option value="events_attended">{t('badges:criteriaTypes.events_attended')}</option>
+                  </TextField>
+                )}
+              />
+              <Controller
+                name="criteriaValue"
+                control={form.control}
+                render={({ field }) => (
+                  <TextField
+                    fullWidth
+                    label={t('badges:criteriaValue')}
+                    type="number"
+                    value={field.value}
+                    onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                    onBlur={field.onBlur}
+                    error={!!form.formState.errors.criteriaValue}
+                    helperText={form.formState.errors.criteriaValue?.message || t('badges:helperTexts.criteriaValue')}
+                    required
+                    data-testid="input-criteria-value"
+                  />
+                )}
               />
             </Stack>
           </DialogContent>
