@@ -2585,8 +2585,12 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       const isAssignedUser = existingTask.assignedUserIds?.includes(req.user!.id) || false;
       
       // If not admin or moderator, only allow assigned user to change status to na_cekanju or završeno
+      // Check req.body keys (not taskData which includes tenantId)
+      const bodyKeys = Object.keys(req.body);
+      const isOnlyStatusUpdate = bodyKeys.length === 1 && bodyKeys[0] === 'status';
+      
       if (!isAdmin && !isModerator) {
-        if (!isAssignedUser || Object.keys(taskData).length !== 1 || !taskData.status || (taskData.status !== 'na_cekanju' && taskData.status !== 'završeno')) {
+        if (!isAssignedUser || !isOnlyStatusUpdate || !taskData.status || (taskData.status !== 'na_cekanju' && taskData.status !== 'završeno')) {
           return res.status(403).json({ message: "Forbidden: Only admins or group moderators can update tasks" });
         }
       }
