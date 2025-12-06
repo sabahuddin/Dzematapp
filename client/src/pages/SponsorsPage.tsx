@@ -147,9 +147,12 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
       const currentSettingsRes = await fetch('/api/organization-settings', { credentials: 'include' });
       const currentSettings = await currentSettingsRes.json();
       
+      // Remove server-managed fields that would fail validation
+      const { id, tenantId, updatedAt, ...settingsWithoutServerFields } = currentSettings;
+      
       // Merge with existing settings
       const fullPayload = {
-        ...currentSettings,
+        ...settingsWithoutServerFields,
         sponsorBronzeAmount: data.sponsorBronzeAmount,
         sponsorSilverAmount: data.sponsorSilverAmount,
         sponsorGoldAmount: data.sponsorGoldAmount,
