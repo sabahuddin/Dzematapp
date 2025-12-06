@@ -756,6 +756,8 @@ async function addMissingColumns(client: any): Promise<void> {
     `ALTER TABLE "tasks" ADD COLUMN IF NOT EXISTS "description_image" text`,
     `ALTER TABLE "tasks" ADD COLUMN IF NOT EXISTS "points_value" integer DEFAULT 50`,
     `ALTER TABLE "tasks" ADD COLUMN IF NOT EXISTS "completed_at" timestamp`,
+    `ALTER TABLE "tasks" ADD COLUMN IF NOT EXISTS "estimated_cost" text`,
+    `ALTER TABLE "tasks" ADD COLUMN IF NOT EXISTS "assigned_user_ids" text[]`,
     
     // TASK_COMMENTS
     `ALTER TABLE "task_comments" ADD COLUMN IF NOT EXISTS "comment_image" text`,
