@@ -113,7 +113,16 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
     }
   };
 
-  const getEntityTypeBadgeLabel = (type: string): string => {
+  const getEntityTypeBadgeLabel = (type: string, item?: ActivityFeedItem): string => {
+    if (type === 'shop_item' && item?.metadata) {
+      try {
+        const meta = JSON.parse(item.metadata);
+        const listingType = meta.listingType;
+        if (listingType === 'sell') return 'Prodaje se';
+        if (listingType === 'gift') return 'Poklanja se';
+        if (listingType === 'service') return 'Usluga';
+      } catch {}
+    }
     switch (type) {
       case 'announcement': return 'Obavještenje';
       case 'event': return 'Događaj';
@@ -252,9 +261,9 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
 
             {/* Content on Right */}
             <Box sx={{ flex: 1, minWidth: 0, p: 2, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              {/* Entity Type Badge - for shop_item use title which contains proper label */}
+              {/* Entity Type Badge - use metadata.listingType for shop items */}
               <Chip
-                label={currentItem.type === 'shop_item' ? currentItem.title : getEntityTypeBadgeLabel(currentItem.type)}
+                label={getEntityTypeBadgeLabel(currentItem.type, currentItem)}
                 size="small"
                 sx={{
                   height: '20px',

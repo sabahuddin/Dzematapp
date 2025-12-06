@@ -48,7 +48,7 @@ import {
   Email,
   EmojiEvents
 } from '@mui/icons-material';
-import { Sponsor, insertSponsorSchema } from '@shared/schema';
+import { Sponsor, OrganizationSettings } from '@shared/schema';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/use-toast';
 import { apiRequest, queryClient } from '../lib/queryClient';
@@ -106,6 +106,23 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
     queryKey: ['/api/sponsors/active'],
   });
 
+  const settingsQuery = useQuery<OrganizationSettings>({
+    queryKey: ['/api/organization'],
+  });
+
+  const settings = settingsQuery.data;
+  
+  const getTierPriceLabel = (tier: string): string => {
+    if (!settings) return '';
+    const currency = settings.sponsorCurrency || 'EUR';
+    let amount: number | null = null;
+    if (tier === 'bronze') amount = settings.sponsorBronzeAmount;
+    if (tier === 'silver') amount = settings.sponsorSilverAmount;
+    if (tier === 'gold') amount = settings.sponsorGoldAmount;
+    if (amount) return `${amount} ${currency}`;
+    return '';
+  };
+
   const formSchema = z.object({
     name: z.string().min(1, 'Naziv je obavezan'),
     type: z.enum(['company', 'individual']),
@@ -133,8 +150,6 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
       .optional()
       .or(z.literal('')),
     logoUrl: z.string().optional(),
-    contributionAmount: z.number().min(0).optional().nullable(),
-    contributionCurrency: z.enum(['EUR', 'CHF', 'USD', 'BAM']).optional().nullable(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -147,8 +162,6 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
       phone: '',
       website: '',
       logoUrl: '',
-      contributionAmount: null,
-      contributionCurrency: null,
     }
   });
 
@@ -226,8 +239,6 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
         phone: sponsor.phone || '',
         website: sponsor.website || '',
         logoUrl: sponsor.logoUrl || '',
-        contributionAmount: sponsor.contributionAmount || null,
-        contributionCurrency: sponsor.contributionCurrency as 'EUR' | 'CHF' | 'USD' | 'BAM' | null || null,
       });
     } else {
       setSelectedSponsor(null);
@@ -239,8 +250,6 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
         phone: '',
         website: '',
         logoUrl: '',
-        contributionAmount: null,
-        contributionCurrency: null,
       });
     }
     setDialogOpen(true);
@@ -625,21 +634,42 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
                   data-testid="select-tier"
                 >
                   <MenuItem value="bronze">
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <EmojiEvents sx={{ color: tierColors.bronze }} />
-                      Bronzani
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%', justifyContent: 'space-between' }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <EmojiEvents sx={{ color: tierColors.bronze }} />
+                        Bronzani
+                      </Box>
+                      {getTierPriceLabel('bronze') && (
+                        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                          {getTierPriceLabel('bronze')}
+                        </Typography>
+                      )}
                     </Box>
                   </MenuItem>
                   <MenuItem value="silver">
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <EmojiEvents sx={{ color: tierColors.silver }} />
-                      Srebreni
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%', justifyContent: 'space-between' }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <EmojiEvents sx={{ color: tierColors.silver }} />
+                        Srebreni
+                      </Box>
+                      {getTierPriceLabel('silver') && (
+                        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                          {getTierPriceLabel('silver')}
+                        </Typography>
+                      )}
                     </Box>
                   </MenuItem>
                   <MenuItem value="gold">
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <EmojiEvents sx={{ color: tierColors.gold }} />
-                      Zlatni
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%', justifyContent: 'space-between' }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <EmojiEvents sx={{ color: tierColors.gold }} />
+                        Zlatni
+                      </Box>
+                      {getTierPriceLabel('gold') && (
+                        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                          {getTierPriceLabel('gold')}
+                        </Typography>
+                      )}
                     </Box>
                   </MenuItem>
                 </Select>
@@ -678,39 +708,6 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
                 helperText="Link do slike vašeg loga"
                 data-testid="input-logo"
               />
-
-              {isAdmin && (
-                <>
-                  <Typography variant="subtitle2" sx={{ mt: 2, mb: 1, fontWeight: 600, color: '#1b5e20' }}>
-                    Visina priloga (samo admin)
-                  </Typography>
-                  <Stack direction="row" spacing={2}>
-                    <TextField
-                      label="Iznos"
-                      type="number"
-                      {...form.register('contributionAmount', { valueAsNumber: true })}
-                      inputProps={{ min: 0 }}
-                      sx={{ flex: 2 }}
-                      data-testid="input-contribution-amount"
-                    />
-                    <FormControl sx={{ flex: 1 }}>
-                      <InputLabel>Valuta</InputLabel>
-                      <Select
-                        {...form.register('contributionCurrency')}
-                        defaultValue={form.getValues('contributionCurrency') || ''}
-                        label="Valuta"
-                        data-testid="select-contribution-currency"
-                      >
-                        <MenuItem value="">-</MenuItem>
-                        <MenuItem value="EUR">EUR</MenuItem>
-                        <MenuItem value="CHF">CHF</MenuItem>
-                        <MenuItem value="USD">USD</MenuItem>
-                        <MenuItem value="BAM">BAM</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Stack>
-                </>
-              )}
             </Stack>
           </DialogContent>
           <DialogActions>

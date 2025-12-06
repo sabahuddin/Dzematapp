@@ -206,6 +206,11 @@ export const organizationSettings = pgTable("organization_settings", {
   livestreamEnabled: boolean("livestream_enabled").default(false).notNull(),
   livestreamTitle: text("livestream_title"),
   livestreamDescription: text("livestream_description"),
+  // Sponsor tier pricing
+  sponsorBronzeAmount: integer("sponsor_bronze_amount"),
+  sponsorSilverAmount: integer("sponsor_silver_amount"),
+  sponsorGoldAmount: integer("sponsor_gold_amount"),
+  sponsorCurrency: text("sponsor_currency").default("EUR"), // EUR, CHF, USD, BAM
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
