@@ -36,6 +36,7 @@
 - **Dokumenti** - Dijeljenje važnih dokumenata
 - **Livestream** - Integracija sa streaming platformama
 - **Badževi** - Sistem priznanja za aktivne članove
+- **Sponzori** - Upravljanje sponzorstvima sa tier-based cijenama
 
 ### Tehnologije
 
@@ -853,6 +854,53 @@ app.post('/api/admin-only', requireAdmin, (req, res) => {
 
 **API Endpoints:**
 - Isti kao za prijavljene korisnike (read-only)
+
+---
+
+### 20. Sponzori
+
+**Putanja:** `/sponsors`  
+**Pristup:** Svi  
+**Guest pristup:** ✅ Da
+
+**Funkcionalnosti:**
+
+#### 20.1 Prikaz Sponzora
+- Lista aktivnih sponzora organizovanih po nivoima
+- Tri nivoa sponzorstva: Bronzani, Srebreni, Zlatni
+- Prikaz loga, naziva i kontakt informacija
+- Klikabilni linkovi (web, telefon, email)
+
+#### 20.2 Prijava za Sponzorstvo
+- Forma za prijavu (firme ili fizička lica)
+- Odabir nivoa sponzorstva sa cijenom
+- Unos kontakt podataka i loga
+- Automatsko trajanje od 1 godine
+
+#### 20.3 Upravljanje Sponzorima (Admin)
+- Pregled svih prijava za sponzorstvo
+- Odobravanje/Odbijanje prijava
+- Postavljanje cijena za svaki nivo (CHF)
+- Uređivanje podataka sponzora
+- Brisanje isteklih sponzorstava
+
+#### 20.4 Workflow Odobrenja
+1. Korisnik podnosi prijavu za sponzorstvo
+2. Admin pregleda prijavu
+3. Admin odobrava ili odbija sa napomenom
+4. Odobreni sponzor se prikazuje na javnoj listi
+
+**Tabele:**
+- `sponsors` - Podaci o sponzorima
+- `sponsor_pricing` - Cijene po nivoima (per-tenant)
+
+**API Endpoints:**
+- `GET /api/sponsors` - Lista sponzora
+- `POST /api/sponsors` - Prijava za sponzorstvo
+- `PATCH /api/sponsors/:id` - Ažuriranje (admin)
+- `DELETE /api/sponsors/:id` - Brisanje (admin)
+- `GET /api/sponsor-pricing` - Dohvat cijena
+- `PUT /api/sponsor-pricing` - Postavljanje cijena (admin)
 
 ---
 
