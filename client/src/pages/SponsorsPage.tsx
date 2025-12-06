@@ -475,9 +475,9 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
           Podržite naš džemat i promovirajte vaš posao u našoj zajednici. Odaberite nivo sponzorstva koji vam odgovara.
         </Typography>
         <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 2 }}>
-          <Chip icon={<EmojiEvents sx={{ color: tierColors.bronze }} />} label="Bronzani - osnovna reklama" />
-          <Chip icon={<EmojiEvents sx={{ color: tierColors.silver }} />} label="Srebreni - istaknuta reklama" />
-          <Chip icon={<EmojiEvents sx={{ color: tierColors.gold }} />} label="Zlatni - premium reklama" />
+          <Chip icon={<EmojiEvents sx={{ color: tierColors.bronze }} />} label={`Bronzani${getTierPriceLabel('bronze') ? ` - ${getTierPriceLabel('bronze')}` : ''}`} />
+          <Chip icon={<EmojiEvents sx={{ color: tierColors.silver }} />} label={`Srebreni${getTierPriceLabel('silver') ? ` - ${getTierPriceLabel('silver')}` : ''}`} />
+          <Chip icon={<EmojiEvents sx={{ color: tierColors.gold }} />} label={`Zlatni${getTierPriceLabel('gold') ? ` - ${getTierPriceLabel('gold')}` : ''}`} />
         </Box>
         <Button 
           variant="contained" 
