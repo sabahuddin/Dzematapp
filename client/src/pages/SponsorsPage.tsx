@@ -48,7 +48,15 @@ import {
   Email,
   EmojiEvents
 } from '@mui/icons-material';
-import { Sponsor, OrganizationSettings } from '@shared/schema';
+import { Sponsor } from '@shared/schema';
+
+interface SponsorPricing {
+  tenantId: string;
+  bronzeAmount: number | null;
+  silverAmount: number | null;
+  goldAmount: number | null;
+  currency: string;
+}
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/use-toast';
 import { apiRequest, queryClient } from '../lib/queryClient';
@@ -113,66 +121,41 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
     queryKey: ['/api/sponsors/active'],
   });
 
-  const settingsQuery = useQuery<OrganizationSettings>({
-    queryKey: ['/api/organization-settings'],
+  const pricingQuery = useQuery<SponsorPricing>({
+    queryKey: ['/api/sponsors/pricing'],
   });
 
-  const settings = settingsQuery.data;
+  const pricing = pricingQuery.data;
   
   const getTierPriceLabel = (tier: string): string => {
-    if (!settings) return '';
-    const currency = settings.sponsorCurrency || 'EUR';
+    if (!pricing) return '';
+    const currency = pricing.currency || 'EUR';
     let amount: number | null = null;
-    if (tier === 'bronze') amount = settings.sponsorBronzeAmount;
-    if (tier === 'silver') amount = settings.sponsorSilverAmount;
-    if (tier === 'gold') amount = settings.sponsorGoldAmount;
+    if (tier === 'bronze') amount = pricing.bronzeAmount;
+    if (tier === 'silver') amount = pricing.silverAmount;
+    if (tier === 'gold') amount = pricing.goldAmount;
     if (amount) return `${amount} ${currency}`;
     return '';
   };
 
-  // Initialize pricing state from settings (using useEffect pattern)
-  if (settings && !pricingInitialized) {
+  // Initialize pricing state from server data (using useEffect pattern)
+  if (pricing && !pricingInitialized) {
     setTimeout(() => {
-      setBronzeAmount(settings.sponsorBronzeAmount?.toString() || '');
-      setSilverAmount(settings.sponsorSilverAmount?.toString() || '');
-      setGoldAmount(settings.sponsorGoldAmount?.toString() || '');
-      setSponsorCurrency(settings.sponsorCurrency || 'EUR');
+      setBronzeAmount(pricing.bronzeAmount?.toString() || '');
+      setSilverAmount(pricing.silverAmount?.toString() || '');
+      setGoldAmount(pricing.goldAmount?.toString() || '');
+      setSponsorCurrency(pricing.currency || 'EUR');
       setPricingInitialized(true);
     }, 0);
   }
 
   const updatePricingMutation = useMutation({
-    mutationFn: async (data: { sponsorBronzeAmount: number | null; sponsorSilverAmount: number | null; sponsorGoldAmount: number | null; sponsorCurrency: string }) => {
-      // First fetch current settings to avoid overwriting other fields
-      const currentSettingsRes = await fetch('/api/organization-settings', { credentials: 'include' });
-      
-      if (!currentSettingsRes.ok) {
-        throw new Error('Nije moguće učitati trenutne postavke');
-      }
-      
-      const currentSettings = await currentSettingsRes.json();
-      
-      if (!currentSettings || typeof currentSettings !== 'object') {
-        throw new Error('Postavke nisu pronađene');
-      }
-      
-      // Remove server-managed fields that would fail validation
-      const { id, tenantId, updatedAt, ...settingsWithoutServerFields } = currentSettings;
-      
-      // Merge with existing settings
-      const fullPayload = {
-        ...settingsWithoutServerFields,
-        sponsorBronzeAmount: data.sponsorBronzeAmount,
-        sponsorSilverAmount: data.sponsorSilverAmount,
-        sponsorGoldAmount: data.sponsorGoldAmount,
-        sponsorCurrency: data.sponsorCurrency
-      };
-      const response = await apiRequest('/api/organization-settings', 'PUT', fullPayload);
+    mutationFn: async (data: { bronzeAmount: number | null; silverAmount: number | null; goldAmount: number | null; currency: string }) => {
+      const response = await apiRequest('/api/sponsors/pricing', 'PUT', data);
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/organization'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/organization-settings'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/sponsors/pricing'] });
       toast({ title: 'Uspješno', description: 'Cijene sponzorskih paketa su sačuvane' });
     },
     onError: (error: Error) => {
@@ -181,12 +164,11 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
   });
 
   const handleSavePricing = () => {
-    // Always save with current form values, don't require settings to be loaded
     updatePricingMutation.mutate({
-      sponsorBronzeAmount: bronzeAmount ? parseInt(bronzeAmount) : null,
-      sponsorSilverAmount: silverAmount ? parseInt(silverAmount) : null,
-      sponsorGoldAmount: goldAmount ? parseInt(goldAmount) : null,
-      sponsorCurrency
+      bronzeAmount: bronzeAmount ? parseInt(bronzeAmount) : null,
+      silverAmount: silverAmount ? parseInt(silverAmount) : null,
+      goldAmount: goldAmount ? parseInt(goldAmount) : null,
+      currency: sponsorCurrency
     });
   };
 

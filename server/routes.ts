@@ -3756,6 +3756,41 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     }
   });
 
+  app.get("/api/sponsors/pricing", requireAuth, async (req, res) => {
+    try {
+      const tenantId = req.user!.tenantId;
+      const pricing = await storage.getSponsorPricing(tenantId);
+      if (!pricing) {
+        return res.json({
+          tenantId,
+          bronzeAmount: 100,
+          silverAmount: 250,
+          goldAmount: 500,
+          currency: 'EUR'
+        });
+      }
+      res.json(pricing);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get sponsor pricing" });
+    }
+  });
+
+  app.put("/api/sponsors/pricing", requireAdmin, async (req, res) => {
+    try {
+      const tenantId = req.user!.tenantId;
+      const { bronzeAmount, silverAmount, goldAmount, currency } = req.body;
+      const pricing = await storage.updateSponsorPricing(tenantId, {
+        bronzeAmount,
+        silverAmount,
+        goldAmount,
+        currency
+      });
+      res.json(pricing);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update sponsor pricing" });
+    }
+  });
+
   app.get("/api/sponsors/:id", requireAuth, async (req, res) => {
     try {
       const tenantId = req.user!.tenantId;
