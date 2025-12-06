@@ -355,13 +355,14 @@ async function createMissingTables(client: any): Promise<void> {
       "phone" text,
       "website" text,
       "logo_url" text,
-      "amount" integer,
-      "start_date" timestamp,
+      "contribution_amount" integer,
+      "contribution_currency" text,
+      "start_date" timestamp NOT NULL DEFAULT now(),
       "end_date" timestamp,
       "status" text NOT NULL DEFAULT 'pending',
       "reviewed_by_id" varchar REFERENCES "users"("id"),
       "reviewed_at" timestamp,
-      "notes" text,
+      "review_notes" text,
       "created_at" timestamp NOT NULL DEFAULT now()
     )`,
     
@@ -640,6 +641,14 @@ async function addMissingColumns(client: any): Promise<void> {
     `ALTER TABLE "organization_settings" ADD COLUMN IF NOT EXISTS "referenz_zeile" text`,
     `ALTER TABLE "organization_settings" ADD COLUMN IF NOT EXISTS "show_financial_section" boolean DEFAULT true`,
     `ALTER TABLE "organization_settings" ADD COLUMN IF NOT EXISTS "created_at" timestamp DEFAULT now()`,
+    
+    // SPONSORS - fix column names for existing tables
+    `ALTER TABLE "sponsors" ADD COLUMN IF NOT EXISTS "contribution_amount" integer`,
+    `ALTER TABLE "sponsors" ADD COLUMN IF NOT EXISTS "contribution_currency" text`,
+    `ALTER TABLE "sponsors" ADD COLUMN IF NOT EXISTS "review_notes" text`,
+    `ALTER TABLE "sponsors" ADD COLUMN IF NOT EXISTS "start_date" timestamp DEFAULT now()`,
+    `ALTER TABLE "sponsors" ADD COLUMN IF NOT EXISTS "end_date" timestamp`,
+    `ALTER TABLE "sponsors" ADD COLUMN IF NOT EXISTS "logo_url" text`,
     
     // POINTS_SETTINGS - 4 missing columns
     `ALTER TABLE "points_settings" ADD COLUMN IF NOT EXISTS "event_attendance" integer DEFAULT 20`,
