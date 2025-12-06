@@ -375,6 +375,27 @@ async function createMissingTables(client: any): Promise<void> {
       "gold_amount" integer,
       "currency" text NOT NULL DEFAULT 'EUR',
       "updated_at" timestamp NOT NULL DEFAULT now()
+    )`,
+    
+    // badges
+    `CREATE TABLE IF NOT EXISTS "badges" (
+      "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+      "tenant_id" varchar NOT NULL REFERENCES "tenants"("id") ON DELETE CASCADE,
+      "name" text NOT NULL,
+      "description" text NOT NULL,
+      "icon" text,
+      "criteria_type" text NOT NULL,
+      "criteria_value" integer NOT NULL,
+      "created_at" timestamp NOT NULL DEFAULT now()
+    )`,
+    
+    // user_badges
+    `CREATE TABLE IF NOT EXISTS "user_badges" (
+      "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+      "tenant_id" varchar NOT NULL REFERENCES "tenants"("id") ON DELETE CASCADE,
+      "user_id" varchar NOT NULL REFERENCES "users"("id"),
+      "badge_id" varchar NOT NULL REFERENCES "badges"("id"),
+      "earned_at" timestamp NOT NULL DEFAULT now()
     )`
   ];
   
