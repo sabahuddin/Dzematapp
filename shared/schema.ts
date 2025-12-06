@@ -1188,6 +1188,10 @@ export const sponsors = pgTable("sponsors", {
   // Logo/slika
   logoUrl: text("logo_url"), // Path do PNG slike
   
+  // Visina priloga / Contribution amount
+  contributionAmount: integer("contribution_amount"), // Iznos u valuti
+  contributionCurrency: text("contribution_currency"), // EUR, CHF, USD, BAM
+  
   // Trajanje sponzorstva
   startDate: timestamp("start_date").defaultNow().notNull(),
   endDate: timestamp("end_date"), // Godinu dana od startDate

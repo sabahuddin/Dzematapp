@@ -112,8 +112,29 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
     tier: z.enum(['bronze', 'silver', 'gold']),
     email: z.string().email('Neispravan email').optional().or(z.literal('')),
     phone: z.string().optional(),
-    website: z.string().url('Neispravna web adresa').optional().or(z.literal('')),
+    website: z.string()
+      .transform((val) => {
+        if (!val || val.trim() === '') return '';
+        const trimmed = val.trim();
+        if (trimmed && !trimmed.startsWith('http://') && !trimmed.startsWith('https://')) {
+          return 'https://' + trimmed;
+        }
+        return trimmed;
+      })
+      .refine((val) => {
+        if (!val || val === '') return true;
+        try {
+          new URL(val);
+          return true;
+        } catch {
+          return false;
+        }
+      }, { message: 'Neispravna web adresa' })
+      .optional()
+      .or(z.literal('')),
     logoUrl: z.string().optional(),
+    contributionAmount: z.number().min(0).optional().nullable(),
+    contributionCurrency: z.enum(['EUR', 'CHF', 'USD', 'BAM']).optional().nullable(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -126,6 +147,8 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
       phone: '',
       website: '',
       logoUrl: '',
+      contributionAmount: null,
+      contributionCurrency: null,
     }
   });
 
@@ -203,6 +226,8 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
         phone: sponsor.phone || '',
         website: sponsor.website || '',
         logoUrl: sponsor.logoUrl || '',
+        contributionAmount: sponsor.contributionAmount || null,
+        contributionCurrency: sponsor.contributionCurrency as 'EUR' | 'CHF' | 'USD' | 'BAM' | null || null,
       });
     } else {
       setSelectedSponsor(null);
@@ -214,6 +239,8 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
         phone: '',
         website: '',
         logoUrl: '',
+        contributionAmount: null,
+        contributionCurrency: null,
       });
     }
     setDialogOpen(true);
@@ -651,6 +678,39 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
                 helperText="Link do slike vašeg loga"
                 data-testid="input-logo"
               />
+
+              {isAdmin && (
+                <>
+                  <Typography variant="subtitle2" sx={{ mt: 2, mb: 1, fontWeight: 600, color: '#1b5e20' }}>
+                    Visina priloga (samo admin)
+                  </Typography>
+                  <Stack direction="row" spacing={2}>
+                    <TextField
+                      label="Iznos"
+                      type="number"
+                      {...form.register('contributionAmount', { valueAsNumber: true })}
+                      inputProps={{ min: 0 }}
+                      sx={{ flex: 2 }}
+                      data-testid="input-contribution-amount"
+                    />
+                    <FormControl sx={{ flex: 1 }}>
+                      <InputLabel>Valuta</InputLabel>
+                      <Select
+                        {...form.register('contributionCurrency')}
+                        defaultValue={form.getValues('contributionCurrency') || ''}
+                        label="Valuta"
+                        data-testid="select-contribution-currency"
+                      >
+                        <MenuItem value="">-</MenuItem>
+                        <MenuItem value="EUR">EUR</MenuItem>
+                        <MenuItem value="CHF">CHF</MenuItem>
+                        <MenuItem value="USD">USD</MenuItem>
+                        <MenuItem value="BAM">BAM</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Stack>
+                </>
+              )}
             </Stack>
           </DialogContent>
           <DialogActions>
