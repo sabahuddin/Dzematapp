@@ -95,6 +95,13 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
   const [reviewAction, setReviewAction] = useState<'approve' | 'reject'>('approve');
   const [reviewNotes, setReviewNotes] = useState('');
   const [sponsorToReview, setSponsorToReview] = useState<Sponsor | null>(null);
+  
+  // Sponsor tier pricing state
+  const [bronzeAmount, setBronzeAmount] = useState<string>('');
+  const [silverAmount, setSilverAmount] = useState<string>('');
+  const [goldAmount, setGoldAmount] = useState<string>('');
+  const [sponsorCurrency, setSponsorCurrency] = useState<string>('EUR');
+  const [pricingInitialized, setPricingInitialized] = useState(false);
 
   const isAdmin = currentUser?.isAdmin;
 
@@ -121,6 +128,38 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
     if (tier === 'gold') amount = settings.sponsorGoldAmount;
     if (amount) return `${amount} ${currency}`;
     return '';
+  };
+
+  // Initialize pricing state from settings
+  if (settings && !pricingInitialized) {
+    setBronzeAmount(settings.sponsorBronzeAmount?.toString() || '');
+    setSilverAmount(settings.sponsorSilverAmount?.toString() || '');
+    setGoldAmount(settings.sponsorGoldAmount?.toString() || '');
+    setSponsorCurrency(settings.sponsorCurrency || 'EUR');
+    setPricingInitialized(true);
+  }
+
+  const updatePricingMutation = useMutation({
+    mutationFn: async (data: { sponsorBronzeAmount: number | null; sponsorSilverAmount: number | null; sponsorGoldAmount: number | null; sponsorCurrency: string }) => {
+      const response = await apiRequest('/api/organization-settings', 'PUT', data);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/organization'] });
+      toast({ title: 'Uspješno', description: 'Cijene sponzorskih paketa su sačuvane' });
+    },
+    onError: () => {
+      toast({ title: 'Greška', description: 'Greška pri čuvanju cijena', variant: 'destructive' });
+    }
+  });
+
+  const handleSavePricing = () => {
+    updatePricingMutation.mutate({
+      sponsorBronzeAmount: bronzeAmount ? parseInt(bronzeAmount) : null,
+      sponsorSilverAmount: silverAmount ? parseInt(silverAmount) : null,
+      sponsorGoldAmount: goldAmount ? parseInt(goldAmount) : null,
+      sponsorCurrency
+    });
   };
 
   const formSchema = z.object({
@@ -453,6 +492,66 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
           {pendingSponsors.length} prijava čeka na odobrenje
         </Alert>
       )}
+
+      {/* Sponsor Tier Pricing Configuration */}
+      <Card sx={{ mb: 3, p: 2 }}>
+        <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+          <EmojiEvents sx={{ color: '#FFD700' }} />
+          Podešavanje cijena sponzorskih paketa
+        </Typography>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 2, mb: 2 }}>
+          <TextField
+            label="Bronzani sponzor (iznos)"
+            type="number"
+            value={bronzeAmount}
+            onChange={(e) => setBronzeAmount(e.target.value)}
+            size="small"
+            sx={{ flex: 1 }}
+            data-testid="input-bronze-amount"
+          />
+          <TextField
+            label="Srebreni sponzor (iznos)"
+            type="number"
+            value={silverAmount}
+            onChange={(e) => setSilverAmount(e.target.value)}
+            size="small"
+            sx={{ flex: 1 }}
+            data-testid="input-silver-amount"
+          />
+          <TextField
+            label="Zlatni sponzor (iznos)"
+            type="number"
+            value={goldAmount}
+            onChange={(e) => setGoldAmount(e.target.value)}
+            size="small"
+            sx={{ flex: 1 }}
+            data-testid="input-gold-amount"
+          />
+          <FormControl size="small" sx={{ minWidth: 100 }}>
+            <InputLabel>Valuta</InputLabel>
+            <Select
+              value={sponsorCurrency}
+              label="Valuta"
+              onChange={(e) => setSponsorCurrency(e.target.value)}
+              data-testid="select-sponsor-currency"
+            >
+              <MenuItem value="EUR">EUR</MenuItem>
+              <MenuItem value="CHF">CHF</MenuItem>
+              <MenuItem value="USD">USD</MenuItem>
+              <MenuItem value="BAM">BAM</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+        <Button
+          variant="contained"
+          onClick={handleSavePricing}
+          disabled={updatePricingMutation.isPending}
+          data-testid="button-save-pricing"
+          sx={{ bgcolor: '#81c784', '&:hover': { bgcolor: '#66bb6a' } }}
+        >
+          {updatePricingMutation.isPending ? 'Čuvanje...' : 'Sačuvaj cijene'}
+        </Button>
+      </Card>
 
       <Card>
         <TableContainer>

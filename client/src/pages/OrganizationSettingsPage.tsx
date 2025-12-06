@@ -12,7 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import type { OrganizationSettings, InsertOrganizationSettings } from "@shared/schema";
 import { insertOrganizationSettingsSchema } from "@shared/schema";
-import { Settings, Building, Phone, Mail, Facebook, Instagram, Youtube, Twitter, Radio, Coins, Trophy } from "lucide-react";
+import { Settings, Building, Phone, Mail, Facebook, Instagram, Youtube, Twitter, Radio, Coins } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -42,11 +42,7 @@ export default function OrganizationSettingsPage({ hideHeader = false }: Organiz
       twitterUrl: "",
       livestreamUrl: "",
       livestreamEnabled: false,
-      livestreamTitle: "",
-      sponsorBronzeAmount: null,
-      sponsorSilverAmount: null,
-      sponsorGoldAmount: null,
-      sponsorCurrency: "EUR"
+      livestreamTitle: ""
     }
   });
 
@@ -65,11 +61,7 @@ export default function OrganizationSettingsPage({ hideHeader = false }: Organiz
         twitterUrl: settings.twitterUrl || "",
         livestreamUrl: settings.livestreamUrl || "",
         livestreamEnabled: settings.livestreamEnabled || false,
-        livestreamTitle: settings.livestreamTitle || "",
-        sponsorBronzeAmount: settings.sponsorBronzeAmount || null,
-        sponsorSilverAmount: settings.sponsorSilverAmount || null,
-        sponsorGoldAmount: settings.sponsorGoldAmount || null,
-        sponsorCurrency: settings.sponsorCurrency || "EUR"
+        livestreamTitle: settings.livestreamTitle || ""
       });
     }
   }, [settings, form]);
@@ -376,107 +368,6 @@ export default function OrganizationSettingsPage({ hideHeader = false }: Organiz
                     />
                   </Box>
                 </Box>
-              </Box>
-            </Box>
-
-            {/* Sponsor Tier Pricing */}
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" sx={{ mb: 2, display: "flex", alignItems: "center", gap: 1 }}>
-                <Trophy size={20} />
-                Sponzorski paketi - cijene
-              </Typography>
-              <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 2 }}>
-                <Box sx={{ flex: 1 }}>
-                  <FormField
-                    control={form.control}
-                    name="sponsorBronzeAmount"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Bronzani sponzor (iznos)</FormLabel>
-                        <FormControl>
-                          <Input 
-                            type="number"
-                            {...field}
-                            value={field.value ?? ''}
-                            onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : null)}
-                            placeholder="npr. 500"
-                            data-testid="input-sponsor-bronze"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </Box>
-                <Box sx={{ flex: 1 }}>
-                  <FormField
-                    control={form.control}
-                    name="sponsorSilverAmount"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Srebreni sponzor (iznos)</FormLabel>
-                        <FormControl>
-                          <Input 
-                            type="number"
-                            {...field}
-                            value={field.value ?? ''}
-                            onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : null)}
-                            placeholder="npr. 1000"
-                            data-testid="input-sponsor-silver"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </Box>
-                <Box sx={{ flex: 1 }}>
-                  <FormField
-                    control={form.control}
-                    name="sponsorGoldAmount"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Zlatni sponzor (iznos)</FormLabel>
-                        <FormControl>
-                          <Input 
-                            type="number"
-                            {...field}
-                            value={field.value ?? ''}
-                            onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : null)}
-                            placeholder="npr. 3000"
-                            data-testid="input-sponsor-gold"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </Box>
-              </Box>
-              <Box sx={{ mt: 2, maxWidth: 200 }}>
-                <FormField
-                  control={form.control}
-                  name="sponsorCurrency"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Valuta za sponzore</FormLabel>
-                      <FormControl>
-                        <Select onValueChange={field.onChange} value={field.value || 'EUR'}>
-                          <SelectTrigger data-testid="select-sponsor-currency">
-                            <SelectValue placeholder="Valuta" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="EUR">EUR</SelectItem>
-                            <SelectItem value="CHF">CHF</SelectItem>
-                            <SelectItem value="USD">USD</SelectItem>
-                            <SelectItem value="BAM">BAM</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
               </Box>
             </Box>
 
