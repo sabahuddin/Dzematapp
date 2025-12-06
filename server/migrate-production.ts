@@ -640,9 +640,6 @@ async function addMissingColumns(client: any): Promise<void> {
     `ALTER TABLE "organization_settings" ADD COLUMN IF NOT EXISTS "referenz_zeile" text`,
     `ALTER TABLE "organization_settings" ADD COLUMN IF NOT EXISTS "show_financial_section" boolean DEFAULT true`,
     `ALTER TABLE "organization_settings" ADD COLUMN IF NOT EXISTS "created_at" timestamp DEFAULT now()`,
-    `ALTER TABLE "organization_settings" ADD COLUMN IF NOT EXISTS "sponsor_bronze_amount" integer`,
-    `ALTER TABLE "organization_settings" ADD COLUMN IF NOT EXISTS "sponsor_silver_amount" integer`,
-    `ALTER TABLE "organization_settings" ADD COLUMN IF NOT EXISTS "sponsor_gold_amount" integer`,
     
     // POINTS_SETTINGS - 4 missing columns
     `ALTER TABLE "points_settings" ADD COLUMN IF NOT EXISTS "event_attendance" integer DEFAULT 20`,
