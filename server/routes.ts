@@ -3733,9 +3733,12 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   app.get("/api/sponsors", requireAuth, async (req, res) => {
     try {
       const tenantId = req.user!.tenantId;
+      console.log('[SPONSORS] Getting all sponsors for tenant:', tenantId);
       const sponsors = await storage.getAllSponsors(tenantId);
+      console.log('[SPONSORS] Found', sponsors.length, 'sponsors');
       res.json(sponsors);
     } catch (error) {
+      console.error('[SPONSORS] Error getting all sponsors:', error);
       res.status(500).json({ message: "Failed to get sponsors" });
     }
   });
@@ -3743,9 +3746,12 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   app.get("/api/sponsors/active", requireAuth, async (req, res) => {
     try {
       const tenantId = req.user!.tenantId;
+      console.log('[SPONSORS] Getting active sponsors for tenant:', tenantId);
       const sponsors = await storage.getActiveSponsors(tenantId);
+      console.log('[SPONSORS] Found', sponsors.length, 'active sponsors');
       res.json(sponsors);
     } catch (error) {
+      console.error('[SPONSORS] Error getting active sponsors:', error);
       res.status(500).json({ message: "Failed to get active sponsors" });
     }
   });
