@@ -77,7 +77,7 @@ export default function OrganizationSettingsPage({ hideHeader = false }: Organiz
   const updateMutation = useMutation({
     mutationFn: async (data: InsertOrganizationSettings) => {
       console.log('[ORG-SETTINGS-FRONTEND] Sending PUT request:', JSON.stringify(data, null, 2));
-      const response = await apiRequest("/api/organization-settings", "PUT", data) as OrganizationSettings;
+      const response = await apiRequest("/api/organization-settings", "PUT", data) as unknown as OrganizationSettings;
       console.log('[ORG-SETTINGS-FRONTEND] PUT response:', JSON.stringify(response, null, 2));
       return response;
     },
