@@ -52,6 +52,7 @@ import MyProfilePage from "@/pages/MyProfilePage";
 import NotificationsPage from "@/pages/NotificationsPage";
 import SuperAdminPanel from "@/pages/SuperAdminPanel";
 import PricingPage from "@/pages/PricingPage";
+import SponsorsPage from "@/pages/SponsorsPage";
 import NotFound from "@/pages/not-found";
 
 // Layout
@@ -418,6 +419,12 @@ function Router() {
       <Route path="/shop">
         <ProtectedRoute>
           <ShopPage />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path="/sponsors">
+        <ProtectedRoute>
+          <SponsorsPage />
         </ProtectedRoute>
       </Route>
       

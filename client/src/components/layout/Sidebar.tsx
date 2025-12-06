@@ -46,7 +46,8 @@ import {
   ExpandMore,
   OndemandVideo,
   DynamicFeed,
-  AdminPanelSettings
+  AdminPanelSettings,
+  Handshake
 } from '@mui/icons-material';
 import { SiFacebook, SiInstagram, SiYoutube, SiX } from 'react-icons/si';
 import { useAuth } from '@/contexts/AuthContext';
@@ -95,6 +96,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     { path: '/ask-imam', label: t('navigation:menu.askImam'), icon: QuestionAnswer, showBadge: true },
     { path: '/documents', label: t('navigation:menu.documents'), icon: Description },
     { path: '/shop', label: t('navigation:menu.shop'), icon: Store, showBadge: true },
+    { path: '/sponsors', label: t('navigation:menu.sponsors'), icon: Handshake },
     { path: '/applications', label: t('navigation:menu.applications'), icon: Assignment },
     { path: '/vaktija', label: t('navigation:menu.vaktija'), icon: Schedule },
     { path: '/vodic', label: t('navigation:menu.guide'), icon: Info },

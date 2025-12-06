@@ -81,6 +81,8 @@ import {
   type Service,
   type InsertService,
   type ServiceWithUser,
+  type Sponsor,
+  type InsertSponsor,
   type ContributionPurpose,
   type InsertContributionPurpose,
   users,
@@ -123,6 +125,7 @@ import {
   marriageApplications,
   activityFeed,
   services,
+  sponsors,
   tenants
 } from "@shared/schema";
 import { db, pool } from './db';
@@ -277,6 +280,16 @@ export interface IStorage {
   getUserServices(userId: string, tenantId: string): Promise<Service[]>;
   updateService(id: string, tenantId: string, updates: Partial<InsertService>): Promise<Service | undefined>;
   deleteService(id: string, tenantId: string): Promise<boolean>;
+
+  // Sponsors (Sponzori Džemata)
+  createSponsor(sponsor: InsertSponsor): Promise<Sponsor>;
+  getSponsor(id: string, tenantId: string): Promise<Sponsor | undefined>;
+  getAllSponsors(tenantId: string): Promise<Sponsor[]>;
+  getActiveSponsors(tenantId: string): Promise<Sponsor[]>;
+  updateSponsor(id: string, tenantId: string, updates: Partial<InsertSponsor>): Promise<Sponsor | undefined>;
+  approveSponsor(id: string, tenantId: string, reviewedById: string, reviewNotes?: string): Promise<Sponsor | undefined>;
+  rejectSponsor(id: string, tenantId: string, reviewedById: string, reviewNotes: string): Promise<Sponsor | undefined>;
+  deleteSponsor(id: string, tenantId: string): Promise<boolean>;
 
   // Product Purchase Requests
   createProductPurchaseRequest(request: InsertProductPurchaseRequest): Promise<ProductPurchaseRequest>;
@@ -1717,6 +1730,80 @@ export class DatabaseStorage implements IStorage {
 
   async deleteService(id: string, tenantId: string): Promise<boolean> {
     const result = await db.delete(services).where(and(eq(services.id, id), eq(services.tenantId, tenantId))).returning();
+    return result.length > 0;
+  }
+
+  // Sponsors (Sponzori Džemata)
+  async createSponsor(sponsor: InsertSponsor): Promise<Sponsor> {
+    const startDate = sponsor.startDate || new Date();
+    const endDate = new Date(startDate);
+    endDate.setFullYear(endDate.getFullYear() + 1);
+    
+    const [newSponsor] = await db.insert(sponsors).values({
+      ...sponsor,
+      startDate,
+      endDate,
+      tenantId: sponsor.tenantId
+    }).returning();
+    return newSponsor;
+  }
+
+  async getSponsor(id: string, tenantId: string): Promise<Sponsor | undefined> {
+    const result = await db.select().from(sponsors).where(and(eq(sponsors.id, id), eq(sponsors.tenantId, tenantId))).limit(1);
+    return result[0];
+  }
+
+  async getAllSponsors(tenantId: string): Promise<Sponsor[]> {
+    return await db.select().from(sponsors).where(eq(sponsors.tenantId, tenantId)).orderBy(desc(sponsors.createdAt));
+  }
+
+  async getActiveSponsors(tenantId: string): Promise<Sponsor[]> {
+    const now = new Date();
+    return await db.select().from(sponsors)
+      .where(and(
+        eq(sponsors.tenantId, tenantId),
+        eq(sponsors.status, 'active'),
+        gt(sponsors.endDate, now)
+      ))
+      .orderBy(
+        sql`CASE WHEN ${sponsors.tier} = 'gold' THEN 1 WHEN ${sponsors.tier} = 'silver' THEN 2 ELSE 3 END`,
+        desc(sponsors.createdAt)
+      );
+  }
+
+  async updateSponsor(id: string, tenantId: string, updates: Partial<InsertSponsor>): Promise<Sponsor | undefined> {
+    const [sponsor] = await db.update(sponsors).set(updates).where(and(eq(sponsors.id, id), eq(sponsors.tenantId, tenantId))).returning();
+    return sponsor;
+  }
+
+  async approveSponsor(id: string, tenantId: string, reviewedById: string, reviewNotes?: string): Promise<Sponsor | undefined> {
+    const startDate = new Date();
+    const endDate = new Date(startDate);
+    endDate.setFullYear(endDate.getFullYear() + 1);
+    
+    const [sponsor] = await db.update(sponsors).set({
+      status: 'active',
+      reviewedById,
+      reviewedAt: new Date(),
+      reviewNotes,
+      startDate,
+      endDate
+    }).where(and(eq(sponsors.id, id), eq(sponsors.tenantId, tenantId))).returning();
+    return sponsor;
+  }
+
+  async rejectSponsor(id: string, tenantId: string, reviewedById: string, reviewNotes: string): Promise<Sponsor | undefined> {
+    const [sponsor] = await db.update(sponsors).set({
+      status: 'rejected',
+      reviewedById,
+      reviewedAt: new Date(),
+      reviewNotes
+    }).where(and(eq(sponsors.id, id), eq(sponsors.tenantId, tenantId))).returning();
+    return sponsor;
+  }
+
+  async deleteSponsor(id: string, tenantId: string): Promise<boolean> {
+    const result = await db.delete(sponsors).where(and(eq(sponsors.id, id), eq(sponsors.tenantId, tenantId))).returning();
     return result.length > 0;
   }
 

@@ -1170,6 +1170,59 @@ export const insertServiceSchema = createInsertSchema(services).omit({
 export type Service = typeof services.$inferSelect;
 export type InsertService = z.infer<typeof insertServiceSchema>;
 
+// Sponsors (Sponzori Džemata)
+export const sponsors = pgTable("sponsors", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
+  
+  // Osnovni podaci
+  name: text("name").notNull(), // Ime i prezime ili naziv firme
+  type: text("type").notNull().default("company"), // company, individual
+  tier: text("tier").notNull(), // bronze, silver, gold
+  
+  // Kontakt informacije
+  email: text("email"),
+  phone: text("phone"),
+  website: text("website"),
+  
+  // Logo/slika
+  logoUrl: text("logo_url"), // Path do PNG slike
+  
+  // Trajanje sponzorstva
+  startDate: timestamp("start_date").defaultNow().notNull(),
+  endDate: timestamp("end_date"), // Godinu dana od startDate
+  
+  // Status
+  status: text("status").notNull().default("pending"), // pending, active, expired, rejected
+  
+  // Admin review
+  reviewedById: varchar("reviewed_by_id").references(() => users.id),
+  reviewedAt: timestamp("reviewed_at"),
+  reviewNotes: text("review_notes"),
+  
+  // Metadata
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertSponsorSchema = createInsertSchema(sponsors).omit({
+  id: true,
+  createdAt: true,
+  reviewedAt: true,
+}).extend({
+  tenantId: z.string(),
+  startDate: z.union([
+    z.date(),
+    z.string().transform((str) => new Date(str))
+  ]).optional(),
+  endDate: z.union([
+    z.date(),
+    z.string().transform((str) => new Date(str))
+  ]).optional().nullable()
+});
+
+export type Sponsor = typeof sponsors.$inferSelect;
+export type InsertSponsor = z.infer<typeof insertSponsorSchema>;
+
 // ========================================
 // MULTI-TENANT ARCHITECTURE
 // ========================================

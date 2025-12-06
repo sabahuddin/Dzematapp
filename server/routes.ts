@@ -12,7 +12,7 @@ import { seedDemoData } from "./seed-demo-data";
 import { requireFeature, getTenantSubscriptionInfo } from "./feature-access";
 import { generateCertificate, saveCertificate } from "./certificateService";
 import { processAndSaveToFolder, IMAGE_CONFIGS, generateImageFilename } from "./utils/image-processor";
-import { type User, insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema, insertImportantDateSchema, insertContributionPurposeSchema, insertFinancialContributionSchema, insertActivityLogSchema, insertEventAttendanceSchema, insertPointsSettingsSchema, insertBadgeSchema, insertUserBadgeSchema, insertProjectSchema, insertProposalSchema, insertReceiptSchema, insertCertificateTemplateSchema, insertUserCertificateSchema, insertMembershipApplicationSchema, insertAkikaApplicationSchema, insertMarriageApplicationSchema, insertServiceSchema, insertTenantSchema } from "@shared/schema";
+import { type User, insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema, insertImportantDateSchema, insertContributionPurposeSchema, insertFinancialContributionSchema, insertActivityLogSchema, insertEventAttendanceSchema, insertPointsSettingsSchema, insertBadgeSchema, insertUserBadgeSchema, insertProjectSchema, insertProposalSchema, insertReceiptSchema, insertCertificateTemplateSchema, insertUserCertificateSchema, insertMembershipApplicationSchema, insertAkikaApplicationSchema, insertMarriageApplicationSchema, insertServiceSchema, insertSponsorSchema, insertTenantSchema } from "@shared/schema";
 
 // Upload directories
 const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'photos');
@@ -3728,6 +3728,116 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       res.status(500).json({ message: "Failed to delete service" });
     }
 });
+
+  // Sponsors routes (Sponzori Džemata)
+  app.get("/api/sponsors", requireAuth, async (req, res) => {
+    try {
+      const tenantId = req.user!.tenantId;
+      const sponsors = await storage.getAllSponsors(tenantId);
+      res.json(sponsors);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get sponsors" });
+    }
+  });
+
+  app.get("/api/sponsors/active", requireAuth, async (req, res) => {
+    try {
+      const tenantId = req.user!.tenantId;
+      const sponsors = await storage.getActiveSponsors(tenantId);
+      res.json(sponsors);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get active sponsors" });
+    }
+  });
+
+  app.get("/api/sponsors/:id", requireAuth, async (req, res) => {
+    try {
+      const tenantId = req.user!.tenantId;
+      const sponsor = await storage.getSponsor(req.params.id, tenantId);
+      if (!sponsor) {
+        return res.status(404).json({ message: "Sponsor not found" });
+      }
+      res.json(sponsor);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get sponsor" });
+    }
+  });
+
+  app.post("/api/sponsors", requireAuth, async (req, res) => {
+    try {
+      const tenantId = req.user!.tenantId;
+      const sponsorData = insertSponsorSchema.parse({
+        ...req.body,
+        tenantId,
+        status: 'pending'
+      });
+      const sponsor = await storage.createSponsor(sponsorData);
+      res.status(201).json(sponsor);
+    } catch (error) {
+      console.error("Error creating sponsor:", error);
+      res.status(400).json({ message: "Invalid sponsor data" });
+    }
+  });
+
+  app.put("/api/sponsors/:id", requireAdmin, async (req, res) => {
+    try {
+      const tenantId = req.user!.tenantId;
+      const sponsor = await storage.getSponsor(req.params.id, tenantId);
+      if (!sponsor) {
+        return res.status(404).json({ message: "Sponsor not found" });
+      }
+      const updated = await storage.updateSponsor(req.params.id, tenantId, req.body);
+      res.json(updated);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update sponsor" });
+    }
+  });
+
+  app.put("/api/sponsors/:id/approve", requireAdmin, async (req, res) => {
+    try {
+      const tenantId = req.user!.tenantId;
+      const reviewedById = req.user!.id;
+      const { reviewNotes } = req.body;
+      const sponsor = await storage.approveSponsor(req.params.id, tenantId, reviewedById, reviewNotes);
+      if (!sponsor) {
+        return res.status(404).json({ message: "Sponsor not found" });
+      }
+      res.json(sponsor);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to approve sponsor" });
+    }
+  });
+
+  app.put("/api/sponsors/:id/reject", requireAdmin, async (req, res) => {
+    try {
+      const tenantId = req.user!.tenantId;
+      const reviewedById = req.user!.id;
+      const { reviewNotes } = req.body;
+      if (!reviewNotes) {
+        return res.status(400).json({ message: "Review notes required for rejection" });
+      }
+      const sponsor = await storage.rejectSponsor(req.params.id, tenantId, reviewedById, reviewNotes);
+      if (!sponsor) {
+        return res.status(404).json({ message: "Sponsor not found" });
+      }
+      res.json(sponsor);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to reject sponsor" });
+    }
+  });
+
+  app.delete("/api/sponsors/:id", requireAdmin, async (req, res) => {
+    try {
+      const tenantId = req.user!.tenantId;
+      const deleted = await storage.deleteSponsor(req.params.id, tenantId);
+      if (!deleted) {
+        return res.status(404).json({ message: "Sponsor not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete sponsor" });
+    }
+  });
 
   // Purchase Requests routes
   app.get("/api/shop/purchase-requests", requireAdmin, async (req, res) => {
