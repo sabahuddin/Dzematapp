@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -138,16 +138,16 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
     return '';
   };
 
-  // Initialize pricing state from server data (using useEffect pattern)
-  if (pricing && !pricingInitialized) {
-    setTimeout(() => {
+  // Initialize pricing state from server data
+  useEffect(() => {
+    if (pricing && !pricingInitialized) {
       setBronzeAmount(pricing.bronzeAmount?.toString() || '');
       setSilverAmount(pricing.silverAmount?.toString() || '');
       setGoldAmount(pricing.goldAmount?.toString() || '');
       setSponsorCurrency(pricing.currency || 'EUR');
       setPricingInitialized(true);
-    }, 0);
-  }
+    }
+  }, [pricing, pricingInitialized]);
 
   const updatePricingMutation = useMutation({
     mutationFn: async (data: { bronzeAmount: number | null; silverAmount: number | null; goldAmount: number | null; currency: string }) => {
