@@ -114,7 +114,7 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
   });
 
   const settingsQuery = useQuery<OrganizationSettings>({
-    queryKey: ['/api/organization'],
+    queryKey: ['/api/organization-settings'],
   });
 
   const settings = settingsQuery.data;
