@@ -3017,8 +3017,9 @@ export class DatabaseStorage implements IStorage {
       .filter(item => item.relatedEntityType === 'announcement' && item.relatedEntityId)
       .map(item => item.relatedEntityId!);
 
+    // Include marketplace, shop_item, and filter by type for proper image lookup
     const marketplaceIds = items
-      .filter(item => item.relatedEntityType === 'shop_item' && item.relatedEntityId)
+      .filter(item => (item.relatedEntityType === 'shop_item' || item.relatedEntityType === 'marketplace') && item.relatedEntityId)
       .map(item => item.relatedEntityId!);
 
     // Batched lookup for announcement images (first image per announcement)
@@ -3056,7 +3057,7 @@ export class DatabaseStorage implements IStorage {
 
     // Batched lookup for shop product images (first photo)
     const shopProductIds = items
-      .filter(item => item.type === 'shop_item' && item.relatedEntityId && item.relatedEntityType !== 'shop_item')
+      .filter(item => item.type === 'shop_item' && item.relatedEntityId && item.relatedEntityType === 'shop_item')
       .map(item => item.relatedEntityId!);
 
     const shopImages = new Map<string, string>();
@@ -3068,6 +3069,24 @@ export class DatabaseStorage implements IStorage {
       for (const product of products) {
         if (product.photos && product.photos.length > 0) {
           shopImages.set(product.id, product.photos[0]);
+        }
+      }
+    }
+
+    // Batched lookup for service images (first photo)
+    const serviceIds = items
+      .filter(item => item.relatedEntityType === 'service' && item.relatedEntityId)
+      .map(item => item.relatedEntityId!);
+
+    const serviceImages = new Map<string, string>();
+    if (serviceIds.length > 0) {
+      const serviceItems = await db.select()
+        .from(services)
+        .where(inArray(services.id, serviceIds));
+
+      for (const svc of serviceItems) {
+        if (svc.photos && svc.photos.length > 0) {
+          serviceImages.set(svc.id, svc.photos[0]);
         }
       }
     }
@@ -3111,6 +3130,10 @@ export class DatabaseStorage implements IStorage {
         imageUrl = eventImages.get(item.relatedEntityId) || null;
       } else if (item.relatedEntityType === 'shop_item' && item.relatedEntityId) {
         imageUrl = marketplaceImages.get(item.relatedEntityId) || shopImages.get(item.relatedEntityId) || null;
+      } else if (item.relatedEntityType === 'marketplace' && item.relatedEntityId) {
+        imageUrl = marketplaceImages.get(item.relatedEntityId) || null;
+      } else if (item.relatedEntityType === 'service' && item.relatedEntityId) {
+        imageUrl = serviceImages.get(item.relatedEntityId) || null;
       }
 
       // Parse existing metadata and merge with imageUrl

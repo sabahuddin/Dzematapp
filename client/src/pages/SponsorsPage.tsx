@@ -143,9 +143,13 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
 
   const updatePricingMutation = useMutation({
     mutationFn: async (data: { sponsorBronzeAmount: number | null; sponsorSilverAmount: number | null; sponsorGoldAmount: number | null; sponsorCurrency: string }) => {
-      // Merge with existing settings to avoid overwriting other fields
+      // First fetch current settings to avoid overwriting other fields
+      const currentSettingsRes = await fetch('/api/organization-settings', { credentials: 'include' });
+      const currentSettings = await currentSettingsRes.json();
+      
+      // Merge with existing settings
       const fullPayload = {
-        ...settings,
+        ...currentSettings,
         sponsorBronzeAmount: data.sponsorBronzeAmount,
         sponsorSilverAmount: data.sponsorSilverAmount,
         sponsorGoldAmount: data.sponsorGoldAmount,
@@ -165,10 +169,7 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
   });
 
   const handleSavePricing = () => {
-    if (!settings) {
-      toast({ title: 'Greška', description: 'Postavke nisu učitane', variant: 'destructive' });
-      return;
-    }
+    // Always save with current form values, don't require settings to be loaded
     updatePricingMutation.mutate({
       sponsorBronzeAmount: bronzeAmount ? parseInt(bronzeAmount) : null,
       sponsorSilverAmount: silverAmount ? parseInt(silverAmount) : null,

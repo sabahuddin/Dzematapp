@@ -50,6 +50,7 @@ export default function ModulesPage() {
     { icon: <Help sx={{ fontSize: 48 }} />, label: 'Pitaj Imama', description: 'Pitanja za imama', route: '/ask-imam', testId: 'module-ask-imam' },
     { icon: <Description sx={{ fontSize: 48 }} />, label: 'Dokumenti', description: 'Dokumenti džemata', route: '/documents', testId: 'module-documents' },
     { icon: <Store sx={{ fontSize: 48 }} />, label: 'Trgovina', description: 'DžematShop i oglasnik', route: '/shop', testId: 'module-shop' },
+    { icon: <EmojiEvents sx={{ fontSize: 48 }} />, label: 'Sponzori', description: 'Naši sponzori', route: '/sponsors', testId: 'module-sponsors' },
     { icon: <Assignment sx={{ fontSize: 48 }} />, label: 'Prijave', description: 'Pristupnica, Akika, Vjenčanje', route: '/applications', testId: 'module-applications' },
     { icon: <MenuBook sx={{ fontSize: 48 }} />, label: 'Vaktija', description: 'Raspored namaza', route: '/vaktija', testId: 'module-vaktija' },
     { icon: <Help sx={{ fontSize: 48 }} />, label: 'Vodič', description: 'Vodič kroz aplikaciju', route: '/vodic', testId: 'module-guide' },
