@@ -334,6 +334,23 @@
       "member": "Članovi pristupaju Livestream modulu gdje mogu gledati live prenose džumua, mevluda, predavanja i drugih programa direktno iz aplikacije. Video player ima standardne kontrole (play, pause, volume, full-screen) i automatski detektuje kada je prenos uživo. Nije potrebna YouTube registracija za gledanje.",
       "all": "Gosti (neprijavljeni korisnici) takođe imaju pristup livestream modulu što omogućava široj zajednici da prati program džemata bez potrebe za prijavljivanjem. Ovo proširuje doseg prenosa i omogućava uključivanje svih zainteresovanih."
     },
+    "sponsors": {
+      "title": "Sponzori",
+      "shortDesc": "Sponzorstva i promocija firmi u džematu",
+      "description": "Modul za upravljanje sponzorstvima džemata. Omogućava firmama i fizičkim licima da podrže džemat kroz sponzorske pakete (Bronzani, Srebreni, Zlatni) sa godišnjom trajanjem. Sponzori dobijaju vidljivost na stranici sponzora sa svojim logom, kontakt informacijama i linkom na web stranicu.",
+      "features": [
+        "Tri nivoa sponzorstva: Bronzani, Srebreni i Zlatni",
+        "Godišnje trajanje sponzorstva (automatski 1 godina od odobrenja)",
+        "Prikaz loga sponzora, kontakt podataka i web stranice",
+        "Workflow odobrenja: prijava → pregled admina → odobrenje/odbijanje",
+        "Prilagodljive cijene za svaki nivo sponzorstva",
+        "Javna vidljivost odobrenih sponzora",
+        "Mogućnost prijave za fizička lica i firme"
+      ],
+      "admin": "Admin postavlja cijene za svaki nivo sponzorstva (Bronzani, Srebreni, Zlatni) u CHF. Kada stigne prijava za sponzorstvo, admin je pregleda, može dodati napomenu i odlučuje hoće li je odobriti ili odbiti. Odobreni sponzori automatski dobijaju trajanje od godinu dana. Admin može uređivati podatke sponzora i brisati istekla sponzorstva.",
+      "member": "Članovi mogu vidjeti sve aktivne sponzore džemata organizovane po nivoima. Za svakog sponzora vide logo, naziv, kontakt informacije (telefon, email, web stranica) sa mogućnošću direktnog kontakta. Članovi mogu podnijeti prijavu za sponzorstvo u ime svoje firme ili kao fizičko lice.",
+      "all": "Gosti mogu vidjeti aktivne sponzore i podnijeti prijavu za sponzorstvo bez prijavljivanja. Ovo omogućava široj zajednici da podrži džemat i dobije promociju unutar zajednice."
+    },
     "settings": {
       "title": "Postavke",
       "shortDesc": "Postavke aplikacije i profila",

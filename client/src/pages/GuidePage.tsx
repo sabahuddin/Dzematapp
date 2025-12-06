@@ -30,6 +30,7 @@ import {
   CardGiftcard,
   Description,
   OndemandVideo,
+  Handshake,
 } from '@mui/icons-material';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
@@ -132,6 +133,11 @@ export default function GuidePage() {
       icon: <OndemandVideo sx={{ fontSize: 28 }} />,
       key: 'media',
       color: 'hsl(14 100% 45%)',
+    },
+    {
+      icon: <Handshake sx={{ fontSize: 28 }} />,
+      key: 'sponsors',
+      color: 'hsl(122 60% 29%)',
     },
     {
       icon: <Settings sx={{ fontSize: 28 }} />,
