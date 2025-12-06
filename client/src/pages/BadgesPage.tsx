@@ -70,8 +70,8 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
     queryKey: ['/api/badges'],
   });
 
-  // Form schema
-  const formSchema = insertBadgeSchema.extend({
+  // Form schema - omit tenantId since backend adds it
+  const formSchema = insertBadgeSchema.omit({ tenantId: true }).extend({
     name: z.string().min(1, t('badges:validation.nameRequired')),
     description: z.string().min(1, t('badges:validation.descriptionRequired')),
     criteriaType: z.string().min(1, t('badges:validation.criteriaTypeRequired')),
