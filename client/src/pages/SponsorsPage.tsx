@@ -423,7 +423,9 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
                                 data-testid={`link-sponsor-website-${sponsor.id}`}
                               >
                                 <Language sx={{ fontSize: 24, color: 'primary.main' }} />
-                                <Typography variant="caption" sx={{ mt: 0.5 }}>Web</Typography>
+                                <Typography variant="caption" sx={{ mt: 0.5, maxWidth: 120, wordBreak: 'break-all', textAlign: 'center', fontSize: '0.7rem' }}>
+                                  {sponsor.website?.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+                                </Typography>
                               </Box>
                             )}
                             {sponsor.phone && (
@@ -439,7 +441,7 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
                                 data-testid={`link-sponsor-phone-${sponsor.id}`}
                               >
                                 <Phone sx={{ fontSize: 24, color: 'primary.main' }} />
-                                <Typography variant="caption" sx={{ mt: 0.5 }}>Telefon</Typography>
+                                <Typography variant="caption" sx={{ mt: 0.5, fontSize: '0.7rem' }}>{sponsor.phone}</Typography>
                               </Box>
                             )}
                             {sponsor.email && (
@@ -455,7 +457,7 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
                                 data-testid={`link-sponsor-email-${sponsor.id}`}
                               >
                                 <Email sx={{ fontSize: 24, color: 'primary.main' }} />
-                                <Typography variant="caption" sx={{ mt: 0.5 }}>Email</Typography>
+                                <Typography variant="caption" sx={{ mt: 0.5, fontSize: '0.7rem' }}>{sponsor.email}</Typography>
                               </Box>
                             )}
                           </Stack>
