@@ -409,33 +409,54 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
                             size="small"
                             sx={{ mt: 1 }}
                           />
-                          <Stack direction="row" spacing={1} justifyContent="center" sx={{ mt: 2 }}>
+                          <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 2 }}>
                             {sponsor.website && (
-                              <IconButton 
-                                size="small" 
+                              <Box 
+                                sx={{ 
+                                  display: 'flex', 
+                                  flexDirection: 'column', 
+                                  alignItems: 'center',
+                                  cursor: 'pointer',
+                                  '&:hover': { opacity: 0.7 }
+                                }}
                                 onClick={() => window.open(sponsor.website!, '_blank')}
                                 data-testid={`link-sponsor-website-${sponsor.id}`}
                               >
-                                <Language />
-                              </IconButton>
+                                <Language sx={{ fontSize: 24, color: 'primary.main' }} />
+                                <Typography variant="caption" sx={{ mt: 0.5 }}>Web</Typography>
+                              </Box>
                             )}
                             {sponsor.phone && (
-                              <IconButton 
-                                size="small"
+                              <Box 
+                                sx={{ 
+                                  display: 'flex', 
+                                  flexDirection: 'column', 
+                                  alignItems: 'center',
+                                  cursor: 'pointer',
+                                  '&:hover': { opacity: 0.7 }
+                                }}
                                 onClick={() => window.open(`tel:${sponsor.phone}`, '_self')}
                                 data-testid={`link-sponsor-phone-${sponsor.id}`}
                               >
-                                <Phone />
-                              </IconButton>
+                                <Phone sx={{ fontSize: 24, color: 'primary.main' }} />
+                                <Typography variant="caption" sx={{ mt: 0.5 }}>Telefon</Typography>
+                              </Box>
                             )}
                             {sponsor.email && (
-                              <IconButton 
-                                size="small"
+                              <Box 
+                                sx={{ 
+                                  display: 'flex', 
+                                  flexDirection: 'column', 
+                                  alignItems: 'center',
+                                  cursor: 'pointer',
+                                  '&:hover': { opacity: 0.7 }
+                                }}
                                 onClick={() => window.open(`mailto:${sponsor.email}`, '_self')}
                                 data-testid={`link-sponsor-email-${sponsor.id}`}
                               >
-                                <Email />
-                              </IconButton>
+                                <Email sx={{ fontSize: 24, color: 'primary.main' }} />
+                                <Typography variant="caption" sx={{ mt: 0.5 }}>Email</Typography>
+                              </Box>
                             )}
                           </Stack>
                         </CardContent>
