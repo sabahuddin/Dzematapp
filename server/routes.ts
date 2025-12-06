@@ -3807,10 +3807,16 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   app.post("/api/sponsors", requireAuth, async (req, res) => {
     try {
       const tenantId = req.user!.tenantId;
+      const startDate = new Date();
+      const endDate = new Date();
+      endDate.setFullYear(endDate.getFullYear() + 1);
+      
       const sponsorData = insertSponsorSchema.parse({
         ...req.body,
         tenantId,
-        status: 'pending'
+        status: 'pending',
+        startDate,
+        endDate
       });
       const sponsor = await storage.createSponsor(sponsorData);
       res.status(201).json(sponsor);
