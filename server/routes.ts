@@ -4636,6 +4636,81 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     }
 });
 
+  // DIAGNOSTIC ENDPOINT - Check badge system status
+  app.get("/api/diagnostics/badges", requireAdmin, async (req, res) => {
+    try {
+      const { pool } = await import('./db');
+      const client = await pool.connect();
+      
+      try {
+        // Check if badges table exists
+        const badgesTableCheck = await client.query(`
+          SELECT EXISTS (
+            SELECT FROM information_schema.tables 
+            WHERE table_name = 'badges'
+          ) as exists
+        `);
+        
+        // Check if user_badges table exists
+        const userBadgesTableCheck = await client.query(`
+          SELECT EXISTS (
+            SELECT FROM information_schema.tables 
+            WHERE table_name = 'user_badges'
+          ) as exists
+        `);
+        
+        // Get badges table structure if exists
+        let badgesColumns: any[] = [];
+        if (badgesTableCheck.rows[0].exists) {
+          const cols = await client.query(`
+            SELECT column_name, data_type, is_nullable 
+            FROM information_schema.columns 
+            WHERE table_name = 'badges'
+            ORDER BY ordinal_position
+          `);
+          badgesColumns = cols.rows;
+        }
+        
+        // Count badges for this tenant
+        let badgeCount = 0;
+        if (badgesTableCheck.rows[0].exists) {
+          const count = await client.query(
+            `SELECT COUNT(*) FROM badges WHERE tenant_id = $1`,
+            [req.user!.tenantId]
+          );
+          badgeCount = parseInt(count.rows[0].count);
+        }
+        
+        res.json({
+          status: 'ok',
+          tenantId: req.user!.tenantId,
+          tables: {
+            badges: {
+              exists: badgesTableCheck.rows[0].exists,
+              columns: badgesColumns,
+              count: badgeCount
+            },
+            user_badges: {
+              exists: userBadgesTableCheck.rows[0].exists
+            }
+          },
+          message: badgesTableCheck.rows[0].exists 
+            ? 'Badge tables exist and are ready' 
+            : 'BADGES TABLE MISSING - run migrations!'
+        });
+      } finally {
+        client.release();
+      }
+    } catch (error: any) {
+      console.error('[DIAGNOSTICS] Error:', error);
+      res.status(500).json({
+        status: 'error',
+        error: error.message,
+        hint: 'Database connection or table check failed'
+      });
+    }
+  });
+
   // Points Settings Routes (Feature 2)
   app.get("/api/point-settings", requireAuth, async (req, res) => {
     try {
@@ -4669,15 +4744,39 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   app.post("/api/badges", requireAdmin, requireFeature("badges"), async (req, res) => {
     try {
       const tenantId = req.user!.tenantId;
+      console.log('[BADGES] POST /api/badges - tenantId:', tenantId, 'body:', JSON.stringify(req.body));
+      
       const validated = insertBadgeSchema.parse({
         ...req.body,
         tenantId
       });
+      console.log('[BADGES] Validated data:', JSON.stringify(validated));
+      
       const badge = await storage.createBadge(validated);
+      console.log('[BADGES] Badge created successfully:', badge.id);
       res.status(201).json(badge);
-    } catch (error) {
-      console.error('Error creating badge:', error);
-      res.status(500).json({ message: "Failed to create badge" });
+    } catch (error: any) {
+      console.error('[BADGES] Error creating badge:', error.message, error.stack);
+      const errorMessage = error.message || 'Unknown error';
+      const isTableMissing = errorMessage.includes('relation') && errorMessage.includes('does not exist');
+      const isValidationError = error.name === 'ZodError';
+      
+      if (isTableMissing) {
+        res.status(500).json({ 
+          message: "Database table 'badges' does not exist. Run migrations first.",
+          error: errorMessage 
+        });
+      } else if (isValidationError) {
+        res.status(400).json({ 
+          message: "Validation failed", 
+          errors: error.errors 
+        });
+      } else {
+        res.status(500).json({ 
+          message: "Failed to create badge", 
+          error: errorMessage 
+        });
+      }
     }
 });
 
