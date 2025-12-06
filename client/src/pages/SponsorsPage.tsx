@@ -145,7 +145,16 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
     mutationFn: async (data: { sponsorBronzeAmount: number | null; sponsorSilverAmount: number | null; sponsorGoldAmount: number | null; sponsorCurrency: string }) => {
       // First fetch current settings to avoid overwriting other fields
       const currentSettingsRes = await fetch('/api/organization-settings', { credentials: 'include' });
+      
+      if (!currentSettingsRes.ok) {
+        throw new Error('Nije moguće učitati trenutne postavke');
+      }
+      
       const currentSettings = await currentSettingsRes.json();
+      
+      if (!currentSettings || typeof currentSettings !== 'object') {
+        throw new Error('Postavke nisu pronađene');
+      }
       
       // Remove server-managed fields that would fail validation
       const { id, tenantId, updatedAt, ...settingsWithoutServerFields } = currentSettings;
@@ -166,8 +175,8 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
       queryClient.invalidateQueries({ queryKey: ['/api/organization-settings'] });
       toast({ title: 'Uspješno', description: 'Cijene sponzorskih paketa su sačuvane' });
     },
-    onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri čuvanju cijena', variant: 'destructive' });
+    onError: (error: Error) => {
+      toast({ title: 'Greška', description: error.message || 'Greška pri čuvanju cijena', variant: 'destructive' });
     }
   });
 
