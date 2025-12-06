@@ -342,6 +342,38 @@ async function createMissingTables(client: any): Promise<void> {
       "review_comment" text,
       "reviewed_at" timestamp,
       "created_at" timestamp NOT NULL DEFAULT now()
+    )`,
+    
+    // sponsors
+    `CREATE TABLE IF NOT EXISTS "sponsors" (
+      "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+      "tenant_id" varchar NOT NULL REFERENCES "tenants"("id") ON DELETE CASCADE,
+      "name" text NOT NULL,
+      "type" text NOT NULL DEFAULT 'company',
+      "tier" text NOT NULL,
+      "email" text,
+      "phone" text,
+      "website" text,
+      "logo_url" text,
+      "amount" integer,
+      "start_date" timestamp,
+      "end_date" timestamp,
+      "status" text NOT NULL DEFAULT 'pending',
+      "reviewed_by_id" varchar REFERENCES "users"("id"),
+      "reviewed_at" timestamp,
+      "notes" text,
+      "created_at" timestamp NOT NULL DEFAULT now()
+    )`,
+    
+    // sponsor_pricing
+    `CREATE TABLE IF NOT EXISTS "sponsor_pricing" (
+      "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+      "tenant_id" varchar NOT NULL UNIQUE REFERENCES "tenants"("id") ON DELETE CASCADE,
+      "bronze_amount" integer,
+      "silver_amount" integer,
+      "gold_amount" integer,
+      "currency" text NOT NULL DEFAULT 'EUR',
+      "updated_at" timestamp NOT NULL DEFAULT now()
     )`
   ];
   
@@ -608,6 +640,9 @@ async function addMissingColumns(client: any): Promise<void> {
     `ALTER TABLE "organization_settings" ADD COLUMN IF NOT EXISTS "referenz_zeile" text`,
     `ALTER TABLE "organization_settings" ADD COLUMN IF NOT EXISTS "show_financial_section" boolean DEFAULT true`,
     `ALTER TABLE "organization_settings" ADD COLUMN IF NOT EXISTS "created_at" timestamp DEFAULT now()`,
+    `ALTER TABLE "organization_settings" ADD COLUMN IF NOT EXISTS "sponsor_bronze_amount" integer`,
+    `ALTER TABLE "organization_settings" ADD COLUMN IF NOT EXISTS "sponsor_silver_amount" integer`,
+    `ALTER TABLE "organization_settings" ADD COLUMN IF NOT EXISTS "sponsor_gold_amount" integer`,
     
     // POINTS_SETTINGS - 4 missing columns
     `ALTER TABLE "points_settings" ADD COLUMN IF NOT EXISTS "event_attendance" integer DEFAULT 20`,
