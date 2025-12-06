@@ -1232,6 +1232,31 @@ export const insertSponsorSchema = createInsertSchema(sponsors).omit({
 export type Sponsor = typeof sponsors.$inferSelect;
 export type InsertSponsor = z.infer<typeof insertSponsorSchema>;
 
+// Sponsor Pricing (Cijene sponzorskih paketa - per tenant)
+export const sponsorPricing = pgTable("sponsor_pricing", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().unique().references(() => tenants.id, { onDelete: "cascade" }),
+  
+  // Tier amounts
+  bronzeAmount: integer("bronze_amount"),
+  silverAmount: integer("silver_amount"),
+  goldAmount: integer("gold_amount"),
+  
+  // Currency
+  currency: text("currency").notNull().default("EUR"),
+  
+  // Metadata
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertSponsorPricingSchema = createInsertSchema(sponsorPricing).omit({
+  id: true,
+  updatedAt: true,
+});
+
+export type SponsorPricing = typeof sponsorPricing.$inferSelect;
+export type InsertSponsorPricing = z.infer<typeof insertSponsorPricingSchema>;
+
 // ========================================
 // MULTI-TENANT ARCHITECTURE
 // ========================================
