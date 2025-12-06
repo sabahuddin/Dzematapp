@@ -83,6 +83,8 @@ import {
   type ServiceWithUser,
   type Sponsor,
   type InsertSponsor,
+  type SponsorPricing,
+  type InsertSponsorPricing,
   type ContributionPurpose,
   type InsertContributionPurpose,
   users,
@@ -126,6 +128,7 @@ import {
   activityFeed,
   services,
   sponsors,
+  sponsorPricing,
   tenants
 } from "@shared/schema";
 import { db, pool } from './db';
@@ -290,6 +293,10 @@ export interface IStorage {
   approveSponsor(id: string, tenantId: string, reviewedById: string, reviewNotes?: string): Promise<Sponsor | undefined>;
   rejectSponsor(id: string, tenantId: string, reviewedById: string, reviewNotes: string): Promise<Sponsor | undefined>;
   deleteSponsor(id: string, tenantId: string): Promise<boolean>;
+
+  // Sponsor Pricing (Cijene sponzorskih paketa)
+  getSponsorPricing(tenantId: string): Promise<SponsorPricing | undefined>;
+  updateSponsorPricing(tenantId: string, data: Partial<InsertSponsorPricing>): Promise<SponsorPricing>;
 
   // Product Purchase Requests
   createProductPurchaseRequest(request: InsertProductPurchaseRequest): Promise<ProductPurchaseRequest>;
@@ -1805,6 +1812,28 @@ export class DatabaseStorage implements IStorage {
   async deleteSponsor(id: string, tenantId: string): Promise<boolean> {
     const result = await db.delete(sponsors).where(and(eq(sponsors.id, id), eq(sponsors.tenantId, tenantId))).returning();
     return result.length > 0;
+  }
+
+  async getSponsorPricing(tenantId: string): Promise<SponsorPricing | undefined> {
+    const result = await db.select().from(sponsorPricing).where(eq(sponsorPricing.tenantId, tenantId)).limit(1);
+    return result[0];
+  }
+
+  async updateSponsorPricing(tenantId: string, data: Partial<InsertSponsorPricing>): Promise<SponsorPricing> {
+    const existing = await this.getSponsorPricing(tenantId);
+    
+    if (existing) {
+      const [updated] = await db.update(sponsorPricing)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(sponsorPricing.tenantId, tenantId))
+        .returning();
+      return updated;
+    } else {
+      const [created] = await db.insert(sponsorPricing)
+        .values({ tenantId, ...data })
+        .returning();
+      return created;
+    }
   }
 
   async createProductPurchaseRequest(request: InsertProductPurchaseRequest): Promise<ProductPurchaseRequest> {
