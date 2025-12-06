@@ -114,14 +114,24 @@ export default function FeedSlideshow({ items }: FeedSlideshowProps) {
   };
 
   const getEntityTypeBadgeLabel = (type: string, item?: ActivityFeedItem): string => {
-    if (type === 'shop_item' && item?.metadata) {
-      try {
-        const meta = JSON.parse(item.metadata);
-        const listingType = meta.listingType;
-        if (listingType === 'sell') return 'Prodaje se';
-        if (listingType === 'gift') return 'Poklanja se';
-        if (listingType === 'service') return 'Usluga';
-      } catch {}
+    if (type === 'shop_item' && item) {
+      // First try to get listingType from metadata
+      if (item.metadata) {
+        try {
+          const meta = JSON.parse(item.metadata);
+          const listingType = meta.listingType;
+          if (listingType === 'sell') return 'Prodaje se';
+          if (listingType === 'gift') return 'Poklanja se';
+          if (listingType === 'service') return 'Usluga';
+        } catch {}
+      }
+      // Fallback: use title field for legacy items
+      if (item.title) {
+        if (item.title.toLowerCase().includes('prodaje')) return 'Prodaje se';
+        if (item.title.toLowerCase().includes('poklanja')) return 'Poklanja se';
+        if (item.title.toLowerCase().includes('usluga')) return 'Usluga';
+      }
+      return 'Shop';
     }
     switch (type) {
       case 'announcement': return 'Obavještenje';

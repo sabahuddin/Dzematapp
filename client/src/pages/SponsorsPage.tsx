@@ -130,22 +130,33 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
     return '';
   };
 
-  // Initialize pricing state from settings
+  // Initialize pricing state from settings (using useEffect pattern)
   if (settings && !pricingInitialized) {
-    setBronzeAmount(settings.sponsorBronzeAmount?.toString() || '');
-    setSilverAmount(settings.sponsorSilverAmount?.toString() || '');
-    setGoldAmount(settings.sponsorGoldAmount?.toString() || '');
-    setSponsorCurrency(settings.sponsorCurrency || 'EUR');
-    setPricingInitialized(true);
+    setTimeout(() => {
+      setBronzeAmount(settings.sponsorBronzeAmount?.toString() || '');
+      setSilverAmount(settings.sponsorSilverAmount?.toString() || '');
+      setGoldAmount(settings.sponsorGoldAmount?.toString() || '');
+      setSponsorCurrency(settings.sponsorCurrency || 'EUR');
+      setPricingInitialized(true);
+    }, 0);
   }
 
   const updatePricingMutation = useMutation({
     mutationFn: async (data: { sponsorBronzeAmount: number | null; sponsorSilverAmount: number | null; sponsorGoldAmount: number | null; sponsorCurrency: string }) => {
-      const response = await apiRequest('/api/organization-settings', 'PUT', data);
+      // Merge with existing settings to avoid overwriting other fields
+      const fullPayload = {
+        ...settings,
+        sponsorBronzeAmount: data.sponsorBronzeAmount,
+        sponsorSilverAmount: data.sponsorSilverAmount,
+        sponsorGoldAmount: data.sponsorGoldAmount,
+        sponsorCurrency: data.sponsorCurrency
+      };
+      const response = await apiRequest('/api/organization-settings', 'PUT', fullPayload);
       return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/organization'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/organization-settings'] });
       toast({ title: 'Uspješno', description: 'Cijene sponzorskih paketa su sačuvane' });
     },
     onError: () => {
@@ -154,6 +165,10 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
   });
 
   const handleSavePricing = () => {
+    if (!settings) {
+      toast({ title: 'Greška', description: 'Postavke nisu učitane', variant: 'destructive' });
+      return;
+    }
     updatePricingMutation.mutate({
       sponsorBronzeAmount: bronzeAmount ? parseInt(bronzeAmount) : null,
       sponsorSilverAmount: silverAmount ? parseInt(silverAmount) : null,
