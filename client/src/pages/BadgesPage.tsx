@@ -43,6 +43,16 @@ interface BadgesPageProps {
   hideHeader?: boolean;
 }
 
+// Form schema defined outside component to avoid recreating on each render
+const badgeFormSchema = insertBadgeSchema.omit({ tenantId: true }).extend({
+  name: z.string().min(1, 'Naziv je obavezan'),
+  description: z.string().min(1, 'Opis je obavezan'),
+  criteriaType: z.string().min(1, 'Tip kriterija je obavezan'),
+  criteriaValue: z.number().min(0, 'Vrijednost mora biti pozitivna'),
+});
+
+type BadgeFormData = z.infer<typeof badgeFormSchema>;
+
 export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {}) {
   const { user: currentUser } = useAuth();
   const { toast } = useToast();
@@ -52,34 +62,14 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null);
 
-  if (featureAccess.upgradeRequired) {
-    return <UpgradeCTA moduleId="badges" requiredPlan={featureAccess.requiredPlan || 'full'} currentPlan={featureAccess.currentPlan || 'standard'} />;
-  }
-
-  // Check admin access
-  if (!currentUser?.isAdmin) {
-    return (
-      <Alert severity="error">
-        {t('badges:accessDenied')}
-      </Alert>
-    );
-  }
-
-  // Fetch badges
+  // ALL HOOKS MUST BE CALLED BEFORE ANY CONDITIONAL RETURNS
   const badgesQuery = useQuery({
     queryKey: ['/api/badges'],
+    enabled: !featureAccess.upgradeRequired && currentUser?.isAdmin,
   });
 
-  // Form schema - omit tenantId since backend adds it
-  const formSchema = insertBadgeSchema.omit({ tenantId: true }).extend({
-    name: z.string().min(1, t('badges:validation.nameRequired')),
-    description: z.string().min(1, t('badges:validation.descriptionRequired')),
-    criteriaType: z.string().min(1, t('badges:validation.criteriaTypeRequired')),
-    criteriaValue: z.number().min(0, t('badges:validation.criteriaValuePositive')),
-  });
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<BadgeFormData>({
+    resolver: zodResolver(badgeFormSchema),
     defaultValues: {
       name: '',
       description: '',
@@ -89,9 +79,14 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
     }
   });
 
-  // Create/Update badge mutation
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    setSelectedBadge(null);
+    form.reset();
+  };
+
   const saveBadgeMutation = useMutation({
-    mutationFn: async (data: z.infer<typeof formSchema>) => {
+    mutationFn: async (data: BadgeFormData) => {
       if (selectedBadge) {
         const response = await apiRequest(`/api/badges/${selectedBadge.id}`, 'PUT', data);
         return response.json();
@@ -117,7 +112,6 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
     }
   });
 
-  // Delete badge mutation
   const deleteBadgeMutation = useMutation({
     mutationFn: async (id: string) => {
       await apiRequest(`/api/badges/${id}`, 'DELETE');
@@ -138,14 +132,12 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
     }
   });
 
-  // Check all users badges mutation
   const checkAllBadgesMutation = useMutation({
     mutationFn: async () => {
       const response = await apiRequest('/api/user-badges/check-all', 'POST');
       return response.json();
     },
     onSuccess: (data) => {
-      // Invalidate all badge-related queries using predicate for user-specific keys
       queryClient.invalidateQueries({ 
         predicate: (query) => {
           const key = query.queryKey[0] as string;
@@ -165,6 +157,19 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
       });
     }
   });
+
+  // CONDITIONAL RETURNS AFTER ALL HOOKS
+  if (featureAccess.upgradeRequired) {
+    return <UpgradeCTA moduleId="badges" requiredPlan={featureAccess.requiredPlan || 'full'} currentPlan={featureAccess.currentPlan || 'standard'} />;
+  }
+
+  if (!currentUser?.isAdmin) {
+    return (
+      <Alert severity="error">
+        {t('badges:accessDenied')}
+      </Alert>
+    );
+  }
 
   const handleOpenDialog = (badge?: Badge) => {
     if (badge) {
@@ -187,12 +192,6 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
       });
     }
     setDialogOpen(true);
-  };
-
-  const handleCloseDialog = () => {
-    setDialogOpen(false);
-    setSelectedBadge(null);
-    form.reset();
   };
 
   const handleSubmit = form.handleSubmit((data) => {
