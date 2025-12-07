@@ -5344,13 +5344,14 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     try {
       const updates = {
         ...req.body,
-        ...(req.body.textPositionX && { textPositionX: parseInt(req.body.textPositionX) }),
-        ...(req.body.textPositionY && { textPositionY: parseInt(req.body.textPositionY) }),
-        ...(req.body.fontSize && { fontSize: parseInt(req.body.fontSize) }),
-        ...(req.body.fontColor && { fontColor: req.body.fontColor }),
-        ...(req.body.fontFamily && { fontFamily: req.body.fontFamily }),
-        ...(req.body.textAlign && { textAlign: req.body.textAlign })
+        ...(req.body.textPositionX !== undefined && { textPositionX: parseInt(req.body.textPositionX) }),
+        ...(req.body.textPositionY !== undefined && { textPositionY: parseInt(req.body.textPositionY) }),
+        ...(req.body.fontSize !== undefined && { fontSize: parseInt(req.body.fontSize) }),
+        ...(req.body.fontColor !== undefined && { fontColor: req.body.fontColor }),
+        ...(req.body.fontFamily !== undefined && { fontFamily: req.body.fontFamily }),
+        ...(req.body.textAlign !== undefined && { textAlign: req.body.textAlign })
       };
+      console.log('[TEMPLATE UPDATE] Updates to save:', JSON.stringify(updates, null, 2));
       const updated = await storage.updateCertificateTemplate(req.params.id, req.user!.tenantId, updates);
       if (!updated) {
         return res.status(404).json({ message: "Certificate template not found" });
@@ -5421,6 +5422,16 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       if (!template) {
         return res.status(404).json({ message: "Certificate template not found" });
       }
+      
+      console.log('[ISSUE CERTIFICATE] Template data:', JSON.stringify({
+        id: template.id,
+        name: template.name,
+        textPositionX: template.textPositionX,
+        textPositionY: template.textPositionY,
+        fontSize: template.fontSize,
+        fontColor: template.fontColor,
+        textAlign: template.textAlign
+      }, null, 2));
       
       const issuedCertificates = [];
       
