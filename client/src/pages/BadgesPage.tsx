@@ -371,95 +371,92 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
         </TableContainer>
       </Card>
 
-      {/* Add/Edit Dialog - Using form wrapper like EventModal */}
+      {/* Add/Edit Dialog - Simple onClick approach */}
       <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
-        <form onSubmit={(e) => {
-          e.preventDefault();
-          console.log('[BADGES] Form submitted!');
-          handleFormSubmit();
-        }}>
-          <DialogTitle>
-            {selectedBadge ? t('badges:editBadge') : t('badges:addNewBadge')}
-          </DialogTitle>
-          <DialogContent>
-            <Stack spacing={2} sx={{ mt: 1 }}>
-              <TextField
-                fullWidth
-                label={t('badges:badgeName')}
-                {...form.register('name')}
-                error={!!form.formState.errors.name}
-                helperText={form.formState.errors.name?.message}
-                required
-                data-testid="input-name"
-              />
-              <TextField
-                fullWidth
-                label={t('badges:description')}
-                multiline
-                rows={2}
-                {...form.register('description')}
-                error={!!form.formState.errors.description}
-                helperText={form.formState.errors.description?.message}
-                required
-                data-testid="input-description"
-              />
-              <Controller
-                name="criteriaType"
-                control={form.control}
-                render={({ field }) => (
-                  <TextField
-                    select
-                    fullWidth
-                    label={t('badges:criteriaType')}
-                    {...field}
-                    error={!!form.formState.errors.criteriaType}
-                    helperText={form.formState.errors.criteriaType?.message || t('badges:helperTexts.criteriaType')}
-                    SelectProps={{ native: true }}
-                    required
-                    data-testid="select-criteria-type"
-                  >
-                    <option value="">{t('badges:selectType')}</option>
-                    <option value="points_total">{t('badges:criteriaTypes.points')}</option>
-                    <option value="tasks_completed">{t('badges:criteriaTypes.tasks_completed')}</option>
-                    <option value="donation_total">{t('badges:criteriaTypes.contributions_amount')}</option>
-                    <option value="events_attended">{t('badges:criteriaTypes.events_attended')}</option>
-                  </TextField>
-                )}
-              />
-              <Controller
-                name="criteriaValue"
-                control={form.control}
-                render={({ field }) => (
-                  <TextField
-                    fullWidth
-                    label={t('badges:criteriaValue')}
-                    type="number"
-                    value={field.value}
-                    onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                    onBlur={field.onBlur}
-                    error={!!form.formState.errors.criteriaValue}
-                    helperText={form.formState.errors.criteriaValue?.message || t('badges:helperTexts.criteriaValue')}
-                    required
-                    data-testid="input-criteria-value"
-                  />
-                )}
-              />
-            </Stack>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDialog} data-testid="button-cancel">
-              {t('badges:cancel')}
-            </Button>
-            <Button 
-              type="submit"
-              variant="contained" 
-              disabled={saveBadgeMutation.isPending}
-              data-testid="button-save"
-            >
-              {saveBadgeMutation.isPending ? t('badges:saving') : t('badges:save')}
-            </Button>
-          </DialogActions>
-        </form>
+        <DialogTitle>
+          {selectedBadge ? t('badges:editBadge') : t('badges:addNewBadge')}
+        </DialogTitle>
+        <DialogContent>
+          <Stack spacing={2} sx={{ mt: 1 }}>
+            <TextField
+              fullWidth
+              label={t('badges:badgeName')}
+              {...form.register('name')}
+              error={!!form.formState.errors.name}
+              helperText={form.formState.errors.name?.message}
+              required
+              data-testid="input-name"
+            />
+            <TextField
+              fullWidth
+              label={t('badges:description')}
+              multiline
+              rows={2}
+              {...form.register('description')}
+              error={!!form.formState.errors.description}
+              helperText={form.formState.errors.description?.message}
+              required
+              data-testid="input-description"
+            />
+            <Controller
+              name="criteriaType"
+              control={form.control}
+              render={({ field }) => (
+                <TextField
+                  select
+                  fullWidth
+                  label={t('badges:criteriaType')}
+                  {...field}
+                  error={!!form.formState.errors.criteriaType}
+                  helperText={form.formState.errors.criteriaType?.message || t('badges:helperTexts.criteriaType')}
+                  SelectProps={{ native: true }}
+                  required
+                  data-testid="select-criteria-type"
+                >
+                  <option value="">{t('badges:selectType')}</option>
+                  <option value="points_total">{t('badges:criteriaTypes.points')}</option>
+                  <option value="tasks_completed">{t('badges:criteriaTypes.tasks_completed')}</option>
+                  <option value="donation_total">{t('badges:criteriaTypes.contributions_amount')}</option>
+                  <option value="events_attended">{t('badges:criteriaTypes.events_attended')}</option>
+                </TextField>
+              )}
+            />
+            <Controller
+              name="criteriaValue"
+              control={form.control}
+              render={({ field }) => (
+                <TextField
+                  fullWidth
+                  label={t('badges:criteriaValue')}
+                  type="number"
+                  value={field.value}
+                  onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                  onBlur={field.onBlur}
+                  error={!!form.formState.errors.criteriaValue}
+                  helperText={form.formState.errors.criteriaValue?.message || t('badges:helperTexts.criteriaValue')}
+                  required
+                  data-testid="input-criteria-value"
+                />
+              )}
+            />
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} data-testid="button-cancel">
+            {t('badges:cancel')}
+          </Button>
+          <Button 
+            variant="contained" 
+            disabled={saveBadgeMutation.isPending}
+            onClick={() => {
+              console.log('[BADGES] Save button onClick fired!');
+              handleFormSubmit();
+            }}
+            data-testid="button-save"
+          >
+            {saveBadgeMutation.isPending ? t('badges:saving') : t('badges:save')}
+          </Button>
+        </DialogActions>
       </Dialog>
     </Box>
   );
