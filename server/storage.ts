@@ -2451,14 +2451,17 @@ export class DatabaseStorage implements IStorage {
           qualifies = count >= badge.criteriaValue;
           break;
         }
+        case 'points':
         case 'points_total': {
           const user = await this.getUser(userId);
           qualifies = (user?.totalPoints || 0) >= badge.criteriaValue;
+          console.log(`[BADGE CHECK] User ${userId} has ${user?.totalPoints || 0} points, badge requires ${badge.criteriaValue}, qualifies: ${qualifies}`);
           break;
         }
       }
       
       if (qualifies) {
+        console.log(`[BADGE AWARD] Awarding badge "${badge.name}" to user ${userId}`);
         const ub = await this.awardBadgeToUser(userId, badge.id, tenantId);
         awarded.push(ub);
       }
@@ -2495,6 +2498,7 @@ export class DatabaseStorage implements IStorage {
           stillQualifies = count >= badge.criteriaValue;
           break;
         }
+        case 'points':
         case 'points_total': {
           const user = await this.getUser(userId);
           stillQualifies = (user?.totalPoints || 0) >= badge.criteriaValue;
