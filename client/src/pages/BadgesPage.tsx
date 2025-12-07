@@ -194,12 +194,24 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
     setDialogOpen(true);
   };
 
-  const handleSubmit = form.handleSubmit((data) => {
-    console.log('Form submitted with data:', data);
+  const handleFormSubmit = async () => {
+    const isValid = await form.trigger();
+    console.log('[BADGES] Form validation result:', isValid);
+    console.log('[BADGES] Form errors:', form.formState.errors);
+    
+    if (!isValid) {
+      toast({
+        title: 'Greška u formi',
+        description: 'Molimo popunite sva obavezna polja.',
+        variant: 'destructive'
+      });
+      return;
+    }
+    
+    const data = form.getValues();
+    console.log('[BADGES] Submitting data:', data);
     saveBadgeMutation.mutate(data);
-  }, (errors) => {
-    console.log('Form validation errors:', errors);
-  });
+  };
 
   const handleDelete = (id: string) => {
     if (window.confirm(t('badges:messages.confirmDelete'))) {
@@ -358,8 +370,7 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
 
       {/* Add/Edit Dialog */}
       <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
-        <form onSubmit={handleSubmit}>
-          <DialogTitle>
+        <DialogTitle>
             {selectedBadge ? t('badges:editBadge') : t('badges:addNewBadge')}
           </DialogTitle>
           <DialogContent>
@@ -432,15 +443,14 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
               {t('badges:cancel')}
             </Button>
             <Button 
-              type="submit" 
               variant="contained" 
               disabled={saveBadgeMutation.isPending}
+              onClick={handleFormSubmit}
               data-testid="button-save"
             >
               {saveBadgeMutation.isPending ? t('badges:saving') : t('badges:save')}
             </Button>
           </DialogActions>
-        </form>
       </Dialog>
     </Box>
   );
