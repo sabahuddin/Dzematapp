@@ -410,26 +410,47 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
               )}
             </Box>
             
-            <Stack direction="row" spacing={2} justifyContent="flex-end">
-              <Button 
-                variant="outlined" 
-                onClick={handleCloseDialog}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '16px' }}>
+              <button
+                type="button"
+                onClick={() => {
+                  console.log('[BADGES] Cancel clicked');
+                  handleCloseDialog();
+                }}
+                style={{
+                  padding: '10px 20px',
+                  backgroundColor: '#e5e7eb',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontSize: '14px'
+                }}
                 data-testid="button-cancel-inline"
               >
                 {t('badges:cancel')}
-              </Button>
-              <Button 
-                variant="contained" 
+              </button>
+              <button
+                type="button"
                 disabled={saveBadgeMutation.isPending}
                 onClick={() => {
-                  console.log('[BADGES-INLINE] Save clicked!');
+                  console.log('[BADGES] PURE HTML Save clicked!');
+                  alert('Spremi kliknut - HTML button!');
                   handleFormSubmit();
+                }}
+                style={{
+                  padding: '10px 20px',
+                  backgroundColor: saveBadgeMutation.isPending ? '#9ca3af' : '#16a34a',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: saveBadgeMutation.isPending ? 'not-allowed' : 'pointer',
+                  fontSize: '14px'
                 }}
                 data-testid="button-save-inline"
               >
                 {saveBadgeMutation.isPending ? t('badges:saving') : t('badges:save')}
-              </Button>
-            </Stack>
+              </button>
+            </div>
           </Stack>
         </Card>
       )}
