@@ -371,8 +371,21 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
         </TableContainer>
       </Card>
 
-      {/* Add/Edit Dialog - Simple onClick approach */}
-      <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
+      {/* Add/Edit Dialog - with PaperProps like EventModal */}
+      <Dialog 
+        open={dialogOpen} 
+        onClose={handleCloseDialog} 
+        maxWidth="sm" 
+        fullWidth
+        PaperProps={{
+          sx: { 
+            borderRadius: 2,
+            pointerEvents: 'auto',
+            position: 'relative',
+            zIndex: 1301
+          }
+        }}
+      >
         <DialogTitle>
           {selectedBadge ? t('badges:editBadge') : t('badges:addNewBadge')}
         </DialogTitle>
@@ -441,13 +454,18 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
             />
           </Stack>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} data-testid="button-cancel">
+        <DialogActions sx={{ pointerEvents: 'auto', position: 'relative', zIndex: 1 }}>
+          <Button 
+            onClick={handleCloseDialog} 
+            data-testid="button-cancel"
+            sx={{ pointerEvents: 'auto' }}
+          >
             {t('badges:cancel')}
           </Button>
           <Button 
             variant="contained" 
             disabled={saveBadgeMutation.isPending}
+            sx={{ pointerEvents: 'auto' }}
             onClick={() => {
               console.log('[BADGES] Save button onClick fired!');
               handleFormSubmit();
