@@ -53,7 +53,8 @@ import {
   ExpandLess,
   ExpandMore,
   Visibility,
-  Close
+  Close,
+  Refresh
 } from '@mui/icons-material';
 import { ActivityLog, User, UserCertificate, FinancialContribution, Badge, insertBadgeSchema } from '@shared/schema';
 import { useAuth } from '../hooks/useAuth';
@@ -278,6 +279,26 @@ export default function ActivityLogPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/certificates/user'] });
       queryClient.invalidateQueries({ queryKey: ['/api/certificates/unviewed-count'] });
+    },
+  });
+
+  const recalculatePointsMutation = useMutation({
+    mutationFn: async () => {
+      return apiRequest('/api/admin/recalculate-all-points', 'POST');
+    },
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/activity-logs'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/users'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/user-stats'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/badges'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/user-badges'] });
+      toast({ 
+        title: "Uspješno", 
+        description: `Preračunato bodova za ${data.usersProcessed} korisnika` 
+      });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Greška", description: error.message, variant: "destructive" });
     },
   });
 
@@ -599,7 +620,7 @@ export default function ActivityLogPage() {
 
             {/* Admin Search & Filter */}
             {currentUser?.isAdmin && (
-              <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
+              <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap', alignItems: 'center' }}>
                 <TextField 
                   variant="outlined" 
                   placeholder="Pretraži po imenu..." 
@@ -619,6 +640,16 @@ export default function ActivityLogPage() {
                     <MenuItem value="badge_earned">Osvojena značka</MenuItem>
                   </Select>
                 </FormControl>
+                <Button 
+                  variant="outlined" 
+                  color="primary" 
+                  onClick={() => recalculatePointsMutation.mutate()}
+                  disabled={recalculatePointsMutation.isPending}
+                  startIcon={<Refresh />}
+                  data-testid="button-recalculate-points"
+                >
+                  {recalculatePointsMutation.isPending ? 'Preračunavanje...' : 'Preračunaj bodove'}
+                </Button>
               </Box>
             )}
 

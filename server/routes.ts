@@ -6390,6 +6390,43 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     }
 });
 
+  // Admin endpoint to recalculate all user points and award badges
+  app.post("/api/admin/recalculate-all-points", requireAdmin, async (req, res) => {
+    try {
+      const tenantId = req.user!.tenantId;
+      console.log('[RECALCULATE] Starting points recalculation for all users in tenant:', tenantId);
+      
+      const users = await storage.getAllUsers(tenantId);
+      const results = [];
+      
+      for (const user of users) {
+        const oldPoints = user.totalPoints || 0;
+        const newPoints = await storage.recalculateUserPoints(user.id, tenantId);
+        const badgesAwarded = await storage.checkAndAwardBadges(user.id, tenantId);
+        
+        results.push({
+          userId: user.id,
+          userName: `${user.firstName} ${user.lastName}`,
+          oldPoints,
+          newPoints,
+          badgesAwarded: badgesAwarded.length
+        });
+        
+        console.log(`[RECALCULATE] ${user.firstName} ${user.lastName}: ${oldPoints} -> ${newPoints} points, ${badgesAwarded.length} badges awarded`);
+      }
+      
+      console.log('[RECALCULATE] Complete. Processed', users.length, 'users');
+      res.json({ 
+        message: 'Points recalculated and badges awarded for all users',
+        usersProcessed: users.length,
+        results
+      });
+    } catch (error) {
+      console.error('[RECALCULATE] Error:', error);
+      res.status(500).json({ message: 'Recalculation failed', error: String(error) });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
