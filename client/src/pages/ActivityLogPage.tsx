@@ -180,7 +180,7 @@ export default function ActivityLogPage() {
     defaultValues: {
       name: '',
       description: '',
-      criteriaType: '',
+      criteriaType: 'points_total',
       criteriaValue: 0,
       icon: null,
     }
@@ -1078,30 +1078,85 @@ export default function ActivityLogPage() {
         </Card>
       )}
 
-      {/* Badge Dialog */}
-      <Dialog open={badgeDialogOpen} onClose={() => { setBadgeDialogOpen(false); setSelectedBadge(null); badgeForm.reset(); }} maxWidth="sm" fullWidth>
-        <DialogTitle>{selectedBadge ? 'Uredi značku' : 'Dodaj novu značku'}</DialogTitle>
-        <DialogContent sx={{ mt: 2 }}>
+      {/* Badge Inline Form (replaces Dialog to avoid aria-hidden issues) */}
+      {badgeDialogOpen && (
+        <Card sx={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 9999, width: '90%', maxWidth: 500, p: 3, boxShadow: 24 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              {selectedBadge ? 'Uredi značku' : 'Dodaj novu značku'}
+            </Typography>
+            <IconButton onClick={() => { setBadgeDialogOpen(false); setSelectedBadge(null); badgeForm.reset(); }}>
+              <Close />
+            </IconButton>
+          </Box>
           <Stack spacing={2}>
-            <TextField fullWidth label="Naziv" {...badgeForm.register('name')} error={!!badgeForm.formState.errors.name} helperText={badgeForm.formState.errors.name?.message} data-testid="input-badge-name" />
-            <TextField fullWidth label="Opis" {...badgeForm.register('description')} error={!!badgeForm.formState.errors.description} helperText={badgeForm.formState.errors.description?.message} data-testid="input-badge-description" />
+            <TextField 
+              fullWidth 
+              label="Naziv" 
+              {...badgeForm.register('name')} 
+              error={!!badgeForm.formState.errors.name} 
+              helperText={badgeForm.formState.errors.name?.message} 
+              data-testid="input-badge-name" 
+            />
+            <TextField 
+              fullWidth 
+              label="Opis" 
+              {...badgeForm.register('description')} 
+              error={!!badgeForm.formState.errors.description} 
+              helperText={badgeForm.formState.errors.description?.message} 
+              data-testid="input-badge-description" 
+            />
             <FormControl fullWidth>
               <InputLabel>Tip kriterija</InputLabel>
-              <Select {...badgeForm.register('criteriaType')} label="Tip kriterija" data-testid="select-criteria-type">
+              <Select 
+                value={badgeForm.watch('criteriaType') || 'points_total'}
+                onChange={(e) => badgeForm.setValue('criteriaType', e.target.value)}
+                label="Tip kriterija" 
+                data-testid="select-criteria-type"
+              >
                 <MenuItem value="points_total">Ukupno bodova</MenuItem>
                 <MenuItem value="contributions_amount">Iznos doprinosa</MenuItem>
                 <MenuItem value="tasks_completed">Završeni zadaci</MenuItem>
                 <MenuItem value="events_attended">Posjećeni eventi</MenuItem>
               </Select>
             </FormControl>
-            <TextField fullWidth type="number" label="Vrijednost" {...badgeForm.register('criteriaValue', { valueAsNumber: true })} error={!!badgeForm.formState.errors.criteriaValue} helperText={badgeForm.formState.errors.criteriaValue?.message} data-testid="input-criteria-value" />
+            <TextField 
+              fullWidth 
+              type="number" 
+              label="Vrijednost" 
+              {...badgeForm.register('criteriaValue', { valueAsNumber: true })} 
+              error={!!badgeForm.formState.errors.criteriaValue} 
+              helperText={badgeForm.formState.errors.criteriaValue?.message} 
+              data-testid="input-criteria-value" 
+            />
           </Stack>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => { setBadgeDialogOpen(false); setSelectedBadge(null); badgeForm.reset(); }}>Otkaži</Button>
-          <Button variant="contained" onClick={badgeForm.handleSubmit((data) => saveBadgeMutation.mutate(data))} data-testid="button-save-badge">Spremi</Button>
-        </DialogActions>
-      </Dialog>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 3 }}>
+            <Button onClick={() => { setBadgeDialogOpen(false); setSelectedBadge(null); badgeForm.reset(); }}>
+              Otkaži
+            </Button>
+            <Button 
+              variant="contained" 
+              disabled={saveBadgeMutation.isPending}
+              onClick={() => {
+                console.log('[BADGE FORM] Spremi clicked!');
+                badgeForm.handleSubmit((data) => {
+                  console.log('[BADGE FORM] Submitting:', data);
+                  saveBadgeMutation.mutate(data);
+                })();
+              }} 
+              data-testid="button-save-badge"
+            >
+              {saveBadgeMutation.isPending ? 'Spremanje...' : 'Spremi'}
+            </Button>
+          </Box>
+        </Card>
+      )}
+      {badgeDialogOpen && (
+        <Box 
+          sx={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, bgcolor: 'rgba(0,0,0,0.5)', zIndex: 9998 }}
+          onClick={() => { setBadgeDialogOpen(false); setSelectedBadge(null); badgeForm.reset(); }}
+        />
+      )}
 
       {/* View Certificate Dialog */}
       <Dialog 
