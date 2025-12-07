@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { createPortal } from 'react-dom';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -295,6 +294,146 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
         </Box>
       )}
 
+      {/* Inline Form - appears when dialogOpen is true */}
+      {dialogOpen && (
+        <Card sx={{ mb: 3, p: 3 }}>
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            {selectedBadge ? t('badges:editBadge') : t('badges:addNewBadge')}
+          </Typography>
+          <Stack spacing={2}>
+            <Box>
+              <Typography variant="body2" sx={{ mb: 0.5, fontWeight: 500 }}>
+                {t('badges:badgeName')} *
+              </Typography>
+              <input
+                type="text"
+                {...form.register('name')}
+                style={{
+                  width: '100%',
+                  padding: '10px 12px',
+                  border: '2px solid #4caf50',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  boxSizing: 'border-box'
+                }}
+                data-testid="input-name-inline"
+              />
+              {form.formState.errors.name && (
+                <Typography color="error" variant="caption">{form.formState.errors.name.message}</Typography>
+              )}
+            </Box>
+            
+            <Box>
+              <Typography variant="body2" sx={{ mb: 0.5, fontWeight: 500 }}>
+                {t('badges:description')} *
+              </Typography>
+              <textarea
+                {...form.register('description')}
+                rows={2}
+                style={{
+                  width: '100%',
+                  padding: '10px 12px',
+                  border: '2px solid #4caf50',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  resize: 'vertical',
+                  boxSizing: 'border-box'
+                }}
+                data-testid="input-description-inline"
+              />
+              {form.formState.errors.description && (
+                <Typography color="error" variant="caption">{form.formState.errors.description.message}</Typography>
+              )}
+            </Box>
+            
+            <Box>
+              <Typography variant="body2" sx={{ mb: 0.5, fontWeight: 500 }}>
+                {t('badges:criteriaType')} *
+              </Typography>
+              <Controller
+                name="criteriaType"
+                control={form.control}
+                render={({ field }) => (
+                  <select
+                    {...field}
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      border: '2px solid #4caf50',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      backgroundColor: 'white',
+                      boxSizing: 'border-box'
+                    }}
+                    data-testid="select-criteria-type-inline"
+                  >
+                    <option value="">{t('badges:selectType')}</option>
+                    <option value="points_total">{t('badges:criteriaTypes.points')}</option>
+                    <option value="tasks_completed">{t('badges:criteriaTypes.tasks_completed')}</option>
+                    <option value="donation_total">{t('badges:criteriaTypes.contributions_amount')}</option>
+                    <option value="events_attended">{t('badges:criteriaTypes.events_attended')}</option>
+                  </select>
+                )}
+              />
+              {form.formState.errors.criteriaType && (
+                <Typography color="error" variant="caption">{form.formState.errors.criteriaType.message}</Typography>
+              )}
+            </Box>
+            
+            <Box>
+              <Typography variant="body2" sx={{ mb: 0.5, fontWeight: 500 }}>
+                {t('badges:criteriaValue')} *
+              </Typography>
+              <Controller
+                name="criteriaValue"
+                control={form.control}
+                render={({ field }) => (
+                  <input
+                    type="number"
+                    value={field.value}
+                    onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                    onBlur={field.onBlur}
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      border: '2px solid #4caf50',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      boxSizing: 'border-box'
+                    }}
+                    data-testid="input-criteria-value-inline"
+                  />
+                )}
+              />
+              {form.formState.errors.criteriaValue && (
+                <Typography color="error" variant="caption">{form.formState.errors.criteriaValue.message}</Typography>
+              )}
+            </Box>
+            
+            <Stack direction="row" spacing={2} justifyContent="flex-end">
+              <Button 
+                variant="outlined" 
+                onClick={handleCloseDialog}
+                data-testid="button-cancel-inline"
+              >
+                {t('badges:cancel')}
+              </Button>
+              <Button 
+                variant="contained" 
+                disabled={saveBadgeMutation.isPending}
+                onClick={() => {
+                  console.log('[BADGES-INLINE] Save clicked!');
+                  handleFormSubmit();
+                }}
+                data-testid="button-save-inline"
+              >
+                {saveBadgeMutation.isPending ? t('badges:saving') : t('badges:save')}
+              </Button>
+            </Stack>
+          </Stack>
+        </Card>
+      )}
+
       <Card>
         <TableContainer sx={{ overflowX: 'auto' }}>
           <Table>
@@ -367,197 +506,6 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
         </TableContainer>
       </Card>
 
-      {/* Add/Edit Modal - Using React Portal to render directly in body */}
-      {dialogOpen && createPortal(
-        <div 
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 9999,
-            pointerEvents: 'auto'
-          }}
-          onClick={handleCloseDialog}
-          data-testid="badge-modal-backdrop"
-        >
-          <div 
-            style={{
-              backgroundColor: 'white',
-              borderRadius: '12px',
-              padding: '24px',
-              width: '100%',
-              maxWidth: '500px',
-              margin: '16px',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-              pointerEvents: 'auto'
-            }}
-            onClick={(e) => e.stopPropagation()}
-            data-testid="badge-modal-content"
-          >
-            <h2 style={{ margin: '0 0 20px 0', fontSize: '1.25rem', fontWeight: 600 }}>
-              {selectedBadge ? t('badges:editBadge') : t('badges:addNewBadge')}
-            </h2>
-            
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div>
-                <label style={{ display: 'block', marginBottom: '4px', fontWeight: 500, fontSize: '14px' }}>
-                  {t('badges:badgeName')} *
-                </label>
-                <input
-                  type="text"
-                  {...form.register('name')}
-                  style={{
-                    width: '100%',
-                    padding: '10px 12px',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '8px',
-                    fontSize: '14px',
-                    boxSizing: 'border-box'
-                  }}
-                  data-testid="input-name"
-                />
-                {form.formState.errors.name && (
-                  <span style={{ color: '#ef4444', fontSize: '12px' }}>{form.formState.errors.name.message}</span>
-                )}
-              </div>
-              
-              <div>
-                <label style={{ display: 'block', marginBottom: '4px', fontWeight: 500, fontSize: '14px' }}>
-                  {t('badges:description')} *
-                </label>
-                <textarea
-                  {...form.register('description')}
-                  rows={2}
-                  style={{
-                    width: '100%',
-                    padding: '10px 12px',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '8px',
-                    fontSize: '14px',
-                    resize: 'vertical',
-                    boxSizing: 'border-box'
-                  }}
-                  data-testid="input-description"
-                />
-                {form.formState.errors.description && (
-                  <span style={{ color: '#ef4444', fontSize: '12px' }}>{form.formState.errors.description.message}</span>
-                )}
-              </div>
-              
-              <div>
-                <label style={{ display: 'block', marginBottom: '4px', fontWeight: 500, fontSize: '14px' }}>
-                  {t('badges:criteriaType')} *
-                </label>
-                <Controller
-                  name="criteriaType"
-                  control={form.control}
-                  render={({ field }) => (
-                    <select
-                      {...field}
-                      style={{
-                        width: '100%',
-                        padding: '10px 12px',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '8px',
-                        fontSize: '14px',
-                        backgroundColor: 'white',
-                        boxSizing: 'border-box'
-                      }}
-                      data-testid="select-criteria-type"
-                    >
-                      <option value="">{t('badges:selectType')}</option>
-                      <option value="points_total">{t('badges:criteriaTypes.points')}</option>
-                      <option value="tasks_completed">{t('badges:criteriaTypes.tasks_completed')}</option>
-                      <option value="donation_total">{t('badges:criteriaTypes.contributions_amount')}</option>
-                      <option value="events_attended">{t('badges:criteriaTypes.events_attended')}</option>
-                    </select>
-                  )}
-                />
-                {form.formState.errors.criteriaType && (
-                  <span style={{ color: '#ef4444', fontSize: '12px' }}>{form.formState.errors.criteriaType.message}</span>
-                )}
-              </div>
-              
-              <div>
-                <label style={{ display: 'block', marginBottom: '4px', fontWeight: 500, fontSize: '14px' }}>
-                  {t('badges:criteriaValue')} *
-                </label>
-                <Controller
-                  name="criteriaValue"
-                  control={form.control}
-                  render={({ field }) => (
-                    <input
-                      type="number"
-                      value={field.value}
-                      onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                      onBlur={field.onBlur}
-                      style={{
-                        width: '100%',
-                        padding: '10px 12px',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '8px',
-                        fontSize: '14px',
-                        boxSizing: 'border-box'
-                      }}
-                      data-testid="input-criteria-value"
-                    />
-                  )}
-                />
-                {form.formState.errors.criteriaValue && (
-                  <span style={{ color: '#ef4444', fontSize: '12px' }}>{form.formState.errors.criteriaValue.message}</span>
-                )}
-              </div>
-            </div>
-            
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '24px' }}>
-              <button
-                type="button"
-                onClick={handleCloseDialog}
-                style={{
-                  padding: '10px 20px',
-                  backgroundColor: '#f3f4f6',
-                  border: 'none',
-                  borderRadius: '8px',
-                  fontSize: '14px',
-                  fontWeight: 500,
-                  cursor: 'pointer'
-                }}
-                data-testid="button-cancel"
-              >
-                {t('badges:cancel')}
-              </button>
-              <button
-                type="button"
-                disabled={saveBadgeMutation.isPending}
-                onClick={() => {
-                  console.log('[BADGES] Portal Save button clicked!');
-                  handleFormSubmit();
-                }}
-                style={{
-                  padding: '10px 20px',
-                  backgroundColor: saveBadgeMutation.isPending ? '#9ca3af' : '#16a34a',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '8px',
-                  fontSize: '14px',
-                  fontWeight: 500,
-                  cursor: saveBadgeMutation.isPending ? 'not-allowed' : 'pointer'
-                }}
-                data-testid="button-save"
-              >
-                {saveBadgeMutation.isPending ? t('badges:saving') : t('badges:save')}
-              </button>
-            </div>
-          </div>
-        </div>,
-        document.body
-      )}
     </Box>
   );
 }
