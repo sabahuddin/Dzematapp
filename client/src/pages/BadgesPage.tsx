@@ -195,6 +195,9 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
   };
 
   const handleFormSubmit = async () => {
+    console.log('[BADGES] handleFormSubmit CALLED!');
+    alert('Spremi kliknut!'); // DEBUG - remove after testing
+    
     const isValid = await form.trigger();
     console.log('[BADGES] Form validation result:', isValid);
     
