@@ -64,7 +64,7 @@ export async function seedDefaultTenant() {
           priceMonthly: '149.00',
           priceYearly: '1490.00',
           currency: 'EUR',
-          enabledModules: ['dashboard', 'users', 'announcements', 'events', 'tasks', 'messages', 'askImam', 'requests', 'shop', 'vaktija', 'finances', 'projects', 'activity', 'badges', 'points', 'certificates', 'documents', 'media', 'settings', 'guide'],
+          enabledModules: ['dashboard', 'users', 'announcements', 'events', 'tasks', 'messages', 'askImam', 'ask-imam', 'requests', 'shop', 'marketplace', 'vaktija', 'finances', 'projects', 'activity', 'activity-log', 'badges', 'points', 'certificates', 'documents', 'media', 'livestream', 'settings', 'guide', 'vodic', 'sponsors', 'applications'],
           readOnlyModules: [],
           maxUsers: null,
           maxStorage: null,
@@ -73,7 +73,17 @@ export async function seedDefaultTenant() {
       ]);
       console.log('✅ Subscription plans created\n');
     } else {
-      console.log('ℹ️  Subscription plans already exist\n');
+      // UPDATE existing plans with latest modules
+      console.log('📋 Updating existing subscription plans with latest modules...');
+      
+      const fullPlanModules = ['dashboard', 'users', 'announcements', 'events', 'tasks', 'messages', 'askImam', 'ask-imam', 'requests', 'shop', 'marketplace', 'vaktija', 'finances', 'projects', 'activity', 'activity-log', 'badges', 'points', 'certificates', 'documents', 'media', 'livestream', 'settings', 'guide', 'vodic', 'sponsors', 'applications'];
+      
+      await db
+        .update(subscriptionPlans)
+        .set({ enabledModules: fullPlanModules })
+        .where(eq(subscriptionPlans.slug, 'full'));
+      
+      console.log('✅ Full plan modules updated\n');
     }
 
     // 2. Create GLOBAL SuperAdmin tenant (hidden from regular users)

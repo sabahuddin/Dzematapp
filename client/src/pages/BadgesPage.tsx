@@ -195,14 +195,11 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
   };
 
   const handleFormSubmit = async () => {
-    alert('SPREMI KLIKNUT!'); // TEST - ovo MORA pokazati popup
-    
     const isValid = await form.trigger();
     console.log('[BADGES] Form validation result:', isValid);
-    console.log('[BADGES] Form errors:', form.formState.errors);
     
     if (!isValid) {
-      alert('Forma nije validna: ' + JSON.stringify(form.formState.errors));
+      console.log('[BADGES] Form errors:', form.formState.errors);
       toast({
         title: 'Greška u formi',
         description: 'Molimo popunite sva obavezna polja.',
@@ -212,7 +209,6 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
     }
     
     const data = form.getValues();
-    alert('Šaljem podatke: ' + JSON.stringify(data));
     console.log('[BADGES] Submitting data:', data);
     saveBadgeMutation.mutate(data);
   };
