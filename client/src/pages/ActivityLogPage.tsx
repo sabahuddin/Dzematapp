@@ -167,8 +167,8 @@ export default function ActivityLogPage() {
     defaultSortDirection: 'asc',
   });
 
-  // Badge form
-  const badgeFormSchema = insertBadgeSchema.extend({
+  // Badge form - omit tenantId from validation (added in mutation)
+  const badgeFormSchema = insertBadgeSchema.omit({ tenantId: true }).extend({
     name: z.string().min(1, 'Naziv je obavezan'),
     description: z.string().min(1, 'Opis je obavezan'),
     criteriaType: z.string().min(1, 'Tip kriterija je obavezan'),
@@ -210,10 +210,11 @@ export default function ActivityLogPage() {
 
   const saveBadgeMutation = useMutation({
     mutationFn: async (data: z.infer<typeof badgeFormSchema>) => {
+      const payload = { ...data, tenantId: currentUser?.tenantId };
       if (selectedBadge) {
-        return apiRequest(`/api/badges/${selectedBadge.id}`, 'PUT', data);
+        return apiRequest(`/api/badges/${selectedBadge.id}`, 'PUT', payload);
       } else {
-        return apiRequest('/api/badges', 'POST', data);
+        return apiRequest('/api/badges', 'POST', payload);
       }
     },
     onSuccess: () => {
