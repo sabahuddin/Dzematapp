@@ -1149,10 +1149,17 @@ export default function ActivityLogPage() {
                 disabled={saveBadgeMutation.isPending}
                 onClick={() => {
                   console.log('[BADGE FORM] Spremi clicked!');
-                  badgeForm.handleSubmit((data) => {
-                    console.log('[BADGE FORM] Submitting:', data);
-                    saveBadgeMutation.mutate(data);
-                  })();
+                  console.log('[BADGE FORM] Current values:', badgeForm.getValues());
+                  console.log('[BADGE FORM] Errors:', badgeForm.formState.errors);
+                  badgeForm.handleSubmit(
+                    (data) => {
+                      console.log('[BADGE FORM] Submitting:', data);
+                      saveBadgeMutation.mutate(data);
+                    },
+                    (errors) => {
+                      console.log('[BADGE FORM] Validation errors:', errors);
+                    }
+                  )();
                 }} 
                 data-testid="button-save-badge"
               >
