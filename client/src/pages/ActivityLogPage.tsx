@@ -1158,29 +1158,28 @@ export default function ActivityLogPage() {
         />
       )}
 
-      {/* View Certificate Dialog */}
-      <Dialog 
-        open={viewCertificateOpen} 
-        onClose={() => setViewCertificateOpen(false)}
-        maxWidth="lg"
-        fullWidth
-      >
-        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="h6">Zahvalnica - {selectedCertificate?.recipientName}</Typography>
-          <IconButton onClick={() => setViewCertificateOpen(false)}>
-            <Close />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          {selectedCertificate && (
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, pt: 2 }}>
+      {/* View Certificate Inline Modal (replaces Dialog to avoid aria-hidden issues) */}
+      {viewCertificateOpen && selectedCertificate && (
+        <>
+          <Box 
+            sx={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, bgcolor: 'rgba(0,0,0,0.5)', zIndex: 9998 }}
+            onClick={() => setViewCertificateOpen(false)}
+          />
+          <Card sx={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 9999, width: '95%', maxWidth: 900, maxHeight: '90vh', overflow: 'auto', p: 3, boxShadow: 24 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Typography variant="h6">Zahvalnica - {selectedCertificate.recipientName}</Typography>
+              <IconButton onClick={() => setViewCertificateOpen(false)}>
+                <Close />
+              </IconButton>
+            </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
               <Box
                 component="img"
                 src={selectedCertificate.certificateImagePath}
                 alt={`Zahvalnica za ${selectedCertificate.recipientName}`}
                 sx={{ 
                   width: '100%', 
-                  maxHeight: '70vh',
+                  maxHeight: '60vh',
                   objectFit: 'contain',
                   borderRadius: 2,
                   border: '1px solid',
@@ -1194,56 +1193,57 @@ export default function ActivityLogPage() {
                 </Typography>
               )}
             </Box>
-          )}
-        </DialogContent>
-        <DialogActions sx={{ justifyContent: 'center', pb: 3 }}>
-          <Button 
-            variant="contained" 
-            startIcon={<Download />}
-            onClick={() => selectedCertificate && handleDownloadCertificate(selectedCertificate)}
-            data-testid="button-download-full"
-          >
-            Preuzmi
-          </Button>
-          <Button 
-            variant="outlined"
-            onClick={() => {
-              if (selectedCertificate) {
-                const printWindow = window.open(selectedCertificate.certificateImagePath, '_blank');
-                printWindow?.print();
-              }
-            }}
-            data-testid="button-print"
-          >
-            Ispiši
-          </Button>
-        </DialogActions>
-      </Dialog>
+            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 3 }}>
+              <Button 
+                variant="contained" 
+                startIcon={<Download />}
+                onClick={() => handleDownloadCertificate(selectedCertificate)}
+                data-testid="button-download-full"
+              >
+                Preuzmi
+              </Button>
+              <Button 
+                variant="outlined"
+                onClick={() => {
+                  const printWindow = window.open(selectedCertificate.certificateImagePath, '_blank');
+                  printWindow?.print();
+                }}
+                data-testid="button-print"
+              >
+                Ispiši
+              </Button>
+            </Box>
+          </Card>
+        </>
+      )}
 
-      {/* Delete Certificate Confirmation Dialog */}
-      <Dialog
-        open={deleteCertificateOpen}
-        onClose={() => setDeleteCertificateOpen(false)}
-      >
-        <DialogTitle>Obriši zahvalnicu</DialogTitle>
-        <DialogContent>
-          <Typography>
-            Jeste li sigurni da želite obrisati zahvalnicu za "{certificateToDelete?.recipientName}"?
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDeleteCertificateOpen(false)}>Otkaži</Button>
-          <Button 
-            variant="contained" 
-            color="error"
-            onClick={() => certificateToDelete && deleteCertificateMutation.mutate(certificateToDelete.id)}
-            disabled={deleteCertificateMutation.isPending}
-            data-testid="button-confirm-delete"
-          >
-            {deleteCertificateMutation.isPending ? 'Brisanje...' : 'Obriši'}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {/* Delete Certificate Inline Confirmation (replaces Dialog to avoid aria-hidden issues) */}
+      {deleteCertificateOpen && certificateToDelete && (
+        <>
+          <Box 
+            sx={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, bgcolor: 'rgba(0,0,0,0.5)', zIndex: 9998 }}
+            onClick={() => setDeleteCertificateOpen(false)}
+          />
+          <Card sx={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 9999, width: '90%', maxWidth: 400, p: 3, boxShadow: 24 }}>
+            <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>Obriši zahvalnicu</Typography>
+            <Typography sx={{ mb: 3 }}>
+              Jeste li sigurni da želite obrisati zahvalnicu za "{certificateToDelete.recipientName}"?
+            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+              <Button onClick={() => setDeleteCertificateOpen(false)}>Otkaži</Button>
+              <Button 
+                variant="contained" 
+                color="error"
+                onClick={() => deleteCertificateMutation.mutate(certificateToDelete.id)}
+                disabled={deleteCertificateMutation.isPending}
+                data-testid="button-confirm-delete"
+              >
+                {deleteCertificateMutation.isPending ? 'Brisanje...' : 'Obriši'}
+              </Button>
+            </Box>
+          </Card>
+        </>
+      )}
     </Box>
   );
 }
