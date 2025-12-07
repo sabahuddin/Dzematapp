@@ -8,7 +8,6 @@ import {
   Box,
   Button,
   Card,
-  TextField,
   Table,
   TableBody,
   TableCell,
@@ -19,10 +18,6 @@ import {
   Typography,
   Alert,
   CircularProgress,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   Chip,
   Stack
 } from '@mui/material';
@@ -371,100 +366,126 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
         </TableContainer>
       </Card>
 
-      {/* Add/Edit Dialog */}
-      <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
-        <DialogTitle>
-            {selectedBadge ? t('badges:editBadge') : t('badges:addNewBadge')}
-          </DialogTitle>
-          <DialogContent>
-            <Stack spacing={2} sx={{ mt: 1 }}>
-              <TextField
-                fullWidth
-                label={t('badges:badgeName')}
-                {...form.register('name')}
-                error={!!form.formState.errors.name}
-                helperText={form.formState.errors.name?.message}
-                required
-                data-testid="input-name"
-              />
-              <TextField
-                fullWidth
-                label={t('badges:description')}
-                multiline
-                rows={2}
-                {...form.register('description')}
-                error={!!form.formState.errors.description}
-                helperText={form.formState.errors.description?.message}
-                required
-                data-testid="input-description"
-              />
-              <Controller
-                name="criteriaType"
-                control={form.control}
-                render={({ field }) => (
-                  <TextField
-                    select
-                    fullWidth
-                    label={t('badges:criteriaType')}
-                    {...field}
-                    error={!!form.formState.errors.criteriaType}
-                    helperText={form.formState.errors.criteriaType?.message || t('badges:helperTexts.criteriaType')}
-                    SelectProps={{ native: true }}
-                    required
-                    data-testid="select-criteria-type"
-                  >
-                    <option value="">{t('badges:selectType')}</option>
-                    <option value="points_total">{t('badges:criteriaTypes.points')}</option>
-                    <option value="tasks_completed">{t('badges:criteriaTypes.tasks_completed')}</option>
-                    <option value="donation_total">{t('badges:criteriaTypes.contributions_amount')}</option>
-                    <option value="events_attended">{t('badges:criteriaTypes.events_attended')}</option>
-                  </TextField>
+      {/* Add/Edit Modal - Pure HTML/CSS to avoid MUI Dialog issues */}
+      {dialogOpen && (
+        <div 
+          className="fixed inset-0 z-[9999] flex items-center justify-center"
+          style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+          onClick={handleCloseDialog}
+        >
+          <div 
+            className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-xl font-semibold mb-4">
+              {selectedBadge ? t('badges:editBadge') : t('badges:addNewBadge')}
+            </h2>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('badges:badgeName')} *
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  {...form.register('name')}
+                  data-testid="input-name"
+                />
+                {form.formState.errors.name && (
+                  <p className="text-red-500 text-sm mt-1">{form.formState.errors.name.message}</p>
                 )}
-              />
-              <Controller
-                name="criteriaValue"
-                control={form.control}
-                render={({ field }) => (
-                  <TextField
-                    fullWidth
-                    label={t('badges:criteriaValue')}
-                    type="number"
-                    value={field.value}
-                    onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                    onBlur={field.onBlur}
-                    error={!!form.formState.errors.criteriaValue}
-                    helperText={form.formState.errors.criteriaValue?.message || t('badges:helperTexts.criteriaValue')}
-                    required
-                    data-testid="input-criteria-value"
-                  />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('badges:description')} *
+                </label>
+                <textarea
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  rows={2}
+                  {...form.register('description')}
+                  data-testid="input-description"
+                />
+                {form.formState.errors.description && (
+                  <p className="text-red-500 text-sm mt-1">{form.formState.errors.description.message}</p>
                 )}
-              />
-            </Stack>
-          </DialogContent>
-          <DialogActions sx={{ pointerEvents: 'auto' }}>
-            <Button 
-              onClick={handleCloseDialog} 
-              data-testid="button-cancel"
-              sx={{ pointerEvents: 'auto' }}
-            >
-              {t('badges:cancel')}
-            </Button>
-            <Button 
-              variant="contained" 
-              disabled={saveBadgeMutation.isPending}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('[BADGES] Button clicked via inline handler');
-                handleFormSubmit();
-              }}
-              data-testid="button-save"
-              sx={{ pointerEvents: 'auto', zIndex: 9999 }}
-            >
-              {saveBadgeMutation.isPending ? t('badges:saving') : t('badges:save')}
-            </Button>
-          </DialogActions>
-      </Dialog>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('badges:criteriaType')} *
+                </label>
+                <Controller
+                  name="criteriaType"
+                  control={form.control}
+                  render={({ field }) => (
+                    <select
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      {...field}
+                      data-testid="select-criteria-type"
+                    >
+                      <option value="">{t('badges:selectType')}</option>
+                      <option value="points_total">{t('badges:criteriaTypes.points')}</option>
+                      <option value="tasks_completed">{t('badges:criteriaTypes.tasks_completed')}</option>
+                      <option value="donation_total">{t('badges:criteriaTypes.contributions_amount')}</option>
+                      <option value="events_attended">{t('badges:criteriaTypes.events_attended')}</option>
+                    </select>
+                  )}
+                />
+                {form.formState.errors.criteriaType && (
+                  <p className="text-red-500 text-sm mt-1">{form.formState.errors.criteriaType.message}</p>
+                )}
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('badges:criteriaValue')} *
+                </label>
+                <Controller
+                  name="criteriaValue"
+                  control={form.control}
+                  render={({ field }) => (
+                    <input
+                      type="number"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      value={field.value}
+                      onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                      data-testid="input-criteria-value"
+                    />
+                  )}
+                />
+                {form.formState.errors.criteriaValue && (
+                  <p className="text-red-500 text-sm mt-1">{form.formState.errors.criteriaValue.message}</p>
+                )}
+              </div>
+            </div>
+            
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                type="button"
+                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                onClick={handleCloseDialog}
+                data-testid="button-cancel"
+              >
+                {t('badges:cancel')}
+              </button>
+              <button
+                type="button"
+                className="px-4 py-2 text-white bg-green-600 rounded-md hover:bg-green-700 disabled:opacity-50"
+                disabled={saveBadgeMutation.isPending}
+                onClick={() => {
+                  console.log('[BADGES] Save button clicked!');
+                  handleFormSubmit();
+                }}
+                data-testid="button-save"
+              >
+                {saveBadgeMutation.isPending ? t('badges:saving') : t('badges:save')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </Box>
   );
 }
