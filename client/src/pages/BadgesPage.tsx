@@ -441,15 +441,25 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
               />
             </Stack>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDialog} data-testid="button-cancel">
+          <DialogActions sx={{ pointerEvents: 'auto' }}>
+            <Button 
+              onClick={handleCloseDialog} 
+              data-testid="button-cancel"
+              sx={{ pointerEvents: 'auto' }}
+            >
               {t('badges:cancel')}
             </Button>
             <Button 
               variant="contained" 
               disabled={saveBadgeMutation.isPending}
-              onClick={handleFormSubmit}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('[BADGES] Button clicked via inline handler');
+                handleFormSubmit();
+              }}
               data-testid="button-save"
+              sx={{ pointerEvents: 'auto', zIndex: 9999 }}
             >
               {saveBadgeMutation.isPending ? t('badges:saving') : t('badges:save')}
             </Button>
