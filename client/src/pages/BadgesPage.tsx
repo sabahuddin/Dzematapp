@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -19,12 +20,7 @@ import {
   Alert,
   CircularProgress,
   Chip,
-  Stack,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField
+  Stack
 } from '@mui/material';
 import {
   Add,
@@ -371,111 +367,197 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
         </TableContainer>
       </Card>
 
-      {/* Add/Edit Dialog - with PaperProps like EventModal */}
-      <Dialog 
-        open={dialogOpen} 
-        onClose={handleCloseDialog} 
-        maxWidth="sm" 
-        fullWidth
-        PaperProps={{
-          sx: { 
-            borderRadius: 2,
-            pointerEvents: 'auto',
-            position: 'relative',
-            zIndex: 1301
-          }
-        }}
-      >
-        <DialogTitle>
-          {selectedBadge ? t('badges:editBadge') : t('badges:addNewBadge')}
-        </DialogTitle>
-        <DialogContent>
-          <Stack spacing={2} sx={{ mt: 1 }}>
-            <TextField
-              fullWidth
-              label={t('badges:badgeName')}
-              {...form.register('name')}
-              error={!!form.formState.errors.name}
-              helperText={form.formState.errors.name?.message}
-              required
-              data-testid="input-name"
-            />
-            <TextField
-              fullWidth
-              label={t('badges:description')}
-              multiline
-              rows={2}
-              {...form.register('description')}
-              error={!!form.formState.errors.description}
-              helperText={form.formState.errors.description?.message}
-              required
-              data-testid="input-description"
-            />
-            <Controller
-              name="criteriaType"
-              control={form.control}
-              render={({ field }) => (
-                <TextField
-                  select
-                  fullWidth
-                  label={t('badges:criteriaType')}
-                  {...field}
-                  error={!!form.formState.errors.criteriaType}
-                  helperText={form.formState.errors.criteriaType?.message || t('badges:helperTexts.criteriaType')}
-                  SelectProps={{ native: true }}
-                  required
-                  data-testid="select-criteria-type"
-                >
-                  <option value="">{t('badges:selectType')}</option>
-                  <option value="points_total">{t('badges:criteriaTypes.points')}</option>
-                  <option value="tasks_completed">{t('badges:criteriaTypes.tasks_completed')}</option>
-                  <option value="donation_total">{t('badges:criteriaTypes.contributions_amount')}</option>
-                  <option value="events_attended">{t('badges:criteriaTypes.events_attended')}</option>
-                </TextField>
-              )}
-            />
-            <Controller
-              name="criteriaValue"
-              control={form.control}
-              render={({ field }) => (
-                <TextField
-                  fullWidth
-                  label={t('badges:criteriaValue')}
-                  type="number"
-                  value={field.value}
-                  onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                  onBlur={field.onBlur}
-                  error={!!form.formState.errors.criteriaValue}
-                  helperText={form.formState.errors.criteriaValue?.message || t('badges:helperTexts.criteriaValue')}
-                  required
-                  data-testid="input-criteria-value"
-                />
-              )}
-            />
-          </Stack>
-        </DialogContent>
-        <DialogActions sx={{ pointerEvents: 'auto', position: 'relative', zIndex: 1 }}>
-          <Button 
-            onClick={handleCloseDialog} 
-            data-testid="button-cancel"
-            sx={{ pointerEvents: 'auto' }}
-          >
-            {t('badges:cancel')}
-          </Button>
-          <Button 
-            variant="contained" 
-            disabled={saveBadgeMutation.isPending}
-            sx={{ pointerEvents: 'auto' }}
-            onClick={() => {
-              console.log('[BADGES] Save button onClick fired!');
-              handleFormSubmit();
+      {/* Add/Edit Modal - Using React Portal to render directly in body */}
+      {dialogOpen && createPortal(
+        <div 
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 9999,
+            pointerEvents: 'auto'
+          }}
+          onClick={handleCloseDialog}
+          data-testid="badge-modal-backdrop"
+        >
+          <div 
+            style={{
+              backgroundColor: 'white',
+              borderRadius: '12px',
+              padding: '24px',
+              width: '100%',
+              maxWidth: '500px',
+              margin: '16px',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+              pointerEvents: 'auto'
             }}
-            data-testid="button-save"
+            onClick={(e) => e.stopPropagation()}
+            data-testid="badge-modal-content"
           >
-            {saveBadgeMutation.isPending ? t('badges:saving') : t('badges:save')}
-          </Button>
-        </DialogActions>
-      </Dialog>
+            <h2 style={{ margin: '0 0 20px 0', fontSize: '1.25rem', fontWeight: 600 }}>
+              {selectedBadge ? t('badges:editBadge') : t('badges:addNewBadge')}
+            </h2>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div>
+                <label style={{ display: 'block', marginBottom: '4px', fontWeight: 500, fontSize: '14px' }}>
+                  {t('badges:badgeName')} *
+                </label>
+                <input
+                  type="text"
+                  {...form.register('name')}
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    boxSizing: 'border-box'
+                  }}
+                  data-testid="input-name"
+                />
+                {form.formState.errors.name && (
+                  <span style={{ color: '#ef4444', fontSize: '12px' }}>{form.formState.errors.name.message}</span>
+                )}
+              </div>
+              
+              <div>
+                <label style={{ display: 'block', marginBottom: '4px', fontWeight: 500, fontSize: '14px' }}>
+                  {t('badges:description')} *
+                </label>
+                <textarea
+                  {...form.register('description')}
+                  rows={2}
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    resize: 'vertical',
+                    boxSizing: 'border-box'
+                  }}
+                  data-testid="input-description"
+                />
+                {form.formState.errors.description && (
+                  <span style={{ color: '#ef4444', fontSize: '12px' }}>{form.formState.errors.description.message}</span>
+                )}
+              </div>
+              
+              <div>
+                <label style={{ display: 'block', marginBottom: '4px', fontWeight: 500, fontSize: '14px' }}>
+                  {t('badges:criteriaType')} *
+                </label>
+                <Controller
+                  name="criteriaType"
+                  control={form.control}
+                  render={({ field }) => (
+                    <select
+                      {...field}
+                      style={{
+                        width: '100%',
+                        padding: '10px 12px',
+                        border: '1px solid #d1d5db',
+                        borderRadius: '8px',
+                        fontSize: '14px',
+                        backgroundColor: 'white',
+                        boxSizing: 'border-box'
+                      }}
+                      data-testid="select-criteria-type"
+                    >
+                      <option value="">{t('badges:selectType')}</option>
+                      <option value="points_total">{t('badges:criteriaTypes.points')}</option>
+                      <option value="tasks_completed">{t('badges:criteriaTypes.tasks_completed')}</option>
+                      <option value="donation_total">{t('badges:criteriaTypes.contributions_amount')}</option>
+                      <option value="events_attended">{t('badges:criteriaTypes.events_attended')}</option>
+                    </select>
+                  )}
+                />
+                {form.formState.errors.criteriaType && (
+                  <span style={{ color: '#ef4444', fontSize: '12px' }}>{form.formState.errors.criteriaType.message}</span>
+                )}
+              </div>
+              
+              <div>
+                <label style={{ display: 'block', marginBottom: '4px', fontWeight: 500, fontSize: '14px' }}>
+                  {t('badges:criteriaValue')} *
+                </label>
+                <Controller
+                  name="criteriaValue"
+                  control={form.control}
+                  render={({ field }) => (
+                    <input
+                      type="number"
+                      value={field.value}
+                      onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                      onBlur={field.onBlur}
+                      style={{
+                        width: '100%',
+                        padding: '10px 12px',
+                        border: '1px solid #d1d5db',
+                        borderRadius: '8px',
+                        fontSize: '14px',
+                        boxSizing: 'border-box'
+                      }}
+                      data-testid="input-criteria-value"
+                    />
+                  )}
+                />
+                {form.formState.errors.criteriaValue && (
+                  <span style={{ color: '#ef4444', fontSize: '12px' }}>{form.formState.errors.criteriaValue.message}</span>
+                )}
+              </div>
+            </div>
+            
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '24px' }}>
+              <button
+                type="button"
+                onClick={handleCloseDialog}
+                style={{
+                  padding: '10px 20px',
+                  backgroundColor: '#f3f4f6',
+                  border: 'none',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  cursor: 'pointer'
+                }}
+                data-testid="button-cancel"
+              >
+                {t('badges:cancel')}
+              </button>
+              <button
+                type="button"
+                disabled={saveBadgeMutation.isPending}
+                onClick={() => {
+                  console.log('[BADGES] Portal Save button clicked!');
+                  handleFormSubmit();
+                }}
+                style={{
+                  padding: '10px 20px',
+                  backgroundColor: saveBadgeMutation.isPending ? '#9ca3af' : '#16a34a',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  cursor: saveBadgeMutation.isPending ? 'not-allowed' : 'pointer'
+                }}
+                data-testid="button-save"
+              >
+                {saveBadgeMutation.isPending ? t('badges:saving') : t('badges:save')}
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
     </Box>
   );
 }
