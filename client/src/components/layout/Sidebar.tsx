@@ -47,7 +47,8 @@ import {
   OndemandVideo,
   DynamicFeed,
   AdminPanelSettings,
-  Handshake
+  Handshake,
+  Receipt
 } from '@mui/icons-material';
 import { SiFacebook, SiInstagram, SiYoutube, SiX } from 'react-icons/si';
 import { useAuth } from '@/contexts/AuthContext';
@@ -88,6 +89,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     { path: '/users', label: t('navigation:menu.users'), icon: People, adminOnly: true },
     { path: '/my-activities', label: 'Moje aktivnosti', icon: Timeline, memberOnly: true },
     { path: '/finances', label: t('navigation:menu.finances'), icon: AttachMoney, adminOnly: true },
+    { path: '/membership-fees', label: 'Članarina', icon: Receipt, adminOnly: true },
     { path: '/activity-log', label: t('navigation:menu.activityLog'), icon: Timeline, adminOnly: true },
     { path: '/announcements', label: t('navigation:menu.announcements'), icon: Campaign, showBadge: true },
     { path: '/events', label: t('navigation:menu.events'), icon: Event, showBadge: true },
