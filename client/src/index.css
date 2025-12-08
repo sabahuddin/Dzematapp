@@ -543,38 +543,38 @@
   }
 
   /* Hide the notch/legend completely - ensures solid unbroken border */
-  .MuiOutlinedInput-notchedOutline > legend {
-    display: none !important;
-    max-width: 0 !important;
+  .MuiOutlinedInput-notchedOutline legend {
+    float: unset !important;
+    overflow: hidden !important;
+    display: block !important;
     width: 0 !important;
+    max-width: 0.01px !important;
     height: 0 !important;
     padding: 0 !important;
-    overflow: hidden !important;
-    visibility: hidden !important;
+    font-size: 0 !important;
+    transition: none !important;
+    -webkit-transition: none !important;
   }
   
-  .MuiOutlinedInput-notchedOutline > legend > span {
+  .MuiOutlinedInput-notchedOutline legend span {
     display: none !important;
     padding: 0 !important;
+    width: 0 !important;
   }
   
+  /* Force complete border - no gap */
   .MuiOutlinedInput-notchedOutline {
-    border-width: 1px !important;
-    border-color: var(--border-color-default) !important;
+    border: 1px solid var(--border-color-default) !important;
     top: 0 !important;
-    border-top-width: 1px !important;
   }
   
   /* Unified focus border - Indigo ring - complete border on all sides */
   .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-    border-color: var(--border-color-hover) !important;
-    border-top-width: 1px !important;
+    border: 1px solid var(--border-color-hover) !important;
   }
   
   .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-width: 2px !important;
-    border-color: var(--border-color-focus) !important;
-    border-top-width: 2px !important;
+    border: 2px solid var(--border-color-focus) !important;
   }
 
   /* Adjust the input field to account for label above */
