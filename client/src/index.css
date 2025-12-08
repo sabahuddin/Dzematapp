@@ -357,86 +357,10 @@
     touch-action: pan-y;
   }
 
-  /* Material-UI component customizations - Card/Paper styling removed to allow theme overrides */
+  /* Material-UI component styling is handled via MUI theme overrides in App.tsx */
+  /* Button, Chip, Table styling controlled by theme */
 
-  .MuiButton-contained {
-    background-color: #1E88E5 !important;
-    color: white !important;
-    text-transform: none !important;
-    font-weight: 600 !important;
-    border-radius: 10px !important;
-    box-shadow: none !important;
-  }
-
-  .MuiButton-contained:hover {
-    background-color: #1976D2 !important;
-    box-shadow: none !important;
-  }
-
-  .MuiButton-outlined {
-    border-color: #3949AB !important;
-    color: #3949AB !important;
-    text-transform: none !important;
-    font-weight: 600 !important;
-    border-radius: 10px !important;
-  }
-
-  .MuiButton-outlined:hover {
-    background-color: rgba(57, 73, 171, 0.04) !important;
-    border-color: #3949AB !important;
-  }
-
-  .MuiChip-root {
-    font-weight: 500 !important;
-    text-transform: uppercase !important;
-    font-size: 0.75rem !important;
-    letter-spacing: 0.5px !important;
-  }
-
-  .MuiChip-colorSuccess {
-    background-color: hsl(174 63% 95%) !important;
-    color: #26A69A !important;
-  }
-
-  .MuiChip-colorWarning {
-    background-color: #fff3e0 !important;
-    color: #ed6c02 !important;
-  }
-
-  .MuiChip-colorError {
-    background-color: #ffebee !important;
-    color: #d32f2f !important;
-  }
-
-  .MuiChip-colorInfo {
-    background-color: hsl(207 78% 95%) !important;
-    color: #1E88E5 !important;
-  }
-
-  .MuiChip-colorPrimary {
-    background-color: hsl(231 54% 95%) !important;
-    color: #3949AB !important;
-  }
-
-  .MuiTableHead-root .MuiTableCell-root {
-    background-color: var(--surface-table-header) !important;
-    font-weight: 600 !important;
-    color: #1a1a1a !important;
-  }
-
-  .MuiTableCell-root {
-    border: 0 !important;
-    border-bottom: 1px solid var(--border-color-default) !important;
-  }
-
-  /* Drawer/Menu/Popover/Select styling removed to allow theme overrides */
-
-  .MuiAppBar-root {
-    background-color: #3949AB !important;
-    color: #ffffff !important;
-    box-shadow: none !important;
-    border: 0 !important;
-  }
+  /* AppBar styling is handled via MUI theme overrides in App.tsx */
 
   /* Login page specific styles - Spiritual Tech Indigo */
   .login-gradient {
@@ -463,46 +387,13 @@
     background: #a8a8a8;
   }
 
-  /* Focus styles for accessibility - buttons only */
-  .MuiButton-root:focus-visible,
-  .MuiIconButton-root:focus-visible {
-    outline: 2px solid var(--mui-primary);
-    outline-offset: 2px;
-  }
+  /* Focus styles handled via MUI theme - keeping for accessibility */
 
-  /* Custom table hover effects */
-  .MuiTableBody-root .MuiTableRow-root:hover {
-    background-color: rgba(25, 118, 210, 0.04) !important;
-  }
+  /* Table styling is handled via MUI theme overrides in App.tsx */
 
   /* Modal and dialog customizations - styling removed to allow theme overrides */
   
-  /* Global dropdown/menu/popover - force white background consistently */
-  .MuiMenu-paper,
-  .MuiPopover-paper,
-  .MuiAutocomplete-paper,
-  .MuiSelect-paper,
-  .MuiPopper-root .MuiPaper-root {
-    background-color: #ffffff !important;
-    color: var(--mui-text-primary) !important;
-  }
-  
-  .MuiMenuItem-root {
-    background-color: transparent !important;
-    color: var(--mui-text-primary) !important;
-  }
-  
-  .MuiMenuItem-root:hover {
-    background-color: #f5f7ff !important;
-  }
-  
-  .MuiMenuItem-root.Mui-selected {
-    background-color: #e8eaf6 !important;
-  }
-  
-  .MuiMenuItem-root.Mui-selected:hover {
-    background-color: #c5cae9 !important;
-  }
+  /* Dropdown/menu styling is handled via MUI theme overrides in App.tsx */
 
   /* Prevent horizontal overflow on mobile */
   .MuiContainer-root {
@@ -530,9 +421,7 @@
     white-space: pre-wrap;
   }
 
-  .MuiDialogTitle-root {
-    font-weight: 600 !important;
-  }
+  /* Dialog styling is handled via MUI theme overrides in App.tsx */
 
   /* Form field customizations */
   .MuiTextField-root {
@@ -541,59 +430,14 @@
 
   /* Input field styling removed to allow theme overrides with semantic-success tokens */
 
-  /* GLOBAL FIX: Force ALL labels to stay ABOVE the field (like shadcn forms) */
-  .MuiTextField-root label.MuiInputLabel-outlined,
-  .MuiFormControl-root label.MuiInputLabel-outlined {
-    position: relative !important;
-    transform: none !important;
-    font-size: 0.875rem !important;
-    font-weight: 500 !important;
-    color: rgba(0, 0, 0, 0.87) !important;
-    margin-bottom: 6px !important;
-    display: block !important;
-    background-color: transparent !important;
-    padding: 0 !important;
-  }
-
-  /* Remove the shrink animation - label stays in place */
-  .MuiTextField-root label.MuiInputLabel-outlined.MuiInputLabel-shrink,
-  .MuiFormControl-root label.MuiInputLabel-outlined.MuiInputLabel-shrink {
-    position: relative !important;
-    transform: none !important;
-    font-size: 0.875rem !important;
-    font-weight: 500 !important;
-    color: rgba(0, 0, 0, 0.87) !important;
-    margin-bottom: 6px !important;
-    display: block !important;
-    background-color: transparent !important;
-    padding: 0 !important;
-  }
-
-  /* Input border styling is handled via MUI theme overrides in App.tsx */
-
-  /* Adjust the input field to account for label above */
-  .MuiTextField-root .MuiInputBase-root,
-  .MuiFormControl-root .MuiInputBase-root {
-    margin-top: 0 !important;
-  }
+  /* Input label and field styling is handled via MUI theme overrides in App.tsx */
   
-  /* Dark mode support */
-  .dark .MuiTextField-root label.MuiInputLabel-outlined,
-  .dark .MuiFormControl-root label.MuiInputLabel-outlined,
-  .dark .MuiTextField-root label.MuiInputLabel-outlined.MuiInputLabel-shrink,
-  .dark .MuiFormControl-root label.MuiInputLabel-outlined.MuiInputLabel-shrink {
+  /* Dark mode label color support */
+  .dark .MuiInputLabel-root {
     color: rgba(255, 255, 255, 0.87) !important;
   }
 
-  /* Sidebar customizations - Spiritual Tech Indigo */
-  .MuiListItemButton-root.Mui-selected {
-    background-color: hsl(231 54% 95%) !important;
-    color: #3949AB !important;
-  }
-
-  .MuiListItemButton-root:hover {
-    background-color: #ECEFF1 !important;
-  }
+  /* Sidebar/ListItemButton styling handled via MUI theme overrides */
 
   /* Statistics card customizations - Spiritual Tech Indigo */
   .stat-icon-blue {
@@ -635,6 +479,31 @@
 
 .dark .MuiCssBaseline-root {
   color-scheme: dark;
+}
+
+/* DataGrid styling - X component requires CSS (not in core theme) */
+.MuiDataGrid-root {
+  background-color: #ffffff;
+  border-radius: 16px;
+  border: none !important;
+}
+
+.MuiDataGrid-columnHeaders {
+  background-color: #f5f7ff !important;
+  border-bottom: 1px solid #e8eaf6 !important;
+}
+
+.MuiDataGrid-columnHeader {
+  font-weight: 600 !important;
+  color: #0D1B2A !important;
+}
+
+.MuiDataGrid-cell {
+  border-bottom: 1px solid #f0f0f0 !important;
+}
+
+.MuiDataGrid-row:hover {
+  background-color: #fafbff !important;
 }
 
 /* Custom animation for cards */

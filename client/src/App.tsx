@@ -312,6 +312,274 @@ const theme = createTheme({
         },
       },
     },
+    MuiMenu: {
+      styleOverrides: {
+        paper: {
+          backgroundColor: '#ffffff',
+          borderRadius: 12,
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+          border: '1px solid #e8eaf6',
+        },
+        list: {
+          padding: '8px',
+        },
+      },
+    },
+    MuiMenuItem: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+          margin: '2px 0',
+          padding: '10px 16px',
+          '&:hover': {
+            backgroundColor: '#f5f7ff',
+          },
+          '&.Mui-selected': {
+            backgroundColor: '#e8eaf6',
+            '&:hover': {
+              backgroundColor: '#c5cae9',
+            },
+          },
+        },
+      },
+    },
+    MuiPopover: {
+      styleOverrides: {
+        paper: {
+          backgroundColor: '#ffffff',
+          borderRadius: 12,
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+        },
+      },
+    },
+    MuiAutocomplete: {
+      styleOverrides: {
+        paper: {
+          backgroundColor: '#ffffff',
+          borderRadius: 12,
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+        },
+        listbox: {
+          padding: '8px',
+        },
+        option: {
+          borderRadius: 8,
+          margin: '2px 0',
+          '&:hover': {
+            backgroundColor: '#f5f7ff',
+          },
+          '&[aria-selected="true"]': {
+            backgroundColor: '#e8eaf6',
+            '&:hover': {
+              backgroundColor: '#c5cae9',
+            },
+          },
+        },
+      },
+    },
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          backgroundColor: '#ffffff',
+          borderRadius: 16,
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+        },
+      },
+    },
+    MuiDialogTitle: {
+      styleOverrides: {
+        root: {
+          fontWeight: 600,
+          fontSize: '1.25rem',
+          color: '#0D1B2A',
+          padding: '24px 24px 16px',
+        },
+      },
+    },
+    MuiDialogContent: {
+      styleOverrides: {
+        root: {
+          padding: '16px 24px',
+        },
+      },
+    },
+    MuiDialogActions: {
+      styleOverrides: {
+        root: {
+          padding: '16px 24px 24px',
+          gap: '12px',
+        },
+      },
+    },
+    MuiTableContainer: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#ffffff',
+          borderRadius: 16,
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+        },
+      },
+    },
+    MuiTableHead: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#f5f7ff',
+        },
+      },
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          borderBottom: '1px solid #e8eaf6',
+          padding: '16px',
+        },
+        head: {
+          fontWeight: 600,
+          color: '#0D1B2A',
+          backgroundColor: '#f5f7ff',
+        },
+      },
+    },
+    MuiTableRow: {
+      styleOverrides: {
+        root: {
+          '&:hover': {
+            backgroundColor: '#fafbff',
+          },
+          '&:last-child td': {
+            borderBottom: 0,
+          },
+        },
+      },
+    },
+    MuiAccordion: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#ffffff',
+          borderRadius: '16px !important',
+          border: '1px solid #c5cae9',
+          boxShadow: '0 2px 8px rgba(57, 73, 171, 0.08)',
+          '&:before': {
+            display: 'none',
+          },
+          '&.Mui-expanded': {
+            margin: '0 0 16px 0',
+          },
+        },
+      },
+    },
+    MuiAccordionSummary: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#f5f7ff',
+          borderRadius: 16,
+          '&:hover': {
+            backgroundColor: '#e8eaf6',
+          },
+        },
+      },
+    },
+    MuiAccordionDetails: {
+      styleOverrides: {
+        root: {
+          padding: '24px',
+          backgroundColor: '#fafbff',
+          borderTop: '1px solid #e8eaf6',
+        },
+      },
+    },
+    MuiTabs: {
+      styleOverrides: {
+        indicator: {
+          backgroundColor: '#3949AB',
+          height: 3,
+          borderRadius: '3px 3px 0 0',
+        },
+      },
+    },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          fontWeight: 500,
+          color: '#546E7A',
+          '&.Mui-selected': {
+            color: '#3949AB',
+            fontWeight: 600,
+          },
+        },
+      },
+    },
+    MuiSwitch: {
+      styleOverrides: {
+        root: {
+          width: 42,
+          height: 26,
+          padding: 0,
+        },
+        switchBase: {
+          padding: 1,
+          '&.Mui-checked': {
+            color: '#ffffff',
+            '& + .MuiSwitch-track': {
+              backgroundColor: '#3949AB',
+              opacity: 1,
+            },
+          },
+        },
+        thumb: {
+          width: 24,
+          height: 24,
+        },
+        track: {
+          borderRadius: 13,
+          backgroundColor: '#B0BEC5',
+          opacity: 1,
+        },
+      },
+    },
+    MuiTooltip: {
+      styleOverrides: {
+        tooltip: {
+          backgroundColor: '#0D1B2A',
+          color: '#ffffff',
+          fontSize: '0.75rem',
+          borderRadius: 8,
+          padding: '8px 12px',
+        },
+        arrow: {
+          color: '#0D1B2A',
+        },
+      },
+    },
+    MuiIconButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: 10,
+          '&:hover': {
+            backgroundColor: 'rgba(57, 73, 171, 0.08)',
+          },
+        },
+      },
+    },
+    MuiListItemButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+          margin: '2px 8px',
+          '&:hover': {
+            backgroundColor: '#ECEFF1',
+          },
+          '&.Mui-selected': {
+            backgroundColor: 'hsl(231 54% 95%)',
+            color: '#3949AB',
+            '&:hover': {
+              backgroundColor: 'hsl(231 54% 90%)',
+            },
+          },
+        },
+      },
+    },
   },
 });
 
