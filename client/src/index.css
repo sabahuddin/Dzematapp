@@ -476,6 +476,33 @@
   }
 
   /* Modal and dialog customizations - styling removed to allow theme overrides */
+  
+  /* Global dropdown/menu/popover - force white background consistently */
+  .MuiMenu-paper,
+  .MuiPopover-paper,
+  .MuiAutocomplete-paper,
+  .MuiSelect-paper,
+  .MuiPopper-root .MuiPaper-root {
+    background-color: #ffffff !important;
+    color: var(--mui-text-primary) !important;
+  }
+  
+  .MuiMenuItem-root {
+    background-color: transparent !important;
+    color: var(--mui-text-primary) !important;
+  }
+  
+  .MuiMenuItem-root:hover {
+    background-color: #f5f7ff !important;
+  }
+  
+  .MuiMenuItem-root.Mui-selected {
+    background-color: #e8eaf6 !important;
+  }
+  
+  .MuiMenuItem-root.Mui-selected:hover {
+    background-color: #c5cae9 !important;
+  }
 
   /* Prevent horizontal overflow on mobile */
   .MuiContainer-root {
