@@ -5071,27 +5071,40 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       const user = req.user!;
       
+      console.log('[PROPOSAL] Creating proposal for workGroupId:', req.body.workGroupId, 'tenantId:', tenantId, 'userId:', user.id);
+      
       // Check if user is a moderator of the work group or an admin
       const workGroupMembers = await storage.getWorkGroupMembers(req.body.workGroupId, tenantId);
       const userMembership = workGroupMembers.find(m => m.userId === user.id);
       const isModerator = userMembership?.isModerator;
       const isAdmin = user.isAdmin;
       
+      console.log('[PROPOSAL] User isModerator:', isModerator, 'isAdmin:', isAdmin);
+      
       if (!isModerator && !isAdmin) {
         return res.status(403).json({ message: "Only moderators and admins can create proposals" });
       }
       
-      const validated = insertProposalSchema.parse({
+      const proposalData = {
         ...req.body,
         createdById: user.id,
-        tenantId
-      });
+        tenantId,
+        status: 'pending'
+      };
+      
+      console.log('[PROPOSAL] Validating proposal data:', JSON.stringify(proposalData));
+      
+      const validated = insertProposalSchema.parse(proposalData);
+      
+      console.log('[PROPOSAL] Validated data:', JSON.stringify(validated));
       
       const proposal = await storage.createProposal(validated);
+      console.log('[PROPOSAL] Created proposal:', proposal.id);
       res.status(201).json(proposal);
-    } catch (error) {
-      console.error('Error creating proposal:', error);
-      res.status(500).json({ message: "Failed to create proposal" });
+    } catch (error: any) {
+      console.error('[PROPOSAL] Error creating proposal:', error?.message || error);
+      console.error('[PROPOSAL] Error stack:', error?.stack);
+      res.status(500).json({ message: "Failed to create proposal", error: error?.message });
     }
 });
 
