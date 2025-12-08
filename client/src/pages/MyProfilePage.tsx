@@ -92,7 +92,7 @@ export default function MyProfilePage() {
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h5" sx={{ fontWeight: 600, color: 'hsl(123 46% 34%)' }}>
+        <Typography variant="h5" sx={{ fontWeight: 600, color: '#3949AB' }}>
           Moj Profil
         </Typography>
         <Button
@@ -104,9 +104,9 @@ export default function MyProfilePage() {
           }}
           data-testid="button-edit-profile"
           sx={{
-            bgcolor: 'hsl(123 46% 34%)',
+            bgcolor: '#3949AB',
             '&:hover': {
-              bgcolor: 'hsl(123 46% 24%)',
+              bgcolor: '#303F9F',
             }
           }}
         >

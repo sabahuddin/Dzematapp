@@ -28,10 +28,10 @@ export default function SettingsPage() {
             minHeight: 48,
           },
           '& .Mui-selected': {
-            color: 'hsl(123 46% 34%)',
+            color: '#3949AB',
           },
           '& .MuiTabs-indicator': {
-            backgroundColor: 'hsl(123 46% 64%)',
+            backgroundColor: '#5C6BC0',
           }
         }}
       >

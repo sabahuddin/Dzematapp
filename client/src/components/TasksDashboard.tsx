@@ -281,7 +281,7 @@ export default function TasksDashboard() {
             icon={<CheckCircle />}
             label={t('tasks:dashboard.completed')}
             count={taskStats.završeno}
-            color="#2e7d32"
+            color="#26A69A"
             onClick={() => setSelectedStatus('završeno')}
             active={selectedStatus === 'završeno'}
           />

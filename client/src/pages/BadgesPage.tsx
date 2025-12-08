@@ -311,7 +311,7 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
                 style={{
                   width: '100%',
                   padding: '10px 12px',
-                  border: '2px solid #4caf50',
+                  border: '2px solid #5C6BC0',
                   borderRadius: '8px',
                   fontSize: '14px',
                   boxSizing: 'border-box'
@@ -333,7 +333,7 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
                 style={{
                   width: '100%',
                   padding: '10px 12px',
-                  border: '2px solid #4caf50',
+                  border: '2px solid #5C6BC0',
                   borderRadius: '8px',
                   fontSize: '14px',
                   resize: 'vertical',
@@ -359,7 +359,7 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
                     style={{
                       width: '100%',
                       padding: '10px 12px',
-                      border: '2px solid #4caf50',
+                      border: '2px solid #5C6BC0',
                       borderRadius: '8px',
                       fontSize: '14px',
                       backgroundColor: 'white',
@@ -396,7 +396,7 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
                     style={{
                       width: '100%',
                       padding: '10px 12px',
-                      border: '2px solid #4caf50',
+                      border: '2px solid #5C6BC0',
                       borderRadius: '8px',
                       fontSize: '14px',
                       boxSizing: 'border-box'
@@ -439,7 +439,7 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
                 }}
                 style={{
                   padding: '10px 20px',
-                  backgroundColor: saveBadgeMutation.isPending ? '#9ca3af' : '#16a34a',
+                  backgroundColor: saveBadgeMutation.isPending ? '#9ca3af' : '#1E88E5',
                   color: 'white',
                   border: 'none',
                   borderRadius: '8px',

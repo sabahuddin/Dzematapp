@@ -720,7 +720,7 @@ export default function ActivityLogPage() {
                           </TableCell>
                           <TableCell><Typography variant="body2">{entry.description}</Typography></TableCell>
                           <TableCell align="center">
-                            <Typography sx={{ fontWeight: 600, color: (entry.points || 0) > 0 ? 'hsl(122 60% 29%)' : 'inherit' }}>
+                            <Typography sx={{ fontWeight: 600, color: (entry.points || 0) > 0 ? '#26A69A' : 'inherit' }}>
                               +{entry.points || 0}
                             </Typography>
                           </TableCell>

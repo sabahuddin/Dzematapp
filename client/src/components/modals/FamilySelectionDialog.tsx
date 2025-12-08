@@ -332,7 +332,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
                       onClick={() => setSelectedExistingUser(user)}
                       sx={{
                         '&.Mui-selected': {
-                          backgroundColor: '#e8f5e9',
+                          backgroundColor: '#e8eaf6',
                         }
                       }}
                       data-testid={`user-option-${user.id}`}

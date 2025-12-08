@@ -26,7 +26,7 @@ export function SectionCard({
     <Box
       sx={{
         ...(isHero ? {
-          background: 'linear-gradient(135deg, var(--semantic-success-bg) 0%, hsl(123 46% 96%) 100%)',
+          background: 'linear-gradient(135deg, var(--semantic-success-bg) 0%, #f5f7ff 100%)',
         } : {
           bgcolor: 'var(--card)',
         }),
@@ -46,7 +46,7 @@ export function SectionCard({
             variant={isHero ? 'h6' : 'subtitle1'}
             sx={{ 
               fontWeight: isHero ? 700 : 600,
-              color: isHero ? 'hsl(123 46% 34%)' : 'var(--card-foreground)',
+              color: isHero ? '#0D1B2A' : 'var(--card-foreground)',
               fontSize: isHero ? '1.1rem' : '1rem'
             }}
             data-testid={`text-section-title-${title.toLowerCase().replace(/\s+/g, '-')}`}
@@ -60,9 +60,9 @@ export function SectionCard({
             <IconButton 
               size="small" 
               sx={{ 
-                color: isHero ? 'hsl(123 46% 54%)' : 'var(--primary)',
+                color: isHero ? '#3949AB' : 'var(--primary)',
                 '&:hover': {
-                  bgcolor: isHero ? 'hsl(123 46% 90%)' : 'var(--accent)',
+                  bgcolor: isHero ? '#e8eaf6' : 'var(--accent)',
                 }
               }}
               data-testid={`button-view-all-${title.toLowerCase().replace(/\s+/g, '-')}`}

@@ -172,7 +172,7 @@ export default function AnnouncementModal({
                     label={cat} 
                     color="primary"
                     size="small"
-                    sx={{ backgroundColor: '#81c784', color: '#fff' }}
+                    sx={{ backgroundColor: '#3949AB', color: '#fff' }}
                   />
                 ))}
               </Box>
@@ -180,7 +180,7 @@ export default function AnnouncementModal({
 
             {/* Publish Date */}
             <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
-              <Schedule sx={{ color: '#81c784', fontSize: 28, mt: 0.5 }} />
+              <Schedule sx={{ color: '#3949AB', fontSize: 28, mt: 0.5 }} />
               <Box>
                 <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
                   Objavljeno
@@ -197,16 +197,16 @@ export default function AnnouncementModal({
 
             {/* Content */}
             <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
-              <Article sx={{ color: '#81c784', fontSize: 28, mt: 0.5 }} />
+              <Article sx={{ color: '#3949AB', fontSize: 28, mt: 0.5 }} />
               <Box sx={{ flex: 1 }}>
                 <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
                   Sadržaj
                 </Typography>
                 <Box sx={{ 
                   p: 2, 
-                  border: '1px solid #c8e6c9', 
+                  border: '1px solid #e8eaf6', 
                   borderRadius: '8px',
-                  backgroundColor: '#f1f8f6'
+                  backgroundColor: '#f5f7ff'
                 }}>
                   <Typography variant="body2" sx={{ lineHeight: 1.6 }} dangerouslySetInnerHTML={{ __html: formData.content }} />
                 </Box>
@@ -220,7 +220,7 @@ export default function AnnouncementModal({
             onClick={onClose} 
             variant="contained"
             data-testid="button-close"
-            sx={{ backgroundColor: '#81c784' }}
+            sx={{ backgroundColor: '#3949AB' }}
           >
             {t('common:buttons.close')}
           </Button>
@@ -252,11 +252,11 @@ export default function AnnouncementModal({
             {/* Photo Upload */}
             {!isReadOnly && (
               <Box sx={{ 
-                border: '2px dashed #81c784', 
+                border: '2px dashed #3949AB', 
                 borderRadius: '12px', 
                 p: 2, 
                 textAlign: 'center',
-                backgroundColor: '#f1f8f6',
+                backgroundColor: '#f5f7ff',
                 cursor: 'pointer',
                 position: 'relative'
               }}>
@@ -271,14 +271,14 @@ export default function AnnouncementModal({
                   {photoPreview ? (
                     <Box>
                       <img src={photoPreview} alt="Preview" style={{ maxHeight: '150px', borderRadius: '8px' }} />
-                      <Typography variant="caption" sx={{ display: 'block', mt: 1, color: '#81c784' }}>
+                      <Typography variant="caption" sx={{ display: 'block', mt: 1, color: '#3949AB' }}>
                         {t('announcements:modal.uploadFiles')}
                       </Typography>
                     </Box>
                   ) : (
                     <Box sx={{ py: 2 }}>
-                      <CloudUpload sx={{ fontSize: 40, color: '#81c784', mb: 1 }} />
-                      <Typography variant="body2" sx={{ color: '#81c784', fontWeight: 500 }}>
+                      <CloudUpload sx={{ fontSize: 40, color: '#3949AB', mb: 1 }} />
+                      <Typography variant="body2" sx={{ color: '#3949AB', fontWeight: 500 }}>
                         Dodaj sliku obavijesti
                       </Typography>
                     </Box>

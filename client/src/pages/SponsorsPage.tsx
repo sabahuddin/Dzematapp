@@ -355,7 +355,7 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
 
   const renderPublicView = () => (
     <Box>
-      <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: '#1b5e20' }}>
+      <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: '#0D1B2A' }}>
         Naši sponzori
       </Typography>
       
@@ -472,7 +472,7 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
         </>
       )}
 
-      <Card sx={{ mt: 4, p: 3, bgcolor: '#e8f5e9', borderRadius: '12px' }}>
+      <Card sx={{ mt: 4, p: 3, bgcolor: '#f5f7ff', borderRadius: '12px' }}>
         <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
           Postanite naš sponzor!
         </Typography>
@@ -490,8 +490,8 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
           onClick={() => handleOpenDialog()}
           data-testid="button-become-sponsor"
           sx={{ 
-            bgcolor: '#81c784',
-            '&:hover': { bgcolor: '#66bb6a' }
+            bgcolor: '#1E88E5',
+            '&:hover': { bgcolor: '#1976D2' }
           }}
         >
           Prijavite se za sponzorstvo
@@ -503,7 +503,7 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
   const renderAdminView = () => (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h5" sx={{ fontWeight: 600, color: '#1b5e20' }}>
+        <Typography variant="h5" sx={{ fontWeight: 600, color: '#0D1B2A' }}>
           Upravljanje sponzorima
         </Typography>
         <Button
@@ -512,8 +512,8 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
           onClick={() => handleOpenDialog()}
           data-testid="button-add-sponsor"
           sx={{ 
-            bgcolor: '#81c784',
-            '&:hover': { bgcolor: '#66bb6a' }
+            bgcolor: '#1E88E5',
+            '&:hover': { bgcolor: '#1976D2' }
           }}
         >
           Dodaj sponzora
@@ -580,7 +580,7 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
           onClick={handleSavePricing}
           disabled={updatePricingMutation.isPending}
           data-testid="button-save-pricing"
-          sx={{ bgcolor: '#81c784', '&:hover': { bgcolor: '#66bb6a' } }}
+          sx={{ bgcolor: '#1E88E5', '&:hover': { bgcolor: '#1976D2' } }}
         >
           {updatePricingMutation.isPending ? 'Čuvanje...' : 'Sačuvaj cijene'}
         </Button>

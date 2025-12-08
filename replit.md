@@ -1,18 +1,44 @@
 # Overview
 
-DžematApp is a mobile-first Progressive Web App (PWA) designed for mosque community management. It aims to enhance community engagement and administrative efficiency by providing a comprehensive platform for managing users, announcements, events, work groups ("Sekcije"), and tasks. Key capabilities include user management, event scheduling, a task manager with role-based interfaces, expense tracking, a shop module, prayer times, and a robust notification system. The application offers a native-app-like experience with offline support and a consistent light-green themed design.
+DžematApp is a mobile-first Progressive Web App (PWA) designed for mosque community management. It aims to enhance community engagement and administrative efficiency by providing a comprehensive platform for managing users, announcements, events, work groups ("Sekcije"), and tasks. Key capabilities include user management, event scheduling, a task manager with role-based interfaces, expense tracking, a shop module, prayer times, and a robust notification system. The application offers a native-app-like experience with offline support and a modern "Spiritual Tech Indigo" design.
 
 # User Preferences
 
 - **Communication Style**: Simple, everyday language (Serbian/Croatian/Bosnian).
-- **Visual Design**: Light green theme (#e8f5e9), 1px borders, 12px border radius.
+- **Visual Design**: "Spiritual Tech Indigo" palette - Indigo (#3949AB), Tech Blue (#1E88E5), Tirkizna (#26A69A), with subtle shadows and 16px border radius.
 - **Layout Requirements**: Fixed TopBar and BottomNavigation with zero bounce/overscroll effect on iOS.
 - **Language**: Serbian/Croatian (Bosnian ijekavica dialect).
+
+# Design System - "Spiritual Tech Indigo"
+
+## Color Palette
+- **Primary (Indigo)**: #3949AB - Used for TopBar, active navigation, primary actions
+- **Secondary (Tech Blue)**: #1E88E5 - Used for contained buttons, CTAs, links
+- **Accent (Tirkizna)**: #26A69A - Used for success states, confirmations
+- **Background (Soft Gray)**: #ECEFF1 - Main app background
+- **Surface (White)**: #FFFFFF - Cards, inputs on focus, modals
+- **Text Primary**: #0D1B2A - Main heading and body text
+- **Text Secondary**: #546E7A - Subtle/helper text
+- **Navigation Inactive**: #B0BEC5 - Bottom nav inactive icons
+
+## Typography
+- **Font Family**: Inter (primary), Roboto (fallback), SF Pro (system)
+- **Weights**: 400 (body), 600 (subheadings, buttons), 700 (headings)
+
+## Component Styling
+- **Cards**: White (#FFFFFF) with subtle shadow (0 4px 6px -1px rgba(0,0,0,0.05)), 16px border-radius, no border
+- **Inputs**: Filled style with soft gray (#ECEFF1) background, no border, white on focus with indigo ring
+- **Buttons**: Tech Blue contained (#1E88E5), Indigo outlined (#3949AB), 10px border-radius
+- **TopBar**: Indigo (#3949AB) background with white text/icons
+- **BottomNavigation**: White background, gray inactive icons (#B0BEC5), Indigo active icon (#3949AB)
+
+## Dark Mode
+- Deep Navy palette based on #0D1B2A and #1C2A3A
 
 # System Architecture
 
 ## Frontend
-The frontend is a React with TypeScript application, built with Vite, Material-UI (MUI), shadcn/ui, and Tailwind CSS. It uses Wouter for routing, React Query for server state management, and context-based authentication with localStorage. The design is mobile-first, featuring a fixed layout with a 64px TopBar and 88px BottomNavigation, using a custom `useEdgeLockScroll` hook for iOS bounce prevention. The PWA is configured for offline support and installability, utilizing a custom transparent SVG logo (crescent moon and book symbol in blue #2196F3) and a light-green Material-UI based theme.
+The frontend is a React with TypeScript application, built with Vite, Material-UI (MUI), shadcn/ui, and Tailwind CSS. It uses Wouter for routing, React Query for server state management, and context-based authentication with localStorage. The design is mobile-first, featuring a fixed layout with a 64px TopBar and 88px BottomNavigation, using a custom `useEdgeLockScroll` hook for iOS bounce prevention. The PWA is configured for offline support and installability, utilizing the "Spiritual Tech Indigo" design system with Inter font family.
 
 ## Backend
 The backend is an Express.js application written in TypeScript, providing a REST API. It uses Drizzle ORM for type-safe database interactions with PostgreSQL. It includes centralized error handling.

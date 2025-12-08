@@ -326,7 +326,7 @@ export default function RecognitionsPage() {
                         </TableCell>
                         <TableCell sx={{ fontSize: '0.875rem' }} data-testid={`text-activity-description-${entry.id}`}>{entry.description}</TableCell>
                         <TableCell align="right">
-                          <Typography sx={{ fontWeight: 600, color: (entry.points || 0) > 0 ? 'hsl(122 60% 20%)' : 'inherit', fontSize: '0.875rem' }} data-testid={`text-activity-points-${entry.id}`}>
+                          <Typography sx={{ fontWeight: 600, color: (entry.points || 0) > 0 ? '#26A69A' : 'inherit', fontSize: '0.875rem' }} data-testid={`text-activity-points-${entry.id}`}>
                             +{entry.points || 0}
                           </Typography>
                         </TableCell>
@@ -612,7 +612,7 @@ export default function RecognitionsPage() {
                           </TableCell>
                           <TableCell data-testid={`text-activity-description-${entry.id}`}>{entry.description}</TableCell>
                           <TableCell align="center">
-                            <Typography sx={{ fontWeight: 600, color: (entry.points || 0) > 0 ? 'hsl(122 60% 20%)' : 'inherit' }} data-testid={`text-activity-points-${entry.id}`}>
+                            <Typography sx={{ fontWeight: 600, color: (entry.points || 0) > 0 ? '#26A69A' : 'inherit' }} data-testid={`text-activity-points-${entry.id}`}>
                               +{entry.points || 0}
                             </Typography>
                           </TableCell>

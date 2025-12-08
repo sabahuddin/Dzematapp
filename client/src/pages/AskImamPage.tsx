@@ -306,7 +306,7 @@ export default function AskImamPage() {
                             onClick={() => handleQuestionClick(question)}
                             data-testid={`button-reply-${question.id}`}
                           >
-                            <Reply fontSize="small" sx={{ color: 'hsl(120 68% 42%)' }} />
+                            <Reply fontSize="small" sx={{ color: '#26A69A' }} />
                           </IconButton>
                         )}
                       </Box>
@@ -402,8 +402,8 @@ export default function AskImamPage() {
             {selectedQuestion?.isAnswered && selectedQuestion.answer ? (
               <div>
                 <Label>{t('askImam:answerColon')}</Label>
-                <Box sx={{ mt: 2, p: 2, bgcolor: 'hsl(120 60% 95%)', borderRadius: 1, border: '1px solid hsl(123 46% 64%)' }}>
-                  <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', color: 'hsl(122 60% 20%)' }}>
+                <Box sx={{ mt: 2, p: 2, bgcolor: '#f5f7ff', borderRadius: 1, border: '1px solid #c5cae9' }}>
+                  <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', color: '#0D1B2A' }}>
                     {selectedQuestion.answer}
                   </Typography>
                 </Box>

@@ -535,7 +535,7 @@ export default function DashboardHome() {
             <Card sx={{ height: '100%' }}>
               <Box sx={{ p: 2, borderBottom: '1px solid hsl(0 0% 88%)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <Campaign sx={{ color: 'hsl(122 60% 29%)' }} />
+                  <Campaign sx={{ color: '#3949AB' }} />
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>
                     {t('dashboard:latestAnnouncement')}
                   </Typography>
@@ -1081,7 +1081,7 @@ export default function DashboardHome() {
             icon={<Campaign />}
             title={t('dashboard:statistics.newAnnouncements')}
             value={statistics?.newAnnouncementsCount || 0}
-            color="hsl(122 60% 29%)"
+            color="#3949AB"
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>

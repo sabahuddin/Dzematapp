@@ -145,7 +145,7 @@ export default function LivestreamSettingsPage() {
       <Card sx={{ mb: 3 }}>
         <CardContent>
           <Typography variant="h6" sx={{ mb: 2, display: "flex", alignItems: "center", gap: 1 }}>
-            <CheckCircle sx={{ color: 'hsl(122 60% 29%)' }} />
+            <CheckCircle sx={{ color: '#26A69A' }} />
             {t("livestreamSettings.howToUse.title")}
           </Typography>
           

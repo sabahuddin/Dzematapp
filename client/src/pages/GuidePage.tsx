@@ -52,7 +52,7 @@ export default function GuidePage() {
     {
       icon: <People sx={{ fontSize: 28 }} />,
       key: 'users',
-      color: 'hsl(122 60% 29%)',
+      color: '#3949AB',
     },
     {
       icon: <Campaign sx={{ fontSize: 28 }} />,
@@ -92,12 +92,12 @@ export default function GuidePage() {
     {
       icon: <Schedule sx={{ fontSize: 28 }} />,
       key: 'vaktija',
-      color: 'hsl(122 60% 29%)',
+      color: '#3949AB',
     },
     {
       icon: <AccountBalance sx={{ fontSize: 28 }} />,
       key: 'finances',
-      color: 'hsl(122 60% 29%)',
+      color: '#3949AB',
     },
     {
       icon: <FolderOpen sx={{ fontSize: 28 }} />,
@@ -137,7 +137,7 @@ export default function GuidePage() {
     {
       icon: <Handshake sx={{ fontSize: 28 }} />,
       key: 'sponsors',
-      color: 'hsl(122 60% 29%)',
+      color: '#3949AB',
     },
     {
       icon: <Settings sx={{ fontSize: 28 }} />,
@@ -157,7 +157,7 @@ export default function GuidePage() {
     },
     {
       key: 'member',
-      color: 'hsl(122 60% 29%)',
+      color: '#3949AB',
     },
     {
       key: 'familyMember',
@@ -439,7 +439,7 @@ export default function GuidePage() {
                 <Box>
                   <Box
                     sx={{
-                      bgcolor: 'hsl(122 60% 29%)',
+                      bgcolor: '#3949AB',
                       color: 'white',
                       px: 1.5,
                       py: 0.5,

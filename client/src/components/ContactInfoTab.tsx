@@ -29,7 +29,7 @@ export default function ContactInfoTab() {
     <Card sx={{ p: 3 }}>
       {/* Basic Contact Info */}
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h6" sx={{ mb: 3, fontWeight: 600, color: 'hsl(123 46% 34%)' }}>
+        <Typography variant="h6" sx={{ mb: 3, fontWeight: 600, color: '#0D1B2A' }}>
           Osnovni podaci
         </Typography>
         
@@ -46,7 +46,7 @@ export default function ContactInfoTab() {
 
           {/* Address */}
           <Box sx={{ display: 'flex', gap: 2 }}>
-            <MapPin size={20} style={{ color: 'hsl(123 46% 64%)', marginTop: 2 }} />
+            <MapPin size={20} style={{ color: '#3949AB', marginTop: 2 }} />
             <Box>
               <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.secondary', mb: 0.5 }}>
                 Adresa
@@ -59,7 +59,7 @@ export default function ContactInfoTab() {
 
           {/* Phone */}
           <Box sx={{ display: 'flex', gap: 2 }}>
-            <Phone size={20} style={{ color: 'hsl(123 46% 64%)', marginTop: 2 }} />
+            <Phone size={20} style={{ color: '#3949AB', marginTop: 2 }} />
             <Box>
               <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.secondary', mb: 0.5 }}>
                 Telefon
@@ -72,7 +72,7 @@ export default function ContactInfoTab() {
 
           {/* Email */}
           <Box sx={{ display: 'flex', gap: 2 }}>
-            <Mail size={20} style={{ color: 'hsl(123 46% 64%)', marginTop: 2 }} />
+            <Mail size={20} style={{ color: '#3949AB', marginTop: 2 }} />
             <Box>
               <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.secondary', mb: 0.5 }}>
                 Email
@@ -88,7 +88,7 @@ export default function ContactInfoTab() {
       {/* Social Media */}
       {(settings.facebookUrl || settings.instagramUrl || settings.youtubeUrl || settings.twitterUrl) && (
         <Box>
-          <Typography variant="h6" sx={{ mb: 3, fontWeight: 600, color: 'hsl(123 46% 34%)' }}>
+          <Typography variant="h6" sx={{ mb: 3, fontWeight: 600, color: '#0D1B2A' }}>
             Društvene mreže
           </Typography>
           

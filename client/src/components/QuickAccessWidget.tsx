@@ -22,10 +22,10 @@ import { useTranslation } from 'react-i18next';
 export const getAvailableShortcuts = (t: any) => [
   { path: '/announcements', label: t('navigation:menu.announcements'), icon: Campaign, color: '#1976d2', testId: 'quickaccess-announcements' },
   { path: '/events', label: t('navigation:menu.events'), icon: Event, color: '#ed6c02', testId: 'quickaccess-events' },
-  { path: '/users', label: t('navigation:menu.users'), icon: People, color: '#2e7d32', testId: 'quickaccess-users' },
+  { path: '/users', label: t('navigation:menu.users'), icon: People, color: '#26A69A', testId: 'quickaccess-users' },
   { path: '/tasks', label: t('navigation:menu.sections'), icon: Workspaces, color: '#9c27b0', testId: 'quickaccess-sections' },
   { path: '/messages', label: t('navigation:menu.messages'), icon: Mail, color: '#0288d1', testId: 'quickaccess-messages' },
-  { path: '/ask-imam', label: t('navigation:menu.askImam'), icon: School, color: '#388e3c', testId: 'quickaccess-askimam' },
+  { path: '/ask-imam', label: t('navigation:menu.askImam'), icon: School, color: '#3949AB', testId: 'quickaccess-askimam' },
   { path: '/documents', label: t('navigation:menu.documents'), icon: Description, color: '#f57c00', testId: 'quickaccess-documents' },
   { path: '/shop', label: t('navigation:menu.shop'), icon: ShoppingCart, color: '#c2185b', testId: 'quickaccess-shop' },
   { path: '/vaktija', label: t('navigation:menu.vaktija'), icon: CalendarMonth, color: '#5e35b1', testId: 'quickaccess-vaktija' },

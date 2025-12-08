@@ -162,7 +162,7 @@ export default function AnnouncementsPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'published':
-        return '#4caf50';
+        return '#26A69A';
       case 'archived':
         return '#ff9800';
       default:
@@ -211,7 +211,7 @@ export default function AnnouncementsPage() {
     }}>
       {/* Header with Add Button */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="h5" sx={{ fontWeight: 600, color: '#1b5e20' }}>
+        <Typography variant="h5" sx={{ fontWeight: 600, color: '#0D1B2A' }}>
           {t('announcements:title')}
         </Typography>
         {user?.isAdmin && (
@@ -221,13 +221,13 @@ export default function AnnouncementsPage() {
             onClick={handleCreateAnnouncement}
             data-testid="button-add-announcement"
             sx={{ 
-              backgroundColor: '#81c784',
+              backgroundColor: '#1E88E5',
               color: '#fff',
               borderRadius: '12px',
               textTransform: 'none',
               fontSize: '0.9rem',
               '&:hover': {
-                backgroundColor: '#66bb6a'
+                backgroundColor: '#1976D2'
               }
             }}
           >
@@ -248,8 +248,8 @@ export default function AnnouncementsPage() {
             flex: 1,
             '& .MuiOutlinedInput-root': {
               borderRadius: '12px',
-              border: '1px solid #c8e6c9',
-              backgroundColor: '#f1f8f6'
+              border: '1px solid #e8eaf6',
+              backgroundColor: '#f5f7ff'
             }
           }}
         />
@@ -269,8 +269,8 @@ export default function AnnouncementsPage() {
               sx={{ 
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '12px',
-                  border: '1px solid #c8e6c9',
-                  backgroundColor: '#f1f8f6'
+                  border: '1px solid #e8eaf6',
+                  backgroundColor: '#f5f7ff'
                 }
               }}
             />
@@ -295,9 +295,9 @@ export default function AnnouncementsPage() {
             data-testid={`card-announcement-${announcement.id}`}
             onClick={() => window.location.href = `/announcements?id=${announcement.id}`}
             sx={{
-              border: '1px solid #c8e6c9',
+              border: '1px solid #e8eaf6',
               borderRadius: '12px',
-              backgroundColor: '#f1f8f6',
+              backgroundColor: '#f5f7ff',
               display: 'flex',
               flexDirection: 'column',
               overflow: 'hidden',
@@ -305,7 +305,7 @@ export default function AnnouncementsPage() {
               cursor: 'pointer',
               '&:hover': {
                 boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                borderColor: '#81c784'
+                borderColor: '#1E88E5'
               }
             }}
           >
@@ -334,7 +334,7 @@ export default function AnnouncementsPage() {
                     variant="subtitle1" 
                     sx={{ 
                       fontWeight: 600, 
-                      color: '#1b5e20',
+                      color: '#0D1B2A',
                       mb: 0.5
                     }}
                   >
@@ -360,8 +360,8 @@ export default function AnnouncementsPage() {
                         label={cat}
                         size="small"
                         sx={{
-                          backgroundColor: '#c8e6c9',
-                          color: '#1b5e20',
+                          backgroundColor: '#e8eaf6',
+                          color: '#0D1B2A',
                           fontWeight: 500,
                           borderRadius: '8px'
                         }}
@@ -381,7 +381,7 @@ export default function AnnouncementsPage() {
                   onClick={(e) => { e.stopPropagation(); handleViewAnnouncement(announcement); }}
                   data-testid={`button-view-announcement-${announcement.id}`}
                   title={t('announcements:view')}
-                  sx={{ color: '#81c784' }}
+                  sx={{ color: '#1E88E5' }}
                 >
                   <Visibility fontSize="small" />
                 </IconButton>
@@ -415,9 +415,9 @@ export default function AnnouncementsPage() {
         {sortedAnnouncements.length === 0 && (
           <Card
             sx={{
-              border: '1px solid #c8e6c9',
+              border: '1px solid #e8eaf6',
               borderRadius: '12px',
-              backgroundColor: '#f1f8f6',
+              backgroundColor: '#f5f7ff',
               p: 4,
               textAlign: 'center',
               gridColumn: { xs: '1', sm: '1 / -1', md: '1 / -1' }

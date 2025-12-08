@@ -718,7 +718,7 @@ select:focus {
   .MuiCard-root {
     page-break-inside: avoid;
     box-shadow: none;
-    border: 1px solid hsl(123 46% 64%);
+    border: 1px solid #c5cae9;
   }
   
   /* Ensure background colors print */

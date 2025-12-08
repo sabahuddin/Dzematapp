@@ -75,8 +75,8 @@ export function HeroPrayerCard({ prayerTime }: HeroPrayerCardProps) {
       {nextPrayer && (
         <Box 
           sx={{ 
-            bgcolor: 'hsl(123 46% 97%)',
-            border: '1px solid hsl(123 46% 80%)',
+            bgcolor: '#f5f7ff',
+            border: '1px solid #c5cae9',
             borderRadius: 'var(--radius)',
             p: 1,
             mb: 1.5,
@@ -90,7 +90,7 @@ export function HeroPrayerCard({ prayerTime }: HeroPrayerCardProps) {
           <Typography 
             variant="caption" 
             sx={{ 
-              color: 'hsl(123 46% 54%)',
+              color: '#3949AB',
               fontSize: '0.65rem'
             }}
           >
@@ -100,7 +100,7 @@ export function HeroPrayerCard({ prayerTime }: HeroPrayerCardProps) {
             variant="body2" 
             sx={{ 
               fontWeight: 600,
-              color: 'hsl(123 46% 24%)',
+              color: '#0D1B2A',
             }}
             data-testid="text-next-prayer-name"
           >
@@ -110,7 +110,7 @@ export function HeroPrayerCard({ prayerTime }: HeroPrayerCardProps) {
             variant="body1" 
             sx={{ 
               fontWeight: 700,
-              color: 'hsl(123 46% 24%)',
+              color: '#0D1B2A',
             }}
             data-testid="text-next-prayer-time"
           >
@@ -126,18 +126,18 @@ export function HeroPrayerCard({ prayerTime }: HeroPrayerCardProps) {
             key={prayer.name}
             sx={{
               bgcolor: 'white',
-              border: '1px solid hsl(123 46% 85%)',
+              border: '1px solid #e8eaf6',
               borderRadius: 'var(--radius)',
               p: 0.75,
               textAlign: 'center',
             }}
             data-testid={`chip-prayer-${prayer.name.toLowerCase()}`}
           >
-            <Box sx={{ color: 'hsl(123 46% 54%)', mb: 0.25 }}>{prayer.icon}</Box>
-            <Typography variant="caption" sx={{ fontSize: '0.6rem', color: 'hsl(123 46% 44%)', display: 'block' }}>
+            <Box sx={{ color: '#3949AB', mb: 0.25 }}>{prayer.icon}</Box>
+            <Typography variant="caption" sx={{ fontSize: '0.6rem', color: '#546E7A', display: 'block' }}>
               {prayer.name}
             </Typography>
-            <Typography variant="body2" sx={{ fontWeight: 600, color: 'hsl(123 46% 24%)', fontSize: '0.85rem' }}>
+            <Typography variant="body2" sx={{ fontWeight: 600, color: '#0D1B2A', fontSize: '0.85rem' }}>
               {prayer.time}
             </Typography>
           </Box>

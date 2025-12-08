@@ -35,49 +35,49 @@ export default function NotificationsPage() {
 
   const notificationItems = [
     {
-      icon: <Campaign sx={{ color: 'hsl(123 46% 54%)' }} />,
+      icon: <Campaign sx={{ color: '#3949AB' }} />,
       label: 'Nova obavještenja',
       count: notificationCounts?.announcements || 0,
       route: '/announcements',
       testId: 'notification-announcements'
     },
     {
-      icon: <Event sx={{ color: 'hsl(123 46% 54%)' }} />,
+      icon: <Event sx={{ color: '#3949AB' }} />,
       label: 'Novi događaji',
       count: notificationCounts?.events || 0,
       route: '/events',
       testId: 'notification-events'
     },
     {
-      icon: <Store sx={{ color: 'hsl(123 46% 54%)' }} />,
+      icon: <Store sx={{ color: '#3949AB' }} />,
       label: 'Novi proizvodi',
       count: notificationCounts?.shop || 0,
       route: '/shop',
       testId: 'notification-shop'
     },
     {
-      icon: <Task sx={{ color: 'hsl(123 46% 54%)' }} />,
+      icon: <Task sx={{ color: '#3949AB' }} />,
       label: 'Novi zadaci',
       count: notificationCounts?.tasks || 0,
       route: '/tasks',
       testId: 'notification-tasks'
     },
     {
-      icon: <QuestionAnswer sx={{ color: 'hsl(123 46% 54%)' }} />,
+      icon: <QuestionAnswer sx={{ color: '#3949AB' }} />,
       label: 'Pitanja za imama',
       count: notificationCounts?.imamQuestions || 0,
       route: '/ask-imam',
       testId: 'notification-imam'
     },
     {
-      icon: <Mail sx={{ color: 'hsl(123 46% 54%)' }} />,
+      icon: <Mail sx={{ color: '#3949AB' }} />,
       label: 'Nove poruke',
       count: unreadMessages?.count || 0,
       route: '/messages',
       testId: 'notification-messages'
     },
     {
-      icon: <CardGiftcard sx={{ color: 'hsl(123 46% 54%)' }} />,
+      icon: <CardGiftcard sx={{ color: '#3949AB' }} />,
       label: 'Nove zahvalnice',
       count: unviewedCertificates?.count || 0,
       route: '/my-certificates',
@@ -93,7 +93,7 @@ export default function NotificationsPage() {
   return (
     <Box>
       <Box sx={{ mb: 3 }}>
-        <Typography variant="h5" sx={{ fontWeight: 600, color: 'hsl(123 46% 34%)', mb: 1 }}>
+        <Typography variant="h5" sx={{ fontWeight: 600, color: '#0D1B2A', mb: 1 }}>
           Notifikacije
         </Typography>
         <Typography variant="body2" color="text.secondary">
@@ -103,7 +103,7 @@ export default function NotificationsPage() {
 
       {activeNotifications.length === 0 ? (
         <Paper sx={{ p: 4, textAlign: 'center' }}>
-          <Info sx={{ fontSize: 64, color: 'hsl(123 46% 54%)', mb: 2 }} />
+          <Info sx={{ fontSize: 64, color: '#3949AB', mb: 2 }} />
           <Typography variant="h6" color="text.secondary">
             Nemate novih notifikacija
           </Typography>
@@ -124,7 +124,7 @@ export default function NotificationsPage() {
                 transition: 'all 0.2s ease',
                 '&:hover': {
                   transform: 'translateX(8px)',
-                  boxShadow: '0 8px 16px rgba(18, 94, 48, 0.18)',
+                  boxShadow: '0 8px 16px rgba(57, 73, 171, 0.15)',
                 },
               }}
             >

@@ -27,7 +27,7 @@ export default function CompactPrayerTimes({ prayerTime }: CompactPrayerTimesPro
           variant="body1" 
           sx={{ 
             fontWeight: 600, 
-            color: 'hsl(123 46% 34%)',
+            color: '#3949AB',
             fontSize: { xs: '0.95rem', sm: '1.1rem' }
           }}
         >
@@ -40,7 +40,7 @@ export default function CompactPrayerTimes({ prayerTime }: CompactPrayerTimesPro
             sx={{
               textTransform: 'none',
               fontSize: '0.85rem',
-              color: 'hsl(123 46% 54%)',
+              color: '#1E88E5',
               minWidth: 'auto',
               p: 0.5,
             }}
@@ -53,48 +53,48 @@ export default function CompactPrayerTimes({ prayerTime }: CompactPrayerTimesPro
 
       {/* Row 2: Prayer names */}
       <Box sx={{ display: 'flex', gap: { xs: 0.5, sm: 1 }, justifyContent: 'space-between', mb: 0.5 }}>
-        <Typography variant="caption" sx={{ flex: 1, textAlign: 'center', fontSize: { xs: '0.65rem', sm: '0.75rem' }, color: 'hsl(123 46% 34%)' }}>
+        <Typography variant="caption" sx={{ flex: 1, textAlign: 'center', fontSize: { xs: '0.65rem', sm: '0.75rem' }, color: '#3949AB' }}>
           {t('dashboard:prayers.fajr')}
         </Typography>
         {prayerTime.sunrise && (
-          <Typography variant="caption" sx={{ flex: 1, textAlign: 'center', fontSize: { xs: '0.65rem', sm: '0.75rem' }, color: 'hsl(123 46% 34%)' }}>
+          <Typography variant="caption" sx={{ flex: 1, textAlign: 'center', fontSize: { xs: '0.65rem', sm: '0.75rem' }, color: '#3949AB' }}>
             {t('dashboard:prayers.sunrise')}
           </Typography>
         )}
-        <Typography variant="caption" sx={{ flex: 1, textAlign: 'center', fontSize: { xs: '0.65rem', sm: '0.75rem' }, color: 'hsl(123 46% 34%)' }}>
+        <Typography variant="caption" sx={{ flex: 1, textAlign: 'center', fontSize: { xs: '0.65rem', sm: '0.75rem' }, color: '#3949AB' }}>
           {t('dashboard:prayers.dhuhr')}
         </Typography>
-        <Typography variant="caption" sx={{ flex: 1, textAlign: 'center', fontSize: { xs: '0.65rem', sm: '0.75rem' }, color: 'hsl(123 46% 34%)' }}>
+        <Typography variant="caption" sx={{ flex: 1, textAlign: 'center', fontSize: { xs: '0.65rem', sm: '0.75rem' }, color: '#3949AB' }}>
           {t('dashboard:prayers.asr')}
         </Typography>
-        <Typography variant="caption" sx={{ flex: 1, textAlign: 'center', fontSize: { xs: '0.65rem', sm: '0.75rem' }, color: 'hsl(123 46% 34%)' }}>
+        <Typography variant="caption" sx={{ flex: 1, textAlign: 'center', fontSize: { xs: '0.65rem', sm: '0.75rem' }, color: '#3949AB' }}>
           {t('dashboard:prayers.maghrib')}
         </Typography>
-        <Typography variant="caption" sx={{ flex: 1, textAlign: 'center', fontSize: { xs: '0.65rem', sm: '0.75rem' }, color: 'hsl(123 46% 34%)' }}>
+        <Typography variant="caption" sx={{ flex: 1, textAlign: 'center', fontSize: { xs: '0.65rem', sm: '0.75rem' }, color: '#3949AB' }}>
           {t('dashboard:prayers.isha')}
         </Typography>
       </Box>
 
       {/* Row 3: Prayer times */}
       <Box sx={{ display: 'flex', gap: { xs: 0.5, sm: 1 }, justifyContent: 'space-between' }}>
-        <Typography variant="body2" sx={{ flex: 1, textAlign: 'center', fontWeight: 600, fontSize: { xs: '0.85rem', sm: '1rem' }, color: 'hsl(123 46% 24%)' }}>
+        <Typography variant="body2" sx={{ flex: 1, textAlign: 'center', fontWeight: 600, fontSize: { xs: '0.85rem', sm: '1rem' }, color: '#0D1B2A' }}>
           {prayerTime.fajr}
         </Typography>
         {prayerTime.sunrise && (
-          <Typography variant="body2" sx={{ flex: 1, textAlign: 'center', fontWeight: 600, fontSize: { xs: '0.85rem', sm: '1rem' }, color: 'hsl(123 46% 24%)' }}>
+          <Typography variant="body2" sx={{ flex: 1, textAlign: 'center', fontWeight: 600, fontSize: { xs: '0.85rem', sm: '1rem' }, color: '#0D1B2A' }}>
             {prayerTime.sunrise}
           </Typography>
         )}
-        <Typography variant="body2" sx={{ flex: 1, textAlign: 'center', fontWeight: 600, fontSize: { xs: '0.85rem', sm: '1rem' }, color: 'hsl(123 46% 24%)' }}>
+        <Typography variant="body2" sx={{ flex: 1, textAlign: 'center', fontWeight: 600, fontSize: { xs: '0.85rem', sm: '1rem' }, color: '#0D1B2A' }}>
           {prayerTime.dhuhr}
         </Typography>
-        <Typography variant="body2" sx={{ flex: 1, textAlign: 'center', fontWeight: 600, fontSize: { xs: '0.85rem', sm: '1rem' }, color: 'hsl(123 46% 24%)' }}>
+        <Typography variant="body2" sx={{ flex: 1, textAlign: 'center', fontWeight: 600, fontSize: { xs: '0.85rem', sm: '1rem' }, color: '#0D1B2A' }}>
           {prayerTime.asr}
         </Typography>
-        <Typography variant="body2" sx={{ flex: 1, textAlign: 'center', fontWeight: 600, fontSize: { xs: '0.85rem', sm: '1rem' }, color: 'hsl(123 46% 24%)' }}>
+        <Typography variant="body2" sx={{ flex: 1, textAlign: 'center', fontWeight: 600, fontSize: { xs: '0.85rem', sm: '1rem' }, color: '#0D1B2A' }}>
           {prayerTime.maghrib}
         </Typography>
-        <Typography variant="body2" sx={{ flex: 1, textAlign: 'center', fontWeight: 600, fontSize: { xs: '0.85rem', sm: '1rem' }, color: 'hsl(123 46% 24%)' }}>
+        <Typography variant="body2" sx={{ flex: 1, textAlign: 'center', fontWeight: 600, fontSize: { xs: '0.85rem', sm: '1rem' }, color: '#0D1B2A' }}>
           {prayerTime.isha}
         </Typography>
       </Box>
