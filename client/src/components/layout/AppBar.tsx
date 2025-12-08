@@ -104,7 +104,7 @@ export default function AppBar({ onMenuClick }: AppBarProps) {
             }}
             data-testid="profile-menu-button"
           >
-            <Avatar sx={{ width: 32, height: 32, bgcolor: '#1976d2' }}>
+            <Avatar sx={{ width: 32, height: 32, bgcolor: '#3949AB' }}>
               <AccountCircle />
             </Avatar>
           </IconButton>

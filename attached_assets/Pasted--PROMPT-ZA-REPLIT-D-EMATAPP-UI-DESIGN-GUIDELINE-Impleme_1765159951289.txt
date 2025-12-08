@@ -1,0 +1,76 @@
+# PROMPT ZA REPLIT — DŽEMATAPP UI DESIGN GUIDELINE
+
+Implementirajte moderni UI za "DžematApp" prateći striktno ovaj vizuelni standard. Dizajn treba odavati dojam: "čisto, pouzdano, duhovno-moderno".
+
+## 🎨 1. Paleta boja — “Spiritual Tech Indigo”
+
+**Primarne boje:**
+* **Indigo (Primary):** `#3949AB` (Koristiti za Header, Active Tabs, Primary Borders)
+* **Tech Blue (Accent):** `#1E88E5` (Koristiti za Floating Action Buttons, Links, Highlights)
+* **White (Surface/Text):** `#FFFFFF` (Glavna pozadina kartica i modala)
+
+**Sekundarne i Pozadinske boje (VAŽNO PRAVILO RAZDVAJANJA):**
+* **Soft Light Gray:** `#ECEFF1` — *Sistemska boja.* Koristiti za pozadinu input polja (inputs) i opštu pozadinu ekrana (app background) u listama i postavkama.
+* **Warm Beige:** `#F5F3E7` — *Sadržajna boja.* Koristiti **ISKLJUČIVO** kao pozadinu za sekcije s dugim tekstom (čitanje članaka, hadisa, dova) radi smanjenja naprezanja očiju. Ne miješati direktno sa sivom bez bijelog separatora.
+* **Tirkizna (Success/Badges):** `#26A69A`
+
+**Tekst:**
+* **Tamni tekst (Primary):** `#0D1B2A` (Naslovi, glavni sadržaj)
+* **Sekundarni tekst (Secondary):** `#546E7A` (Opisi, meta podaci)
+
+---
+
+## 🔹 2. Oblik i Radijus (Corner Radius)
+Koristimo "Rounded Minimal" pristup.
+
+* **Cards (Kartice):** `16px` (Standard za kontejere sadržaja)
+* **Input polja:** `12px` (Moderni, prijateljski izgled)
+* **Dugmad (Buttons):** `10px` (Malo oštrije od kartica za hijerarhiju)
+* **Badges / Status:** `9999px` (Pill shape / potpuno zaobljeno)
+* **Bottom Sheet (Modal):** `20px` (Samo gornji uglovi)
+
+---
+
+## 🔠 3. Tipografija
+* **Font Family:** `Inter` (Google Fonts) ili sistemski sans-serif (SF Pro/Roboto).
+* **Hijerarhija:**
+    * **H1/H2 (Naslovi):** Weight 700 (Bold) — Tamno plava/crna.
+    * **H3/H4 (Podnaslovi):** Weight 600 (Semi-Bold).
+    * **Body (Tekst):** Weight 400 (Regular) — Dobar "line-height" (min. 1.5) za čitljivost.
+    * **Button Text:** Weight 600 (Semi-Bold).
+
+---
+
+## 📱 4. Komponente i Stil (Implementation Specs)
+
+**A) Input Polja (Forme)**
+* **Stil:** "Filled" (Ispunjena).
+* **Pozadina:** `#ECEFF1` (Soft Light Gray).
+* **Border:** Nema bordera u stanju mirovanja (default).
+* **Focus State:** Dodati border `2px solid #3949AB` (Indigo) i promijeniti pozadinu u `#FFFFFF`.
+
+**B) Kartice (Cards)**
+* **Pozadina:** `#FFFFFF`.
+* **Shadow:** Vrlo suptilna sjena: `box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05)`.
+* **Border:** Opcionalno, vrlo tanak border `#F3F4F6` ako je sjena preblaga.
+
+**C) Dugmad (Buttons)**
+* **Primary Button:** Pozadina `#1E88E5`, Tekst `#FFFFFF`, bez sjene ili minimalna sjena.
+* **Secondary Button:** Transparentna pozadina, Border `1px solid #3949AB`, Tekst `#3949AB`.
+
+**D) Navigacija (App Bar & Bottom Nav)**
+* **Top App Bar:** Pozadina `#3949AB` (Indigo), Tekst/Ikone `#FFFFFF`. Bez sjene (flat) ako se spaja sa sadržajem.
+* **Bottom Nav:** Bijela pozadina sa gornjim borderom `#ECEFF1`. Aktivna ikona: `#3949AB`. Neaktivna: `#B0BEC5`.
+
+---
+
+## 🌙 5. Dark Mode Pravila (Opcionalno)
+* **Background:** `#0D1B2A` (Deep Navy).
+* **Surface (Cards):** `#1C2A3A` (Lighter Navy).
+* **Text:** `#FFFFFF` (Primary), `#B0BEC5` (Secondary).
+* **Accent:** Zadržati `#1E88E5` i `#26A69A`.
+
+---
+
+## Završna instrukcija za generisanje
+Kreiraj UI komponente koristeći navedene HEX kodove i radijuse. Osiguraj da postoji dovoljno "White space" (praznog prostora) unutar kartica (padding min. 16px). Izgled treba biti konzistentan na svim ekranima (Home, Feed, Profil, Događaji).

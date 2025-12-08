@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Aladin&display=swap');
 @tailwind base;
@@ -5,70 +6,109 @@
 @tailwind utilities;
 
 :root {
-  --background: hsl(240 4% 96%);
-  --foreground: hsl(210 25% 7.8431%);
-  --card: hsl(120 60% 95%);
-  --card-foreground: hsl(122 60% 20%);
+  /* ============================================
+     SPIRITUAL TECH INDIGO - Design System
+     "čisto, pouzdano, duhovno-moderno"
+     ============================================ */
+  
+  /* Primary Colors */
+  --color-indigo: #3949AB;
+  --color-tech-blue: #1E88E5;
+  --color-white: #FFFFFF;
+  --color-tirkizna: #26A69A;
+  
+  /* Background Colors */
+  --color-soft-gray: #ECEFF1;
+  --color-warm-beige: #F5F3E7;
+  
+  /* Text Colors */
+  --color-text-primary: #0D1B2A;
+  --color-text-secondary: #546E7A;
+  
+  /* Bottom Nav Colors */
+  --color-nav-inactive: #B0BEC5;
+  --color-nav-border: #ECEFF1;
+  
+  /* Shadcn/Tailwind CSS Variables */
+  --background: hsl(200 20% 94%);
+  --foreground: hsl(210 50% 10%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(210 50% 10%);
   --popover: hsl(0 0% 100%);
-  --popover-foreground: hsl(210 25% 7.8431%);
-  --primary: hsl(203.8863 88.2845% 53.1373%);
+  --popover-foreground: hsl(210 50% 10%);
+  --primary: hsl(231 54% 44%);
   --primary-foreground: hsl(0 0% 100%);
-  --secondary: hsl(210 25% 7.8431%);
+  --secondary: hsl(207 78% 51%);
   --secondary-foreground: hsl(0 0% 100%);
-  --muted: hsl(240 1.9608% 90%);
-  --muted-foreground: hsl(210 25% 7.8431%);
-  --accent: hsl(211.5789 51.3514% 92.7451%);
-  --accent-foreground: hsl(203.8863 88.2845% 53.1373%);
-  --destructive: hsl(356.3033 90.5579% 54.3137%);
+  --muted: hsl(200 18% 93%);
+  --muted-foreground: hsl(200 18% 42%);
+  --accent: hsl(207 78% 51%);
+  --accent-foreground: hsl(0 0% 100%);
+  --destructive: hsl(0 84% 60%);
   --destructive-foreground: hsl(0 0% 100%);
-  --border: hsl(123 46% 64%);
-  --input: hsl(0 0% 100%);
-  --ring: hsl(120 68% 42%);
-  --chart-1: hsl(203.8863 88.2845% 53.1373%);
-  --chart-2: hsl(159.7826 100% 36.0784%);
-  --chart-3: hsl(42.0290 92.8251% 56.2745%);
-  --chart-4: hsl(147.1429 78.5047% 41.9608%);
-  --chart-5: hsl(341.4894 75.2000% 50.9804%);
-  --sidebar: hsl(180 6.6667% 97.0588%);
-  --sidebar-foreground: hsl(210 25% 7.8431%);
-  --sidebar-primary: hsl(203.8863 88.2845% 53.1373%);
+  --border: hsl(200 18% 88%);
+  --input: hsl(200 18% 93%);
+  --ring: hsl(231 54% 44%);
+  --chart-1: hsl(231 54% 44%);
+  --chart-2: hsl(174 63% 40%);
+  --chart-3: hsl(207 78% 51%);
+  --chart-4: hsl(43 96% 56%);
+  --chart-5: hsl(0 84% 60%);
+  --sidebar: hsl(0 0% 100%);
+  --sidebar-foreground: hsl(210 50% 10%);
+  --sidebar-primary: hsl(231 54% 44%);
   --sidebar-primary-foreground: hsl(0 0% 100%);
-  --sidebar-accent: hsl(211.5789 51.3514% 92.7451%);
-  --sidebar-accent-foreground: hsl(203.8863 88.2845% 53.1373%);
-  --sidebar-border: hsl(205.0000 25.0000% 90.5882%);
-  --sidebar-ring: hsl(202.8169 89.1213% 53.1373%);
-  --font-sans: 'Roboto', 'Open Sans', sans-serif;
+  --sidebar-accent: hsl(207 78% 51%);
+  --sidebar-accent-foreground: hsl(0 0% 100%);
+  --sidebar-border: hsl(200 18% 88%);
+  --sidebar-ring: hsl(231 54% 44%);
+  --font-sans: 'Inter', 'Roboto', 'SF Pro', system-ui, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: Menlo, monospace;
-  --radius: 1.3rem;
+  --radius: 16px;
   
-  /* Design System Tokens - Based on "Moje značke" Page Design */
+  /* Design System Tokens - Spiritual Tech Indigo */
   
   /* Surface/Background layers */
   --surface-base: hsl(0 0% 100%);
-  --surface-field: hsl(0 0% 100%);
-  --surface-subtle: hsl(240 4% 96%);
+  --surface-field: #ECEFF1;
+  --surface-subtle: #ECEFF1;
   --surface-card: hsl(0 0% 100%);
-  --surface-table-header: hsl(210 17% 98%);
+  --surface-table-header: hsl(200 18% 97%);
   --surface-gray-50: hsl(0 0% 98%);
-  --surface-gray-96: hsl(0 0% 96%);
+  --surface-gray-96: #ECEFF1;
+  --surface-reading: #F5F3E7;
   
-  /* Semantic Colors - Success/Contributions (Green) */
-  --semantic-success-bg: hsl(120 60% 95%);
-  --semantic-success-bg-hover: hsl(120 70% 85%);
-  --semantic-success-text: hsl(122 60% 20%);
-  --semantic-success-border: hsl(123 46% 64%);
-  --semantic-success-active: hsl(120 68% 42%);
+  /* Semantic Colors - Primary (Indigo) */
+  --semantic-primary-bg: hsl(231 54% 95%);
+  --semantic-primary-bg-hover: hsl(231 54% 90%);
+  --semantic-primary-text: #3949AB;
+  --semantic-primary-border: hsl(231 54% 75%);
+  --semantic-primary-active: #3949AB;
+  
+  /* Semantic Colors - Accent (Tech Blue) */
+  --semantic-accent-bg: hsl(207 78% 95%);
+  --semantic-accent-bg-hover: hsl(207 78% 90%);
+  --semantic-accent-text: #1E88E5;
+  --semantic-accent-border: hsl(207 78% 70%);
+  --semantic-accent-active: #1E88E5;
+  
+  /* Semantic Colors - Success (Tirkizna) */
+  --semantic-success-bg: hsl(174 63% 95%);
+  --semantic-success-bg-hover: hsl(174 63% 90%);
+  --semantic-success-text: #26A69A;
+  --semantic-success-border: hsl(174 63% 60%);
+  --semantic-success-active: #26A69A;
   
   /* Semantic Colors - Info/Tasks (Blue) */
-  --semantic-info-bg: hsl(207 90% 95%);
-  --semantic-info-bg-hover: hsl(207 90% 85%);
-  --semantic-info-text: hsl(207 84% 40%);
-  --semantic-info-border: hsl(207 73% 69%);
-  --semantic-info-active: hsl(217 91% 60%);
-  --semantic-info-active-hover: hsl(217 91% 45%);
-  --semantic-info-gradient-start: hsl(207 88% 55%);
-  --semantic-info-gradient-end: hsl(207 84% 40%);
+  --semantic-info-bg: hsl(207 78% 95%);
+  --semantic-info-bg-hover: hsl(207 78% 90%);
+  --semantic-info-text: #1E88E5;
+  --semantic-info-border: hsl(207 78% 70%);
+  --semantic-info-active: #1E88E5;
+  --semantic-info-active-hover: hsl(207 78% 40%);
+  --semantic-info-gradient-start: #1E88E5;
+  --semantic-info-gradient-end: #3949AB;
   
   /* Semantic Colors - Celebration/Events (Purple) */
   --semantic-celebration-bg: hsl(291 47% 95%);
@@ -84,7 +124,6 @@
   --semantic-award-border: hsl(35 100% 66%);
   --semantic-award-active: hsl(38 100% 52%);
   --semantic-award-active-hover: hsl(32 100% 51%);
-  
 
   /* Semantic Colors - Danger/Error (Red) */
   --semantic-danger-bg: hsl(0 100% 97%);
@@ -94,159 +133,200 @@
   --semantic-danger-active: hsl(0 65% 51%);
 
   /* Semantic Colors - Neutral/UI Chrome (Grey) */
-  --semantic-neutral-bg: hsl(210 11% 96%);
-  --semantic-neutral-bg-hover: hsl(210 11% 90%);
-  --semantic-neutral-text: hsl(210 9% 38%);
-  --semantic-neutral-border: hsl(210 11% 71%);
+  --semantic-neutral-bg: #ECEFF1;
+  --semantic-neutral-bg-hover: hsl(200 18% 90%);
+  --semantic-neutral-text: #546E7A;
+  --semantic-neutral-border: hsl(200 18% 75%);
 
   /* Semantic Typography */
-  --semantic-heading-text: hsl(231 48% 22%);
+  --semantic-heading-text: #0D1B2A;
 
   /* Border tokens */
   --border-width-default: 1px;
-  --border-width-card: 2px;
+  --border-width-card: 0px;
   --border-width-focus: 2px;
-  --border-color-default: hsl(0 0% 88%);
-  --border-color-hover: hsl(0 0% 74%);
-  --border-color-focus: hsl(203.8863 88.2845% 53.1373%);
+  --border-color-default: #ECEFF1;
+  --border-color-hover: hsl(200 18% 75%);
+  --border-color-focus: #3949AB;
   
-  /* Radius tokens */
-  --radius-xs: 4px;
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
+  /* Radius tokens - Rounded Minimal */
+  --radius-xs: 9px;
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
   --radius-pill: 9999px;
   
   /* Chat/Message bubbles */
-  --bubble-self-bg: hsl(203.8863 88.2845% 53.1373%);
+  --bubble-self-bg: #1E88E5;
   --bubble-self-text: hsl(0 0% 100%);
   --bubble-other-bg: hsl(0 0% 100%);
-  --bubble-other-text: hsl(0 0% 13%);
-  --bubble-other-border: hsl(0 0% 88%);
+  --bubble-other-text: #0D1B2A;
+  --bubble-other-border: #ECEFF1;
   
   /* State tokens */
-  --state-hover-bg: hsl(210 20% 98%);
-  --state-focus-ring: hsl(203.8863 88.2845% 53.1373% / 0.2);
+  --state-hover-bg: hsl(200 18% 97%);
+  --state-focus-ring: hsla(231, 54%, 44%, 0.2);
   --state-disabled-bg: hsl(0 0% 96%);
   --state-disabled-text: hsl(0 0% 60%);
-  --shadow-2xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-sm: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-md: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 2px 4px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-lg: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 4px 6px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 8px 10px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-2xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  
+  /* Shadows - Subtle */
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  --shadow-2xs: 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.10);
+  --shadow-2xl: 0 16px 32px rgba(0, 0, 0, 0.12);
+  
   --tracking-normal: 0em;
   --spacing: 0.25rem;
   
   /* Material-UI specific custom properties */
-  --mui-primary: #1976d2;
-  --mui-primary-dark: #1565c0;
-  --mui-primary-light: #42a5f5;
-  --mui-secondary: #f50057;
+  --mui-primary: #3949AB;
+  --mui-primary-dark: #303F9F;
+  --mui-primary-light: #5C6BC0;
+  --mui-secondary: #1E88E5;
+  --mui-secondary-dark: #1976D2;
+  --mui-secondary-light: #42A5F5;
   --mui-error: #d32f2f;
   --mui-warning: #ed6c02;
-  --mui-info: #0288d1;
-  --mui-success: #2e7d32;
-  --mui-background-default: #eeeeee;
+  --mui-info: #1E88E5;
+  --mui-success: #26A69A;
+  --mui-background-default: #ECEFF1;
   --mui-background-paper: #ffffff;
-  --mui-text-primary: rgba(0, 0, 0, 0.87);
-  --mui-text-secondary: rgba(0, 0, 0, 0.6);
-  --mui-divider: rgba(0, 0, 0, 0.12);
+  --mui-text-primary: #0D1B2A;
+  --mui-text-secondary: #546E7A;
+  --mui-divider: rgba(0, 0, 0, 0.08);
 }
 
 .dark {
-  --background: hsl(0 0% 0%);
-  --foreground: hsl(200 6.6667% 91.1765%);
-  --card: hsl(228 9.8039% 10%);
-  --card-foreground: hsl(0 0% 85.0980%);
-  --popover: hsl(0 0% 0%);
-  --popover-foreground: hsl(200 6.6667% 91.1765%);
-  --primary: hsl(203.7736 87.6033% 52.5490%);
+  /* ============================================
+     SPIRITUAL TECH INDIGO - Dark Mode
+     Deep Navy Theme
+     ============================================ */
+  
+  --background: hsl(210 50% 5%);
+  --foreground: hsl(0 0% 95%);
+  --card: hsl(210 40% 12%);
+  --card-foreground: hsl(0 0% 95%);
+  --popover: hsl(210 40% 10%);
+  --popover-foreground: hsl(0 0% 95%);
+  --primary: hsl(207 78% 51%);
   --primary-foreground: hsl(0 0% 100%);
-  --secondary: hsl(195.0000 15.3846% 94.9020%);
-  --secondary-foreground: hsl(210 25% 7.8431%);
-  --muted: hsl(0 0% 9.4118%);
-  --muted-foreground: hsl(210 3.3898% 46.2745%);
-  --accent: hsl(205.7143 70% 7.8431%);
-  --accent-foreground: hsl(203.7736 87.6033% 52.5490%);
-  --destructive: hsl(356.3033 90.5579% 54.3137%);
+  --secondary: hsl(231 54% 60%);
+  --secondary-foreground: hsl(0 0% 100%);
+  --muted: hsl(210 30% 18%);
+  --muted-foreground: hsl(200 18% 65%);
+  --accent: hsl(207 78% 51%);
+  --accent-foreground: hsl(0 0% 100%);
+  --destructive: hsl(0 84% 60%);
   --destructive-foreground: hsl(0 0% 100%);
-  --border: hsl(210 5.2632% 14.9020%);
-  --input: hsl(207.6923 27.6596% 18.4314%);
-  --ring: hsl(202.8169 89.1213% 53.1373%);
-  --chart-1: hsl(203.8863 88.2845% 53.1373%);
-  --chart-2: hsl(159.7826 100% 36.0784%);
-  --chart-3: hsl(42.0290 92.8251% 56.2745%);
-  --chart-4: hsl(147.1429 78.5047% 41.9608%);
-  --chart-5: hsl(341.4894 75.2000% 50.9804%);
-  --sidebar: hsl(228 9.8039% 10%);
-  --sidebar-foreground: hsl(0 0% 85.0980%);
-  --sidebar-primary: hsl(202.8169 89.1213% 53.1373%);
+  --border: hsl(210 30% 22%);
+  --input: hsl(210 30% 18%);
+  --ring: hsl(207 78% 51%);
+  --chart-1: hsl(207 78% 51%);
+  --chart-2: hsl(174 63% 50%);
+  --chart-3: hsl(231 54% 60%);
+  --chart-4: hsl(43 96% 56%);
+  --chart-5: hsl(0 84% 60%);
+  --sidebar: hsl(210 40% 10%);
+  --sidebar-foreground: hsl(0 0% 95%);
+  --sidebar-primary: hsl(207 78% 51%);
   --sidebar-primary-foreground: hsl(0 0% 100%);
-  --sidebar-accent: hsl(205.7143 70% 7.8431%);
-  --sidebar-accent-foreground: hsl(203.7736 87.6033% 52.5490%);
-  --sidebar-border: hsl(205.7143 15.7895% 26.0784%);
-  --sidebar-ring: hsl(202.8169 89.1213% 53.1373%);
-  --font-sans: 'Roboto', 'Open Sans', sans-serif;
+  --sidebar-accent: hsl(207 78% 51%);
+  --sidebar-accent-foreground: hsl(0 0% 100%);
+  --sidebar-border: hsl(210 30% 22%);
+  --sidebar-ring: hsl(207 78% 51%);
+  --font-sans: 'Inter', 'Roboto', 'SF Pro', system-ui, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: Menlo, monospace;
-  --radius: 1.3rem;
+  --radius: 16px;
   
   /* Design System Tokens - Dark Mode */
-  /* Surface/Background layers */
-  --surface-base: hsl(0 0% 7%);
-  --surface-field: hsl(0 0% 12%);
-  --surface-subtle: hsl(0 0% 10%);
-  --surface-card: hsl(0 0% 12%);
-  --surface-table-header: hsl(0 0% 15%);
-  --surface-gray-50: hsl(0 0% 14%);
+  /* Surface/Background layers - Deep Navy */
+  --surface-base: #0D1B2A;
+  --surface-field: #1C2A3A;
+  --surface-subtle: #152232;
+  --surface-card: #1C2A3A;
+  --surface-table-header: #253545;
+  --surface-gray-50: #1C2A3A;
+  --surface-reading: #1C2A3A;
+  
+  /* Semantic Colors - Primary (Indigo in Dark) */
+  --semantic-primary-bg: hsl(231 54% 20%);
+  --semantic-primary-bg-hover: hsl(231 54% 25%);
+  --semantic-primary-text: #7986CB;
+  --semantic-primary-border: hsl(231 54% 40%);
+  --semantic-primary-active: #7986CB;
+  
+  /* Semantic Colors - Accent (Tech Blue in Dark) */
+  --semantic-accent-bg: hsl(207 78% 20%);
+  --semantic-accent-bg-hover: hsl(207 78% 25%);
+  --semantic-accent-text: #42A5F5;
+  --semantic-accent-border: hsl(207 78% 40%);
+  --semantic-accent-active: #42A5F5;
+  
+  /* Semantic Colors - Success (Tirkizna in Dark) */
+  --semantic-success-bg: hsl(174 63% 18%);
+  --semantic-success-bg-hover: hsl(174 63% 23%);
+  --semantic-success-text: #4DB6AC;
+  --semantic-success-border: hsl(174 63% 35%);
+  --semantic-success-active: #4DB6AC;
   
   /* Border tokens */
   --border-width-default: 1px;
   --border-width-focus: 2px;
-  --border-color-default: hsl(0 0% 25%);
-  --border-color-hover: hsl(0 0% 35%);
-  --border-color-focus: hsl(203.7736 87.6033% 52.5490%);
+  --border-color-default: hsl(210 30% 25%);
+  --border-color-hover: hsl(210 30% 35%);
+  --border-color-focus: #1E88E5;
   
   /* Radius tokens */
-  --radius-xs: 4px;
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
+  --radius-xs: 9px;
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
   --radius-pill: 9999px;
   
   /* Chat/Message bubbles */
-  --bubble-self-bg: hsl(203.7736 87.6033% 52.5490%);
+  --bubble-self-bg: #1E88E5;
   --bubble-self-text: hsl(0 0% 100%);
-  --bubble-other-bg: hsl(0 0% 18%);
+  --bubble-other-bg: #1C2A3A;
   --bubble-other-text: hsl(0 0% 95%);
-  --bubble-other-border: hsl(0 0% 25%);
+  --bubble-other-border: hsl(210 30% 25%);
   
   /* State tokens */
-  --state-hover-bg: hsl(0 0% 15%);
-  --state-focus-ring: hsl(203.7736 87.6033% 52.5490% / 0.3);
-  --state-disabled-bg: hsl(0 0% 10%);
+  --state-hover-bg: hsl(210 30% 15%);
+  --state-focus-ring: hsla(207, 78%, 51%, 0.3);
+  --state-disabled-bg: hsl(210 30% 12%);
   --state-disabled-text: hsl(0 0% 45%);
-  --shadow-2xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-sm: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-md: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 2px 4px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-lg: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 4px 6px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 8px 10px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-2xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  
+  /* Shadows - Subtle for dark mode */
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-2xs: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.25);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.45);
+  --shadow-2xl: 0 16px 32px rgba(0, 0, 0, 0.5);
 
   /* Dark mode Material-UI overrides */
-  --mui-primary: #90caf9;
-  --mui-primary-dark: #1976d2;
-  --mui-primary-light: #e3f2fd;
-  --mui-background-default: #121212;
-  --mui-background-paper: #1e1e1e;
+  --mui-primary: #7986CB;
+  --mui-primary-dark: #5C6BC0;
+  --mui-primary-light: #9FA8DA;
+  --mui-secondary: #42A5F5;
+  --mui-secondary-dark: #1E88E5;
+  --mui-secondary-light: #64B5F6;
+  --mui-background-default: #0D1B2A;
+  --mui-background-paper: #1C2A3A;
   --mui-text-primary: rgba(255, 255, 255, 0.87);
-  --mui-text-secondary: rgba(255, 255, 255, 0.6);
-  --mui-divider: rgba(255, 255, 255, 0.12);
+  --mui-text-secondary: #B0BEC5;
+  --mui-divider: rgba(255, 255, 255, 0.08);
 }
 
 @layer base {
@@ -269,8 +349,9 @@
     width: 100%;
     height: 100%;
     @apply font-sans antialiased text-foreground;
-    font-family: var(--font-sans);
-    background-color: #eeeeee !important;
+    font-family: 'Inter', 'Roboto', 'SF Pro', system-ui, sans-serif;
+    background-color: #ECEFF1 !important;
+    color: #0D1B2A;
     overscroll-behavior: none;
     -webkit-overflow-scrolling: touch;
     touch-action: pan-y;
@@ -279,30 +360,30 @@
   /* Material-UI component customizations - Card/Paper styling removed to allow theme overrides */
 
   .MuiButton-contained {
-    background-color: var(--mui-primary) !important;
+    background-color: #1E88E5 !important;
     color: white !important;
     text-transform: none !important;
-    font-weight: 500 !important;
-    border-radius: 6px !important;
+    font-weight: 600 !important;
+    border-radius: 10px !important;
     box-shadow: none !important;
   }
 
   .MuiButton-contained:hover {
-    background-color: var(--mui-primary-dark) !important;
-    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3) !important;
+    background-color: #1976D2 !important;
+    box-shadow: none !important;
   }
 
   .MuiButton-outlined {
-    border-color: var(--mui-primary) !important;
-    color: var(--mui-primary) !important;
+    border-color: #3949AB !important;
+    color: #3949AB !important;
     text-transform: none !important;
-    font-weight: 500 !important;
-    border-radius: 6px !important;
+    font-weight: 600 !important;
+    border-radius: 10px !important;
   }
 
   .MuiButton-outlined:hover {
-    background-color: rgba(25, 118, 210, 0.04) !important;
-    border-color: var(--mui-primary-dark) !important;
+    background-color: rgba(57, 73, 171, 0.04) !important;
+    border-color: #3949AB !important;
   }
 
   .MuiChip-root {
@@ -313,8 +394,8 @@
   }
 
   .MuiChip-colorSuccess {
-    background-color: #e8f5e8 !important;
-    color: #2e7d32 !important;
+    background-color: hsl(174 63% 95%) !important;
+    color: #26A69A !important;
   }
 
   .MuiChip-colorWarning {
@@ -328,8 +409,13 @@
   }
 
   .MuiChip-colorInfo {
-    background-color: #e3f2fd !important;
-    color: #1976d2 !important;
+    background-color: hsl(207 78% 95%) !important;
+    color: #1E88E5 !important;
+  }
+
+  .MuiChip-colorPrimary {
+    background-color: hsl(231 54% 95%) !important;
+    color: #3949AB !important;
   }
 
   .MuiTableHead-root .MuiTableCell-root {
@@ -346,15 +432,15 @@
   /* Drawer/Menu/Popover/Select styling removed to allow theme overrides */
 
   .MuiAppBar-root {
-    background-color: #ffffff !important;
-    color: var(--mui-text-primary) !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+    background-color: #3949AB !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
     border: 0 !important;
   }
 
-  /* Login page specific styles */
+  /* Login page specific styles - Spiritual Tech Indigo */
   .login-gradient {
-    background: linear-gradient(135deg, #1976d2 0%, #0d47a1 100%);
+    background: linear-gradient(135deg, #3949AB 0%, #1E88E5 100%);
   }
 
   /* Custom scroll styles */
@@ -476,23 +562,23 @@
     color: rgba(255, 255, 255, 0.87) !important;
   }
 
-  /* Sidebar customizations */
+  /* Sidebar customizations - Spiritual Tech Indigo */
   .MuiListItemButton-root.Mui-selected {
-    background-color: #e3f2fd !important;
-    color: #1976d2 !important;
+    background-color: hsl(231 54% 95%) !important;
+    color: #3949AB !important;
   }
 
   .MuiListItemButton-root:hover {
-    background-color: #f5f5f5 !important;
+    background-color: #ECEFF1 !important;
   }
 
-  /* Statistics card customizations */
+  /* Statistics card customizations - Spiritual Tech Indigo */
   .stat-icon-blue {
-    background-color: #1976d2 !important;
+    background-color: #1E88E5 !important;
   }
 
   .stat-icon-green {
-    background-color: #2e7d32 !important;
+    background-color: #26A69A !important;
   }
 
   .stat-icon-orange {
@@ -500,7 +586,11 @@
   }
 
   .stat-icon-teal {
-    background-color: #0097a7 !important;
+    background-color: #26A69A !important;
+  }
+
+  .stat-icon-indigo {
+    background-color: #3949AB !important;
   }
 
   /* Responsive utilities */

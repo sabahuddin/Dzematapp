@@ -24,11 +24,11 @@ export default function BottomNavigation() {
   return (
     <Paper
       sx={{
-        borderTop: '1px solid var(--semantic-success-border)',
-        backgroundColor: 'var(--semantic-success-bg)',
+        borderTop: '1px solid #ECEFF1',
+        backgroundColor: '#ffffff',
         borderRadius: 0,
       }}
-      elevation={8}
+      elevation={0}
     >
       <MuiBottomNavigation
         value={getActiveTab()}
@@ -41,11 +41,11 @@ export default function BottomNavigation() {
           py: 1,
           borderRadius: 0,
           '& .MuiBottomNavigationAction-root': {
-            color: 'hsl(123 46% 34%)',
+            color: '#B0BEC5',
             minWidth: '60px',
             fontSize: '0.75rem',
             '&.Mui-selected': {
-              color: 'hsl(123 46% 54%)',
+              color: '#3949AB',
             },
           },
         }}

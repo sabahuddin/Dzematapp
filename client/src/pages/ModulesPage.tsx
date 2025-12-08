@@ -71,7 +71,7 @@ export default function ModulesPage() {
 
   return (
     <Box>
-      <Typography variant="h5" sx={{ mb: 3, fontWeight: 600, color: 'hsl(123 46% 34%)' }}>
+      <Typography variant="h5" sx={{ mb: 3, fontWeight: 700, color: '#0D1B2A' }}>
         Moduli
       </Typography>
       
@@ -101,13 +101,16 @@ export default function ModulesPage() {
               cursor: 'pointer',
               transition: 'all 0.2s ease',
               minHeight: '120px',
+              backgroundColor: '#ffffff',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+              border: 'none',
               '&:hover': {
                 transform: 'scale(1.05)',
-                boxShadow: '0 8px 16px rgba(18, 94, 48, 0.18)',
+                boxShadow: '0 8px 16px rgba(57, 73, 171, 0.15)',
               },
             }}
           >
-            <Box sx={{ color: 'hsl(123 46% 54%)', mb: 1 }}>
+            <Box sx={{ color: '#3949AB', mb: 1 }}>
               {module.icon}
             </Box>
             <Typography variant="body2" sx={{ fontWeight: 600, fontSize: '0.85rem' }}>

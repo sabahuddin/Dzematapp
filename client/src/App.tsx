@@ -58,58 +58,99 @@ import NotFound from "@/pages/not-found";
 // Layout
 import DashboardLayout from "@/components/layout/DashboardLayout";
 
-// Create Material-UI theme
+// Create Material-UI theme - Spiritual Tech Indigo
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#1976d2',
+      main: '#3949AB',
+      dark: '#303F9F',
+      light: '#5C6BC0',
       contrastText: '#ffffff',
     },
     secondary: {
-      main: '#f50057',
+      main: '#1E88E5',
+      dark: '#1976D2',
+      light: '#42A5F5',
+      contrastText: '#ffffff',
+    },
+    success: {
+      main: '#26A69A',
+      light: '#4DB6AC',
+      dark: '#00897B',
     },
     background: {
-      default: 'hsl(240 4% 96%)',
+      default: '#ECEFF1',
       paper: '#ffffff',
+    },
+    text: {
+      primary: '#0D1B2A',
+      secondary: '#546E7A',
     },
   },
   typography: {
-    fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+    fontFamily: 'Inter, Roboto, "SF Pro", "Helvetica Neue", Arial, sans-serif',
+    h1: {
+      fontWeight: 700,
+      color: '#0D1B2A',
+    },
+    h2: {
+      fontWeight: 700,
+      color: '#0D1B2A',
+    },
+    h3: {
+      fontWeight: 600,
+      color: '#0D1B2A',
+    },
     h4: {
       fontWeight: 600,
+      color: '#0D1B2A',
     },
     h5: {
       fontWeight: 600,
+      color: '#0D1B2A',
     },
     h6: {
       fontWeight: 600,
+      color: '#0D1B2A',
     },
+    body1: {
+      fontWeight: 400,
+      lineHeight: 1.5,
+    },
+    body2: {
+      fontWeight: 400,
+      lineHeight: 1.5,
+    },
+    button: {
+      fontWeight: 600,
+      textTransform: 'none',
+    },
+  },
+  shape: {
+    borderRadius: 16,
   },
   components: {
     MuiCard: {
       styleOverrides: {
         root: {
-          backgroundColor: 'var(--semantic-success-bg)',
-          border: '2px solid var(--semantic-success-border)',
-          borderRadius: 'var(--radius-lg)',
-          boxShadow: '0 12px 24px rgba(18, 94, 48, 0.12)',
+          backgroundColor: '#ffffff',
+          border: 'none',
+          borderRadius: 16,
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
         },
       },
     },
     MuiPaper: {
       styleOverrides: {
         root: ({ ownerState }) => {
-          // Exclude high-elevation overlays (dialogs, menus, popovers) from green styling
-          // Overlays typically use elevation 8+ (Menu=8, Popover=8, Dialog=24, Drawer=16)
           const isOverlay = ownerState.elevation !== undefined && ownerState.elevation > 3;
           
           return {
-            borderRadius: 'var(--radius-lg)',
-            // Apply green styling to all Papers EXCEPT high-elevation overlays
+            borderRadius: 16,
             ...(!isOverlay && {
-              backgroundColor: 'var(--semantic-success-bg)',
-              border: '2px solid var(--semantic-success-border)',
-              boxShadow: '0 8px 16px rgba(18, 94, 48, 0.10)',
+              backgroundColor: '#ffffff',
+              border: 'none',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
             }),
           };
         },
@@ -124,9 +165,15 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           '& .MuiOutlinedInput-root': {
-            backgroundColor: 'var(--surface-field)',
-            borderRadius: 'var(--radius-lg)',
-            transition: 'box-shadow 0.2s ease, border-color 0.2s ease',
+            backgroundColor: '#ECEFF1',
+            borderRadius: 12,
+            transition: 'box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.2s ease',
+            '&:hover': {
+              backgroundColor: '#ffffff',
+            },
+            '&.Mui-focused': {
+              backgroundColor: '#ffffff',
+            },
           },
         },
       },
@@ -134,25 +181,27 @@ const theme = createTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          backgroundColor: 'var(--surface-field)',
-          borderRadius: 'var(--radius-lg)',
+          backgroundColor: '#ECEFF1',
+          borderRadius: 12,
           '& fieldset': {
-            borderColor: 'var(--semantic-success-border)',
-            borderWidth: '2px',
+            borderColor: 'transparent',
+            borderWidth: '0px',
           },
           '&:hover fieldset': {
-            borderColor: 'var(--semantic-success-active)',
+            borderColor: 'transparent',
           },
           '&.Mui-focused fieldset': {
-            borderColor: 'var(--semantic-success-active)',
+            borderColor: '#3949AB',
+            borderWidth: '2px',
           },
           '&.Mui-focused': {
-            boxShadow: '0 0 0 4px hsla(120, 68%, 42%, 0.20)',
+            backgroundColor: '#ffffff',
+            boxShadow: '0 0 0 4px rgba(57, 73, 171, 0.15)',
           },
         },
         input: {
-          backgroundColor: 'var(--surface-field)',
-          borderRadius: 'var(--radius-lg)',
+          backgroundColor: 'transparent',
+          borderRadius: 12,
         },
       },
     },
@@ -169,7 +218,7 @@ const theme = createTheme({
     MuiFormControl: {
       styleOverrides: {
         root: {
-          borderRadius: '12px',
+          borderRadius: 12,
         },
       },
     },
@@ -177,7 +226,28 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           textTransform: 'none',
-          borderRadius: 6,
+          borderRadius: 10,
+          fontWeight: 600,
+          boxShadow: 'none',
+          '&:hover': {
+            boxShadow: 'none',
+          },
+        },
+        contained: {
+          backgroundColor: '#1E88E5',
+          color: '#ffffff',
+          '&:hover': {
+            backgroundColor: '#1976D2',
+          },
+        },
+        outlined: {
+          borderColor: '#3949AB',
+          color: '#3949AB',
+          backgroundColor: 'transparent',
+          '&:hover': {
+            backgroundColor: 'rgba(57, 73, 171, 0.04)',
+            borderColor: '#3949AB',
+          },
         },
       },
     },
@@ -185,6 +255,34 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           fontWeight: 500,
+          borderRadius: 9999,
+        },
+      },
+    },
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#3949AB',
+          color: '#ffffff',
+          boxShadow: 'none',
+        },
+      },
+    },
+    MuiBottomNavigation: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#ffffff',
+          borderTop: '1px solid #ECEFF1',
+        },
+      },
+    },
+    MuiBottomNavigationAction: {
+      styleOverrides: {
+        root: {
+          color: '#B0BEC5',
+          '&.Mui-selected': {
+            color: '#3949AB',
+          },
         },
       },
     },
