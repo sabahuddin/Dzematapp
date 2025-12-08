@@ -311,11 +311,11 @@ function AkikaApplicationForm() {
           <Grid size={{ xs: 12, sm: 6 }}>
             <TextField
               fullWidth
-              required
               type="email"
               label={t("akika.email")}
               value={formData.email}
               onChange={handleChange('email')}
+              helperText={t("akika.emailOptional")}
               data-testid="input-email"
             />
           </Grid>
@@ -324,11 +324,11 @@ function AkikaApplicationForm() {
               fullWidth
               multiline
               rows={3}
-              label={t("akika.notes")}
-              placeholder={t("akika.notesPlaceholder")}
+              label={t("akika.proposedDateTime")}
+              placeholder={t("akika.proposedDateTimePlaceholder")}
               value={formData.notes}
               onChange={handleChange('notes')}
-              data-testid="input-notes"
+              data-testid="input-proposedDateTime"
             />
           </Grid>
         </Grid>
