@@ -46,6 +46,7 @@ import { useToast } from '../hooks/use-toast';
 import { apiRequest, queryClient } from '../lib/queryClient';
 import { useFeatureAccess } from '../hooks/useFeatureAccess';
 import { UpgradeCTA } from '../components/UpgradeCTA';
+import * as XLSX from 'xlsx';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -256,12 +257,19 @@ export default function MembershipFeesPage() {
   };
 
   const downloadTemplate = () => {
-    const csvContent = "Ime i Prezime,Iznos,Godina,Mjesec\nMujo Mujic,30,2025,1\nHaso Hasic,30,2025,1";
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'clanarina_template.csv';
-    link.click();
+    const templateData = [
+      { 'Ime i Prezime': 'Mujo Mujić', 'Iznos': 30, 'Godina': currentYear, 'Mjesec': 1 },
+      { 'Ime i Prezime': 'Haso Hasić', 'Iznos': 30, 'Godina': currentYear, 'Mjesec': 2 },
+      { 'Ime i Prezime': 'Suljo Suljić', 'Iznos': 30, 'Godina': currentYear, 'Mjesec': 3 },
+    ];
+    
+    const worksheet = XLSX.utils.json_to_sheet(templateData);
+    worksheet['!cols'] = [{ wch: 25 }, { wch: 10 }, { wch: 10 }, { wch: 10 }];
+    
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Članarina');
+    
+    XLSX.writeFile(workbook, 'clanarina_template.xlsx');
   };
 
   if (!currentUser?.isAdmin) {
