@@ -2968,7 +2968,8 @@ export class DatabaseStorage implements IStorage {
         recipientId: app.submittedBy,
         subject,
         content,
-        category: null
+        category: null,
+        tenantId
       });
     }
     

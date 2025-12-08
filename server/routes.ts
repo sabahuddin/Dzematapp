@@ -5732,20 +5732,34 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   app.patch("/api/akika-applications/:id/review", requireAdmin, requireFeature("applications"), async (req, res) => {
     try {
       const { status, reviewNotes } = req.body;
+      const tenantId = req.user!.tenantId;
+      const userId = req.user!.id;
+      
+      console.log('[AKIKA-REVIEW] Reviewing application:', req.params.id, 'tenantId:', tenantId, 'status:', status, 'reviewerId:', userId);
+      
+      if (!status) {
+        return res.status(400).json({ message: "Status is required" });
+      }
+      
       const updated = await storage.reviewAkikaApplication(
         req.params.id, 
-        req.user!.tenantId, 
+        tenantId, 
         status, 
-        req.user!.id, 
-        reviewNotes
+        userId, 
+        reviewNotes || null
       );
+      
       if (!updated) {
+        console.log('[AKIKA-REVIEW] Application not found:', req.params.id);
         return res.status(404).json({ message: "Application not found" });
       }
+      
+      console.log('[AKIKA-REVIEW] Successfully reviewed application:', updated.id);
       res.json(updated);
-    } catch (error) {
-      console.error('Error reviewing akika application:', error);
-      res.status(500).json({ message: "Failed to review akika application" });
+    } catch (error: any) {
+      console.error('[AKIKA-REVIEW] Error reviewing akika application:', error?.message || error);
+      console.error('[AKIKA-REVIEW] Error stack:', error?.stack);
+      res.status(500).json({ message: "Failed to review akika application", error: error?.message });
     }
 });
 
