@@ -5054,7 +5054,8 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
 
   app.get("/api/proposals/:id", requireAuth, async (req, res) => {
     try {
-      const proposal = await storage.getProposal(req.params.id);
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      const proposal = await storage.getProposal(req.params.id, tenantId);
       if (!proposal) {
         return res.status(404).json({ message: "Proposal not found" });
       }
@@ -5071,7 +5072,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       const user = req.user!;
       
       // Check if user is a moderator of the work group or an admin
-      const workGroupMembers = await storage.getWorkGroupMembers(req.body.workGroupId);
+      const workGroupMembers = await storage.getWorkGroupMembers(req.body.workGroupId, tenantId);
       const userMembership = workGroupMembers.find(m => m.userId === user.id);
       const isModerator = userMembership?.isModerator;
       const isAdmin = user.isAdmin;
@@ -5097,7 +5098,8 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   app.patch("/api/proposals/:id", requireAuth, async (req, res) => {
     try {
       const user = req.user!;
-      const proposal = await storage.getProposal(req.params.id);
+      const tenantId = user.tenantId || "default-tenant-demo";
+      const proposal = await storage.getProposal(req.params.id, tenantId);
       
       if (!proposal) {
         return res.status(404).json({ message: "Proposal not found" });
@@ -5109,7 +5111,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       }
       
       const validated = insertProposalSchema.partial().parse(req.body);
-      const updated = await storage.updateProposal(req.params.id, req.user!.tenantId, validated);
+      const updated = await storage.updateProposal(req.params.id, tenantId, validated);
       res.json(updated);
     } catch (error) {
       console.error('Error updating proposal:', error);
@@ -5120,6 +5122,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   app.patch("/api/proposals/:id/approve", requireAuth, async (req, res) => {
     try {
       const user = req.user!;
+      const tenantId = user.tenantId || "default-tenant-demo";
       
       // Only IO members and admins can approve
       if (!user.roles?.includes('clan_io') && !user.isAdmin) {
@@ -5127,7 +5130,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       }
       
       const { reviewComment } = req.body;
-      const updated = await storage.approveProposal(req.params.id, user.id, reviewComment);
+      const updated = await storage.approveProposal(req.params.id, tenantId, user.id, reviewComment);
       res.json(updated);
     } catch (error) {
       console.error('Error approving proposal:', error);
@@ -5138,6 +5141,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   app.patch("/api/proposals/:id/reject", requireAuth, async (req, res) => {
     try {
       const user = req.user!;
+      const tenantId = user.tenantId || "default-tenant-demo";
       
       // Only IO members and admins can reject
       if (!user.roles?.includes('clan_io') && !user.isAdmin) {
@@ -5149,7 +5153,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         return res.status(400).json({ message: "Review comment is required for rejection" });
       }
       
-      const updated = await storage.rejectProposal(req.params.id, user.id, reviewComment);
+      const updated = await storage.rejectProposal(req.params.id, tenantId, user.id, reviewComment);
       res.json(updated);
     } catch (error) {
       console.error('Error rejecting proposal:', error);
@@ -5161,18 +5165,19 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   app.get("/api/receipts", requireAuth, async (req, res) => {
     try {
       const user = req.user!;
+      const tenantId = user.tenantId || "default-tenant-demo";
       const { status, taskId, proposalId } = req.query;
 
       let receipts;
       
       if (status) {
-        receipts = await storage.getReceiptsByStatus(status as string);
+        receipts = await storage.getReceiptsByStatus(status as string, tenantId);
       } else if (taskId) {
-        receipts = await storage.getReceiptsByTask(taskId as string);
+        receipts = await storage.getReceiptsByTask(taskId as string, tenantId);
       } else if (proposalId) {
-        receipts = await storage.getReceiptsByProposal(proposalId as string);
+        receipts = await storage.getReceiptsByProposal(proposalId as string, tenantId);
       } else {
-        receipts = await storage.getAllReceipts(req.user!.tenantId);
+        receipts = await storage.getAllReceipts(tenantId);
       }
 
       // Filter based on user role - blagajnik (treasurers) and admins see all
