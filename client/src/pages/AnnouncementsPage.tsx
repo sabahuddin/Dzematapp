@@ -245,7 +245,6 @@ export default function AnnouncementsPage() {
               <TextField
                 {...params}
                 label={t('announcements:filterByCategories')}
-                placeholder={t('announcements:filterByCategories')}
                 InputLabelProps={{ shrink: true }}
                 data-testid="input-filter-category"
               />
