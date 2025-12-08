@@ -1748,8 +1748,6 @@ function ProposalModal({ open, onClose, workGroup, currentUserId }: ProposalModa
       how: how || null,
       why: why || null,
       budget: budget || null,
-      status: 'pending',
-      createdBy: currentUserId,
     };
 
     createProposalMutation.mutate(proposalData);
