@@ -117,10 +117,15 @@ function WorkGroupCard({ workGroup, onManageMembers, onManageTasks, onJoinReques
       <Card 
         sx={{ 
           height: '100%',
+          backgroundColor: '#ffffff',
+          border: '1px solid #c5cae9',
+          borderRadius: '16px',
+          boxShadow: '0 2px 8px rgba(57, 73, 171, 0.08)',
           transition: 'transform 0.2s ease, box-shadow 0.2s ease',
           '&:hover': {
             transform: 'translateY(-2px)',
-            boxShadow: '0 4px 16px rgba(0,0,0,0.12)'
+            boxShadow: '0 4px 16px rgba(57, 73, 171, 0.12)',
+            borderColor: '#3949AB'
           }
         }}
       >
@@ -946,19 +951,26 @@ export default function TaskManagerPage() {
               <Accordion 
                 defaultExpanded={false}
                 TransitionProps={{ unmountOnExit: false, timeout: 0 }}
+                sx={{
+                  border: '1px solid #c5cae9',
+                  borderRadius: '16px !important',
+                  '&:before': { display: 'none' },
+                  boxShadow: '0 2px 8px rgba(57, 73, 171, 0.08)'
+                }}
               >
                 <AccordionSummary 
                   expandIcon={<ExpandMore />}
                   sx={{ 
-                    bgcolor: 'hsl(0 0% 98%)',
-                    '&:hover': { bgcolor: 'var(--state-hover-bg)' }
+                    bgcolor: '#f5f7ff',
+                    borderRadius: '16px',
+                    '&:hover': { bgcolor: '#e8eaf6' }
                   }}
                 >
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>
                     {t('otherSections')} ({otherWorkGroups.length})
                   </Typography>
                 </AccordionSummary>
-                <AccordionDetails sx={{ pt: 3 }}>
+                <AccordionDetails sx={{ pt: 3, bgcolor: '#fafbff', borderTop: '1px solid #e8eaf6' }}>
                   <Grid container spacing={3}>
                     {otherWorkGroups.map((workGroup: WorkGroup) => (
                       <WorkGroupCard 
