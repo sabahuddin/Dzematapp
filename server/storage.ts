@@ -541,8 +541,30 @@ export class DatabaseStorage implements IStorage {
     return result[0];
   }
 
+  async getNextRegistryNumber(tenantId: string): Promise<number> {
+    // Get and increment the counter atomically
+    const result = await db.execute(sql`
+      INSERT INTO membership_registry_counters (tenant_id, last_number)
+      VALUES (${tenantId}, 1)
+      ON CONFLICT (tenant_id) 
+      DO UPDATE SET last_number = membership_registry_counters.last_number + 1
+      RETURNING last_number
+    `);
+    return (result.rows[0] as any).last_number;
+  }
+
   async createUser(insertUser: InsertUser): Promise<User> {
-    const [user] = await db.insert(users).values({...insertUser, tenantId: insertUser.tenantId}).returning();
+    // Auto-assign registry number for non-admin, non-superadmin users
+    let registryNumber = insertUser.registryNumber;
+    if (!registryNumber && !insertUser.isAdmin && !insertUser.isSuperAdmin) {
+      registryNumber = await this.getNextRegistryNumber(insertUser.tenantId);
+    }
+    
+    const [user] = await db.insert(users).values({
+      ...insertUser, 
+      tenantId: insertUser.tenantId,
+      registryNumber
+    }).returning();
     
     await this.createActivity({
       type: "registration",
