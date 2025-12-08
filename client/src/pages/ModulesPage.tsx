@@ -1,4 +1,4 @@
-import { Box, Paper, Typography } from '@mui/material';
+import { Box, Paper, Typography, Button, Divider } from '@mui/material';
 import {
   Announcement,
   Email,
@@ -17,6 +17,10 @@ import {
   Assignment,
   Store,
   CalendarMonth,
+  Person,
+  MilitaryTech,
+  WorkspacePremium,
+  Logout,
 } from '@mui/icons-material';
 import { useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
@@ -34,14 +38,21 @@ interface ModuleItem {
 export default function ModulesPage() {
   const [, setLocation] = useLocation();
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+    setLocation('/login');
+  };
 
   // Ordered same as webapp sidebar menu
   const modules: ModuleItem[] = [
     { icon: <Feed sx={{ fontSize: 48 }} />, label: 'Feed', description: 'Aktivnosti zajednice', route: '/feed', testId: 'module-feed' },
-    { icon: <People sx={{ fontSize: 48 }} />, label: user?.isAdmin ? 'Korisnici' : 'Moje aktivnosti', description: user?.isAdmin ? 'Članovi džemata' : 'Pregled aktivnosti', route: user?.isAdmin ? '/users' : '/activity-log', testId: 'module-users' },
+    { icon: <Person sx={{ fontSize: 48 }} />, label: 'Moj Profil', description: 'Vaši podaci i postavke', route: '/my-profile', testId: 'module-profile' },
+    { icon: <People sx={{ fontSize: 48 }} />, label: user?.isAdmin ? 'Korisnici' : 'Moje aktivnosti', description: user?.isAdmin ? 'Članovi džemata' : 'Pregled aktivnosti', route: user?.isAdmin ? '/users' : '/my-activities', testId: 'module-users' },
+    { icon: <MilitaryTech sx={{ fontSize: 48 }} />, label: 'Bodovi i Značke', description: 'Vaša priznanja', route: '/my-activities', testId: 'module-badges' },
     { icon: <BarChart sx={{ fontSize: 48 }} />, label: user?.isAdmin ? 'Finansije' : 'Moje uplate', description: user?.isAdmin ? 'Finansijski pregled' : 'Moje donacije', route: '/finances', testId: 'module-finances' },
-    { icon: <BarChart sx={{ fontSize: 48 }} />, label: user?.isAdmin ? 'Izvještaj aktivnosti' : 'Moje aktivnosti', description: 'Pregled aktivnosti', route: '/activity-log', testId: 'module-activity', adminOnly: true },
+    { icon: <BarChart sx={{ fontSize: 48 }} />, label: 'Izvještaj aktivnosti', description: 'Pregled aktivnosti', route: '/activity-log', testId: 'module-activity', adminOnly: true },
     { icon: <AccountBalance sx={{ fontSize: 48 }} />, label: 'Projekti', description: 'Projekti džemata', route: '/projects', testId: 'module-projects' },
     { icon: <Announcement sx={{ fontSize: 48 }} />, label: 'Obavještenja', description: 'Obavještenja džemata', route: '/announcements', testId: 'module-announcements' },
     { icon: <CalendarMonth sx={{ fontSize: 48 }} />, label: 'Događaji', description: 'Događaji i aktivnosti', route: '/events', testId: 'module-events' },
@@ -67,7 +78,11 @@ export default function ModulesPage() {
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
+          gridTemplateColumns: {
+            xs: 'repeat(3, 1fr)',
+            sm: 'repeat(4, 1fr)',
+            md: 'repeat(5, 1fr)',
+          },
           gap: 2,
         }}
       >
@@ -100,6 +115,21 @@ export default function ModulesPage() {
             </Typography>
           </Paper>
         ))}
+      </Box>
+
+      <Divider sx={{ my: 3 }} />
+      
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Button
+          variant="outlined"
+          color="error"
+          startIcon={<Logout />}
+          onClick={handleLogout}
+          data-testid="button-logout"
+          sx={{ px: 4 }}
+        >
+          Odjava
+        </Button>
       </Box>
     </Box>
   );
