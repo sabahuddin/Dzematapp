@@ -118,11 +118,7 @@ export default function MembershipFeesPage() {
     coverageMonth: 1
   });
   const [editSettings, setEditSettings] = useState({
-    feeType: 'monthly',
-    monthlyAmount: '0',
-    yearlyAmount: '0',
-    currency: 'KM',
-    currentFiscalYear: new Date().getFullYear()
+    feeType: 'monthly'
   });
 
   if (featureAccess.upgradeRequired) {
@@ -228,11 +224,7 @@ export default function MembershipFeesPage() {
   const openSettingsDialog = () => {
     if (settings) {
       setEditSettings({
-        feeType: settings.feeType,
-        monthlyAmount: settings.monthlyAmount,
-        yearlyAmount: settings.yearlyAmount,
-        currency: settings.currency,
-        currentFiscalYear: settings.currentFiscalYear
+        feeType: settings.feeType
       });
     }
     setSettingsDialogOpen(true);
@@ -240,11 +232,7 @@ export default function MembershipFeesPage() {
 
   const handleSaveSettings = () => {
     updateSettingsMutation.mutate({
-      feeType: editSettings.feeType,
-      monthlyAmount: editSettings.monthlyAmount,
-      yearlyAmount: editSettings.yearlyAmount,
-      currentFiscalYear: editSettings.currentFiscalYear,
-      currency: editSettings.currency
+      feeType: editSettings.feeType
     });
   };
 
@@ -257,19 +245,21 @@ export default function MembershipFeesPage() {
   };
 
   const downloadTemplate = () => {
+    const months = ['Januar', 'Februar', 'Mart', 'April', 'Maj', 'Juni', 'Juli', 'August', 'Septembar', 'Oktobar', 'Novembar', 'Decembar'];
+    
     const templateData = [
-      { 'Ime i Prezime': 'Mujo Mujić', 'Iznos': 30, 'Godina': currentYear, 'Mjesec': 1 },
-      { 'Ime i Prezime': 'Haso Hasić', 'Iznos': 30, 'Godina': currentYear, 'Mjesec': 2 },
-      { 'Ime i Prezime': 'Suljo Suljić', 'Iznos': 30, 'Godina': currentYear, 'Mjesec': 3 },
+      { 'Ime i Prezime': 'Mujo Mujić', ...Object.fromEntries(months.map(m => [m, ''])) },
+      { 'Ime i Prezime': 'Haso Hasić', ...Object.fromEntries(months.map(m => [m, ''])) },
+      { 'Ime i Prezime': 'Suljo Suljić', ...Object.fromEntries(months.map(m => [m, ''])) },
     ];
     
     const worksheet = XLSX.utils.json_to_sheet(templateData);
-    worksheet['!cols'] = [{ wch: 25 }, { wch: 10 }, { wch: 10 }, { wch: 10 }];
+    worksheet['!cols'] = [{ wch: 25 }, ...months.map(() => ({ wch: 10 }))];
     
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Članarina');
+    XLSX.utils.book_append_sheet(workbook, worksheet, `Članarina ${selectedYear}`);
     
-    XLSX.writeFile(workbook, 'clanarina_template.xlsx');
+    XLSX.writeFile(workbook, `clanarina_template_${selectedYear}.xlsx`);
   };
 
   if (!currentUser?.isAdmin) {
@@ -357,7 +347,7 @@ export default function MembershipFeesPage() {
             <Grid size={{ xs: 12, sm: 3 }}>
               {settings && (
                 <Chip 
-                  label={`${settings.feeType === 'monthly' ? 'Mjesečno' : 'Godišnje'}: ${settings.feeType === 'monthly' ? settings.monthlyAmount : settings.yearlyAmount} ${settings.currency}`} 
+                  label={settings.feeType === 'monthly' ? 'Mjesečna naplata' : 'Godišnja naplata'} 
                   color="primary"
                   variant="outlined"
                 />
@@ -481,57 +471,23 @@ export default function MembershipFeesPage() {
       </TabPanel>
 
       {/* Settings Dialog */}
-      <Dialog open={settingsDialogOpen} onClose={() => setSettingsDialogOpen(false)} maxWidth="sm" fullWidth>
+      <Dialog open={settingsDialogOpen} onClose={() => setSettingsDialogOpen(false)} maxWidth="xs" fullWidth>
         <DialogTitle>Postavke članarine</DialogTitle>
         <DialogContent>
-          <Grid container spacing={2} sx={{ mt: 1 }}>
-            <Grid size={{ xs: 12 }}>
-              <FormControl fullWidth>
-                <InputLabel>Tip naplate</InputLabel>
-                <Select
-                  value={editSettings.feeType}
-                  onChange={(e) => setEditSettings({ ...editSettings, feeType: e.target.value })}
-                  label="Tip naplate"
-                >
-                  <MenuItem value="monthly">Mjesečno</MenuItem>
-                  <MenuItem value="yearly">Godišnje</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid size={{ xs: 6 }}>
-              <TextField
-                fullWidth
-                label="Mjesečni iznos"
-                value={editSettings.monthlyAmount}
-                onChange={(e) => setEditSettings({ ...editSettings, monthlyAmount: e.target.value })}
-              />
-            </Grid>
-            <Grid size={{ xs: 6 }}>
-              <TextField
-                fullWidth
-                label="Godišnji iznos"
-                value={editSettings.yearlyAmount}
-                onChange={(e) => setEditSettings({ ...editSettings, yearlyAmount: e.target.value })}
-              />
-            </Grid>
-            <Grid size={{ xs: 6 }}>
-              <TextField
-                fullWidth
-                label="Valuta"
-                value={editSettings.currency}
-                onChange={(e) => setEditSettings({ ...editSettings, currency: e.target.value })}
-              />
-            </Grid>
-            <Grid size={{ xs: 6 }}>
-              <TextField
-                fullWidth
-                type="number"
-                label="Fiskalna godina"
-                value={editSettings.currentFiscalYear}
-                onChange={(e) => setEditSettings({ ...editSettings, currentFiscalYear: parseInt(e.target.value) || new Date().getFullYear() })}
-              />
-            </Grid>
-          </Grid>
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel>Tip naplate</InputLabel>
+            <Select
+              value={editSettings.feeType}
+              onChange={(e) => setEditSettings({ ...editSettings, feeType: e.target.value })}
+              label="Tip naplate"
+            >
+              <MenuItem value="monthly">Mjesečno</MenuItem>
+              <MenuItem value="yearly">Godišnje</MenuItem>
+            </Select>
+          </FormControl>
+          <Typography variant="caption" color="text.secondary" sx={{ mt: 2, display: 'block' }}>
+            Valuta se definiše u podešavanjima organizacije.
+          </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setSettingsDialogOpen(false)}>Otkaži</Button>
@@ -551,7 +507,7 @@ export default function MembershipFeesPage() {
               Uploadajte Excel ili CSV fajl sa uplatama.
             </Typography>
             <Typography variant="body2" color="text.secondary" paragraph>
-              Potrebne kolone: <strong>Ime i Prezime, Iznos, Godina, Mjesec</strong>
+              Format: <strong>Ime i Prezime</strong> + 12 kolona za mjesece (Januar-Decembar) sa iznosom
             </Typography>
             
             <input
