@@ -1,0 +1,77 @@
+{
+  "title": "Membership Fees",
+  "settings": "Settings",
+  "bulkUpload": "Bulk Upload",
+  "addPayment": "Add Payment",
+  "searchMembers": "Search by name...",
+  "year": "Year",
+  "month": "Month",
+  "member": "Member",
+  "amount": "Amount",
+  "total": "Total",
+  "paymentsGrid": "Payments Overview",
+  "uploadHistory": "Upload History",
+  "noMembers": "No members to display.",
+  "settingsDialog": {
+    "title": "Membership Fee Settings",
+    "feeType": "Fee Type",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "monthlyAmount": "Monthly Amount",
+    "yearlyAmount": "Yearly Amount",
+    "currency": "Currency",
+    "fiscalYear": "Fiscal Year",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "uploadDialog": {
+    "title": "Bulk Upload Payments",
+    "description": "Upload an Excel or CSV file with payments.",
+    "requiredColumns": "Required columns: Full Name, Amount, Year, Month",
+    "downloadTemplate": "Download Template",
+    "selectFile": "Select File",
+    "uploading": "Uploading..."
+  },
+  "addPaymentDialog": {
+    "title": "Add Individual Payment",
+    "selectMember": "Member",
+    "add": "Add"
+  },
+  "uploadLog": {
+    "date": "Date",
+    "fileName": "File",
+    "processed": "Processed",
+    "successful": "Successful",
+    "failed": "Failed"
+  },
+  "myPayments": {
+    "title": "My Membership",
+    "viewHistory": "View History",
+    "paidMonths": "Paid Months",
+    "totalPaid": "Total Paid",
+    "noPayments": "No payments recorded."
+  },
+  "months": {
+    "1": "January",
+    "2": "February",
+    "3": "March",
+    "4": "April",
+    "5": "May",
+    "6": "June",
+    "7": "July",
+    "8": "August",
+    "9": "September",
+    "10": "October",
+    "11": "November",
+    "12": "December"
+  },
+  "messages": {
+    "settingsSaved": "Settings saved successfully",
+    "settingsError": "Error saving settings",
+    "paymentAdded": "Payment added successfully",
+    "paymentError": "Error adding payment",
+    "uploadError": "Error uploading file",
+    "fillAllFields": "Please fill all fields",
+    "adminOnly": "Only administrators can access this page."
+  }
+}

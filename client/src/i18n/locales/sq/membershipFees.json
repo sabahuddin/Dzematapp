@@ -1,0 +1,77 @@
+{
+  "title": "Anëtarësia",
+  "settings": "Cilësimet",
+  "bulkUpload": "Ngarkim në masë",
+  "addPayment": "Shto pagesë",
+  "searchMembers": "Kërko sipas emrit...",
+  "year": "Viti",
+  "month": "Muaji",
+  "member": "Anëtari",
+  "amount": "Shuma",
+  "total": "Totali",
+  "paymentsGrid": "Pasqyra e pagesave",
+  "uploadHistory": "Historia e ngarkimeve",
+  "noMembers": "Nuk ka anëtarë për t'u shfaqur.",
+  "settingsDialog": {
+    "title": "Cilësimet e anëtarësisë",
+    "feeType": "Lloji i tarifës",
+    "monthly": "Mujore",
+    "yearly": "Vjetore",
+    "monthlyAmount": "Shuma mujore",
+    "yearlyAmount": "Shuma vjetore",
+    "currency": "Valuta",
+    "fiscalYear": "Viti fiskal",
+    "save": "Ruaj",
+    "cancel": "Anulo"
+  },
+  "uploadDialog": {
+    "title": "Ngarkim në masë i pagesave",
+    "description": "Ngarkoni një skedar Excel ose CSV me pagesa.",
+    "requiredColumns": "Kolonat e nevojshme: Emri i plotë, Shuma, Viti, Muaji",
+    "downloadTemplate": "Shkarko shabllonin",
+    "selectFile": "Zgjidh skedarin",
+    "uploading": "Duke ngarkuar..."
+  },
+  "addPaymentDialog": {
+    "title": "Shto pagesë individuale",
+    "selectMember": "Anëtari",
+    "add": "Shto"
+  },
+  "uploadLog": {
+    "date": "Data",
+    "fileName": "Skedari",
+    "processed": "Përpunuar",
+    "successful": "Të suksesshme",
+    "failed": "Dështuar"
+  },
+  "myPayments": {
+    "title": "Anëtarësia ime",
+    "viewHistory": "Shiko historinë",
+    "paidMonths": "Muajt e paguar",
+    "totalPaid": "Totali i paguar",
+    "noPayments": "Nuk ka pagesa të regjistruara."
+  },
+  "months": {
+    "1": "Janar",
+    "2": "Shkurt",
+    "3": "Mars",
+    "4": "Prill",
+    "5": "Maj",
+    "6": "Qershor",
+    "7": "Korrik",
+    "8": "Gusht",
+    "9": "Shtator",
+    "10": "Tetor",
+    "11": "Nëntor",
+    "12": "Dhjetor"
+  },
+  "messages": {
+    "settingsSaved": "Cilësimet u ruajtën me sukses",
+    "settingsError": "Gabim gjatë ruajtjes së cilësimeve",
+    "paymentAdded": "Pagesa u shtua me sukses",
+    "paymentError": "Gabim gjatë shtimit të pagesës",
+    "uploadError": "Gabim gjatë ngarkimit të skedarit",
+    "fillAllFields": "Ju lutemi plotësoni të gjitha fushat",
+    "adminOnly": "Vetëm administratorët mund të kenë qasje në këtë faqe."
+  }
+}

@@ -5,7 +5,7 @@ import { type ActivityFeedItem, type PrayerTime, type Announcement, type Message
 import { HeroPrayerCard } from '../components/HeroPrayerCard';
 import { SectionCard } from '../components/SectionCard';
 import FeedSlideshow from '../components/FeedSlideshow';
-import { ArrowForward, Article, Campaign, Mail } from '@mui/icons-material';
+import { ArrowForward, Article, Campaign, Mail, Receipt } from '@mui/icons-material';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { normalizeImageUrl } from '@/lib/imageUtils';
@@ -44,6 +44,18 @@ export default function MobileDashboard() {
     queryKey: ['/api/messages'],
     refetchInterval: 30000,
   });
+
+  // Fetch membership fee payments for current user
+  const { data: myPayments = [], isLoading: paymentsLoading } = useQuery<any[]>({
+    queryKey: ['/api/membership-fees/my-payments'],
+    refetchInterval: 60000,
+  });
+
+  // Calculate membership stats
+  const currentYear = new Date().getFullYear();
+  const thisYearPayments = myPayments.filter((p: any) => p.coverageYear === currentYear);
+  const totalPaidThisYear = thisYearPayments.reduce((sum: number, p: any) => sum + parseFloat(p.amount || '0'), 0);
+  const paidMonthsCount = thisYearPayments.length;
 
   // Get user-specific activities (events, shop, tasks, messages, etc.)
   const userActivities = feedItems
@@ -449,6 +461,67 @@ export default function MobileDashboard() {
                   </Box>
                 );
               })}
+            </Box>
+          )}
+        </SectionCard>
+
+        {/* Membership Fees Section */}
+        <SectionCard 
+          title={t('membershipFees:myPayments.title', 'Moja članarina')}
+          icon={<Receipt />}
+          linkTo="/finances"
+          linkText={t('membershipFees:myPayments.viewHistory', 'Vidi historiju')}
+        >
+          {paymentsLoading && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+              <CircularProgress />
+            </Box>
+          )}
+
+          {!paymentsLoading && (
+            <Box sx={{ p: 2 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                <Box>
+                  <Typography variant="body2" color="text.secondary">
+                    {t('membershipFees:myPayments.paidMonths', 'Uplaćeni mjeseci')} ({currentYear})
+                  </Typography>
+                  <Typography variant="h5" fontWeight="bold" color="primary">
+                    {paidMonthsCount} / 12
+                  </Typography>
+                </Box>
+                <Box sx={{ textAlign: 'right' }}>
+                  <Typography variant="body2" color="text.secondary">
+                    {t('membershipFees:myPayments.totalPaid', 'Ukupno uplaćeno')}
+                  </Typography>
+                  <Typography variant="h5" fontWeight="bold" color="success.main">
+                    {totalPaidThisYear.toFixed(2)} KM
+                  </Typography>
+                </Box>
+              </Box>
+              
+              {/* Monthly payment indicators */}
+              <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+                {[1,2,3,4,5,6,7,8,9,10,11,12].map((month) => {
+                  const payment = thisYearPayments.find((p: any) => p.coverageMonth === month);
+                  const isPaid = !!payment;
+                  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Maj', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec'];
+                  return (
+                    <Chip
+                      key={month}
+                      label={monthNames[month - 1]}
+                      size="small"
+                      sx={{
+                        minWidth: 42,
+                        height: 24,
+                        fontSize: '0.7rem',
+                        bgcolor: isPaid ? 'success.light' : 'grey.200',
+                        color: isPaid ? 'success.dark' : 'text.disabled',
+                        fontWeight: isPaid ? 600 : 400,
+                      }}
+                    />
+                  );
+                })}
+              </Box>
             </Box>
           )}
         </SectionCard>

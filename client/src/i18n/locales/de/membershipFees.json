@@ -1,0 +1,77 @@
+{
+  "title": "Mitgliedsbeiträge",
+  "settings": "Einstellungen",
+  "bulkUpload": "Massenupload",
+  "addPayment": "Zahlung hinzufügen",
+  "searchMembers": "Nach Namen suchen...",
+  "year": "Jahr",
+  "month": "Monat",
+  "member": "Mitglied",
+  "amount": "Betrag",
+  "total": "Gesamt",
+  "paymentsGrid": "Zahlungsübersicht",
+  "uploadHistory": "Upload-Verlauf",
+  "noMembers": "Keine Mitglieder anzuzeigen.",
+  "settingsDialog": {
+    "title": "Beitragseinstellungen",
+    "feeType": "Beitragsart",
+    "monthly": "Monatlich",
+    "yearly": "Jährlich",
+    "monthlyAmount": "Monatlicher Betrag",
+    "yearlyAmount": "Jährlicher Betrag",
+    "currency": "Währung",
+    "fiscalYear": "Geschäftsjahr",
+    "save": "Speichern",
+    "cancel": "Abbrechen"
+  },
+  "uploadDialog": {
+    "title": "Zahlungen Massenupload",
+    "description": "Laden Sie eine Excel- oder CSV-Datei mit Zahlungen hoch.",
+    "requiredColumns": "Erforderliche Spalten: Vollständiger Name, Betrag, Jahr, Monat",
+    "downloadTemplate": "Vorlage herunterladen",
+    "selectFile": "Datei auswählen",
+    "uploading": "Hochladen..."
+  },
+  "addPaymentDialog": {
+    "title": "Einzelzahlung hinzufügen",
+    "selectMember": "Mitglied",
+    "add": "Hinzufügen"
+  },
+  "uploadLog": {
+    "date": "Datum",
+    "fileName": "Datei",
+    "processed": "Verarbeitet",
+    "successful": "Erfolgreich",
+    "failed": "Fehlgeschlagen"
+  },
+  "myPayments": {
+    "title": "Meine Mitgliedschaft",
+    "viewHistory": "Verlauf anzeigen",
+    "paidMonths": "Bezahlte Monate",
+    "totalPaid": "Gesamtbetrag",
+    "noPayments": "Keine Zahlungen erfasst."
+  },
+  "months": {
+    "1": "Januar",
+    "2": "Februar",
+    "3": "März",
+    "4": "April",
+    "5": "Mai",
+    "6": "Juni",
+    "7": "Juli",
+    "8": "August",
+    "9": "September",
+    "10": "Oktober",
+    "11": "November",
+    "12": "Dezember"
+  },
+  "messages": {
+    "settingsSaved": "Einstellungen erfolgreich gespeichert",
+    "settingsError": "Fehler beim Speichern der Einstellungen",
+    "paymentAdded": "Zahlung erfolgreich hinzugefügt",
+    "paymentError": "Fehler beim Hinzufügen der Zahlung",
+    "uploadError": "Fehler beim Hochladen der Datei",
+    "fillAllFields": "Bitte füllen Sie alle Felder aus",
+    "adminOnly": "Nur Administratoren haben Zugriff auf diese Seite."
+  }
+}

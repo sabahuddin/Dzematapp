@@ -27,6 +27,7 @@ import livestreamBS from './locales/bs/livestream.json';
 import guideBS from './locales/bs/guide.json';
 import certificatesBS from './locales/bs/certificates.json';
 import applicationsBS from './locales/bs/applications.json';
+import membershipFeesBS from './locales/bs/membershipFees.json';
 
 // Import all DE translations
 import commonDE from './locales/de/common.json';
@@ -53,6 +54,7 @@ import livestreamDE from './locales/de/livestream.json';
 import guideDE from './locales/de/guide.json';
 import certificatesDE from './locales/de/certificates.json';
 import applicationsDE from './locales/de/applications.json';
+import membershipFeesDE from './locales/de/membershipFees.json';
 
 // Import all EN translations
 import commonEN from './locales/en/common.json';
@@ -79,6 +81,7 @@ import livestreamEN from './locales/en/livestream.json';
 import guideEN from './locales/en/guide.json';
 import certificatesEN from './locales/en/certificates.json';
 import applicationsEN from './locales/en/applications.json';
+import membershipFeesEN from './locales/en/membershipFees.json';
 
 // Import all SQ (Albanian) translations
 import commonSQ from './locales/sq/common.json';
@@ -105,6 +108,7 @@ import livestreamSQ from './locales/sq/livestream.json';
 import guideSQ from './locales/sq/guide.json';
 import certificatesSQ from './locales/sq/certificates.json';
 import applicationsSQ from './locales/sq/applications.json';
+import membershipFeesSQ from './locales/sq/membershipFees.json';
 
 const resources = {
   bs: {
@@ -132,6 +136,7 @@ const resources = {
     guide: guideBS,
     certificates: certificatesBS,
     applications: applicationsBS,
+    membershipFees: membershipFeesBS,
   },
   de: {
     common: commonDE,
@@ -158,6 +163,7 @@ const resources = {
     guide: guideDE,
     certificates: certificatesDE,
     applications: applicationsDE,
+    membershipFees: membershipFeesDE,
   },
   en: {
     common: commonEN,
@@ -184,6 +190,7 @@ const resources = {
     guide: guideEN,
     certificates: certificatesEN,
     applications: applicationsEN,
+    membershipFees: membershipFeesEN,
   },
   sq: {
     common: commonSQ,
@@ -210,6 +217,7 @@ const resources = {
     guide: guideSQ,
     certificates: certificatesSQ,
     applications: applicationsSQ,
+    membershipFees: membershipFeesSQ,
   },
 };
 
