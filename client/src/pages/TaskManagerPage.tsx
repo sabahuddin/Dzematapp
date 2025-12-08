@@ -1761,7 +1761,7 @@ function ProposalModal({ open, onClose, workGroup, currentUserId }: ProposalModa
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
           <TextField
-            label="Šta je to (What) *"
+            label="Šta *"
             value={what}
             onChange={(e) => setWhat(e.target.value)}
             fullWidth
@@ -1772,7 +1772,7 @@ function ProposalModal({ open, onClose, workGroup, currentUserId }: ProposalModa
             data-testid="input-proposal-what"
           />
           <TextField
-            label="Gdje (Where - Opciono)"
+            label="Gdje (opciono)"
             value={where}
             onChange={(e) => setWhere(e.target.value)}
             fullWidth
@@ -1780,7 +1780,7 @@ function ProposalModal({ open, onClose, workGroup, currentUserId }: ProposalModa
             data-testid="input-proposal-where"
           />
           <TextField
-            label="Kada (When - Opciono)"
+            label="Kada (opciono)"
             value={when}
             onChange={(e) => setWhen(e.target.value)}
             fullWidth
@@ -1788,7 +1788,7 @@ function ProposalModal({ open, onClose, workGroup, currentUserId }: ProposalModa
             data-testid="input-proposal-when"
           />
           <TextField
-            label="Kako (How - Opciono)"
+            label="Kako (opciono)"
             value={how}
             onChange={(e) => setHow(e.target.value)}
             fullWidth
@@ -1798,7 +1798,7 @@ function ProposalModal({ open, onClose, workGroup, currentUserId }: ProposalModa
             data-testid="input-proposal-how"
           />
           <TextField
-            label="Zašto (Why - Opciono)"
+            label="Zašto (opciono)"
             value={why}
             onChange={(e) => setWhy(e.target.value)}
             fullWidth
@@ -1808,12 +1808,12 @@ function ProposalModal({ open, onClose, workGroup, currentUserId }: ProposalModa
             data-testid="input-proposal-why"
           />
           <TextField
-            label={`Budžet (${currency} - Opciono)`}
+            label="Budžet (opciono)"
             value={budget}
             onChange={(e) => setBudget(e.target.value)}
             fullWidth
             type="number"
-            placeholder={`Procijenjeni budžet u ${currency}`}
+            placeholder="Procijenjeni budžet"
             data-testid="input-proposal-budget"
           />
         </Box>
