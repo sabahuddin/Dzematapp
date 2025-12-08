@@ -505,7 +505,7 @@ export default function ActivityLogPage() {
             <Grid container spacing={2}>
               {currentUser?.isAdmin && (
                 <Grid size={{ xs: 12, md: 6 }}>
-                  <TextField variant="outlined" placeholder={t('searchPlaceholder')} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} fullWidth data-testid="input-search" />
+                  <TextField variant="outlined" label={t('searchPlaceholder')} placeholder={t('searchPlaceholder')} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} fullWidth InputLabelProps={{ shrink: true }} data-testid="input-search" />
                 </Grid>
               )}
               <Grid size={{ xs: 12, md: currentUser?.isAdmin ? 6 : 12 }}>
@@ -636,10 +636,12 @@ export default function ActivityLogPage() {
               <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap', alignItems: 'center' }}>
                 <TextField 
                   variant="outlined" 
+                  label="Pretraži po imenu"
                   placeholder="Pretraži po imenu..." 
                   value={userSearchTerm} 
                   onChange={(e) => setUserSearchTerm(e.target.value)} 
                   fullWidth 
+                  InputLabelProps={{ shrink: true }}
                   sx={{ maxWidth: 300 }}
                   data-testid="input-bodove-search"
                 />

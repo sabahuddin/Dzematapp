@@ -742,9 +742,11 @@ export default function ShopPage() {
           <TextField
             fullWidth
             size="small"
+            label="Pretraži"
             placeholder="Pretraži..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            InputLabelProps={{ shrink: true }}
             data-testid="input-search"
           />
           <FormControl size="small" sx={{ minWidth: 150 }}>

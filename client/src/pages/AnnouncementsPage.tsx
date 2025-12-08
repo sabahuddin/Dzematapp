@@ -242,10 +242,12 @@ export default function AnnouncementsPage() {
       {/* Search and Filter - 50%:50% layout */}
       <Box sx={{ display: 'flex', gap: 1 }}>
         <TextField
+          label={t('announcements:searchPlaceholder')}
           placeholder={t('announcements:searchPlaceholder')}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           size="small"
+          InputLabelProps={{ shrink: true }}
           data-testid="input-search-announcements"
           sx={{ 
             flex: 1,
@@ -266,8 +268,10 @@ export default function AnnouncementsPage() {
           renderInput={(params) => (
             <TextField
               {...params}
+              label={t('announcements:filterByCategories')}
               placeholder={t('announcements:filterByCategories')}
               size="small"
+              InputLabelProps={{ shrink: true }}
               data-testid="input-filter-category"
             />
           )}
