@@ -463,10 +463,9 @@
     background: #a8a8a8;
   }
 
-  /* Focus styles for accessibility */
+  /* Focus styles for accessibility - buttons only */
   .MuiButton-root:focus-visible,
-  .MuiIconButton-root:focus-visible,
-  .MuiTextField-root:focus-within {
+  .MuiIconButton-root:focus-visible {
     outline: 2px solid var(--mui-primary);
     outline-offset: 2px;
   }
@@ -552,7 +551,18 @@
   
   .MuiOutlinedInput-notchedOutline {
     border-width: 1px !important;
+    border-color: var(--border-color-default) !important;
     top: 0 !important;
+  }
+  
+  /* Unified focus border - Indigo ring */
+  .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: var(--border-color-hover) !important;
+  }
+  
+  .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-width: 2px !important;
+    border-color: var(--border-color-focus) !important;
   }
 
   /* Adjust the input field to account for label above */
