@@ -341,52 +341,57 @@ function AdminTasksArchive({ workGroups, users, currentUser }: AdminTasksArchive
         Arhiva svih zadataka
       </Typography>
 
-      <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
-        <TextField
-          select
-          label="Sekcija"
-          value={selectedWorkGroupId}
-          onChange={(e) => setSelectedWorkGroupId(e.target.value)}
-          sx={{ minWidth: 200 }}
-          size="small"
-          data-testid="select-archive-workgroup"
-        >
-          <MenuItem value="all">Sve sekcije</MenuItem>
-          {workGroups.map((wg) => (
-            <MenuItem key={wg.id} value={wg.id}>{wg.name}</MenuItem>
-          ))}
-        </TextField>
+      <Card sx={{ mb: 3 }}>
+        <Box sx={{ p: 2, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+          <TextField
+            select
+            label="Sekcija"
+            value={selectedWorkGroupId}
+            onChange={(e) => setSelectedWorkGroupId(e.target.value)}
+            sx={{ minWidth: 200 }}
+            size="small"
+            InputLabelProps={{ shrink: true }}
+            data-testid="select-archive-workgroup"
+          >
+            <MenuItem value="all">Sve sekcije</MenuItem>
+            {workGroups.map((wg) => (
+              <MenuItem key={wg.id} value={wg.id}>{wg.name}</MenuItem>
+            ))}
+          </TextField>
 
-        <TextField
-          select
-          label="Korisnik"
-          value={selectedUserId}
-          onChange={(e) => setSelectedUserId(e.target.value)}
-          sx={{ minWidth: 200 }}
-          size="small"
-          data-testid="select-archive-user"
-        >
-          <MenuItem value="all">Svi korisnici</MenuItem>
-          {users.map((u) => (
-            <MenuItem key={u.id} value={u.id}>{u.firstName} {u.lastName}</MenuItem>
-          ))}
-        </TextField>
+          <TextField
+            select
+            label="Korisnik"
+            value={selectedUserId}
+            onChange={(e) => setSelectedUserId(e.target.value)}
+            sx={{ minWidth: 200 }}
+            size="small"
+            InputLabelProps={{ shrink: true }}
+            data-testid="select-archive-user"
+          >
+            <MenuItem value="all">Svi korisnici</MenuItem>
+            {users.map((u) => (
+              <MenuItem key={u.id} value={u.id}>{u.firstName} {u.lastName}</MenuItem>
+            ))}
+          </TextField>
 
-        <TextField
-          select
-          label="Period"
-          value={dateFilter}
-          onChange={(e) => setDateFilter(e.target.value as any)}
-          sx={{ minWidth: 200 }}
-          size="small"
-          data-testid="select-archive-date"
-        >
-          <MenuItem value="all">Svi periodi</MenuItem>
-          <MenuItem value="last7days">Zadnjih 7 dana</MenuItem>
-          <MenuItem value="last30days">Zadnjih 30 dana</MenuItem>
-          <MenuItem value="last90days">Zadnjih 90 dana</MenuItem>
-        </TextField>
-      </Box>
+          <TextField
+            select
+            label="Period"
+            value={dateFilter}
+            onChange={(e) => setDateFilter(e.target.value as any)}
+            sx={{ minWidth: 200 }}
+            size="small"
+            InputLabelProps={{ shrink: true }}
+            data-testid="select-archive-date"
+          >
+            <MenuItem value="all">Svi periodi</MenuItem>
+            <MenuItem value="last7days">Zadnjih 7 dana</MenuItem>
+            <MenuItem value="last30days">Zadnjih 30 dana</MenuItem>
+            <MenuItem value="last90days">Zadnjih 90 dana</MenuItem>
+          </TextField>
+        </Box>
+      </Card>
 
       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
         Ukupno arhiviranih zadataka: {archivedTasks.length}
