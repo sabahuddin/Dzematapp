@@ -214,6 +214,21 @@ const theme = createTheme({
       defaultProps: {
         shrink: true,
       },
+      styleOverrides: {
+        root: {
+          position: 'relative',
+          transform: 'none',
+          fontSize: '0.875rem',
+          fontWeight: 500,
+          color: '#0D1B2A',
+          marginBottom: '6px',
+          display: 'block',
+        },
+        shrink: {
+          position: 'relative',
+          transform: 'none',
+        },
+      },
     },
     MuiFormControl: {
       styleOverrides: {

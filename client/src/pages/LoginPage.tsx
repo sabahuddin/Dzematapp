@@ -261,6 +261,7 @@ export default function LoginPage() {
                   value={tenantCode}
                   onChange={(e) => setTenantCode(e.target.value.toUpperCase())}
                   placeholder="DEMO2025"
+                  InputLabelProps={{ shrink: true }}
                   InputProps={{
                     startAdornment: <Business sx={{ mr: 1, color: 'text.secondary' }} />
                   }}
@@ -301,6 +302,7 @@ export default function LoginPage() {
                       value={formData.username}
                       onChange={handleChange('username')}
                       placeholder="admin"
+                      InputLabelProps={{ shrink: true }}
                       data-testid="input-username"
                     />
 
@@ -313,6 +315,7 @@ export default function LoginPage() {
                       onChange={handleChange('password')}
                       placeholder="••••••••"
                       required
+                      InputLabelProps={{ shrink: true }}
                       data-testid="input-password"
                     />
 
