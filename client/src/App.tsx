@@ -183,20 +183,31 @@ const theme = createTheme({
         root: {
           backgroundColor: '#ECEFF1',
           borderRadius: 12,
-          '& fieldset': {
-            borderColor: 'transparent',
-            borderWidth: '0px',
-          },
-          '&:hover fieldset': {
-            borderColor: 'transparent',
-          },
-          '&.Mui-focused fieldset': {
-            borderColor: '#3949AB',
-            borderWidth: '2px',
+          '&:hover': {
+            backgroundColor: '#ffffff',
           },
           '&.Mui-focused': {
             backgroundColor: '#ffffff',
-            boxShadow: '0 0 0 4px rgba(57, 73, 171, 0.15)',
+          },
+        },
+        notchedOutline: {
+          border: '1px solid #ECEFF1',
+          borderRadius: 12,
+          padding: 0,
+          top: 0,
+          '& legend': {
+            display: 'none',
+            width: 0,
+            maxWidth: 0,
+            padding: 0,
+            height: 0,
+            overflow: 'hidden',
+          },
+          '.MuiOutlinedInput-root:hover &': {
+            border: '1px solid #B0BEC5',
+          },
+          '.MuiOutlinedInput-root.Mui-focused &': {
+            border: '2px solid #3949AB',
           },
         },
         input: {
