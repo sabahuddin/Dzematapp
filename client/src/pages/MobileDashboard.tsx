@@ -55,7 +55,8 @@ export default function MobileDashboard() {
   const currentYear = new Date().getFullYear();
   const thisYearPayments = myPayments.filter((p: any) => p.coverageYear === currentYear);
   const totalPaidThisYear = thisYearPayments.reduce((sum: number, p: any) => sum + parseFloat(p.amount || '0'), 0);
-  const paidMonthsCount = thisYearPayments.length;
+  const uniquePaidMonths = new Set(thisYearPayments.map((p: any) => p.coverageMonth));
+  const paidMonthsCount = uniquePaidMonths.size;
 
   // Get user-specific activities (events, shop, tasks, messages, etc.)
   const userActivities = feedItems

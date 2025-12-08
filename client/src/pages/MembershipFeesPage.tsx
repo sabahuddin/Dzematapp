@@ -116,6 +116,13 @@ export default function MembershipFeesPage() {
     coverageYear: new Date().getFullYear(),
     coverageMonth: 1
   });
+  const [editSettings, setEditSettings] = useState({
+    feeType: 'monthly',
+    monthlyAmount: '0',
+    yearlyAmount: '0',
+    currency: 'KM',
+    currentFiscalYear: new Date().getFullYear()
+  });
 
   if (featureAccess.upgradeRequired) {
     return <UpgradeCTA moduleId="membership-fees" requiredPlan={featureAccess.requiredPlan || 'standard'} currentPlan={featureAccess.currentPlan || 'basic'} />;
@@ -163,7 +170,7 @@ export default function MembershipFeesPage() {
       return await apiRequest('/api/membership-fees/payments', 'POST', data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/membership-fees/members-grid'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/membership-fees/members-grid', selectedYear] });
       setAddPaymentDialogOpen(false);
       setNewPayment({ userId: '', amount: '', coverageYear: currentYear, coverageMonth: 1 });
       toast({ title: 'Uplata uspješno dodana', variant: 'default' });
@@ -191,7 +198,7 @@ export default function MembershipFeesPage() {
       return await response.json();
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['/api/membership-fees/members-grid'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/membership-fees/members-grid', selectedYear] });
       queryClient.invalidateQueries({ queryKey: ['/api/membership-fees/upload-logs'] });
       setUploadResult(data);
       toast({ title: data.message, variant: 'default' });
@@ -217,14 +224,26 @@ export default function MembershipFeesPage() {
     return fullName.includes(searchTerm.toLowerCase());
   });
 
+  const openSettingsDialog = () => {
+    if (settings) {
+      setEditSettings({
+        feeType: settings.feeType,
+        monthlyAmount: settings.monthlyAmount,
+        yearlyAmount: settings.yearlyAmount,
+        currency: settings.currency,
+        currentFiscalYear: settings.currentFiscalYear
+      });
+    }
+    setSettingsDialogOpen(true);
+  };
+
   const handleSaveSettings = () => {
-    if (!settings) return;
     updateSettingsMutation.mutate({
-      feeType: settings.feeType,
-      monthlyAmount: settings.monthlyAmount,
-      yearlyAmount: settings.yearlyAmount,
-      currentFiscalYear: settings.currentFiscalYear,
-      currency: settings.currency
+      feeType: editSettings.feeType,
+      monthlyAmount: editSettings.monthlyAmount,
+      yearlyAmount: editSettings.yearlyAmount,
+      currentFiscalYear: editSettings.currentFiscalYear,
+      currency: editSettings.currency
     });
   };
 
@@ -266,7 +285,7 @@ export default function MembershipFeesPage() {
           <Button
             variant="outlined"
             startIcon={<Settings />}
-            onClick={() => setSettingsDialogOpen(true)}
+            onClick={openSettingsDialog}
             data-testid="button-membership-settings"
           >
             Postavke
@@ -457,56 +476,54 @@ export default function MembershipFeesPage() {
       <Dialog open={settingsDialogOpen} onClose={() => setSettingsDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>Postavke članarine</DialogTitle>
         <DialogContent>
-          {settings && (
-            <Grid container spacing={2} sx={{ mt: 1 }}>
-              <Grid size={{ xs: 12 }}>
-                <FormControl fullWidth>
-                  <InputLabel>Tip naplate</InputLabel>
-                  <Select
-                    value={settings.feeType}
-                    onChange={(e) => settingsQuery.data && (settingsQuery.data.feeType = e.target.value)}
-                    label="Tip naplate"
-                  >
-                    <MenuItem value="monthly">Mjesečno</MenuItem>
-                    <MenuItem value="yearly">Godišnje</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid size={{ xs: 6 }}>
-                <TextField
-                  fullWidth
-                  label="Mjesečni iznos"
-                  value={settings.monthlyAmount}
-                  onChange={(e) => settingsQuery.data && (settingsQuery.data.monthlyAmount = e.target.value)}
-                />
-              </Grid>
-              <Grid size={{ xs: 6 }}>
-                <TextField
-                  fullWidth
-                  label="Godišnji iznos"
-                  value={settings.yearlyAmount}
-                  onChange={(e) => settingsQuery.data && (settingsQuery.data.yearlyAmount = e.target.value)}
-                />
-              </Grid>
-              <Grid size={{ xs: 6 }}>
-                <TextField
-                  fullWidth
-                  label="Valuta"
-                  value={settings.currency}
-                  onChange={(e) => settingsQuery.data && (settingsQuery.data.currency = e.target.value)}
-                />
-              </Grid>
-              <Grid size={{ xs: 6 }}>
-                <TextField
-                  fullWidth
-                  type="number"
-                  label="Fiskalna godina"
-                  value={settings.currentFiscalYear}
-                  onChange={(e) => settingsQuery.data && (settingsQuery.data.currentFiscalYear = parseInt(e.target.value))}
-                />
-              </Grid>
+          <Grid container spacing={2} sx={{ mt: 1 }}>
+            <Grid size={{ xs: 12 }}>
+              <FormControl fullWidth>
+                <InputLabel>Tip naplate</InputLabel>
+                <Select
+                  value={editSettings.feeType}
+                  onChange={(e) => setEditSettings({ ...editSettings, feeType: e.target.value })}
+                  label="Tip naplate"
+                >
+                  <MenuItem value="monthly">Mjesečno</MenuItem>
+                  <MenuItem value="yearly">Godišnje</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
-          )}
+            <Grid size={{ xs: 6 }}>
+              <TextField
+                fullWidth
+                label="Mjesečni iznos"
+                value={editSettings.monthlyAmount}
+                onChange={(e) => setEditSettings({ ...editSettings, monthlyAmount: e.target.value })}
+              />
+            </Grid>
+            <Grid size={{ xs: 6 }}>
+              <TextField
+                fullWidth
+                label="Godišnji iznos"
+                value={editSettings.yearlyAmount}
+                onChange={(e) => setEditSettings({ ...editSettings, yearlyAmount: e.target.value })}
+              />
+            </Grid>
+            <Grid size={{ xs: 6 }}>
+              <TextField
+                fullWidth
+                label="Valuta"
+                value={editSettings.currency}
+                onChange={(e) => setEditSettings({ ...editSettings, currency: e.target.value })}
+              />
+            </Grid>
+            <Grid size={{ xs: 6 }}>
+              <TextField
+                fullWidth
+                type="number"
+                label="Fiskalna godina"
+                value={editSettings.currentFiscalYear}
+                onChange={(e) => setEditSettings({ ...editSettings, currentFiscalYear: parseInt(e.target.value) || new Date().getFullYear() })}
+              />
+            </Grid>
+          </Grid>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setSettingsDialogOpen(false)}>Otkaži</Button>
