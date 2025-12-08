@@ -658,45 +658,46 @@
 }
 
 /* Shadcn component border enhancements - using design tokens */
-input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="number"],
-input[type="tel"],
-input[type="url"],
-input[type="search"],
-input[type="date"],
-textarea,
-select {
+/* Exclude MUI inputs to prevent double borders */
+input[type="text"]:not(.MuiInputBase-input),
+input[type="email"]:not(.MuiInputBase-input),
+input[type="password"]:not(.MuiInputBase-input),
+input[type="number"]:not(.MuiInputBase-input),
+input[type="tel"]:not(.MuiInputBase-input),
+input[type="url"]:not(.MuiInputBase-input),
+input[type="search"]:not(.MuiInputBase-input),
+input[type="date"]:not(.MuiInputBase-input),
+textarea:not(.MuiInputBase-input),
+select:not(.MuiSelect-select):not(.MuiNativeSelect-select) {
   border-color: var(--border-color-default) !important;
   border-width: var(--border-width-default) !important;
   background-color: var(--surface-field) !important;
   border-radius: var(--radius-sm) !important;
 }
 
-input[type="text"]:hover,
-input[type="email"]:hover,
-input[type="password"]:hover,
-input[type="number"]:hover,
-input[type="tel"]:hover,
-input[type="url"]:hover,
-input[type="search"]:hover,
-input[type="date"]:hover,
-textarea:hover,
-select:hover {
+input[type="text"]:not(.MuiInputBase-input):hover,
+input[type="email"]:not(.MuiInputBase-input):hover,
+input[type="password"]:not(.MuiInputBase-input):hover,
+input[type="number"]:not(.MuiInputBase-input):hover,
+input[type="tel"]:not(.MuiInputBase-input):hover,
+input[type="url"]:not(.MuiInputBase-input):hover,
+input[type="search"]:not(.MuiInputBase-input):hover,
+input[type="date"]:not(.MuiInputBase-input):hover,
+textarea:not(.MuiInputBase-input):hover,
+select:not(.MuiSelect-select):not(.MuiNativeSelect-select):hover {
   border-color: var(--border-color-hover) !important;
 }
 
-input[type="text"]:focus,
-input[type="email"]:focus,
-input[type="password"]:focus,
-input[type="number"]:focus,
-input[type="tel"]:focus,
-input[type="url"]:focus,
-input[type="search"]:focus,
-input[type="date"]:focus,
-textarea:focus,
-select:focus {
+input[type="text"]:not(.MuiInputBase-input):focus,
+input[type="email"]:not(.MuiInputBase-input):focus,
+input[type="password"]:not(.MuiInputBase-input):focus,
+input[type="number"]:not(.MuiInputBase-input):focus,
+input[type="tel"]:not(.MuiInputBase-input):focus,
+input[type="url"]:not(.MuiInputBase-input):focus,
+input[type="search"]:not(.MuiInputBase-input):focus,
+input[type="date"]:not(.MuiInputBase-input):focus,
+textarea:not(.MuiInputBase-input):focus,
+select:not(.MuiSelect-select):not(.MuiNativeSelect-select):focus {
   border-color: var(--border-color-focus) !important;
   border-width: var(--border-width-focus) !important;
   outline: none !important;

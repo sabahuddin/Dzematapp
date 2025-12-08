@@ -191,7 +191,7 @@ const theme = createTheme({
           },
         },
         notchedOutline: {
-          border: '1px solid #ECEFF1',
+          border: '1px solid #c5cae9',
           borderRadius: 12,
           padding: 0,
           top: 0,
@@ -204,7 +204,7 @@ const theme = createTheme({
             overflow: 'hidden',
           },
           '.MuiOutlinedInput-root:hover &': {
-            border: '1px solid #B0BEC5',
+            border: '1px solid #9fa8da',
           },
           '.MuiOutlinedInput-root.Mui-focused &': {
             border: '2px solid #3949AB',
