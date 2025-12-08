@@ -203,18 +203,10 @@ export default function AnnouncementsPage() {
   });
 
   return (
-    <Box sx={{ 
-      display: 'flex', 
-      flexDirection: 'column', 
-      gap: 2,
-      p: 2,
-      backgroundColor: '#f5f7ff',
-      minHeight: '100%',
-      borderRadius: '12px'
-    }}>
+    <Box>
       {/* Header with Add Button */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="h5" sx={{ fontWeight: 600, color: '#0D1B2A' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Typography variant="h5" sx={{ fontWeight: 600 }}>
           {t('announcements:title')}
         </Typography>
         {user?.isAdmin && (
@@ -223,76 +215,52 @@ export default function AnnouncementsPage() {
             startIcon={<Add />}
             onClick={handleCreateAnnouncement}
             data-testid="button-add-announcement"
-            sx={{ 
-              backgroundColor: '#1E88E5',
-              color: '#fff',
-              borderRadius: '12px',
-              textTransform: 'none',
-              fontSize: '0.9rem',
-              '&:hover': {
-                backgroundColor: '#1976D2'
-              }
-            }}
           >
             {t('announcements:addAnnouncement')}
           </Button>
         )}
       </Box>
 
-      {/* Search and Filter - 50%:50% layout */}
-      <Box sx={{ display: 'flex', gap: 1 }}>
-        <TextField
-          label={t('announcements:searchPlaceholder')}
-          placeholder={t('announcements:searchPlaceholder')}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          size="small"
-          InputLabelProps={{ shrink: true }}
-          data-testid="input-search-announcements"
-          sx={{ 
-            flex: 1,
-            '& .MuiOutlinedInput-root': {
-              borderRadius: '12px',
-              border: '1px solid #e8eaf6',
-              backgroundColor: '#ffffff'
-            }
-          }}
-        />
-        
-        <Autocomplete
-          multiple
-          freeSolo
-          options={predefinedCategories}
-          value={selectedCategories}
-          onChange={(_, value) => setSelectedCategories(value as string[])}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label={t('announcements:filterByCategories')}
-              placeholder={t('announcements:filterByCategories')}
-              size="small"
-              InputLabelProps={{ shrink: true }}
-              data-testid="input-filter-category"
-            />
-          )}
-          sx={{ 
-            flex: 1,
-            '& .MuiOutlinedInput-root': {
-              borderRadius: '12px',
-              border: '1px solid #e8eaf6',
-              backgroundColor: '#ffffff'
-            }
-          }}
-        />
-      </Box>
+      {/* Search and Filter Card */}
+      <Card sx={{ mb: 3 }}>
+        <Box sx={{ p: 2, display: 'flex', gap: 2, flexDirection: { xs: 'column', sm: 'row' } }}>
+          <TextField
+            label={t('announcements:searchPlaceholder')}
+            placeholder={t('announcements:searchPlaceholder')}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            data-testid="input-search-announcements"
+          />
+          
+          <Autocomplete
+            multiple
+            freeSolo
+            options={predefinedCategories}
+            value={selectedCategories}
+            onChange={(_, value) => setSelectedCategories(value as string[])}
+            fullWidth
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={t('announcements:filterByCategories')}
+                placeholder={t('announcements:filterByCategories')}
+                InputLabelProps={{ shrink: true }}
+                data-testid="input-filter-category"
+              />
+            )}
+          />
+        </Box>
+      </Card>
 
       {/* Announcements Cards - Grid Layout */}
       <Box sx={{ 
         display: 'grid',
         gridTemplateColumns: {
-          xs: '1fr',           // 1 column on mobile
-          sm: 'repeat(2, 1fr)', // 2 columns on tablet
-          md: 'repeat(3, 1fr)'  // 3 columns on desktop
+          xs: '1fr',
+          sm: 'repeat(2, 1fr)',
+          md: 'repeat(3, 1fr)'
         },
         gap: 2
       }}>
@@ -302,9 +270,6 @@ export default function AnnouncementsPage() {
             data-testid={`card-announcement-${announcement.id}`}
             onClick={() => window.location.href = `/announcements?id=${announcement.id}`}
             sx={{
-              border: '1px solid #e8eaf6',
-              borderRadius: '12px',
-              backgroundColor: '#ffffff',
               display: 'flex',
               flexDirection: 'column',
               overflow: 'hidden',

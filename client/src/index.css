@@ -543,9 +543,16 @@
     padding: 0 !important;
   }
 
-  /* Hide the notch/legend since label is above now */
+  /* Hide the notch/legend since label is above now - complete border */
   .MuiOutlinedInput-notchedOutline > legend {
     display: none !important;
+    max-width: 0 !important;
+    width: 0 !important;
+  }
+  
+  .MuiOutlinedInput-notchedOutline {
+    border-width: 1px !important;
+    top: 0 !important;
   }
 
   /* Adjust the input field to account for label above */
