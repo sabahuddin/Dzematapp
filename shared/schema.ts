@@ -32,9 +32,11 @@ export const users = pgTable("users", {
   lastViewedTasks: timestamp("last_viewed_tasks"),
   skills: text("skills").array(), // Member skills/talents (Feature 3)
   totalPoints: integer("total_points").default(0), // Gamification points (Feature 2)
+  registryNumber: integer("registry_number"), // Unique member registry number per tenant (članski broj)
 }, (t) => ({
   usernamePerTenant: unique("users_username_tenant_unique").on(t.username, t.tenantId),
   emailPerTenant: unique("users_email_tenant_unique").on(t.email, t.tenantId),
+  registryNumberPerTenant: unique("users_registry_number_tenant_unique").on(t.registryNumber, t.tenantId),
 }));
 
 export const familyRelationships = pgTable("family_relationships", {
