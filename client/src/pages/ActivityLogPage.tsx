@@ -29,7 +29,9 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions
+  DialogActions,
+  Tabs,
+  Tab
 } from '@mui/material';
 import {
   Timeline,
@@ -89,7 +91,17 @@ export default function ActivityLogPage() {
   const featureAccess = useFeatureAccess('activity-log');
   const [filterType, setFilterType] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState<'activities' | 'contributions' | 'bodove' | 'badges-manage' | 'badges-earned' | 'zahvale' | 'templates' | 'issue' | 'issued' | 'issued-badges'>('activities');
+  const [activeTab, setActiveTab] = useState<number>(0);
+  
+  const getTabValue = () => {
+    if (currentUser?.isAdmin) {
+      return ['activities', 'contributions', 'bodove', 'badges-manage', 'issued-badges', 'templates', 'issue', 'issued'];
+    }
+    return ['activities', 'contributions', 'bodove', 'badges-earned', 'zahvale'];
+  };
+  
+  const tabKeys = getTabValue();
+  const currentTabKey = tabKeys[activeTab] || 'activities';
   const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
   const [selectedTemplate, setSelectedTemplate] = useState<string>('');
   const [customMessage, setCustomMessage] = useState('');
@@ -436,57 +448,58 @@ export default function ActivityLogPage() {
         <Typography variant="h5" sx={{ fontWeight: 600 }}>
           {currentUser?.isAdmin ? 'Pregled' : 'Moje aktivnosti'}
         </Typography>
-        {currentUser?.isAdmin && activeTab === 'activities' && (
+        {currentUser?.isAdmin && currentTabKey === 'activities' && (
           <Button variant="outlined" startIcon={<Download />} onClick={handleExportActivityLogsToExcel} data-testid="button-export-excel">
             Exportuj u Excel
           </Button>
         )}
       </Box>
 
-      {/* Tab Buttons */}
-      <Box sx={{ display: 'flex', gap: 1, mb: 3, flexWrap: 'wrap' }}>
-        <Button variant={activeTab === 'activities' ? 'contained' : 'outlined'} onClick={() => setActiveTab('activities')} data-testid="tab-activities">
-          Aktivnosti
-        </Button>
-        <Button variant={activeTab === 'contributions' ? 'contained' : 'outlined'} onClick={() => setActiveTab('contributions')} data-testid="tab-contributions" startIcon={<AttachMoney />}>
-          Uplate
-        </Button>
-        <Button variant={activeTab === 'bodove' ? 'contained' : 'outlined'} onClick={() => setActiveTab('bodove')} data-testid="tab-bodove" startIcon={<EmojiEvents />}>
-          Bodovi
-        </Button>
-        {currentUser?.isAdmin && (
-          <>
-            <Button variant={activeTab === 'badges-manage' ? 'contained' : 'outlined'} onClick={() => setActiveTab('badges-manage')} data-testid="tab-badges-manage" startIcon={<BadgeOutlined />}>
-              Značke
-            </Button>
-            <Button variant={activeTab === 'issued-badges' ? 'contained' : 'outlined'} onClick={() => setActiveTab('issued-badges')} data-testid="tab-issued-badges" startIcon={<BadgeOutlined />}>
-              Dodjeljene značke
-            </Button>
-            <Button variant={activeTab === 'templates' ? 'contained' : 'outlined'} onClick={() => setActiveTab('templates')} data-testid="tab-templates">
-              Šabloni zahvala
-            </Button>
-            <Button variant={activeTab === 'issue' ? 'contained' : 'outlined'} onClick={() => setActiveTab('issue')} data-testid="tab-issue" startIcon={<SendIcon />}>
-              Dodjeli zahvalnicu
-            </Button>
-            <Button variant={activeTab === 'issued' ? 'contained' : 'outlined'} onClick={() => setActiveTab('issued')} data-testid="tab-issued" startIcon={<ReceiptLong />}>
-              Dodijeljene zahvale
-            </Button>
-          </>
+      {/* Tabs */}
+      <Tabs
+        value={activeTab}
+        onChange={(_, newValue) => setActiveTab(newValue)}
+        variant="scrollable"
+        scrollButtons="auto"
+        sx={{
+          mb: 3,
+          borderBottom: 1,
+          borderColor: 'divider',
+          '& .MuiTab-root': {
+            textTransform: 'none',
+            fontSize: '0.9rem',
+            fontWeight: 500,
+            minHeight: 48,
+          },
+          '& .Mui-selected': {
+            color: '#3949AB',
+          },
+          '& .MuiTabs-indicator': {
+            backgroundColor: '#5C6BC0',
+          }
+        }}
+      >
+        <Tab label="Aktivnosti" data-testid="tab-activities" />
+        <Tab icon={<AttachMoney />} iconPosition="start" label="Uplate" data-testid="tab-contributions" />
+        <Tab icon={<EmojiEvents />} iconPosition="start" label="Bodovi" data-testid="tab-bodove" />
+        {currentUser?.isAdmin ? (
+          [
+            <Tab key="badges-manage" icon={<BadgeOutlined />} iconPosition="start" label="Značke" data-testid="tab-badges-manage" />,
+            <Tab key="issued-badges" icon={<BadgeOutlined />} iconPosition="start" label="Dodjeljene značke" data-testid="tab-issued-badges" />,
+            <Tab key="templates" label="Šabloni zahvala" data-testid="tab-templates" />,
+            <Tab key="issue" icon={<SendIcon />} iconPosition="start" label="Dodjeli zahvalnicu" data-testid="tab-issue" />,
+            <Tab key="issued" icon={<ReceiptLong />} iconPosition="start" label="Dodijeljene zahvale" data-testid="tab-issued" />
+          ]
+        ) : (
+          [
+            <Tab key="badges-earned" icon={<BadgeOutlined />} iconPosition="start" label={`Značke (${earnedBadges.length})`} data-testid="tab-badges-earned" />,
+            <Tab key="zahvale" icon={<ReceiptLong />} iconPosition="start" label="Zahvale" data-testid="tab-zahvale" />
+          ]
         )}
-        {!currentUser?.isAdmin && (
-          <>
-            <Button variant={activeTab === 'badges-earned' ? 'contained' : 'outlined'} onClick={() => setActiveTab('badges-earned')} data-testid="tab-badges-earned" startIcon={<BadgeOutlined />}>
-              Značke ({earnedBadges.length})
-            </Button>
-            <Button variant={activeTab === 'zahvale' ? 'contained' : 'outlined'} onClick={() => setActiveTab('zahvale')} data-testid="tab-zahvale" startIcon={<ReceiptLong />}>
-              Zahvale
-            </Button>
-          </>
-        )}
-      </Box>
+      </Tabs>
 
       {/* Activities Tab */}
-      {activeTab === 'activities' && (
+      {currentTabKey === 'activities' && (
         <Card>
           <Box sx={{ p: 3, borderBottom: '1px solid hsl(0 0% 88%)' }}>
             <Grid container spacing={2}>
@@ -567,7 +580,7 @@ export default function ActivityLogPage() {
       )}
 
       {/* Contributions Tab */}
-      {activeTab === 'contributions' && (
+      {currentTabKey === 'contributions' && (
         <Card>
           <Box sx={{ p: 3 }}>
             {(contributionsQuery.data as FinancialContribution[])?.length === 0 ? (
@@ -603,7 +616,7 @@ export default function ActivityLogPage() {
       )}
 
       {/* Bodove Tab */}
-      {activeTab === 'bodove' && (
+      {currentTabKey === 'bodove' && (
         <Card>
           <Box sx={{ p: 3 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
@@ -739,7 +752,7 @@ export default function ActivityLogPage() {
       )}
 
       {/* Badges Admin Tab */}
-      {activeTab === 'badges-manage' && currentUser?.isAdmin && (
+      {currentTabKey === 'badges-manage' && currentUser?.isAdmin && (
         <Card>
           <Box sx={{ p: 3 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
@@ -787,7 +800,7 @@ export default function ActivityLogPage() {
       )}
 
       {/* Earned Badges Tab */}
-      {activeTab === 'badges-earned' && !currentUser?.isAdmin && (
+      {currentTabKey === 'badges-earned' && !currentUser?.isAdmin && (
         <Card>
           <Box sx={{ p: 3 }}>
             <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>Značke ({earnedBadges.length})</Typography>
@@ -814,12 +827,12 @@ export default function ActivityLogPage() {
       )}
 
       {/* Certificate Templates Tab */}
-      {activeTab === 'templates' && currentUser?.isAdmin && (
+      {currentTabKey === 'templates' && currentUser?.isAdmin && (
         <CertificateTemplatesPage hideHeader={true} />
       )}
 
       {/* Issue Certificates Tab */}
-      {activeTab === 'issue' && currentUser?.isAdmin && (
+      {currentTabKey === 'issue' && currentUser?.isAdmin && (
         <Stack spacing={3}>
           <Card>
             <Box sx={{ p: 3 }}>
@@ -902,7 +915,7 @@ export default function ActivityLogPage() {
       )}
 
       {/* Issued Certificates Tab */}
-      {activeTab === 'issued' && currentUser?.isAdmin && (
+      {currentTabKey === 'issued' && currentUser?.isAdmin && (
         <Card>
           <Box sx={{ p: 3 }}>
             {(certificatesQuery.data as UserCertificate[])?.length === 0 ? (
@@ -985,7 +998,7 @@ export default function ActivityLogPage() {
       )}
 
       {/* Zahvale Tab - Members Only */}
-      {activeTab === 'zahvale' && !currentUser?.isAdmin && (
+      {currentTabKey === 'zahvale' && !currentUser?.isAdmin && (
         <Card>
           <Box sx={{ p: 3 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
@@ -1077,7 +1090,7 @@ export default function ActivityLogPage() {
       )}
 
       {/* Issued Badges Tab */}
-      {activeTab === 'issued-badges' && currentUser?.isAdmin && (
+      {currentTabKey === 'issued-badges' && currentUser?.isAdmin && (
         <Card>
           <Box sx={{ p: 3 }}>
             {allIssuedBadges.length === 0 ? (

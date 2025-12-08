@@ -775,13 +775,18 @@ export default function ShopPage() {
       <Paper sx={{ mb: 3 }}>
         <Tabs 
           value={activeTab} 
-          onChange={(_, newValue) => setActiveTab(newValue)} 
+          onChange={(_, newValue) => setActiveTab(newValue)}
+          variant="scrollable"
+          scrollButtons="auto"
           sx={{ 
             borderBottom: 1, 
             borderColor: 'divider',
             '& .MuiTab-root': {
+              textTransform: 'none',
+              fontSize: '0.9rem',
+              fontWeight: 500,
+              minHeight: 48,
               minWidth: { xs: 60, md: 120 },
-              fontSize: { xs: '0.7rem', md: '0.875rem' },
               padding: { xs: '6px 8px', md: '12px 16px' },
               flexDirection: { xs: 'column', md: 'row' },
               gap: { xs: 0.5, md: 1 },
@@ -789,6 +794,12 @@ export default function ShopPage() {
                 marginBottom: { xs: 0, md: 0 },
                 marginRight: { xs: 0, md: 1 }
               }
+            },
+            '& .Mui-selected': {
+              color: '#3949AB',
+            },
+            '& .MuiTabs-indicator': {
+              backgroundColor: '#5C6BC0',
             }
           }}
         >

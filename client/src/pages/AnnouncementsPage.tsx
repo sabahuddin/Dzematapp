@@ -207,7 +207,10 @@ export default function AnnouncementsPage() {
       display: 'flex', 
       flexDirection: 'column', 
       gap: 2,
-      p: 2
+      p: 2,
+      backgroundColor: '#f5f7ff',
+      minHeight: '100%',
+      borderRadius: '12px'
     }}>
       {/* Header with Add Button */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -249,7 +252,7 @@ export default function AnnouncementsPage() {
             '& .MuiOutlinedInput-root': {
               borderRadius: '12px',
               border: '1px solid #e8eaf6',
-              backgroundColor: '#f5f7ff'
+              backgroundColor: '#ffffff'
             }
           }}
         />
@@ -266,16 +269,16 @@ export default function AnnouncementsPage() {
               placeholder={t('announcements:filterByCategories')}
               size="small"
               data-testid="input-filter-category"
-              sx={{ 
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '12px',
-                  border: '1px solid #e8eaf6',
-                  backgroundColor: '#f5f7ff'
-                }
-              }}
             />
           )}
-          sx={{ flex: 1 }}
+          sx={{ 
+            flex: 1,
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '12px',
+              border: '1px solid #e8eaf6',
+              backgroundColor: '#ffffff'
+            }
+          }}
         />
       </Box>
 
@@ -297,15 +300,15 @@ export default function AnnouncementsPage() {
             sx={{
               border: '1px solid #e8eaf6',
               borderRadius: '12px',
-              backgroundColor: '#f5f7ff',
+              backgroundColor: '#ffffff',
               display: 'flex',
               flexDirection: 'column',
               overflow: 'hidden',
               height: '100%',
               cursor: 'pointer',
               '&:hover': {
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                borderColor: '#1E88E5'
+                boxShadow: '0 4px 12px rgba(57, 73, 171, 0.12)',
+                borderColor: '#3949AB'
               }
             }}
           >
@@ -417,7 +420,7 @@ export default function AnnouncementsPage() {
             sx={{
               border: '1px solid #e8eaf6',
               borderRadius: '12px',
-              backgroundColor: '#f5f7ff',
+              backgroundColor: '#ffffff',
               p: 4,
               textAlign: 'center',
               gridColumn: { xs: '1', sm: '1 / -1', md: '1 / -1' }

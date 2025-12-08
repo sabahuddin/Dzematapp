@@ -84,7 +84,20 @@ export default function AllSectionsPage() {
           const isMember = !!membership;
 
           return (
-            <Card key={workGroup.id} data-testid={`card-section-${workGroup.id}`}>
+            <Card 
+              key={workGroup.id} 
+              data-testid={`card-section-${workGroup.id}`}
+              sx={{
+                backgroundColor: '#ffffff',
+                border: '1px solid #c5cae9',
+                borderRadius: '16px',
+                boxShadow: '0 2px 8px rgba(57, 73, 171, 0.08)',
+                '&:hover': {
+                  boxShadow: '0 4px 16px rgba(57, 73, 171, 0.12)',
+                  borderColor: '#3949AB'
+                }
+              }}
+            >
               <CardContent>
                 <Typography variant="h6" gutterBottom>
                   {workGroup.name}
