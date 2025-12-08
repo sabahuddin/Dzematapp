@@ -332,12 +332,12 @@ const theme = createTheme({
           margin: '2px 0',
           padding: '10px 16px',
           '&:hover': {
-            backgroundColor: '#f5f7ff',
+            backgroundColor: '#f8f9ff',
           },
           '&.Mui-selected': {
-            backgroundColor: '#e8eaf6',
+            backgroundColor: '#f0f2ff',
             '&:hover': {
-              backgroundColor: '#c5cae9',
+              backgroundColor: '#e8eaf6',
             },
           },
         },
@@ -366,12 +366,12 @@ const theme = createTheme({
           borderRadius: 8,
           margin: '2px 0',
           '&:hover': {
-            backgroundColor: '#f5f7ff',
+            backgroundColor: '#f8f9ff',
           },
           '&[aria-selected="true"]': {
-            backgroundColor: '#e8eaf6',
+            backgroundColor: '#f0f2ff',
             '&:hover': {
-              backgroundColor: '#c5cae9',
+              backgroundColor: '#e8eaf6',
             },
           },
         },
@@ -474,7 +474,7 @@ const theme = createTheme({
           backgroundColor: '#f5f7ff',
           borderRadius: 16,
           '&:hover': {
-            backgroundColor: '#e8eaf6',
+            backgroundColor: '#f5f7ff',
           },
         },
       },
@@ -571,10 +571,10 @@ const theme = createTheme({
             backgroundColor: '#ECEFF1',
           },
           '&.Mui-selected': {
-            backgroundColor: 'hsl(231 54% 95%)',
+            backgroundColor: 'hsl(231 54% 97%)',
             color: '#3949AB',
             '&:hover': {
-              backgroundColor: 'hsl(231 54% 90%)',
+              backgroundColor: 'hsl(231 54% 95%)',
             },
           },
         },
