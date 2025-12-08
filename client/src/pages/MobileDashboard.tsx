@@ -238,7 +238,7 @@ export default function MobileDashboard() {
                       borderBottom: isLast ? 'none' : '1px solid var(--border)',
                       transition: 'all 0.2s ease',
                       '&:hover': {
-                        bgcolor: 'var(--accent)',
+                        bgcolor: 'rgba(57, 73, 171, 0.04)',
                       },
                     }}
                   >
@@ -351,7 +351,7 @@ export default function MobileDashboard() {
                       
                       ...(item.isClickable && {
                         '&:hover': {
-                          bgcolor: 'var(--accent)',
+                          bgcolor: 'rgba(57, 73, 171, 0.04)',
                         },
                       })
                     }}
@@ -487,7 +487,7 @@ export default function MobileDashboard() {
                       borderBottom: isLast ? 'none' : '1px solid var(--border)',
                       transition: 'all 0.2s ease',
                       '&:hover': {
-                        bgcolor: 'var(--accent)',
+                        bgcolor: 'rgba(57, 73, 171, 0.04)',
                       },
                     }}
                   >
