@@ -87,6 +87,12 @@ import {
   type InsertSponsorPricing,
   type ContributionPurpose,
   type InsertContributionPurpose,
+  type MembershipSettings,
+  type InsertMembershipSettings,
+  type MembershipPayment,
+  type InsertMembershipPayment,
+  type MembershipUploadLog,
+  type InsertMembershipUploadLog,
   users,
   announcements,
   events,
@@ -129,7 +135,10 @@ import {
   services,
   sponsors,
   sponsorPricing,
-  tenants
+  tenants,
+  membershipSettings,
+  membershipPayments,
+  membershipUploadLogs
 } from "@shared/schema";
 import { db, pool } from './db';
 import { eq, and, or, desc, asc, gt, sql, inArray, ilike } from 'drizzle-orm';
@@ -488,6 +497,18 @@ export interface IStorage {
     maxStorage: number | null;
     isActive: boolean;
   }>>;
+
+  // Membership Fees (Članarina)
+  getMembershipSettings(tenantId: string): Promise<MembershipSettings | undefined>;
+  updateMembershipSettings(tenantId: string, settings: Partial<InsertMembershipSettings>): Promise<MembershipSettings>;
+  getMembershipPayments(tenantId: string, userId?: string, year?: number): Promise<MembershipPayment[]>;
+  getMembershipPaymentGrid(tenantId: string, userId: string): Promise<Array<{ year: number; month: number; amount: string }>>;
+  createMembershipPayment(payment: InsertMembershipPayment): Promise<MembershipPayment>;
+  createMembershipPaymentBulk(payments: InsertMembershipPayment[]): Promise<MembershipPayment[]>;
+  deleteMembershipPayment(id: string, tenantId: string): Promise<boolean>;
+  getMembershipUploadLogs(tenantId: string): Promise<MembershipUploadLog[]>;
+  getLatestMembershipUpload(tenantId: string): Promise<MembershipUploadLog | undefined>;
+  createMembershipUploadLog(log: InsertMembershipUploadLog): Promise<MembershipUploadLog>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -3276,6 +3297,108 @@ export class DatabaseStorage implements IStorage {
     const { subscriptionPlans } = await import("@shared/schema");
     const plans = await db.select().from(subscriptionPlans).where(eq(subscriptionPlans.isActive, true));
     return plans;
+  }
+
+  // =====================================================
+  // Membership Fees (Članarina) Implementation
+  // =====================================================
+
+  async getMembershipSettings(tenantId: string): Promise<MembershipSettings | undefined> {
+    const result = await db.select().from(membershipSettings).where(eq(membershipSettings.tenantId, tenantId)).limit(1);
+    return result[0];
+  }
+
+  async updateMembershipSettings(tenantId: string, settings: Partial<InsertMembershipSettings>): Promise<MembershipSettings> {
+    const existing = await this.getMembershipSettings(tenantId);
+    
+    if (existing) {
+      const [updated] = await db.update(membershipSettings)
+        .set({ ...settings, updatedAt: new Date() })
+        .where(eq(membershipSettings.tenantId, tenantId))
+        .returning();
+      return updated;
+    } else {
+      const [created] = await db.insert(membershipSettings)
+        .values({ ...settings, tenantId })
+        .returning();
+      return created;
+    }
+  }
+
+  async getMembershipPayments(tenantId: string, userId?: string, year?: number): Promise<MembershipPayment[]> {
+    let query = db.select().from(membershipPayments).where(eq(membershipPayments.tenantId, tenantId));
+    
+    if (userId) {
+      query = db.select().from(membershipPayments).where(
+        and(eq(membershipPayments.tenantId, tenantId), eq(membershipPayments.userId, userId))
+      );
+    }
+    
+    if (year) {
+      query = db.select().from(membershipPayments).where(
+        and(
+          eq(membershipPayments.tenantId, tenantId),
+          eq(membershipPayments.coverageYear, year),
+          userId ? eq(membershipPayments.userId, userId) : sql`1=1`
+        )
+      );
+    }
+    
+    return await query.orderBy(desc(membershipPayments.coverageYear), asc(membershipPayments.coverageMonth));
+  }
+
+  async getMembershipPaymentGrid(tenantId: string, userId: string): Promise<Array<{ year: number; month: number; amount: string }>> {
+    const payments = await db.select({
+      year: membershipPayments.coverageYear,
+      month: membershipPayments.coverageMonth,
+      amount: membershipPayments.amount
+    })
+    .from(membershipPayments)
+    .where(and(eq(membershipPayments.tenantId, tenantId), eq(membershipPayments.userId, userId)))
+    .orderBy(desc(membershipPayments.coverageYear), asc(membershipPayments.coverageMonth));
+    
+    return payments.map(p => ({
+      year: p.year,
+      month: p.month || 0,
+      amount: p.amount
+    }));
+  }
+
+  async createMembershipPayment(payment: InsertMembershipPayment): Promise<MembershipPayment> {
+    const [created] = await db.insert(membershipPayments).values(payment).returning();
+    return created;
+  }
+
+  async createMembershipPaymentBulk(payments: InsertMembershipPayment[]): Promise<MembershipPayment[]> {
+    if (payments.length === 0) return [];
+    const created = await db.insert(membershipPayments).values(payments).returning();
+    return created;
+  }
+
+  async deleteMembershipPayment(id: string, tenantId: string): Promise<boolean> {
+    const result = await db.delete(membershipPayments).where(
+      and(eq(membershipPayments.id, id), eq(membershipPayments.tenantId, tenantId))
+    );
+    return result.rowCount ? result.rowCount > 0 : false;
+  }
+
+  async getMembershipUploadLogs(tenantId: string): Promise<MembershipUploadLog[]> {
+    return await db.select().from(membershipUploadLogs)
+      .where(eq(membershipUploadLogs.tenantId, tenantId))
+      .orderBy(desc(membershipUploadLogs.uploadDate));
+  }
+
+  async getLatestMembershipUpload(tenantId: string): Promise<MembershipUploadLog | undefined> {
+    const result = await db.select().from(membershipUploadLogs)
+      .where(eq(membershipUploadLogs.tenantId, tenantId))
+      .orderBy(desc(membershipUploadLogs.uploadDate))
+      .limit(1);
+    return result[0];
+  }
+
+  async createMembershipUploadLog(log: InsertMembershipUploadLog): Promise<MembershipUploadLog> {
+    const [created] = await db.insert(membershipUploadLogs).values(log).returning();
+    return created;
   }
 }
 

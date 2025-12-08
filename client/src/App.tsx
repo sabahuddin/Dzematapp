@@ -53,6 +53,7 @@ import NotificationsPage from "@/pages/NotificationsPage";
 import SuperAdminPanel from "@/pages/SuperAdminPanel";
 import PricingPage from "@/pages/PricingPage";
 import SponsorsPage from "@/pages/SponsorsPage";
+import MembershipFeesPage from "@/pages/MembershipFeesPage";
 import NotFound from "@/pages/not-found";
 
 // Layout
@@ -692,6 +693,12 @@ function Router() {
         <ProtectedRoute>
           <FinancesPage />
         </ProtectedRoute>
+      </Route>
+      
+      <Route path="/membership-fees">
+        <AdminRoute>
+          <MembershipFeesPage />
+        </AdminRoute>
       </Route>
       
       <Route path="/activity-log">

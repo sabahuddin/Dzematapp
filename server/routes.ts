@@ -6459,6 +6459,308 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     }
   });
 
+  // =====================================================
+  // Membership Fees (Članarina) Routes
+  // =====================================================
+
+  // Get membership settings for current tenant
+  app.get("/api/membership-fees/settings", requireAuth, async (req, res) => {
+    try {
+      const tenantId = req.user!.tenantId;
+      let settings = await storage.getMembershipSettings(tenantId);
+      
+      // Return default settings if none exist
+      if (!settings) {
+        settings = {
+          id: '',
+          tenantId,
+          feeType: 'monthly',
+          monthlyAmount: '30',
+          yearlyAmount: '300',
+          currentFiscalYear: new Date().getFullYear(),
+          currency: 'CHF',
+          updatedAt: null,
+          updatedById: null
+        };
+      }
+      
+      res.json(settings);
+    } catch (error) {
+      console.error('[MEMBERSHIP] Error getting settings:', error);
+      res.status(500).json({ message: "Failed to get membership settings" });
+    }
+  });
+
+  // Update membership settings (admin only)
+  app.patch("/api/membership-fees/settings", requireAdmin, async (req, res) => {
+    try {
+      const tenantId = req.user!.tenantId;
+      const { feeType, monthlyAmount, yearlyAmount, currentFiscalYear, currency } = req.body;
+      
+      const settings = await storage.updateMembershipSettings(tenantId, {
+        feeType,
+        monthlyAmount,
+        yearlyAmount,
+        currentFiscalYear,
+        currency,
+        updatedById: req.user!.id
+      });
+      
+      res.json(settings);
+    } catch (error) {
+      console.error('[MEMBERSHIP] Error updating settings:', error);
+      res.status(500).json({ message: "Failed to update membership settings" });
+    }
+  });
+
+  // Get all payments for admin view (with optional filters)
+  app.get("/api/membership-fees/payments", requireAdmin, async (req, res) => {
+    try {
+      const tenantId = req.user!.tenantId;
+      const { userId, year } = req.query;
+      
+      const payments = await storage.getMembershipPayments(
+        tenantId, 
+        userId as string | undefined, 
+        year ? parseInt(year as string) : undefined
+      );
+      
+      res.json(payments);
+    } catch (error) {
+      console.error('[MEMBERSHIP] Error getting payments:', error);
+      res.status(500).json({ message: "Failed to get membership payments" });
+    }
+  });
+
+  // Get payment grid for a specific user
+  app.get("/api/membership-fees/payments/grid/:userId", requireAuth, async (req, res) => {
+    try {
+      const tenantId = req.user!.tenantId;
+      const { userId } = req.params;
+      
+      // Users can only view their own grid unless they're admin
+      if (userId !== req.user!.id && !req.user!.isAdmin) {
+        return res.status(403).json({ message: "Not authorized to view this data" });
+      }
+      
+      const grid = await storage.getMembershipPaymentGrid(tenantId, userId);
+      res.json(grid);
+    } catch (error) {
+      console.error('[MEMBERSHIP] Error getting payment grid:', error);
+      res.status(500).json({ message: "Failed to get payment grid" });
+    }
+  });
+
+  // Get my membership payments (for regular users)
+  app.get("/api/membership-fees/my-payments", requireAuth, async (req, res) => {
+    try {
+      const tenantId = req.user!.tenantId;
+      const userId = req.user!.id;
+      
+      const payments = await storage.getMembershipPayments(tenantId, userId);
+      const latestUpload = await storage.getLatestMembershipUpload(tenantId);
+      
+      res.json({
+        payments,
+        lastUpdated: latestUpload?.uploadDate || null
+      });
+    } catch (error) {
+      console.error('[MEMBERSHIP] Error getting my payments:', error);
+      res.status(500).json({ message: "Failed to get your membership payments" });
+    }
+  });
+
+  // Create single payment (admin only)
+  app.post("/api/membership-fees/payments", requireAdmin, async (req, res) => {
+    try {
+      const tenantId = req.user!.tenantId;
+      const { userId, amount, coverageYear, coverageMonth, notes } = req.body;
+      
+      const payment = await storage.createMembershipPayment({
+        tenantId,
+        userId,
+        amount,
+        coverageYear,
+        coverageMonth: coverageMonth || null,
+        notes: notes || null
+      });
+      
+      res.status(201).json(payment);
+    } catch (error) {
+      console.error('[MEMBERSHIP] Error creating payment:', error);
+      res.status(500).json({ message: "Failed to create membership payment" });
+    }
+  });
+
+  // Delete payment (admin only)
+  app.delete("/api/membership-fees/payments/:id", requireAdmin, async (req, res) => {
+    try {
+      const tenantId = req.user!.tenantId;
+      const success = await storage.deleteMembershipPayment(req.params.id, tenantId);
+      
+      if (!success) {
+        return res.status(404).json({ message: "Payment not found" });
+      }
+      
+      res.json({ message: "Payment deleted successfully" });
+    } catch (error) {
+      console.error('[MEMBERSHIP] Error deleting payment:', error);
+      res.status(500).json({ message: "Failed to delete membership payment" });
+    }
+  });
+
+  // Bulk upload payments (admin only)
+  app.post("/api/membership-fees/payments/bulk-upload", requireAdmin, upload.single('file'), async (req, res) => {
+    try {
+      const tenantId = req.user!.tenantId;
+      const adminId = req.user!.id;
+      
+      if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
+      
+      // Parse Excel/CSV file
+      const XLSX = await import('xlsx');
+      const workbook = XLSX.read(req.file.buffer, { type: 'buffer' });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const data = XLSX.utils.sheet_to_json(worksheet) as any[];
+      
+      // Get all users for matching
+      const allUsers = await storage.getAllUsers(tenantId);
+      
+      const payments: any[] = [];
+      const errors: string[] = [];
+      
+      for (let i = 0; i < data.length; i++) {
+        const row = data[i];
+        const rowNum = i + 2; // Excel rows start at 1, plus header
+        
+        // Expected columns: Name (Ime i Prezime), Amount (Iznos), Year (Godina), Month (Mjesec)
+        const memberName = row['Ime i Prezime'] || row['Name'] || row['name'] || '';
+        const amount = row['Iznos'] || row['Amount'] || row['amount'] || '';
+        const year = row['Godina'] || row['Year'] || row['year'];
+        const month = row['Mjesec'] || row['Month'] || row['month'];
+        
+        if (!memberName || !amount || !year) {
+          errors.push(`Red ${rowNum}: Nedostaju obavezni podaci (ime, iznos, godina)`);
+          continue;
+        }
+        
+        // Match user by name (case-insensitive)
+        const nameParts = memberName.trim().toLowerCase().split(/\s+/);
+        const matchedUser = allUsers.find(u => {
+          const userFirstName = (u.firstName || '').toLowerCase();
+          const userLastName = (u.lastName || '').toLowerCase();
+          const userFullName = `${userFirstName} ${userLastName}`;
+          const inputFullName = nameParts.join(' ');
+          
+          return userFullName === inputFullName || 
+                 (nameParts.length === 2 && 
+                  userFirstName === nameParts[0] && 
+                  userLastName === nameParts[1]);
+        });
+        
+        if (!matchedUser) {
+          errors.push(`Red ${rowNum}: Član "${memberName}" nije pronađen u bazi`);
+          continue;
+        }
+        
+        payments.push({
+          tenantId,
+          userId: matchedUser.id,
+          amount: String(amount),
+          coverageYear: parseInt(year),
+          coverageMonth: month ? parseInt(month) : null
+        });
+      }
+      
+      // Create upload log first
+      const uploadLog = await storage.createMembershipUploadLog({
+        tenantId,
+        adminId,
+        fileName: req.file.originalname,
+        recordsProcessed: data.length,
+        recordsSuccessful: payments.length,
+        recordsFailed: errors.length,
+        errorLog: errors.length > 0 ? JSON.stringify(errors) : null
+      });
+      
+      // Add uploadBatchId to payments and insert
+      const paymentsWithBatch = payments.map(p => ({ ...p, uploadBatchId: uploadLog.id }));
+      const createdPayments = await storage.createMembershipPaymentBulk(paymentsWithBatch);
+      
+      res.json({
+        message: `Uspješno uneseno ${createdPayments.length} od ${data.length} uplata`,
+        processed: data.length,
+        successful: createdPayments.length,
+        failed: errors.length,
+        errors: errors.slice(0, 20), // Return first 20 errors
+        uploadLogId: uploadLog.id
+      });
+    } catch (error) {
+      console.error('[MEMBERSHIP] Error in bulk upload:', error);
+      res.status(500).json({ message: "Failed to process bulk upload", error: String(error) });
+    }
+  });
+
+  // Get upload logs (admin only)
+  app.get("/api/membership-fees/upload-logs", requireAdmin, async (req, res) => {
+    try {
+      const tenantId = req.user!.tenantId;
+      const logs = await storage.getMembershipUploadLogs(tenantId);
+      res.json(logs);
+    } catch (error) {
+      console.error('[MEMBERSHIP] Error getting upload logs:', error);
+      res.status(500).json({ message: "Failed to get upload logs" });
+    }
+  });
+
+  // Get all members with their payment totals for current year (admin grid view)
+  app.get("/api/membership-fees/members-grid", requireAdmin, async (req, res) => {
+    try {
+      const tenantId = req.user!.tenantId;
+      const { year } = req.query;
+      const targetYear = year ? parseInt(year as string) : new Date().getFullYear();
+      
+      // Get all active users
+      const allUsers = await storage.getAllUsers(tenantId);
+      const activeUsers = allUsers.filter(u => u.status === 'aktivan' && !u.isAdmin);
+      
+      // Get all payments for this year
+      const payments = await storage.getMembershipPayments(tenantId, undefined, targetYear);
+      
+      // Build grid data for each user
+      const gridData = activeUsers.map(user => {
+        const userPayments = payments.filter(p => p.userId === user.id);
+        
+        // Create monthly array (1-12)
+        const months: { [key: number]: string } = {};
+        for (let m = 1; m <= 12; m++) {
+          const payment = userPayments.find(p => p.coverageMonth === m);
+          months[m] = payment ? payment.amount : '0';
+        }
+        
+        // Calculate total
+        const total = userPayments.reduce((sum, p) => sum + parseFloat(p.amount || '0'), 0);
+        
+        return {
+          userId: user.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          phone: user.phone,
+          ...months,
+          total: total.toFixed(2)
+        };
+      });
+      
+      res.json(gridData);
+    } catch (error) {
+      console.error('[MEMBERSHIP] Error getting members grid:', error);
+      res.status(500).json({ message: "Failed to get members grid" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

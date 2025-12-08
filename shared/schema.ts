@@ -1335,6 +1335,50 @@ export const tenantFeatures = pgTable("tenant_features", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+// =====================================================
+// Membership Fee Module (Članarina)
+// =====================================================
+
+// Membership Settings - per-tenant configuration
+export const membershipSettings = pgTable("membership_settings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }).unique(),
+  feeType: text("fee_type").notNull().default("monthly"), // "monthly" or "yearly"
+  monthlyAmount: text("monthly_amount").default("30"), // Default monthly fee
+  yearlyAmount: text("yearly_amount").default("300"), // Default yearly fee
+  currentFiscalYear: integer("current_fiscal_year").default(2025),
+  currency: text("currency").default("CHF"),
+  updatedAt: timestamp("updated_at").defaultNow(),
+  updatedById: varchar("updated_by_id").references(() => users.id, { onDelete: "set null" }),
+});
+
+// Membership Payments - payment records
+export const membershipPayments = pgTable("membership_payments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  amount: text("amount").notNull(), // e.g., "30", "50", "70"
+  datePaid: timestamp("date_paid").defaultNow(),
+  coverageYear: integer("coverage_year").notNull(), // e.g., 2024, 2025
+  coverageMonth: integer("coverage_month"), // 1-12 for monthly, NULL for yearly
+  uploadBatchId: varchar("upload_batch_id").references(() => membershipUploadLogs.id, { onDelete: "set null" }),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Membership Upload Logs - bulk upload tracking
+export const membershipUploadLogs = pgTable("membership_upload_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
+  adminId: varchar("admin_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  uploadDate: timestamp("upload_date").defaultNow(),
+  fileName: text("file_name"),
+  recordsProcessed: integer("records_processed").default(0),
+  recordsSuccessful: integer("records_successful").default(0),
+  recordsFailed: integer("records_failed").default(0),
+  errorLog: text("error_log"), // JSON array of errors
+});
+
 // Audit Logs - GDPR Compliance & Security
 export const auditLogs = pgTable("audit_logs", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -1384,6 +1428,22 @@ export const insertAuditLogSchema = createInsertSchema(auditLogs).omit({
   createdAt: true,
 });
 
+// Membership Fee Insert Schemas
+export const insertMembershipSettingsSchema = createInsertSchema(membershipSettings).omit({
+  id: true,
+  updatedAt: true,
+});
+
+export const insertMembershipPaymentSchema = createInsertSchema(membershipPayments).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertMembershipUploadLogSchema = createInsertSchema(membershipUploadLogs).omit({
+  id: true,
+  uploadDate: true,
+});
+
 // Types
 export type Tenant = typeof tenants.$inferSelect;
 export type InsertTenant = z.infer<typeof insertTenantSchema>;
@@ -1393,3 +1453,11 @@ export type TenantFeature = typeof tenantFeatures.$inferSelect;
 export type InsertTenantFeature = z.infer<typeof insertTenantFeatureSchema>;
 export type AuditLog = typeof auditLogs.$inferSelect;
 export type InsertAuditLog = z.infer<typeof insertAuditLogSchema>;
+
+// Membership Fee Types
+export type MembershipSettings = typeof membershipSettings.$inferSelect;
+export type InsertMembershipSettings = z.infer<typeof insertMembershipSettingsSchema>;
+export type MembershipPayment = typeof membershipPayments.$inferSelect;
+export type InsertMembershipPayment = z.infer<typeof insertMembershipPaymentSchema>;
+export type MembershipUploadLog = typeof membershipUploadLogs.$inferSelect;
+export type InsertMembershipUploadLog = z.infer<typeof insertMembershipUploadLogSchema>;

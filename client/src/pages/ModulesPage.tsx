@@ -21,6 +21,7 @@ import {
   MilitaryTech,
   WorkspacePremium,
   Logout,
+  Receipt,
 } from '@mui/icons-material';
 import { useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
@@ -52,6 +53,7 @@ export default function ModulesPage() {
     { icon: <People sx={{ fontSize: 48 }} />, label: user?.isAdmin ? 'Korisnici' : 'Moje aktivnosti', description: user?.isAdmin ? 'Članovi džemata' : 'Pregled aktivnosti', route: user?.isAdmin ? '/users' : '/my-activities', testId: 'module-users' },
     { icon: <MilitaryTech sx={{ fontSize: 48 }} />, label: 'Bodovi i Značke', description: 'Vaša priznanja', route: '/my-activities', testId: 'module-badges' },
     { icon: <BarChart sx={{ fontSize: 48 }} />, label: user?.isAdmin ? 'Finansije' : 'Moje uplate', description: user?.isAdmin ? 'Finansijski pregled' : 'Moje donacije', route: '/finances', testId: 'module-finances' },
+    { icon: <Receipt sx={{ fontSize: 48 }} />, label: 'Članarina', description: 'Pregled uplata članarine', route: '/membership-fees', testId: 'module-membership-fees', adminOnly: true },
     { icon: <BarChart sx={{ fontSize: 48 }} />, label: 'Izvještaj aktivnosti', description: 'Pregled aktivnosti', route: '/activity-log', testId: 'module-activity', adminOnly: true },
     { icon: <AccountBalance sx={{ fontSize: 48 }} />, label: 'Projekti', description: 'Projekti džemata', route: '/projects', testId: 'module-projects' },
     { icon: <Announcement sx={{ fontSize: 48 }} />, label: 'Obavještenja', description: 'Obavještenja džemata', route: '/announcements', testId: 'module-announcements' },
