@@ -542,27 +542,39 @@
     padding: 0 !important;
   }
 
-  /* Hide the notch/legend since label is above now - complete border */
+  /* Hide the notch/legend completely - ensures solid unbroken border */
   .MuiOutlinedInput-notchedOutline > legend {
     display: none !important;
     max-width: 0 !important;
     width: 0 !important;
+    height: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    visibility: hidden !important;
+  }
+  
+  .MuiOutlinedInput-notchedOutline > legend > span {
+    display: none !important;
+    padding: 0 !important;
   }
   
   .MuiOutlinedInput-notchedOutline {
     border-width: 1px !important;
     border-color: var(--border-color-default) !important;
     top: 0 !important;
+    border-top-width: 1px !important;
   }
   
-  /* Unified focus border - Indigo ring */
+  /* Unified focus border - Indigo ring - complete border on all sides */
   .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
     border-color: var(--border-color-hover) !important;
+    border-top-width: 1px !important;
   }
   
   .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
     border-width: 2px !important;
     border-color: var(--border-color-focus) !important;
+    border-top-width: 2px !important;
   }
 
   /* Adjust the input field to account for label above */
