@@ -6610,7 +6610,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   });
 
   // Bulk upload payments (admin only)
-  // New format: "Ime i Prezime" + 12 month columns (Januar-Decembar)
+  // Format: Ime i Prezime, Iznos, Godina, Mjesec
   app.post("/api/membership-fees/payments/bulk-upload", requireAdmin, upload.single('file'), async (req, res) => {
     try {
       const tenantId = req.user!.tenantId;
@@ -6627,41 +6627,24 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       const worksheet = workbook.Sheets[sheetName];
       const data = XLSX.utils.sheet_to_json(worksheet) as any[];
       
-      // Try to extract year from sheet name (format: "Članarina 2025")
-      const yearMatch = sheetName.match(/\d{4}/);
-      const coverageYear = yearMatch ? parseInt(yearMatch[0]) : new Date().getFullYear();
-      
-      // Month name to number mapping
-      const monthNames: Record<string, number> = {
-        'Januar': 1, 'januar': 1,
-        'Februar': 2, 'februar': 2,
-        'Mart': 3, 'mart': 3,
-        'April': 4, 'april': 4,
-        'Maj': 5, 'maj': 5,
-        'Juni': 6, 'juni': 6, 'Jun': 6, 'jun': 6,
-        'Juli': 7, 'juli': 7, 'Jul': 7, 'jul': 7,
-        'August': 8, 'august': 8, 'Avgust': 8, 'avgust': 8,
-        'Septembar': 9, 'septembar': 9, 'September': 9,
-        'Oktobar': 10, 'oktobar': 10, 'Oktober': 10,
-        'Novembar': 11, 'novembar': 11, 'November': 11,
-        'Decembar': 12, 'decembar': 12, 'December': 12
-      };
-      
       // Get all users for matching
       const allUsers = await storage.getAllUsers(tenantId);
       
       const payments: any[] = [];
       const errors: string[] = [];
-      let totalPaymentsCount = 0;
       
       for (let i = 0; i < data.length; i++) {
         const row = data[i];
         const rowNum = i + 2; // Excel rows start at 1, plus header
         
+        // Expected columns: Ime i Prezime, Iznos, Godina, Mjesec
         const memberName = row['Ime i Prezime'] || row['Name'] || row['name'] || '';
+        const amount = row['Iznos'] || row['Amount'] || row['amount'] || '';
+        const year = row['Godina'] || row['Year'] || row['year'];
+        const month = row['Mjesec'] || row['Month'] || row['month'];
         
-        if (!memberName) {
-          errors.push(`Red ${rowNum}: Nedostaje ime člana`);
+        if (!memberName || !amount || !year) {
+          errors.push(`Red ${rowNum}: Nedostaju obavezni podaci (ime, iznos, godina)`);
           continue;
         }
         
@@ -6684,20 +6667,13 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
           continue;
         }
         
-        // Process each month column
-        for (const [columnName, monthNum] of Object.entries(monthNames)) {
-          const amount = row[columnName];
-          if (amount !== undefined && amount !== null && amount !== '' && !isNaN(parseFloat(amount))) {
-            totalPaymentsCount++;
-            payments.push({
-              tenantId,
-              userId: matchedUser.id,
-              amount: String(amount),
-              coverageYear,
-              coverageMonth: monthNum
-            });
-          }
-        }
+        payments.push({
+          tenantId,
+          userId: matchedUser.id,
+          amount: String(amount),
+          coverageYear: parseInt(year),
+          coverageMonth: month ? parseInt(month) : null
+        });
       }
       
       // Create upload log first
@@ -6716,7 +6692,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       const createdPayments = await storage.createMembershipPaymentBulk(paymentsWithBatch);
       
       res.json({
-        message: `Uspješno uneseno ${createdPayments.length} uplata za ${data.length} članova`,
+        message: `Uspješno uneseno ${createdPayments.length} od ${data.length} uplata`,
         processed: data.length,
         successful: createdPayments.length,
         failed: errors.length,
