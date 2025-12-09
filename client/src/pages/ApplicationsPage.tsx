@@ -1214,36 +1214,227 @@ function IncomingAkikaApplications() {
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
     
+    const statusLabel = application.status === 'pending' ? 'Na čekanju' : 
+                        application.status === 'approved' ? 'Odobreno' : 'Odbijeno';
+    
     printWindow.document.write(`
       <html>
         <head>
-          <title>${t("incomingApplications.print")} - ${application.childName}</title>
+          <title>Akika prijava - ${application.childName}</title>
           <style>
-            body { font-family: Arial, sans-serif; padding: 20px; }
-            h2 { color: #333; border-bottom: 2px solid #333; padding-bottom: 10px; }
-            .field { margin: 15px 0; }
-            .label { font-weight: bold; color: #555; }
-            .value { margin-left: 10px; }
+            @page { margin: 20mm; }
+            * { box-sizing: border-box; }
+            body { 
+              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+              padding: 0; 
+              margin: 0;
+              color: #333;
+              line-height: 1.6;
+            }
+            .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+            .header { 
+              text-align: center; 
+              border-bottom: 3px solid #3949AB; 
+              padding-bottom: 20px; 
+              margin-bottom: 30px; 
+            }
+            .header h1 { 
+              color: #3949AB; 
+              margin: 0 0 10px 0; 
+              font-size: 28px;
+            }
+            .header .subtitle {
+              color: #666;
+              font-size: 14px;
+            }
+            .section { 
+              margin-bottom: 25px; 
+              page-break-inside: avoid;
+            }
+            .section-title { 
+              background: #3949AB; 
+              color: white; 
+              padding: 10px 15px; 
+              margin-bottom: 15px;
+              font-size: 16px;
+              font-weight: 600;
+              border-radius: 4px;
+            }
+            .fields-grid { 
+              display: grid; 
+              grid-template-columns: repeat(2, 1fr); 
+              gap: 15px; 
+            }
+            .field { 
+              padding: 12px;
+              background: #f8f9fa;
+              border-radius: 4px;
+              border-left: 3px solid #1E88E5;
+            }
+            .field.full-width { grid-column: span 2; }
+            .field-label { 
+              font-size: 11px; 
+              color: #666; 
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+              margin-bottom: 4px;
+            }
+            .field-value { 
+              font-size: 14px; 
+              color: #333;
+              font-weight: 500;
+            }
+            .status-badge {
+              display: inline-block;
+              padding: 6px 16px;
+              border-radius: 20px;
+              font-weight: 600;
+              font-size: 12px;
+            }
+            .status-pending { background: #FFF3E0; color: #E65100; }
+            .status-approved { background: #E8F5E9; color: #2E7D32; }
+            .status-rejected { background: #FFEBEE; color: #C62828; }
+            .footer {
+              margin-top: 40px;
+              padding-top: 20px;
+              border-top: 1px solid #ddd;
+              text-align: center;
+              color: #666;
+              font-size: 12px;
+            }
+            .signature-section {
+              margin-top: 50px;
+              display: grid;
+              grid-template-columns: repeat(2, 1fr);
+              gap: 40px;
+            }
+            .signature-box {
+              text-align: center;
+            }
+            .signature-line {
+              border-top: 1px solid #333;
+              margin-top: 60px;
+              padding-top: 10px;
+              font-size: 12px;
+            }
+            @media print {
+              body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            }
           </style>
         </head>
         <body>
-          <h2>${t("requestTypes.akika")}</h2>
-          <div class="field"><span class="label">${t("akika.fatherName")}:</span><span class="value">${application.fatherName}</span></div>
-          <div class="field"><span class="label">${t("akika.motherName")}:</span><span class="value">${application.motherName}</span></div>
-          <div class="field"><span class="label">${t("akika.childName")}:</span><span class="value">${application.childName}</span></div>
-          <div class="field"><span class="label">${t("akika.childGender")}:</span><span class="value">${application.childGender}</span></div>
-          <div class="field"><span class="label">${t("akika.childDateOfBirth")}:</span><span class="value">${application.childDateOfBirth}</span></div>
-          <div class="field"><span class="label">${t("akika.childPlaceOfBirth")}:</span><span class="value">${application.childPlaceOfBirth}</span></div>
-          <div class="field"><span class="label">${t("akika.location")}:</span><span class="value">${application.location}</span></div>
-          <div class="field"><span class="label">${t("akika.phone")}:</span><span class="value">${application.phone}</span></div>
-          ${application.notes ? `<div class="field"><span class="label">${t("akika.notes")}:</span><span class="value">${application.notes}</span></div>` : ''}
-          <div class="field"><span class="label">${t("print.submittedAt")}:</span><span class="value">${application.createdAt ? new Date(application.createdAt).toLocaleString('hr-HR') : '-'}</span></div>
-          <div class="field"><span class="label">${t("print.status")}:</span><span class="value">${t(`status.${application.status}`)}</span></div>
+          <div class="container">
+            <div class="header">
+              <h1>AKIKA PRIJAVA</h1>
+              <div class="subtitle">Zahtjev za organizaciju akike</div>
+            </div>
+            
+            <div class="section">
+              <div class="section-title">Podaci o roditeljima</div>
+              <div class="fields-grid">
+                <div class="field">
+                  <div class="field-label">Ime oca</div>
+                  <div class="field-value">${application.fatherName || '-'}</div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Ime majke</div>
+                  <div class="field-value">${application.motherName || '-'}</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="section">
+              <div class="section-title">Podaci o djetetu</div>
+              <div class="fields-grid">
+                <div class="field">
+                  <div class="field-label">Ime djeteta</div>
+                  <div class="field-value">${application.childName || '-'}</div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Spol</div>
+                  <div class="field-value">${application.childGender || '-'}</div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Datum rođenja</div>
+                  <div class="field-value">${application.childDateOfBirth || '-'}</div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Mjesto rođenja</div>
+                  <div class="field-value">${application.childPlaceOfBirth || '-'}</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="section">
+              <div class="section-title">Detalji organizacije</div>
+              <div class="fields-grid">
+                <div class="field">
+                  <div class="field-label">Lokacija</div>
+                  <div class="field-value">${application.location || '-'}</div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Organizirati ketering</div>
+                  <div class="field-value">${application.organizeCatering ? 'Da' : 'Ne'}</div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Kontakt telefon</div>
+                  <div class="field-value">${application.phone || '-'}</div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Email</div>
+                  <div class="field-value">${application.email || '-'}</div>
+                </div>
+                ${application.notes ? `
+                  <div class="field full-width">
+                    <div class="field-label">Napomene</div>
+                    <div class="field-value">${application.notes}</div>
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+            
+            <div class="section">
+              <div class="section-title">Status prijave</div>
+              <div class="fields-grid">
+                <div class="field">
+                  <div class="field-label">Status</div>
+                  <div class="field-value">
+                    <span class="status-badge status-${application.status}">${statusLabel}</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Datum prijave</div>
+                  <div class="field-value">${application.createdAt ? new Date(application.createdAt).toLocaleDateString('bs-BA') : '-'}</div>
+                </div>
+                ${application.reviewNotes ? `
+                  <div class="field full-width">
+                    <div class="field-label">Odgovor/Napomena</div>
+                    <div class="field-value">${application.reviewNotes}</div>
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+            
+            <div class="signature-section">
+              <div class="signature-box">
+                <div class="signature-line">Potpis podnosioca</div>
+              </div>
+              <div class="signature-box">
+                <div class="signature-line">Potpis ovlaštene osobe</div>
+              </div>
+            </div>
+            
+            <div class="footer">
+              Dokument generisan: ${new Date().toLocaleString('bs-BA')}
+            </div>
+          </div>
         </body>
       </html>
     `);
     printWindow.document.close();
-    printWindow.print();
+    printWindow.onload = () => {
+      printWindow.print();
+    };
   };
 
   if (isLoading) {

@@ -25,7 +25,7 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
-import { Visibility, CheckCircle, Cancel, Delete } from '@mui/icons-material';
+import { Visibility, CheckCircle, Cancel, Delete, Print } from '@mui/icons-material';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { queryClient, apiRequest } from '@/lib/queryClient';
 import type { MembershipApplication } from '@shared/schema';
@@ -113,6 +113,261 @@ export function MembershipApplicationsList() {
     if (confirm('Da li ste sigurni da želite obrisati ovu pristupnicu?')) {
       deleteMutation.mutate(id);
     }
+  };
+
+  const handlePrint = (application: MembershipApplication) => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Pristupnica - ${application.firstName} ${application.lastName}</title>
+          <style>
+            @page { margin: 20mm; }
+            * { box-sizing: border-box; }
+            body { 
+              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+              padding: 0; 
+              margin: 0;
+              color: #333;
+              line-height: 1.6;
+            }
+            .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+            .header { 
+              text-align: center; 
+              border-bottom: 3px solid #3949AB; 
+              padding-bottom: 20px; 
+              margin-bottom: 30px; 
+            }
+            .header h1 { 
+              color: #3949AB; 
+              margin: 0 0 10px 0; 
+              font-size: 28px;
+            }
+            .header .subtitle {
+              color: #666;
+              font-size: 14px;
+            }
+            .photo-section {
+              text-align: center;
+              margin-bottom: 30px;
+            }
+            .photo-section img {
+              width: 150px;
+              height: 150px;
+              border-radius: 50%;
+              object-fit: cover;
+              border: 3px solid #3949AB;
+            }
+            .section { 
+              margin-bottom: 25px; 
+              page-break-inside: avoid;
+            }
+            .section-title { 
+              background: #3949AB; 
+              color: white; 
+              padding: 10px 15px; 
+              margin-bottom: 15px;
+              font-size: 16px;
+              font-weight: 600;
+              border-radius: 4px;
+            }
+            .fields-grid { 
+              display: grid; 
+              grid-template-columns: repeat(2, 1fr); 
+              gap: 15px; 
+            }
+            .field { 
+              padding: 12px;
+              background: #f8f9fa;
+              border-radius: 4px;
+              border-left: 3px solid #1E88E5;
+            }
+            .field.full-width { grid-column: span 2; }
+            .field-label { 
+              font-size: 11px; 
+              color: #666; 
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+              margin-bottom: 4px;
+            }
+            .field-value { 
+              font-size: 14px; 
+              color: #333;
+              font-weight: 500;
+            }
+            .status-badge {
+              display: inline-block;
+              padding: 6px 16px;
+              border-radius: 20px;
+              font-weight: 600;
+              font-size: 12px;
+            }
+            .status-pending { background: #FFF3E0; color: #E65100; }
+            .status-approved { background: #E8F5E9; color: #2E7D32; }
+            .status-rejected { background: #FFEBEE; color: #C62828; }
+            .footer {
+              margin-top: 40px;
+              padding-top: 20px;
+              border-top: 1px solid #ddd;
+              text-align: center;
+              color: #666;
+              font-size: 12px;
+            }
+            .signature-section {
+              margin-top: 50px;
+              display: grid;
+              grid-template-columns: repeat(2, 1fr);
+              gap: 40px;
+            }
+            .signature-box {
+              text-align: center;
+            }
+            .signature-line {
+              border-top: 1px solid #333;
+              margin-top: 60px;
+              padding-top: 10px;
+              font-size: 12px;
+            }
+            @media print {
+              body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>PRISTUPNICA</h1>
+              <div class="subtitle">Zahtjev za članstvo u džematu</div>
+            </div>
+            
+            ${application.photo ? `
+              <div class="photo-section">
+                <img src="${application.photo}" alt="Fotografija" />
+              </div>
+            ` : ''}
+            
+            <div class="section">
+              <div class="section-title">Lični podaci</div>
+              <div class="fields-grid">
+                <div class="field">
+                  <div class="field-label">Ime</div>
+                  <div class="field-value">${application.firstName || '-'}</div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Prezime</div>
+                  <div class="field-value">${application.lastName || '-'}</div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Pol</div>
+                  <div class="field-value">${application.gender || '-'}</div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Datum rođenja</div>
+                  <div class="field-value">${application.dateOfBirth || '-'}</div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Mjesto rođenja</div>
+                  <div class="field-value">${application.placeOfBirth || '-'}</div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Zanimanje</div>
+                  <div class="field-value">${application.occupation || '-'}</div>
+                </div>
+                <div class="field full-width">
+                  <div class="field-label">Adresa stanovanja</div>
+                  <div class="field-value">${application.streetAddress || ''}, ${application.postalCode || ''} ${application.city || ''}</div>
+                </div>
+                ${application.skillsHobbies ? `
+                  <div class="field full-width">
+                    <div class="field-label">Posebne sposobnosti i hobiji</div>
+                    <div class="field-value">${application.skillsHobbies}</div>
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+            
+            <div class="section">
+              <div class="section-title">Porodični podaci</div>
+              <div class="fields-grid">
+                <div class="field">
+                  <div class="field-label">Bračno stanje</div>
+                  <div class="field-value">${application.maritalStatus || '-'}</div>
+                </div>
+                ${application.spouseName ? `
+                  <div class="field">
+                    <div class="field-label">Ime bračnog partnera</div>
+                    <div class="field-value">${application.spouseName}</div>
+                  </div>
+                ` : '<div></div>'}
+                ${application.childrenInfo ? `
+                  <div class="field full-width">
+                    <div class="field-label">Djeca</div>
+                    <div class="field-value">${application.childrenInfo}</div>
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+            
+            <div class="section">
+              <div class="section-title">Kontakt podaci</div>
+              <div class="fields-grid">
+                <div class="field">
+                  <div class="field-label">Email</div>
+                  <div class="field-value">${application.email || '-'}</div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Telefon</div>
+                  <div class="field-value">${application.phone || '-'}</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="section">
+              <div class="section-title">Podaci o članstvu</div>
+              <div class="fields-grid">
+                <div class="field">
+                  <div class="field-label">Mjesečna članarina</div>
+                  <div class="field-value">${application.monthlyFee || '-'}</div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Način dostave računa</div>
+                  <div class="field-value">${application.invoiceDelivery || '-'}</div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Status prijave</div>
+                  <div class="field-value">
+                    <span class="status-badge status-${application.status}">${application.status === 'pending' ? 'Na čekanju' : application.status === 'approved' ? 'Odobreno' : 'Odbijeno'}</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Datum prijave</div>
+                  <div class="field-value">${application.createdAt ? new Date(application.createdAt).toLocaleDateString('bs-BA') : '-'}</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="signature-section">
+              <div class="signature-box">
+                <div class="signature-line">Potpis podnosioca</div>
+              </div>
+              <div class="signature-box">
+                <div class="signature-line">Potpis ovlaštene osobe</div>
+              </div>
+            </div>
+            
+            <div class="footer">
+              Dokument generisan: ${new Date().toLocaleString('bs-BA')}
+            </div>
+          </div>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.onload = () => {
+      printWindow.print();
+    };
   };
 
   const getStatusColor = (status: string) => {
@@ -215,6 +470,14 @@ export function MembershipApplicationsList() {
                         data-testid={`button-view-${app.id}`}
                       >
                         <Visibility fontSize="small" />
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        color="primary"
+                        onClick={() => handlePrint(app)}
+                        data-testid={`button-print-${app.id}`}
+                      >
+                        <Print fontSize="small" />
                       </IconButton>
                       {app.status === 'pending' && (
                         <>
