@@ -91,6 +91,18 @@ export const eventRsvps = pgTable("event_rsvps", {
   rsvpDate: timestamp("rsvp_date").defaultNow(),
 });
 
+export const eventAttendance = pgTable("event_attendance", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
+  eventId: varchar("event_id").notNull().references(() => events.id, { onDelete: "cascade" }),
+  userId: varchar("user_id").references(() => users.id, { onDelete: "cascade" }),
+  guestName: text("guest_name"),
+  pointsAwarded: integer("points_awarded").default(0),
+  checkedInAt: timestamp("checked_in_at").defaultNow(),
+}, (t) => ({
+  uniqueUserEvent: unique("event_attendance_user_event_unique").on(t.eventId, t.userId),
+}));
+
 export const workGroups = pgTable("work_groups", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
@@ -325,6 +337,13 @@ export const insertEventRsvpSchema = createInsertSchema(eventRsvps).omit({
   tenantId: z.string()
 });
 
+export const insertEventAttendanceSchema = createInsertSchema(eventAttendance).omit({
+  id: true,
+  checkedInAt: true,
+}).extend({
+  tenantId: z.string()
+});
+
 export const insertWorkGroupSchema = createInsertSchema(workGroups).omit({
   id: true,
   createdAt: true,
@@ -473,6 +492,8 @@ export type Event = typeof events.$inferSelect;
 export type InsertEvent = z.infer<typeof insertEventSchema>;
 export type EventRsvp = typeof eventRsvps.$inferSelect;
 export type InsertEventRsvp = z.infer<typeof insertEventRsvpSchema>;
+export type EventAttendance = typeof eventAttendance.$inferSelect;
+export type InsertEventAttendance = z.infer<typeof insertEventAttendanceSchema>;
 export type WorkGroup = typeof workGroups.$inferSelect;
 export type InsertWorkGroup = z.infer<typeof insertWorkGroupSchema>;
 export type WorkGroupMember = typeof workGroupMembers.$inferSelect;
@@ -623,16 +644,6 @@ export const activityLog = pgTable("activity_log", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const eventAttendance = pgTable("event_attendance", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
-  eventId: varchar("event_id").notNull().references(() => events.id),
-  userId: varchar("user_id").notNull().references(() => users.id),
-  attended: boolean("attended").default(true).notNull(),
-  recordedById: varchar("recorded_by_id").notNull().references(() => users.id), // Admin who confirmed
-  recordedAt: timestamp("recorded_at").defaultNow().notNull(),
-});
-
 // Feature 2: Gamification System
 export const pointsSettings = pgTable("points_settings", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -767,13 +778,6 @@ export const insertActivityLogSchema = createInsertSchema(activityLog).omit({
   tenantId: z.string()
 });
 
-export const insertEventAttendanceSchema = createInsertSchema(eventAttendance).omit({
-  id: true,
-  recordedAt: true,
-}).extend({
-  tenantId: z.string()
-});
-
 // Feature 2: Gamification System
 export const insertPointsSettingsSchema = createInsertSchema(pointsSettings).omit({
   id: true,
@@ -842,8 +846,6 @@ export type FinancialContribution = typeof financialContributions.$inferSelect;
 export type InsertFinancialContribution = z.infer<typeof insertFinancialContributionSchema>;
 export type ActivityLog = typeof activityLog.$inferSelect;
 export type InsertActivityLog = z.infer<typeof insertActivityLogSchema>;
-export type EventAttendance = typeof eventAttendance.$inferSelect;
-export type InsertEventAttendance = z.infer<typeof insertEventAttendanceSchema>;
 export type PointsSettings = typeof pointsSettings.$inferSelect;
 export type InsertPointsSettings = z.infer<typeof insertPointsSettingsSchema>;
 export type Badge = typeof badges.$inferSelect;
