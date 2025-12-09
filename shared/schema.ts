@@ -1360,12 +1360,11 @@ export const membershipPayments = pgTable("membership_payments", {
   tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
   amount: text("amount").notNull(), // e.g., "30", "50", "70"
-  datePaid: timestamp("date_paid").defaultNow(),
   coverageYear: integer("coverage_year").notNull(), // e.g., 2024, 2025
   coverageMonth: integer("coverage_month"), // 1-12 for monthly, NULL for yearly
+  paidAt: timestamp("paid_at").defaultNow(),
+  recordedById: varchar("recorded_by_id").references(() => users.id, { onDelete: "set null" }),
   uploadBatchId: varchar("upload_batch_id").references(() => membershipUploadLogs.id, { onDelete: "set null" }),
-  notes: text("notes"),
-  createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Membership Upload Logs - bulk upload tracking
@@ -1373,7 +1372,7 @@ export const membershipUploadLogs = pgTable("membership_upload_logs", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
   adminId: varchar("admin_id").notNull().references(() => users.id, { onDelete: "cascade" }),
-  uploadDate: timestamp("upload_date").defaultNow(),
+  uploadedAt: timestamp("uploaded_at").defaultNow(),
   fileName: text("file_name"),
   recordsProcessed: integer("records_processed").default(0),
   recordsSuccessful: integer("records_successful").default(0),
@@ -1438,12 +1437,12 @@ export const insertMembershipSettingsSchema = createInsertSchema(membershipSetti
 
 export const insertMembershipPaymentSchema = createInsertSchema(membershipPayments).omit({
   id: true,
-  createdAt: true,
+  paidAt: true,
 });
 
 export const insertMembershipUploadLogSchema = createInsertSchema(membershipUploadLogs).omit({
   id: true,
-  uploadDate: true,
+  uploadedAt: true,
 });
 
 // Types
