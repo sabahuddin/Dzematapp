@@ -494,6 +494,24 @@ async function createMissingTables(client: any): Promise<void> {
     console.log("ℹ️  Constraint migration note:", error.message);
   }
   
+  // Add unique constraint for membership payments (prevent duplicate payments for same month/year)
+  console.log("📋 Adding membership payment unique constraint...");
+  try {
+    await client.query(`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'membership_payments_unique') THEN
+          ALTER TABLE membership_payments ADD CONSTRAINT membership_payments_unique 
+            UNIQUE (tenant_id, user_id, coverage_year, coverage_month);
+          RAISE NOTICE 'Created membership payments unique constraint';
+        END IF;
+      END $$;
+    `);
+    console.log("✅ Membership payment constraint added");
+  } catch (error: any) {
+    console.log("ℹ️  Membership constraint note:", error.message);
+  }
+  
   // Update usernames to new standard
   console.log("📋 Updating admin usernames to new standard...");
   try {
@@ -1019,6 +1037,7 @@ export async function verifyAllTablesExist(): Promise<void> {
       'event_attendance', 'event_rsvps', 'events', 'family_relationships',
       'financial_contributions', 'imam_questions', 'important_dates',
       'marketplace_items', 'marriage_applications', 'membership_applications',
+      'membership_payments', 'membership_settings', 'membership_upload_logs',
       'messages', 'organization_settings', 'points_settings', 'prayer_times',
       'product_purchase_requests', 'projects', 'proposals', 'receipts',
       'requests', 'services', 'shop_products', 'subscription_plans',
