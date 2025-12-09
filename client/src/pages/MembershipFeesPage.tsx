@@ -35,13 +35,13 @@ import {
 } from '@mui/material';
 import {
   Upload,
-  Settings,
   Search,
   Download,
   Add,
   Delete,
   Receipt,
-  CloudUpload
+  CloudUpload,
+  Edit
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../hooks/use-toast';
@@ -68,13 +68,19 @@ function TabPanel(props: TabPanelProps) {
 interface MembershipSettings {
   id: string;
   tenantId: string;
-  feeType: string;
   monthlyAmount: string;
   yearlyAmount: string;
   currentFiscalYear: number;
   currency: string;
   updatedAt: string | null;
   updatedById: string | null;
+}
+
+interface OrganizationSettings {
+  id: string;
+  name: string;
+  currency: string;
+  membershipFeeType: string;
 }
 
 interface GridMember {
@@ -113,7 +119,6 @@ export default function MembershipFeesPage() {
   const [tabValue, setTabValue] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedYear, setSelectedYear] = useState<number | 'all'>(new Date().getFullYear());
-  const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [uploadResult, setUploadResult] = useState<any>(null);
   const [addPaymentDialogOpen, setAddPaymentDialogOpen] = useState(false);
@@ -123,9 +128,6 @@ export default function MembershipFeesPage() {
     coverageYear: new Date().getFullYear(),
     coverageMonth: 1,
     autoDistribute: true
-  });
-  const [editSettings, setEditSettings] = useState({
-    feeType: 'monthly'
   });
   const [editPaymentDialogOpen, setEditPaymentDialogOpen] = useState(false);
   const [editingPayment, setEditingPayment] = useState<any>(null);
@@ -139,6 +141,11 @@ export default function MembershipFeesPage() {
 
   const settingsQuery = useQuery<MembershipSettings>({
     queryKey: ['/api/membership-fees/settings'],
+    enabled: !!currentUser,
+  });
+
+  const orgSettingsQuery = useQuery<OrganizationSettings>({
+    queryKey: ['/api/organization-settings'],
     enabled: !!currentUser,
   });
 
@@ -160,20 +167,6 @@ export default function MembershipFeesPage() {
   const allPaymentsQuery = useQuery<any[]>({
     queryKey: ['/api/membership-fees/payments', selectedYear === 'all' ? undefined : selectedYear],
     enabled: !!currentUser?.isAdmin,
-  });
-
-  const updateSettingsMutation = useMutation({
-    mutationFn: async (data: Partial<MembershipSettings>) => {
-      return await apiRequest('/api/membership-fees/settings', 'PATCH', data);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/membership-fees/settings'] });
-      setSettingsDialogOpen(false);
-      toast({ title: 'Postavke uspješno sačuvane', variant: 'default' });
-    },
-    onError: () => {
-      toast({ title: 'Greška pri čuvanju postavki', variant: 'destructive' });
-    }
   });
 
   const createPaymentMutation = useMutation({
@@ -267,20 +260,7 @@ export default function MembershipFeesPage() {
     return fullName.includes(searchTerm.toLowerCase()) || regNum.includes(searchTerm);
   });
 
-  const openSettingsDialog = () => {
-    if (settings) {
-      setEditSettings({
-        feeType: settings.feeType
-      });
-    }
-    setSettingsDialogOpen(true);
-  };
-
-  const handleSaveSettings = () => {
-    updateSettingsMutation.mutate({
-      feeType: editSettings.feeType
-    });
-  };
+  const orgSettings = orgSettingsQuery.data;
 
   const handleAddPayment = () => {
     if (!newPayment.userId || !newPayment.amount) {
@@ -325,24 +305,14 @@ export default function MembershipFeesPage() {
           <Receipt sx={{ mr: 1, verticalAlign: 'middle' }} />
           Članarina
         </Typography>
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          <Button
-            variant="outlined"
-            startIcon={<Settings />}
-            onClick={openSettingsDialog}
-            data-testid="button-membership-settings"
-          >
-            Postavke
-          </Button>
-          <Button
-            variant="contained"
-            startIcon={<Upload />}
-            onClick={() => setUploadDialogOpen(true)}
-            data-testid="button-bulk-upload"
-          >
-            Bulk Upload
-          </Button>
-        </Box>
+        <Button
+          variant="contained"
+          startIcon={<Upload />}
+          onClick={() => setUploadDialogOpen(true)}
+          data-testid="button-bulk-upload"
+        >
+          Bulk Upload
+        </Button>
       </Box>
 
       <Card sx={{ mb: 3 }}>
@@ -393,7 +363,7 @@ export default function MembershipFeesPage() {
             <Grid size={{ xs: 12, sm: 3 }}>
               {settings && (
                 <Chip 
-                  label={settings.feeType === 'monthly' ? 'Mjesečna naplata' : 'Godišnja naplata'} 
+                  label={orgSettings?.membershipFeeType === 'monthly' ? 'Mjesečna naplata' : 'Godišnja naplata'} 
                   color="primary"
                   variant="outlined"
                 />
@@ -538,7 +508,7 @@ export default function MembershipFeesPage() {
                           }}
                           data-testid={`button-edit-payment-${payment.id}`}
                         >
-                          <Settings fontSize="small" />
+                          <Edit fontSize="small" />
                         </IconButton>
                         <IconButton
                           size="small"
@@ -598,33 +568,6 @@ export default function MembershipFeesPage() {
           </TableContainer>
         )}
       </TabPanel>
-
-      {/* Settings Dialog */}
-      <Dialog open={settingsDialogOpen} onClose={() => setSettingsDialogOpen(false)} maxWidth="xs" fullWidth>
-        <DialogTitle>Postavke članarine</DialogTitle>
-        <DialogContent>
-          <FormControl fullWidth sx={{ mt: 2 }}>
-            <InputLabel>Tip naplate</InputLabel>
-            <Select
-              value={editSettings.feeType}
-              onChange={(e) => setEditSettings({ ...editSettings, feeType: e.target.value })}
-              label="Tip naplate"
-            >
-              <MenuItem value="monthly">Mjesečno</MenuItem>
-              <MenuItem value="yearly">Godišnje</MenuItem>
-            </Select>
-          </FormControl>
-          <Typography variant="caption" color="text.secondary" sx={{ mt: 2, display: 'block' }}>
-            Valuta se definiše u podešavanjima organizacije.
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setSettingsDialogOpen(false)}>Otkaži</Button>
-          <Button variant="contained" onClick={handleSaveSettings} disabled={updateSettingsMutation.isPending}>
-            Sačuvaj
-          </Button>
-        </DialogActions>
-      </Dialog>
 
       {/* Upload Dialog */}
       <Dialog open={uploadDialogOpen} onClose={() => { setUploadDialogOpen(false); setUploadResult(null); }} maxWidth="sm" fullWidth>

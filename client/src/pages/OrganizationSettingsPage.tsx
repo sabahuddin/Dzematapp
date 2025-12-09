@@ -36,6 +36,7 @@ export default function OrganizationSettingsPage({ hideHeader = false }: Organiz
       phone: "",
       email: "",
       currency: "CHF",
+      membershipFeeType: "monthly",
       facebookUrl: "",
       instagramUrl: "",
       youtubeUrl: "",
@@ -55,6 +56,7 @@ export default function OrganizationSettingsPage({ hideHeader = false }: Organiz
         phone: settings.phone,
         email: settings.email,
         currency: settings.currency || "CHF",
+        membershipFeeType: (settings as any).membershipFeeType || "monthly",
         facebookUrl: settings.facebookUrl || "",
         instagramUrl: settings.instagramUrl || "",
         youtubeUrl: settings.youtubeUrl || "",
@@ -255,6 +257,32 @@ export default function OrganizationSettingsPage({ hideHeader = false }: Organiz
                               <SelectItem value="CHF">CHF (Švicarski franak)</SelectItem>
                               <SelectItem value="EUR">EUR (Euro)</SelectItem>
                               <SelectItem value="USD">USD (Američki dolar)</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </Box>
+                <Box sx={{ flex: 1 }}>
+                  <FormField
+                    control={form.control}
+                    name="membershipFeeType"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center gap-2">
+                          <Coins size={16} />
+                          Tip članarine
+                        </FormLabel>
+                        <FormControl>
+                          <Select onValueChange={field.onChange} value={field.value || "monthly"}>
+                            <SelectTrigger data-testid="select-membership-fee-type">
+                              <SelectValue placeholder="Odaberite tip članarine" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="monthly">Mjesečno</SelectItem>
+                              <SelectItem value="yearly">Godišnje</SelectItem>
                             </SelectContent>
                           </Select>
                         </FormControl>

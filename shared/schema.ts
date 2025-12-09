@@ -202,6 +202,7 @@ export const organizationSettings = pgTable("organization_settings", {
   phone: text("phone").notNull().default("+387 33 123 456"),
   email: text("email").notNull().default("info@dzemat.ba"),
   currency: text("currency").notNull().default("CHF"), // BAM, CHF, EUR, USD
+  membershipFeeType: text("membership_fee_type").notNull().default("monthly"), // "monthly" or "yearly"
   facebookUrl: text("facebook_url"),
   instagramUrl: text("instagram_url"),
   youtubeUrl: text("youtube_url"),

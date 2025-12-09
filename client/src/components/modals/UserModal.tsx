@@ -80,7 +80,6 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
     roles: [] as string[],
     skills: [] as string[],
     isAdmin: false,
-    membershipFeeType: '',
     membershipFeeAmount: ''
   });
   const [photoFile, setPhotoFile] = useState<File | null>(null);
@@ -148,7 +147,6 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
         roles: user.roles || [],
         skills: user.skills || [],
         isAdmin: user.isAdmin || false,
-        membershipFeeType: (user as any).membershipFeeType || '',
         membershipFeeAmount: (user as any).membershipFeeAmount || ''
       });
       setPhotoPreview(user.photo || '');
@@ -173,7 +171,6 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
         roles: ['clan'],
         skills: [],
         isAdmin: false,
-        membershipFeeType: 'monthly',
         membershipFeeAmount: ''
       });
       setPhotoPreview('');
@@ -555,39 +552,23 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
               </Grid>
             )}
 
-            {/* Row 6c: Membership Fee Settings - Admin only */}
+            {/* Row 6c: Membership Fee Amount - Admin only */}
             {!isMemberEditingSelf && (
-              <>
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <FormControl fullWidth>
-                    <InputLabel>Tip članarine</InputLabel>
-                    <Select
-                      value={formData.membershipFeeType || 'monthly'}
-                      label="Tip članarine"
-                      onChange={(e) => handleChange('membershipFeeType')(e as any)}
-                      data-testid="select-membershipFeeType"
-                    >
-                      <MenuItem value="monthly">Mjesečno</MenuItem>
-                      <MenuItem value="yearly">Godišnje</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    label="Iznos članarine"
-                    type="number"
-                    value={formData.membershipFeeAmount}
-                    onChange={handleChange('membershipFeeAmount')}
-                    placeholder="npr. 30"
-                    InputProps={{
-                      endAdornment: <Typography variant="body2" color="text.secondary">CHF</Typography>
-                    }}
-                    data-testid="input-membershipFeeAmount"
-                  />
-                </Grid>
-              </>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  label="Iznos članarine"
+                  type="number"
+                  value={formData.membershipFeeAmount}
+                  onChange={handleChange('membershipFeeAmount')}
+                  placeholder="npr. 30"
+                  InputProps={{
+                    endAdornment: <Typography variant="body2" color="text.secondary">CHF</Typography>
+                  }}
+                  data-testid="input-membershipFeeAmount"
+                />
+              </Grid>
             )}
             
             {/* Row 7a: Skills (Full width or 50%) */}

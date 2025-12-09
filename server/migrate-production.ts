@@ -719,6 +719,7 @@ async function addMissingColumns(client: any): Promise<void> {
     `ALTER TABLE "organization_settings" ADD COLUMN IF NOT EXISTS "referenz_zeile" text`,
     `ALTER TABLE "organization_settings" ADD COLUMN IF NOT EXISTS "show_financial_section" boolean DEFAULT true`,
     `ALTER TABLE "organization_settings" ADD COLUMN IF NOT EXISTS "created_at" timestamp DEFAULT now()`,
+    `ALTER TABLE "organization_settings" ADD COLUMN IF NOT EXISTS "membership_fee_type" text NOT NULL DEFAULT 'monthly'`,
     
     // SPONSORS - fix column names for existing tables
     `ALTER TABLE "sponsors" ADD COLUMN IF NOT EXISTS "contribution_amount" integer`,

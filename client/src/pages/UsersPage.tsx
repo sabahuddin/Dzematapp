@@ -218,6 +218,7 @@ export default function UsersPage() {
     }
 
     const userData = filteredUsers.map((user: User) => [
+      (user as any).registryNumber || '-',
       `${user.firstName} ${user.lastName}`,
       user.username || '-',
       formatDateForDisplay(user.dateOfBirth),
@@ -234,6 +235,7 @@ export default function UsersPage() {
       filename: 'Korisnici',
       sheetName: 'Korisnici',
       headers: [
+        'ID',
         'Ime i prezime',
         'Username',
         'Datum rođenja',
@@ -277,11 +279,12 @@ export default function UsersPage() {
       return user.id === currentUser?.id;
     }
     
-    // Text search filter (admin only)
+    // Text search filter (admin only) - includes ID (registry number)
+    const registryNumberStr = (user as any).registryNumber ? String((user as any).registryNumber) : '';
     const matchesSearch = 
       user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (user.email ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      registryNumberStr.includes(searchTerm) ||
       (user.username ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
       (user.phone ?? '').toLowerCase().includes(searchTerm.toLowerCase());
     
@@ -714,6 +717,7 @@ export default function UsersPage() {
           <Table>
             <TableHead>
               <TableRow>
+                <TableCell sx={{ fontWeight: 600, width: 60 }}>ID</TableCell>
                 <TableCell>
                   <TableSortLabel
                     active={sortField === 'firstName'}
@@ -776,6 +780,11 @@ export default function UsersPage() {
             <TableBody>
               {sortedUsers.map((user: User) => (
                 <TableRow key={user.id}>
+                  <TableCell>
+                    <Typography variant="body2" fontWeight={600} color="primary">
+                      {(user as any).registryNumber || '-'}
+                    </Typography>
+                  </TableCell>
                   <TableCell>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                       <Avatar 
