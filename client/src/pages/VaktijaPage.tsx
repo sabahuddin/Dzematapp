@@ -399,6 +399,23 @@ export default function VaktijaPage() {
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
               {t('vaktija:dateFormat')}
             </Typography>
+            
+            <Button
+              variant="outlined"
+              size="small"
+              startIcon={<Download />}
+              onClick={() => {
+                const link = document.createElement('a');
+                link.href = '/api/prayer-times/template';
+                link.download = 'vaktija-template.csv';
+                link.click();
+              }}
+              sx={{ mb: 2 }}
+              data-testid="button-download-template"
+            >
+              Preuzmi template CSV
+            </Button>
+            
             <input
               type="file"
               accept=".csv"

@@ -4021,6 +4021,35 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     }
 });
 
+  // Download template CSV for prayer times (vaktija)
+  app.get("/api/prayer-times/template", async (req, res) => {
+    try {
+      // Generate template with current year dates and placeholder times
+      const now = new Date();
+      const year = now.getFullYear();
+      const csvRows = [];
+      csvRows.push('Datum;Sabah;Izlazak sunca;Podne;Ikindija;Akšam;Jacija');
+      
+      // Generate entries for current month as example
+      const month = now.getMonth();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${String(day).padStart(2, '0')}.${String(month + 1).padStart(2, '0')}.${year}`;
+        csvRows.push(`${dateStr};05:30;06:45;12:30;15:45;18:30;20:00`);
+      }
+
+      const csvContent = csvRows.join('\n');
+      
+      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+      res.setHeader('Content-Disposition', 'attachment; filename=vaktija-template.csv');
+      res.send(csvContent);
+    } catch (error) {
+      console.error('Template download error:', error);
+      res.status(500).json({ message: "Failed to download template" });
+    }
+  });
+
   app.get("/api/prayer-times/export", requireAdmin, async (req, res) => {
     try {
       const prayerTimes = await storage.getAllPrayerTimes(req.user!.tenantId);
