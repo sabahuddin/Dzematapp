@@ -125,6 +125,11 @@ export default function MyProfilePage() {
               <Person sx={{ fontSize: 60 }} />
             </Avatar>
             <Box>
+              {user.registryNumber && (
+                <Typography variant="body2" sx={{ color: '#3949AB', fontWeight: 600, mb: 0.5 }} data-testid="text-registry-number">
+                  ID člana: #{user.registryNumber}
+                </Typography>
+              )}
               <Typography variant="h5" sx={{ fontWeight: 600, mb: 1 }}>
                 {user.firstName} {user.lastName}
               </Typography>
