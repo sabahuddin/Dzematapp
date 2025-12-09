@@ -3422,13 +3422,13 @@ export class DatabaseStorage implements IStorage {
   async getMembershipUploadLogs(tenantId: string): Promise<MembershipUploadLog[]> {
     return await db.select().from(membershipUploadLogs)
       .where(eq(membershipUploadLogs.tenantId, tenantId))
-      .orderBy(desc(membershipUploadLogs.uploadDate));
+      .orderBy(desc(membershipUploadLogs.uploadedAt));
   }
 
   async getLatestMembershipUpload(tenantId: string): Promise<MembershipUploadLog | undefined> {
     const result = await db.select().from(membershipUploadLogs)
       .where(eq(membershipUploadLogs.tenantId, tenantId))
-      .orderBy(desc(membershipUploadLogs.uploadDate))
+      .orderBy(desc(membershipUploadLogs.uploadedAt))
       .limit(1);
     return result[0];
   }
