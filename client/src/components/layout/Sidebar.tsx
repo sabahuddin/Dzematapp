@@ -88,7 +88,6 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     { path: '/super-admin/panel', label: 'Super Admin Panel', icon: AdminPanelSettings, superAdminOnly: true },
     { path: '/feed', label: 'Feed', icon: DynamicFeed },
     { path: '/users', label: t('navigation:menu.users'), icon: People, adminOnly: true },
-    { path: '/membership-applications', label: 'Pristupnice', icon: PersonAdd, adminOnly: true },
     { path: '/my-activities', label: 'Moje aktivnosti', icon: Timeline, memberOnly: true },
     { path: '/finances', label: t('navigation:menu.finances'), icon: AttachMoney, adminOnly: true },
     { path: '/membership-fees', label: 'Članarina (Admin)', icon: Receipt, adminOnly: true },

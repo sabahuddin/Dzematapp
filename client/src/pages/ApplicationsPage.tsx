@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Container, Typography, Box, Card, CardContent, Tabs, Tab, TextField, Button, FormControl, InputLabel, Select, MenuItem, Alert, Stack, Grid, Chip, CardHeader, IconButton, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
-import { ChildCare, Favorite, CheckCircle, List as ListIcon, Print, Archive as ArchiveIcon, Inbox, Check, Close } from "@mui/icons-material";
+import { ChildCare, Favorite, CheckCircle, List as ListIcon, Print, Archive as ArchiveIcon, Inbox, Check, Close, PersonAdd } from "@mui/icons-material";
 import { format } from "date-fns";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/contexts/AuthContext";
@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import type { Request, AkikaApplication } from "@shared/schema";
 import { useFeatureAccess } from "@/hooks/useFeatureAccess";
 import { UpgradeCTA } from "@/components/UpgradeCTA";
+import { MembershipApplicationsList } from "./MembershipApplicationsPage";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -1510,10 +1511,18 @@ export default function ApplicationsPage() {
               />
               <Tab 
                 icon={user?.isAdmin ? <Inbox /> : <ListIcon />} 
-                label={user?.isAdmin ? "Prijave" : t("myApplications.title")} 
+                label={user?.isAdmin ? "Akika prijave" : t("myApplications.title")} 
                 iconPosition="start"
                 data-testid={user?.isAdmin ? "tab-incoming-applications" : "tab-my-applications"}
               />
+              {user?.isAdmin && (
+                <Tab 
+                  icon={<PersonAdd />} 
+                  label="Pristupnice" 
+                  iconPosition="start"
+                  data-testid="tab-membership-applications"
+                />
+              )}
             </Tabs>
 
             <TabPanel value={tabValue} index={0}>
@@ -1527,6 +1536,12 @@ export default function ApplicationsPage() {
             <TabPanel value={tabValue} index={2}>
               {user?.isAdmin ? <IncomingAkikaApplications /> : <MyApplicationsList />}
             </TabPanel>
+
+            {user?.isAdmin && (
+              <TabPanel value={tabValue} index={3}>
+                <MembershipApplicationsList />
+              </TabPanel>
+            )}
           </CardContent>
         </Card>
       </Container>

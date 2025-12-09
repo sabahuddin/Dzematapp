@@ -31,7 +31,7 @@ import { queryClient, apiRequest } from '@/lib/queryClient';
 import type { MembershipApplication } from '@shared/schema';
 import { useToast } from '@/hooks/use-toast';
 
-export default function MembershipApplicationsPage() {
+export function MembershipApplicationsList() {
   const [selectedApplication, setSelectedApplication] = useState<MembershipApplication | null>(null);
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
   const [reviewNotes, setReviewNotes] = useState('');
@@ -465,3 +465,5 @@ export default function MembershipApplicationsPage() {
     </Box>
   );
 }
+
+export default MembershipApplicationsList;
