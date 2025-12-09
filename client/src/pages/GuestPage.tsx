@@ -31,7 +31,7 @@ import {
   Select,
   InputLabel,
 } from '@mui/material';
-import { Announcement, Event, Assignment, Schedule, CloudUpload, CheckCircle, ChildCare, Favorite } from '@mui/icons-material';
+import { Announcement, Event, Assignment, Schedule, CheckCircle, ChildCare, Favorite } from '@mui/icons-material';
 import { useLocation } from 'wouter';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import type { Announcement as AnnouncementType, Event as EventType, PrayerTime } from '@shared/schema';
@@ -101,8 +101,6 @@ function MembershipApplicationForm() {
     membershipStartDate: '',
   });
 
-  const [photoFile, setPhotoFile] = useState<File | null>(null);
-  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -124,45 +122,12 @@ function MembershipApplicationForm() {
     }
   }, [membershipSettings?.monthlyAmount]);
 
-  const uploadPhotoMutation = useMutation({
-    mutationFn: async ({ file, captchaData, honeypotValue }: { file: File; captchaData: { a: number; b: number; answer: string }; honeypotValue: string }) => {
-      const formDataUpload = new FormData();
-      formDataUpload.append('photo', file);
-      formDataUpload.append('captchaA', String(captchaData.a));
-      formDataUpload.append('captchaB', String(captchaData.b));
-      formDataUpload.append('captchaAnswer', captchaData.answer);
-      formDataUpload.append('honeypot', honeypotValue);
-      const response = await fetch('/api/upload/guest-photo', {
-        method: 'POST',
-        body: formDataUpload,
-      });
-      if (!response.ok) {
-        const error = await response.json().catch(() => ({ message: 'Photo upload failed' }));
-        throw new Error(error.message || 'Photo upload failed');
-      }
-      const result = await response.json();
-      return result.photoUrl;
-    },
-  });
-
   const submitApplicationMutation = useMutation({
     mutationFn: async (data: any) => {
       const response = await apiRequest('/api/membership-applications', 'POST', data);
       return await response.json();
     },
   });
-
-  const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setPhotoFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPhotoPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -181,26 +146,6 @@ function MembershipApplicationForm() {
 
     try {
       let finalData: any = { ...formData };
-
-      if (photoFile) {
-        try {
-          const photoUrl = await uploadPhotoMutation.mutateAsync({
-            file: photoFile,
-            captchaData: { a: captcha.a, b: captcha.b, answer: captchaInput },
-            honeypotValue: honeypot
-          });
-          finalData.photo = photoUrl;
-        } catch (error: any) {
-          console.error('Photo upload failed:', error);
-          setSubmitError(error.message || 'Greška pri učitavanju fotografije');
-          // Regenerate captcha on error
-          const a = Math.floor(Math.random() * 10) + 1;
-          const b = Math.floor(Math.random() * 10) + 1;
-          setCaptcha({ a, b, answer: a + b });
-          setCaptchaInput('');
-          return;
-        }
-      }
 
       if (finalData.dateOfBirth) {
         const date = new Date(finalData.dateOfBirth);
@@ -240,8 +185,6 @@ function MembershipApplicationForm() {
         phone: '',
         membershipStartDate: '',
       });
-      setPhotoFile(null);
-      setPhotoPreview(null);
     } catch (error) {
       console.error('Application submission failed:', error);
       setSubmitError('Greška pri slanju zahtjeva. Pokušajte ponovo.');
@@ -333,35 +276,6 @@ function MembershipApplicationForm() {
                 <FormControlLabel value="žensko" control={<Radio />} label="Žensko" />
               </RadioGroup>
             </FormControl>
-          </Grid>
-
-          <Grid size={{ xs: 12 }}>
-            <Typography variant="subtitle2" gutterBottom sx={{ mt: 2, mb: 1 }}>
-              Fotografija (opciono)
-            </Typography>
-            <Button
-              variant="outlined"
-              component="label"
-              startIcon={<CloudUpload />}
-              data-testid="button-upload-photo"
-            >
-              {photoFile ? 'Promijeni fotografiju' : 'Učitaj fotografiju'}
-              <input
-                type="file"
-                hidden
-                accept="image/*"
-                onChange={handlePhotoChange}
-              />
-            </Button>
-            {photoPreview && (
-              <Box sx={{ mt: 2 }}>
-                <img
-                  src={photoPreview}
-                  alt="Preview"
-                  style={{ maxWidth: '200px', maxHeight: '200px', borderRadius: '8px' }}
-                />
-              </Box>
-            )}
           </Grid>
 
           <Grid size={{ xs: 12, sm: 6 }}>
@@ -616,7 +530,7 @@ function MembershipApplicationForm() {
           type="submit"
           variant="contained"
           size="large"
-          disabled={submitApplicationMutation.isPending || uploadPhotoMutation.isPending || !captchaInput}
+          disabled={submitApplicationMutation.isPending || !captchaInput}
           data-testid="button-submit-application"
         >
           {submitApplicationMutation.isPending ? 'Slanje...' : 'Pošalji zahtjev'}
