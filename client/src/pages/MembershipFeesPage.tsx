@@ -246,14 +246,14 @@ export default function MembershipFeesPage() {
 
   const downloadTemplate = () => {
     const templateData = [
-      { 'Ime i Prezime': 'Mujo Mujić', 'Iznos': 30, 'Godina': selectedYear, 'Mjesec': 1 },
-      { 'Ime i Prezime': 'Mujo Mujić', 'Iznos': 30, 'Godina': selectedYear, 'Mjesec': 2 },
-      { 'Ime i Prezime': 'Mujo Mujić', 'Iznos': 30, 'Godina': selectedYear, 'Mjesec': 3 },
-      { 'Ime i Prezime': 'Haso Hasić', 'Iznos': 50, 'Godina': selectedYear, 'Mjesec': 1 },
+      { 'Članski broj': 1, 'Ime i Prezime': 'Mujo Mujić', 'Iznos': 30, 'Godina': selectedYear, 'Mjesec': 1 },
+      { 'Članski broj': 1, 'Ime i Prezime': 'Mujo Mujić', 'Iznos': 30, 'Godina': selectedYear, 'Mjesec': 2 },
+      { 'Članski broj': 1, 'Ime i Prezime': 'Mujo Mujić', 'Iznos': 30, 'Godina': selectedYear, 'Mjesec': 3 },
+      { 'Članski broj': 2, 'Ime i Prezime': 'Haso Hasić', 'Iznos': 50, 'Godina': selectedYear, 'Mjesec': 1 },
     ];
     
     const worksheet = XLSX.utils.json_to_sheet(templateData);
-    worksheet['!cols'] = [{ wch: 25 }, { wch: 10 }, { wch: 10 }, { wch: 10 }];
+    worksheet['!cols'] = [{ wch: 12 }, { wch: 25 }, { wch: 10 }, { wch: 10 }, { wch: 10 }];
     
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Članarina');
@@ -506,7 +506,7 @@ export default function MembershipFeesPage() {
               Uploadajte Excel ili CSV fajl sa uplatama.
             </Typography>
             <Typography variant="body2" color="text.secondary" paragraph>
-              Kolone: <strong>Ime i Prezime, Iznos, Godina, Mjesec</strong>
+              Kolone: <strong>Članski broj, Ime i Prezime, Iznos, Godina, Mjesec</strong>
             </Typography>
             
             <input

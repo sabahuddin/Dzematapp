@@ -6637,33 +6637,48 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         const row = data[i];
         const rowNum = i + 2; // Excel rows start at 1, plus header
         
-        // Expected columns: Ime i Prezime, Iznos, Godina, Mjesec
+        // Expected columns: Članski broj, Ime i Prezime, Iznos, Godina, Mjesec
+        const registryNumber = row['Članski broj'] || row['Registry Number'] || row['ID'] || '';
         const memberName = row['Ime i Prezime'] || row['Name'] || row['name'] || '';
         const amount = row['Iznos'] || row['Amount'] || row['amount'] || '';
         const year = row['Godina'] || row['Year'] || row['year'];
         const month = row['Mjesec'] || row['Month'] || row['month'];
         
-        if (!memberName || !amount || !year) {
-          errors.push(`Red ${rowNum}: Nedostaju obavezni podaci (ime, iznos, godina)`);
+        if (!amount || !year) {
+          errors.push(`Red ${rowNum}: Nedostaju obavezni podaci (iznos, godina)`);
           continue;
         }
         
-        // Match user by name (case-insensitive)
-        const nameParts = memberName.trim().toLowerCase().split(/\s+/);
-        const matchedUser = allUsers.find(u => {
-          const userFirstName = (u.firstName || '').toLowerCase();
-          const userLastName = (u.lastName || '').toLowerCase();
-          const userFullName = `${userFirstName} ${userLastName}`;
-          const inputFullName = nameParts.join(' ');
-          
-          return userFullName === inputFullName || 
-                 (nameParts.length === 2 && 
-                  userFirstName === nameParts[0] && 
-                  userLastName === nameParts[1]);
-        });
+        let matchedUser = null;
         
-        if (!matchedUser) {
-          errors.push(`Red ${rowNum}: Član "${memberName}" nije pronađen u bazi`);
+        // Primary lookup by registry number (članski broj)
+        if (registryNumber) {
+          matchedUser = allUsers.find(u => u.registryNumber === parseInt(registryNumber));
+          if (!matchedUser) {
+            errors.push(`Red ${rowNum}: Članski broj ${registryNumber} nije pronađen u bazi`);
+            continue;
+          }
+        } else if (memberName) {
+          // Fallback: Match user by name (case-insensitive)
+          const nameParts = memberName.trim().toLowerCase().split(/\s+/);
+          matchedUser = allUsers.find(u => {
+            const userFirstName = (u.firstName || '').toLowerCase();
+            const userLastName = (u.lastName || '').toLowerCase();
+            const userFullName = `${userFirstName} ${userLastName}`;
+            const inputFullName = nameParts.join(' ');
+            
+            return userFullName === inputFullName || 
+                   (nameParts.length === 2 && 
+                    userFirstName === nameParts[0] && 
+                    userLastName === nameParts[1]);
+          });
+          
+          if (!matchedUser) {
+            errors.push(`Red ${rowNum}: Član "${memberName}" nije pronađen u bazi`);
+            continue;
+          }
+        } else {
+          errors.push(`Red ${rowNum}: Nedostaje članski broj ili ime člana`);
           continue;
         }
         
