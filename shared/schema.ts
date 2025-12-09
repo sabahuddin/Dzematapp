@@ -949,13 +949,13 @@ export const membershipApplications = pgTable("membership_applications", {
   photo: text("photo"), // Profile photo path
   dateOfBirth: text("date_of_birth").notNull(),
   placeOfBirth: text("place_of_birth").notNull(),
-  country: text("country").notNull(),
+  country: text("country"),
   email: text("email"),
   phone: text("phone").notNull(),
   streetAddress: text("street_address").notNull(),
   postalCode: text("postal_code").notNull(),
   city: text("city").notNull(),
-  employmentStatus: text("employment_status").notNull(), // Zaposlen/a, Nezaposlen/a, Penzioner/Renta/Socijala, Učenik/Student
+  employmentStatus: text("employment_status"), // Zaposlen/a, Nezaposlen/a, Penzioner/Renta/Socijala, Učenik/Student
   occupation: text("occupation"),
   skillsHobbies: text("skills_hobbies"), // Hobi, vještina, znanje koje može pomoći džematu
   
