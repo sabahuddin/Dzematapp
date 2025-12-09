@@ -5594,6 +5594,29 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     }
 });
 
+  // Public endpoint for membership settings (for guest application form)
+  app.get("/api/membership-settings/public", async (req, res) => {
+    try {
+      const tenantId = req.tenantId;
+      if (!tenantId) {
+        return res.status(400).json({ message: "Tenant ID is required" });
+      }
+      
+      const settings = await storage.getMembershipSettings(tenantId);
+      const orgSettings = await storage.getOrganizationSettings(tenantId);
+      
+      // Return only public-safe settings
+      res.json({
+        feeType: settings?.feeType || 'monthly',
+        monthlyAmount: settings?.monthlyAmount || 50,
+        currency: orgSettings?.currency || 'CHF'
+      });
+    } catch (error) {
+      console.error('Error getting public membership settings:', error);
+      res.status(500).json({ message: "Failed to get membership settings" });
+    }
+  });
+
   // Membership Applications (Pristupnice)
   app.post("/api/membership-applications", requireFeature("applications"), async (req, res) => {
     try {
@@ -5623,6 +5646,28 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         tenantId
       });
       const application = await storage.createMembershipApplication(validated);
+      
+      // Send notification message to all admins of this tenant
+      try {
+        const users = await storage.getAllUsers(tenantId);
+        const admins = users.filter(u => u.roles?.includes('admin'));
+        
+        for (const admin of admins) {
+          await storage.createMessage({
+            tenantId,
+            senderId: admin.id, // System message from admin to admin
+            recipientId: admin.id,
+            subject: `Nova pristupnica: ${application.firstName} ${application.lastName}`,
+            content: `Primljena je nova pristupnica za članstvo.\n\nPodnosilac: ${application.firstName} ${application.lastName}\nEmail: ${application.email}\nTelefon: ${application.phone}\nMjesečna članarina: ${application.monthlyFee} CHF\n\nPregledajte pristupnicu u Administraciji → Pristupnice.`,
+            isRead: false,
+            threadId: null
+          });
+        }
+      } catch (msgError) {
+        console.error('Error sending notification to admins:', msgError);
+        // Don't fail the request if notification fails
+      }
+      
       res.status(201).json(application);
     } catch (error) {
       console.error('Error creating membership application:', error);
