@@ -11,8 +11,8 @@ export function requireFeature(moduleId: string) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const session = req.session as any;
-      // Support both session tenantId and request tenantId (for guest access)
-      const tenantId = session.tenantId || (req as any).tenantId;
+      // Support session tenantId, request tenantId, and body tenantId (for guest applications)
+      const tenantId = session.tenantId || (req as any).tenantId || req.body?.tenantId;
       
       // Super Admin bypass - has access to everything
       if (session.isSuperAdmin) {
@@ -25,6 +25,9 @@ export function requireFeature(moduleId: string) {
           upgradeRequired: false
         });
       }
+      
+      // Store tenantId in request for downstream use
+      (req as any).tenantId = tenantId;
       
       // Get tenant subscription tier
       const [tenant] = await db

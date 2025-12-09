@@ -145,7 +145,10 @@ function MembershipApplicationForm() {
     }
 
     try {
-      let finalData: any = { ...formData };
+      let finalData: any = { 
+        ...formData,
+        tenantId: 'default-tenant-demo'  // Guest applications go to default tenant
+      };
 
       if (finalData.dateOfBirth) {
         const date = new Date(finalData.dateOfBirth);
