@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Container, Typography, Box, Card, CardContent, Tabs, Tab, TextField, Button, FormControl, InputLabel, Select, MenuItem, Alert, Stack, Grid, Chip, CardHeader, IconButton, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
+import { Container, Typography, Box, Card, CardContent, Tabs, Tab, TextField, Button, FormControl, InputLabel, Select, MenuItem, Alert, Stack, Grid, Chip, CardHeader, IconButton, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions, Divider } from "@mui/material";
 import { ChildCare, Favorite, CheckCircle, List as ListIcon, Print, Archive as ArchiveIcon, Inbox, Check, Close, PersonAdd } from "@mui/icons-material";
 import { format } from "date-fns";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -1656,34 +1656,6 @@ function IncomingAkikaApplications() {
   );
 }
 
-function AllApplicationsView() {
-  const [subTab, setSubTab] = useState(0);
-  
-  return (
-    <Box>
-      <Tabs
-        value={subTab}
-        onChange={(_, newValue) => setSubTab(newValue)}
-        sx={{ mb: 2, borderBottom: 1, borderColor: 'divider' }}
-      >
-        <Tab label="Akika" icon={<ChildCare />} iconPosition="start" />
-        <Tab label="Vjenčanja" icon={<Favorite />} iconPosition="start" />
-        <Tab label="Pristupnice" icon={<PersonAdd />} iconPosition="start" />
-      </Tabs>
-      
-      {subTab === 0 && <IncomingAkikaApplications />}
-      {subTab === 1 && (
-        <Box sx={{ textAlign: 'center', py: 4 }}>
-          <Typography color="text.secondary">
-            Prijave za vjenčanja će biti prikazane ovdje
-          </Typography>
-        </Box>
-      )}
-      {subTab === 2 && <MembershipApplicationsList />}
-    </Box>
-  );
-}
-
 export default function ApplicationsPage() {
   const { user } = useAuth();
   const { t } = useTranslation("applications");
@@ -1729,15 +1701,25 @@ export default function ApplicationsPage() {
                 data-testid="tab-marriage"
               />
               <Tab 
-                icon={user?.isAdmin ? <Inbox /> : <ListIcon />} 
-                label={user?.isAdmin ? "Prijave" : t("myApplications.title")} 
+                icon={user?.isAdmin ? <PersonAdd /> : <ListIcon />} 
+                label={user?.isAdmin ? "Pristupnice" : t("myApplications.title")} 
                 iconPosition="start"
-                data-testid={user?.isAdmin ? "tab-incoming-applications" : "tab-my-applications"}
+                data-testid={user?.isAdmin ? "tab-membership-applications" : "tab-my-applications"}
               />
             </Tabs>
 
             <TabPanel value={tabValue} index={0}>
-              <AkikaApplicationForm />
+              {user?.isAdmin ? (
+                <Box>
+                  <Typography variant="h6" sx={{ mb: 2 }}>Pristigle akika prijave</Typography>
+                  <IncomingAkikaApplications />
+                  <Divider sx={{ my: 4 }} />
+                  <Typography variant="h6" sx={{ mb: 2 }}>Podnesite novu akika prijavu</Typography>
+                  <AkikaApplicationForm />
+                </Box>
+              ) : (
+                <AkikaApplicationForm />
+              )}
             </TabPanel>
 
             <TabPanel value={tabValue} index={1}>
@@ -1745,7 +1727,7 @@ export default function ApplicationsPage() {
             </TabPanel>
 
             <TabPanel value={tabValue} index={2}>
-              {user?.isAdmin ? <AllApplicationsView /> : <MyApplicationsList />}
+              {user?.isAdmin ? <MembershipApplicationsList /> : <MyApplicationsList />}
             </TabPanel>
           </CardContent>
         </Card>

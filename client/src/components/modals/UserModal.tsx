@@ -366,6 +366,30 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
               <Divider sx={{ mb: 2 }} />
             </Grid>
 
+            {/* ID člana - only shown when editing existing user */}
+            {user && (
+              <Grid size={{ xs: 12 }}>
+                <Box sx={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: 2, 
+                  p: 2, 
+                  bgcolor: '#E8EAF6', 
+                  borderRadius: 2,
+                  border: '2px solid #3949AB'
+                }}>
+                  <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                    ID ČLANA
+                  </Typography>
+                  <Typography variant="h5" sx={{ fontWeight: 700, color: '#3949AB' }}>
+                    {(user as any).registryNumber !== undefined && (user as any).registryNumber !== null 
+                      ? (user as any).registryNumber 
+                      : 'Nije dodijeljen'}
+                  </Typography>
+                </Box>
+              </Grid>
+            )}
+
             {/* Row 1: Ime i Prezime (50-50) */}
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
