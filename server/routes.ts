@@ -6586,11 +6586,32 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       
       res.json({
         payments,
-        lastUpdated: latestUpload?.uploadDate || null
+        lastUpdated: latestUpload?.uploadedAt || null
       });
     } catch (error) {
       console.error('[MEMBERSHIP] Error getting my payments:', error);
       res.status(500).json({ message: "Failed to get your membership payments" });
+    }
+  });
+
+  // Get my membership status (for regular users - includes fee amount and all payments)
+  app.get("/api/membership-fees/my-status", requireAuth, async (req, res) => {
+    try {
+      const tenantId = req.user!.tenantId;
+      const userId = req.user!.id;
+      
+      const user = await storage.getUser(userId, tenantId);
+      const payments = await storage.getMembershipPayments(tenantId, userId);
+      const settings = await storage.getMembershipFeeSettings(tenantId);
+      
+      res.json({
+        payments,
+        membershipFeeAmount: user?.membershipFeeAmount ? parseFloat(String(user.membershipFeeAmount)) : null,
+        feeType: settings?.feeType || 'monthly'
+      });
+    } catch (error) {
+      console.error('[MEMBERSHIP] Error getting my status:', error);
+      res.status(500).json({ message: "Failed to get your membership status" });
     }
   });
 

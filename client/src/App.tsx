@@ -54,6 +54,7 @@ import SuperAdminPanel from "@/pages/SuperAdminPanel";
 import PricingPage from "@/pages/PricingPage";
 import SponsorsPage from "@/pages/SponsorsPage";
 import MembershipFeesPage from "@/pages/MembershipFeesPage";
+import MyClanarinaPage from "@/pages/MyClanarinaPage";
 import NotFound from "@/pages/not-found";
 
 // Layout
@@ -699,6 +700,12 @@ function Router() {
         <AdminRoute>
           <MembershipFeesPage />
         </AdminRoute>
+      </Route>
+      
+      <Route path="/my-clanarina">
+        <ProtectedRoute>
+          <MyClanarinaPage />
+        </ProtectedRoute>
       </Route>
       
       <Route path="/activity-log">
