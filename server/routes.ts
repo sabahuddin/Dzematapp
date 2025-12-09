@@ -4290,6 +4290,36 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     }
   });
 
+  app.put("/api/contribution-purposes/:id", requireAdmin, requireFeature("finances"), async (req, res) => {
+    try {
+      const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      
+      // Zod validation schema for update - strict to reject unknown fields
+      const updatePurposeSchema = z.object({
+        name: z.string().transform(s => s.trim()).refine(s => s.length > 0, "Name is required"),
+        description: z.string().nullable().optional().transform(s => s?.trim() || null)
+      }).strict();
+      
+      const validated = updatePurposeSchema.parse(req.body);
+      
+      const sanitizedData = {
+        name: validated.name,
+        description: validated.description
+      };
+      
+      const updated = await storage.updateContributionPurpose(req.params.id, tenantId, sanitizedData);
+      if (!updated) {
+        return res.status(404).json({ message: "Contribution purpose not found" });
+      }
+      res.json(updated);
+    } catch (error: any) {
+      if (error?.name === 'ZodError') {
+        return res.status(400).json({ message: "Validation failed", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to update contribution purpose" });
+    }
+  });
+
   app.delete("/api/contribution-purposes/:id", requireAdmin, requireFeature("finances"), async (req, res) => {
     try {
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";

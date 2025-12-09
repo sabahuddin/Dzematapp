@@ -59,6 +59,9 @@ export default function FinancesPage() {
   const [purposeDialogOpen, setPurposeDialogOpen] = useState(false);
   const [newPurposeName, setNewPurposeName] = useState('');
   const [newPurposeDesc, setNewPurposeDesc] = useState('');
+  const [editingPurpose, setEditingPurpose] = useState<ContributionPurpose | null>(null);
+  const [editPurposeName, setEditPurposeName] = useState('');
+  const [editPurposeDesc, setEditPurposeDesc] = useState('');
 
   if (featureAccess.upgradeRequired) {
     return <UpgradeCTA moduleId="finances" requiredPlan={featureAccess.requiredPlan || 'standard'} currentPlan={featureAccess.currentPlan || 'basic'} />;
@@ -199,6 +202,45 @@ export default function FinancesPage() {
     if (window.confirm('Jeste li sigurni da želite obrisati ovu svrhu?')) {
       deletePurposeMutation.mutate(id);
     }
+  };
+
+  // Update purpose mutation
+  const updatePurposeMutation = useMutation({
+    mutationFn: async ({ id, name, description }: { id: string; name: string; description: string }) => {
+      return await apiRequest(`/api/contribution-purposes/${id}`, 'PUT', { name, description });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/contribution-purposes'] });
+      toast({ title: 'Uspjeh', description: 'Svrha je ažurirana' });
+      setEditingPurpose(null);
+      setEditPurposeName('');
+      setEditPurposeDesc('');
+    },
+    onError: () => {
+      toast({ title: 'Greška', description: 'Greška pri ažuriranju svrhe', variant: 'destructive' });
+    }
+  });
+
+  const handleStartEditPurpose = (purpose: ContributionPurpose) => {
+    setEditingPurpose(purpose);
+    setEditPurposeName(purpose.name);
+    setEditPurposeDesc(purpose.description || '');
+  };
+
+  const handleSaveEditPurpose = () => {
+    if (editingPurpose && editPurposeName.trim()) {
+      updatePurposeMutation.mutate({
+        id: editingPurpose.id,
+        name: editPurposeName.trim(),
+        description: editPurposeDesc.trim()
+      });
+    }
+  };
+
+  const handleCancelEditPurpose = () => {
+    setEditingPurpose(null);
+    setEditPurposeName('');
+    setEditPurposeDesc('');
   };
 
 
@@ -530,35 +572,84 @@ export default function FinancesPage() {
                   <Box 
                     key={purpose.id} 
                     sx={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      justifyContent: 'space-between',
                       p: 1.5,
                       borderRadius: 1,
                       bgcolor: 'grey.50',
                       border: '1px solid',
-                      borderColor: 'grey.200'
+                      borderColor: editingPurpose?.id === purpose.id ? 'primary.main' : 'grey.200'
                     }}
                   >
-                    <Box>
-                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                        {purpose.name}
-                      </Typography>
-                      {purpose.description && (
-                        <Typography variant="caption" color="text.secondary">
-                          {purpose.description}
-                        </Typography>
-                      )}
-                    </Box>
-                    <IconButton
-                      size="small"
-                      onClick={() => handleDeletePurpose(purpose.id)}
-                      sx={{ color: 'error.main' }}
-                      disabled={deletePurposeMutation.isPending}
-                      data-testid={`button-delete-purpose-${purpose.id}`}
-                    >
-                      <Delete fontSize="small" />
-                    </IconButton>
+                    {editingPurpose?.id === purpose.id ? (
+                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                        <TextField
+                          fullWidth
+                          size="small"
+                          label="Naziv svrhe"
+                          value={editPurposeName}
+                          onChange={(e) => setEditPurposeName(e.target.value)}
+                          data-testid={`input-edit-purpose-name-${purpose.id}`}
+                        />
+                        <TextField
+                          fullWidth
+                          size="small"
+                          label="Opis (opcionalno)"
+                          value={editPurposeDesc}
+                          onChange={(e) => setEditPurposeDesc(e.target.value)}
+                          data-testid={`input-edit-purpose-desc-${purpose.id}`}
+                        />
+                        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
+                          <Button 
+                            size="small" 
+                            onClick={handleCancelEditPurpose}
+                            disabled={updatePurposeMutation.isPending}
+                            data-testid={`button-cancel-edit-purpose-${purpose.id}`}
+                          >
+                            Odustani
+                          </Button>
+                          <Button 
+                            size="small" 
+                            variant="contained"
+                            onClick={handleSaveEditPurpose}
+                            disabled={updatePurposeMutation.isPending || !editPurposeName.trim()}
+                            data-testid={`button-save-edit-purpose-${purpose.id}`}
+                          >
+                            {updatePurposeMutation.isPending ? 'Spremam...' : 'Spremi'}
+                          </Button>
+                        </Box>
+                      </Box>
+                    ) : (
+                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <Box>
+                          <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                            {purpose.name}
+                          </Typography>
+                          {purpose.description && (
+                            <Typography variant="caption" color="text.secondary">
+                              {purpose.description}
+                            </Typography>
+                          )}
+                        </Box>
+                        <Box sx={{ display: 'flex', gap: 0.5 }}>
+                          <IconButton
+                            size="small"
+                            onClick={() => handleStartEditPurpose(purpose)}
+                            sx={{ color: 'primary.main' }}
+                            data-testid={`button-edit-purpose-${purpose.id}`}
+                          >
+                            <Edit fontSize="small" />
+                          </IconButton>
+                          <IconButton
+                            size="small"
+                            onClick={() => handleDeletePurpose(purpose.id)}
+                            sx={{ color: 'error.main' }}
+                            disabled={deletePurposeMutation.isPending}
+                            data-testid={`button-delete-purpose-${purpose.id}`}
+                          >
+                            <Delete fontSize="small" />
+                          </IconButton>
+                        </Box>
+                      </Box>
+                    )}
                   </Box>
                 ))}
               </Box>

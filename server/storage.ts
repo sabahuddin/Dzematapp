@@ -345,6 +345,7 @@ export interface IStorage {
   createContributionPurpose(purpose: InsertContributionPurpose & { createdById: string; tenantId: string }): Promise<ContributionPurpose>;
   createContributionPurposeWithTitle(data: { tenantId: string; name?: string; title?: string; description?: string; createdById?: string; isDefault?: boolean }): Promise<ContributionPurpose>;
   deleteContributionPurpose(id: string, tenantId: string): Promise<boolean>;
+  updateContributionPurpose(id: string, tenantId: string, updates: { name?: string; description?: string }): Promise<ContributionPurpose | undefined>;
 
   // Financial Contributions (Feature 1)
   createFinancialContribution(contribution: InsertFinancialContribution): Promise<FinancialContribution>;
@@ -2297,6 +2298,14 @@ export class DatabaseStorage implements IStorage {
   async deleteContributionPurpose(id: string, tenantId: string): Promise<boolean> {
     const result = await db.delete(contributionPurposes).where(and(eq(contributionPurposes.id, id), eq(contributionPurposes.tenantId, tenantId))).returning();
     return result.length > 0;
+  }
+
+  async updateContributionPurpose(id: string, tenantId: string, updates: { name?: string; description?: string }): Promise<ContributionPurpose | undefined> {
+    const [updated] = await db.update(contributionPurposes)
+      .set(updates)
+      .where(and(eq(contributionPurposes.id, id), eq(contributionPurposes.tenantId, tenantId)))
+      .returning();
+    return updated;
   }
 
   // Activity Log (Feature 1)
