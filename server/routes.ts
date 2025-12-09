@@ -97,6 +97,30 @@ const certificateUpload = multer({
   }
 });
 
+// Configure multer for Excel uploads (membership fees bulk upload)
+const excelUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+    files: 1
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedMimes = [
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'application/vnd.ms-excel',
+      'application/octet-stream'
+    ];
+    const allowedExtensions = ['.xlsx', '.xls'];
+    const extension = path.extname(file.originalname).toLowerCase();
+    
+    if (allowedMimes.includes(file.mimetype) || allowedExtensions.includes(extension)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Samo Excel fajlovi (.xlsx, .xls) su dozvoljeni'));
+    }
+  }
+});
+
 /**
  * GLOBAL HELPER: Prepares data for Zod validation by injecting tenantId and other server-side fields
  * This ensures ALL POST endpoints have consistent tenant isolation and field mapping
@@ -6680,8 +6704,8 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   });
 
   // Bulk upload payments (admin only)
-  // Format: Ime i Prezime, Iznos, Godina, Mjesec
-  app.post("/api/membership-fees/payments/bulk-upload", requireAdmin, upload.single('file'), async (req, res) => {
+  // Format: Matični broj, Iznos, Godina, Mjesec
+  app.post("/api/membership-fees/payments/bulk-upload", requireAdmin, excelUpload.single('file'), async (req, res) => {
     try {
       const tenantId = req.user!.tenantId;
       const adminId = req.user!.id;
