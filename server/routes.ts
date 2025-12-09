@@ -4756,6 +4756,153 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     }
 });
 
+  // QR Code Event Check-in Routes
+  // Public route to get event info for check-in page
+  app.get("/api/events/:eventId/checkin-info", async (req, res) => {
+    try {
+      const { pool } = await import('./db');
+      const result = await pool.query(
+        `SELECT e.id, e.name, e.location, e.date_time, e.photo_url, e.points_value, e.tenant_id,
+                os.name as org_name
+         FROM events e
+         LEFT JOIN organization_settings os ON os.tenant_id = e.tenant_id
+         WHERE e.id = $1`,
+        [req.params.eventId]
+      );
+      
+      if (result.rows.length === 0) {
+        return res.status(404).json({ message: "Event not found" });
+      }
+      
+      const event = result.rows[0];
+      res.json({
+        id: event.id,
+        name: event.name,
+        location: event.location,
+        dateTime: event.date_time,
+        photoUrl: event.photo_url,
+        pointsValue: event.points_value || 20,
+        tenantId: event.tenant_id,
+        organizationName: event.org_name || 'Islamska Zajednica'
+      });
+    } catch (error) {
+      console.error('Error getting event checkin info:', error);
+      res.status(500).json({ message: "Failed to get event info" });
+    }
+  });
+
+  // QR Check-in route - works for logged in users (auto) or guests
+  app.post("/api/events/:eventId/qr-checkin", async (req, res) => {
+    try {
+      const { pool } = await import('./db');
+      const eventId = req.params.eventId;
+      const { guestName } = req.body;
+      
+      // Get event info
+      const eventResult = await pool.query(
+        `SELECT id, tenant_id, points_value FROM events WHERE id = $1`,
+        [eventId]
+      );
+      
+      if (eventResult.rows.length === 0) {
+        return res.status(404).json({ message: "Event not found" });
+      }
+      
+      const event = eventResult.rows[0];
+      const pointsValue = event.points_value || 20;
+      
+      // Check if user is logged in
+      const userId = req.user?.id || null;
+      
+      if (userId) {
+        // Check if already checked in
+        const existingResult = await pool.query(
+          `SELECT id FROM event_attendance WHERE event_id = $1 AND user_id = $2`,
+          [eventId, userId]
+        );
+        
+        if (existingResult.rows.length > 0) {
+          return res.status(400).json({ message: "Već ste prijavljeni na ovaj događaj", alreadyCheckedIn: true });
+        }
+        
+        // Create attendance record for logged in user
+        await pool.query(
+          `INSERT INTO event_attendance (tenant_id, event_id, user_id, points_awarded, checked_in_at)
+           VALUES ($1, $2, $3, $4, NOW())`,
+          [event.tenant_id, eventId, userId, pointsValue]
+        );
+        
+        // Award points to user
+        await pool.query(
+          `UPDATE users SET total_points = COALESCE(total_points, 0) + $1 WHERE id = $2`,
+          [pointsValue, userId]
+        );
+        
+        res.json({ 
+          success: true, 
+          message: "Uspješno ste se prijavili!", 
+          pointsAwarded: pointsValue,
+          isGuest: false
+        });
+      } else {
+        // Guest check-in
+        if (!guestName || guestName.trim().length < 2) {
+          return res.status(400).json({ message: "Molimo unesite ime i prezime" });
+        }
+        
+        // Create attendance record for guest
+        await pool.query(
+          `INSERT INTO event_attendance (tenant_id, event_id, guest_name, points_awarded, checked_in_at)
+           VALUES ($1, $2, $3, $4, NOW())`,
+          [event.tenant_id, eventId, guestName.trim(), 0]
+        );
+        
+        res.json({ 
+          success: true, 
+          message: "Uspješno ste se prijavili kao gost!", 
+          pointsAwarded: 0,
+          isGuest: true
+        });
+      }
+    } catch (error) {
+      console.error('Error during QR checkin:', error);
+      res.status(500).json({ message: "Greška pri prijavi" });
+    }
+  });
+
+  // Get attendance list with user details (admin only)
+  app.get("/api/events/:eventId/attendance-list", requireAuth, async (req, res) => {
+    try {
+      const { pool } = await import('./db');
+      const result = await pool.query(
+        `SELECT ea.id, ea.user_id, ea.guest_name, ea.points_awarded, ea.checked_in_at,
+                u.first_name, u.last_name, u.photo
+         FROM event_attendance ea
+         LEFT JOIN users u ON u.id = ea.user_id
+         WHERE ea.event_id = $1 AND ea.tenant_id = $2
+         ORDER BY ea.checked_in_at DESC`,
+        [req.params.eventId, req.user!.tenantId]
+      );
+      
+      const attendees = result.rows.map(row => ({
+        id: row.id,
+        userId: row.user_id,
+        guestName: row.guest_name,
+        firstName: row.first_name,
+        lastName: row.last_name,
+        photo: row.photo,
+        pointsAwarded: row.points_awarded,
+        checkedInAt: row.checked_in_at,
+        displayName: row.user_id ? `${row.first_name} ${row.last_name}` : row.guest_name
+      }));
+      
+      res.json(attendees);
+    } catch (error) {
+      console.error('Error getting attendance list:', error);
+      res.status(500).json({ message: "Failed to get attendance list" });
+    }
+  });
+
   // DIAGNOSTIC ENDPOINT - Check badge system status
   app.get("/api/diagnostics/badges", requireAdmin, async (req, res) => {
     try {
