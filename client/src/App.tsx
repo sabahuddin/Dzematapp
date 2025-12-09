@@ -56,6 +56,7 @@ import SponsorsPage from "@/pages/SponsorsPage";
 import MembershipFeesPage from "@/pages/MembershipFeesPage";
 import MyClanarinaPage from "@/pages/MyClanarinaPage";
 import NotFound from "@/pages/not-found";
+import EventCheckinPage from "@/pages/EventCheckinPage";
 
 // Layout
 import DashboardLayout from "@/components/layout/DashboardLayout";
@@ -717,6 +718,10 @@ function Router() {
       
       <Route path="/pricing">
         <PricingPage />
+      </Route>
+      
+      <Route path="/event-checkin/:eventId">
+        <EventCheckinPage />
       </Route>
       
       <Route path="/dashboard">

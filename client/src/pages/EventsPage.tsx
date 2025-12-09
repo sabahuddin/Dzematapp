@@ -37,7 +37,11 @@ import {
   Visibility,
   CalendarMonth,
   EventNote,
-  ExpandMore
+  ExpandMore,
+  QrCode2,
+  Print,
+  People,
+  Close
 } from '@mui/icons-material';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay';
@@ -119,6 +123,11 @@ export default function EventsPage() {
   const [rsvpModalOpen, setRsvpModalOpen] = useState(false);
   const [rsvpEvent, setRsvpEvent] = useState<Event | null>(null);
   const [expandedAccordion, setExpandedAccordion] = useState<string | false>(false);
+  const [qrModalOpen, setQrModalOpen] = useState(false);
+  const [qrEvent, setQrEvent] = useState<Event | null>(null);
+  const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>('');
+  const [attendanceListOpen, setAttendanceListOpen] = useState(false);
+  const [attendanceEvent, setAttendanceEvent] = useState<Event | null>(null);
   
   // Store deep link ID - read from URL on every render
   const getDeepLinkEventId = () => {
@@ -288,6 +297,133 @@ export default function EventsPage() {
     setRsvpModalOpen(true);
   };
 
+  const handleQrCodeClick = async (event: Event) => {
+    setQrEvent(event);
+    setQrModalOpen(true);
+    
+    const baseUrl = window.location.origin;
+    const checkinUrl = `${baseUrl}/event-checkin/${event.id}`;
+    
+    try {
+      const QRCode = (await import('qrcode')).default;
+      const dataUrl = await QRCode.toDataURL(checkinUrl, {
+        width: 400,
+        margin: 2,
+        color: {
+          dark: '#3949AB',
+          light: '#FFFFFF'
+        }
+      });
+      setQrCodeDataUrl(dataUrl);
+    } catch (error) {
+      console.error('Error generating QR code:', error);
+      toast({ title: 'Greška', description: 'Nije moguće generirati QR kod', variant: 'destructive' });
+    }
+  };
+
+  const handlePrintQrCode = () => {
+    if (!qrEvent || !qrCodeDataUrl) return;
+    
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+    
+    const eventDate = new Date(qrEvent.dateTime);
+    const formattedDate = format(eventDate, "d. MMMM yyyy. 'u' HH:mm");
+    
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>QR Kod - ${qrEvent.name}</title>
+        <style>
+          body {
+            font-family: 'Inter', 'Roboto', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px;
+            background: #fff;
+          }
+          .container {
+            text-align: center;
+            border: 3px solid #3949AB;
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 500px;
+          }
+          h1 {
+            color: #3949AB;
+            margin-bottom: 8px;
+            font-size: 28px;
+          }
+          .event-name {
+            font-size: 24px;
+            font-weight: 600;
+            color: #0D1B2A;
+            margin-bottom: 8px;
+          }
+          .event-details {
+            color: #546E7A;
+            font-size: 16px;
+            margin-bottom: 24px;
+          }
+          .qr-code {
+            margin: 24px 0;
+          }
+          .instruction {
+            color: #3949AB;
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 24px;
+          }
+          .points {
+            background: #FFF3E0;
+            color: #E65100;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            margin-top: 16px;
+            display: inline-block;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1>DžematApp Check-in</h1>
+          <div class="event-name">${qrEvent.name}</div>
+          <div class="event-details">${formattedDate}<br>${qrEvent.location}</div>
+          <img class="qr-code" src="${qrCodeDataUrl}" alt="QR Kod" />
+          <div class="instruction">Skeniraj za prijavu prisustva</div>
+          <div class="points">+${qrEvent.pointsValue || 20} bodova</div>
+        </div>
+        <script>
+          window.onload = function() { window.print(); }
+        </script>
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
+  };
+
+  const handleAttendanceClick = (event: Event) => {
+    setAttendanceEvent(event);
+    setAttendanceListOpen(true);
+  };
+
+  const attendanceQuery = useQuery<any[]>({
+    queryKey: ['/api/events', attendanceEvent?.id, 'attendance-list'],
+    queryFn: async () => {
+      if (!attendanceEvent?.id) return [];
+      const response = await fetch(`/api/events/${attendanceEvent.id}/attendance-list`);
+      if (!response.ok) throw new Error('Failed to fetch attendance');
+      return response.json();
+    },
+    enabled: !!attendanceEvent?.id && attendanceListOpen
+  });
+
   const handleImportantDateSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!importantDateForm.name || !importantDateForm.date) {
@@ -386,6 +522,24 @@ export default function EventsPage() {
             </IconButton>
             {user?.isAdmin && (
               <>
+                <IconButton
+                  size="small"
+                  onClick={() => handleQrCodeClick(event)}
+                  sx={{ color: '#3949AB' }}
+                  title="QR kod za check-in"
+                  data-testid={`button-qr-event-${event.id}`}
+                >
+                  <QrCode2 fontSize="small" />
+                </IconButton>
+                <IconButton
+                  size="small"
+                  onClick={() => handleAttendanceClick(event)}
+                  sx={{ color: '#26A69A' }}
+                  title="Lista prisutnih"
+                  data-testid={`button-attendance-event-${event.id}`}
+                >
+                  <People fontSize="small" />
+                </IconButton>
                 <IconButton
                   size="small"
                   onClick={() => handleEditEvent(event)}
@@ -959,6 +1113,134 @@ export default function EventsPage() {
           event={rsvpEvent}
         />
       )}
+
+      {/* QR Code Modal */}
+      <Dialog 
+        open={qrModalOpen} 
+        onClose={() => { setQrModalOpen(false); setQrEvent(null); setQrCodeDataUrl(''); }}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <QrCode2 sx={{ color: '#3949AB' }} />
+            QR Kod za Check-in
+          </Box>
+          <IconButton onClick={() => { setQrModalOpen(false); setQrEvent(null); setQrCodeDataUrl(''); }}>
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          {qrEvent && (
+            <Box sx={{ textAlign: 'center' }}>
+              <Typography variant="h6" gutterBottom>{qrEvent.name}</Typography>
+              <Typography color="text.secondary" gutterBottom>
+                {format(new Date(qrEvent.dateTime), "d. MMMM yyyy. 'u' HH:mm")} • {qrEvent.location}
+              </Typography>
+              
+              {qrCodeDataUrl ? (
+                <Box sx={{ my: 3 }}>
+                  <img src={qrCodeDataUrl} alt="QR Kod" style={{ maxWidth: '100%', height: 'auto' }} />
+                </Box>
+              ) : (
+                <Box sx={{ my: 3, display: 'flex', justifyContent: 'center' }}>
+                  <CircularProgress />
+                </Box>
+              )}
+              
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                Posjetioci skeniraju ovaj kod da prijave prisustvo i dobiju {qrEvent.pointsValue || 20} bodova.
+              </Typography>
+              
+              <Button
+                variant="contained"
+                startIcon={<Print />}
+                onClick={handlePrintQrCode}
+                disabled={!qrCodeDataUrl}
+                sx={{ bgcolor: '#3949AB', '&:hover': { bgcolor: '#303F9F' } }}
+                data-testid="button-print-qr"
+              >
+                Štampaj QR Kod
+              </Button>
+            </Box>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Attendance List Modal */}
+      <Dialog 
+        open={attendanceListOpen} 
+        onClose={() => { setAttendanceListOpen(false); setAttendanceEvent(null); }}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <People sx={{ color: '#26A69A' }} />
+            Lista Prisutnih
+          </Box>
+          <IconButton onClick={() => { setAttendanceListOpen(false); setAttendanceEvent(null); }}>
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          {attendanceEvent && (
+            <Box>
+              <Typography variant="h6" gutterBottom>{attendanceEvent.name}</Typography>
+              <Typography color="text.secondary" gutterBottom sx={{ mb: 2 }}>
+                {format(new Date(attendanceEvent.dateTime), "d. MMMM yyyy. 'u' HH:mm")}
+              </Typography>
+              
+              {attendanceQuery.isLoading ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+                  <CircularProgress />
+                </Box>
+              ) : attendanceQuery.data && attendanceQuery.data.length > 0 ? (
+                <>
+                  <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                    Ukupno prisutnih: {attendanceQuery.data.length}
+                  </Typography>
+                  <TableContainer component={Paper} sx={{ maxHeight: 400 }}>
+                    <Table size="small" stickyHeader>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Ime</TableCell>
+                          <TableCell>Vrijeme prijave</TableCell>
+                          <TableCell align="right">Bodovi</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {attendanceQuery.data.map((attendee: any) => (
+                          <TableRow key={attendee.id}>
+                            <TableCell>
+                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                {attendee.displayName}
+                                {!attendee.userId && (
+                                  <Chip label="Gost" size="small" sx={{ fontSize: '0.7rem' }} />
+                                )}
+                              </Box>
+                            </TableCell>
+                            <TableCell>
+                              {format(new Date(attendee.checkedInAt), 'HH:mm')}
+                            </TableCell>
+                            <TableCell align="right">
+                              {attendee.pointsAwarded > 0 ? `+${attendee.pointsAwarded}` : '-'}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </>
+              ) : (
+                <Alert severity="info">
+                  Nema zabilježenih prisustvovanja za ovaj događaj.
+                </Alert>
+              )}
+            </Box>
+          )}
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 }
