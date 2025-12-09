@@ -581,7 +581,7 @@ export default function MembershipFeesPage() {
                 {(uploadLogsQuery.data || []).map((log: any) => (
                   <TableRow key={log.id}>
                     <TableCell>
-                      {new Date(log.uploadDate).toLocaleDateString('bs-BA')}
+                      {new Date(log.uploadedAt).toLocaleDateString('bs-BA')}
                     </TableCell>
                     <TableCell>{log.fileName}</TableCell>
                     <TableCell align="center">{log.recordsProcessed}</TableCell>
