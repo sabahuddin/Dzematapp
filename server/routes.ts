@@ -6574,12 +6574,17 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   app.post("/api/membership-fees/payments", requireAdmin, async (req, res) => {
     try {
       const tenantId = req.user!.tenantId;
-      const { userId, amount, coverageYear, coverageMonth, notes, autoDistribute } = req.body;
+      const { userId, coverageYear, coverageMonth, notes, autoDistribute } = req.body;
+      const amount = parseFloat(req.body.amount) || 0;
+      
+      console.log('[MEMBERSHIP] Creating payment:', { userId, amount, coverageYear, coverageMonth, autoDistribute });
       
       // If autoDistribute is enabled and user has a membership fee set
       if (autoDistribute && coverageMonth) {
         const user = await storage.getUser(userId);
-        const monthlyFee = user?.membershipFeeAmount;
+        const monthlyFee = user?.membershipFeeAmount ? parseFloat(String(user.membershipFeeAmount)) : 0;
+        
+        console.log('[MEMBERSHIP] Auto-distribute check:', { monthlyFee, amount, shouldDistribute: monthlyFee > 0 && amount > monthlyFee });
         
         if (monthlyFee && monthlyFee > 0 && amount > monthlyFee) {
           // Calculate how many months this payment covers
