@@ -77,6 +77,7 @@ interface MembershipSettings {
 
 interface GridMember {
   userId: string;
+  registryNumber: number | null;
   firstName: string;
   lastName: string;
   phone: string;
@@ -218,7 +219,8 @@ export default function MembershipFeesPage() {
 
   const filteredGrid = gridData.filter(member => {
     const fullName = `${member.firstName} ${member.lastName}`.toLowerCase();
-    return fullName.includes(searchTerm.toLowerCase());
+    const regNum = member.registryNumber ? `#${member.registryNumber}` : '';
+    return fullName.includes(searchTerm.toLowerCase()) || regNum.includes(searchTerm);
   });
 
   const openSettingsDialog = () => {
@@ -391,6 +393,7 @@ export default function MembershipFeesPage() {
                   <TableRow key={member.userId} hover>
                     <TableCell sx={{ position: 'sticky', left: 0, bgcolor: 'background.paper', zIndex: 1 }}>
                       <Typography variant="body2" fontWeight="medium">
+                        {member.registryNumber && <span style={{ color: '#3949AB' }}>#{member.registryNumber} </span>}
                         {member.firstName} {member.lastName}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
@@ -574,7 +577,7 @@ export default function MembershipFeesPage() {
                 >
                   {users.filter(u => u.status === 'aktivan' && !u.isAdmin).map((user: any) => (
                     <MenuItem key={user.id} value={user.id}>
-                      {user.firstName} {user.lastName}
+                      {user.registryNumber ? `#${user.registryNumber} - ` : ''}{user.firstName} {user.lastName}
                     </MenuItem>
                   ))}
                 </Select>

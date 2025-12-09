@@ -6762,6 +6762,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         
         return {
           userId: user.id,
+          registryNumber: user.registryNumber,
           firstName: user.firstName,
           lastName: user.lastName,
           phone: user.phone,
