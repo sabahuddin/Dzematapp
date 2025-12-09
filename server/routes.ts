@@ -6737,13 +6737,14 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     try {
       const tenantId = req.user!.tenantId;
       const { year } = req.query;
-      const targetYear = year ? parseInt(year as string) : new Date().getFullYear();
+      const isAllYears = year === 'all';
+      const targetYear = isAllYears ? undefined : (year ? parseInt(year as string) : new Date().getFullYear());
       
       // Get all active users
       const allUsers = await storage.getAllUsers(tenantId);
       const activeUsers = allUsers.filter(u => u.status === 'aktivan' && !u.isAdmin);
       
-      // Get all payments for this year
+      // Get payments - all years or specific year
       const payments = await storage.getMembershipPayments(tenantId, undefined, targetYear);
       
       // Build grid data for each user
@@ -6757,8 +6758,25 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
           months[m] = payment ? payment.amount : '0';
         }
         
-        // Calculate total
-        const total = userPayments.reduce((sum, p) => sum + parseFloat(p.amount || '0'), 0);
+        // Calculate total paid
+        const totalPaid = userPayments.reduce((sum, p) => sum + parseFloat(p.amount || '0'), 0);
+        
+        // Get member's fee settings
+        const feeAmount = parseFloat((user as any).membershipFeeAmount || '0');
+        const feeType = (user as any).membershipFeeType || 'monthly';
+        
+        // Calculate expected amount for the year
+        let expectedAmount = 0;
+        if (feeAmount > 0) {
+          if (feeType === 'monthly') {
+            expectedAmount = feeAmount * 12;
+          } else {
+            expectedAmount = feeAmount;
+          }
+        }
+        
+        // Calculate owed
+        const owed = Math.max(0, expectedAmount - totalPaid);
         
         return {
           userId: user.id,
@@ -6766,8 +6784,11 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
           firstName: user.firstName,
           lastName: user.lastName,
           phone: user.phone,
+          membershipFeeAmount: (user as any).membershipFeeAmount || null,
           ...months,
-          total: total.toFixed(2)
+          total: totalPaid.toFixed(2),
+          paid: totalPaid.toFixed(2),
+          owed: owed.toFixed(2)
         };
       });
       

@@ -81,6 +81,7 @@ interface GridMember {
   firstName: string;
   lastName: string;
   phone: string;
+  membershipFeeAmount: string | null;
   1: string;
   2: string;
   3: string;
@@ -94,6 +95,8 @@ interface GridMember {
   11: string;
   12: string;
   total: string;
+  paid: string;
+  owed: string;
 }
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'Maj', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec'];
@@ -107,7 +110,7 @@ export default function MembershipFeesPage() {
   
   const [tabValue, setTabValue] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [selectedYear, setSelectedYear] = useState<number | 'all'>(new Date().getFullYear());
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [uploadResult, setUploadResult] = useState<any>(null);
@@ -127,7 +130,7 @@ export default function MembershipFeesPage() {
   }
 
   const currentYear = new Date().getFullYear();
-  const yearOptions = [currentYear - 2, currentYear - 1, currentYear, currentYear + 1];
+  const yearOptions: (number | 'all')[] = ['all', ...Array.from({ length: currentYear - 1999 }, (_, i) => currentYear - i)];
 
   const settingsQuery = useQuery<MembershipSettings>({
     queryKey: ['/api/membership-fees/settings'],
@@ -324,12 +327,12 @@ export default function MembershipFeesPage() {
                 <InputLabel>Godina</InputLabel>
                 <Select
                   value={selectedYear}
-                  onChange={(e) => setSelectedYear(e.target.value as number)}
+                  onChange={(e) => setSelectedYear(e.target.value as number | 'all')}
                   label="Godina"
                   data-testid="select-year"
                 >
                   {yearOptions.map(year => (
-                    <MenuItem key={year} value={year}>{year}</MenuItem>
+                    <MenuItem key={String(year)} value={year}>{year === 'all' ? 'Sve godine' : year}</MenuItem>
                   ))}
                 </Select>
               </FormControl>
@@ -378,13 +381,19 @@ export default function MembershipFeesPage() {
                   <TableCell sx={{ fontWeight: 'bold', position: 'sticky', left: 0, bgcolor: 'background.paper', zIndex: 1 }}>
                     Član
                   </TableCell>
-                  {MONTHS.map((month, idx) => (
+                  <TableCell align="center" sx={{ fontWeight: 'bold', minWidth: 80 }}>
+                    Članarina
+                  </TableCell>
+                  {selectedYear !== 'all' && MONTHS.map((month, idx) => (
                     <TableCell key={idx} align="center" sx={{ fontWeight: 'bold', minWidth: 50 }}>
                       {month}
                     </TableCell>
                   ))}
-                  <TableCell align="center" sx={{ fontWeight: 'bold', bgcolor: 'primary.light', color: 'white' }}>
-                    Ukupno
+                  <TableCell align="center" sx={{ fontWeight: 'bold', bgcolor: 'success.light', color: 'success.dark' }}>
+                    Uplaćeno
+                  </TableCell>
+                  <TableCell align="center" sx={{ fontWeight: 'bold', bgcolor: 'error.light', color: 'error.dark' }}>
+                    Duguje
                   </TableCell>
                 </TableRow>
               </TableHead>
@@ -400,7 +409,10 @@ export default function MembershipFeesPage() {
                         {member.phone}
                       </Typography>
                     </TableCell>
-                    {[1,2,3,4,5,6,7,8,9,10,11,12].map((monthNum) => {
+                    <TableCell align="center" sx={{ fontWeight: 'medium' }}>
+                      {member.membershipFeeAmount ? `${member.membershipFeeAmount}` : '-'}
+                    </TableCell>
+                    {selectedYear !== 'all' && [1,2,3,4,5,6,7,8,9,10,11,12].map((monthNum) => {
                       const amount = member[monthNum as keyof GridMember] as string;
                       const isPaid = parseFloat(amount) > 0;
                       return (
@@ -421,11 +433,21 @@ export default function MembershipFeesPage() {
                       align="center" 
                       sx={{ 
                         fontWeight: 'bold', 
-                        bgcolor: 'primary.main', 
-                        color: 'white' 
+                        bgcolor: 'success.light', 
+                        color: 'success.dark' 
                       }}
                     >
-                      {member.total}
+                      {member.paid}
+                    </TableCell>
+                    <TableCell 
+                      align="center" 
+                      sx={{ 
+                        fontWeight: 'bold', 
+                        bgcolor: parseFloat(member.owed) > 0 ? 'error.light' : 'grey.100', 
+                        color: parseFloat(member.owed) > 0 ? 'error.dark' : 'text.secondary' 
+                      }}
+                    >
+                      {member.owed}
                     </TableCell>
                   </TableRow>
                 ))}
