@@ -61,6 +61,21 @@ export async function migrateProductionSchema(): Promise<void> {
     // Copy data from old 'title' column to new 'name' column if exists
     await copyTitleToName(client);
     
+    // Sync membership_settings currency with organization_settings currency
+    console.log("📋 Syncing membership settings currency with organization...");
+    try {
+      await client.query(`
+        UPDATE membership_settings ms
+        SET currency = os.currency
+        FROM organization_settings os
+        WHERE ms.tenant_id = os.tenant_id
+        AND ms.currency != os.currency
+      `);
+      console.log("✅ Membership currency synced with organization settings");
+    } catch (error: any) {
+      console.log("ℹ️  Membership currency sync skipped:", error.message);
+    }
+    
     console.log("✅ Schema migration complete");
   } finally {
     client.release();
