@@ -250,11 +250,12 @@ export default function MembershipFeesPage() {
   };
 
   const downloadTemplate = () => {
+    const templateYear = selectedYear === 'all' ? currentYear : selectedYear;
     const templateData = [
-      { 'Članski broj': 1, 'Ime i Prezime': 'Mujo Mujić', 'Iznos': 30, 'Godina': selectedYear, 'Mjesec': 1 },
-      { 'Članski broj': 1, 'Ime i Prezime': 'Mujo Mujić', 'Iznos': 30, 'Godina': selectedYear, 'Mjesec': 2 },
-      { 'Članski broj': 1, 'Ime i Prezime': 'Mujo Mujić', 'Iznos': 30, 'Godina': selectedYear, 'Mjesec': 3 },
-      { 'Članski broj': 2, 'Ime i Prezime': 'Haso Hasić', 'Iznos': 50, 'Godina': selectedYear, 'Mjesec': 1 },
+      { 'Članski broj': 1, 'Ime i Prezime': 'Mujo Mujić', 'Iznos': 30, 'Godina': templateYear, 'Mjesec': 1 },
+      { 'Članski broj': 1, 'Ime i Prezime': 'Mujo Mujić', 'Iznos': 30, 'Godina': templateYear, 'Mjesec': 2 },
+      { 'Članski broj': 1, 'Ime i Prezime': 'Mujo Mujić', 'Iznos': 30, 'Godina': templateYear, 'Mjesec': 3 },
+      { 'Članski broj': 2, 'Ime i Prezime': 'Haso Hasić', 'Iznos': 50, 'Godina': templateYear, 'Mjesec': 1 },
     ];
     
     const worksheet = XLSX.utils.json_to_sheet(templateData);
@@ -263,7 +264,7 @@ export default function MembershipFeesPage() {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Članarina');
     
-    XLSX.writeFile(workbook, `clanarina_template_${selectedYear}.xlsx`);
+    XLSX.writeFile(workbook, `clanarina_template_${templateYear}.xlsx`);
   };
 
   if (!currentUser?.isAdmin) {
@@ -622,8 +623,8 @@ export default function MembershipFeesPage() {
                   onChange={(e) => setNewPayment({ ...newPayment, coverageYear: e.target.value as number })}
                   label="Godina"
                 >
-                  {yearOptions.map(year => (
-                    <MenuItem key={year} value={year}>{year}</MenuItem>
+                  {yearOptions.filter(y => y !== 'all').map(year => (
+                    <MenuItem key={String(year)} value={year}>{year}</MenuItem>
                   ))}
                 </Select>
               </FormControl>
