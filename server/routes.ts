@@ -6602,7 +6602,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       
       const user = await storage.getUser(userId, tenantId);
       const payments = await storage.getMembershipPayments(tenantId, userId);
-      const settings = await storage.getMembershipFeeSettings(tenantId);
+      const settings = await storage.getMembershipSettings(tenantId);
       
       res.json({
         payments,
