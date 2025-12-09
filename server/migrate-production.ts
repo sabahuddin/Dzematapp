@@ -396,6 +396,45 @@ async function createMissingTables(client: any): Promise<void> {
       "user_id" varchar NOT NULL REFERENCES "users"("id"),
       "badge_id" varchar NOT NULL REFERENCES "badges"("id"),
       "earned_at" timestamp NOT NULL DEFAULT now()
+    )`,
+    
+    // membership_upload_logs (must be created first - referenced by membership_payments)
+    `CREATE TABLE IF NOT EXISTS "membership_upload_logs" (
+      "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+      "tenant_id" varchar NOT NULL REFERENCES "tenants"("id") ON DELETE CASCADE,
+      "admin_id" varchar NOT NULL REFERENCES "users"("id") ON DELETE CASCADE,
+      "uploaded_at" timestamp DEFAULT now(),
+      "file_name" text,
+      "records_processed" integer DEFAULT 0,
+      "records_successful" integer DEFAULT 0,
+      "records_failed" integer DEFAULT 0,
+      "error_log" text
+    )`,
+    
+    // membership_settings
+    `CREATE TABLE IF NOT EXISTS "membership_settings" (
+      "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+      "tenant_id" varchar NOT NULL UNIQUE REFERENCES "tenants"("id") ON DELETE CASCADE,
+      "fee_type" text NOT NULL DEFAULT 'monthly',
+      "monthly_amount" text DEFAULT '30',
+      "yearly_amount" text DEFAULT '300',
+      "current_fiscal_year" integer DEFAULT 2025,
+      "currency" text DEFAULT 'CHF',
+      "updated_at" timestamp DEFAULT now(),
+      "updated_by_id" varchar REFERENCES "users"("id") ON DELETE SET NULL
+    )`,
+    
+    // membership_payments
+    `CREATE TABLE IF NOT EXISTS "membership_payments" (
+      "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+      "tenant_id" varchar NOT NULL REFERENCES "tenants"("id") ON DELETE CASCADE,
+      "user_id" varchar NOT NULL REFERENCES "users"("id") ON DELETE CASCADE,
+      "amount" text NOT NULL,
+      "coverage_year" integer NOT NULL,
+      "coverage_month" integer,
+      "paid_at" timestamp DEFAULT now(),
+      "recorded_by_id" varchar REFERENCES "users"("id") ON DELETE SET NULL,
+      "upload_batch_id" varchar REFERENCES "membership_upload_logs"("id") ON DELETE SET NULL
     )`
   ];
   
