@@ -568,6 +568,32 @@ export default function UsersPage() {
               <Grid size={{ xs: 12, md: 6 }}>
                 <Box>
                   <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+                    ID člana
+                  </Typography>
+                  <Box sx={{ border: '1px solid hsl(0 0% 88%)', borderRadius: 2, p: 1.5, bgcolor: 'hsl(0 0% 98%)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
+                    <Typography variant="body1" fontWeight={600} color="primary">
+                      #{(myProfile as any).registryNumber || '-'}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Box>
+                  <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+                    Visina članarine
+                  </Typography>
+                  <Box sx={{ border: '1px solid hsl(0 0% 88%)', borderRadius: 2, p: 1.5, bgcolor: 'hsl(0 0% 98%)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
+                    <Typography variant="body1">
+                      {(myProfile as any).membershipFeeAmount ? `${(myProfile as any).membershipFeeAmount} CHF` : '-'}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Box>
+                  <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
                     {t('users:memberSince')}
                   </Typography>
                   <Box sx={{ border: '1px solid hsl(0 0% 88%)', borderRadius: 2, p: 1.5, bgcolor: 'hsl(0 0% 98%)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
