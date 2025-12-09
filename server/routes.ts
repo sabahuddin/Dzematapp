@@ -6638,6 +6638,30 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     }
   });
 
+  // Update payment (admin only)
+  app.put("/api/membership-fees/payments/:id", requireAdmin, async (req, res) => {
+    try {
+      const tenantId = req.user!.tenantId;
+      const { amount, coverageYear, coverageMonth, notes } = req.body;
+      
+      const payment = await storage.updateMembershipPayment(req.params.id, tenantId, {
+        amount: parseFloat(amount) || undefined,
+        coverageYear,
+        coverageMonth,
+        notes
+      });
+      
+      if (!payment) {
+        return res.status(404).json({ message: "Payment not found" });
+      }
+      
+      res.json(payment);
+    } catch (error) {
+      console.error('[MEMBERSHIP] Error updating payment:', error);
+      res.status(500).json({ message: "Failed to update membership payment" });
+    }
+  });
+
   // Delete payment (admin only)
   app.delete("/api/membership-fees/payments/:id", requireAdmin, async (req, res) => {
     try {

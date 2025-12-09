@@ -127,6 +127,8 @@ export default function MembershipFeesPage() {
   const [editSettings, setEditSettings] = useState({
     feeType: 'monthly'
   });
+  const [editPaymentDialogOpen, setEditPaymentDialogOpen] = useState(false);
+  const [editingPayment, setEditingPayment] = useState<any>(null);
 
   if (featureAccess.upgradeRequired) {
     return <UpgradeCTA moduleId="membership-fees" requiredPlan={featureAccess.requiredPlan || 'standard'} currentPlan={featureAccess.currentPlan || 'basic'} />;
@@ -155,6 +157,11 @@ export default function MembershipFeesPage() {
     enabled: !!currentUser?.isAdmin,
   });
 
+  const allPaymentsQuery = useQuery<any[]>({
+    queryKey: ['/api/membership-fees/payments', selectedYear === 'all' ? undefined : selectedYear],
+    enabled: !!currentUser?.isAdmin,
+  });
+
   const updateSettingsMutation = useMutation({
     mutationFn: async (data: Partial<MembershipSettings>) => {
       return await apiRequest('/api/membership-fees/settings', 'PATCH', data);
@@ -175,12 +182,43 @@ export default function MembershipFeesPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/membership-fees/members-grid', selectedYear] });
+      queryClient.invalidateQueries({ queryKey: ['/api/membership-fees/payments'] });
       setAddPaymentDialogOpen(false);
       setNewPayment({ userId: '', amount: '', coverageYear: currentYear, coverageMonth: 1, autoDistribute: true });
       toast({ title: 'Uplata uspješno dodana', variant: 'default' });
     },
     onError: () => {
       toast({ title: 'Greška pri dodavanju uplate', variant: 'destructive' });
+    }
+  });
+
+  const updatePaymentMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: any }) => {
+      return await apiRequest(`/api/membership-fees/payments/${id}`, 'PUT', data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/membership-fees/members-grid', selectedYear] });
+      queryClient.invalidateQueries({ queryKey: ['/api/membership-fees/payments'] });
+      setEditPaymentDialogOpen(false);
+      setEditingPayment(null);
+      toast({ title: 'Uplata uspješno izmijenjena', variant: 'default' });
+    },
+    onError: () => {
+      toast({ title: 'Greška pri izmjeni uplate', variant: 'destructive' });
+    }
+  });
+
+  const deletePaymentMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return await apiRequest(`/api/membership-fees/payments/${id}`, 'DELETE');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/membership-fees/members-grid', selectedYear] });
+      queryClient.invalidateQueries({ queryKey: ['/api/membership-fees/payments'] });
+      toast({ title: 'Uplata uspješno obrisana', variant: 'default' });
+    },
+    onError: () => {
+      toast({ title: 'Greška pri brisanju uplate', variant: 'destructive' });
     }
   });
 
@@ -367,6 +405,7 @@ export default function MembershipFeesPage() {
 
       <Tabs value={tabValue} onChange={(_, v) => setTabValue(v)} sx={{ mb: 2 }}>
         <Tab label="Pregled uplatnica" data-testid="tab-payments-grid" />
+        <Tab label="Sve uplate" data-testid="tab-all-payments" />
         <Tab label="Historija upload-a" data-testid="tab-upload-history" />
       </Tabs>
 
@@ -462,6 +501,68 @@ export default function MembershipFeesPage() {
       </TabPanel>
 
       <TabPanel value={tabValue} index={1}>
+        {allPaymentsQuery.isLoading ? (
+          <CircularProgress />
+        ) : (
+          <TableContainer component={Card}>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Član</TableCell>
+                  <TableCell align="center" sx={{ fontWeight: 'bold' }}>Iznos</TableCell>
+                  <TableCell align="center" sx={{ fontWeight: 'bold' }}>Godina</TableCell>
+                  <TableCell align="center" sx={{ fontWeight: 'bold' }}>Mjesec</TableCell>
+                  <TableCell align="center" sx={{ fontWeight: 'bold' }}>Datum uplate</TableCell>
+                  <TableCell align="center" sx={{ fontWeight: 'bold' }}>Akcije</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {(allPaymentsQuery.data || []).map((payment: any) => {
+                  const user = users.find(u => u.id === payment.userId);
+                  return (
+                    <TableRow key={payment.id} hover>
+                      <TableCell>
+                        {user ? `${user.registryNumber ? `#${user.registryNumber} - ` : ''}${user.firstName} ${user.lastName}` : 'Nepoznat'}
+                      </TableCell>
+                      <TableCell align="center">{payment.amount}</TableCell>
+                      <TableCell align="center">{payment.coverageYear}</TableCell>
+                      <TableCell align="center">{payment.coverageMonth ? MONTHS[payment.coverageMonth - 1] : '-'}</TableCell>
+                      <TableCell align="center">{payment.paidAt ? new Date(payment.paidAt).toLocaleDateString('bs-BA') : '-'}</TableCell>
+                      <TableCell align="center">
+                        <IconButton
+                          size="small"
+                          color="primary"
+                          onClick={() => {
+                            setEditingPayment(payment);
+                            setEditPaymentDialogOpen(true);
+                          }}
+                          data-testid={`button-edit-payment-${payment.id}`}
+                        >
+                          <Settings fontSize="small" />
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          color="error"
+                          onClick={() => {
+                            if (confirm('Da li ste sigurni da želite obrisati ovu uplatu?')) {
+                              deletePaymentMutation.mutate(payment.id);
+                            }
+                          }}
+                          data-testid={`button-delete-payment-${payment.id}`}
+                        >
+                          <Delete fontSize="small" />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+      </TabPanel>
+
+      <TabPanel value={tabValue} index={2}>
         {uploadLogsQuery.isLoading ? (
           <CircularProgress />
         ) : (
@@ -664,6 +765,80 @@ export default function MembershipFeesPage() {
           <Button onClick={() => setAddPaymentDialogOpen(false)}>Otkaži</Button>
           <Button variant="contained" onClick={handleAddPayment} disabled={createPaymentMutation.isPending}>
             Dodaj
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Edit Payment Dialog */}
+      <Dialog open={editPaymentDialogOpen} onClose={() => setEditPaymentDialogOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Izmijeni uplatu</DialogTitle>
+        <DialogContent>
+          {editingPayment && (
+            <Grid container spacing={2} sx={{ mt: 1 }}>
+              <Grid size={{ xs: 12 }}>
+                <Typography variant="body2" color="text.secondary">
+                  Član: {users.find(u => u.id === editingPayment.userId)?.firstName} {users.find(u => u.id === editingPayment.userId)?.lastName}
+                </Typography>
+              </Grid>
+              <Grid size={{ xs: 6 }}>
+                <TextField
+                  fullWidth
+                  label="Iznos"
+                  type="number"
+                  value={editingPayment.amount || ''}
+                  onChange={(e) => setEditingPayment({ ...editingPayment, amount: e.target.value })}
+                />
+              </Grid>
+              <Grid size={{ xs: 6 }}>
+                <FormControl fullWidth>
+                  <InputLabel>Godina</InputLabel>
+                  <Select
+                    value={editingPayment.coverageYear || currentYear}
+                    onChange={(e) => setEditingPayment({ ...editingPayment, coverageYear: e.target.value as number })}
+                    label="Godina"
+                  >
+                    {yearOptions.filter(y => y !== 'all').map(year => (
+                      <MenuItem key={String(year)} value={year}>{year}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <FormControl fullWidth>
+                  <InputLabel>Mjesec</InputLabel>
+                  <Select
+                    value={editingPayment.coverageMonth || 1}
+                    onChange={(e) => setEditingPayment({ ...editingPayment, coverageMonth: e.target.value as number })}
+                    label="Mjesec"
+                  >
+                    {MONTHS.map((month, idx) => (
+                      <MenuItem key={idx + 1} value={idx + 1}>{month}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+            </Grid>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEditPaymentDialogOpen(false)}>Otkaži</Button>
+          <Button 
+            variant="contained" 
+            onClick={() => {
+              if (editingPayment) {
+                updatePaymentMutation.mutate({
+                  id: editingPayment.id,
+                  data: {
+                    amount: editingPayment.amount,
+                    coverageYear: editingPayment.coverageYear,
+                    coverageMonth: editingPayment.coverageMonth
+                  }
+                });
+              }
+            }} 
+            disabled={updatePaymentMutation.isPending}
+          >
+            Sačuvaj
           </Button>
         </DialogActions>
       </Dialog>

@@ -505,6 +505,7 @@ export interface IStorage {
   getMembershipPaymentGrid(tenantId: string, userId: string): Promise<Array<{ year: number; month: number; amount: string }>>;
   createMembershipPayment(payment: InsertMembershipPayment): Promise<MembershipPayment>;
   createMembershipPaymentBulk(payments: InsertMembershipPayment[]): Promise<MembershipPayment[]>;
+  updateMembershipPayment(id: string, tenantId: string, data: Partial<InsertMembershipPayment>): Promise<MembershipPayment | undefined>;
   deleteMembershipPayment(id: string, tenantId: string): Promise<boolean>;
   getMembershipUploadLogs(tenantId: string): Promise<MembershipUploadLog[]>;
   getLatestMembershipUpload(tenantId: string): Promise<MembershipUploadLog | undefined>;
@@ -3395,6 +3396,20 @@ export class DatabaseStorage implements IStorage {
     if (payments.length === 0) return [];
     const created = await db.insert(membershipPayments).values(payments).returning();
     return created;
+  }
+
+  async updateMembershipPayment(id: string, tenantId: string, data: Partial<InsertMembershipPayment>): Promise<MembershipPayment | undefined> {
+    const updateData: any = {};
+    if (data.amount !== undefined) updateData.amount = String(data.amount);
+    if (data.coverageYear !== undefined) updateData.coverageYear = data.coverageYear;
+    if (data.coverageMonth !== undefined) updateData.coverageMonth = data.coverageMonth;
+    if (data.notes !== undefined) updateData.notes = data.notes;
+    
+    const [updated] = await db.update(membershipPayments)
+      .set(updateData)
+      .where(and(eq(membershipPayments.id, id), eq(membershipPayments.tenantId, tenantId)))
+      .returning();
+    return updated;
   }
 
   async deleteMembershipPayment(id: string, tenantId: string): Promise<boolean> {
