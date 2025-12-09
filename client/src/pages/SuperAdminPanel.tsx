@@ -89,7 +89,10 @@ export default function SuperAdminPanel() {
 
   // Create tenant mutation
   const createMutation = useMutation({
-    mutationFn: (data: any) => apiRequest("/api/tenants", "POST", data),
+    mutationFn: async (data: any) => {
+      const response = await apiRequest("/api/tenants", "POST", data);
+      return response.json();
+    },
     onSuccess: (data: any) => {
       queryClient.invalidateQueries({ queryKey: ["/api/tenants"] });
       if (data.adminCredentials) {
@@ -99,9 +102,8 @@ export default function SuperAdminPanel() {
         });
       } else {
         toast({ 
-          title: "Tenant kreiran", 
-          description: data.adminError || "Admin korisnik nije kreiran",
-          variant: "destructive"
+          title: "Tenant kreiran uspješno!", 
+          description: "Tenant je kreiran."
         });
       }
       setDialogOpen(false);
@@ -335,56 +337,61 @@ export default function SuperAdminPanel() {
   }
 
   return (
-    <Box sx={{ p: 4 }}>
-      <Typography variant="h4" data-testid="text-page-title" sx={{ mb: 3 }}>
+    <Box sx={{ p: { xs: 2, md: 4 }, minHeight: '100%' }}>
+      <Typography variant="h5" data-testid="text-page-title" sx={{ mb: 2, fontSize: { xs: '1.25rem', md: '2rem' } }}>
         Super Admin Panel
       </Typography>
 
       {/* Tenant Management */}
-      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'flex-end', gap: 2, flexWrap: 'wrap' }}>
+      <Box sx={{ mb: 2, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'flex-end', gap: 1, flexWrap: 'wrap' }}>
+            <Button 
+              variant="contained" 
+              size="small"
+              startIcon={<Add />} 
+              onClick={() => handleOpenDialog()}
+              data-testid="button-create-tenant"
+              sx={{ order: { xs: -1, sm: 0 } }}
+            >
+              Novi Tenant
+            </Button>
             <Button 
               variant="outlined"
+              size="small"
+              color="warning"
+              onClick={() => cleanDuplicatesMutation.mutate()}
+              disabled={cleanDuplicatesMutation.isPending}
+              data-testid="button-clean-duplicate-admins"
+            >
+              {cleanDuplicatesMutation.isPending ? <CircularProgress size={16} /> : 'Duplikati'}
+            </Button>
+            <Button 
+              variant="outlined"
+              size="small"
               color="error"
               onClick={() => {
-                if (window.confirm('Obrisati sve demo korisnike (Iso, Elma, Hase...) iz svih tenanta osim Demo Džemata?')) {
+                if (window.confirm('Obrisati sve demo korisnike iz svih tenanta osim Demo Džemata?')) {
                   purgeDemoUsersMutation.mutate();
                 }
               }}
               disabled={purgeDemoUsersMutation.isPending}
               data-testid="button-purge-demo-users"
             >
-              {purgeDemoUsersMutation.isPending ? <CircularProgress size={20} /> : 'Obriši demo korisnike'}
-            </Button>
-            <Button 
-              variant="outlined"
-              color="warning"
-              onClick={() => cleanDuplicatesMutation.mutate()}
-              disabled={cleanDuplicatesMutation.isPending}
-              data-testid="button-clean-duplicate-admins"
-            >
-              {cleanDuplicatesMutation.isPending ? <CircularProgress size={20} /> : 'Očisti duplikate'}
-            </Button>
-            <Button 
-              variant="contained" 
-              startIcon={<Add />} 
-              onClick={() => handleOpenDialog()}
-              data-testid="button-create-tenant"
-            >
-              Novi Tenant
+              {purgeDemoUsersMutation.isPending ? <CircularProgress size={16} /> : 'Demo'}
             </Button>
           </Box>
 
-          <Card sx={{ p: 2, mb: 3 }}>
+          <Card sx={{ p: 1, mb: 2 }}>
             <TextField
               fullWidth
-              placeholder="Pretraži po nazivu, email-u ili kodu..."
+              size="small"
+              placeholder="Pretraži..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               data-testid="input-search"
             />
           </Card>
 
-          <TableContainer component={Card}>
+          <TableContainer component={Card} sx={{ overflowX: 'auto' }}>
         <Table>
           <TableHead>
             <TableRow>
@@ -499,7 +506,7 @@ export default function SuperAdminPanel() {
         </DialogTitle>
         <DialogContent>
           <Grid container spacing={2} sx={{ mt: 1 }}>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
                 label="Naziv"
@@ -509,7 +516,7 @@ export default function SuperAdminPanel() {
                 data-testid="input-name"
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
                 label="Slug (URL-friendly)"
@@ -519,7 +526,7 @@ export default function SuperAdminPanel() {
                 data-testid="input-slug"
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
                 label="Tenant Kod"
@@ -529,7 +536,7 @@ export default function SuperAdminPanel() {
                 data-testid="input-tenantCode"
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
                 label="Subdomain"
@@ -538,7 +545,7 @@ export default function SuperAdminPanel() {
                 data-testid="input-subdomain"
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
                 label="Email"
@@ -549,7 +556,7 @@ export default function SuperAdminPanel() {
                 data-testid="input-email"
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
                 label="Telefon"
@@ -558,7 +565,7 @@ export default function SuperAdminPanel() {
                 data-testid="input-phone"
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
                 label="Adresa"
@@ -567,7 +574,7 @@ export default function SuperAdminPanel() {
                 data-testid="input-address"
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
                 label="Grad"
@@ -576,7 +583,7 @@ export default function SuperAdminPanel() {
                 data-testid="input-city"
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <FormControl fullWidth>
                 <InputLabel>Subscription Tier</InputLabel>
                 <Select
@@ -591,7 +598,7 @@ export default function SuperAdminPanel() {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <FormControl fullWidth>
                 <InputLabel>Subscription Status</InputLabel>
                 <Select
@@ -607,7 +614,7 @@ export default function SuperAdminPanel() {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <FormControl fullWidth>
                 <InputLabel>Jezik</InputLabel>
                 <Select
@@ -623,7 +630,7 @@ export default function SuperAdminPanel() {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <FormControl fullWidth>
                 <InputLabel>Valuta</InputLabel>
                 <Select
