@@ -341,11 +341,6 @@ export default function MembershipFeesPage() {
                   onChange={(e) => setSelectedYear(e.target.value as number | 'all')}
                   displayEmpty
                   data-testid="select-year"
-                  MenuProps={{
-                    PaperProps: {
-                      sx: { backgroundColor: '#fff', color: '#333' }
-                    }
-                  }}
                 >
                   <MenuItem value="all">Sve godine</MenuItem>
                   {yearOptions.filter(y => y !== 'all').map(year => (

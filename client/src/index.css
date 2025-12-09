@@ -737,3 +737,28 @@ select:not(.MuiSelect-select):not(.MuiNativeSelect-select):focus {
     padding-bottom: calc(100% * var(--aspect-ratio, 0.75));
   }
 }
+
+/* Global MUI Dropdown/Menu Light Theme Override */
+.MuiMenu-paper,
+.MuiPopover-paper,
+.MuiAutocomplete-paper {
+  background-color: #ffffff !important;
+  color: #333333 !important;
+}
+
+.MuiMenuItem-root {
+  background-color: #ffffff !important;
+  color: #333333 !important;
+}
+
+.MuiMenuItem-root:hover {
+  background-color: #f5f5f5 !important;
+}
+
+.MuiMenuItem-root.Mui-selected {
+  background-color: #e3f2fd !important;
+}
+
+.MuiMenuItem-root.Mui-selected:hover {
+  background-color: #bbdefb !important;
+}
