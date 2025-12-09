@@ -808,6 +808,9 @@ async function addMissingColumns(client: any): Promise<void> {
     `ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "last_viewed_tasks" timestamp`,
     `ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "is_super_admin" boolean DEFAULT false`,
     `ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "inactive_reason" text`,
+    `ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "registry_number" integer`,
+    `ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "membership_fee_type" text`,
+    `ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "membership_fee_amount" text`,
     
     // TASKS
     `ALTER TABLE "tasks" ADD COLUMN IF NOT EXISTS "description_image" text`,

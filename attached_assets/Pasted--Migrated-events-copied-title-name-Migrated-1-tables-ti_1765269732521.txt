@@ -1,0 +1,96 @@
+✅ Migrated events: copied title->name
+✅ Migrated 1 tables (title->name)
+✅ Schema migration complete
+📋 Verifying all schema tables exist...
+✅ All 47 tables verified
+✅ Database schema synchronized successfully!
+[INIT] Registering /api/auth/superadmin/login endpoint
+📂 Serving static files from: /app/dist/public
+8:39:22 AM [express] serving on port 3000
+✅ Admin user already exists
+🌱 Starting default tenant seed...
+📋 Creating subscription plans...
+📋 Updating existing subscription plans with latest modules...
+✅ Full plan modules updated
+🔐 Creating SuperAdmin global tenant...
+ℹ️  SuperAdmin global tenant already exists
+🏢 Creating default tenant...
+ℹ️  Default tenant already exists: Demo Džemat
+👤 Creating SuperAdmin user...
+8:40:15 AM [express] GET /api/auth/session 401 in 6ms :: {"message":"Not authenticated"}
+[ORG-SETTINGS] Getting settings for tenant: default-tenant-demo
+[STORAGE] ✅ Found existing org settings: fe93405c-6d88-4363-8dec-75b45f796008
+[ORG-SETTINGS] ✅ Success: fe93405c-6d88-4363-8dec-75b45f796008
+8:40:15 AM [express] GET /api/organization-settings 304 in 9ms :: {"id":"fe93405c-6d88-4363-8dec-75b…
+[LOGIN] Received credentials: {
+  username: 'admin',
+❌ Seed failed: error: column "registry_number" does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async seedDefaultTenant (file:///app/dist/index.js:3681:32)
+    at async startSeeding (file:///app/dist/index.js:11412:5) {
+  length: 116,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '419',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3716',
+  routine: 'errorMissingColumn'
+}
+Seed error: error: column "registry_number" does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async seedDefaultTenant (file:///app/dist/index.js:3681:32)
+    at async startSeeding (file:///app/dist/index.js:11412:5) {
+  length: 116,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '419',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3716',
+  routine: 'errorMissingColumn'
+}
+  passwordLength: 8,
+  tenantCode: undefined,
+  tenantId: 'default-tenant-demo'
+}
+8:40:24 AM [express] POST /api/auth/login 500 in 10ms :: {"message":"Internal server error"}
+[ORG-SETTINGS] Getting settings for tenant: default-tenant-demo
+[STORAGE] ✅ Found existing org settings: fe93405c-6d88-4363-8dec-75b45f796008
+[ORG-SETTINGS] ✅ Success: fe93405c-6d88-4363-8dec-75b45f796008
+8:40:40 AM [express] GET /api/organization-settings 304 in 10ms :: {"id":"fe93405c-6d88-4363-8dec-75…
+8:40:40 AM [express] GET /api/auth/session 401 in 5ms :: {"message":"Not authenticated"}
+[ORG-SETTINGS] Getting settings for tenant: default-tenant-demo
+8:40:44 AM [express] GET /api/auth/session 401 in 3ms :: {"message":"Not authenticated"}
+[STORAGE] ✅ Found existing org settings: fe93405c-6d88-4363-8dec-75b45f796008
+[ORG-SETTINGS] ✅ Success: fe93405c-6d88-4363-8dec-75b45f796008
+8:40:44 AM [express] GET /api/organization-settings 304 in 8ms :: {"id":"fe93405c-6d88-4363-8dec-75b…
+[LOGIN] Received credentials: {
+  username: 'admin',
+  passwordLength: 8,
+  tenantCode: undefined,
+  tenantId: 'default-tenant-demo'
+}
+8:40:53 AM [express] POST /api/auth/login 500 in 6ms :: {"message":"Internal server error"}
