@@ -450,7 +450,7 @@ export default function FinancesPage() {
                   variant="outlined"
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}
-                  sx={{ minWidth: 200 }}
+                  sx={{ minWidth: 200, '& select': { backgroundColor: '#fff', color: '#333' } }}
                   SelectProps={{ native: true }}
                   data-testid="select-category-filter"
                 >
@@ -764,9 +764,10 @@ export default function FinancesPage() {
                   error={!!form.formState.errors.purpose}
                   helperText={form.formState.errors.purpose?.message}
                   SelectProps={{ native: true }}
+                  sx={{ '& select': { backgroundColor: '#fff', color: '#333' } }}
                   data-testid="select-purpose"
                 >
-                  <option value="">{t('finances:selectPurpose') || 'Odaberi svrhu...'}</option>
+                  <option value="">{t('finances:selectPurpose')}</option>
                   {purposesQuery.data?.map((purpose: ContributionPurpose) => (
                     <option key={purpose.id} value={purpose.name || (purpose as any).title || ''}>{purpose.name || (purpose as any).title || 'N/A'}</option>
                   ))}
@@ -781,6 +782,7 @@ export default function FinancesPage() {
                   error={!!form.formState.errors.paymentMethod}
                   helperText={form.formState.errors.paymentMethod?.message}
                   SelectProps={{ native: true }}
+                  sx={{ '& select': { backgroundColor: '#fff', color: '#333' } }}
                   data-testid="select-payment-method"
                 >
                   <option value={t('finances:paymentMethods.cash')}>{t('finances:paymentMethods.cash')}</option>
@@ -794,6 +796,7 @@ export default function FinancesPage() {
                   label={t('finances:projectOptional')}
                   {...form.register('projectId')}
                   SelectProps={{ native: true }}
+                  sx={{ '& select': { backgroundColor: '#fff', color: '#333' } }}
                   data-testid="select-project"
                 >
                   <option value="">{t('finances:noProject')}</option>
@@ -809,10 +812,9 @@ export default function FinancesPage() {
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
-                  label={t('finances:pointsValue') || 'Bodovi'}
+                  label={t('finances:pointsValue')}
                   type="number"
                   {...form.register('pointsValue', { valueAsNumber: true })}
-                  helperText={t('finances:pointsValueHelper') || 'Unesite broj bodova za ovu uplatu (0 = bez bodova)'}
                   data-testid="input-points"
                 />
               </Grid>
