@@ -33,6 +33,8 @@ export const users = pgTable("users", {
   skills: text("skills").array(), // Member skills/talents (Feature 3)
   totalPoints: integer("total_points").default(0), // Gamification points (Feature 2)
   registryNumber: integer("registry_number"), // Unique member registry number per tenant (članski broj)
+  membershipFeeType: text("membership_fee_type"), // "monthly" or "yearly" - individual member setting
+  membershipFeeAmount: text("membership_fee_amount"), // Individual fee amount (e.g., "30", "50")
 }, (t) => ({
   usernamePerTenant: unique("users_username_tenant_unique").on(t.username, t.tenantId),
   emailPerTenant: unique("users_email_tenant_unique").on(t.email, t.tenantId),
