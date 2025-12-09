@@ -11,7 +11,8 @@ export function requireFeature(moduleId: string) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const session = req.session as any;
-      const tenantId = session.tenantId;
+      // Support both session tenantId and request tenantId (for guest access)
+      const tenantId = session.tenantId || (req as any).tenantId;
       
       // Super Admin bypass - has access to everything
       if (session.isSuperAdmin) {
