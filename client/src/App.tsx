@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Switch, Route, Redirect } from "wouter";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
+import { ThemeProvider, createTheme, CssBaseline, Box, Typography } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { bs } from 'date-fns/locale';
@@ -585,12 +585,71 @@ const theme = createTheme({
   },
 });
 
+// Loading Screen Component
+function LoadingScreen() {
+  return (
+    <Box sx={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: 'linear-gradient(135deg, #3949AB 0%, #1E88E5 100%)',
+      zIndex: 9999,
+    }}>
+      <Box sx={{
+        width: 80,
+        height: 80,
+        background: 'white',
+        borderRadius: '20px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        mb: 3,
+        boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
+      }}>
+        <Box component="svg" width={48} height={48} viewBox="0 0 24 24" fill="none" stroke="#3949AB" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </Box>
+      </Box>
+      <Typography sx={{ color: 'white', fontSize: 24, fontWeight: 600, mb: 1 }}>
+        DžematApp
+      </Typography>
+      <Box sx={{
+        width: 120,
+        height: 4,
+        background: 'rgba(255,255,255,0.3)',
+        borderRadius: 2,
+        overflow: 'hidden',
+        mt: 2,
+      }}>
+        <Box sx={{
+          width: '40%',
+          height: '100%',
+          background: 'white',
+          borderRadius: 2,
+          animation: 'loading 1.5s ease-in-out infinite',
+          '@keyframes loading': {
+            '0%': { transform: 'translateX(-100%)' },
+            '50%': { transform: 'translateX(150%)' },
+            '100%': { transform: 'translateX(-100%)' },
+          },
+        }} />
+      </Box>
+    </Box>
+  );
+}
+
 // Protected Route Component
 function ProtectedRoute({ children }: { children: ReactNode }) {
   const { user, isLoading } = useAuth();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <LoadingScreen />;
   }
 
   if (!user) {
@@ -605,7 +664,7 @@ function AdminRoute({ children }: { children: ReactNode }) {
   const { user, isLoading } = useAuth();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <LoadingScreen />;
   }
 
   if (!user) {
@@ -624,7 +683,7 @@ function SuperAdminRoute({ children }: { children: ReactNode }) {
   const { user, isLoading } = useAuth();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <LoadingScreen />;
   }
 
   if (!user) {
