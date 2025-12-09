@@ -106,6 +106,17 @@ function MembershipApplicationForm() {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
+  // Simple math captcha
+  const [captcha, setCaptcha] = useState(() => {
+    const a = Math.floor(Math.random() * 10) + 1;
+    const b = Math.floor(Math.random() * 10) + 1;
+    return { a, b, answer: a + b };
+  });
+  const [captchaInput, setCaptchaInput] = useState('');
+  
+  // Honeypot field - bots will fill this, humans won't see it
+  const [honeypot, setHoneypot] = useState('');
+
   // Update monthlyFee when settings load
   useEffect(() => {
     if (membershipSettings?.monthlyAmount) {
@@ -114,14 +125,21 @@ function MembershipApplicationForm() {
   }, [membershipSettings?.monthlyAmount]);
 
   const uploadPhotoMutation = useMutation({
-    mutationFn: async (file: File) => {
+    mutationFn: async ({ file, captchaData, honeypotValue }: { file: File; captchaData: { a: number; b: number; answer: string }; honeypotValue: string }) => {
       const formDataUpload = new FormData();
       formDataUpload.append('photo', file);
-      const response = await fetch('/api/upload/photo', {
+      formDataUpload.append('captchaA', String(captchaData.a));
+      formDataUpload.append('captchaB', String(captchaData.b));
+      formDataUpload.append('captchaAnswer', captchaData.answer);
+      formDataUpload.append('honeypot', honeypotValue);
+      const response = await fetch('/api/upload/guest-photo', {
         method: 'POST',
         body: formDataUpload,
       });
-      if (!response.ok) throw new Error('Photo upload failed');
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({ message: 'Photo upload failed' }));
+        throw new Error(error.message || 'Photo upload failed');
+      }
       const result = await response.json();
       return result.photoUrl;
     },
@@ -150,16 +168,36 @@ function MembershipApplicationForm() {
     event.preventDefault();
     setSubmitError(null);
 
+    // Validate captcha
+    if (parseInt(captchaInput) !== captcha.answer) {
+      setSubmitError('Neispravan odgovor na sigurnosno pitanje. Pokušajte ponovo.');
+      // Regenerate captcha
+      const a = Math.floor(Math.random() * 10) + 1;
+      const b = Math.floor(Math.random() * 10) + 1;
+      setCaptcha({ a, b, answer: a + b });
+      setCaptchaInput('');
+      return;
+    }
+
     try {
       let finalData: any = { ...formData };
 
       if (photoFile) {
         try {
-          const photoUrl = await uploadPhotoMutation.mutateAsync(photoFile);
+          const photoUrl = await uploadPhotoMutation.mutateAsync({
+            file: photoFile,
+            captchaData: { a: captcha.a, b: captcha.b, answer: captchaInput },
+            honeypotValue: honeypot
+          });
           finalData.photo = photoUrl;
-        } catch (error) {
+        } catch (error: any) {
           console.error('Photo upload failed:', error);
-          setSubmitError('Greška pri učitavanju fotografije');
+          setSubmitError(error.message || 'Greška pri učitavanju fotografije');
+          // Regenerate captcha on error
+          const a = Math.floor(Math.random() * 10) + 1;
+          const b = Math.floor(Math.random() * 10) + 1;
+          setCaptcha({ a, b, answer: a + b });
+          setCaptchaInput('');
           return;
         }
       }
@@ -536,12 +574,49 @@ function MembershipApplicationForm() {
         </Grid>
       </Card>
 
+      {/* Honeypot field - invisible to humans, bots fill it */}
+      <TextField
+        value={honeypot}
+        onChange={(e) => setHoneypot(e.target.value)}
+        sx={{ 
+          position: 'absolute',
+          left: '-9999px',
+          opacity: 0,
+          height: 0,
+          width: 0,
+          overflow: 'hidden'
+        }}
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+      />
+
+      {/* Security Captcha */}
+      <Card sx={{ p: 3, mt: 3 }}>
+        <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
+          Sigurnosno pitanje
+        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Typography variant="body1">
+            Koliko je {captcha.a} + {captcha.b} = ?
+          </Typography>
+          <TextField
+            size="small"
+            value={captchaInput}
+            onChange={(e) => setCaptchaInput(e.target.value)}
+            placeholder="Unesite odgovor"
+            sx={{ width: 120 }}
+            data-testid="input-captcha"
+          />
+        </Box>
+      </Card>
+
       <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 3 }}>
         <Button
           type="submit"
           variant="contained"
           size="large"
-          disabled={submitApplicationMutation.isPending || uploadPhotoMutation.isPending}
+          disabled={submitApplicationMutation.isPending || uploadPhotoMutation.isPending || !captchaInput}
           data-testid="button-submit-application"
         >
           {submitApplicationMutation.isPending ? 'Slanje...' : 'Pošalji zahtjev'}

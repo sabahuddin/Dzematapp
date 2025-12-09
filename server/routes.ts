@@ -214,6 +214,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Guest photo upload route (for membership applications) - no auth required, uses honeypot + captcha
+  app.post("/api/upload/guest-photo", upload.single('photo'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
+
+      // Honeypot check - bots fill hidden fields, humans don't
+      const { honeypot, captchaA, captchaB, captchaAnswer, tenantId: bodyTenantId } = req.body;
+      if (honeypot) {
+        console.log('❌ Guest photo upload: honeypot triggered (bot detected)');
+        return res.status(400).json({ message: "Zahtjev odbijen" });
+      }
+
+      // Basic captcha validation (client-side math check, honeypot is main protection)
+      const a = parseInt(captchaA);
+      const b = parseInt(captchaB);
+      const answer = parseInt(captchaAnswer);
+      if (isNaN(a) || isNaN(b) || isNaN(answer) || a + b !== answer) {
+        console.log('❌ Guest photo upload: captcha validation failed');
+        return res.status(400).json({ message: "Neispravan odgovor na sigurnosno pitanje" });
+      }
+
+      const tenantId = bodyTenantId || 'shared';
+      const photoUrl = await processAndSaveToFolder(req.file.buffer, 'photos', 'guest-photo', IMAGE_CONFIGS.profile, tenantId);
+      console.log(`✅ Guest photo saved: ${Math.round(req.file.size / 1024)}KB -> WebP (tenant: ${tenantId})`);
+      
+      res.json({ 
+        message: "Photo uploaded successfully",
+        photoUrl: photoUrl 
+      });
+    } catch (error) {
+      console.error('❌ Guest photo upload error:', error);
+      res.status(500).json({ message: "Failed to upload photo" });
+    }
+  });
+
   // Photo upload route (profile/general) - with WebP compression
   app.post("/api/upload/photo", requireAuth, upload.single('photo'), async (req, res) => {
     try {
