@@ -6581,7 +6581,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       
       // If autoDistribute is enabled and user has a membership fee set
       if (autoDistribute && coverageMonth) {
-        const user = await storage.getUser(userId);
+        const user = await storage.getUser(userId, tenantId);
         const monthlyFee = user?.membershipFeeAmount ? parseFloat(String(user.membershipFeeAmount)) : 0;
         
         console.log('[MEMBERSHIP] Auto-distribute check:', { monthlyFee, amount, shouldDistribute: monthlyFee > 0 && amount > monthlyFee });
