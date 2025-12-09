@@ -29,7 +29,9 @@ import {
   TableRow,
   Chip,
   IconButton,
-  InputAdornment
+  InputAdornment,
+  FormControlLabel,
+  Checkbox
 } from '@mui/material';
 import {
   Upload,
@@ -119,7 +121,8 @@ export default function MembershipFeesPage() {
     userId: '',
     amount: '',
     coverageYear: new Date().getFullYear(),
-    coverageMonth: 1
+    coverageMonth: 1,
+    autoDistribute: true
   });
   const [editSettings, setEditSettings] = useState({
     feeType: 'monthly'
@@ -173,7 +176,7 @@ export default function MembershipFeesPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/membership-fees/members-grid', selectedYear] });
       setAddPaymentDialogOpen(false);
-      setNewPayment({ userId: '', amount: '', coverageYear: currentYear, coverageMonth: 1 });
+      setNewPayment({ userId: '', amount: '', coverageYear: currentYear, coverageMonth: 1, autoDistribute: true });
       toast({ title: 'Uplata uspješno dodana', variant: 'default' });
     },
     onError: () => {
@@ -642,6 +645,18 @@ export default function MembershipFeesPage() {
                   ))}
                 </Select>
               </FormControl>
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={newPayment.autoDistribute}
+                    onChange={(e) => setNewPayment({ ...newPayment, autoDistribute: e.target.checked })}
+                    color="primary"
+                  />
+                }
+                label="Automatski rasporedi na mjesece (ako iznos prelazi članarinu)"
+              />
             </Grid>
           </Grid>
         </DialogContent>

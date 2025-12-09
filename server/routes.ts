@@ -6570,12 +6570,53 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     }
   });
 
-  // Create single payment (admin only)
+  // Create single payment (admin only) - with auto-distribution option
   app.post("/api/membership-fees/payments", requireAdmin, async (req, res) => {
     try {
       const tenantId = req.user!.tenantId;
-      const { userId, amount, coverageYear, coverageMonth, notes } = req.body;
+      const { userId, amount, coverageYear, coverageMonth, notes, autoDistribute } = req.body;
       
+      // If autoDistribute is enabled and user has a membership fee set
+      if (autoDistribute && coverageMonth) {
+        const user = await storage.getUser(userId);
+        const monthlyFee = user?.membershipFeeAmount;
+        
+        if (monthlyFee && monthlyFee > 0 && amount > monthlyFee) {
+          // Calculate how many months this payment covers
+          const monthsCovered = Math.floor(amount / monthlyFee);
+          const payments = [];
+          
+          let currentMonth = coverageMonth;
+          let currentYear = coverageYear;
+          
+          for (let i = 0; i < monthsCovered; i++) {
+            const payment = await storage.createMembershipPayment({
+              tenantId,
+              userId,
+              amount: monthlyFee,
+              coverageYear: currentYear,
+              coverageMonth: currentMonth,
+              notes: i === 0 ? notes : `Auto-raspoređeno iz uplate od ${amount}`
+            });
+            payments.push(payment);
+            
+            // Move to next month
+            currentMonth++;
+            if (currentMonth > 12) {
+              currentMonth = 1;
+              currentYear++;
+            }
+          }
+          
+          return res.status(201).json({ 
+            distributed: true, 
+            count: payments.length,
+            payments 
+          });
+        }
+      }
+      
+      // Standard single payment
       const payment = await storage.createMembershipPayment({
         tenantId,
         userId,
