@@ -1465,6 +1465,34 @@ function IncomingAkikaApplications() {
   );
 }
 
+function AllApplicationsView() {
+  const [subTab, setSubTab] = useState(0);
+  
+  return (
+    <Box>
+      <Tabs
+        value={subTab}
+        onChange={(_, newValue) => setSubTab(newValue)}
+        sx={{ mb: 2, borderBottom: 1, borderColor: 'divider' }}
+      >
+        <Tab label="Akika" icon={<ChildCare />} iconPosition="start" />
+        <Tab label="Vjenčanja" icon={<Favorite />} iconPosition="start" />
+        <Tab label="Pristupnice" icon={<PersonAdd />} iconPosition="start" />
+      </Tabs>
+      
+      {subTab === 0 && <IncomingAkikaApplications />}
+      {subTab === 1 && (
+        <Box sx={{ textAlign: 'center', py: 4 }}>
+          <Typography color="text.secondary">
+            Prijave za vjenčanja će biti prikazane ovdje
+          </Typography>
+        </Box>
+      )}
+      {subTab === 2 && <MembershipApplicationsList />}
+    </Box>
+  );
+}
+
 export default function ApplicationsPage() {
   const { user } = useAuth();
   const { t } = useTranslation("applications");
@@ -1511,18 +1539,10 @@ export default function ApplicationsPage() {
               />
               <Tab 
                 icon={user?.isAdmin ? <Inbox /> : <ListIcon />} 
-                label={user?.isAdmin ? "Akika prijave" : t("myApplications.title")} 
+                label={user?.isAdmin ? "Prijave" : t("myApplications.title")} 
                 iconPosition="start"
                 data-testid={user?.isAdmin ? "tab-incoming-applications" : "tab-my-applications"}
               />
-              {user?.isAdmin && (
-                <Tab 
-                  icon={<PersonAdd />} 
-                  label="Pristupnice" 
-                  iconPosition="start"
-                  data-testid="tab-membership-applications"
-                />
-              )}
             </Tabs>
 
             <TabPanel value={tabValue} index={0}>
@@ -1534,14 +1554,8 @@ export default function ApplicationsPage() {
             </TabPanel>
 
             <TabPanel value={tabValue} index={2}>
-              {user?.isAdmin ? <IncomingAkikaApplications /> : <MyApplicationsList />}
+              {user?.isAdmin ? <AllApplicationsView /> : <MyApplicationsList />}
             </TabPanel>
-
-            {user?.isAdmin && (
-              <TabPanel value={tabValue} index={3}>
-                <MembershipApplicationsList />
-              </TabPanel>
-            )}
           </CardContent>
         </Card>
       </Container>
