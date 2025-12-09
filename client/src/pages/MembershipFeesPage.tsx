@@ -335,20 +335,24 @@ export default function MembershipFeesPage() {
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 3 }}>
-              <TextField
-                select
-                fullWidth
-                value={selectedYear}
-                onChange={(e) => setSelectedYear(e.target.value as number | 'all')}
-                SelectProps={{ native: true }}
-                sx={{ '& select': { backgroundColor: '#fff', color: '#333' } }}
-                data-testid="select-year"
-              >
-                <option value="all">Sve godine</option>
-                {yearOptions.filter(y => y !== 'all').map(year => (
-                  <option key={String(year)} value={year}>{year}</option>
-                ))}
-              </TextField>
+              <FormControl fullWidth>
+                <Select
+                  value={selectedYear}
+                  onChange={(e) => setSelectedYear(e.target.value as number | 'all')}
+                  displayEmpty
+                  data-testid="select-year"
+                  MenuProps={{
+                    PaperProps: {
+                      sx: { backgroundColor: '#fff', color: '#333' }
+                    }
+                  }}
+                >
+                  <MenuItem value="all">Sve godine</MenuItem>
+                  {yearOptions.filter(y => y !== 'all').map(year => (
+                    <MenuItem key={String(year)} value={year}>{year}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
             <Grid size={{ xs: 12, sm: 2 }}>
               <Button
