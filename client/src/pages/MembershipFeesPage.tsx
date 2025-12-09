@@ -403,10 +403,10 @@ export default function MembershipFeesPage() {
                       {month}
                     </TableCell>
                   ))}
-                  <TableCell align="center" sx={{ fontWeight: 'bold', bgcolor: 'success.light', color: 'success.dark' }}>
+                  <TableCell align="center" sx={{ fontWeight: 'bold', bgcolor: 'success.main', color: 'white' }}>
                     Uplaćeno
                   </TableCell>
-                  <TableCell align="center" sx={{ fontWeight: 'bold', bgcolor: 'error.light', color: 'error.dark' }}>
+                  <TableCell align="center" sx={{ fontWeight: 'bold', bgcolor: 'error.main', color: 'white' }}>
                     Duguje
                   </TableCell>
                 </TableRow>
@@ -434,8 +434,8 @@ export default function MembershipFeesPage() {
                           key={monthNum} 
                           align="center"
                           sx={{ 
-                            bgcolor: isPaid ? 'success.light' : 'grey.100',
-                            color: isPaid ? 'success.dark' : 'text.disabled',
+                            bgcolor: isPaid ? 'success.main' : 'grey.100',
+                            color: isPaid ? 'white' : 'text.disabled',
                             fontWeight: isPaid ? 'bold' : 'normal'
                           }}
                         >
@@ -447,8 +447,8 @@ export default function MembershipFeesPage() {
                       align="center" 
                       sx={{ 
                         fontWeight: 'bold', 
-                        bgcolor: 'success.light', 
-                        color: 'success.dark' 
+                        bgcolor: 'success.main', 
+                        color: 'white' 
                       }}
                     >
                       {member.paid}
@@ -457,8 +457,8 @@ export default function MembershipFeesPage() {
                       align="center" 
                       sx={{ 
                         fontWeight: 'bold', 
-                        bgcolor: parseFloat(member.owed) > 0 ? 'error.light' : 'grey.100', 
-                        color: parseFloat(member.owed) > 0 ? 'error.dark' : 'text.secondary' 
+                        bgcolor: parseFloat(member.owed) > 0 ? 'error.main' : 'grey.100', 
+                        color: parseFloat(member.owed) > 0 ? 'white' : 'text.secondary' 
                       }}
                     >
                       {member.owed}
