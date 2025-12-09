@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Container,
@@ -65,7 +65,21 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
+interface MembershipSettingsPublic {
+  feeType: string;
+  monthlyAmount: number;
+  currency: string;
+}
+
 function MembershipApplicationForm() {
+  // Fetch membership settings for dynamic fee display
+  const { data: membershipSettings } = useQuery<MembershipSettingsPublic>({
+    queryKey: ['/api/membership-settings/public'],
+  });
+
+  const currency = membershipSettings?.currency || 'CHF';
+  const suggestedFee = membershipSettings?.monthlyAmount || 50;
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -80,7 +94,7 @@ function MembershipApplicationForm() {
     maritalStatus: 'neoženjen/neudana',
     spouseName: '',
     childrenInfo: '',
-    monthlyFee: '50',
+    monthlyFee: String(suggestedFee),
     invoiceDelivery: 'email',
     email: '',
     phone: '',
@@ -91,6 +105,13 @@ function MembershipApplicationForm() {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+
+  // Update monthlyFee when settings load
+  useEffect(() => {
+    if (membershipSettings?.monthlyAmount) {
+      setFormData(prev => ({ ...prev, monthlyFee: String(membershipSettings.monthlyAmount) }));
+    }
+  }, [membershipSettings?.monthlyAmount]);
 
   const uploadPhotoMutation = useMutation({
     mutationFn: async (file: File) => {
@@ -175,7 +196,7 @@ function MembershipApplicationForm() {
         maritalStatus: 'neoženjen/neudana',
         spouseName: '',
         childrenInfo: '',
-        monthlyFee: '50',
+        monthlyFee: String(suggestedFee),
         invoiceDelivery: 'email',
         email: '',
         phone: '',
@@ -448,16 +469,18 @@ function MembershipApplicationForm() {
                 label="Visina mjesečne članarine"
                 data-testid="select-monthlyFee"
               >
-                <MenuItem value="30">30 CHF</MenuItem>
-                <MenuItem value="40">40 CHF</MenuItem>
-                <MenuItem value="50">50 CHF</MenuItem>
-                <MenuItem value="60">60 CHF</MenuItem>
-                <MenuItem value="70">70 CHF</MenuItem>
-                <MenuItem value="80">80 CHF</MenuItem>
-                <MenuItem value="90">90 CHF</MenuItem>
-                <MenuItem value="100">100 CHF</MenuItem>
+                {[30, 40, 50, 60, 70, 80, 90, 100].map((amount) => (
+                  <MenuItem key={amount} value={String(amount)}>
+                    {amount} {currency}{amount === suggestedFee ? ' (preporučeno)' : ''}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
+            {membershipSettings && (
+              <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
+                Preporučena visina članarine: {suggestedFee} {currency}
+              </Typography>
+            )}
           </Grid>
 
           <Grid size={{ xs: 12 }}>
