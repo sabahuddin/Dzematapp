@@ -305,7 +305,8 @@ export default function EventsPage() {
     const checkinUrl = `${baseUrl}/event-checkin/${event.id}`;
     
     try {
-      const QRCode = (await import('qrcode')).default;
+      // Use browser-specific import to avoid Node.js modules that crash iOS Safari
+      const QRCode = await import('qrcode/lib/browser');
       const dataUrl = await QRCode.toDataURL(checkinUrl, {
         width: 400,
         margin: 2,
