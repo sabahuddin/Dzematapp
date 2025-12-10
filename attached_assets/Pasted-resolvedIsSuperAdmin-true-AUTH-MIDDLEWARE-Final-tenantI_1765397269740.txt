@@ -1,0 +1,100 @@
+resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+[MESSAGES/UNREAD-COUNT] Debug: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  sessionTenantId: 'tenant-superadmin-global',
+  userTenantId: 'tenant-superadmin-global',
+  reqTenantId: 'tenant-superadmin-global',
+  resolvedTenantId: 'tenant-superadmin-global'
+}
+8:05:33 PM [express] GET /api/certificates/unviewed-count 304 in 10ms :: {"count":0}
+8:05:33 PM [express] GET /api/messages/unread-count 304 in 8ms :: {"count":0}
+8:05:33 PM [express] GET /api/notifications/unread 304 in 46ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  username: 'superadmin',
+  userTenantId: 'tenant-superadmin-global',
+  sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+[TENANT UPDATE] Request for: eff2c096-9919-4f84-aa50-6e22b5ea2daf {
+  body: {
+    name: 'Džemat Oslo',
+    slug: 'dzoslo',
+    tenantCode: 'NO0001',
+    subdomain: 'dzoslo',
+    email: 'info@dzematoslo.no',
+    phone: '',
+    address: '',
+    city: 'Oslo',
+    country: 'Switzerland',
+    subscriptionTier: 'standard',
+    subscriptionStatus: 'active',
+    locale: 'bs',
+    currency: 'EUR',
+    isActive: true
+  },
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987'
+}
+[TENANT UPDATE] ✅ Updated: eff2c096-9919-4f84-aa50-6e22b5ea2daf
+8:05:35 PM [express] PATCH /api/tenants/eff2c096-9919-4f84-aa50-6e22b5ea2daf 200 in 10ms :: {"id":"e…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  username: 'superadmin',
+  userTenantId: 'tenant-superadmin-global',
+  sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+8:05:35 PM [express] GET /api/tenants 200 in 7ms :: [{"id":"default-tenant-demo","name":"Demo Džemat…
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  username: 'superadmin',
+  userTenantId: 'tenant-superadmin-global',
+  sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+8:06:03 PM [express] GET /api/certificates/unviewed-count 304 in 6ms :: {"count":0}
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  username: 'superadmin',
+  userTenantId: 'tenant-superadmin-global',
+  sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+[MESSAGES/UNREAD-COUNT] Debug: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  sessionTenantId: 'tenant-superadmin-global',
+  userTenantId: 'tenant-superadmin-global',
+  reqTenantId: 'tenant-superadmin-global',
+  resolvedTenantId: 'tenant-superadmin-global'
+}
+8:06:03 PM [express] GET /api/messages/unread-count 304 in 8ms :: {"count":0}
+[AUTH MIDDLEWARE] 🛡️ SuperAdmin session detected
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '9899e05c-66f9-4c62-9d2d-295791c51987',
+  username: 'superadmin',
+  userTenantId: 'tenant-superadmin-global',
+  sessionTenantId: 'tenant-superadmin-global',
+  sessionIsSuperAdmin: true,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: true
+}
+[AUTH MIDDLEWARE] Final tenantId: tenant-superadmin-global
+8:06:03 PM [express] GET /api/notifications/unread 304 in 44ms :: {"shop":0,"events":0,"announcement…
