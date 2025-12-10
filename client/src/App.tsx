@@ -8,6 +8,7 @@ import { bs } from 'date-fns/locale';
 import { queryClient } from "./lib/queryClient";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { CurrencyProvider } from "./contexts/CurrencyContext";
+import { ModuleProvider, ModuleGuard, useModules } from "./contexts/ModuleContext";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
@@ -756,19 +757,25 @@ function Router() {
       
       <Route path="/finances">
         <ProtectedRoute>
-          <FinancesPage />
+          <ModuleGuard moduleId="finances">
+            <FinancesPage />
+          </ModuleGuard>
         </ProtectedRoute>
       </Route>
       
       <Route path="/membership-fees">
         <AdminRoute>
-          <MembershipFeesPage />
+          <ModuleGuard moduleId="membership">
+            <MembershipFeesPage />
+          </ModuleGuard>
         </AdminRoute>
       </Route>
       
       <Route path="/my-clanarina">
         <ProtectedRoute>
-          <MyClanarinaPage />
+          <ModuleGuard moduleId="membership">
+            <MyClanarinaPage />
+          </ModuleGuard>
         </ProtectedRoute>
       </Route>
       
@@ -792,13 +799,17 @@ function Router() {
       
       <Route path="/badges">
         <AdminRoute>
-          <BadgesPage />
+          <ModuleGuard moduleId="badges">
+            <BadgesPage />
+          </ModuleGuard>
         </AdminRoute>
       </Route>
       
       <Route path="/badges-admin">
         <AdminRoute>
-          <BadgesAdminPage />
+          <ModuleGuard moduleId="badges">
+            <BadgesAdminPage />
+          </ModuleGuard>
         </AdminRoute>
       </Route>
       
@@ -864,7 +875,9 @@ function Router() {
       
       <Route path="/tasks">
         <ProtectedRoute>
-          <TaskManagerPage />
+          <ModuleGuard moduleId="tasks">
+            <TaskManagerPage />
+          </ModuleGuard>
         </ProtectedRoute>
       </Route>
       
@@ -876,19 +889,25 @@ function Router() {
       
       <Route path="/ask-imam">
         <ProtectedRoute>
-          <AskImamPage />
+          <ModuleGuard moduleId="imam_qa">
+            <AskImamPage />
+          </ModuleGuard>
         </ProtectedRoute>
       </Route>
       
       <Route path="/documents">
         <ProtectedRoute>
-          <DocumentsPage />
+          <ModuleGuard moduleId="documents">
+            <DocumentsPage />
+          </ModuleGuard>
         </ProtectedRoute>
       </Route>
       
       <Route path="/shop">
         <ProtectedRoute>
-          <ShopPage />
+          <ModuleGuard moduleId="shop">
+            <ShopPage />
+          </ModuleGuard>
         </ProtectedRoute>
       </Route>
       
@@ -965,10 +984,12 @@ function App() {
           <CssBaseline />
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={bs}>
             <AuthProvider>
-              <TooltipProvider>
-                <Toaster />
-                <Router />
-              </TooltipProvider>
+              <ModuleProvider>
+                <TooltipProvider>
+                  <Toaster />
+                  <Router />
+                </TooltipProvider>
+              </ModuleProvider>
             </AuthProvider>
           </LocalizationProvider>
         </ThemeProvider>
