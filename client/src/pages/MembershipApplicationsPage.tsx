@@ -124,111 +124,113 @@ export function MembershipApplicationsList() {
         <head>
           <title>Pristupnica - ${application.firstName} ${application.lastName}</title>
           <style>
-            @page { margin: 20mm; }
+            @page { margin: 10mm; size: A4; }
             * { box-sizing: border-box; }
             body { 
               font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
               padding: 0; 
               margin: 0;
               color: #333;
-              line-height: 1.6;
+              line-height: 1.3;
+              font-size: 11px;
             }
-            .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+            .container { width: 100%; padding: 5px; }
             .header { 
               text-align: center; 
-              border-bottom: 3px solid #3949AB; 
-              padding-bottom: 20px; 
-              margin-bottom: 30px; 
+              border-bottom: 2px solid #3949AB; 
+              padding-bottom: 8px; 
+              margin-bottom: 12px; 
             }
             .header h1 { 
               color: #3949AB; 
-              margin: 0 0 10px 0; 
-              font-size: 28px;
+              margin: 0 0 4px 0; 
+              font-size: 20px;
             }
             .header .subtitle {
               color: #666;
-              font-size: 14px;
+              font-size: 11px;
             }
             .photo-section {
               text-align: center;
-              margin-bottom: 30px;
+              margin-bottom: 12px;
             }
             .photo-section img {
-              width: 150px;
-              height: 150px;
+              width: 80px;
+              height: 80px;
               border-radius: 50%;
               object-fit: cover;
-              border: 3px solid #3949AB;
+              border: 2px solid #3949AB;
             }
             .section { 
-              margin-bottom: 25px; 
+              margin-bottom: 10px; 
               page-break-inside: avoid;
             }
             .section-title { 
               background: #3949AB; 
               color: white; 
-              padding: 10px 15px; 
-              margin-bottom: 15px;
-              font-size: 16px;
+              padding: 5px 10px; 
+              margin-bottom: 8px;
+              font-size: 12px;
               font-weight: 600;
-              border-radius: 4px;
+              border-radius: 3px;
             }
             .fields-grid { 
               display: grid; 
-              grid-template-columns: repeat(2, 1fr); 
-              gap: 15px; 
+              grid-template-columns: repeat(3, 1fr); 
+              gap: 6px; 
             }
             .field { 
-              padding: 12px;
+              padding: 6px 8px;
               background: #f8f9fa;
-              border-radius: 4px;
-              border-left: 3px solid #1E88E5;
+              border-radius: 3px;
+              border-left: 2px solid #1E88E5;
             }
-            .field.full-width { grid-column: span 2; }
+            .field.full-width { grid-column: span 3; }
+            .field.half-width { grid-column: span 2; }
             .field-label { 
-              font-size: 11px; 
+              font-size: 9px; 
               color: #666; 
               text-transform: uppercase;
-              letter-spacing: 0.5px;
-              margin-bottom: 4px;
+              letter-spacing: 0.3px;
+              margin-bottom: 2px;
             }
             .field-value { 
-              font-size: 14px; 
+              font-size: 11px; 
               color: #333;
               font-weight: 500;
             }
             .status-badge {
               display: inline-block;
-              padding: 6px 16px;
-              border-radius: 20px;
+              padding: 3px 10px;
+              border-radius: 12px;
               font-weight: 600;
-              font-size: 12px;
+              font-size: 10px;
             }
             .status-pending { background: #FFF3E0; color: #E65100; }
             .status-approved { background: #E8F5E9; color: #2E7D32; }
             .status-rejected { background: #FFEBEE; color: #C62828; }
             .footer {
-              margin-top: 40px;
-              padding-top: 20px;
+              margin-top: 15px;
+              padding-top: 8px;
               border-top: 1px solid #ddd;
               text-align: center;
               color: #666;
-              font-size: 12px;
+              font-size: 9px;
             }
             .signature-section {
-              margin-top: 50px;
+              margin-top: 20px;
               display: grid;
               grid-template-columns: repeat(2, 1fr);
-              gap: 40px;
+              gap: 30px;
             }
             .signature-box {
               text-align: center;
             }
             .signature-line {
               border-top: 1px solid #333;
-              margin-top: 60px;
-              padding-top: 10px;
-              font-size: 12px;
+              margin-top: 35px;
+              padding-top: 5px;
+              font-size: 10px;
             }
             @media print {
               body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -275,13 +277,21 @@ export function MembershipApplicationsList() {
                   <div class="field-label">Zanimanje</div>
                   <div class="field-value">${application.occupation || '-'}</div>
                 </div>
-                <div class="field full-width">
+                <div class="field half-width">
                   <div class="field-label">Adresa stanovanja</div>
                   <div class="field-value">${application.streetAddress || ''}, ${application.postalCode || ''} ${application.city || ''}</div>
                 </div>
+                <div class="field">
+                  <div class="field-label">Telefon</div>
+                  <div class="field-value">${application.phone || '-'}</div>
+                </div>
+                <div class="field half-width">
+                  <div class="field-label">Email</div>
+                  <div class="field-value">${application.email || '-'}</div>
+                </div>
                 ${application.skillsHobbies ? `
-                  <div class="field full-width">
-                    <div class="field-label">Posebne sposobnosti i hobiji</div>
+                  <div class="field">
+                    <div class="field-label">Hobiji/Vještine</div>
                     <div class="field-value">${application.skillsHobbies}</div>
                   </div>
                 ` : ''}
@@ -295,31 +305,13 @@ export function MembershipApplicationsList() {
                   <div class="field-label">Bračno stanje</div>
                   <div class="field-value">${application.maritalStatus || '-'}</div>
                 </div>
-                ${application.spouseName ? `
-                  <div class="field">
-                    <div class="field-label">Ime bračnog partnera</div>
-                    <div class="field-value">${application.spouseName}</div>
-                  </div>
-                ` : '<div></div>'}
-                ${application.childrenInfo ? `
-                  <div class="field full-width">
-                    <div class="field-label">Djeca</div>
-                    <div class="field-value">${application.childrenInfo}</div>
-                  </div>
-                ` : ''}
-              </div>
-            </div>
-            
-            <div class="section">
-              <div class="section-title">Kontakt podaci</div>
-              <div class="fields-grid">
                 <div class="field">
-                  <div class="field-label">Email</div>
-                  <div class="field-value">${application.email || '-'}</div>
+                  <div class="field-label">Bračni partner</div>
+                  <div class="field-value">${application.spouseName || '-'}</div>
                 </div>
                 <div class="field">
-                  <div class="field-label">Telefon</div>
-                  <div class="field-value">${application.phone || '-'}</div>
+                  <div class="field-label">Djeca</div>
+                  <div class="field-value">${application.childrenInfo || '-'}</div>
                 </div>
               </div>
             </div>
@@ -329,17 +321,11 @@ export function MembershipApplicationsList() {
               <div class="fields-grid">
                 <div class="field">
                   <div class="field-label">Mjesečna članarina</div>
-                  <div class="field-value">${application.monthlyFee || '-'}</div>
+                  <div class="field-value">${application.monthlyFee || '-'} €</div>
                 </div>
                 <div class="field">
-                  <div class="field-label">Način dostave računa</div>
+                  <div class="field-label">Dostava računa</div>
                   <div class="field-value">${application.invoiceDelivery || '-'}</div>
-                </div>
-                <div class="field">
-                  <div class="field-label">Status prijave</div>
-                  <div class="field-value">
-                    <span class="status-badge status-${application.status}">${application.status === 'pending' ? 'Na čekanju' : application.status === 'approved' ? 'Odobreno' : 'Odbijeno'}</span>
-                  </div>
                 </div>
                 <div class="field">
                   <div class="field-label">Datum prijave</div>
