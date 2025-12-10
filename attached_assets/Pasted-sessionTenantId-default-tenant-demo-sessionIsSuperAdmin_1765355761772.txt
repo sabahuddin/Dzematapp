@@ -1,0 +1,100 @@
+sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+8:22:18 AM [express] GET /api/marketplace/items 200 in 12ms :: [{"id":"5c59a707-612c-4dcf-b192-41fb9…
+8:22:18 AM [express] PUT /api/notifications/mark-viewed/shop 200 in 15ms :: {"success":true}
+8:22:18 AM [express] GET /api/users 200 in 16ms :: [{"id":"0adf0cb6-6f66-44c3-8bc0-b47aa38c1fe7","te…
+8:22:18 AM [express] GET /api/subscription/current 304 in 25ms :: {"tenantId":"default-tenant-demo",…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '4d40e25e-b9d7-4b2f-bfc0-13baf16025f0',
+  username: 'ali.alic',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+8:22:18 AM [express] GET /api/shop/products 200 in 14ms :: [{"id":"62144e11-98b9-4241-ab33-3b71a8c63…
+8:22:18 AM [express] GET /api/services 200 in 41ms :: [{"id":"1b4945d7-8786-4044-8d8e-92b912435e55",…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '4d40e25e-b9d7-4b2f-bfc0-13baf16025f0',
+  username: 'ali.alic',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+8:22:18 AM [express] GET /api/notifications/unread 304 in 9ms :: {"shop":0,"events":0,"announcements…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '4d40e25e-b9d7-4b2f-bfc0-13baf16025f0',
+  username: 'ali.alic',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '4d40e25e-b9d7-4b2f-bfc0-13baf16025f0',
+  username: 'ali.alic',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '4d40e25e-b9d7-4b2f-bfc0-13baf16025f0',
+  username: 'ali.alic',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: false,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+8:22:23 AM [express] POST /api/auth/logout 200 in 2ms :: {"message":"Logged out successfully"}
+8:22:45 AM [express] POST /api/tenants/verify-code 200 in 9ms :: {"tenantId":"default-tenant-demo","…
+8:22:46 AM [express] GET /api/prayer-times 500 in 7ms :: {"message":"Failed to get prayer times"}
+8:22:47 AM [express] GET /api/prayer-times/today 304 in 9ms :: {"id":"8d22108c-6d1e-4c58-a126-5cc540…
+8:22:47 AM [express] GET /api/announcements 304 in 22ms :: [{"id":"6f55058a-5cc7-486a-a424-0e8616cd3…
+Event Večera: rsvpCount = 2
+Event Kahva sa Erdoganom: rsvpCount = 0
+Event Promocija knjige: rsvpCount = 22
+Event Kahva sa....: rsvpCount = 0
+8:22:47 AM [express] GET /api/events 200 in 78ms :: [{"id":"89543993-0bb9-4baf-b70a-da449f717b73","t…
+[STORAGE] ✅ Found existing org settings: fe93405c-6d88-4363-8dec-75b45f796008
+8:23:16 AM [express] GET /api/membership-settings/public 200 in 9ms :: {"feeType":"monthly","monthly…
+8:24:56 AM [express] POST /api/membership-applications 500 in 29ms :: {"message":"Failed to create m…
+Error creating membership application: error: null value in column "country" of relation "membership_applications" violates not-null constraint
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.createMembershipApplication (file:///app/dist/index.js:3210:20)
+    at async file:///app/dist/index.js:9119:27 {
+  length: 610,
+  severity: 'ERROR',
+  code: '23502',
+  detail: 'Failing row contains (bd4395b0-5872-4585-ac75-e188400cc755, default-tenant-demo, Mirza, Mizic, moj@email.com, 061234567, null, Prijedor, 72333, 10.12.1973, Tesar, null, pending, null, null, 2025-12-10 08:24:56.518346, null, null, null, null, null, null, null, individual, f, f, f, null, f, muško, null, Prijedor, null, Bosanska 12, null, null, neoženjen/neudana, null, null, null, 50, email, 01.12.2025).',
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: 'public',
+  table: 'membership_applications',
+  column: 'country',
+  dataType: undefined,
+  constraint: undefined,
+  file: 'execMain.c',
+  line: '2022',
+  routine: 'ExecConstraints'
+}
