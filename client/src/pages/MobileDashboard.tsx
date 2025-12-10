@@ -46,14 +46,15 @@ export default function MobileDashboard() {
   });
 
   // Fetch membership fee payments for current user
-  const { data: myPayments = [], isLoading: paymentsLoading } = useQuery<any[]>({
+  const { data: myPaymentsData, isLoading: paymentsLoading } = useQuery<{ payments: any[], lastUpdated: string | null }>({
     queryKey: ['/api/membership-fees/my-payments'],
     refetchInterval: 60000,
   });
+  const myPayments = myPaymentsData?.payments || [];
 
   // Calculate membership stats
   const currentYear = new Date().getFullYear();
-  const thisYearPayments = myPayments.filter((p: any) => p.coverageYear === currentYear);
+  const thisYearPayments = Array.isArray(myPayments) ? myPayments.filter((p: any) => p.coverageYear === currentYear) : [];
   const totalPaidThisYear = thisYearPayments.reduce((sum: number, p: any) => sum + parseFloat(p.amount || '0'), 0);
   const uniquePaidMonths = new Set(thisYearPayments.map((p: any) => p.coverageMonth));
   const paidMonthsCount = uniquePaidMonths.size;

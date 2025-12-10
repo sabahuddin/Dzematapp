@@ -56,8 +56,7 @@ import SponsorsPage from "@/pages/SponsorsPage";
 import MembershipFeesPage from "@/pages/MembershipFeesPage";
 import MyClanarinaPage from "@/pages/MyClanarinaPage";
 import NotFound from "@/pages/not-found";
-// Temporarily disabled to debug white screen issue
-// import EventCheckinPage from "@/pages/EventCheckinPage";
+import EventCheckinPage from "@/pages/EventCheckinPage";
 
 // Layout
 import DashboardLayout from "@/components/layout/DashboardLayout";
@@ -721,11 +720,9 @@ function Router() {
         <PricingPage />
       </Route>
       
-      {/* Temporarily disabled to debug white screen issue
       <Route path="/event-checkin/:eventId">
         <EventCheckinPage />
       </Route>
-      */}
       
       <Route path="/dashboard">
         <ProtectedRoute>
