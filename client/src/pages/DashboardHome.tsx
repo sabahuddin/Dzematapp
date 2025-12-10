@@ -1196,11 +1196,15 @@ export default function DashboardHome() {
               </Link>
             </Box>
             <CardContent>
-              {(() => {
-                const payments = membershipPaymentsQuery.data || [];
+              {membershipPaymentsQuery.isLoading ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+                  <CircularProgress size={24} />
+                </Box>
+              ) : (() => {
+                const payments = Array.isArray(membershipPaymentsQuery.data) ? membershipPaymentsQuery.data : [];
                 const currentYear = new Date().getFullYear();
                 const thisYearPayments = payments.filter((p: any) => p.coverageYear === currentYear);
-                const totalThisYear = thisYearPayments.reduce((sum: number, p: any) => sum + parseFloat(p.amount || '0'), 0);
+                const totalThisYear = thisYearPayments.reduce((sum: number, p: any) => sum + (Number(p.amount) || 0), 0);
                 const uniqueMembers = new Set(thisYearPayments.map((p: any) => p.userId)).size;
                 
                 return (
@@ -1223,7 +1227,7 @@ export default function DashboardHome() {
                     {payments.slice(0, 3).map((payment: any) => (
                       <Box key={payment.id} sx={{ display: 'flex', justifyContent: 'space-between', py: 1, borderBottom: '1px solid hsl(0 0% 92%)' }}>
                         <Typography variant="body2">{payment.user?.firstName} {payment.user?.lastName}</Typography>
-                        <Typography variant="body2" sx={{ fontWeight: 600, color: '#26A69A' }}>{formatPrice(parseFloat(payment.amount))}</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 600, color: '#26A69A' }}>{formatPrice(Number(payment.amount) || 0)}</Typography>
                       </Box>
                     ))}
                     {payments.length === 0 && (
@@ -1255,8 +1259,12 @@ export default function DashboardHome() {
               </Link>
             </Box>
             <CardContent>
-              {(() => {
-                const products = shopProductsQuery.data || [];
+              {shopProductsQuery.isLoading ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+                  <CircularProgress size={24} />
+                </Box>
+              ) : (() => {
+                const products = Array.isArray(shopProductsQuery.data) ? shopProductsQuery.data : [];
                 const activeProducts = products.filter((p: any) => p.status === 'active' || !p.status);
                 
                 return (
@@ -1281,7 +1289,7 @@ export default function DashboardHome() {
                         <Typography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '60%' }}>
                           {product.name}
                         </Typography>
-                        <Typography variant="body2" sx={{ fontWeight: 600, color: '#3949AB' }}>{formatPrice(parseFloat(product.price || 0))}</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 600, color: '#3949AB' }}>{formatPrice(Number(product.price) || 0)}</Typography>
                       </Box>
                     ))}
                     {products.length === 0 && (
