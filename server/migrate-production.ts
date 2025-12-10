@@ -456,6 +456,16 @@ async function createMissingTables(client: any): Promise<void> {
       "paid_at" timestamp DEFAULT now(),
       "recorded_by_id" varchar REFERENCES "users"("id") ON DELETE SET NULL,
       "upload_batch_id" varchar REFERENCES "membership_upload_logs"("id") ON DELETE SET NULL
+    )`,
+    
+    // dashboard_layouts - for configurable admin dashboard widgets
+    `CREATE TABLE IF NOT EXISTS "dashboard_layouts" (
+      "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+      "tenant_id" varchar NOT NULL REFERENCES "tenants"("id") ON DELETE CASCADE,
+      "user_id" varchar NOT NULL REFERENCES "users"("id") ON DELETE CASCADE,
+      "layout" text NOT NULL,
+      "updated_at" timestamp DEFAULT now(),
+      UNIQUE("user_id", "tenant_id")
     )`
   ];
   

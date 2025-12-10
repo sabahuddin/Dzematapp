@@ -1558,6 +1558,48 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     }
   });
 
+  // Dashboard layout endpoints
+  app.get("/api/dashboard-layout", requireAuth, async (req, res) => {
+    try {
+      const session = req.session as any;
+      const tenantId = session.tenantId || req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      const userId = req.user?.id;
+      
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const layout = await storage.getDashboardLayout(userId, tenantId);
+      res.json(layout || { layout: null });
+    } catch (error) {
+      console.error("[GET /api/dashboard-layout] Error:", error);
+      res.status(500).json({ message: "Failed to fetch dashboard layout" });
+    }
+  });
+
+  app.post("/api/dashboard-layout", requireAuth, async (req, res) => {
+    try {
+      const session = req.session as any;
+      const tenantId = session.tenantId || req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      const userId = req.user?.id;
+      
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const { layout } = req.body;
+      if (!layout) {
+        return res.status(400).json({ message: "Layout is required" });
+      }
+      
+      const savedLayout = await storage.saveDashboardLayout(userId, tenantId, layout);
+      res.json(savedLayout);
+    } catch (error) {
+      console.error("[POST /api/dashboard-layout] Error:", error);
+      res.status(500).json({ message: "Failed to save dashboard layout" });
+    }
+  });
+
   // Users routes
   app.get("/api/users", requireAuth, async (req, res) => {
     try {

@@ -1456,6 +1456,22 @@ export const insertMembershipUploadLogSchema = createInsertSchema(membershipUplo
   uploadedAt: true,
 });
 
+// Dashboard Layouts - for configurable admin dashboard
+export const dashboardLayouts = pgTable("dashboard_layouts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tenantId: varchar("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  layout: text("layout").notNull(), // JSON string of layout configuration
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (t) => ({
+  userLayoutUnique: unique("dashboard_layouts_user_unique").on(t.userId, t.tenantId),
+}));
+
+export const insertDashboardLayoutSchema = createInsertSchema(dashboardLayouts).omit({
+  id: true,
+  updatedAt: true,
+});
+
 // Types
 export type Tenant = typeof tenants.$inferSelect;
 export type InsertTenant = z.infer<typeof insertTenantSchema>;
@@ -1473,3 +1489,7 @@ export type MembershipPayment = typeof membershipPayments.$inferSelect;
 export type InsertMembershipPayment = z.infer<typeof insertMembershipPaymentSchema>;
 export type MembershipUploadLog = typeof membershipUploadLogs.$inferSelect;
 export type InsertMembershipUploadLog = z.infer<typeof insertMembershipUploadLogSchema>;
+
+// Dashboard Layout Types
+export type DashboardLayout = typeof dashboardLayouts.$inferSelect;
+export type InsertDashboardLayout = z.infer<typeof insertDashboardLayoutSchema>;
