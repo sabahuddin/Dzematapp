@@ -25,9 +25,15 @@ import {
   FormControl,
   InputLabel,
   Select,
-  MenuItem
+  MenuItem,
+  Checkbox,
+  FormControlLabel,
+  Divider
 } from '@mui/material';
-import { Add, Edit, Delete, Visibility, CheckCircle, Cancel, PersonOff } from '@mui/icons-material';
+import { Add, Edit, Delete, Visibility, CheckCircle, Cancel, PersonOff, Extension } from '@mui/icons-material';
+import { ALL_MODULES } from '../contexts/ModuleContext';
+
+const DEFAULT_MODULES = ['dashboard', 'announcements', 'events', 'vaktija', 'users'];
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
@@ -84,8 +90,32 @@ export default function SuperAdminPanel() {
     subscriptionStatus: "trial",
     locale: "bs",
     currency: "CHF",
-    isActive: true
+    isActive: true,
+    enabledModules: DEFAULT_MODULES as string[]
   });
+
+  const handleModuleToggle = (moduleId: string) => {
+    setFormData(prev => {
+      const modules = prev.enabledModules.includes(moduleId)
+        ? prev.enabledModules.filter(m => m !== moduleId)
+        : [...prev.enabledModules, moduleId];
+      return { ...prev, enabledModules: modules };
+    });
+  };
+
+  const handleSelectAllModules = () => {
+    setFormData(prev => ({
+      ...prev,
+      enabledModules: Object.keys(ALL_MODULES)
+    }));
+  };
+
+  const handleDeselectAllModules = () => {
+    setFormData(prev => ({
+      ...prev,
+      enabledModules: ['dashboard']
+    }));
+  };
 
   // Create tenant mutation
   const createMutation = useMutation({
@@ -242,7 +272,8 @@ export default function SuperAdminPanel() {
       subscriptionStatus: "trial",
       locale: "bs",
       currency: "CHF",
-      isActive: true
+      isActive: true,
+      enabledModules: DEFAULT_MODULES
     });
   };
 
@@ -263,7 +294,8 @@ export default function SuperAdminPanel() {
         subscriptionStatus: tenant.subscriptionStatus,
         locale: tenant.locale,
         currency: tenant.currency,
-        isActive: tenant.isActive
+        isActive: tenant.isActive,
+        enabledModules: (tenant as any).enabledModules || DEFAULT_MODULES
       });
     } else {
       setSelectedTenant(null);
@@ -643,6 +675,54 @@ export default function SuperAdminPanel() {
                   <MenuItem value="EUR">EUR</MenuItem>
                 </Select>
               </FormControl>
+            </Grid>
+
+            <Grid size={{ xs: 12 }}>
+              <Divider sx={{ my: 2 }} />
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Extension color="primary" />
+                  <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                    Uključeni Moduli ({formData.enabledModules.length}/{Object.keys(ALL_MODULES).length})
+                  </Typography>
+                </Box>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <Button size="small" onClick={handleSelectAllModules} data-testid="button-select-all">
+                    Sve
+                  </Button>
+                  <Button size="small" onClick={handleDeselectAllModules} data-testid="button-deselect-all">
+                    Minimum
+                  </Button>
+                </Box>
+              </Box>
+              
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0 }}>
+                {Object.entries(ALL_MODULES).map(([id, module]) => (
+                  <Box key={id} sx={{ width: '50%' }}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={formData.enabledModules.includes(id)}
+                          onChange={() => handleModuleToggle(id)}
+                          disabled={id === 'dashboard'}
+                          size="small"
+                          data-testid={`checkbox-module-${id}`}
+                        />
+                      }
+                      label={
+                        <Typography variant="body2" sx={{ color: id === 'dashboard' ? 'text.secondary' : 'text.primary' }}>
+                          {module.name}
+                        </Typography>
+                      }
+                      sx={{ m: 0 }}
+                    />
+                  </Box>
+                ))}
+              </Box>
+              
+              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+                Dashboard je uvijek uključen. Odabrani moduli će biti dostupni korisnicima ovog tenanta.
+              </Typography>
             </Grid>
           </Grid>
         </DialogContent>

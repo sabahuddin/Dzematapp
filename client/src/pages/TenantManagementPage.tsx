@@ -364,11 +364,11 @@ export default function TenantManagementPage() {
         </TableContainer>
       </Card>
 
-      <Dialog open={modalOpen} onClose={handleCloseModal} maxWidth="sm" fullWidth>
+      <Dialog open={modalOpen} onClose={handleCloseModal} maxWidth="md" fullWidth>
         <DialogTitle data-testid="dialog-title">
           {selectedTenant ? 'Uredi Tenant' : 'Kreiraj Novi Tenant'}
         </DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ maxHeight: '70vh', overflowY: 'auto' }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 2 }}>
             <TextField
               label="Naziv organizacije"
