@@ -57,6 +57,7 @@ import MembershipFeesPage from "@/pages/MembershipFeesPage";
 import MyClanarinaPage from "@/pages/MyClanarinaPage";
 import NotFound from "@/pages/not-found";
 import EventCheckinPage from "@/pages/EventCheckinPage";
+import LandingPage from "@/pages/LandingPage";
 
 // Layout
 import DashboardLayout from "@/components/layout/DashboardLayout";
@@ -946,9 +947,9 @@ function Router() {
           <NotificationsPage />
         </ProtectedRoute>
       </Route>
-      
+
       <Route path="/">
-        {user ? <Redirect to="/dashboard" /> : <Redirect to="/login" />}
+        {user ? <Redirect to="/dashboard" /> : <LandingPage />}
       </Route>
       
       {/* Fallback to 404 */}
