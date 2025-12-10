@@ -47,7 +47,9 @@ import {
   Edit,
   Delete,
   Close,
-  EmojiEvents
+  EmojiEvents,
+  Payment,
+  Store
 } from '@mui/icons-material';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay';
@@ -61,6 +63,7 @@ import { useAuth } from '../hooks/useAuth';
 import type { Announcement, Event as EventType, WorkGroup, PrayerTime } from '@shared/schema';
 import { format, isSameDay, isWeekend } from 'date-fns';
 import { useTranslation } from 'react-i18next';
+import { useCurrency } from '@/contexts/CurrencyContext';
 
 interface Statistics {
   userCount: number;
@@ -262,6 +265,21 @@ export default function DashboardHome() {
     queryKey: [`/api/user-badges/${user?.id}`],
     enabled: !user?.isAdmin && !!user,
   });
+
+  // Fetch membership payments for admin dashboard
+  const membershipPaymentsQuery = useQuery<any[]>({
+    queryKey: ['/api/membership-fees/payments'],
+    enabled: !!user?.isAdmin,
+  });
+
+  // Fetch shop products for admin dashboard
+  const shopProductsQuery = useQuery<any[]>({
+    queryKey: ['/api/shop/products'],
+    enabled: !!user?.isAdmin,
+  });
+
+  // Currency context for formatting
+  const { formatPrice } = useCurrency();
 
   if (user?.isAdmin) {
     if (statisticsQuery.isLoading || activitiesQuery.isLoading || eventsQuery.isLoading) {
@@ -1096,157 +1114,188 @@ export default function DashboardHome() {
         </Grid>
       </Grid>
 
-      {/* Upcoming Events Section */}
-      <Card sx={{ mb: 3 }}>
-        <Box sx={{ p: 3, borderBottom: '1px solid hsl(0 0% 88%)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            {t('dashboard:upcomingEvents')}
-          </Typography>
-          <Button
-            component={Link}
-            href="/events"
-            endIcon={<ArrowForward />}
-            sx={{ textTransform: 'none' }}
-            data-testid="link-all-events"
-          >
-            {t('dashboard:allEvents')}
-          </Button>
-        </Box>
-        <Box sx={{ p: 3 }}>
-          {eventsQuery.data && eventsQuery.data.length > 0 ? (
-            <Grid container spacing={2}>
-              {eventsQuery.data
-                .filter(event => new Date(event.dateTime) >= new Date())
-                .sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime())
-                .slice(0, 6)
-                .map(event => (
-                  <Grid size={{ xs: 12, sm: 6, md: 4 }} key={event.id}>
-                    <Card 
-                      sx={{ 
-                        height: '100%',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        transition: 'transform 0.2s, box-shadow 0.2s',
-                        '&:hover': {
-                          transform: 'translateY(-4px)',
-                          boxShadow: 3
-                        }
-                      }}
-                      data-testid={`event-card-${event.id}`}
-                    >
-                      <Box
-                        sx={{
-                          height: 180,
-                          bgcolor: 'hsl(207 88% 55%)',
+      {/* Main Dashboard Grid - Events, Membership, Shop */}
+      <Grid container spacing={3} sx={{ mb: 3 }}>
+        {/* Upcoming Event */}
+        <Grid size={{ xs: 12, md: 4 }}>
+          <Card sx={{ height: '100%' }}>
+            <Box sx={{ p: 2, borderBottom: '1px solid hsl(0 0% 88%)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Event sx={{ color: '#ed6c02' }} />
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                  {t('dashboard:upcomingEvents')}
+                </Typography>
+              </Box>
+              <Link href="/events">
+                <Button size="small" endIcon={<ArrowForward />} sx={{ textTransform: 'none' }} data-testid="link-all-events">
+                  {t('dashboard:allEvents')}
+                </Button>
+              </Link>
+            </Box>
+            <CardContent>
+              {eventsQuery.data && eventsQuery.data.filter(e => new Date(e.dateTime) >= new Date()).length > 0 ? (
+                (() => {
+                  const event = eventsQuery.data
+                    .filter(e => new Date(e.dateTime) >= new Date())
+                    .sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime())[0];
+                  return (
+                    <Link href="/events">
+                      <Box sx={{ cursor: 'pointer', '&:hover': { opacity: 0.8 } }}>
+                        <Box sx={{ 
+                          height: 120, 
+                          bgcolor: 'hsl(207 88% 55%)', 
                           backgroundImage: 'linear-gradient(135deg, var(--semantic-info-gradient-start) 0%, var(--semantic-info-gradient-end) 100%)',
+                          borderRadius: 2,
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          position: 'relative'
-                        }}
-                      >
-                        <CalendarMonth sx={{ fontSize: 64, color: 'white', opacity: 0.3 }} />
-                        <Typography
-                          variant="h6"
-                          sx={{
-                            position: 'absolute',
-                            color: 'white',
-                            fontWeight: 600,
-                            textAlign: 'center',
-                            px: 2
-                          }}
-                        >
-                          {format(new Date(event.dateTime), 'dd.MM.yyyy.')}
-                        </Typography>
-                        
-                        {/* Action Icons */}
-                        <Box
-                          sx={{
-                            position: 'absolute',
-                            top: 8,
-                            right: 8,
-                            display: 'flex',
-                            gap: 0.5,
-                            bgcolor: 'rgba(255, 255, 255, 0.9)',
-                            borderRadius: 1,
-                            p: 0.5
-                          }}
-                        >
-                          <Link href="/events">
-                            <IconButton
-                              size="small"
-                              sx={{ color: 'hsl(207 88% 55%)' }}
-                              data-testid={`button-view-event-${event.id}`}
-                            >
-                              <Visibility fontSize="small" />
-                            </IconButton>
-                          </Link>
+                          mb: 2
+                        }}>
+                          <Typography variant="h5" sx={{ color: 'white', fontWeight: 600 }}>
+                            {format(new Date(event.dateTime), 'dd.MM.yyyy.')}
+                          </Typography>
+                        </Box>
+                        <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>{event.name}</Typography>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                          <LocationOn sx={{ fontSize: 16, color: 'text.secondary' }} />
+                          <Typography variant="body2" color="text.secondary">{event.location}</Typography>
+                        </Box>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <Schedule sx={{ fontSize: 16, color: 'text.secondary' }} />
+                          <Typography variant="body2" color="text.secondary">
+                            {format(new Date(event.dateTime), 'HH:mm')}
+                          </Typography>
                         </Box>
                       </Box>
-                      <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-                        <Typography 
-                          variant="h6" 
-                          sx={{ 
-                            fontWeight: 600, 
-                            mb: 1,
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            display: '-webkit-box',
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: 'vertical'
-                          }}
-                        >
-                          {event.name}
-                        </Typography>
-                        
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                          <LocationOn sx={{ fontSize: 18, color: 'text.secondary' }} />
-                          <Typography variant="body2" color="text.secondary">
-                            {event.location}
-                          </Typography>
-                        </Box>
-                        
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                          <Schedule sx={{ fontSize: 18, color: 'text.secondary' }} />
-                          <Typography variant="body2" color="text.secondary">
-                            {format(new Date(event.dateTime), 'dd.MM.yyyy. u HH:mm')}
-                          </Typography>
-                        </Box>
+                    </Link>
+                  );
+                })()
+              ) : (
+                <Typography color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
+                  {t('dashboard:noEvents')}
+                </Typography>
+              )}
+            </CardContent>
+          </Card>
+        </Grid>
 
-                        <Box sx={{ mt: 'auto', display: 'flex', gap: 1 }}>
-                          {event.rsvpEnabled && (
-                            <Button
-                              size="small"
-                              variant="contained"
-                              startIcon={<PersonAdd />}
-                              fullWidth
-                              data-testid={`button-rsvp-${event.id}`}
-                            >
-                              {t('dashboard:rsvpButton')}
-                            </Button>
-                          )}
-                          <Button
-                            size="small"
-                            variant="outlined"
-                            startIcon={<NotificationsActive />}
-                            fullWidth
-                            data-testid={`button-remind-${event.id}`}
-                          >
-                            {t('dashboard:remindMeButton')}
-                          </Button>
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                ))}
-            </Grid>
-          ) : (
-            <Typography color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
-              {t('dashboard:noEvents')}
-            </Typography>
-          )}
-        </Box>
-      </Card>
+        {/* Membership Fees Summary */}
+        <Grid size={{ xs: 12, md: 4 }}>
+          <Card sx={{ height: '100%' }}>
+            <Box sx={{ p: 2, borderBottom: '1px solid hsl(0 0% 88%)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Payment sx={{ color: '#26A69A' }} />
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                  Članarina
+                </Typography>
+              </Box>
+              <Link href="/membership-fees">
+                <Button size="small" endIcon={<ArrowForward />} sx={{ textTransform: 'none' }} data-testid="link-membership-fees">
+                  Sve uplate
+                </Button>
+              </Link>
+            </Box>
+            <CardContent>
+              {(() => {
+                const payments = membershipPaymentsQuery.data || [];
+                const currentYear = new Date().getFullYear();
+                const thisYearPayments = payments.filter((p: any) => p.coverageYear === currentYear);
+                const totalThisYear = thisYearPayments.reduce((sum: number, p: any) => sum + parseFloat(p.amount || '0'), 0);
+                const uniqueMembers = new Set(thisYearPayments.map((p: any) => p.userId)).size;
+                
+                return (
+                  <Box>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3, p: 2, bgcolor: 'hsl(160 40% 95%)', borderRadius: 2 }}>
+                      <Box sx={{ textAlign: 'center' }}>
+                        <Typography variant="h4" sx={{ fontWeight: 700, color: '#26A69A' }}>
+                          {formatPrice(totalThisYear)}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">Ukupno {currentYear}</Typography>
+                      </Box>
+                      <Box sx={{ textAlign: 'center' }}>
+                        <Typography variant="h4" sx={{ fontWeight: 700, color: '#26A69A' }}>
+                          {uniqueMembers}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">Članova platilo</Typography>
+                      </Box>
+                    </Box>
+                    <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>Zadnje uplate:</Typography>
+                    {payments.slice(0, 3).map((payment: any) => (
+                      <Box key={payment.id} sx={{ display: 'flex', justifyContent: 'space-between', py: 1, borderBottom: '1px solid hsl(0 0% 92%)' }}>
+                        <Typography variant="body2">{payment.user?.firstName} {payment.user?.lastName}</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 600, color: '#26A69A' }}>{formatPrice(parseFloat(payment.amount))}</Typography>
+                      </Box>
+                    ))}
+                    {payments.length === 0 && (
+                      <Typography color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
+                        Nema uplata
+                      </Typography>
+                    )}
+                  </Box>
+                );
+              })()}
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Shop Summary */}
+        <Grid size={{ xs: 12, md: 4 }}>
+          <Card sx={{ height: '100%' }}>
+            <Box sx={{ p: 2, borderBottom: '1px solid hsl(0 0% 88%)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Store sx={{ color: '#3949AB' }} />
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                  Shop
+                </Typography>
+              </Box>
+              <Link href="/shop">
+                <Button size="small" endIcon={<ArrowForward />} sx={{ textTransform: 'none' }} data-testid="link-shop">
+                  Svi proizvodi
+                </Button>
+              </Link>
+            </Box>
+            <CardContent>
+              {(() => {
+                const products = shopProductsQuery.data || [];
+                const activeProducts = products.filter((p: any) => p.status === 'active' || !p.status);
+                
+                return (
+                  <Box>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3, p: 2, bgcolor: 'hsl(235 50% 95%)', borderRadius: 2 }}>
+                      <Box sx={{ textAlign: 'center' }}>
+                        <Typography variant="h4" sx={{ fontWeight: 700, color: '#3949AB' }}>
+                          {products.length}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">Ukupno proizvoda</Typography>
+                      </Box>
+                      <Box sx={{ textAlign: 'center' }}>
+                        <Typography variant="h4" sx={{ fontWeight: 700, color: '#3949AB' }}>
+                          {activeProducts.length}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">Aktivnih</Typography>
+                      </Box>
+                    </Box>
+                    <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>Najnoviji proizvodi:</Typography>
+                    {products.slice(0, 3).map((product: any) => (
+                      <Box key={product.id} sx={{ display: 'flex', justifyContent: 'space-between', py: 1, borderBottom: '1px solid hsl(0 0% 92%)' }}>
+                        <Typography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '60%' }}>
+                          {product.name}
+                        </Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 600, color: '#3949AB' }}>{formatPrice(parseFloat(product.price || 0))}</Typography>
+                      </Box>
+                    ))}
+                    {products.length === 0 && (
+                      <Typography color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
+                        Nema proizvoda
+                      </Typography>
+                    )}
+                  </Box>
+                );
+              })()}
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
 
       {/* Tasks Dashboard for Admins and Moderators */}
       <Box sx={{ mb: 3 }}>
