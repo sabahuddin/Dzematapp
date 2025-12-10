@@ -55,7 +55,6 @@ import PricingPage from "@/pages/PricingPage";
 import SponsorsPage from "@/pages/SponsorsPage";
 import MembershipFeesPage from "@/pages/MembershipFeesPage";
 import MyClanarinaPage from "@/pages/MyClanarinaPage";
-import MyContributionsPage from "@/pages/MyContributionsPage";
 import NotFound from "@/pages/not-found";
 import EventCheckinPage from "@/pages/EventCheckinPage";
 
@@ -770,12 +769,6 @@ function Router() {
       <Route path="/my-clanarina">
         <ProtectedRoute>
           <MyClanarinaPage />
-        </ProtectedRoute>
-      </Route>
-      
-      <Route path="/my-contributions">
-        <ProtectedRoute>
-          <MyContributionsPage />
         </ProtectedRoute>
       </Route>
       

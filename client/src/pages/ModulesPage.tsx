@@ -46,8 +46,8 @@ export default function ModulesPage() {
   const modules: ModuleItem[] = [
     { icon: <Feed sx={{ fontSize: 48 }} />, label: 'Feed', description: 'Aktivnosti zajednice', route: '/feed', testId: 'module-feed' },
     { icon: <Person sx={{ fontSize: 48 }} />, label: 'Moj Profil', description: 'Vaši podaci i postavke', route: '/my-profile', testId: 'module-profile' },
-    { icon: <People sx={{ fontSize: 48 }} />, label: user?.isAdmin ? 'Korisnici' : 'Moje aktivnosti', description: user?.isAdmin ? 'Članovi džemata' : 'Bodovi, značke i aktivnosti', route: user?.isAdmin ? '/users' : '/my-activities', testId: 'module-users' },
-    { icon: <BarChart sx={{ fontSize: 48 }} />, label: user?.isAdmin ? 'Finansije' : 'Moje uplate', description: user?.isAdmin ? 'Finansijski pregled' : 'Moje donacije', route: user?.isAdmin ? '/finances' : '/my-contributions', testId: 'module-finances' },
+    { icon: <People sx={{ fontSize: 48 }} />, label: user?.isAdmin ? 'Korisnici' : 'Moje aktivnosti', description: user?.isAdmin ? 'Članovi džemata' : 'Bodovi, uplate, značke', route: user?.isAdmin ? '/users' : '/my-activities', testId: 'module-users' },
+    { icon: <BarChart sx={{ fontSize: 48 }} />, label: 'Finansije', description: 'Finansijski pregled', route: '/finances', testId: 'module-finances', adminOnly: true },
     { icon: <Receipt sx={{ fontSize: 48 }} />, label: user?.isAdmin ? 'Članarina (Admin)' : 'Moja članarina', description: 'Pregled uplata članarine', route: user?.isAdmin ? '/membership-fees' : '/my-clanarina', testId: 'module-membership-fees' },
     { icon: <BarChart sx={{ fontSize: 48 }} />, label: 'Izvještaj aktivnosti', description: 'Pregled aktivnosti', route: '/activity-log', testId: 'module-activity', adminOnly: true },
     { icon: <AccountBalance sx={{ fontSize: 48 }} />, label: 'Projekti', description: 'Projekti džemata', route: '/projects', testId: 'module-projects' },
