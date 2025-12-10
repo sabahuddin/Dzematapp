@@ -1,0 +1,96 @@
+🌱 Seeding demo data for Demo Džemat...
+ℹ️ Demo users already exist
+ℹ️ Demo data already exists
+✅ Demo data seed completed!
+🧹 [AUTO-PURGE] Starting automatic demo user cleanup...
+[AUTO-PURGE] Found 5 tenants
+[AUTO-PURGE] Skipping demo tenant Demo Džemat
+[AUTO-PURGE] Processing tenant: SuperAdmin Global
+[AUTO-PURGE] Processing tenant: Džemat GAM
+[AUTO-PURGE] Processing tenant: Džemat Oslo
+[AUTO-PURGE] Processing tenant: IK Graz
+[AUTO-PURGE] ✅ Automatic demo user cleanup completed!
+Error creating membership application: error: null value in column "employment_status" of relation "membership_applications" violates not-null constraint
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.createMembershipApplication (file:///app/dist/index.js:3210:20)
+    at async file:///app/dist/index.js:9119:27 {
+  length: 626,
+  severity: 'ERROR',
+  code: '23502',
+  detail: 'Failing row contains (e40d424d-2db6-4672-9d3d-dd3910e944db, default-tenant-demo, Fadil, Alić, moj@email.com, 063456789, null, Cazin, 77240, 07.03.1986, poštar, null, pending, null, null, 2025-12-10 09:38:36.726625, null, null, null, null, null, null, null, individual, f, f, f, null, f, muško, null, Cazin, null, Bužimska 4, null, null, neoženjen/neudana, null, null, null, 30, email, 01.12.2025).',
+  hint: undefined,
+9:38:36 AM [express] POST /api/membership-applications 500 in 53ms :: {"message":"Failed to create m…
+9:38:40 AM [express] GET /api/announcements 304 in 16ms :: [{"id":"6f55058a-5cc7-486a-a424-0e8616cd3…
+9:38:40 AM [express] GET /api/prayer-times 500 in 5ms :: {"message":"Failed to get prayer times"}
+[ORG-SETTINGS] Getting settings for tenant: default-tenant-demo
+Event Kahva sa Erdoganom: rsvpCount = 0
+Event Večera: rsvpCount = 2
+9:38:40 AM [express] GET /api/auth/session 401 in 4ms :: {"message":"Not authenticated"}
+9:38:40 AM [express] GET /api/prayer-times/today 304 in 19ms :: {"id":"8d22108c-6d1e-4c58-a126-5cc54…
+Event Promocija knjige: rsvpCount = 22
+[STORAGE] ✅ Found existing org settings: fe93405c-6d88-4363-8dec-75b45f796008
+[ORG-SETTINGS] ✅ Success: fe93405c-6d88-4363-8dec-75b45f796008
+9:38:40 AM [express] GET /api/organization-settings 304 in 14ms :: {"id":"fe93405c-6d88-4363-8dec-75…
+Event Kahva sa....: rsvpCount = 0
+9:38:40 AM [express] GET /api/events 200 in 67ms :: [{"id":"89543993-0bb9-4baf-b70a-da449f717b73","t…
+9:39:13 AM [express] GET /api/auth/session 401 in 4ms :: {"message":"Not authenticated"}
+[ORG-SETTINGS] Getting settings for tenant: default-tenant-demo
+[STORAGE] ✅ Found existing org settings: fe93405c-6d88-4363-8dec-75b45f796008
+[ORG-SETTINGS] ✅ Success: fe93405c-6d88-4363-8dec-75b45f796008
+9:39:13 AM [express] GET /api/organization-settings 304 in 15ms :: {"id":"fe93405c-6d88-4363-8dec-75…
+[ORG-SETTINGS] Getting settings for tenant: default-tenant-demo
+9:39:34 AM [express] GET /api/auth/session 401 in 3ms :: {"message":"Not authenticated"}
+[STORAGE] ✅ Found existing org settings: fe93405c-6d88-4363-8dec-75b45f796008
+[ORG-SETTINGS] ✅ Success: fe93405c-6d88-4363-8dec-75b45f796008
+9:39:34 AM [express] GET /api/organization-settings 200 in 8ms :: {"id":"fe93405c-6d88-4363-8dec-75b…
+9:39:45 AM [express] POST /api/tenants/verify-code 200 in 8ms :: {"tenantId":"default-tenant-demo","…
+9:39:48 AM [express] GET /api/announcements 200 in 30ms :: [{"id":"6f55058a-5cc7-486a-a424-0e8616cd3…
+Event Promocija knjige: rsvpCount = 22
+9:39:48 AM [express] GET /api/prayer-times 500 in 18ms :: {"message":"Failed to get prayer times"}
+9:39:48 AM [express] GET /api/prayer-times/today 200 in 13ms :: {"id":"8d22108c-6d1e-4c58-a126-5cc54…
+Event Večera: rsvpCount = 2
+Event Kahva sa Erdoganom: rsvpCount = 0
+Event Kahva sa....: rsvpCount = 0
+9:39:48 AM [express] GET /api/events 200 in 104ms :: [{"id":"89543993-0bb9-4baf-b70a-da449f717b73","…
+[STORAGE] ✅ Found existing org settings: fe93405c-6d88-4363-8dec-75b45f796008
+9:39:50 AM [express] GET /api/membership-settings/public 200 in 10ms :: {"feeType":"monthly","monthl…
+9:40:55 AM [express] POST /api/membership-applications 500 in 30ms :: {"message":"Failed to create m…
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: 'public',
+  table: 'membership_applications',
+  column: 'employment_status',
+  dataType: undefined,
+  constraint: undefined,
+  file: 'execMain.c',
+  line: '2022',
+  routine: 'ExecConstraints'
+}
+Error creating membership application: error: null value in column "employment_status" of relation "membership_applications" violates not-null constraint
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.createMembershipApplication (file:///app/dist/index.js:3210:20)
+    at async file:///app/dist/index.js:9119:27 {
+  length: 624,
+  severity: 'ERROR',
+  code: '23502',
+  detail: 'Failing row contains (f92fee42-f19e-4709-bce0-22bdab7f8eb4, default-tenant-demo, Fadil, Ekić, moj@email.com, 062123456, null, Bužim, 77245, 20.12.1965, stolar, null, pending, null, null, 2025-12-10 09:40:55.126304, null, null, null, null, null, null, null, individual, f, f, f, null, f, muško, null, Bužim, null, Krupska 34, null, null, oženjen/udata, Ismeta, null, null, 40, email, 01.12.2025).',
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: 'public',
+  table: 'membership_applications',
+  column: 'employment_status',
+  dataType: undefined,
+  constraint: undefined,
+  file: 'execMain.c',
+  line: '2022',
+  routine: 'ExecConstraints'
+}

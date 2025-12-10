@@ -928,14 +928,35 @@ async function addMissingColumns(client: any): Promise<void> {
   }
   console.log(`✅ Fixed ${titleConstraintCount} legacy 'title' NOT NULL constraints`);
   
-  // Fix NOT NULL constraint on membership_applications.country (should be nullable)
-  console.log("📋 Fixing membership_applications.country NOT NULL constraint...");
-  try {
-    await client.query(`ALTER TABLE "membership_applications" ALTER COLUMN "country" DROP NOT NULL`);
-    console.log("✅ Fixed membership_applications.country constraint");
-  } catch (e: any) {
-    // Already nullable or column doesn't exist
+  // Fix NOT NULL constraints on ALL optional membership_applications fields
+  // These fields are nullable in schema.ts but have NOT NULL in production DB
+  console.log("📋 Fixing membership_applications nullable fields...");
+  const membershipNullableFields = [
+    'country',
+    'email', 
+    'employment_status',
+    'occupation',
+    'skills_hobbies',
+    'spouse_name',
+    'spouse_phone',
+    'children_info',
+    'reviewed_by_id',
+    'reviewed_at',
+    'review_notes',
+    'photo',
+  ];
+  
+  let membershipFixCount = 0;
+  for (const field of membershipNullableFields) {
+    try {
+      await client.query(`ALTER TABLE "membership_applications" ALTER COLUMN "${field}" DROP NOT NULL`);
+      membershipFixCount++;
+      console.log(`  ✓ ${field}`);
+    } catch (e: any) {
+      // Already nullable or column doesn't exist - ignore
+    }
   }
+  console.log(`✅ Fixed ${membershipFixCount} membership_applications nullable constraints`);
   
   // Add CASCADE DELETE to all user FK constraints
   console.log("📋 Migrating user foreign key constraints to CASCADE...");
