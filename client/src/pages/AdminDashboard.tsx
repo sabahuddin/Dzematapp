@@ -1,12 +1,13 @@
-import { Box, Typography, Card, CardContent, CircularProgress, Chip, Avatar, Grid } from '@mui/material';
+import { Box, Typography, Card, CardContent, CircularProgress, Avatar, Grid, LinearProgress } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
-import { type Announcement, type Event, type Message, type UserBadge, type UserCertificate } from '@shared/schema';
-import { People, Groups, FamilyRestroom, Campaign, CalendarMonth, Receipt, EmojiEvents, WorkspacePremium, Mail, Store, ArrowForward } from '@mui/icons-material';
+import { type Announcement, type Event, type Message, type WorkGroup, type Task } from '@shared/schema';
+import { People, Groups, FamilyRestroom, Campaign, CalendarMonth, Receipt, Mail, Store, Assignment, GroupWork, AccessTime, TrendingUp } from '@mui/icons-material';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { normalizeImageUrl } from '@/lib/imageUtils';
 import { useCurrency } from '@/contexts/CurrencyContext';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 
 interface DashboardStats {
   totalUsers: number;
@@ -21,6 +22,23 @@ interface ShopItem {
   photos?: string[];
   itemType: 'product' | 'marketplace';
   createdAt?: Date;
+}
+
+interface MembershipFee {
+  id: number;
+  amount: string;
+  paidAt: Date;
+  userId: number;
+}
+
+interface PrayerTime {
+  fajr: string;
+  sunrise: string;
+  dhuhr: string;
+  asr: string;
+  maghrib: string;
+  isha: string;
+  date: string;
 }
 
 export default function AdminDashboard() {
@@ -48,30 +66,79 @@ export default function AdminDashboard() {
     queryKey: ['/api/dashboard/recent-shop'],
   });
 
-  const { data: badges = [] } = useQuery<UserBadge[]>({
-    queryKey: ['/api/user-badges'],
+  const { data: membershipFees = [] } = useQuery<MembershipFee[]>({
+    queryKey: ['/api/membership-fees'],
   });
 
-  const { data: certificates = [] } = useQuery<UserCertificate[]>({
-    queryKey: ['/api/user-certificates'],
+  const { data: workGroups = [] } = useQuery<WorkGroup[]>({
+    queryKey: ['/api/work-groups'],
   });
 
-  const latestAnnouncement = announcements[0];
-  const nextEvent = events.find(e => new Date(e.dateTime!) >= new Date()) || events[0];
+  const { data: tasks = [] } = useQuery<Task[]>({
+    queryKey: ['/api/tasks'],
+  });
+
+  const { data: todayPrayerTime } = useQuery<PrayerTime>({
+    queryKey: ['/api/prayer-times/today'],
+  });
+
+  const latestAnnouncements = announcements.slice(0, 3);
+  const upcomingEvents = events
+    .filter(e => new Date(e.dateTime!) >= new Date())
+    .sort((a, b) => new Date(a.dateTime!).getTime() - new Date(b.dateTime!).getTime())
+    .slice(0, 3);
+
+  const pendingTasks = tasks.filter(t => t.status === 'pending' || t.status === 'in_progress').slice(0, 5);
 
   const formatDate = (dateString: Date | null | string | undefined) => {
     if (!dateString) return '';
     return format(new Date(dateString), 'dd.MM.yyyy');
   };
 
+  const formatTime = (dateString: Date | null | string | undefined) => {
+    if (!dateString) return '';
+    return format(new Date(dateString), 'HH:mm');
+  };
+
+  // Prepare membership fee chart data (last 6 months)
+  const feeChartData = (() => {
+    const months: { [key: string]: number } = {};
+    const now = new Date();
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const key = format(d, 'MMM');
+      months[key] = 0;
+    }
+    membershipFees.forEach(fee => {
+      if (fee.paidAt) {
+        const key = format(new Date(fee.paidAt), 'MMM');
+        if (months[key] !== undefined) {
+          months[key] += parseFloat(fee.amount || '0');
+        }
+      }
+    });
+    return Object.entries(months).map(([name, value]) => ({ name, value }));
+  })();
+
+  const totalFeesThisMonth = membershipFees
+    .filter(f => {
+      if (!f.paidAt) return false;
+      const d = new Date(f.paidAt);
+      const now = new Date();
+      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    })
+    .reduce((sum, f) => sum + parseFloat(f.amount || '0'), 0);
+
+  const cardStyle = { borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' };
+
   const StatCard = ({ icon, label, value, color = 'primary' }: { icon: React.ReactNode; label: string; value: number | string; color?: string }) => (
-    <Card sx={{ height: '100%', borderRadius: 3, boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+    <Card sx={{ ...cardStyle, height: '100%' }}>
       <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 2 }}>
         <Box sx={{ 
           bgcolor: `${color}.light`, 
           color: `${color}.main`,
           p: 1.5, 
-          borderRadius: 2,
+          borderRadius: '8px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center'
@@ -90,40 +157,6 @@ export default function AdminDashboard() {
     </Card>
   );
 
-  const CompactCard = ({ title, subtitle, onClick, icon }: { title: string; subtitle?: string; onClick?: () => void; icon?: React.ReactNode }) => (
-    <Card 
-      onClick={onClick}
-      sx={{ 
-        height: '100%', 
-        borderRadius: 3, 
-        boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)',
-        cursor: onClick ? 'pointer' : 'default',
-        transition: 'all 0.2s ease',
-        '&:hover': onClick ? { boxShadow: '0 8px 12px -2px rgba(0,0,0,0.1)' } : {}
-      }}
-    >
-      <CardContent sx={{ p: 2 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-          {icon}
-          <Typography variant="caption" color="text.secondary" fontWeight={600}>
-            {title}
-          </Typography>
-        </Box>
-        {subtitle && (
-          <Typography variant="body1" fontWeight={600} sx={{ 
-            overflow: 'hidden', 
-            textOverflow: 'ellipsis',
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical'
-          }}>
-            {subtitle}
-          </Typography>
-        )}
-      </CardContent>
-    </Card>
-  );
-
   if (statsLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
@@ -138,147 +171,303 @@ export default function AdminDashboard() {
         Admin Dashboard
       </Typography>
 
-      <Grid container spacing={3}>
-        {/* Column 1: Statistics */}
-        <Grid size={{ xs: 12, md: 4 }}>
+      <Grid container spacing={2}>
+        {/* Column 1: Statistics + Vaktija + Tasks */}
+        <Grid size={{ xs: 12, md: 3 }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <StatCard 
               icon={<People />} 
-              label="Ukupan broj korisnika" 
+              label="Ukupno korisnika" 
               value={stats?.totalUsers || 0}
               color="primary"
             />
             <StatCard 
               icon={<Groups />} 
-              label="Broj članova" 
+              label="Članovi" 
               value={stats?.members || 0}
               color="info"
             />
             <StatCard 
               icon={<FamilyRestroom />} 
-              label="Broj članova porodice" 
+              label="Članovi porodice" 
               value={stats?.familyMembers || 0}
               color="secondary"
             />
-          </Box>
-        </Grid>
 
-        {/* Column 2: Announcements, Events, Fees, Badges */}
-        <Grid size={{ xs: 12, md: 4 }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {/* Row 1: Announcement + Event side by side */}
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              <Box sx={{ flex: 1 }}>
-                <CompactCard 
-                  title="Zadnja obavijest"
-                  subtitle={latestAnnouncement?.title || 'Nema obavijesti'}
-                  onClick={() => latestAnnouncement && setLocation(`/announcements?id=${latestAnnouncement.id}`)}
-                  icon={<Campaign fontSize="small" color="primary" />}
-                />
-              </Box>
-              <Box sx={{ flex: 1 }}>
-                <CompactCard 
-                  title="Sljedeći događaj"
-                  subtitle={nextEvent?.name || 'Nema događaja'}
-                  onClick={() => nextEvent && setLocation(`/events?id=${nextEvent.id}`)}
-                  icon={<CalendarMonth fontSize="small" color="primary" />}
-                />
-              </Box>
-            </Box>
-
-            {/* Row 2: Membership Fee Info */}
-            <Card sx={{ borderRadius: 3, boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
-              <CardContent sx={{ p: 2 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                  <Receipt fontSize="small" color="primary" />
-                  <Typography variant="caption" color="text.secondary" fontWeight={600}>
-                    Uplata članarine
-                  </Typography>
-                </Box>
-                <Box 
-                  onClick={() => setLocation('/membership-fees')}
-                  sx={{ 
-                    cursor: 'pointer',
-                    p: 1.5,
-                    bgcolor: 'success.light',
-                    borderRadius: 2,
-                    '&:hover': { bgcolor: 'success.main', '& *': { color: 'white !important' } }
-                  }}
-                >
-                  <Typography variant="body2" color="success.dark">
-                    Upravljaj članarinama
-                  </Typography>
-                  <Typography variant="caption" color="success.dark">
-                    Klikni za pregled svih uplata
-                  </Typography>
-                </Box>
-              </CardContent>
-            </Card>
-
-            {/* Row 3: Badges and Certificates */}
-            <Card sx={{ borderRadius: 3, boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
-              <CardContent sx={{ p: 2 }}>
-                <Box sx={{ display: 'flex', gap: 2 }}>
-                  <Box sx={{ flex: 1 }}>
-                    <Box 
-                      onClick={() => setLocation('/badges')}
-                      sx={{ 
-                        cursor: 'pointer',
-                        p: 1.5,
-                        bgcolor: 'warning.light',
-                        borderRadius: 2,
-                        textAlign: 'center',
-                        '&:hover': { bgcolor: 'warning.main' }
-                      }}
-                    >
-                      <EmojiEvents sx={{ fontSize: 32, color: 'warning.dark', mb: 0.5 }} />
-                      <Typography variant="body2" fontWeight={600} color="warning.dark">
-                        Značke
-                      </Typography>
-                      <Typography variant="caption" color="warning.dark">
-                        {badges.length} dodijeljeno
-                      </Typography>
-                    </Box>
+            {/* Vaktija - Prayer Times */}
+            {todayPrayerTime && (
+              <Card sx={cardStyle}>
+                <CardContent sx={{ p: 2 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                    <AccessTime fontSize="small" color="primary" />
+                    <Typography variant="subtitle2" fontWeight={600}>Vaktija</Typography>
                   </Box>
-                  <Box sx={{ flex: 1 }}>
-                    <Box 
-                      onClick={() => setLocation('/certificates')}
-                      sx={{ 
-                        cursor: 'pointer',
-                        p: 1.5,
-                        bgcolor: 'info.light',
-                        borderRadius: 2,
-                        textAlign: 'center',
-                        '&:hover': { bgcolor: 'info.main' }
-                      }}
-                    >
-                      <WorkspacePremium sx={{ fontSize: 32, color: 'info.dark', mb: 0.5 }} />
-                      <Typography variant="body2" fontWeight={600} color="info.dark">
-                        Zahvalnice
-                      </Typography>
-                      <Typography variant="caption" color="info.dark">
-                        {certificates.length} izdato
-                      </Typography>
-                    </Box>
+                  <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1 }}>
+                    <Typography variant="caption">Sabah: <strong>{todayPrayerTime.fajr}</strong></Typography>
+                    <Typography variant="caption">Izl. sunca: <strong>{todayPrayerTime.sunrise}</strong></Typography>
+                    <Typography variant="caption">Podne: <strong>{todayPrayerTime.dhuhr}</strong></Typography>
+                    <Typography variant="caption">Ikindija: <strong>{todayPrayerTime.asr}</strong></Typography>
+                    <Typography variant="caption">Akšam: <strong>{todayPrayerTime.maghrib}</strong></Typography>
+                    <Typography variant="caption">Jacija: <strong>{todayPrayerTime.isha}</strong></Typography>
                   </Box>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Tasks */}
+            <Card sx={cardStyle}>
+              <CardContent sx={{ p: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Assignment fontSize="small" color="primary" />
+                    <Typography variant="subtitle2" fontWeight={600}>Zadaci</Typography>
+                  </Box>
+                  <Typography 
+                    variant="caption" 
+                    color="primary" 
+                    sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                    onClick={() => setLocation('/tasks')}
+                  >
+                    Vidi sve
+                  </Typography>
                 </Box>
+                {pendingTasks.length === 0 ? (
+                  <Typography variant="body2" color="text.secondary">Nema aktivnih zadataka</Typography>
+                ) : (
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                    {pendingTasks.map((task) => (
+                      <Box key={task.id} sx={{ p: 1, bgcolor: 'action.hover', borderRadius: '6px' }}>
+                        <Typography variant="body2" noWrap>{task.title}</Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {task.status === 'in_progress' ? 'U toku' : 'Na čekanju'}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                )}
               </CardContent>
             </Card>
           </Box>
         </Grid>
 
-        {/* Column 3: Messages and Shop */}
+        {/* Column 2: Announcements, Events, Work Groups */}
+        <Grid size={{ xs: 12, md: 5 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {/* Announcements with images */}
+            <Card sx={cardStyle}>
+              <CardContent sx={{ p: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Campaign fontSize="small" color="primary" />
+                    <Typography variant="subtitle2" fontWeight={600}>Obavještenja</Typography>
+                  </Box>
+                  <Typography 
+                    variant="caption" 
+                    color="primary" 
+                    sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                    onClick={() => setLocation('/announcements')}
+                  >
+                    Vidi sve
+                  </Typography>
+                </Box>
+                {announcementsLoading ? (
+                  <CircularProgress size={20} />
+                ) : latestAnnouncements.length === 0 ? (
+                  <Typography variant="body2" color="text.secondary">Nema obavještenja</Typography>
+                ) : (
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                    {latestAnnouncements.map((ann) => {
+                      const imageUrl = ann.photoUrl ? normalizeImageUrl(ann.photoUrl) : null;
+                      return (
+                        <Box 
+                          key={ann.id}
+                          onClick={() => setLocation(`/announcements`)}
+                          sx={{ 
+                            display: 'flex', 
+                            gap: 2,
+                            p: 1.5,
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            '&:hover': { bgcolor: 'action.hover' }
+                          }}
+                        >
+                          {imageUrl && (
+                            <Box
+                              component="img"
+                              src={imageUrl}
+                              alt={ann.title}
+                              sx={{ width: 80, height: 60, borderRadius: '6px', objectFit: 'cover', flexShrink: 0 }}
+                            />
+                          )}
+                          <Box sx={{ flex: 1, minWidth: 0 }}>
+                            <Typography variant="body2" fontWeight={600} noWrap>{ann.title}</Typography>
+                            <Typography variant="caption" color="text.secondary">
+                              {formatDate(ann.publishDate)}
+                            </Typography>
+                          </Box>
+                        </Box>
+                      );
+                    })}
+                  </Box>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Events with images */}
+            <Card sx={cardStyle}>
+              <CardContent sx={{ p: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <CalendarMonth fontSize="small" color="primary" />
+                    <Typography variant="subtitle2" fontWeight={600}>Događaji</Typography>
+                  </Box>
+                  <Typography 
+                    variant="caption" 
+                    color="primary" 
+                    sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                    onClick={() => setLocation('/events')}
+                  >
+                    Vidi sve
+                  </Typography>
+                </Box>
+                {eventsLoading ? (
+                  <CircularProgress size={20} />
+                ) : upcomingEvents.length === 0 ? (
+                  <Typography variant="body2" color="text.secondary">Nema nadolazećih događaja</Typography>
+                ) : (
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                    {upcomingEvents.map((event) => {
+                      const imageUrl = event.photoUrl ? normalizeImageUrl(event.photoUrl) : null;
+                      return (
+                        <Box 
+                          key={event.id}
+                          onClick={() => setLocation(`/events`)}
+                          sx={{ 
+                            display: 'flex', 
+                            gap: 2,
+                            p: 1.5,
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            '&:hover': { bgcolor: 'action.hover' }
+                          }}
+                        >
+                          {imageUrl && (
+                            <Box
+                              component="img"
+                              src={imageUrl}
+                              alt={event.name}
+                              sx={{ width: 80, height: 60, borderRadius: '6px', objectFit: 'cover', flexShrink: 0 }}
+                            />
+                          )}
+                          <Box sx={{ flex: 1, minWidth: 0 }}>
+                            <Typography variant="body2" fontWeight={600} noWrap>{event.name}</Typography>
+                            <Typography variant="caption" color="text.secondary">
+                              {formatDate(event.dateTime)} u {formatTime(event.dateTime)}
+                            </Typography>
+                          </Box>
+                        </Box>
+                      );
+                    })}
+                  </Box>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Work Groups (Sekcije) */}
+            <Card sx={cardStyle}>
+              <CardContent sx={{ p: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <GroupWork fontSize="small" color="primary" />
+                    <Typography variant="subtitle2" fontWeight={600}>Sekcije</Typography>
+                  </Box>
+                  <Typography 
+                    variant="caption" 
+                    color="primary" 
+                    sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                    onClick={() => setLocation('/work-groups')}
+                  >
+                    Vidi sve
+                  </Typography>
+                </Box>
+                {workGroups.length === 0 ? (
+                  <Typography variant="body2" color="text.secondary">Nema sekcija</Typography>
+                ) : (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                    {workGroups.slice(0, 6).map((wg) => (
+                      <Box 
+                        key={wg.id}
+                        onClick={() => setLocation('/work-groups')}
+                        sx={{ 
+                          px: 2,
+                          py: 1,
+                          bgcolor: 'primary.light',
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                          '&:hover': { bgcolor: 'primary.main', color: 'white' }
+                        }}
+                      >
+                        <Typography variant="body2" fontWeight={500}>{wg.name}</Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                )}
+              </CardContent>
+            </Card>
+          </Box>
+        </Grid>
+
+        {/* Column 3: Membership Fees Chart, Messages, Shop */}
         <Grid size={{ xs: 12, md: 4 }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {/* Membership Fees Chart */}
+            <Card sx={cardStyle}>
+              <CardContent sx={{ p: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <TrendingUp fontSize="small" color="primary" />
+                    <Typography variant="subtitle2" fontWeight={600}>Članarina</Typography>
+                  </Box>
+                  <Typography 
+                    variant="caption" 
+                    color="primary" 
+                    sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                    onClick={() => setLocation('/membership-fees')}
+                  >
+                    Upravljaj
+                  </Typography>
+                </Box>
+                <Typography variant="h5" fontWeight="bold" color="success.main" sx={{ mb: 1 }}>
+                  {formatPrice(totalFeesThisMonth)}
+                </Typography>
+                <Typography variant="caption" color="text.secondary" sx={{ mb: 2, display: 'block' }}>
+                  Ovaj mjesec
+                </Typography>
+                <Box sx={{ height: 100 }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={feeChartData}>
+                      <defs>
+                        <linearGradient id="colorFee" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#3949AB" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="#3949AB" stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+                      <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                      <Tooltip formatter={(value: number) => formatPrice(value)} />
+                      <Area type="monotone" dataKey="value" stroke="#3949AB" fillOpacity={1} fill="url(#colorFee)" />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </Box>
+              </CardContent>
+            </Card>
+
             {/* Recent Messages */}
-            <Card sx={{ borderRadius: 3, boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+            <Card sx={cardStyle}>
               <CardContent sx={{ p: 2 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <Mail fontSize="small" color="primary" />
-                    <Typography variant="caption" color="text.secondary" fontWeight={600}>
-                      Zadnje poruke
-                    </Typography>
+                    <Typography variant="subtitle2" fontWeight={600}>Zadnje poruke</Typography>
                   </Box>
                   <Typography 
                     variant="caption" 
@@ -296,7 +485,7 @@ export default function AdminDashboard() {
                   <Typography variant="body2" color="text.secondary">Nema poruka</Typography>
                 ) : (
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                    {messages.slice(0, 3).map((message) => (
+                    {messages.slice(0, 5).map((message) => (
                       <Box 
                         key={message.id}
                         onClick={() => setLocation('/messages')}
@@ -305,7 +494,7 @@ export default function AdminDashboard() {
                           alignItems: 'center', 
                           gap: 1.5,
                           p: 1,
-                          borderRadius: 2,
+                          borderRadius: '6px',
                           cursor: 'pointer',
                           '&:hover': { bgcolor: 'action.hover' }
                         }}
@@ -329,14 +518,12 @@ export default function AdminDashboard() {
             </Card>
 
             {/* Recent Shop Items */}
-            <Card sx={{ borderRadius: 3, boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+            <Card sx={cardStyle}>
               <CardContent sx={{ p: 2 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <Store fontSize="small" color="primary" />
-                    <Typography variant="caption" color="text.secondary" fontWeight={600}>
-                      Zadnji oglasi iz shopa
-                    </Typography>
+                    <Typography variant="subtitle2" fontWeight={600}>Zadnji oglasi</Typography>
                   </Box>
                   <Typography 
                     variant="caption" 
@@ -353,8 +540,8 @@ export default function AdminDashboard() {
                 ) : shopItems.length === 0 ? (
                   <Typography variant="body2" color="text.secondary">Nema oglasa</Typography>
                 ) : (
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                    {shopItems.slice(0, 3).map((item) => {
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                    {shopItems.slice(0, 5).map((item) => {
                       const imageUrl = item.photos?.[0] ? (normalizeImageUrl(item.photos[0]) || '/placeholder.png') : '/placeholder.png';
                       return (
                         <Box 
@@ -363,9 +550,9 @@ export default function AdminDashboard() {
                           sx={{ 
                             display: 'flex', 
                             alignItems: 'center', 
-                            gap: 1.5,
+                            gap: 2,
                             p: 1,
-                            borderRadius: 2,
+                            borderRadius: '6px',
                             cursor: 'pointer',
                             '&:hover': { bgcolor: 'action.hover' }
                           }}
@@ -374,7 +561,7 @@ export default function AdminDashboard() {
                             component="img"
                             src={imageUrl}
                             alt={item.name}
-                            sx={{ width: 40, height: 40, borderRadius: 1, objectFit: 'cover' }}
+                            sx={{ width: 56, height: 56, borderRadius: '6px', objectFit: 'cover', flexShrink: 0 }}
                           />
                           <Box sx={{ flex: 1, minWidth: 0 }}>
                             <Typography variant="body2" fontWeight={600} noWrap>
