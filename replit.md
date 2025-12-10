@@ -74,7 +74,6 @@ DžematApp operates as a SaaS platform with strict tenant isolation:
 - **Media/Livestream**: Management for live streams and media.
 - **Documents**: Upload and management system.
 - **Activity Feed**: Real-time display of community activities.
-- **Configurable Dashboard**: Drag-and-drop widget system for admin dashboard with 5-column grid layout, resizable widgets (1x1 to 4x1), and per-user layout persistence via `dashboard_layouts` table.
 
 ## Mobile App
 A companion React Native + Expo application for iOS and Android is located in the `mobile/` directory, featuring Expo Router, login/authentication, dashboard, tab navigation, and a robust API client, all built with TypeScript.

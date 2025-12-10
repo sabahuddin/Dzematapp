@@ -93,8 +93,6 @@ import {
   type InsertMembershipPayment,
   type MembershipUploadLog,
   type InsertMembershipUploadLog,
-  type DashboardLayout,
-  type InsertDashboardLayout,
   users,
   announcements,
   events,
@@ -140,8 +138,7 @@ import {
   tenants,
   membershipSettings,
   membershipPayments,
-  membershipUploadLogs,
-  dashboardLayouts
+  membershipUploadLogs
 } from "@shared/schema";
 import { db, pool } from './db';
 import { eq, and, or, desc, asc, gt, sql, inArray, ilike } from 'drizzle-orm';
@@ -514,10 +511,6 @@ export interface IStorage {
   getMembershipUploadLogs(tenantId: string): Promise<MembershipUploadLog[]>;
   getLatestMembershipUpload(tenantId: string): Promise<MembershipUploadLog | undefined>;
   createMembershipUploadLog(log: InsertMembershipUploadLog): Promise<MembershipUploadLog>;
-  
-  // Dashboard Layouts
-  getDashboardLayout(userId: string, tenantId: string): Promise<DashboardLayout | undefined>;
-  saveDashboardLayout(userId: string, tenantId: string, layout: string): Promise<DashboardLayout>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -3452,26 +3445,6 @@ export class DatabaseStorage implements IStorage {
   async createMembershipUploadLog(log: InsertMembershipUploadLog): Promise<MembershipUploadLog> {
     const [created] = await db.insert(membershipUploadLogs).values(log).returning();
     return created;
-  }
-
-  // Dashboard Layouts
-  async getDashboardLayout(userId: string, tenantId: string): Promise<DashboardLayout | undefined> {
-    const result = await db.select().from(dashboardLayouts)
-      .where(and(eq(dashboardLayouts.userId, userId), eq(dashboardLayouts.tenantId, tenantId)))
-      .limit(1);
-    return result[0];
-  }
-
-  async saveDashboardLayout(userId: string, tenantId: string, layout: string): Promise<DashboardLayout> {
-    // Atomic upsert using onConflictDoUpdate
-    const [result] = await db.insert(dashboardLayouts)
-      .values({ userId, tenantId, layout, updatedAt: new Date() })
-      .onConflictDoUpdate({
-        target: [dashboardLayouts.userId, dashboardLayouts.tenantId],
-        set: { layout, updatedAt: new Date() }
-      })
-      .returning();
-    return result;
   }
 }
 
