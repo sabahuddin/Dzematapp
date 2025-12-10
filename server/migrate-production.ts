@@ -964,6 +964,67 @@ async function addMissingColumns(client: any): Promise<void> {
   }
   console.log(`✅ Fixed ${membershipFixCount} membership_applications nullable constraints`);
   
+  // Auto-assign registry numbers to existing users who don't have one
+  console.log("📋 Assigning registry numbers to existing members...");
+  try {
+    // Get all tenants
+    const tenantsResult = await client.query(`SELECT id FROM tenants WHERE id != 'tenant-superadmin-global'`);
+    
+    let totalAssigned = 0;
+    for (const tenant of tenantsResult.rows) {
+      const tenantId = tenant.id;
+      
+      // Get users without registry numbers (non-admin, non-superadmin)
+      const usersResult = await client.query(`
+        SELECT id FROM users 
+        WHERE tenant_id = $1 
+        AND registry_number IS NULL 
+        AND (is_admin IS NULL OR is_admin = false)
+        AND (is_super_admin IS NULL OR is_super_admin = false)
+        ORDER BY id ASC
+      `, [tenantId]);
+      
+      if (usersResult.rows.length > 0) {
+        // Get current counter for tenant
+        let currentNumber = 0;
+        const counterResult = await client.query(
+          `SELECT last_number FROM membership_registry_counters WHERE tenant_id = $1`,
+          [tenantId]
+        );
+        if (counterResult.rows.length > 0) {
+          currentNumber = counterResult.rows[0].last_number;
+        }
+        
+        // Also check max existing registry_number in users
+        const maxResult = await client.query(
+          `SELECT COALESCE(MAX(registry_number), 0) as max_num FROM users WHERE tenant_id = $1`,
+          [tenantId]
+        );
+        currentNumber = Math.max(currentNumber, maxResult.rows[0].max_num);
+        
+        // Assign sequential registry numbers
+        for (const user of usersResult.rows) {
+          currentNumber++;
+          await client.query(
+            `UPDATE users SET registry_number = $1 WHERE id = $2`,
+            [currentNumber, user.id]
+          );
+          totalAssigned++;
+        }
+        
+        // Update or insert counter
+        await client.query(`
+          INSERT INTO membership_registry_counters (tenant_id, last_number)
+          VALUES ($1, $2)
+          ON CONFLICT (tenant_id) DO UPDATE SET last_number = $2
+        `, [tenantId, currentNumber]);
+      }
+    }
+    console.log(`✅ Assigned registry numbers to ${totalAssigned} existing members`);
+  } catch (e: any) {
+    console.log("ℹ️  Registry number assignment:", e.message);
+  }
+  
   // Add CASCADE DELETE to all user FK constraints
   console.log("📋 Migrating user foreign key constraints to CASCADE...");
   const cascadeDeletes = [
