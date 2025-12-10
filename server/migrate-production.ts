@@ -87,6 +87,12 @@ async function createMissingTables(client: any): Promise<void> {
   console.log("📋 Creating missing tables...");
   
   const tableCreations = [
+    // membership_registry_counters - Auto-increment registry numbers per tenant
+    `CREATE TABLE IF NOT EXISTS "membership_registry_counters" (
+      "tenant_id" varchar PRIMARY KEY REFERENCES "tenants"("id") ON DELETE CASCADE,
+      "last_number" integer NOT NULL DEFAULT 0
+    )`,
+    
     // family_relationships
     `CREATE TABLE IF NOT EXISTS "family_relationships" (
       "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),

@@ -1263,6 +1263,12 @@ export type InsertSponsorPricing = z.infer<typeof insertSponsorPricingSchema>;
 // MULTI-TENANT ARCHITECTURE
 // ========================================
 
+// Membership Registry Counters - Auto-increment registry numbers per tenant
+export const membershipRegistryCounters = pgTable("membership_registry_counters", {
+  tenantId: varchar("tenant_id").primaryKey().references(() => tenants.id, { onDelete: "cascade" }),
+  lastNumber: integer("last_number").notNull().default(0),
+});
+
 // Tenants - Organizations/Džemati
 export const tenants = pgTable("tenants", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
