@@ -1777,26 +1777,15 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       console.log("[DEBUG POST /api/users] Using tenantId from session:", tenantId, "user:", req.user?.username);
       
-      // Get createdById - use current user or get admin from tenant
-      let createdById = req.user?.id;
-      if (!createdById) {
-        const admin = await storage.getUserByUsername("admin", tenantId);
-        createdById = admin?.id;
-        if (!createdById) {
-          return res.status(400).json({ message: "Admin user not found in tenant" });
-        }
-      }
-      
       // Block attempts to set isSuperAdmin - SuperAdmin can only exist in global tenant
       if (req.body.isSuperAdmin === true) {
         return res.status(403).json({ message: "SuperAdmin access je samo za globalni tenant" });
       }
       
-      // Add createdById (admin who created this user)
+      // Parse user data (createdById is tracked separately, not in users table)
       const userData = insertUserSchema.parse({ 
         ...req.body, 
         tenantId,
-        createdById,
         isSuperAdmin: false  // Force isSuperAdmin to false
       });
       
