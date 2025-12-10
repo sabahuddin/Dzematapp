@@ -1,0 +1,89 @@
+✅ Synced events.date_time → start_date
+✅ Fixed 1 legacy 'title' NOT NULL constraints
+📋 Migrating user foreign key constraints to CASCADE...
+✅ Migrated 26 foreign key constraints to CASCADE
+📋 Migrating title->name for legacy tables...
+  ✅ Migrated events: copied title->name
+✅ Migrated 1 tables (title->name)
+📋 Syncing membership settings currency with organization...
+✅ Membership currency synced with organization settings
+✅ Schema migration complete
+📋 Verifying all schema tables exist...
+✅ All 47 tables verified
+✅ Database schema synchronized successfully!
+[INIT] Registering /api/auth/superadmin/login endpoint
+📂 Serving static files from: /app/dist/public
+8:48:35 AM [express] serving on port 3000
+✅ Admin user already exists
+🌱 Starting default tenant seed...
+📋 Creating subscription plans...
+📋 Updating existing subscription plans with latest modules...
+✅ Full plan modules updated
+🔐 Creating SuperAdmin global tenant...
+ℹ️  SuperAdmin global tenant already exists
+🏢 Creating default tenant...
+ℹ️  Default tenant already exists: Demo Džemat
+👤 Creating SuperAdmin user...
+ℹ️  SuperAdmin user already exists
+👤 Creating demo tenant admin...
+ℹ️  Demo admin user already exists
+✅ Seed completed successfully!
+📊 Default Tenant ID: default-tenant-demo
+   Name: Demo Džemat
+   Tier: full
+   Status: trial
+🌱 Seeding demo data for Demo Džemat...
+ℹ️ Demo users already exist
+ℹ️ Demo data already exists
+✅ Demo data seed completed!
+🧹 [AUTO-PURGE] Starting automatic demo user cleanup...
+[AUTO-PURGE] Found 5 tenants
+[AUTO-PURGE] Skipping demo tenant Demo Džemat
+[AUTO-PURGE] Processing tenant: SuperAdmin Global
+[AUTO-PURGE] Processing tenant: Džemat GAM
+[AUTO-PURGE] Processing tenant: Džemat Oslo
+[AUTO-PURGE] Processing tenant: IK Graz
+[AUTO-PURGE] ✅ Automatic demo user cleanup completed!
+[ORG-SETTINGS] Getting settings for tenant: default-tenant-demo
+8:52:07 AM [express] GET /api/auth/session 401 in 6ms :: {"message":"Not authenticated"}
+[STORAGE] ✅ Found existing org settings: fe93405c-6d88-4363-8dec-75b45f796008
+[ORG-SETTINGS] ✅ Success: fe93405c-6d88-4363-8dec-75b45f796008
+8:52:07 AM [express] GET /api/organization-settings 200 in 11ms :: {"id":"fe93405c-6d88-4363-8dec-75…
+8:52:16 AM [express] POST /api/tenants/verify-code 200 in 8ms :: {"tenantId":"default-tenant-demo","…
+8:52:18 AM [express] GET /api/announcements 200 in 34ms :: [{"id":"6f55058a-5cc7-486a-a424-0e8616cd3…
+Event Promocija knjige: rsvpCount = 22
+8:52:18 AM [express] GET /api/prayer-times 500 in 5ms :: {"message":"Failed to get prayer times"}
+Event Večera: rsvpCount = 2
+Event Kahva sa....: rsvpCount = 0
+8:52:18 AM [express] GET /api/prayer-times/today 200 in 17ms :: {"id":"8d22108c-6d1e-4c58-a126-5cc54…
+Event Kahva sa Erdoganom: rsvpCount = 0
+8:52:18 AM [express] GET /api/events 200 in 119ms :: [{"id":"89543993-0bb9-4baf-b70a-da449f717b73","…
+[STORAGE] ✅ Found existing org settings: fe93405c-6d88-4363-8dec-75b45f796008
+8:52:19 AM [express] GET /api/membership-settings/public 200 in 11ms :: {"feeType":"monthly","monthl…
+[STORAGE] ✅ Found existing org settings: fe93405c-6d88-4363-8dec-75b45f796008
+8:53:25 AM [express] GET /api/membership-settings/public 304 in 11ms :: {"feeType":"monthly","monthl…
+8:54:31 AM [express] POST /api/membership-applications 500 in 40ms :: {"message":"Failed to create m…
+Error creating membership application: error: null value in column "country" of relation "membership_applications" violates not-null constraint
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.createMembershipApplication (file:///app/dist/index.js:3210:20)
+    at async file:///app/dist/index.js:9119:27 {
+  length: 605,
+  severity: 'ERROR',
+  code: '23502',
+  detail: 'Failing row contains (e93dfb54-c606-456e-921f-9654fc038c52, default-tenant-demo, Max, Amini, moj@email.ba, 062345678, null, Bihać, 77000, 09.04.1987, poštar, null, pending, null, null, 2025-12-10 08:54:31.247459, null, null, null, null, null, null, null, individual, f, f, f, null, f, muško, null, BIhać, null, Cazinska 23, null, null, neoženjen/neudana, null, null, null, 50, email, 01.12.2025).',
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: 'public',
+  table: 'membership_applications',
+  column: 'country',
+  dataType: undefined,
+  constraint: undefined,
+  file: 'execMain.c',
+  line: '2022',
+  routine: 'ExecConstraints'
+}

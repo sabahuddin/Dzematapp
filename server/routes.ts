@@ -5861,7 +5861,8 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       
       const validated = insertMembershipApplicationSchema.parse({
         ...req.body,
-        tenantId
+        tenantId,
+        country: req.body.country || 'Switzerland'  // Default country for GDPR compliance
       });
       const application = await storage.createMembershipApplication(validated);
       
