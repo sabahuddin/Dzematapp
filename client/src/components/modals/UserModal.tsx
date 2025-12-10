@@ -37,6 +37,7 @@ import { apiRequest } from '@/lib/queryClient';
 import FamilySelectionDialog from './FamilySelectionDialog';
 import { useAuth } from '@/hooks/useAuth';
 import { useTranslation } from 'react-i18next';
+import { useCurrency } from '@/contexts/CurrencyContext';
 
 interface UserModalProps {
   open: boolean;
@@ -49,6 +50,7 @@ interface UserModalProps {
 export default function UserModal({ open, onClose, onSave, user, isMemberView = false }: UserModalProps) {
   const { t } = useTranslation(['users', 'common']);
   const { user: currentUser } = useAuth();
+  const { currency } = useCurrency();
   
   // Check if current user is editing their own profile
   const isEditingSelf = user && currentUser && user.id === currentUser.id;
@@ -588,7 +590,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                   onChange={handleChange('membershipFeeAmount')}
                   placeholder="npr. 30"
                   InputProps={{
-                    endAdornment: <Typography variant="body2" color="text.secondary">CHF</Typography>
+                    endAdornment: <Typography variant="body2" color="text.secondary">{currency}</Typography>
                   }}
                   data-testid="input-membershipFeeAmount"
                 />
