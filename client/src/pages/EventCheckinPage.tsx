@@ -63,7 +63,8 @@ export default function EventCheckinPage() {
     if (user && !authLoading && eventQuery.data && !checkinSuccess && !checkinMutation.isPending) {
       checkinMutation.mutate({});
     }
-  }, [user, authLoading, eventQuery.data]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, authLoading, eventQuery.data, checkinSuccess]);
 
   const handleGuestCheckin = () => {
     if (guestName.trim().length >= 2) {
@@ -162,7 +163,7 @@ export default function EventCheckinPage() {
     }}>
       <Container maxWidth="sm">
         <Box sx={{ textAlign: 'center', mb: 4 }}>
-          <DzematLogo size={80} color="white" />
+          <DzematLogo size={80} />
           <Typography variant="h6" sx={{ color: 'white', mt: 2 }}>
             {event.organizationName}
           </Typography>
