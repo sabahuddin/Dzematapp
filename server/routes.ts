@@ -4827,8 +4827,8 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         
         // Create attendance record for logged in user
         await pool.query(
-          `INSERT INTO event_attendance (tenant_id, event_id, user_id, points_awarded, checked_in_at)
-           VALUES ($1, $2, $3, $4, NOW())`,
+          `INSERT INTO event_attendance (id, tenant_id, event_id, user_id, points_awarded, checked_in_at)
+           VALUES (gen_random_uuid()::text, $1, $2, $3, $4, NOW())`,
           [event.tenant_id, eventId, userId, pointsValue]
         );
         
@@ -4852,8 +4852,8 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         
         // Create attendance record for guest
         await pool.query(
-          `INSERT INTO event_attendance (tenant_id, event_id, guest_name, points_awarded, checked_in_at)
-           VALUES ($1, $2, $3, $4, NOW())`,
+          `INSERT INTO event_attendance (id, tenant_id, event_id, guest_name, points_awarded, checked_in_at)
+           VALUES (gen_random_uuid()::text, $1, $2, $3, $4, NOW())`,
           [event.tenant_id, eventId, guestName.trim(), 0]
         );
         
