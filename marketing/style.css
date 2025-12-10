@@ -288,6 +288,56 @@ body {
     background: var(--surface);
 }
 
+/* Features Carousel */
+.features-carousel {
+    position: relative;
+    overflow: hidden;
+}
+
+.carousel-track {
+    position: relative;
+}
+
+.carousel-slide {
+    display: none;
+    animation: fadeIn 0.5s ease;
+}
+
+.carousel-slide.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 40px;
+}
+
+.carousel-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--primary);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s;
+    padding: 0;
+}
+
+.carousel-dot:hover {
+    background: rgba(57, 73, 171, 0.3);
+}
+
+.carousel-dot.active {
+    background: var(--primary);
+}
+
 .features-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);

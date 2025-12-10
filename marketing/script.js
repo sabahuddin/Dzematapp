@@ -80,6 +80,55 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // Features Carousel
+    const carousel = document.getElementById('features-carousel');
+    if (carousel) {
+        const slides = carousel.querySelectorAll('.carousel-slide');
+        const dots = carousel.querySelectorAll('.carousel-dot');
+        let currentSlide = 0;
+        let autoRotateInterval;
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+            currentSlide = index;
+        }
+
+        function nextSlide() {
+            const next = (currentSlide + 1) % slides.length;
+            showSlide(next);
+        }
+
+        // Auto-rotate every 10 seconds
+        function startAutoRotate() {
+            autoRotateInterval = setInterval(nextSlide, 10000);
+        }
+
+        function stopAutoRotate() {
+            clearInterval(autoRotateInterval);
+        }
+
+        // Dot click handlers
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                showSlide(index);
+                stopAutoRotate();
+                startAutoRotate();
+            });
+        });
+
+        // Start auto-rotation
+        startAutoRotate();
+
+        // Pause on hover
+        carousel.addEventListener('mouseenter', stopAutoRotate);
+        carousel.addEventListener('mouseleave', startAutoRotate);
+    }
+
     // Animation on scroll (simple fade-in)
     const observerOptions = {
         threshold: 0.1,
