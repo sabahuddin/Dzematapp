@@ -20,9 +20,16 @@ import PrayerTimesWidget from './PrayerTimesWidget';
 import WorkGroupsWidget from './WorkGroupsWidget';
 import { DocumentsWidget, SettingsWidget, GuideWidget, ImamQAWidget } from './QuickLinkWidget';
 
-const GRID_COLS = 5;
 const ROW_HEIGHT = 120;
 const MARGIN = 12;
+
+function getColsForWidth(width: number): number {
+  if (width >= 1200) return 5;
+  if (width >= 996) return 4;
+  if (width >= 768) return 3;
+  if (width >= 480) return 2;
+  return 1;
+}
 
 interface LayoutItem {
   i: string;
@@ -69,10 +76,7 @@ export default function DashboardBuilder() {
   // Save layout mutation
   const saveLayoutMutation = useMutation({
     mutationFn: async (layoutData: LayoutItem[]) => {
-      return apiRequest('/api/dashboard-layout', {
-        method: 'POST',
-        body: JSON.stringify({ layout: JSON.stringify(layoutData) }),
-      });
+      return apiRequest('/api/dashboard-layout', 'POST', { layout: JSON.stringify(layoutData) });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/dashboard-layout'] });
@@ -133,8 +137,9 @@ export default function DashboardBuilder() {
     const maxY = layout.reduce((max, l) => Math.max(max, l.y + l.h), 0);
     
     // Try to find space in existing rows first
+    const cols = getColsForWidth(containerWidth);
     for (let row = 0; row <= maxY; row++) {
-      for (let col = 0; col <= GRID_COLS - size.w; col++) {
+      for (let col = 0; col <= cols - size.w; col++) {
         const overlaps = layout.some(l => 
           col < l.x + l.w && col + size.w > l.x &&
           row < l.y + l.h && row + size.h > l.y
@@ -240,14 +245,14 @@ export default function DashboardBuilder() {
       <GridLayout
         className="layout"
         layout={layout}
-        cols={GRID_COLS}
+        cols={getColsForWidth(containerWidth) as any}
         rowHeight={ROW_HEIGHT}
         width={containerWidth}
-        margin={[MARGIN, MARGIN]}
-        onLayoutChange={handleLayoutChange as any}
+        margin={[MARGIN, MARGIN] as any}
+        onLayoutChange={(newLayout: any) => handleLayoutChange(newLayout as LayoutItem[])}
         isDraggable={isEditing}
         isResizable={isEditing}
-        compactType="vertical"
+        compactType={"vertical" as any}
         preventCollision={false}
       >
         {layout.map((item) => (
