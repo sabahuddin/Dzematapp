@@ -1776,6 +1776,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       // CRITICAL: Always use authenticated user's tenantId for tenant isolation
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
       console.log("[DEBUG POST /api/users] Using tenantId from session:", tenantId, "user:", req.user?.username);
+      console.log("[DEBUG POST /api/users] Request body:", JSON.stringify(req.body, null, 2));
       
       // Block attempts to set isSuperAdmin - SuperAdmin can only exist in global tenant
       if (req.body.isSuperAdmin === true) {
@@ -1783,11 +1784,22 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       }
       
       // Parse user data (createdById is tracked separately, not in users table)
-      const userData = insertUserSchema.parse({ 
+      const parseData = { 
         ...req.body, 
         tenantId,
         isSuperAdmin: false  // Force isSuperAdmin to false
-      });
+      };
+      console.log("[DEBUG POST /api/users] Data to parse:", JSON.stringify(parseData, null, 2));
+      
+      const parseResult = insertUserSchema.safeParse(parseData);
+      if (!parseResult.success) {
+        console.error("[DEBUG POST /api/users] Zod validation failed:", parseResult.error.errors);
+        return res.status(400).json({ 
+          message: "Greška u podacima korisnika", 
+          errors: parseResult.error.errors.map(e => `${e.path.join('.')}: ${e.message}`)
+        });
+      }
+      const userData = parseResult.data;
       
       // Check if username already exists (only if username is provided)
       if (userData.username) {
@@ -1797,10 +1809,14 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         }
       }
       
+      console.log("[DEBUG POST /api/users] Creating user with data:", JSON.stringify(userData, null, 2));
       const user = await storage.createUser(userData);
+      console.log("[DEBUG POST /api/users] User created successfully:", user.id);
       res.json({ ...user, password: undefined });
     } catch (error: any) {
-      console.error("Error creating user:", error);
+      console.error("[DEBUG POST /api/users] Error creating user:", error);
+      console.error("[DEBUG POST /api/users] Error code:", error.code);
+      console.error("[DEBUG POST /api/users] Error message:", error.message);
       // Check for unique constraint violation
       if (error.code === '23505') {
         if (error.constraint?.includes('email')) {

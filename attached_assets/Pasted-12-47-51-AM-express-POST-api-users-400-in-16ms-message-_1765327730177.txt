@@ -1,0 +1,100 @@
+12:47:51 AM [express] POST /api/users 400 in 16ms :: {"message":"Invalid user data","error":"relation…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[GET /api/users] DEBUG: {
+  'req.user.tenantId': 'default-tenant-demo',
+  'session.tenantId': 'default-tenant-demo',
+  'req.tenantId': 'default-tenant-demo',
+  username: 'admin',
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba'
+}
+[GET /api/users] Using tenantId: default-tenant-demo
+[GET /api/users] Found 15 users for tenant: default-tenant-demo
+12:48:09 AM [express] GET /api/users 200 in 6ms :: [{"id":"0adf0cb6-6f66-44c3-8bc0-b47aa38c1fe7","ten…
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[MESSAGES/UNREAD-COUNT] Debug: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  sessionTenantId: 'default-tenant-demo',
+  userTenantId: 'default-tenant-demo',
+  reqTenantId: 'default-tenant-demo',
+  resolvedTenantId: 'default-tenant-demo'
+}
+12:48:12 AM [express] GET /api/messages/unread-count 200 in 14ms :: {"count":0}
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+  userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+  username: 'admin',
+  userTenantId: 'default-tenant-demo',
+  sessionTenantId: 'default-tenant-demo',
+  sessionIsSuperAdmin: undefined,
+  userIsSuperAdmin: true,
+  resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+12:48:12 AM [express] GET /api/certificates/unviewed-count 200 in 21ms :: {"count":0}
+12:48:12 AM [express] GET /api/notifications/unread 200 in 44ms :: {"shop":0,"events":0,"announcement…
+    at async file:///app/dist/index.js:5798:20 {
+  length: 127,
+  severity: 'ERROR',
+  code: '42P01',
+  detail: undefined,
+  hint: undefined,
+  position: '20',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '1449',
+  routine: 'parserOpenTable'
+}
