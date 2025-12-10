@@ -928,6 +928,15 @@ async function addMissingColumns(client: any): Promise<void> {
   }
   console.log(`✅ Fixed ${titleConstraintCount} legacy 'title' NOT NULL constraints`);
   
+  // Fix NOT NULL constraint on membership_applications.country (should be nullable)
+  console.log("📋 Fixing membership_applications.country NOT NULL constraint...");
+  try {
+    await client.query(`ALTER TABLE "membership_applications" ALTER COLUMN "country" DROP NOT NULL`);
+    console.log("✅ Fixed membership_applications.country constraint");
+  } catch (e: any) {
+    // Already nullable or column doesn't exist
+  }
+  
   // Add CASCADE DELETE to all user FK constraints
   console.log("📋 Migrating user foreign key constraints to CASCADE...");
   const cascadeDeletes = [
