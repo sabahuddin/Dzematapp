@@ -1012,55 +1012,49 @@ export default function DashboardHome() {
 
   return (
     <Box>
-      {/* Today's Prayer Times */}
+      {/* Today's Prayer Times - Compact */}
       {todayPrayerTime && (
         <Card sx={{ mb: 3, bgcolor: 'hsl(207 90% 95%)' }}>
-          <Box sx={{ p: 2, borderBottom: '1px solid #90caf9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Schedule sx={{ color: 'hsl(207 88% 55%)' }} />
-              <Typography variant="h6" sx={{ fontWeight: 600, color: 'hsl(207 88% 55%)' }}>
-                {t('dashboard:todaysPrayerTimes')} - {todayPrayerTime.date}
-              </Typography>
-            </Box>
-            <Link href="/vaktija">
-              <Button 
-                size="small" 
-                endIcon={<ArrowForward />}
-                sx={{ textTransform: 'none' }}
-                data-testid="link-full-vaktija"
-              >
-                {t('dashboard:prayerCalendar')}
-              </Button>
-            </Link>
-          </Box>
-          <CardContent>
-            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'space-around' }}>
-              <Box sx={{ textAlign: 'center', minWidth: 80 }}>
-                <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.fajr')}</Typography>
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.fajr}</Typography>
-              </Box>
-              {todayPrayerTime.sunrise && (
-                <Box sx={{ textAlign: 'center', minWidth: 80 }}>
-                  <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.sunrise')}</Typography>
-                  <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.sunrise}</Typography>
+          <CardContent sx={{ py: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
+              <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap', justifyContent: 'center', flex: 1 }}>
+                <Box sx={{ textAlign: 'center', minWidth: 70 }}>
+                  <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.fajr')}</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.fajr}</Typography>
                 </Box>
-              )}
-              <Box sx={{ textAlign: 'center', minWidth: 80 }}>
-                <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.dhuhr')}</Typography>
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.dhuhr}</Typography>
+                {todayPrayerTime.sunrise && (
+                  <Box sx={{ textAlign: 'center', minWidth: 70 }}>
+                    <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.sunrise')}</Typography>
+                    <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.sunrise}</Typography>
+                  </Box>
+                )}
+                <Box sx={{ textAlign: 'center', minWidth: 70 }}>
+                  <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.dhuhr')}</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.dhuhr}</Typography>
+                </Box>
+                <Box sx={{ textAlign: 'center', minWidth: 70 }}>
+                  <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.asr')}</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.asr}</Typography>
+                </Box>
+                <Box sx={{ textAlign: 'center', minWidth: 70 }}>
+                  <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.maghrib')}</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.maghrib}</Typography>
+                </Box>
+                <Box sx={{ textAlign: 'center', minWidth: 70 }}>
+                  <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.isha')}</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.isha}</Typography>
+                </Box>
               </Box>
-              <Box sx={{ textAlign: 'center', minWidth: 80 }}>
-                <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.asr')}</Typography>
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.asr}</Typography>
-              </Box>
-              <Box sx={{ textAlign: 'center', minWidth: 80 }}>
-                <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.maghrib')}</Typography>
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.maghrib}</Typography>
-              </Box>
-              <Box sx={{ textAlign: 'center', minWidth: 80 }}>
-                <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.isha')}</Typography>
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.isha}</Typography>
-              </Box>
+              <Link href="/vaktija">
+                <Button 
+                  size="small" 
+                  endIcon={<ArrowForward />}
+                  sx={{ textTransform: 'none' }}
+                  data-testid="link-full-vaktija"
+                >
+                  {t('dashboard:prayerCalendar')}
+                </Button>
+              </Link>
             </Box>
           </CardContent>
         </Card>
