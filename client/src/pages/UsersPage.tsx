@@ -44,12 +44,14 @@ import { apiRequest } from '../lib/queryClient';
 import { useTranslation } from 'react-i18next';
 import { exportToExcel } from '../utils/excelExport';
 import { formatDateForDisplay, getDateTimestamp } from '../utils/dateUtils';
+import { useCurrency } from '@/contexts/CurrencyContext';
 
 export default function UsersPage() {
   const { user: currentUser } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { t } = useTranslation(['users']);
+  const { currency, formatPrice } = useCurrency();
   
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -585,7 +587,7 @@ export default function UsersPage() {
                   </Typography>
                   <Box sx={{ border: '1px solid hsl(0 0% 88%)', borderRadius: 2, p: 1.5, bgcolor: 'hsl(0 0% 98%)', minHeight: 42, display: 'flex', alignItems: 'center' }}>
                     <Typography variant="body1">
-                      {(myProfile as any).membershipFeeAmount ? `${(myProfile as any).membershipFeeAmount} CHF` : '-'}
+                      {(myProfile as any).membershipFeeAmount ? formatPrice((myProfile as any).membershipFeeAmount) : '-'}
                     </Typography>
                   </Box>
                 </Box>

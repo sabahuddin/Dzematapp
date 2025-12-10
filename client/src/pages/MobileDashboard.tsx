@@ -9,6 +9,7 @@ import { ArrowForward, Article, Campaign, Mail, Receipt } from '@mui/icons-mater
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { normalizeImageUrl } from '@/lib/imageUtils';
+import { useCurrency } from '@/contexts/CurrencyContext';
 
 // Green placeholder image for content without photos
 const placeholderImg = '/placeholder.png';
@@ -22,6 +23,7 @@ const mediaImg = placeholderImg;
 export default function MobileDashboard() {
   const [, setLocation] = useLocation();
   const { t } = useTranslation(['dashboard', 'common']);
+  const { formatPrice } = useCurrency();
 
   const { data: prayerTime, isLoading: prayerLoading, error: prayerError } = useQuery<PrayerTime>({
     queryKey: ['/api/prayer-times/today'],
@@ -496,7 +498,7 @@ export default function MobileDashboard() {
                     {t('membershipFees:myPayments.totalPaid', 'Ukupno uplaćeno')}
                   </Typography>
                   <Typography variant="h5" fontWeight="bold" color="success.main">
-                    {totalPaidThisYear.toFixed(2)} KM
+                    {formatPrice(totalPaidThisYear)}
                   </Typography>
                 </Box>
               </Box>

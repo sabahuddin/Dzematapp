@@ -22,6 +22,7 @@ import Grid from '@mui/material/Grid';
 import { useQuery } from '@tanstack/react-query';
 import { Receipt, CheckCircle, Cancel } from '@mui/icons-material';
 import { useAuth } from '@/contexts/AuthContext';
+import { useCurrency } from '@/contexts/CurrencyContext';
 
 const MONTHS = [
   'Januar', 'Februar', 'Mart', 'April', 'Maj', 'Juni',
@@ -30,6 +31,7 @@ const MONTHS = [
 
 export default function MyClanarinaPage() {
   const { user } = useAuth();
+  const { currency, formatPrice } = useCurrency();
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(currentYear);
 
@@ -78,7 +80,7 @@ export default function MyClanarinaPage() {
                 Mjesečna članarina
               </Typography>
               <Typography variant="h4" fontWeight="bold" color="primary">
-                {monthlyFee > 0 ? `${monthlyFee.toFixed(2)} KM` : 'Nije postavljeno'}
+                {monthlyFee > 0 ? formatPrice(monthlyFee) : 'Nije postavljeno'}
               </Typography>
               <Typography variant="caption" color="text.secondary">
                 {feeType === 'monthly' ? 'Mjesečno plaćanje' : 'Godišnje plaćanje'}
@@ -94,7 +96,7 @@ export default function MyClanarinaPage() {
                 Uplaćeno ({selectedYear})
               </Typography>
               <Typography variant="h4" fontWeight="bold" color="success.main">
-                {totalPaidThisYear.toFixed(2)} KM
+                {formatPrice(totalPaidThisYear)}
               </Typography>
               <Typography variant="caption" color="text.secondary">
                 {paidMonths.size} od 12 mjeseci
@@ -110,7 +112,7 @@ export default function MyClanarinaPage() {
                 Duguje ({selectedYear})
               </Typography>
               <Typography variant="h4" fontWeight="bold" color={owedThisYear > 0 ? 'error.main' : 'success.main'}>
-                {owedThisYear.toFixed(2)} KM
+                {formatPrice(owedThisYear)}
               </Typography>
               <Typography variant="caption" color="text.secondary">
                 {owedThisYear > 0 ? `${12 - paidMonths.size} mjeseci neplaćeno` : 'Sve izmireno'}
@@ -182,7 +184,7 @@ export default function MyClanarinaPage() {
                           )}
                         </TableCell>
                         <TableCell align="right">
-                          {isPaid ? `${parseFloat(payment.amount).toFixed(2)} KM` : '-'}
+                          {isPaid ? formatPrice(parseFloat(payment.amount)) : '-'}
                         </TableCell>
                         <TableCell align="right">
                           {isPaid && payment.paidAt 
@@ -224,7 +226,7 @@ export default function MyClanarinaPage() {
                       <TableRow key={payment.id} hover>
                         <TableCell>{payment.coverageYear}</TableCell>
                         <TableCell>{MONTHS[payment.coverageMonth - 1]}</TableCell>
-                        <TableCell align="right">{parseFloat(payment.amount).toFixed(2)} KM</TableCell>
+                        <TableCell align="right">{formatPrice(parseFloat(payment.amount))}</TableCell>
                         <TableCell align="right">
                           {payment.paidAt 
                             ? new Date(payment.paidAt).toLocaleDateString('bs-BA')
