@@ -57,6 +57,7 @@ import {
 } from '../data/mockData';
 import TasksDashboard from '../components/TasksDashboard';
 import MobileDashboard from './MobileDashboard';
+import AdminDashboard from './AdminDashboard';
 import { useAuth } from '../hooks/useAuth';
 import type { Announcement, Event as EventType, WorkGroup, PrayerTime } from '@shared/schema';
 import { format, isSameDay, isWeekend } from 'date-fns';
@@ -263,61 +264,45 @@ export default function DashboardHome() {
     enabled: !user?.isAdmin && !!user,
   });
 
+  // Admin users get the new 3-column dashboard
   if (user?.isAdmin) {
-    if (statisticsQuery.isLoading || activitiesQuery.isLoading || eventsQuery.isLoading) {
-      return (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
-          <CircularProgress />
-        </Box>
-      );
-    }
-
-    if (statisticsQuery.error || activitiesQuery.error || eventsQuery.error) {
-      return (
-        <Alert severity="error">
-          {t('dashboard:error')}
-        </Alert>
-      );
-    }
-  } else {
-    if (announcementsQuery.isLoading || eventsQuery.isLoading || messagesQuery.isLoading || workGroupsQuery.isLoading) {
-      return (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
-          <CircularProgress />
-        </Box>
-      );
-    }
-
-    if (announcementsQuery.error || eventsQuery.error || messagesQuery.error || workGroupsQuery.error) {
-      return (
-        <Alert severity="error">
-          {t('dashboard:error')}
-        </Alert>
-      );
-    }
+    return <AdminDashboard />;
   }
 
-  const statistics = statisticsQuery.data;
-  const activities = activitiesQuery.data;
+  // Non-admin loading/error handling
+  if (announcementsQuery.isLoading || eventsQuery.isLoading || messagesQuery.isLoading || workGroupsQuery.isLoading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (announcementsQuery.error || eventsQuery.error || messagesQuery.error || workGroupsQuery.error) {
+    return (
+      <Alert severity="error">
+        {t('dashboard:error')}
+      </Alert>
+    );
+  }
 
   // For members: get latest announcement, upcoming events, and unread messages
   const latestAnnouncement = announcementsQuery.data?.[0];
   const allEvents = eventsQuery.data || [];
   const upcomingEvent = allEvents
-    .filter(event => new Date(event.dateTime) >= new Date())
-    .sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime())[0];
+    .filter((event: EventType) => new Date(event.dateTime) >= new Date())
+    .sort((a: EventType, b: EventType) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime())[0];
   
   // Get event dates for calendar highlighting
   const eventDates = allEvents
-    .filter(event => new Date(event.dateTime) >= new Date())
-    .map(event => new Date(event.dateTime));
+    .filter((event: EventType) => new Date(event.dateTime) >= new Date())
+    .map((event: EventType) => new Date(event.dateTime));
 
-  const unreadMessages = messagesQuery.data?.filter(msg => !msg.isRead && msg.recipientId === user?.id) || [];
+  const unreadMessages = messagesQuery.data?.filter((msg: MessageWithDetails) => !msg.isRead && msg.recipientId === user?.id) || [];
   const userWorkGroups = workGroupsQuery.data || [];
 
   // Member Dashboard
-  if (!user?.isAdmin) {
-    const todayPrayerTime = todayPrayerTimeQuery.data;
+  const todayPrayerTime = todayPrayerTimeQuery.data;
 
     return (
       <Box>
@@ -1005,319 +990,4 @@ export default function DashboardHome() {
         </Dialog>
       </Box>
     );
-  }
-
-  // Admin Dashboard
-  const todayPrayerTime = todayPrayerTimeQuery.data;
-
-  return (
-    <Box>
-      {/* Today's Prayer Times */}
-      {todayPrayerTime && (
-        <Card sx={{ mb: 3, bgcolor: 'hsl(207 90% 95%)' }}>
-          <Box sx={{ p: 2, borderBottom: '1px solid #90caf9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Schedule sx={{ color: 'hsl(207 88% 55%)' }} />
-              <Typography variant="h6" sx={{ fontWeight: 600, color: 'hsl(207 88% 55%)' }}>
-                {t('dashboard:todaysPrayerTimes')} - {todayPrayerTime.date}
-              </Typography>
-            </Box>
-            <Link href="/vaktija">
-              <Button 
-                size="small" 
-                endIcon={<ArrowForward />}
-                sx={{ textTransform: 'none' }}
-                data-testid="link-full-vaktija"
-              >
-                {t('dashboard:prayerCalendar')}
-              </Button>
-            </Link>
-          </Box>
-          <CardContent>
-            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'space-around' }}>
-              <Box sx={{ textAlign: 'center', minWidth: 80 }}>
-                <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.fajr')}</Typography>
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.fajr}</Typography>
-              </Box>
-              {todayPrayerTime.sunrise && (
-                <Box sx={{ textAlign: 'center', minWidth: 80 }}>
-                  <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.sunrise')}</Typography>
-                  <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.sunrise}</Typography>
-                </Box>
-              )}
-              <Box sx={{ textAlign: 'center', minWidth: 80 }}>
-                <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.dhuhr')}</Typography>
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.dhuhr}</Typography>
-              </Box>
-              <Box sx={{ textAlign: 'center', minWidth: 80 }}>
-                <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.asr')}</Typography>
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.asr}</Typography>
-              </Box>
-              <Box sx={{ textAlign: 'center', minWidth: 80 }}>
-                <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.maghrib')}</Typography>
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.maghrib}</Typography>
-              </Box>
-              <Box sx={{ textAlign: 'center', minWidth: 80 }}>
-                <Typography variant="caption" color="text.secondary">{t('dashboard:prayers.isha')}</Typography>
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.isha}</Typography>
-              </Box>
-            </Box>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Statistics Cards */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard
-            icon={<People />}
-            title={t('dashboard:statistics.totalUsers')}
-            value={statistics?.userCount || 0}
-            color="hsl(207 88% 55%)"
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard
-            icon={<Campaign />}
-            title={t('dashboard:statistics.newAnnouncements')}
-            value={statistics?.newAnnouncementsCount || 0}
-            color="#3949AB"
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard
-            icon={<Event />}
-            title={t('dashboard:statistics.upcomingEvents')}
-            value={statistics?.upcomingEventsCount || 0}
-            color="#ed6c02"
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard
-            icon={<TaskAlt />}
-            title={t('dashboard:statistics.activeTasks')}
-            value={statistics?.activeTasksCount || 0}
-            color="#0097a7"
-          />
-        </Grid>
-      </Grid>
-
-      {/* Upcoming Events Section */}
-      <Card sx={{ mb: 3 }}>
-        <Box sx={{ p: 3, borderBottom: '1px solid hsl(0 0% 88%)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            {t('dashboard:upcomingEvents')}
-          </Typography>
-          <Button
-            component={Link}
-            href="/events"
-            endIcon={<ArrowForward />}
-            sx={{ textTransform: 'none' }}
-            data-testid="link-all-events"
-          >
-            {t('dashboard:allEvents')}
-          </Button>
-        </Box>
-        <Box sx={{ p: 3 }}>
-          {eventsQuery.data && eventsQuery.data.length > 0 ? (
-            <Grid container spacing={2}>
-              {eventsQuery.data
-                .filter(event => new Date(event.dateTime) >= new Date())
-                .sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime())
-                .slice(0, 6)
-                .map(event => (
-                  <Grid size={{ xs: 12, sm: 6, md: 4 }} key={event.id}>
-                    <Card 
-                      sx={{ 
-                        height: '100%',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        transition: 'transform 0.2s, box-shadow 0.2s',
-                        '&:hover': {
-                          transform: 'translateY(-4px)',
-                          boxShadow: 3
-                        }
-                      }}
-                      data-testid={`event-card-${event.id}`}
-                    >
-                      <Box
-                        sx={{
-                          height: 180,
-                          bgcolor: 'hsl(207 88% 55%)',
-                          backgroundImage: 'linear-gradient(135deg, var(--semantic-info-gradient-start) 0%, var(--semantic-info-gradient-end) 100%)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          position: 'relative'
-                        }}
-                      >
-                        <CalendarMonth sx={{ fontSize: 64, color: 'white', opacity: 0.3 }} />
-                        <Typography
-                          variant="h6"
-                          sx={{
-                            position: 'absolute',
-                            color: 'white',
-                            fontWeight: 600,
-                            textAlign: 'center',
-                            px: 2
-                          }}
-                        >
-                          {format(new Date(event.dateTime), 'dd.MM.yyyy.')}
-                        </Typography>
-                        
-                        {/* Action Icons */}
-                        <Box
-                          sx={{
-                            position: 'absolute',
-                            top: 8,
-                            right: 8,
-                            display: 'flex',
-                            gap: 0.5,
-                            bgcolor: 'rgba(255, 255, 255, 0.9)',
-                            borderRadius: 1,
-                            p: 0.5
-                          }}
-                        >
-                          <Link href="/events">
-                            <IconButton
-                              size="small"
-                              sx={{ color: 'hsl(207 88% 55%)' }}
-                              data-testid={`button-view-event-${event.id}`}
-                            >
-                              <Visibility fontSize="small" />
-                            </IconButton>
-                          </Link>
-                        </Box>
-                      </Box>
-                      <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-                        <Typography 
-                          variant="h6" 
-                          sx={{ 
-                            fontWeight: 600, 
-                            mb: 1,
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            display: '-webkit-box',
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: 'vertical'
-                          }}
-                        >
-                          {event.name}
-                        </Typography>
-                        
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                          <LocationOn sx={{ fontSize: 18, color: 'text.secondary' }} />
-                          <Typography variant="body2" color="text.secondary">
-                            {event.location}
-                          </Typography>
-                        </Box>
-                        
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                          <Schedule sx={{ fontSize: 18, color: 'text.secondary' }} />
-                          <Typography variant="body2" color="text.secondary">
-                            {format(new Date(event.dateTime), 'dd.MM.yyyy. u HH:mm')}
-                          </Typography>
-                        </Box>
-
-                        <Box sx={{ mt: 'auto', display: 'flex', gap: 1 }}>
-                          {event.rsvpEnabled && (
-                            <Button
-                              size="small"
-                              variant="contained"
-                              startIcon={<PersonAdd />}
-                              fullWidth
-                              data-testid={`button-rsvp-${event.id}`}
-                            >
-                              {t('dashboard:rsvpButton')}
-                            </Button>
-                          )}
-                          <Button
-                            size="small"
-                            variant="outlined"
-                            startIcon={<NotificationsActive />}
-                            fullWidth
-                            data-testid={`button-remind-${event.id}`}
-                          >
-                            {t('dashboard:remindMeButton')}
-                          </Button>
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                ))}
-            </Grid>
-          ) : (
-            <Typography color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
-              {t('dashboard:noEvents')}
-            </Typography>
-          )}
-        </Box>
-      </Card>
-
-      {/* Tasks Dashboard for Admins and Moderators */}
-      <Box sx={{ mb: 3 }}>
-        <TasksDashboard />
-      </Box>
-
-      {/* Recent Activities Table */}
-      <Card>
-        <Box sx={{ p: 3, borderBottom: '1px solid hsl(0 0% 88%)' }}>
-          <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            {t('dashboard:recentActivities')}
-          </Typography>
-        </Box>
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>{t('dashboard:activityTable.type')}</TableCell>
-                <TableCell>{t('dashboard:activityTable.description')}</TableCell>
-                <TableCell>{t('dashboard:activityTable.user')}</TableCell>
-                <TableCell>{t('dashboard:activityTable.time')}</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {activities?.map((activity, index) => {
-                const chipData = getActivityTypeChip(activity.type);
-                return (
-                  <TableRow key={activity.id || index}>
-                    <TableCell>
-                      <Chip 
-                        label={chipData.label}
-                        color={chipData.color}
-                        size="small"
-                        sx={{ 
-                          textTransform: 'uppercase',
-                          fontSize: '0.75rem',
-                          fontWeight: 500
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell>{activity.description}</TableCell>
-                    <TableCell>
-                      {activity.userId ? t('dashboard:activityTable.userLabel') : t('dashboard:activityTable.systemLabel')}
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="body2" color="text.secondary">
-                        {formatTimeAgo(new Date(activity.createdAt))}
-                      </Typography>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-              {(!activities || activities.length === 0) && (
-                <TableRow>
-                  <TableCell colSpan={4} sx={{ textAlign: 'center', py: 4 }}>
-                    <Typography color="text.secondary">
-                      {t('dashboard:noActivities')}
-                    </Typography>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Card>
-    </Box>
-  );
 }

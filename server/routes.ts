@@ -1504,6 +1504,60 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     }
 });
 
+  // Dashboard stats endpoint for admin
+  app.get("/api/dashboard/stats", requireAuth, async (req, res) => {
+    try {
+      const session = req.session as any;
+      const tenantId = session.tenantId || req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      
+      const users = await storage.getAllUsers(tenantId);
+      
+      // Count different user types - roles is array of strings
+      const totalUsers = users.length;
+      const members = users.filter(u => {
+        const roles = Array.isArray(u.roles) ? u.roles : [];
+        return roles.includes('clan') && !roles.includes('family_member');
+      }).length;
+      const familyMembers = users.filter(u => {
+        const roles = Array.isArray(u.roles) ? u.roles : [];
+        return roles.includes('family_member');
+      }).length;
+      
+      res.json({
+        totalUsers,
+        members,
+        familyMembers
+      });
+    } catch (error) {
+      console.error("[GET /api/dashboard/stats] Error:", error);
+      res.status(500).json({ message: "Failed to fetch dashboard stats" });
+    }
+  });
+
+  // Recent shop listings endpoint for admin dashboard
+  app.get("/api/dashboard/recent-shop", requireAuth, async (req, res) => {
+    try {
+      const session = req.session as any;
+      const tenantId = session.tenantId || req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      
+      const products = await storage.getAllShopProducts(tenantId);
+      const marketplaceItems = await storage.getAllMarketplaceItems(tenantId);
+      
+      // Combine and sort by creation date, get latest 5
+      const allItems = [
+        ...products.map(p => ({ ...p, itemType: 'product' as const })),
+        ...marketplaceItems.map(m => ({ ...m, itemType: 'marketplace' as const }))
+      ]
+      .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
+      .slice(0, 5);
+      
+      res.json(allItems);
+    } catch (error) {
+      console.error("[GET /api/dashboard/recent-shop] Error:", error);
+      res.status(500).json({ message: "Failed to fetch recent shop items" });
+    }
+  });
+
   // Users routes
   app.get("/api/users", requireAuth, async (req, res) => {
     try {
