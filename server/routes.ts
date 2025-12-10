@@ -1482,10 +1482,22 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   });
 
   // Session check route
-  app.get("/api/auth/session", (req, res) => {
+  app.get("/api/auth/session", async (req, res) => {
     const session = req.session as any;
     
     if (req.user) {
+      // Fetch tenant to get enabledModules
+      const tenantId = session.tenantId || req.user.tenantId || req.tenantId;
+      let tenant = null;
+      
+      if (tenantId && !session.isSuperAdmin) {
+        try {
+          tenant = await storage.getTenant(tenantId);
+        } catch (e) {
+          console.error('[AUTH SESSION] Error fetching tenant:', e);
+        }
+      }
+      
       res.json({ 
         user: { 
           id: req.user.id, 
@@ -1496,13 +1508,18 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
           isAdmin: req.user.isAdmin,
           isSuperAdmin: session.isSuperAdmin || false,
           totalPoints: req.user.totalPoints || 0,
-          tenantId: session.isSuperAdmin ? "default-tenant-demo" : req.tenantId
+          tenantId: session.isSuperAdmin ? "default-tenant-demo" : req.tenantId,
+          tenant: tenant ? {
+            id: tenant.id,
+            name: tenant.name,
+            enabledModules: tenant.enabledModules || ['dashboard', 'announcements', 'events', 'vaktija', 'users']
+          } : null
         } 
-});
+      });
     } else {
       res.status(401).json({ message: "Not authenticated" });
     }
-});
+  });
 
   // Users routes
   app.get("/api/users", requireAuth, async (req, res) => {
