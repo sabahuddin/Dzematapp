@@ -22,19 +22,25 @@ import {
   MenuItem,
   Switch,
   FormControlLabel,
-  Alert
+  Alert,
+  Checkbox,
+  Divider
 } from '@mui/material';
 import {
   Add,
   Edit,
   Delete,
   Block,
-  CheckCircle
+  CheckCircle,
+  Extension
 } from '@mui/icons-material';
+import { ALL_MODULES, ModuleId } from '../contexts/ModuleContext';
 import { Tenant } from '@shared/schema';
 import { useToast } from '../hooks/use-toast';
 import { apiRequest } from '../lib/queryClient';
 import { formatDateForDisplay } from '../utils/dateUtils';
+
+const DEFAULT_MODULES = ['dashboard', 'announcements', 'events', 'vaktija', 'users'];
 
 interface TenantFormData {
   name: string;
@@ -43,6 +49,7 @@ interface TenantFormData {
   subdomain: string;
   email: string;
   subscriptionTier: string;
+  enabledModules: string[];
 }
 
 export default function TenantManagementPage() {
@@ -57,7 +64,8 @@ export default function TenantManagementPage() {
     tenantCode: '',
     subdomain: '',
     email: '',
-    subscriptionTier: 'basic'
+    subscriptionTier: 'basic',
+    enabledModules: DEFAULT_MODULES
   });
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [tenantToDelete, setTenantToDelete] = useState<Tenant | null>(null);
@@ -136,7 +144,8 @@ export default function TenantManagementPage() {
         tenantCode: tenant.tenantCode || '',
         subdomain: tenant.subdomain || '',
         email: tenant.email,
-        subscriptionTier: tenant.subscriptionTier
+        subscriptionTier: tenant.subscriptionTier,
+        enabledModules: (tenant as any).enabledModules || DEFAULT_MODULES
       });
     } else {
       setSelectedTenant(null);
@@ -146,7 +155,8 @@ export default function TenantManagementPage() {
         tenantCode: '',
         subdomain: '',
         email: '',
-        subscriptionTier: 'basic'
+        subscriptionTier: 'basic',
+        enabledModules: DEFAULT_MODULES
       });
     }
     setModalOpen(true);
@@ -161,8 +171,32 @@ export default function TenantManagementPage() {
       tenantCode: '',
       subdomain: '',
       email: '',
-      subscriptionTier: 'basic'
+      subscriptionTier: 'basic',
+      enabledModules: DEFAULT_MODULES
     });
+  };
+
+  const handleModuleToggle = (moduleId: string) => {
+    setFormData(prev => ({
+      ...prev,
+      enabledModules: prev.enabledModules.includes(moduleId)
+        ? prev.enabledModules.filter(m => m !== moduleId)
+        : [...prev.enabledModules, moduleId]
+    }));
+  };
+
+  const handleSelectAllModules = () => {
+    setFormData(prev => ({
+      ...prev,
+      enabledModules: Object.keys(ALL_MODULES)
+    }));
+  };
+
+  const handleDeselectAllModules = () => {
+    setFormData(prev => ({
+      ...prev,
+      enabledModules: ['dashboard']
+    }));
   };
 
   const handleSubmit = () => {
@@ -396,6 +430,55 @@ export default function TenantManagementPage() {
               <MenuItem value="standard" data-testid="option-standard">Standard - €79/mjesečno</MenuItem>
               <MenuItem value="full" data-testid="option-full">Full - €149/mjesečno</MenuItem>
             </TextField>
+
+            <Divider sx={{ my: 2 }} />
+            
+            <Box>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Extension color="primary" />
+                  <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                    Uključeni Moduli ({formData.enabledModules.length}/{Object.keys(ALL_MODULES).length})
+                  </Typography>
+                </Box>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <Button size="small" onClick={handleSelectAllModules} data-testid="button-select-all">
+                    Sve
+                  </Button>
+                  <Button size="small" onClick={handleDeselectAllModules} data-testid="button-deselect-all">
+                    Minimum
+                  </Button>
+                </Box>
+              </Box>
+              
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0 }}>
+                {Object.entries(ALL_MODULES).map(([id, module]) => (
+                  <Box key={id} sx={{ width: '50%' }}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={formData.enabledModules.includes(id)}
+                          onChange={() => handleModuleToggle(id)}
+                          disabled={id === 'dashboard'}
+                          size="small"
+                          data-testid={`checkbox-module-${id}`}
+                        />
+                      }
+                      label={
+                        <Typography variant="body2" sx={{ color: id === 'dashboard' ? 'text.secondary' : 'text.primary' }}>
+                          {module.name}
+                        </Typography>
+                      }
+                      sx={{ m: 0 }}
+                    />
+                  </Box>
+                ))}
+              </Box>
+              
+              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+                Dashboard je uvijek uključen. Odabrani moduli će biti dostupni korisnicima ovog tenanta.
+              </Typography>
+            </Box>
           </Box>
         </DialogContent>
         <DialogActions>
