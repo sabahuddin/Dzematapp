@@ -79,8 +79,10 @@ body {
 }
 
 .logo-img {
-    height: 40px;
-    width: auto;
+    height: 44px;
+    width: 44px;
+    border-radius: 10px;
+    object-fit: contain;
 }
 
 .logo-text {
