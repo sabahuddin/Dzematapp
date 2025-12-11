@@ -180,17 +180,23 @@
         
         .pricing-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
-            max-width: 1000px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            max-width: 1200px;
             margin: 0 auto;
+        }
+        
+        @media (max-width: 1100px) {
+            .pricing-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
         
         .pricing-card {
             background: #ffffff;
             border: 2px solid #E0E0E0;
             border-radius: 20px;
-            padding: 40px 32px;
+            padding: 32px 24px;
             text-align: center;
             transition: transform 0.2s, box-shadow 0.2s;
         }
@@ -420,21 +426,35 @@
     </section>
     
     <section class="pricing-section" id="pricing">
-        <h2 class="section-title">Jednostavne cijene</h2>
-        <p class="section-subtitle">Odaberite plan koji odgovara veličini vašeg džemata</p>
+        <h2 class="section-title">Odaberite pravi plan za vaš džemat</h2>
+        <p class="section-subtitle">Od besplatnog pristupa do kompletnog rješenja - svi planovi uključuju besplatnu probnu verziju</p>
         
         <div class="pricing-grid">
             <div class="pricing-card">
+                <h3 class="pricing-name">Guest</h3>
+                <p class="pricing-desc">Besplatni pristup za goste</p>
+                <div class="pricing-price">€0</div>
+                <div class="pricing-period">zauvijek besplatno</div>
+                <div class="pricing-features">
+                    <div class="pricing-feature"><span class="check">✓</span> Obavijesti (javne)</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Vaktija</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Glavne info o džematu</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Pristupnica (prijava za članstvo)</div>
+                </div>
+                <a href="https://app.dzematapp.com" class="pricing-button" style="background: #78909C;">Besplatni pristup</a>
+            </div>
+            
+            <div class="pricing-card">
                 <h3 class="pricing-name">Basic</h3>
-                <p class="pricing-desc">Za manje džemate</p>
+                <p class="pricing-desc">Esencijalna komunikacija</p>
                 <div class="pricing-price">€29</div>
                 <div class="pricing-period">mjesečno</div>
                 <div class="pricing-features">
-                    <div class="pricing-feature"><span class="check">✓</span> Do 200 članova</div>
-                    <div class="pricing-feature"><span class="check">✓</span> Upravljanje članstvom</div>
-                    <div class="pricing-feature"><span class="check">✓</span> Članarine</div>
-                    <div class="pricing-feature"><span class="check">✓</span> Događaji</div>
-                    <div class="pricing-feature"><span class="check">✓</span> Vaktija</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Dashboard</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Korisnici (članovi, porodice)</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Obavijesti (admin)</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Dokumenti</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Zahtjevi i prijave</div>
                 </div>
                 <a href="https://app.dzematapp.com" class="pricing-button">Odaberi Basic</a>
             </div>
@@ -442,14 +462,18 @@
             <div class="pricing-card popular">
                 <div class="popular-badge">Najpopularnije</div>
                 <h3 class="pricing-name">Standard</h3>
-                <p class="pricing-desc">Za srednje džemate</p>
+                <p class="pricing-desc">Operativno upravljanje</p>
                 <div class="pricing-price">€39</div>
                 <div class="pricing-period">mjesečno</div>
                 <div class="pricing-features">
-                    <div class="pricing-feature"><span class="check">✓</span> Do 500 članova</div>
-                    <div class="pricing-feature"><span class="check">✓</span> Sve iz Basic plana</div>
-                    <div class="pricing-feature"><span class="check">✓</span> Sekcije i zadaci</div>
-                    <div class="pricing-feature"><span class="check">✓</span> Dokumenti</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Sve iz Basic +</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Događaji (prijava, bodovi)</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Članarina (evidencija)</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Finansije i izvještaji</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Projekti</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Radne grupe / Sekcije</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Zadaci (bodovi)</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Poruke</div>
                     <div class="pricing-feature"><span class="check">✓</span> Pitaj imama</div>
                 </div>
                 <a href="https://app.dzematapp.com" class="pricing-button">Odaberi Standard</a>
@@ -457,14 +481,17 @@
             
             <div class="pricing-card">
                 <h3 class="pricing-name">Full</h3>
-                <p class="pricing-desc">Za velike džemate</p>
+                <p class="pricing-desc">Premium funkcionalnosti</p>
                 <div class="pricing-price">€49</div>
                 <div class="pricing-period">mjesečno</div>
                 <div class="pricing-features">
-                    <div class="pricing-feature"><span class="check">✓</span> Neograničeno članova</div>
-                    <div class="pricing-feature"><span class="check">✓</span> Sve iz Standard plana</div>
-                    <div class="pricing-feature"><span class="check">✓</span> Trgovina</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Sve iz Standard +</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Feed</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Prodavnica</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Značke (priznanja)</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Zahvalnice</div>
                     <div class="pricing-feature"><span class="check">✓</span> Sponzori</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Mediji / Livestream</div>
                     <div class="pricing-feature"><span class="check">✓</span> Prioritetna podrška</div>
                 </div>
                 <a href="https://app.dzematapp.com" class="pricing-button">Odaberi Full</a>
