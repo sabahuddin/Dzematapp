@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="DžematApp Rückgaberichtlinien und Refund Policy">
-    <title>Rückgaberichtlinien | DžematApp</title>
+    <meta name="description" content="DžematApp Refund Policy / Rückgaberichtlinien">
+    <title>Refund Policy | DžematApp</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,81 +13,211 @@
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #f5f5f5;
-            color: #333;
-            line-height: 1.7;
-        }
-        .header {
-            background: linear-gradient(135deg, #3949AB 0%, #1E88E5 100%);
-            color: white;
-            padding: 40px 20px;
-            text-align: center;
-        }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #f5f5f5; color: #333; line-height: 1.7; }
+        .header { background: linear-gradient(135deg, #3949AB 0%, #1E88E5 100%); color: white; padding: 40px 20px; text-align: center; }
         .header h1 { font-size: 2rem; margin-bottom: 8px; }
         .header a { color: white; text-decoration: none; font-weight: 600; }
         .header a:hover { text-decoration: underline; }
-        .content {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            background: white;
-            min-height: calc(100vh - 200px);
-        }
+        .content { max-width: 800px; margin: 0 auto; padding: 40px 20px; background: white; min-height: calc(100vh - 200px); }
         h2 { color: #3949AB; margin: 32px 0 16px; font-size: 1.25rem; }
         p { margin-bottom: 16px; }
         ul { margin: 16px 0 16px 24px; }
         li { margin-bottom: 8px; }
-        .footer {
-            background: #1a1a2e;
-            color: #aaa;
-            padding: 24px 20px;
-            text-align: center;
-            font-size: 0.9rem;
-        }
+        .footer { background: #1a1a2e; color: #aaa; padding: 24px 20px; text-align: center; font-size: 0.9rem; }
         .footer a { color: #fff; text-decoration: none; margin: 0 12px; }
         .footer a:hover { text-decoration: underline; }
+        .lang-tabs { display: flex; gap: 4px; margin-bottom: 24px; flex-wrap: wrap; justify-content: center; }
+        .lang-tabs button { padding: 8px 16px; border: 2px solid #3949AB; background: white; color: #3949AB; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+        .lang-tabs button.active { background: #3949AB; color: white; }
+        .lang-tabs button:hover:not(.active) { background: #e8eaf6; }
+        .lang-content { display: none; }
+        .lang-content.active { display: block; }
+        .back-top { display: inline-block; margin-top: 24px; color: #3949AB; text-decoration: none; font-weight: 600; }
+        .back-top:hover { text-decoration: underline; }
+        .highlight-box { background: #e8f5e9; border-left: 4px solid #26A69A; padding: 20px; border-radius: 8px; margin: 24px 0; }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>Rückgaberichtlinien (Refund Policy)</h1>
-        <a href="index.html">← Zurück zur Startseite</a>
+        <h1>Refund Policy / Rückgaberichtlinien</h1>
+        <a href="index.html">← Back to Homepage</a>
     </div>
     
     <div class="content">
-        <p><strong>Stand: 11. Dezember 2025</strong></p>
-        <p>Wir möchten, dass Sie mit Dzematapp.com vollkommen zufrieden sind. Da wir jedoch digitale Dienstleistungen (SaaS) anbieten, gelten folgende Richtlinien für Rückerstattungen und Kündigungen.</p>
+        <div class="lang-tabs">
+            <button class="active" onclick="showLang('de')">🇩🇪 Deutsch</button>
+            <button onclick="showLang('bs')">🇧🇦 Bosanski</button>
+            <button onclick="showLang('en')">🇬🇧 English</button>
+            <button onclick="showLang('ar')">🇸🇦 العربية</button>
+            <button onclick="showLang('al')">🇦🇱 Shqip</button>
+            <button onclick="showLang('tr')">🇹🇷 Türkçe</button>
+        </div>
 
-        <h2>1. 14-Tage-Geld-zurück-Garantie</h2>
-        <p>Wir bieten allen Neukunden eine freiwillige 14-tägige Zufriedenheitsgarantie. Sollten Sie innerhalb der ersten 14 Tage nach Abschluss Ihres ersten Abonnements feststellen, dass die Software nicht Ihren Anforderungen entspricht, erstatten wir Ihnen den vollen Betrag zurück – ohne Wenn und Aber.</p>
-        <p>Um diese Garantie in Anspruch zu nehmen, kontaktieren Sie uns bitte innerhalb der Frist unter: <a href="mailto:info@dzematapp.com">info@dzematapp.com</a>.</p>
+        <!-- DEUTSCH -->
+        <div id="de" class="lang-content active">
+            <p><strong>Stand: 11. Dezember 2025</strong></p>
+            <p>Wir möchten, dass Sie mit Dzematapp.com vollkommen zufrieden sind.</p>
+            
+            <div class="highlight-box">
+                <h2 style="margin-top: 0;">14-Tage-Geld-zurück-Garantie</h2>
+                <p style="margin-bottom: 0;">Wir bieten allen Neukunden eine freiwillige 14-tägige Zufriedenheitsgarantie. Sollten Sie innerhalb der ersten 14 Tage feststellen, dass die Software nicht Ihren Anforderungen entspricht, erstatten wir Ihnen den vollen Betrag zurück – ohne Wenn und Aber.</p>
+            </div>
 
-        <h2>2. Kündigung des Abonnements</h2>
-        <p>Sie können Ihr Abonnement jederzeit über die Kontoeinstellungen oder per E-Mail kündigen.</p>
-        <ul>
-            <li><strong>Wirkung der Kündigung:</strong> Die Kündigung verhindert die automatische Verlängerung Ihres Abonnements. Sie behalten den Zugriff auf die Software bis zum Ende des bereits bezahlten Abrechnungszeitraums (Monat oder Jahr).</li>
-            <li><strong>Keine anteilige Rückerstattung:</strong> Für bereits angebrochene Abrechnungszeiträume (nach Ablauf der 14-Tage-Garantie) bieten wir grundsätzlich keine Rückerstattungen an („No prorated refunds"), es sei denn, der Dienst war aufgrund unseres Verschuldens technisch nicht verfügbar.</li>
-        </ul>
+            <h2>Kündigung des Abonnements</h2>
+            <p>Sie können Ihr Abonnement jederzeit über die Kontoeinstellungen oder per E-Mail kündigen.</p>
+            <ul>
+                <li><strong>Wirkung:</strong> Sie behalten den Zugriff bis zum Ende des bezahlten Zeitraums.</li>
+                <li><strong>Keine anteilige Rückerstattung:</strong> Für bereits angebrochene Zeiträume (nach der 14-Tage-Garantie) bieten wir keine Rückerstattungen.</li>
+            </ul>
 
-        <h2>3. Abwicklung über Paddle</h2>
-        <p>Da unser Bestellprozess über unseren autorisierten Händler Paddle.com läuft, werden auch alle Rückerstattungen technisch über Paddle abgewickelt.</p>
-        <ul>
-            <li>Wenn wir Ihre Rückerstattung genehmigen, weisen wir Paddle an, den Betrag auf das ursprünglich verwendete Zahlungsmittel (Kreditkarte, PayPal etc.) zurückzubuchen.</li>
-            <li>Die Bearbeitungszeit beträgt in der Regel 3-5 Werktage nach Bestätigung durch uns.</li>
-        </ul>
+            <h2>Abwicklung über Paddle</h2>
+            <p>Rückerstattungen werden über Paddle.com abgewickelt. Die Bearbeitungszeit beträgt 3-5 Werktage.</p>
 
-        <h2>4. Kontakt für Rückfragen</h2>
-        <p>Bei Fragen zu Ihrer Rechnung oder für Rückerstattungsanträge wenden Sie sich bitte direkt an uns:</p>
-        <p><strong>E-Mail:</strong> <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
+            <h2>Kontakt</h2>
+            <p>E-Mail: <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
+            <a href="#" class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ Zurück nach oben</a>
+        </div>
+
+        <!-- BOSANSKI -->
+        <div id="bs" class="lang-content">
+            <p><strong>Datum: 11. decembar 2025.</strong></p>
+            <p>Želimo da budete potpuno zadovoljni sa Dzematapp.com.</p>
+            
+            <div class="highlight-box">
+                <h2 style="margin-top: 0;">14-dnevna garancija povrata novca</h2>
+                <p style="margin-bottom: 0;">Nudimo svim novim korisnicima dobrovoljnu 14-dnevnu garanciju zadovoljstva. Ako u prvih 14 dana utvrdite da softver ne odgovara vašim potrebama, vratit ćemo vam puni iznos – bez pitanja.</p>
+            </div>
+
+            <h2>Otkazivanje pretplate</h2>
+            <p>Možete otkazati pretplatu u bilo kojem trenutku putem postavki računa ili e-mailom.</p>
+            <ul>
+                <li><strong>Učinak:</strong> Zadržavate pristup do kraja plaćenog perioda.</li>
+                <li><strong>Bez proporcionalne refundacije:</strong> Za već započete periode (nakon 14-dnevne garancije) ne nudimo povrat.</li>
+            </ul>
+
+            <h2>Obrada putem Paddle</h2>
+            <p>Povrati se obrađuju putem Paddle.com. Vrijeme obrade je 3-5 radnih dana.</p>
+
+            <h2>Kontakt</h2>
+            <p>E-mail: <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
+            <a href="#" class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ Nazad na vrh</a>
+        </div>
+
+        <!-- ENGLISH -->
+        <div id="en" class="lang-content">
+            <p><strong>Date: December 11, 2025</strong></p>
+            <p>We want you to be completely satisfied with Dzematapp.com.</p>
+            
+            <div class="highlight-box">
+                <h2 style="margin-top: 0;">14-Day Money-Back Guarantee</h2>
+                <p style="margin-bottom: 0;">We offer all new customers a voluntary 14-day satisfaction guarantee. If within the first 14 days you find that the software doesn't meet your needs, we'll refund you the full amount – no questions asked.</p>
+            </div>
+
+            <h2>Subscription Cancellation</h2>
+            <p>You can cancel your subscription at any time through account settings or by email.</p>
+            <ul>
+                <li><strong>Effect:</strong> You retain access until the end of the paid period.</li>
+                <li><strong>No prorated refunds:</strong> For periods already started (after the 14-day guarantee) we don't offer refunds.</li>
+            </ul>
+
+            <h2>Processing via Paddle</h2>
+            <p>Refunds are processed through Paddle.com. Processing time is 3-5 business days.</p>
+
+            <h2>Contact</h2>
+            <p>Email: <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
+            <a href="#" class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ Back to top</a>
+        </div>
+
+        <!-- ARABIC -->
+        <div id="ar" class="lang-content" dir="rtl" style="text-align: right;">
+            <p><strong>التاريخ: 11 ديسمبر 2025</strong></p>
+            <p>نريدك أن تكون راضياً تماماً عن Dzematapp.com.</p>
+            
+            <div class="highlight-box">
+                <h2 style="margin-top: 0;">ضمان استرداد الأموال لمدة 14 يوماً</h2>
+                <p style="margin-bottom: 0;">نقدم لجميع العملاء الجدد ضمان رضا طوعي لمدة 14 يوماً. إذا وجدت خلال الـ 14 يوماً الأولى أن البرنامج لا يلبي احتياجاتك، سنقوم برد المبلغ الكامل - بدون أي أسئلة.</p>
+            </div>
+
+            <h2>إلغاء الاشتراك</h2>
+            <p>يمكنك إلغاء اشتراكك في أي وقت من خلال إعدادات الحساب أو عبر البريد الإلكتروني.</p>
+            <ul>
+                <li><strong>التأثير:</strong> تحتفظ بالوصول حتى نهاية الفترة المدفوعة.</li>
+                <li><strong>لا استرداد نسبي:</strong> للفترات التي بدأت بالفعل (بعد ضمان الـ 14 يوماً) لا نقدم استرداداً.</li>
+            </ul>
+
+            <h2>المعالجة عبر Paddle</h2>
+            <p>تتم معالجة المبالغ المستردة من خلال Paddle.com. وقت المعالجة هو 3-5 أيام عمل.</p>
+
+            <h2>الاتصال</h2>
+            <p>البريد الإلكتروني: <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
+            <a href="#" class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ العودة إلى الأعلى</a>
+        </div>
+
+        <!-- SHQIP -->
+        <div id="al" class="lang-content">
+            <p><strong>Data: 11 Dhjetor 2025</strong></p>
+            <p>Duam që të jeni plotësisht të kënaqur me Dzematapp.com.</p>
+            
+            <div class="highlight-box">
+                <h2 style="margin-top: 0;">Garancia e Kthimit të Parave 14-Ditore</h2>
+                <p style="margin-bottom: 0;">Ofrojmë të gjithë klientëve të rinj një garanci vullnetare kënaqësie 14-ditore. Nëse brenda 14 ditëve të para zbuloni që softueri nuk i plotëson nevojat tuaja, do t'ju kthejmë shumën e plotë - pa pyetje.</p>
+            </div>
+
+            <h2>Anulimi i Abonimit</h2>
+            <p>Mund të anuloni abonimin tuaj në çdo kohë nëpërmjet cilësimeve të llogarisë ose me email.</p>
+            <ul>
+                <li><strong>Efekti:</strong> Ruani aksesin deri në fund të periudhës së paguar.</li>
+                <li><strong>Pa rimbursim proporcional:</strong> Për periudhat që kanë filluar tashmë (pas garancisë 14-ditore) nuk ofrojmë rimbursim.</li>
+            </ul>
+
+            <h2>Përpunimi nëpërmjet Paddle</h2>
+            <p>Rimbursimet përpunohen nëpërmjet Paddle.com. Koha e përpunimit është 3-5 ditë pune.</p>
+
+            <h2>Kontakti</h2>
+            <p>Email: <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
+            <a href="#" class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ Kthehu në krye</a>
+        </div>
+
+        <!-- TÜRKÇE -->
+        <div id="tr" class="lang-content">
+            <p><strong>Tarih: 11 Aralık 2025</strong></p>
+            <p>Dzematapp.com'dan tamamen memnun kalmanızı istiyoruz.</p>
+            
+            <div class="highlight-box">
+                <h2 style="margin-top: 0;">14 Günlük Para İade Garantisi</h2>
+                <p style="margin-bottom: 0;">Tüm yeni müşterilere gönüllü 14 günlük memnuniyet garantisi sunuyoruz. İlk 14 gün içinde yazılımın ihtiyaçlarınızı karşılamadığını tespit ederseniz, tam tutarı iade edeceğiz - soru sorulmadan.</p>
+            </div>
+
+            <h2>Abonelik İptali</h2>
+            <p>Aboneliğinizi istediğiniz zaman hesap ayarları veya e-posta yoluyla iptal edebilirsiniz.</p>
+            <ul>
+                <li><strong>Etki:</strong> Ödenen sürenin sonuna kadar erişimi korursunuz.</li>
+                <li><strong>Oransal iade yok:</strong> Zaten başlamış dönemler için (14 günlük garantiden sonra) iade sunmuyoruz.</li>
+            </ul>
+
+            <h2>Paddle Üzerinden İşlem</h2>
+            <p>İadeler Paddle.com üzerinden işlenir. İşlem süresi 3-5 iş günüdür.</p>
+
+            <h2>İletişim</h2>
+            <p>E-posta: <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
+            <a href="#" class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ Başa dön</a>
+        </div>
     </div>
 
     <div class="footer">
         <a href="impressum.html">Impressum</a> |
         <a href="agb.html">AGB</a> |
         <a href="datenschutz.html">Datenschutz</a> |
-        <a href="refund.html">Rückgaberichtlinien</a>
+        <a href="refund.html">Refund Policy</a>
     </div>
+
+    <script>
+        function showLang(lang) {
+            document.querySelectorAll('.lang-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.lang-tabs button').forEach(el => el.classList.remove('active'));
+            document.getElementById(lang).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
 </body>
 </html>

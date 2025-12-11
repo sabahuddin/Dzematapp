@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="DžematApp Datenschutzerklärung - Informationen zum Schutz Ihrer personenbezogenen Daten.">
-    <title>Datenschutzerklärung | DžematApp</title>
+    <meta name="description" content="DžematApp Privacy Policy / Datenschutzerklärung">
+    <title>Privacy Policy | DžematApp</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,124 +13,252 @@
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #f5f5f5;
-            color: #333;
-            line-height: 1.7;
-        }
-        .header {
-            background: linear-gradient(135deg, #3949AB 0%, #1E88E5 100%);
-            color: white;
-            padding: 40px 20px;
-            text-align: center;
-        }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #f5f5f5; color: #333; line-height: 1.7; }
+        .header { background: linear-gradient(135deg, #3949AB 0%, #1E88E5 100%); color: white; padding: 40px 20px; text-align: center; }
         .header h1 { font-size: 2rem; margin-bottom: 8px; }
         .header a { color: white; text-decoration: none; font-weight: 600; }
         .header a:hover { text-decoration: underline; }
-        .content {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            background: white;
-            min-height: calc(100vh - 200px);
-        }
+        .content { max-width: 800px; margin: 0 auto; padding: 40px 20px; background: white; min-height: calc(100vh - 200px); }
         h2 { color: #3949AB; margin: 32px 0 16px; font-size: 1.25rem; }
         p { margin-bottom: 16px; }
         ul { margin: 16px 0 16px 24px; }
         li { margin-bottom: 8px; }
-        .footer {
-            background: #1a1a2e;
-            color: #aaa;
-            padding: 24px 20px;
-            text-align: center;
-            font-size: 0.9rem;
-        }
+        .footer { background: #1a1a2e; color: #aaa; padding: 24px 20px; text-align: center; font-size: 0.9rem; }
         .footer a { color: #fff; text-decoration: none; margin: 0 12px; }
         .footer a:hover { text-decoration: underline; }
-        .back-link { margin-bottom: 24px; }
-        .back-link a { color: #3949AB; text-decoration: none; font-weight: 600; }
-        .back-link a:hover { text-decoration: underline; }
+        .lang-tabs { display: flex; gap: 4px; margin-bottom: 24px; flex-wrap: wrap; justify-content: center; }
+        .lang-tabs button { padding: 8px 16px; border: 2px solid #3949AB; background: white; color: #3949AB; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+        .lang-tabs button.active { background: #3949AB; color: white; }
+        .lang-tabs button:hover:not(.active) { background: #e8eaf6; }
+        .lang-content { display: none; }
+        .lang-content.active { display: block; }
+        .back-top { display: inline-block; margin-top: 24px; color: #3949AB; text-decoration: none; font-weight: 600; }
+        .back-top:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>Datenschutzerklärung</h1>
-        <a href="index.html">← Zurück zur Startseite</a>
+        <h1>Privacy Policy / Datenschutzerklärung</h1>
+        <a href="index.html">← Back to Homepage</a>
     </div>
     
     <div class="content">
-        <p><strong>Stand: 11. Dezember 2025</strong></p>
-        <p>Diese Datenschutzerklärung erläutert, wie Dzematapp.com (nachfolgend „wir", „uns" oder „Plattform") personenbezogene Daten erhebt, nutzt und schützt.</p>
+        <div class="lang-tabs">
+            <button class="active" onclick="showLang('de')">🇩🇪 Deutsch</button>
+            <button onclick="showLang('bs')">🇧🇦 Bosanski</button>
+            <button onclick="showLang('en')">🇬🇧 English</button>
+            <button onclick="showLang('ar')">🇸🇦 العربية</button>
+            <button onclick="showLang('al')">🇦🇱 Shqip</button>
+            <button onclick="showLang('tr')">🇹🇷 Türkçe</button>
+        </div>
 
-        <h2>1. Verantwortlicher (Data Controller)</h2>
-        <p>Verantwortlich für den Betrieb dieser Website und die Datenverarbeitung im Sinne der Datenschutzgesetze ist:</p>
-        <p><strong>Sabahudin Sijamhodzic</strong><br>
-        Wiesentalstrasse 6b<br>
-        9000 St. Gallen, Schweiz<br>
-        E-Mail: <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
-        <p>Da unser Sitz in der Schweiz liegt, unsere Server jedoch in der EU (Deutschland) stehen, richten wir uns sowohl nach dem Schweizer Datenschutzgesetz (revDSG) als auch nach der EU-Datenschutz-Grundverordnung (DSGVO).</p>
+        <!-- DEUTSCH -->
+        <div id="de" class="lang-content active">
+            <p><strong>Stand: 11. Dezember 2025</strong></p>
+            <p>Diese Datenschutzerklärung erläutert, wie Dzematapp.com personenbezogene Daten erhebt, nutzt und schützt.</p>
+            <h2>1. Verantwortlicher</h2>
+            <p><strong>Sabahudin Sijamhodzic</strong><br>Wiesentalstrasse 6b<br>9000 St. Gallen, Schweiz<br>E-Mail: <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
+            <p>Wir richten uns nach dem Schweizer DSG und der EU-DSGVO.</p>
+            <h2>2. Verantwortlicher vs. Auftragsverarbeiter</h2>
+            <p><strong>A. Kundendaten:</strong> Wir sind Verantwortlicher für Registrierungsdaten.</p>
+            <p><strong>B. Mitgliederdaten:</strong> Wir sind Auftragsverarbeiter für Daten, die Gemeinden eingeben.</p>
+            <h2>3. Welche Daten erheben wir?</h2>
+            <ul>
+                <li><strong>Registrierungsdaten:</strong> E-Mail, Name, Organisation</li>
+                <li><strong>Zahlungsdaten:</strong> Werden von Paddle.com verarbeitet</li>
+                <li><strong>Server-Logs:</strong> IP-Adresse, Browsertyp (Sicherheitszwecke)</li>
+            </ul>
+            <h2>4. Hosting</h2>
+            <p>Unsere Server befinden sich in Deutschland (Hetzner Online GmbH, ISO 27001 zertifiziert).</p>
+            <h2>5. Cookies</h2>
+            <p>Wir verwenden nur technisch notwendige Cookies. Keine Marketing-Cookies.</p>
+            <h2>6. Ihre Rechte</h2>
+            <ul>
+                <li>Recht auf Auskunft</li>
+                <li>Recht auf Berichtigung</li>
+                <li>Recht auf Löschung</li>
+                <li>Recht auf Einschränkung</li>
+            </ul>
+            <p>Kontakt: <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
+            <h2>7. Speicherdauer</h2>
+            <p>Nach Kündigung werden Daten innerhalb von 30 Tagen gelöscht.</p>
+            <a href="#" class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ Zurück nach oben</a>
+        </div>
 
-        <h2>2. Wichtige Unterscheidung: Verantwortlicher vs. Auftragsverarbeiter</h2>
-        <p>Um unsere Rolle korrekt zu verstehen, unterscheiden wir zwei Arten von Daten:</p>
-        <p><strong>A. Kundendaten (Wir sind Verantwortlicher)</strong><br>
-        Wenn sich ein Vertreter einer Gemeinde (Džemat) registriert, erheben wir Daten zur Vertragsdurchführung (z.B. Name des Admins, E-Mail, Name der Organisation). Für diese Daten sind wir der Verantwortliche.</p>
-        <p><strong>B. Mitgliederdaten der Gemeinde (Wir sind Auftragsverarbeiter)</strong><br>
-        Daten, die der Kunde (die Gemeinde) in die App eingibt (z.B. Namen der Mitglieder, Adressen, Beitragsstatus), verarbeiten wir ausschliesslich im Auftrag und nach Weisung des Kunden.</p>
-        <ul>
-            <li>Die Gemeinde bleibt Eigentümer der Daten und agiert als Verantwortlicher.</li>
-            <li>Dzematapp.com agiert als technischer Auftragsverarbeiter (Data Processor). Wir nutzen diese Daten nicht für eigene Zwecke, machen keine Werbung damit und verkaufen sie nicht an Dritte.</li>
-        </ul>
+        <!-- BOSANSKI -->
+        <div id="bs" class="lang-content">
+            <p><strong>Datum: 11. decembar 2025.</strong></p>
+            <p>Ova Politika privatnosti objašnjava kako Dzematapp.com prikuplja, koristi i štiti lične podatke.</p>
+            <h2>1. Voditelj obrade</h2>
+            <p><strong>Sabahudin Sijamhodžić</strong><br>Wiesentalstrasse 6b<br>9000 St. Gallen, Švicarska<br>E-mail: <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
+            <p>Pridržavamo se švicarskog zakona o zaštiti podataka i EU GDPR-a.</p>
+            <h2>2. Voditelj vs. Izvršitelj obrade</h2>
+            <p><strong>A. Podaci korisnika:</strong> Mi smo voditelj obrade za registracijske podatke.</p>
+            <p><strong>B. Podaci članova:</strong> Mi smo izvršitelj obrade za podatke koje unose zajednice.</p>
+            <h2>3. Koje podatke prikupljamo?</h2>
+            <ul>
+                <li><strong>Registracijski podaci:</strong> E-mail, ime, organizacija</li>
+                <li><strong>Podaci o plaćanju:</strong> Obrađuje Paddle.com</li>
+                <li><strong>Server logovi:</strong> IP adresa, tip preglednika (sigurnosne svrhe)</li>
+            </ul>
+            <h2>4. Hosting</h2>
+            <p>Naši serveri se nalaze u Njemačkoj (Hetzner Online GmbH, ISO 27001 certifikat).</p>
+            <h2>5. Kolačići</h2>
+            <p>Koristimo samo tehnički neophodne kolačiće. Nema marketinških kolačića.</p>
+            <h2>6. Vaša prava</h2>
+            <ul>
+                <li>Pravo na pristup</li>
+                <li>Pravo na ispravak</li>
+                <li>Pravo na brisanje</li>
+                <li>Pravo na ograničenje</li>
+            </ul>
+            <p>Kontakt: <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
+            <h2>7. Period čuvanja</h2>
+            <p>Nakon otkazivanja, podaci se brišu u roku od 30 dana.</p>
+            <a href="#" class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ Nazad na vrh</a>
+        </div>
 
-        <h2>3. Welche Daten erheben wir und warum?</h2>
-        <p><strong>3.1. Registrierungs- und Account-Daten</strong></p>
-        <ul>
-            <li><strong>Datenarten:</strong> E-Mail-Adresse, verschlüsseltes Passwort, Vor- und Nachname der Kontaktperson, Name der Organisation.</li>
-            <li><strong>Zweck:</strong> Erstellung des Benutzerkontos, Bereitstellung des Dienstes und Kommunikation.</li>
-            <li><strong>Rechtsgrundlage:</strong> Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO).</li>
-        </ul>
-        
-        <p><strong>3.2. Zahlungsdaten (Paddle)</strong></p>
-        <p>Wir speichern und verarbeiten keine Kreditkartendaten oder Bankverbindungen. Unser Bestell- und Zahlungsprozess wird von unserem autorisierten Händler (Merchant of Record), Paddle.com, abgewickelt.</p>
-        <ul>
-            <li>Wenn Sie eine Zahlung tätigen, geben Sie die Daten direkt in das sichere Formular von Paddle ein.</li>
-            <li>Paddle.com agiert als eigenständiger Verantwortlicher für die Zahlungsdaten.</li>
-            <li>Weitere Informationen: <a href="https://www.paddle.com/legal/privacy" target="_blank">Paddle Privacy Policy</a>.</li>
-        </ul>
+        <!-- ENGLISH -->
+        <div id="en" class="lang-content">
+            <p><strong>Date: December 11, 2025</strong></p>
+            <p>This Privacy Policy explains how Dzematapp.com collects, uses, and protects personal data.</p>
+            <h2>1. Data Controller</h2>
+            <p><strong>Sabahudin Sijamhodzic</strong><br>Wiesentalstrasse 6b<br>9000 St. Gallen, Switzerland<br>Email: <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
+            <p>We comply with Swiss DSG and EU GDPR.</p>
+            <h2>2. Controller vs. Processor</h2>
+            <p><strong>A. Customer Data:</strong> We are the controller for registration data.</p>
+            <p><strong>B. Member Data:</strong> We are the processor for data entered by communities.</p>
+            <h2>3. What data do we collect?</h2>
+            <ul>
+                <li><strong>Registration data:</strong> Email, name, organization</li>
+                <li><strong>Payment data:</strong> Processed by Paddle.com</li>
+                <li><strong>Server logs:</strong> IP address, browser type (security purposes)</li>
+            </ul>
+            <h2>4. Hosting</h2>
+            <p>Our servers are located in Germany (Hetzner Online GmbH, ISO 27001 certified).</p>
+            <h2>5. Cookies</h2>
+            <p>We only use technically necessary cookies. No marketing cookies.</p>
+            <h2>6. Your Rights</h2>
+            <ul>
+                <li>Right to access</li>
+                <li>Right to rectification</li>
+                <li>Right to erasure</li>
+                <li>Right to restriction</li>
+            </ul>
+            <p>Contact: <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
+            <h2>7. Retention Period</h2>
+            <p>After cancellation, data is deleted within 30 days.</p>
+            <a href="#" class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ Back to top</a>
+        </div>
 
-        <p><strong>3.3. Server-Logfiles und Sicherheit</strong></p>
-        <ul>
-            <li><strong>Datenarten:</strong> IP-Adresse, Browsertyp, Zugriffszeit.</li>
-            <li><strong>Zweck:</strong> Erkennung und Abwehr von Angriffen, Sicherstellung der Systemstabilität.</li>
-            <li><strong>Rechtsgrundlage:</strong> Berechtigtes Interesse an der Sicherheit der IT-Infrastruktur (Art. 6 Abs. 1 lit. f DSGVO).</li>
-        </ul>
+        <!-- ARABIC -->
+        <div id="ar" class="lang-content" dir="rtl" style="text-align: right;">
+            <p><strong>التاريخ: 11 ديسمبر 2025</strong></p>
+            <p>توضح سياسة الخصوصية هذه كيف يقوم Dzematapp.com بجمع واستخدام وحماية البيانات الشخصية.</p>
+            <h2>1. مراقب البيانات</h2>
+            <p><strong>صباح الدين سيامهودزيتش</strong><br>Wiesentalstrasse 6b<br>9000 سانت غالن، سويسرا<br>البريد الإلكتروني: <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
+            <h2>2. المراقب مقابل المعالج</h2>
+            <p><strong>أ. بيانات العملاء:</strong> نحن المراقب لبيانات التسجيل.</p>
+            <p><strong>ب. بيانات الأعضاء:</strong> نحن المعالج للبيانات التي تدخلها المجتمعات.</p>
+            <h2>3. ما البيانات التي نجمعها؟</h2>
+            <ul>
+                <li><strong>بيانات التسجيل:</strong> البريد الإلكتروني، الاسم، المنظمة</li>
+                <li><strong>بيانات الدفع:</strong> تتم معالجتها بواسطة Paddle.com</li>
+                <li><strong>سجلات الخادم:</strong> عنوان IP، نوع المتصفح (لأغراض أمنية)</li>
+            </ul>
+            <h2>4. الاستضافة</h2>
+            <p>تقع خوادمنا في ألمانيا (Hetzner Online GmbH، حاصلة على شهادة ISO 27001).</p>
+            <h2>5. ملفات تعريف الارتباط</h2>
+            <p>نستخدم فقط ملفات تعريف الارتباط الضرورية تقنياً. لا توجد ملفات تعريف ارتباط تسويقية.</p>
+            <h2>6. حقوقك</h2>
+            <ul>
+                <li>الحق في الوصول</li>
+                <li>الحق في التصحيح</li>
+                <li>الحق في المحو</li>
+                <li>الحق في التقييد</li>
+            </ul>
+            <h2>7. فترة الاحتفاظ</h2>
+            <p>بعد الإلغاء، يتم حذف البيانات في غضون 30 يوماً.</p>
+            <a href="#" class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ العودة إلى الأعلى</a>
+        </div>
 
-        <h2>4. Speicherort und Hosting</h2>
-        <p>Ihre Daten werden auf sicheren Servern gespeichert, die sich physisch in Deutschland (Europäische Union) befinden. Unser Hosting-Dienstleister ist die Hetzner Online GmbH (Gunzenhausen, Deutschland), die nach ISO 27001 zertifiziert ist und höchsten Sicherheitsstandards entspricht.</p>
+        <!-- SHQIP -->
+        <div id="al" class="lang-content">
+            <p><strong>Data: 11 Dhjetor 2025</strong></p>
+            <p>Kjo Politikë e Privatësisë shpjegon si Dzematapp.com mbledh, përdor dhe mbron të dhënat personale.</p>
+            <h2>1. Kontrolluesi i të Dhënave</h2>
+            <p><strong>Sabahudin Sijamhodzic</strong><br>Wiesentalstrasse 6b<br>9000 St. Gallen, Zvicër<br>Email: <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
+            <h2>2. Kontrollues vs. Përpunues</h2>
+            <p><strong>A. Të dhënat e klientit:</strong> Ne jemi kontrolluesi për të dhënat e regjistrimit.</p>
+            <p><strong>B. Të dhënat e anëtarëve:</strong> Ne jemi përpunuesi për të dhënat e futura nga komunitetet.</p>
+            <h2>3. Çfarë të dhënash mbledhim?</h2>
+            <ul>
+                <li><strong>Të dhënat e regjistrimit:</strong> Email, emri, organizata</li>
+                <li><strong>Të dhënat e pagesës:</strong> Përpunohen nga Paddle.com</li>
+                <li><strong>Regjistrat e serverit:</strong> Adresa IP, lloji i shfletuesit (qëllime sigurie)</li>
+            </ul>
+            <h2>4. Pritja</h2>
+            <p>Serverët tanë ndodhen në Gjermani (Hetzner Online GmbH, certifikuar ISO 27001).</p>
+            <h2>5. Cookies</h2>
+            <p>Përdorim vetëm cookies teknikisht të nevojshme. Asnjë cookie marketingu.</p>
+            <h2>6. Të drejtat tuaja</h2>
+            <ul>
+                <li>E drejta e aksesit</li>
+                <li>E drejta e korrigjimit</li>
+                <li>E drejta e fshirjes</li>
+                <li>E drejta e kufizimit</li>
+            </ul>
+            <h2>7. Periudha e Ruajtjes</h2>
+            <p>Pas anulimit, të dhënat fshihen brenda 30 ditëve.</p>
+            <a href="#" class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ Kthehu në krye</a>
+        </div>
 
-        <h2>5. Cookies</h2>
-        <p>Wir verwenden ausschließlich technisch notwendige Cookies, die für den Betrieb der App erforderlich sind (z.B. um Ihren Login-Status während der Sitzung zu erhalten). Wir setzen keine Marketing-Cookies ein und betreiben kein Tracking zu Werbezwecken.</p>
-
-        <h2>6. Ihre Rechte</h2>
-        <p>Als Nutzer haben Sie folgende Rechte bezüglich Ihrer personenbezogenen Daten:</p>
-        <ul>
-            <li>Recht auf Auskunft (zu erfahren, welche Daten wir über Sie speichern).</li>
-            <li>Recht auf Berichtigung falscher Daten.</li>
-            <li>Recht auf Löschung („Recht auf Vergessenwerden").</li>
-            <li>Recht auf Einschränkung der Verarbeitung.</li>
-        </ul>
-        <p>Um diese Rechte auszuüben, kontaktieren Sie uns bitte unter: <a href="mailto:info@dzematapp.com">info@dzematapp.com</a>.</p>
-
-        <h2>7. Speicherdauer und Löschung</h2>
-        <p>Wir speichern personenbezogene Daten nur so lange, wie es für die Erbringung der Dienstleistung erforderlich ist.</p>
-        <p>Wenn ein Kunde (Gemeinde) das Abonnement kündigt und die Löschung des Accounts beantragt, werden alle mit diesem Account verknüpften Daten (einschließlich Mitgliederdaten) innerhalb von 30 Tagen unwiderruflich aus unserer aktiven Datenbank gelöscht, sofern keine gesetzlichen Aufbewahrungsfristen (z.B. für Rechnungen) bestehen.</p>
+        <!-- TÜRKÇE -->
+        <div id="tr" class="lang-content">
+            <p><strong>Tarih: 11 Aralık 2025</strong></p>
+            <p>Bu Gizlilik Politikası, Dzematapp.com'un kişisel verileri nasıl topladığını, kullandığını ve koruduğunu açıklar.</p>
+            <h2>1. Veri Sorumlusu</h2>
+            <p><strong>Sabahudin Sijamhodzic</strong><br>Wiesentalstrasse 6b<br>9000 St. Gallen, İsviçre<br>E-posta: <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
+            <h2>2. Sorumlu vs. İşleyici</h2>
+            <p><strong>A. Müşteri Verileri:</strong> Kayıt verileri için sorumluyuz.</p>
+            <p><strong>B. Üye Verileri:</strong> Toplulukların girdiği veriler için işleyiciyiz.</p>
+            <h2>3. Hangi verileri topluyoruz?</h2>
+            <ul>
+                <li><strong>Kayıt verileri:</strong> E-posta, ad, kuruluş</li>
+                <li><strong>Ödeme verileri:</strong> Paddle.com tarafından işlenir</li>
+                <li><strong>Sunucu günlükleri:</strong> IP adresi, tarayıcı türü (güvenlik amaçlı)</li>
+            </ul>
+            <h2>4. Barındırma</h2>
+            <p>Sunucularımız Almanya'da bulunmaktadır (Hetzner Online GmbH, ISO 27001 sertifikalı).</p>
+            <h2>5. Çerezler</h2>
+            <p>Yalnızca teknik olarak gerekli çerezleri kullanıyoruz. Pazarlama çerezi yok.</p>
+            <h2>6. Haklarınız</h2>
+            <ul>
+                <li>Erişim hakkı</li>
+                <li>Düzeltme hakkı</li>
+                <li>Silme hakkı</li>
+                <li>Kısıtlama hakkı</li>
+            </ul>
+            <h2>7. Saklama Süresi</h2>
+            <p>İptalden sonra veriler 30 gün içinde silinir.</p>
+            <a href="#" class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ Başa dön</a>
+        </div>
     </div>
 
     <div class="footer">
         <a href="impressum.html">Impressum</a> |
         <a href="agb.html">AGB</a> |
         <a href="datenschutz.html">Datenschutz</a> |
-        <a href="refund.html">Rückgaberichtlinien</a>
+        <a href="refund.html">Refund Policy</a>
     </div>
+
+    <script>
+        function showLang(lang) {
+            document.querySelectorAll('.lang-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.lang-tabs button').forEach(el => el.classList.remove('active'));
+            document.getElementById(lang).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="DžematApp Impressum - Rechtliche Informationen und Kontaktdaten">
+    <meta name="description" content="DžematApp Impressum - Legal Information">
     <title>Impressum | DžematApp</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,83 +13,180 @@
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #f5f5f5;
-            color: #333;
-            line-height: 1.7;
-        }
-        .header {
-            background: linear-gradient(135deg, #3949AB 0%, #1E88E5 100%);
-            color: white;
-            padding: 40px 20px;
-            text-align: center;
-        }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #f5f5f5; color: #333; line-height: 1.7; }
+        .header { background: linear-gradient(135deg, #3949AB 0%, #1E88E5 100%); color: white; padding: 40px 20px; text-align: center; }
         .header h1 { font-size: 2rem; margin-bottom: 8px; }
         .header a { color: white; text-decoration: none; font-weight: 600; }
         .header a:hover { text-decoration: underline; }
-        .content {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            background: white;
-            min-height: calc(100vh - 200px);
-        }
+        .content { max-width: 800px; margin: 0 auto; padding: 40px 20px; background: white; min-height: calc(100vh - 200px); }
         h2 { color: #3949AB; margin: 32px 0 16px; font-size: 1.25rem; }
         p { margin-bottom: 16px; }
-        .contact-info {
-            background: #f8f9fa;
-            padding: 24px;
-            border-radius: 12px;
-            border-left: 4px solid #3949AB;
-            margin: 24px 0;
-        }
+        .contact-info { background: #f8f9fa; padding: 24px; border-radius: 12px; border-left: 4px solid #3949AB; margin: 24px 0; }
         .contact-info p { margin-bottom: 8px; }
-        .footer {
-            background: #1a1a2e;
-            color: #aaa;
-            padding: 24px 20px;
-            text-align: center;
-            font-size: 0.9rem;
-        }
+        .footer { background: #1a1a2e; color: #aaa; padding: 24px 20px; text-align: center; font-size: 0.9rem; }
         .footer a { color: #fff; text-decoration: none; margin: 0 12px; }
         .footer a:hover { text-decoration: underline; }
+        .lang-tabs { display: flex; gap: 4px; margin-bottom: 24px; flex-wrap: wrap; justify-content: center; }
+        .lang-tabs button { padding: 8px 16px; border: 2px solid #3949AB; background: white; color: #3949AB; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+        .lang-tabs button.active { background: #3949AB; color: white; }
+        .lang-tabs button:hover:not(.active) { background: #e8eaf6; }
+        .lang-content { display: none; }
+        .lang-content.active { display: block; }
+        .back-top { display: inline-block; margin-top: 24px; color: #3949AB; text-decoration: none; font-weight: 600; }
+        .back-top:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>Impressum</h1>
-        <a href="index.html">← Zurück zur Startseite</a>
+        <h1>Impressum / Legal Notice</h1>
+        <a href="index.html">← Back to Homepage</a>
     </div>
     
     <div class="content">
-        <h2>Angaben gemäß Art. 5 DSG / § 5 TMG</h2>
-        
-        <div class="contact-info">
-            <p><strong>Sabahudin Sijamhodzic</strong></p>
-            <p>Wiesentalstrasse 6b</p>
-            <p>9000 St. Gallen</p>
-            <p>Schweiz</p>
-            <p style="margin-top: 16px;"><strong>E-Mail:</strong> <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
+        <div class="lang-tabs">
+            <button class="active" onclick="showLang('de')">🇩🇪 Deutsch</button>
+            <button onclick="showLang('bs')">🇧🇦 Bosanski</button>
+            <button onclick="showLang('en')">🇬🇧 English</button>
+            <button onclick="showLang('ar')">🇸🇦 العربية</button>
+            <button onclick="showLang('al')">🇦🇱 Shqip</button>
+            <button onclick="showLang('tr')">🇹🇷 Türkçe</button>
         </div>
 
-        <h2>Verantwortlich für den Inhalt</h2>
-        <p>Sabahudin Sijamhodzic (Anschrift wie oben)</p>
+        <!-- DEUTSCH -->
+        <div id="de" class="lang-content active">
+            <h2>Angaben gemäß Art. 5 DSG / § 5 TMG</h2>
+            <div class="contact-info">
+                <p><strong>Sabahudin Sijamhodzic</strong></p>
+                <p>Wiesentalstrasse 6b</p>
+                <p>9000 St. Gallen</p>
+                <p>Schweiz</p>
+                <p style="margin-top: 16px;"><strong>E-Mail:</strong> <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
+            </div>
+            <h2>Verantwortlich für den Inhalt</h2>
+            <p>Sabahudin Sijamhodzic (Anschrift wie oben)</p>
+            <h2>Haftungsausschluss</h2>
+            <p><strong>Haftung für Inhalte:</strong> Als Diensteanbieter sind wir für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Wir sind jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen.</p>
+            <p><strong>Haftung für Links:</strong> Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter verantwortlich.</p>
+            <h2>Urheberrecht</h2>
+            <p>Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem schweizerischen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.</p>
+            <a href="#" class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ Zurück nach oben</a>
+        </div>
 
-        <h2>Haftungsausschluss</h2>
-        <p><strong>Haftung für Inhalte:</strong> Als Diensteanbieter sind wir für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Wir sind jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen.</p>
-        
-        <p><strong>Haftung für Links:</strong> Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter verantwortlich.</p>
+        <!-- BOSANSKI -->
+        <div id="bs" class="lang-content">
+            <h2>Podaci prema čl. 5 DSG / § 5 TMG</h2>
+            <div class="contact-info">
+                <p><strong>Sabahudin Sijamhodžić</strong></p>
+                <p>Wiesentalstrasse 6b</p>
+                <p>9000 St. Gallen</p>
+                <p>Švicarska</p>
+                <p style="margin-top: 16px;"><strong>E-mail:</strong> <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
+            </div>
+            <h2>Odgovoran za sadržaj</h2>
+            <p>Sabahudin Sijamhodžić (adresa kao gore)</p>
+            <h2>Odricanje od odgovornosti</h2>
+            <p><strong>Odgovornost za sadržaj:</strong> Kao pružatelj usluga, odgovorni smo za vlastiti sadržaj na ovim stranicama prema općim zakonima. Međutim, nismo obavezni nadzirati prenesene ili pohranjene tuđe informacije.</p>
+            <p><strong>Odgovornost za linkove:</strong> Naša ponuda sadrži linkove na vanjske web stranice trećih strana na čiji sadržaj nemamo utjecaja. Za sadržaj povezanih stranica uvijek je odgovoran dotični pružatelj.</p>
+            <h2>Autorska prava</h2>
+            <p>Sadržaji i djela na ovim stranicama koje su kreirali operatori stranica podliježu švicarskom zakonu o autorskim pravima. Umnožavanje, obrada, distribucija i bilo koja vrsta korištenja izvan granica autorskog prava zahtijevaju pisanu suglasnost autora.</p>
+            <a href="#" class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ Nazad na vrh</a>
+        </div>
 
-        <h2>Urheberrecht</h2>
-        <p>Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem schweizerischen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.</p>
+        <!-- ENGLISH -->
+        <div id="en" class="lang-content">
+            <h2>Information according to Art. 5 DSG / § 5 TMG</h2>
+            <div class="contact-info">
+                <p><strong>Sabahudin Sijamhodzic</strong></p>
+                <p>Wiesentalstrasse 6b</p>
+                <p>9000 St. Gallen</p>
+                <p>Switzerland</p>
+                <p style="margin-top: 16px;"><strong>Email:</strong> <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
+            </div>
+            <h2>Responsible for content</h2>
+            <p>Sabahudin Sijamhodzic (address as above)</p>
+            <h2>Disclaimer</h2>
+            <p><strong>Liability for content:</strong> As a service provider, we are responsible for our own content on these pages according to general laws. However, we are not obligated to monitor transmitted or stored third-party information.</p>
+            <p><strong>Liability for links:</strong> Our offer contains links to external third-party websites over whose content we have no influence. The respective provider is always responsible for the content of linked pages.</p>
+            <h2>Copyright</h2>
+            <p>The content and works created by the site operators on these pages are subject to Swiss copyright law. Reproduction, editing, distribution, and any kind of use beyond the limits of copyright law require the written consent of the respective author or creator.</p>
+            <a href="#" class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ Back to top</a>
+        </div>
+
+        <!-- ARABIC -->
+        <div id="ar" class="lang-content" dir="rtl" style="text-align: right;">
+            <h2>المعلومات وفقاً للمادة 5 DSG / § 5 TMG</h2>
+            <div class="contact-info">
+                <p><strong>صباح الدين سيامهودزيتش</strong></p>
+                <p>Wiesentalstrasse 6b</p>
+                <p>9000 St. Gallen</p>
+                <p>سويسرا</p>
+                <p style="margin-top: 16px;"><strong>البريد الإلكتروني:</strong> <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
+            </div>
+            <h2>المسؤول عن المحتوى</h2>
+            <p>صباح الدين سيامهودزيتش (العنوان كما هو مذكور أعلاه)</p>
+            <h2>إخلاء المسؤولية</h2>
+            <p><strong>المسؤولية عن المحتوى:</strong> بصفتنا مقدم خدمة، نحن مسؤولون عن محتوانا الخاص على هذه الصفحات وفقاً للقوانين العامة. ومع ذلك، لسنا ملزمين بمراقبة المعلومات المنقولة أو المخزنة من طرف ثالث.</p>
+            <p><strong>المسؤولية عن الروابط:</strong> يحتوي عرضنا على روابط لمواقع خارجية تابعة لجهات خارجية ليس لنا أي تأثير على محتواها. المزود المعني هو المسؤول دائماً عن محتوى الصفحات المرتبطة.</p>
+            <h2>حقوق النشر</h2>
+            <p>المحتوى والأعمال التي أنشأها مشغلو الموقع على هذه الصفحات تخضع لقانون حقوق النشر السويسري. يتطلب النسخ والتحرير والتوزيع وأي نوع من الاستخدام خارج حدود قانون حقوق النشر موافقة كتابية من المؤلف أو المنشئ المعني.</p>
+            <a href="#" class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ العودة إلى الأعلى</a>
+        </div>
+
+        <!-- SHQIP -->
+        <div id="al" class="lang-content">
+            <h2>Informacione sipas Art. 5 DSG / § 5 TMG</h2>
+            <div class="contact-info">
+                <p><strong>Sabahudin Sijamhodzic</strong></p>
+                <p>Wiesentalstrasse 6b</p>
+                <p>9000 St. Gallen</p>
+                <p>Zvicër</p>
+                <p style="margin-top: 16px;"><strong>Email:</strong> <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
+            </div>
+            <h2>Përgjegjës për përmbajtjen</h2>
+            <p>Sabahudin Sijamhodzic (adresa si më sipër)</p>
+            <h2>Mohimi i përgjegjësisë</h2>
+            <p><strong>Përgjegjësia për përmbajtjen:</strong> Si ofrues shërbimi, ne jemi përgjegjës për përmbajtjen tonë në këto faqe sipas ligjeve të përgjithshme. Megjithatë, nuk jemi të detyruar të monitorojmë informacionin e palëve të treta të transmetuar ose të ruajtur.</p>
+            <p><strong>Përgjegjësia për lidhjet:</strong> Oferta jonë përmban lidhje me faqe të jashtme të palëve të treta mbi përmbajtjen e të cilave nuk kemi asnjë ndikim. Ofruesi përkatës është gjithmonë përgjegjës për përmbajtjen e faqeve të lidhura.</p>
+            <h2>Të drejtat e autorit</h2>
+            <p>Përmbajtja dhe veprat e krijuara nga operatorët e faqes në këto faqe i nënshtrohen ligjit zviceran të të drejtave të autorit. Riprodhimi, redaktimi, shpërndarja dhe çdo lloj përdorimi jashtë kufijve të ligjit të të drejtave të autorit kërkojnë pëlqimin me shkrim të autorit ose krijuesit përkatës.</p>
+            <a href="#" class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ Kthehu në krye</a>
+        </div>
+
+        <!-- TÜRKÇE -->
+        <div id="tr" class="lang-content">
+            <h2>Art. 5 DSG / § 5 TMG'ye göre bilgiler</h2>
+            <div class="contact-info">
+                <p><strong>Sabahudin Sijamhodzic</strong></p>
+                <p>Wiesentalstrasse 6b</p>
+                <p>9000 St. Gallen</p>
+                <p>İsviçre</p>
+                <p style="margin-top: 16px;"><strong>E-posta:</strong> <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
+            </div>
+            <h2>İçerikten sorumlu</h2>
+            <p>Sabahudin Sijamhodzic (yukarıdaki adres)</p>
+            <h2>Sorumluluk reddi</h2>
+            <p><strong>İçerik sorumluluğu:</strong> Bir hizmet sağlayıcı olarak, genel yasalara göre bu sayfalardaki kendi içeriğimizden sorumluyuz. Ancak, iletilen veya depolanan üçüncü taraf bilgilerini izlemekle yükümlü değiliz.</p>
+            <p><strong>Bağlantı sorumluluğu:</strong> Teklifimiz, içerikleri üzerinde hiçbir etkimizin olmadığı harici üçüncü taraf web sitelerine bağlantılar içermektedir. Bağlantılı sayfaların içeriğinden her zaman ilgili sağlayıcı sorumludur.</p>
+            <h2>Telif hakkı</h2>
+            <p>Site operatörleri tarafından bu sayfalarda oluşturulan içerik ve eserler İsviçre telif hakkı yasasına tabidir. Çoğaltma, düzenleme, dağıtım ve telif hakkı yasasının sınırları dışında her türlü kullanım, ilgili yazar veya yaratıcının yazılı onayını gerektirir.</p>
+            <a href="#" class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ Başa dön</a>
+        </div>
     </div>
 
     <div class="footer">
         <a href="impressum.html">Impressum</a> |
         <a href="agb.html">AGB</a> |
         <a href="datenschutz.html">Datenschutz</a> |
-        <a href="refund.html">Rückgaberichtlinien</a>
+        <a href="refund.html">Refund Policy</a>
     </div>
+
+    <script>
+        function showLang(lang) {
+            document.querySelectorAll('.lang-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.lang-tabs button').forEach(el => el.classList.remove('active'));
+            document.getElementById(lang).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
 </body>
 </html>

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="DžematApp Allgemeine Geschäftsbedingungen (AGB)">
-    <title>AGB | DžematApp</title>
+    <meta name="description" content="DžematApp Terms and Conditions / AGB">
+    <title>AGB / Terms | DžematApp</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,103 +13,256 @@
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #f5f5f5;
-            color: #333;
-            line-height: 1.7;
-        }
-        .header {
-            background: linear-gradient(135deg, #3949AB 0%, #1E88E5 100%);
-            color: white;
-            padding: 40px 20px;
-            text-align: center;
-        }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #f5f5f5; color: #333; line-height: 1.7; }
+        .header { background: linear-gradient(135deg, #3949AB 0%, #1E88E5 100%); color: white; padding: 40px 20px; text-align: center; }
         .header h1 { font-size: 2rem; margin-bottom: 8px; }
         .header a { color: white; text-decoration: none; font-weight: 600; }
         .header a:hover { text-decoration: underline; }
-        .content {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            background: white;
-            min-height: calc(100vh - 200px);
-        }
+        .content { max-width: 800px; margin: 0 auto; padding: 40px 20px; background: white; min-height: calc(100vh - 200px); }
         h2 { color: #3949AB; margin: 32px 0 16px; font-size: 1.25rem; }
         p { margin-bottom: 16px; }
         ul { margin: 16px 0 16px 24px; }
         li { margin-bottom: 8px; }
-        .footer {
-            background: #1a1a2e;
-            color: #aaa;
-            padding: 24px 20px;
-            text-align: center;
-            font-size: 0.9rem;
-        }
+        .footer { background: #1a1a2e; color: #aaa; padding: 24px 20px; text-align: center; font-size: 0.9rem; }
         .footer a { color: #fff; text-decoration: none; margin: 0 12px; }
         .footer a:hover { text-decoration: underline; }
+        .lang-tabs { display: flex; gap: 4px; margin-bottom: 24px; flex-wrap: wrap; justify-content: center; }
+        .lang-tabs button { padding: 8px 16px; border: 2px solid #3949AB; background: white; color: #3949AB; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+        .lang-tabs button.active { background: #3949AB; color: white; }
+        .lang-tabs button:hover:not(.active) { background: #e8eaf6; }
+        .lang-content { display: none; }
+        .lang-content.active { display: block; }
+        .back-top { display: inline-block; margin-top: 24px; color: #3949AB; text-decoration: none; font-weight: 600; }
+        .back-top:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>Allgemeine Geschäftsbedingungen (AGB)</h1>
-        <a href="index.html">← Zurück zur Startseite</a>
+        <h1>AGB / Terms and Conditions</h1>
+        <a href="index.html">← Back to Homepage</a>
     </div>
     
     <div class="content">
-        <p><strong>Stand: 11. Dezember 2025</strong></p>
+        <div class="lang-tabs">
+            <button class="active" onclick="showLang('de')">🇩🇪 Deutsch</button>
+            <button onclick="showLang('bs')">🇧🇦 Bosanski</button>
+            <button onclick="showLang('en')">🇬🇧 English</button>
+            <button onclick="showLang('ar')">🇸🇦 العربية</button>
+            <button onclick="showLang('al')">🇦🇱 Shqip</button>
+            <button onclick="showLang('tr')">🇹🇷 Türkçe</button>
+        </div>
 
-        <h2>1. Geltungsbereich</h2>
-        <p>Diese Allgemeinen Geschäftsbedingungen (nachfolgend „AGB") regeln das Vertragsverhältnis zwischen Sijamhodzic Sabahudin (nachfolgend „Anbieter"), ansässig in Wiesentalstrasse 6b, CH-9000 St. Gallen, Schweiz, und den Nutzern der Software-Plattform „Dzematapp.com" (nachfolgend „Kunde" oder „Gemeinde").</p>
+        <!-- DEUTSCH -->
+        <div id="de" class="lang-content active">
+            <p><strong>Stand: 11. Dezember 2025</strong></p>
+            <h2>1. Geltungsbereich</h2>
+            <p>Diese Allgemeinen Geschäftsbedingungen (nachfolgend „AGB") regeln das Vertragsverhältnis zwischen Sijamhodzic Sabahudin (nachfolgend „Anbieter"), ansässig in Wiesentalstrasse 6b, CH-9000 St. Gallen, Schweiz, und den Nutzern der Software-Plattform „Dzematapp.com" (nachfolgend „Kunde" oder „Gemeinde").</p>
+            <h2>2. Vertragsgegenstand</h2>
+            <p>(1) Der Anbieter stellt dem Kunden eine webbasierte Software (SaaS) zur Verwaltung von Mitgliedern und administrativen Aufgaben für religiöse Gemeinschaften zur Verfügung.</p>
+            <p>(2) Die Software wird als „Software as a Service" bereitgestellt. Der Kunde erhält das nicht-ausschließliche, zeitlich auf die Laufzeit des Vertrages beschränkte Recht, die Software über das Internet zu nutzen.</p>
+            <h2>3. Vertragsschluss und Testphase</h2>
+            <p>(1) Der Vertrag kommt durch die Online-Registrierung und die Auswahl eines kostenpflichtigen Abonnements zustande.</p>
+            <p>(2) Soweit eine kostenlose Testphase angeboten wird, geht diese nach Ablauf nicht automatisch in ein kostenpflichtiges Abo über.</p>
+            <h2>4. Zahlungsabwicklung (Reseller / Merchant of Record)</h2>
+            <p>(1) Der Bestellprozess, die Rechnungsstellung und die Zahlungsabwicklung erfolgen über unseren autorisierten Wiederverkäufer (Merchant of Record):</p>
+            <p><strong>Paddle.com Market Ltd.</strong><br>Judd House, 18-29 Mora Street<br>London EC1V 8BT, United Kingdom</p>
+            <p>(2) Die Nutzungsgebühren sind im Voraus fällig (monatlich oder jährlich, je nach gewähltem Plan).</p>
+            <h2>5. Pflichten des Kunden</h2>
+            <p>(1) Der Kunde versichert, dass er als vertretungsberechtigte Person für seine Organisation handelt.</p>
+            <p>(2) Der Kunde ist verpflichtet, seine Zugangsdaten geheim zu halten und vor dem Zugriff Dritter zu schützen.</p>
+            <p>(3) Der Kunde trägt die alleinige Verantwortung für die Rechtmäßigkeit der von ihm eingegebenen Daten.</p>
+            <h2>6. Verfügbarkeit und Gewährleistung</h2>
+            <p>(1) Der Anbieter bemüht sich um eine höchstmögliche Verfügbarkeit der Software (Ziel: 99% im Jahresmittel).</p>
+            <p>(2) Es wird keine Gewähr dafür übernommen, dass die Software fehlerfrei ist.</p>
+            <h2>7. Haftung</h2>
+            <p>(1) Der Anbieter haftet unbeschränkt für Schäden aus der Verletzung des Lebens, des Körpers oder der Gesundheit sowie für Schäden, die auf Vorsatz oder grober Fahrlässigkeit beruhen.</p>
+            <p>(2) Für leichte Fahrlässigkeit haftet der Anbieter nur bei Verletzung wesentlicher Vertragspflichten.</p>
+            <h2>8. Laufzeit und Kündigung</h2>
+            <p>(1) Das Abonnement läuft auf unbestimmte Zeit und verlängert sich automatisch.</p>
+            <p>(2) Der Kunde kann das Abonnement jederzeit zum Ende der aktuellen Laufzeit kündigen.</p>
+            <h2>9. Datenschutz</h2>
+            <p>Der Umgang mit personenbezogenen Daten richtet sich nach unserer <a href="datenschutz.html">Datenschutzerklärung</a>.</p>
+            <h2>10. Schlussbestimmungen</h2>
+            <p>(1) Es gilt das materielle Recht der Schweiz.</p>
+            <p>(2) Gerichtsstand für alle Streitigkeiten ist St. Gallen, Schweiz.</p>
+            <a href="#" class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ Zurück nach oben</a>
+        </div>
 
-        <h2>2. Vertragsgegenstand</h2>
-        <p>(1) Der Anbieter stellt dem Kunden eine webbasierte Software (SaaS) zur Verwaltung von Mitgliedern und administrativen Aufgaben für religiöse Gemeinschaften zur Verfügung.</p>
-        <p>(2) Die Software wird als „Software as a Service" bereitgestellt. Der Kunde erhält das nicht-ausschließliche, zeitlich auf die Laufzeit des Vertrages beschränkte Recht, die Software über das Internet zu nutzen. Ein Anspruch auf Überlassung des Quellcodes besteht nicht.</p>
+        <!-- BOSANSKI -->
+        <div id="bs" class="lang-content">
+            <p><strong>Datum: 11. decembar 2025.</strong></p>
+            <h2>1. Područje primjene</h2>
+            <p>Ovi Opći uvjeti poslovanja (u daljem tekstu „OUP") reguliraju ugovorni odnos između Sijamhodžić Sabahudina (u daljem tekstu „Pružatelj usluga"), sa sjedištem u Wiesentalstrasse 6b, CH-9000 St. Gallen, Švicarska, i korisnika softverske platforme „Dzematapp.com" (u daljem tekstu „Korisnik" ili „Zajednica").</p>
+            <h2>2. Predmet ugovora</h2>
+            <p>(1) Pružatelj usluga stavlja korisniku na raspolaganje web-baziran softver (SaaS) za upravljanje članstvom i administrativnim zadacima za vjerske zajednice.</p>
+            <p>(2) Softver se pruža kao „Software as a Service". Korisnik dobiva neisključivo pravo korištenja softvera putem interneta, ograničeno na trajanje ugovora.</p>
+            <h2>3. Sklapanje ugovora i probni period</h2>
+            <p>(1) Ugovor se sklapa online registracijom i odabirom plaćene pretplate.</p>
+            <p>(2) Ako se nudi besplatni probni period, on se nakon isteka ne pretvara automatski u plaćenu pretplatu.</p>
+            <h2>4. Obrada plaćanja (Preprodavač)</h2>
+            <p>(1) Proces narudžbe, fakturiranje i obrada plaćanja vrše se putem našeg ovlaštenog preprodavača:</p>
+            <p><strong>Paddle.com Market Ltd.</strong><br>Judd House, 18-29 Mora Street<br>London EC1V 8BT, United Kingdom</p>
+            <p>(2) Naknade za korištenje dospijevaju unaprijed (mjesečno ili godišnje, ovisno o odabranom planu).</p>
+            <h2>5. Obaveze korisnika</h2>
+            <p>(1) Korisnik jamči da djeluje kao ovlaštena osoba za svoju organizaciju.</p>
+            <p>(2) Korisnik je obavezan čuvati svoje pristupne podatke tajnima i zaštititi ih od pristupa trećih strana.</p>
+            <p>(3) Korisnik snosi isključivu odgovornost za zakonitost unesenih podataka.</p>
+            <h2>6. Dostupnost i garancija</h2>
+            <p>(1) Pružatelj usluga nastoji osigurati najvišu moguću dostupnost softvera (cilj: 99% godišnje).</p>
+            <p>(2) Ne daje se garancija da je softver bez grešaka.</p>
+            <h2>7. Odgovornost</h2>
+            <p>(1) Pružatelj usluga neograničeno odgovara za štete nastale povredom života, tijela ili zdravlja, te za štete uzrokovane namjerom ili grubom nepažnjom.</p>
+            <p>(2) Za blagu nepažnju, pružatelj usluga odgovara samo u slučaju povrede bitnih ugovornih obaveza.</p>
+            <h2>8. Trajanje i raskid</h2>
+            <p>(1) Pretplata traje neodređeno vrijeme i automatski se obnavlja.</p>
+            <p>(2) Korisnik može otkazati pretplatu u bilo kojem trenutku do kraja tekućeg perioda.</p>
+            <h2>9. Zaštita podataka</h2>
+            <p>Rukovanje ličnim podacima regulirano je našom <a href="datenschutz.html">Politikom privatnosti</a>.</p>
+            <h2>10. Završne odredbe</h2>
+            <p>(1) Primjenjuje se materijalno pravo Švicarske.</p>
+            <p>(2) Mjesto nadležnosti za sve sporove je St. Gallen, Švicarska.</p>
+            <a href="#" class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ Nazad na vrh</a>
+        </div>
 
-        <h2>3. Vertragsschluss und Testphase</h2>
-        <p>(1) Der Vertrag kommt durch die Online-Registrierung und die Auswahl eines kostenpflichtigen Abonnements zustande.</p>
-        <p>(2) Soweit eine kostenlose Testphase angeboten wird, geht diese nach Ablauf nicht automatisch in ein kostenpflichtiges Abo über, es sei denn, der Kunde hinterlegt aktiv Zahlungsdaten.</p>
+        <!-- ENGLISH -->
+        <div id="en" class="lang-content">
+            <p><strong>Date: December 11, 2025</strong></p>
+            <h2>1. Scope</h2>
+            <p>These General Terms and Conditions (hereinafter "GTC") govern the contractual relationship between Sijamhodzic Sabahudin (hereinafter "Provider"), located at Wiesentalstrasse 6b, CH-9000 St. Gallen, Switzerland, and users of the software platform "Dzematapp.com" (hereinafter "Customer" or "Community").</p>
+            <h2>2. Subject of the Contract</h2>
+            <p>(1) The Provider provides the Customer with a web-based software (SaaS) for managing members and administrative tasks for religious communities.</p>
+            <p>(2) The software is provided as "Software as a Service". The Customer receives a non-exclusive right to use the software via the Internet, limited to the term of the contract.</p>
+            <h2>3. Contract Conclusion and Trial Period</h2>
+            <p>(1) The contract is concluded through online registration and selection of a paid subscription.</p>
+            <p>(2) If a free trial period is offered, it does not automatically convert to a paid subscription upon expiry.</p>
+            <h2>4. Payment Processing (Reseller / Merchant of Record)</h2>
+            <p>(1) The ordering process, invoicing, and payment processing are handled by our authorized reseller:</p>
+            <p><strong>Paddle.com Market Ltd.</strong><br>Judd House, 18-29 Mora Street<br>London EC1V 8BT, United Kingdom</p>
+            <p>(2) Usage fees are due in advance (monthly or annually, depending on the selected plan).</p>
+            <h2>5. Customer Obligations</h2>
+            <p>(1) The Customer warrants that they act as an authorized representative for their organization.</p>
+            <p>(2) The Customer is obligated to keep their access credentials confidential and protect them from third-party access.</p>
+            <p>(3) The Customer bears sole responsibility for the legality of the data entered.</p>
+            <h2>6. Availability and Warranty</h2>
+            <p>(1) The Provider strives for the highest possible availability of the software (target: 99% annual average).</p>
+            <p>(2) No guarantee is given that the software is error-free.</p>
+            <h2>7. Liability</h2>
+            <p>(1) The Provider is unlimitedly liable for damages resulting from injury to life, body, or health, as well as for damages caused by intent or gross negligence.</p>
+            <p>(2) For slight negligence, the Provider is only liable for breach of essential contractual obligations.</p>
+            <h2>8. Term and Termination</h2>
+            <p>(1) The subscription runs for an indefinite period and renews automatically.</p>
+            <p>(2) The Customer can cancel the subscription at any time at the end of the current term.</p>
+            <h2>9. Data Protection</h2>
+            <p>The handling of personal data is governed by our <a href="datenschutz.html">Privacy Policy</a>.</p>
+            <h2>10. Final Provisions</h2>
+            <p>(1) Swiss substantive law applies.</p>
+            <p>(2) The place of jurisdiction for all disputes is St. Gallen, Switzerland.</p>
+            <a href="#" class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ Back to top</a>
+        </div>
 
-        <h2>4. Zahlungsabwicklung (Reseller / Merchant of Record)</h2>
-        <p>(1) Der Bestellprozess, die Rechnungsstellung und die Zahlungsabwicklung erfolgen über unseren autorisierten Wiederverkäufer (Merchant of Record):</p>
-        <p><strong>Paddle.com Market Ltd.</strong><br>
-        Judd House, 18-29 Mora Street<br>
-        London EC1V 8BT, United Kingdom</p>
-        <p>(2) Vertragspartner für den reinen Kaufvorgang ist Paddle.com. Es gelten zusätzlich die AGB von Paddle für Käufer.</p>
-        <p>(3) Die Nutzungsgebühren sind im Voraus fällig (monatlich oder jährlich, je nach gewähltem Plan).</p>
+        <!-- ARABIC -->
+        <div id="ar" class="lang-content" dir="rtl" style="text-align: right;">
+            <p><strong>التاريخ: 11 ديسمبر 2025</strong></p>
+            <h2>1. نطاق التطبيق</h2>
+            <p>تنظم هذه الشروط والأحكام العامة العلاقة التعاقدية بين صباح الدين سيامهودزيتش (المشار إليه فيما بعد بـ "المزود")، الكائن في Wiesentalstrasse 6b، CH-9000 سانت غالن، سويسرا، ومستخدمي منصة البرمجيات "Dzematapp.com" (المشار إليهم فيما بعد بـ "العميل" أو "المجتمع").</p>
+            <h2>2. موضوع العقد</h2>
+            <p>(1) يوفر المزود للعميل برنامجاً قائماً على الويب (SaaS) لإدارة الأعضاء والمهام الإدارية للمجتمعات الدينية.</p>
+            <p>(2) يتم توفير البرنامج كـ "البرنامج كخدمة". يحصل العميل على حق غير حصري لاستخدام البرنامج عبر الإنترنت، مقيداً بمدة العقد.</p>
+            <h2>3. إبرام العقد والفترة التجريبية</h2>
+            <p>(1) يتم إبرام العقد من خلال التسجيل عبر الإنترنت واختيار اشتراك مدفوع.</p>
+            <p>(2) إذا تم تقديم فترة تجريبية مجانية، فإنها لا تتحول تلقائياً إلى اشتراك مدفوع عند انتهائها.</p>
+            <h2>4. معالجة الدفع</h2>
+            <p>(1) يتم التعامل مع عملية الطلب والفواتير ومعالجة الدفع من قبل بائعنا المعتمد:</p>
+            <p><strong>Paddle.com Market Ltd.</strong><br>Judd House, 18-29 Mora Street<br>London EC1V 8BT, United Kingdom</p>
+            <h2>5. التزامات العميل</h2>
+            <p>(1) يضمن العميل أنه يتصرف كممثل مفوض لمنظمته.</p>
+            <p>(2) يلتزم العميل بالحفاظ على سرية بيانات اعتماد الوصول الخاصة به.</p>
+            <h2>6. التوفر والضمان</h2>
+            <p>(1) يسعى المزود لتحقيق أعلى توفر ممكن للبرنامج (الهدف: 99% سنوياً).</p>
+            <h2>7. المسؤولية</h2>
+            <p>المزود مسؤول بشكل غير محدود عن الأضرار الناتجة عن الإصابة في الحياة أو الجسم أو الصحة.</p>
+            <h2>8. المدة والإنهاء</h2>
+            <p>يمكن للعميل إلغاء الاشتراك في أي وقت في نهاية الفترة الحالية.</p>
+            <h2>9. حماية البيانات</h2>
+            <p>يخضع التعامل مع البيانات الشخصية لـ <a href="datenschutz.html">سياسة الخصوصية</a> الخاصة بنا.</p>
+            <h2>10. الأحكام الختامية</h2>
+            <p>يطبق القانون السويسري. مكان الاختصاص القضائي هو سانت غالن، سويسرا.</p>
+            <a href="#" class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ العودة إلى الأعلى</a>
+        </div>
 
-        <h2>5. Pflichten des Kunden</h2>
-        <p>(1) Der Kunde versichert, dass er als vertretungsberechtigte Person für seine Organisation (Džemat/Verein) handelt.</p>
-        <p>(2) Der Kunde ist verpflichtet, seine Zugangsdaten geheim zu halten und vor dem Zugriff Dritter zu schützen.</p>
-        <p>(3) Der Kunde trägt die alleinige Verantwortung für die Rechtmäßigkeit der von ihm in die Software eingegebenen Daten (insbesondere personenbezogene Daten seiner Mitglieder). Der Kunde garantiert, dass er über die notwendigen Einwilligungen gemäß Datenschutzrecht verfügt.</p>
+        <!-- SHQIP -->
+        <div id="al" class="lang-content">
+            <p><strong>Data: 11 Dhjetor 2025</strong></p>
+            <h2>1. Fusha e zbatimit</h2>
+            <p>Këto Kushte të Përgjithshme (në vijim "KP") rregullojnë marrëdhënien kontraktuale midis Sijamhodzic Sabahudin (në vijim "Ofruesi"), me seli në Wiesentalstrasse 6b, CH-9000 St. Gallen, Zvicër, dhe përdoruesve të platformës softuerike "Dzematapp.com" (në vijim "Klienti" ose "Komuniteti").</p>
+            <h2>2. Objekti i Kontratës</h2>
+            <p>(1) Ofruesi i siguron Klientit një softuer të bazuar në ueb (SaaS) për menaxhimin e anëtarëve dhe detyrave administrative për komunitetet fetare.</p>
+            <p>(2) Softueri ofrohet si "Software as a Service". Klienti merr të drejtën jo-ekskluzive për të përdorur softuerin nëpërmjet internetit.</p>
+            <h2>3. Lidhja e Kontratës dhe Periudha Provuese</h2>
+            <p>(1) Kontrata lidhet nëpërmjet regjistrimit online dhe zgjedhjes së një abonimi me pagesë.</p>
+            <p>(2) Nëse ofrohet një periudhë provuese falas, ajo nuk konvertohet automatikisht në abonim me pagesë.</p>
+            <h2>4. Përpunimi i Pagesave</h2>
+            <p>Procesi i porosisë dhe përpunimi i pagesave kryhen nga rishitësi ynë i autorizuar: Paddle.com Market Ltd.</p>
+            <h2>5. Detyrimet e Klientit</h2>
+            <p>(1) Klienti garanton që vepron si përfaqësues i autorizuar për organizatën e tij.</p>
+            <p>(2) Klienti është i detyruar të mbajë konfidenciale kredencialet e aksesit.</p>
+            <h2>6. Disponueshmëria dhe Garancia</h2>
+            <p>Ofruesi përpiqet për disponueshmërinë më të lartë të mundshme të softuerit (objektivi: 99% mesatare vjetore).</p>
+            <h2>7. Përgjegjësia</h2>
+            <p>Ofruesi është përgjegjës pa limit për dëmet që rezultojnë nga lëndimi i jetës, trupit ose shëndetit.</p>
+            <h2>8. Afati dhe Përfundimi</h2>
+            <p>Klienti mund të anulojë abonimin në çdo kohë në fund të afatit aktual.</p>
+            <h2>9. Mbrojtja e të Dhënave</h2>
+            <p>Trajtimi i të dhënave personale rregullohet nga <a href="datenschutz.html">Politika e Privatësisë</a>.</p>
+            <h2>10. Dispozitat Përfundimtare</h2>
+            <p>Zbatohet ligji zviceran. Vendi i juridiksionit është St. Gallen, Zvicër.</p>
+            <a href="#" class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ Kthehu në krye</a>
+        </div>
 
-        <h2>6. Verfügbarkeit und Gewährleistung</h2>
-        <p>(1) Der Anbieter bemüht sich um eine höchstmögliche Verfügbarkeit der Software (Ziel: 99% im Jahresmittel). Wartungsarbeiten werden, soweit möglich, angekündigt.</p>
-        <p>(2) Es wird keine Gewähr dafür übernommen, dass die Software fehlerfrei ist oder für den spezifischen Zweck des Kunden geeignet ist, der über die allgemeine Mitgliederverwaltung hinausgeht.</p>
-
-        <h2>7. Haftung</h2>
-        <p>(1) Der Anbieter haftet unbeschränkt für Schäden aus der Verletzung des Lebens, des Körpers oder der Gesundheit sowie für Schäden, die auf Vorsatz oder grober Fahrlässigkeit beruhen.</p>
-        <p>(2) Für leichte Fahrlässigkeit haftet der Anbieter nur bei Verletzung wesentlicher Vertragspflichten. In diesem Fall ist die Haftung auf den bei Vertragsschluss vorhersehbaren, typischen Schaden begrenzt.</p>
-        <p>(3) Eine weitergehende Haftung (z.B. für Datenverlust, entgangenen Gewinn) ist ausgeschlossen.</p>
-
-        <h2>8. Laufzeit und Kündigung</h2>
-        <p>(1) Das Abonnement läuft auf unbestimmte Zeit und verlängert sich automatisch um den gewählten Zeitraum (Monat oder Jahr).</p>
-        <p>(2) Der Kunde kann das Abonnement jederzeit zum Ende der aktuellen Laufzeit über die Kontoeinstellungen kündigen. Eine Rückerstattung für bereits angebrochene Zeiträume erfolgt grundsätzlich nicht, vorbehaltlich einer Kulanzregelung in den ersten 14 Tagen.</p>
-
-        <h2>9. Datenschutz</h2>
-        <p>Der Umgang mit personenbezogenen Daten richtet sich nach unserer <a href="datenschutz.html">Datenschutzerklärung</a>. Der Kunde und der Anbieter schließen, soweit erforderlich, einen Auftragsverarbeitungsvertrag (AVV) gemäß Art. 28 DSGVO.</p>
-
-        <h2>10. Schlussbestimmungen</h2>
-        <p>(1) Es gilt das materielle Recht der Schweiz unter Ausschluss des UN-Kaufrechts.</p>
-        <p>(2) Gerichtsstand für alle Streitigkeiten aus diesem Vertrag ist St. Gallen, Schweiz.</p>
-        <p>(3) Sollte eine Bestimmung dieser AGB unwirksam sein, bleibt der Vertrag im Übrigen wirksam.</p>
+        <!-- TÜRKÇE -->
+        <div id="tr" class="lang-content">
+            <p><strong>Tarih: 11 Aralık 2025</strong></p>
+            <h2>1. Kapsam</h2>
+            <p>Bu Genel Şartlar ve Koşullar (bundan sonra "GŞK"), Sijamhodzic Sabahudin (bundan sonra "Sağlayıcı"), Wiesentalstrasse 6b, CH-9000 St. Gallen, İsviçre adresinde mukim, ile "Dzematapp.com" yazılım platformu kullanıcıları (bundan sonra "Müşteri" veya "Topluluk") arasındaki sözleşme ilişkisini düzenler.</p>
+            <h2>2. Sözleşmenin Konusu</h2>
+            <p>(1) Sağlayıcı, Müşteriye dini topluluklar için üye yönetimi ve idari görevler için web tabanlı bir yazılım (SaaS) sağlar.</p>
+            <p>(2) Yazılım "Hizmet Olarak Yazılım" olarak sağlanır. Müşteri, sözleşme süresiyle sınırlı, münhasır olmayan bir kullanım hakkı alır.</p>
+            <h2>3. Sözleşme Akdi ve Deneme Süresi</h2>
+            <p>(1) Sözleşme, çevrimiçi kayıt ve ücretli abonelik seçimi ile akdedilir.</p>
+            <p>(2) Ücretsiz deneme süresi sunulursa, süresi dolduğunda otomatik olarak ücretli aboneliğe dönüşmez.</p>
+            <h2>4. Ödeme İşleme</h2>
+            <p>Sipariş süreci, faturalama ve ödeme işleme yetkili satıcımız tarafından yapılır: Paddle.com Market Ltd.</p>
+            <h2>5. Müşteri Yükümlülükleri</h2>
+            <p>(1) Müşteri, kuruluşu için yetkili temsilci olarak hareket ettiğini garanti eder.</p>
+            <p>(2) Müşteri, erişim kimlik bilgilerini gizli tutmakla yükümlüdür.</p>
+            <h2>6. Kullanılabilirlik ve Garanti</h2>
+            <p>Sağlayıcı, yazılımın mümkün olan en yüksek kullanılabilirliği için çaba gösterir (hedef: yıllık ortalama %99).</p>
+            <h2>7. Sorumluluk</h2>
+            <p>Sağlayıcı, yaşam, vücut veya sağlığa verilen zararlardan kaynaklanan hasarlar için sınırsız sorumludur.</p>
+            <h2>8. Süre ve Fesih</h2>
+            <p>Müşteri, mevcut dönemin sonunda aboneliği istediği zaman iptal edebilir.</p>
+            <h2>9. Veri Koruma</h2>
+            <p>Kişisel verilerin işlenmesi <a href="datenschutz.html">Gizlilik Politikamıza</a> tabidir.</p>
+            <h2>10. Son Hükümler</h2>
+            <p>İsviçre maddi hukuku uygulanır. Yargı yeri St. Gallen, İsviçre'dir.</p>
+            <a href="#" class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ Başa dön</a>
+        </div>
     </div>
 
     <div class="footer">
         <a href="impressum.html">Impressum</a> |
         <a href="agb.html">AGB</a> |
         <a href="datenschutz.html">Datenschutz</a> |
-        <a href="refund.html">Rückgaberichtlinien</a>
+        <a href="refund.html">Refund Policy</a>
     </div>
+
+    <script>
+        function showLang(lang) {
+            document.querySelectorAll('.lang-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.lang-tabs button').forEach(el => el.classList.remove('active'));
+            document.getElementById(lang).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
 </body>
 </html>
