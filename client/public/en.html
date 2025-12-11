@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DzematApp - Modern platform for mosque community management. Membership, finances, events and more.">
+    <title>DzematApp - Mosque Community Management Platform</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Aladin&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.png">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: #0D1B2A; line-height: 1.6; }
+        .navbar { background: #f8fafc; padding: 16px 20px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #e2e8f0; }
+        .navbar-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: center; align-items: center; gap: 40px; }
+        .navbar a { color: #0D1B2A; text-decoration: none; font-weight: 500; font-size: 1rem; transition: color 0.2s; }
+        .navbar a:hover { color: #3949AB; }
+        .lang-switcher { position: absolute; right: 20px; display: flex; gap: 8px; }
+        .lang-switcher a { font-size: 0.85rem; padding: 4px 8px; border-radius: 4px; color: #546E7A; }
+        .lang-switcher a.active { background: #3949AB; color: white; }
+        .lang-switcher a:hover:not(.active) { background: #e2e8f0; }
+        .hero { background: linear-gradient(180deg, #f8fafc 0%, #e8eaf6 30%, #c5cae9 60%, #7986cb 85%, #3949AB 100%); color: #0D1B2A; text-align: center; padding: 60px 20px 100px; }
+        .hero-content { max-width: 800px; margin: 0 auto; }
+        .logo { width: 90px; height: 90px; margin: 0 auto 20px; background: rgba(57, 73, 171, 0.1); border-radius: 24px; display: flex; align-items: center; justify-content: center; }
+        .logo img { width: 55px; height: 55px; object-fit: contain; }
+        .logo-text { font-family: 'Aladin', cursive; font-size: 3.5rem; font-weight: 400; margin-bottom: 20px; letter-spacing: 1px; color: #3949AB; }
+        .hero-subtitle { font-size: 1.25rem; color: #546E7A; margin-bottom: 36px; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .cta-button { display: inline-block; background: #3949AB; color: #ffffff; padding: 16px 44px; border-radius: 50px; font-size: 1.1rem; font-weight: 600; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; }
+        .cta-button:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(57, 73, 171, 0.3); }
+        .preview-section { background: linear-gradient(180deg, #3949AB 0%, #1E88E5 50%, #ECEFF1 100%); padding: 0 20px 80px; }
+        .preview-container { max-width: 1100px; margin: -50px auto 0; position: relative; }
+        .preview-image { width: 100%; border-radius: 16px; box-shadow: 0 25px 80px rgba(0,0,0,0.25); border: 4px solid rgba(255,255,255,0.3); }
+        .modules-section { background: #ECEFF1; padding: 80px 20px; }
+        .section-title { text-align: center; font-size: 2rem; font-weight: 700; margin-bottom: 16px; color: #0D1B2A; }
+        .section-subtitle { text-align: center; font-size: 1.1rem; color: #546E7A; margin-bottom: 48px; max-width: 700px; margin-left: auto; margin-right: auto; }
+        .section-subtitle strong { display: block; color: #3949AB; font-weight: 600; margin-top: 8px; }
+        .modules-slideshow { max-width: 1100px; margin: 0 auto; position: relative; overflow: hidden; }
+        .modules-slides { display: flex; transition: transform 0.5s ease; }
+        .modules-slide { min-width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; padding: 0 10px; }
+        @media (max-width: 900px) { .modules-slide { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 600px) { .modules-slide { grid-template-columns: 1fr; } }
+        .module-card { background: #ffffff; padding: 32px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); text-align: center; }
+        .module-icon { width: 56px; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+        .module-icon svg { width: 28px; height: 28px; }
+        .module-icon.blue { background: #E3F2FD; color: #1E88E5; }
+        .module-icon.green { background: #E8F5E9; color: #43A047; }
+        .module-icon.orange { background: #FFF3E0; color: #FB8C00; }
+        .module-icon.purple { background: #EDE7F6; color: #7E57C2; }
+        .module-icon.cyan { background: #E0F7FA; color: #00ACC1; }
+        .module-icon.red { background: #FFEBEE; color: #E53935; }
+        .module-icon.teal { background: #E0F2F1; color: #26A69A; }
+        .module-icon.amber { background: #FFF8E1; color: #FFB300; }
+        .module-icon.pink { background: #FCE4EC; color: #EC407A; }
+        .module-icon.indigo { background: #E8EAF6; color: #5C6BC0; }
+        .module-title { font-size: 1.15rem; font-weight: 600; margin-bottom: 12px; color: #0D1B2A; }
+        .module-desc { color: #546E7A; font-size: 0.9rem; line-height: 1.5; }
+        .slideshow-dots { display: flex; justify-content: center; gap: 12px; margin-top: 40px; }
+        .slideshow-dot { width: 14px; height: 14px; border-radius: 50%; background: #B0BEC5; border: 2px solid transparent; cursor: pointer; transition: all 0.3s; }
+        .slideshow-dot.active { background: #3949AB; }
+        .slideshow-dot:hover { background: #78909C; }
+        .pricing-section { background: #ffffff; padding: 80px 20px; }
+        .pricing-highlight { text-align: center; color: #1E88E5; font-size: 1.1rem; font-weight: 600; margin-top: -32px; margin-bottom: 48px; }
+        .pricing-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; max-width: 1200px; margin: 0 auto; }
+        @media (max-width: 1100px) { .pricing-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 600px) { .pricing-grid { grid-template-columns: 1fr; } }
+        .pricing-card { background: #ffffff; border: 2px solid #E0E0E0; border-radius: 20px; padding: 32px 24px; text-align: center; transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; }
+        .pricing-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.1); }
+        .pricing-card.popular { border-color: #3949AB; position: relative; }
+        .popular-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #3949AB; color: white; padding: 6px 20px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+        .pricing-name { font-size: 1.5rem; font-weight: 700; color: #0D1B2A; margin-bottom: 8px; }
+        .pricing-desc { color: #546E7A; font-size: 0.9rem; margin-bottom: 24px; }
+        .pricing-price { font-size: 3rem; font-weight: 700; color: #3949AB; margin-bottom: 4px; }
+        .pricing-period { color: #546E7A; font-size: 0.9rem; margin-bottom: 32px; }
+        .pricing-features { text-align: left; flex-grow: 1; }
+        .pricing-feature { display: flex; align-items: flex-start; gap: 12px; padding: 8px 0; font-size: 0.9rem; color: #0D1B2A; }
+        .pricing-feature .check { color: #26A69A; font-weight: bold; flex-shrink: 0; }
+        .pricing-button { display: block; background: #3949AB; color: white; padding: 14px 32px; border-radius: 10px; font-size: 1rem; font-weight: 600; text-decoration: none; transition: background 0.2s; margin-top: 32px; }
+        .pricing-button:hover { background: #303F9F; }
+        .pricing-card.popular .pricing-button { background: #1E88E5; }
+        .pricing-card.popular .pricing-button:hover { background: #1976D2; }
+        .cta-section { background: linear-gradient(135deg, #3949AB 0%, #1E88E5 100%); color: white; text-align: center; padding: 80px 20px; }
+        .cta-section h2 { font-size: 2rem; margin-bottom: 20px; }
+        .cta-section p { font-size: 1.1rem; opacity: 0.95; margin-bottom: 16px; max-width: 600px; margin-left: auto; margin-right: auto; line-height: 1.7; }
+        .cta-section .highlight-text { font-weight: 600; font-size: 1.15rem; margin-bottom: 32px; }
+        .contact-section { background: #ECEFF1; padding: 80px 20px; }
+        .contact-container { max-width: 600px; margin: 0 auto; }
+        .contact-form { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .form-group { margin-bottom: 24px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: #0D1B2A; }
+        .form-group input, .form-group textarea { width: 100%; padding: 14px 16px; border: 2px solid #E0E0E0; border-radius: 10px; font-size: 1rem; font-family: inherit; transition: border-color 0.2s; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #3949AB; }
+        .form-group textarea { min-height: 150px; resize: vertical; }
+        .submit-button { width: 100%; background: #3949AB; color: white; padding: 16px; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        .submit-button:hover { background: #303F9F; }
+        .footer { background: #1a1a2e; color: #aaa; padding: 40px 20px; }
+        .footer-content { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px; }
+        .footer-links a { color: #fff; text-decoration: none; margin: 0 12px; font-size: 0.9rem; }
+        .footer-links a:hover { text-decoration: underline; }
+        .footer-copyright { font-size: 0.9rem; color: #888; }
+        @media (max-width: 768px) { .navbar-content { gap: 20px; flex-wrap: wrap; } .lang-switcher { position: static; margin-top: 10px; } .logo-text { font-size: 2.5rem; } .hero-subtitle { font-size: 1.1rem; } .section-title { font-size: 1.75rem; } .footer-content { flex-direction: column; text-align: center; } }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="#home">Home</a>
+            <a href="#moduli">Modules</a>
+            <a href="#pricing">Pricing</a>
+            <a href="https://app.dzematapp.com">Demo</a>
+            <a href="#kontakt">Contact</a>
+        </div>
+        <div class="lang-switcher">
+            <a href="index.html">BS</a>
+            <a href="ar.html">AR</a>
+            <a href="en.html" class="active">EN</a>
+            <a href="de.html">DE</a>
+            <a href="al.html">AL</a>
+            <a href="tr.html">TR</a>
+        </div>
+    </nav>
+    
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="logo"><img src="images/logo.png" alt="DzematApp Logo"></div>
+            <h1 class="logo-text">DzematApp</h1>
+            <p class="hero-subtitle">Modern platform for mosque community management. Digitize membership, finances, events and communication.</p>
+            <a href="https://app.dzematapp.com" class="cta-button">Start for free</a>
+        </div>
+    </section>
+    
+    <section class="preview-section">
+        <div class="preview-container">
+            <img src="images/dashboard-preview.png" alt="DzematApp Dashboard Preview" class="preview-image">
+        </div>
+    </section>
+    
+    <section class="modules-section" id="moduli">
+        <h2 class="section-title">Everything you need in one place</h2>
+        <p class="section-subtitle">Complete solution for mosque management<strong>Helping successful communities become even more successful</strong></p>
+        
+        <div class="modules-slideshow">
+            <div class="modules-slides" id="modulesSlides">
+                <div class="modules-slide">
+                    <div class="module-card">
+                        <div class="module-icon blue"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+                        <h3 class="module-title">Member Management</h3>
+                        <p class="module-desc">Member records with all necessary data, family connections and history.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon green"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+                        <h3 class="module-title">Dues & Finances</h3>
+                        <p class="module-desc">Track membership payments, generate reports and automatic notifications.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon orange"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+                        <h3 class="module-title">Events & Activities</h3>
+                        <p class="module-desc">Event calendar with registrations, reminders and participant management.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon purple"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+                        <h3 class="module-title">Tasks & Sections</h3>
+                        <p class="module-desc">Organize work groups, assign tasks and track project progress.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon cyan"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+                        <h3 class="module-title">Prayer Times</h3>
+                        <p class="module-desc">Integrated prayer calendar with automatic updates for your location.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon red"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+                        <h3 class="module-title">Announcements</h3>
+                        <p class="module-desc">Fast communication with members via announcements and messages.</p>
+                    </div>
+                </div>
+                
+                <div class="modules-slide">
+                    <div class="module-card">
+                        <div class="module-icon teal"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+                        <h3 class="module-title">Projects</h3>
+                        <p class="module-desc">Track projects from planning to completion with clear milestones.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon amber"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
+                        <h3 class="module-title">Documents</h3>
+                        <p class="module-desc">Centralized storage and sharing of documents with members.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon pink"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+                        <h3 class="module-title">Messages</h3>
+                        <p class="module-desc">Internal communication between members and mosque administration.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon indigo"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+                        <h3 class="module-title">Ask the Imam</h3>
+                        <p class="module-desc">Q&A system with the imam for community members.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon blue"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></div>
+                        <h3 class="module-title">Requests & Applications</h3>
+                        <p class="module-desc">Manage applications for aqiqah, weddings and other services.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon green"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
+                        <h3 class="module-title">Dashboard</h3>
+                        <p class="module-desc">Overview of all key statistics and activities in one place.</p>
+                    </div>
+                </div>
+                
+                <div class="modules-slide">
+                    <div class="module-card">
+                        <div class="module-icon orange"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg></div>
+                        <h3 class="module-title">Feed</h3>
+                        <p class="module-desc">Community activities and news in real time.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon purple"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
+                        <h3 class="module-title">Shop</h3>
+                        <p class="module-desc">Sell products, gifts and services for community members.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon cyan"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg></div>
+                        <h3 class="module-title">Badges</h3>
+                        <p class="module-desc">Awards and recognition for active and deserving members.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon red"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 15l-2 5l9-9l-5 2l2-5l-9 9l5-2z"/></svg></div>
+                        <h3 class="module-title">Certificates</h3>
+                        <p class="module-desc">Create and issue certificates of appreciation to members.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon teal"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+                        <h3 class="module-title">Sponsors</h3>
+                        <p class="module-desc">Manage sponsorships and donors for the mosque.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon amber"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></div>
+                        <h3 class="module-title">Media / Livestream</h3>
+                        <p class="module-desc">Manage video content and live broadcasts.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slideshow-dots">
+                <div class="slideshow-dot active" onclick="goToSlide(0)"></div>
+                <div class="slideshow-dot" onclick="goToSlide(1)"></div>
+                <div class="slideshow-dot" onclick="goToSlide(2)"></div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="pricing-section" id="pricing">
+        <h2 class="section-title">Choose the right plan for your mosque</h2>
+        <p class="section-subtitle">From free access to complete solution</p>
+        <p class="pricing-highlight">Free Full version for 14 days</p>
+        
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <h3 class="pricing-name">Guest</h3>
+                <p class="pricing-desc">Free access for guests</p>
+                <div class="pricing-price">€0</div>
+                <div class="pricing-period">forever free</div>
+                <div class="pricing-features">
+                    <div class="pricing-feature"><span class="check">✓</span> Announcements (public)</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Prayer Times</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Mosque Info</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Membership Application</div>
+                </div>
+                <a href="https://app.dzematapp.com" class="pricing-button" style="background: #78909C;">Free Access</a>
+            </div>
+            
+            <div class="pricing-card">
+                <h3 class="pricing-name">Basic</h3>
+                <p class="pricing-desc">Essential communication</p>
+                <div class="pricing-price">€29</div>
+                <div class="pricing-period">monthly</div>
+                <div class="pricing-features">
+                    <div class="pricing-feature"><span class="check">✓</span> Dashboard</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Members (members, families)</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Announcements (admin)</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Documents</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Requests & Applications</div>
+                </div>
+                <a href="https://app.dzematapp.com" class="pricing-button">Choose Basic</a>
+            </div>
+            
+            <div class="pricing-card popular">
+                <div class="popular-badge">Most Popular</div>
+                <h3 class="pricing-name">Standard</h3>
+                <p class="pricing-desc">Operational management</p>
+                <div class="pricing-price">€39</div>
+                <div class="pricing-period">monthly</div>
+                <div class="pricing-features">
+                    <div class="pricing-feature"><span class="check">✓</span> Everything in Basic +</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Events (registration, points)</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Membership Dues</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Finances & Reports</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Projects</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Work Groups / Sections</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Tasks (points)</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Messages</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Ask the Imam</div>
+                </div>
+                <a href="https://app.dzematapp.com" class="pricing-button">Choose Standard</a>
+            </div>
+            
+            <div class="pricing-card">
+                <h3 class="pricing-name">Full</h3>
+                <p class="pricing-desc">Premium features</p>
+                <div class="pricing-price">€49</div>
+                <div class="pricing-period">monthly</div>
+                <div class="pricing-features">
+                    <div class="pricing-feature"><span class="check">✓</span> Everything in Standard +</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Feed</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Shop</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Badges (recognition)</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Certificates</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Sponsors</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Media / Livestream</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Priority Support</div>
+                </div>
+                <a href="https://app.dzematapp.com" class="pricing-button">Choose Full</a>
+            </div>
+        </div>
+    </section>
+    
+    <section class="cta-section">
+        <h2>Be an example for other mosques</h2>
+        <p>Organization, communication, transparency, collective action – set the standard that others will follow.</p>
+        <p class="highlight-text">DzematApp is what you've been waiting for.</p>
+        <a href="#kontakt" class="cta-button">Contact Us</a>
+    </section>
+    
+    <section class="contact-section" id="kontakt">
+        <div class="contact-container">
+            <h2 class="section-title">Contact Us</h2>
+            <p class="section-subtitle">Have questions? Write to us and we'll get back to you as soon as possible.</p>
+            
+            <form class="contact-form" action="mailto:info@dzematapp.com" method="POST" enctype="text/plain">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required placeholder="Your name">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="dzemat">Mosque Name (optional)</label>
+                    <input type="text" id="dzemat" name="dzemat" placeholder="E.g. Islamic Center...">
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" required placeholder="How can we help you?"></textarea>
+                </div>
+                <button type="submit" class="submit-button">Send Message</button>
+            </form>
+        </div>
+    </section>
+    
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="impressum.html">Impressum</a> |
+                <a href="agb.html">Terms of Service</a> |
+                <a href="datenschutz.html">Privacy Policy</a> |
+                <a href="refund.html">Refund Policy</a>
+            </div>
+            <div class="footer-copyright">© 2025 DzematApp</div>
+        </div>
+    </footer>
+    
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 3;
+        function goToSlide(index) {
+            currentSlide = index;
+            const slides = document.getElementById('modulesSlides');
+            slides.style.transform = `translateX(-${index * 100}%)`;
+            document.querySelectorAll('.slideshow-dot').forEach((dot, i) => { dot.classList.toggle('active', i === index); });
+        }
+        setInterval(() => { currentSlide = (currentSlide + 1) % totalSlides; goToSlide(currentSlide); }, 6000);
+    </script>
+</body>
+</html>
