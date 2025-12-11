@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DžematApp - Moderna platforma za upravljanje džematom. Članstvo, finansije, događaji i više.">
+    <title>DžematApp - Platforma za upravljanje džematom</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Aladin&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.png">
+    <link rel="apple-touch-icon" href="images/favicon.png">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: #0D1B2A;
+            line-height: 1.6;
+        }
+        
+        .navbar {
+            background: #f8fafc;
+            padding: 16px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+        }
+        
+        .navbar a {
+            color: #0D1B2A;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: color 0.2s;
+        }
+        
+        .navbar a:hover {
+            color: #3949AB;
+        }
+        
+        .lang-switcher {
+            position: absolute;
+            right: 20px;
+            display: flex;
+            gap: 3px;
+        }
+        
+        .lang-switcher a {
+            font-size: 1.1rem;
+            padding: 2px 4px;
+            border-radius: 4px;
+            text-decoration: none;
+            opacity: 0.5;
+            transition: opacity 0.2s;
+        }
+        
+        .lang-switcher a.active {
+            opacity: 1;
+        }
+        
+        .lang-switcher a:hover:not(.active) {
+            opacity: 0.8;
+        }
+        
+        .hero {
+            background: #f5f5fa;
+            color: #0D1B2A;
+            text-align: center;
+            padding: 60px 20px 100px;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 20px;
+            background: rgba(57, 73, 171, 0.1);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo img {
+            width: 55px;
+            height: 55px;
+            object-fit: contain;
+        }
+        
+        .logo-text {
+            font-family: 'Aladin', cursive;
+            font-size: 3.5rem;
+            font-weight: 400;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+            color: #3949AB;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: #546E7A;
+            margin-bottom: 36px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: #3949AB;
+            color: #ffffff;
+            padding: 16px 44px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(57, 73, 171, 0.3);
+        }
+        
+        .preview-section {
+            background: linear-gradient(180deg, #f5f5fa 0%, #f5f5fa 40%, #3949AB 40%, #3949AB 60%, #1E88E5 80%, #ECEFF1 100%);
+            padding: 0 20px 80px;
+        }
+        
+        .preview-container {
+            max-width: 1100px;
+            margin: -50px auto 0;
+            position: relative;
+        }
+        
+        .preview-image {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 3576 / 1756;
+            object-fit: contain;
+            border-radius: 16px;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.25);
+            border: 4px solid rgba(255,255,255,0.3);
+        }
+        
+        .modules-section {
+            background: #ECEFF1;
+            padding: 80px 20px;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #0D1B2A;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #546E7A;
+            margin-bottom: 48px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .section-subtitle strong {
+            display: block;
+            color: #3949AB;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        
+        .modules-slideshow {
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .modules-slides {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+        
+        .modules-slide {
+            min-width: 100%;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            padding: 0 10px;
+        }
+        
+        @media (max-width: 900px) {
+            .modules-slide {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .modules-slide {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .module-card {
+            background: #ffffff;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            text-align: center;
+        }
+        
+        .module-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+        
+        .module-icon svg {
+            width: 28px;
+            height: 28px;
+        }
+        
+        .module-icon.blue { background: #E3F2FD; color: #1E88E5; }
+        .module-icon.green { background: #E8F5E9; color: #43A047; }
+        .module-icon.orange { background: #FFF3E0; color: #FB8C00; }
+        .module-icon.purple { background: #EDE7F6; color: #7E57C2; }
+        .module-icon.cyan { background: #E0F7FA; color: #00ACC1; }
+        .module-icon.red { background: #FFEBEE; color: #E53935; }
+        .module-icon.teal { background: #E0F2F1; color: #26A69A; }
+        .module-icon.amber { background: #FFF8E1; color: #FFB300; }
+        .module-icon.pink { background: #FCE4EC; color: #EC407A; }
+        .module-icon.indigo { background: #E8EAF6; color: #5C6BC0; }
+        
+        .module-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #0D1B2A;
+        }
+        
+        .module-desc {
+            color: #546E7A;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .slideshow-dots {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 40px;
+        }
+        
+        .slideshow-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #B0BEC5;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .slideshow-dot.active {
+            background: #3949AB;
+        }
+        
+        .slideshow-dot:hover {
+            background: #78909C;
+        }
+        
+        .pricing-section {
+            background: #ffffff;
+            padding: 80px 20px;
+        }
+        
+        .pricing-highlight {
+            text-align: center;
+            color: #1E88E5;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: -32px;
+            margin-bottom: 48px;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 1100px) {
+            .pricing-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .pricing-card {
+            background: #ffffff;
+            border: 2px solid #E0E0E0;
+            border-radius: 20px;
+            padding: 32px 24px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+        }
+        
+        .pricing-card.popular {
+            border-color: #3949AB;
+            position: relative;
+        }
+        
+        .popular-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #3949AB;
+            color: white;
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .pricing-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0D1B2A;
+            margin-bottom: 8px;
+        }
+        
+        .pricing-desc {
+            color: #546E7A;
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+        
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #3949AB;
+            margin-bottom: 4px;
+        }
+        
+        .pricing-period {
+            color: #546E7A;
+            font-size: 0.9rem;
+            margin-bottom: 32px;
+        }
+        
+        .pricing-features {
+            text-align: left;
+            flex-grow: 1;
+        }
+        
+        .pricing-feature {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 8px 0;
+            font-size: 0.9rem;
+            color: #0D1B2A;
+        }
+        
+        .pricing-feature .check {
+            color: #26A69A;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .pricing-button {
+            display: block;
+            background: #3949AB;
+            color: white;
+            padding: 14px 32px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.2s;
+            margin-top: 32px;
+        }
+        
+        .pricing-button:hover {
+            background: #303F9F;
+        }
+        
+        .pricing-card.popular .pricing-button {
+            background: #1E88E5;
+        }
+        
+        .pricing-card.popular .pricing-button:hover {
+            background: #1976D2;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, #3949AB 0%, #1E88E5 100%);
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+        }
+        
+        .cta-section h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        
+        .cta-section p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            margin-bottom: 16px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.7;
+        }
+        
+        .cta-section .highlight-text {
+            font-weight: 600;
+            font-size: 1.15rem;
+            margin-bottom: 32px;
+        }
+        
+        .contact-section {
+            background: #ECEFF1;
+            padding: 80px 20px;
+        }
+        
+        .contact-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .contact-form {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #0D1B2A;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #E0E0E0;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3949AB;
+        }
+        
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .submit-button {
+            width: 100%;
+            background: #3949AB;
+            color: white;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .submit-button:hover {
+            background: #303F9F;
+        }
+        
+        .footer {
+            background: #1a1a2e;
+            color: #aaa;
+            padding: 40px 20px;
+        }
+        
+        .footer-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+        
+        .footer-links a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 12px;
+            font-size: 0.9rem;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .footer-copyright {
+            font-size: 0.9rem;
+            color: #888;
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 12px 20px;
+            }
+            .navbar-content {
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .lang-switcher {
+                position: static;
+                order: -1;
+                margin-bottom: 10px;
+                align-self: flex-end;
+            }
+            .logo-text { font-size: 2.5rem; }
+            .hero-subtitle { font-size: 1.1rem; }
+            .section-title { font-size: 1.75rem; }
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="#home">Home</a>
+            <a href="#moduli">Moduli</a>
+            <a href="#pricing">Cijena</a>
+            <a href="https://app.dzematapp.com">Demo</a>
+            <a href="#kontakt">Kontakt</a>
+        </div>
+        <div class="lang-switcher">
+            <a href="index.html" class="active" title="Bosanski">🇧🇦</a>
+            <a href="ar.html" title="العربية">🇸🇦</a>
+            <a href="en.html" title="English">🇬🇧</a>
+            <a href="de.html" title="Deutsch">🇩🇪</a>
+            <a href="al.html" title="Shqip">🇦🇱</a>
+            <a href="tr.html" title="Türkçe">🇹🇷</a>
+        </div>
+    </nav>
+    
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="logo">
+                <img src="images/logo.png" alt="DžematApp Logo">
+            </div>
+            <h1 class="logo-text">DžematApp</h1>
+            <p class="hero-subtitle">Moderna platforma za upravljanje džematom. Digitalizirajte članstvo, finansije, događaje i komunikaciju sa zajednicom.</p>
+        </div>
+    </section>
+    
+    <section class="preview-section">
+        <div class="preview-container">
+            <img src="images/dashboard-preview.png" alt="DžematApp Dashboard Preview" class="preview-image">
+        </div>
+    </section>
+    
+    <section class="modules-section" id="moduli">
+        <h2 class="section-title">Sve što vam treba na jednom mjestu</h2>
+        <p class="section-subtitle">Kompletno rješenje za upravljanje džematom<strong>Da uspješni džemati budu još uspješniji</strong></p>
+        
+        <div class="modules-slideshow">
+            <div class="modules-slides" id="modulesSlides">
+                <div class="modules-slide">
+                    <div class="module-card">
+                        <div class="module-icon blue">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        </div>
+                        <h3 class="module-title">Upravljanje članstvom</h3>
+                        <p class="module-desc">Evidencija članova sa svim potrebnim podacima, porodičnim vezama i historijom.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon green">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                        </div>
+                        <h3 class="module-title">Članarine i finansije</h3>
+                        <p class="module-desc">Praćenje uplata članarine, generisanje izvještaja i automatske notifikacije.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon orange">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        </div>
+                        <h3 class="module-title">Događaji i aktivnosti</h3>
+                        <p class="module-desc">Kalendar događaja sa prijavama, podsjećanjima i upravljanjem učesnicima.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon purple">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        </div>
+                        <h3 class="module-title">Zadaci i sekcije</h3>
+                        <p class="module-desc">Organizujte radne grupe, dodijelite zadatke i pratite napredak projekata.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon cyan">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        </div>
+                        <h3 class="module-title">Vaktija</h3>
+                        <p class="module-desc">Integrisani kalendar namaza sa automatskim ažuriranjima za vašu lokaciju.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon red">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                        </div>
+                        <h3 class="module-title">Obavijesti</h3>
+                        <p class="module-desc">Brza komunikacija sa članovima putem obavijesti i poruka.</p>
+                    </div>
+                </div>
+                
+                <div class="modules-slide">
+                    <div class="module-card">
+                        <div class="module-icon teal">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                        </div>
+                        <h3 class="module-title">Projekti</h3>
+                        <p class="module-desc">Praćenje projekata od planiranja do završetka sa jasnim milestoneima.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon amber">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                        </div>
+                        <h3 class="module-title">Dokumenti</h3>
+                        <p class="module-desc">Centralizovano skladištenje i dijeljenje dokumenata sa članovima.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon pink">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        </div>
+                        <h3 class="module-title">Poruke</h3>
+                        <p class="module-desc">Interna komunikacija između članova i uprave džemata.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon indigo">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                        </div>
+                        <h3 class="module-title">Pitaj imama</h3>
+                        <p class="module-desc">Sistem za pitanja i odgovore sa imamom za vjernike.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon blue">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+                        </div>
+                        <h3 class="module-title">Zahtjevi i prijave</h3>
+                        <p class="module-desc">Upravljanje prijavama za akike, vjenčanja i druge usluge.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon green">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                        </div>
+                        <h3 class="module-title">Dashboard</h3>
+                        <p class="module-desc">Pregled svih ključnih statistika i aktivnosti na jednom mjestu.</p>
+                    </div>
+                </div>
+                
+                <div class="modules-slide">
+                    <div class="module-card">
+                        <div class="module-icon orange">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+                        </div>
+                        <h3 class="module-title">Feed</h3>
+                        <p class="module-desc">Aktivnosti i novosti iz zajednice u realnom vremenu.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon purple">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        </div>
+                        <h3 class="module-title">Prodavnica</h3>
+                        <p class="module-desc">Prodaja proizvoda, poklona i usluga za članove džemata.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon cyan">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+                        </div>
+                        <h3 class="module-title">Značke</h3>
+                        <p class="module-desc">Priznanja i nagrade za aktivne i zaslužne članove.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon red">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 15l-2 5l9-9l-5 2l2-5l-9 9l5-2z"/></svg>
+                        </div>
+                        <h3 class="module-title">Zahvalnice</h3>
+                        <p class="module-desc">Kreiranje i izdavanje zahvalnica članovima džemata.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon teal">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        </div>
+                        <h3 class="module-title">Sponzori</h3>
+                        <p class="module-desc">Upravljanje sponzorstvima i donatorima džemata.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon amber">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                        </div>
+                        <h3 class="module-title">Mediji / Livestream</h3>
+                        <p class="module-desc">Upravljanje video sadržajem i prijenosom uživo.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slideshow-dots">
+                <div class="slideshow-dot active" onclick="goToSlide(0)"></div>
+                <div class="slideshow-dot" onclick="goToSlide(1)"></div>
+                <div class="slideshow-dot" onclick="goToSlide(2)"></div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="pricing-section" id="pricing">
+        <h2 class="section-title">Odaberite pravi plan za vaš džemat</h2>
+        <p class="section-subtitle">Od besplatnog pristupa do kompletnog rješenja</p>
+        <p class="pricing-highlight">Besplatna Full verzija 14 dana</p>
+        
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <h3 class="pricing-name">Guest</h3>
+                <p class="pricing-desc">Besplatni pristup za goste</p>
+                <div class="pricing-price">€0</div>
+                <div class="pricing-period">zauvijek besplatno</div>
+                <div class="pricing-features">
+                    <div class="pricing-feature"><span class="check">✓</span> Obavijesti (javne)</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Vaktija</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Glavne info o džematu</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Pristupnica (prijava za članstvo)</div>
+                </div>
+                <a href="https://app.dzematapp.com" class="pricing-button" style="background: #78909C;">Besplatni pristup</a>
+            </div>
+            
+            <div class="pricing-card">
+                <h3 class="pricing-name">Basic</h3>
+                <p class="pricing-desc">Esencijalna komunikacija</p>
+                <div class="pricing-price">€29</div>
+                <div class="pricing-period">mjesečno</div>
+                <div class="pricing-features">
+                    <div class="pricing-feature"><span class="check">✓</span> Dashboard</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Korisnici (članovi, porodice)</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Obavijesti (admin)</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Dokumenti</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Zahtjevi i prijave</div>
+                </div>
+                <a href="https://app.dzematapp.com" class="pricing-button">Odaberi Basic</a>
+            </div>
+            
+            <div class="pricing-card popular">
+                <div class="popular-badge">Najpopularnije</div>
+                <h3 class="pricing-name">Standard</h3>
+                <p class="pricing-desc">Operativno upravljanje</p>
+                <div class="pricing-price">€39</div>
+                <div class="pricing-period">mjesečno</div>
+                <div class="pricing-features">
+                    <div class="pricing-feature"><span class="check">✓</span> Sve iz Basic +</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Događaji (prijava, bodovi)</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Članarina (evidencija)</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Finansije i izvještaji</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Projekti</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Radne grupe / Sekcije</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Zadaci (bodovi)</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Poruke</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Pitaj imama</div>
+                </div>
+                <a href="https://app.dzematapp.com" class="pricing-button">Odaberi Standard</a>
+            </div>
+            
+            <div class="pricing-card">
+                <h3 class="pricing-name">Full</h3>
+                <p class="pricing-desc">Premium funkcionalnosti</p>
+                <div class="pricing-price">€49</div>
+                <div class="pricing-period">mjesečno</div>
+                <div class="pricing-features">
+                    <div class="pricing-feature"><span class="check">✓</span> Sve iz Standard +</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Feed</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Prodavnica</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Značke (priznanja)</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Zahvalnice</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Sponzori</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Mediji / Livestream</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Prioritetna podrška</div>
+                </div>
+                <a href="https://app.dzematapp.com" class="pricing-button">Odaberi Full</a>
+            </div>
+        </div>
+    </section>
+    
+    <section class="cta-section">
+        <h2>Budite primjer drugim džematima</h2>
+        <p>Organizacija, komunikacija, transparentnost, zajedničko djelovanje – postavite standard koji će drugi slijediti.</p>
+        <p class="highlight-text">DžematApp je ono što odavno trebate.</p>
+    </section>
+    
+    <section class="contact-section" id="kontakt">
+        <div class="contact-container">
+            <h2 class="section-title">Kontaktirajte nas</h2>
+            <p class="section-subtitle">Imate pitanja? Pišite nam i javit ćemo vam se u najkraćem mogućem roku.</p>
+            
+            <form class="contact-form" action="mailto:info@dzematapp.com" method="POST" enctype="text/plain">
+                <div class="form-group">
+                    <label for="name">Ime i prezime</label>
+                    <input type="text" id="name" name="name" required placeholder="Vaše ime">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email adresa</label>
+                    <input type="email" id="email" name="email" required placeholder="vas@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="dzemat">Naziv džemata (opcionalno)</label>
+                    <input type="text" id="dzemat" name="dzemat" placeholder="Npr. Islamska zajednica...">
+                </div>
+                <div class="form-group">
+                    <label for="message">Poruka</label>
+                    <textarea id="message" name="message" required placeholder="Kako vam možemo pomoći?"></textarea>
+                </div>
+                <button type="submit" class="submit-button">Pošaljite poruku</button>
+            </form>
+        </div>
+    </section>
+    
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="impressum.html">Impressum</a> |
+                <a href="agb.html">AGB (Terms)</a> |
+                <a href="datenschutz.html">Datenschutz (Privacy)</a> |
+                <a href="refund.html">Ruckgaberichtlinien (Refund)</a>
+            </div>
+            <div class="footer-copyright">
+                © 2025 DžematApp
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 3;
+        
+        function goToSlide(index) {
+            currentSlide = index;
+            const slides = document.getElementById('modulesSlides');
+            slides.style.transform = `translateX(-${index * 100}%)`;
+            
+            document.querySelectorAll('.slideshow-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+        }
+        
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            goToSlide(currentSlide);
+        }, 6000);
+    </script>
+</body>
+</html>
