@@ -151,6 +151,14 @@ export default function MembershipFeesPage() {
 
   const gridQuery = useQuery<GridMember[]>({
     queryKey: ['/api/membership-fees/members-grid', selectedYear],
+    queryFn: async () => {
+      const url = selectedYear === 'all' 
+        ? '/api/membership-fees/members-grid?year=all'
+        : `/api/membership-fees/members-grid?year=${selectedYear}`;
+      const res = await fetch(url, { credentials: 'include' });
+      if (!res.ok) throw new Error('Failed to fetch grid');
+      return res.json();
+    },
     enabled: !!currentUser?.isAdmin,
   });
 
@@ -165,7 +173,15 @@ export default function MembershipFeesPage() {
   });
 
   const allPaymentsQuery = useQuery<any[]>({
-    queryKey: ['/api/membership-fees/payments', selectedYear === 'all' ? undefined : selectedYear],
+    queryKey: ['/api/membership-fees/payments', selectedYear],
+    queryFn: async () => {
+      const url = selectedYear === 'all'
+        ? '/api/membership-fees/payments'
+        : `/api/membership-fees/payments?year=${selectedYear}`;
+      const res = await fetch(url, { credentials: 'include' });
+      if (!res.ok) throw new Error('Failed to fetch payments');
+      return res.json();
+    },
     enabled: !!currentUser?.isAdmin,
   });
 
