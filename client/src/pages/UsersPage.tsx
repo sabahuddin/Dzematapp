@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Box,
@@ -11,6 +11,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TablePagination,
   Chip,
   IconButton,
   Typography,
@@ -63,6 +64,8 @@ export default function UsersPage() {
   const [selectedUserForFamily, setSelectedUserForFamily] = useState<User | null>(null);
   const [sortField, setSortField] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [page, setPage] = useState(0);
+  const rowsPerPage = 20;
 
   const predefinedCategories = [
     t('users:categories.all'),
@@ -343,6 +346,11 @@ export default function UsersPage() {
       return 0;
     });
   }, [filteredUsers, sortField, sortDirection]);
+
+  useEffect(() => {
+    const maxPage = Math.max(0, Math.ceil(sortedUsers.length / rowsPerPage) - 1);
+    if (page > maxPage) setPage(maxPage);
+  }, [sortedUsers.length, page, rowsPerPage]);
 
   if (usersQuery.isLoading) {
     return (
@@ -703,7 +711,7 @@ export default function UsersPage() {
             variant="outlined"
             placeholder={t('users:search')}
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => { setSearchTerm(e.target.value); setPage(0); }}
             sx={{ minWidth: 250, flex: 1, maxWidth: 400 }}
             data-testid="input-search"
           />
@@ -711,7 +719,7 @@ export default function UsersPage() {
             multiple
             options={allCategories}
             value={selectedCategories}
-            onChange={(event, newValue) => setSelectedCategories(newValue)}
+            onChange={(event, newValue) => { setSelectedCategories(newValue); setPage(0); }}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -727,7 +735,7 @@ export default function UsersPage() {
             multiple
             options={allSkills}
             value={selectedSkills}
-            onChange={(event, newValue) => setSelectedSkills(newValue)}
+            onChange={(event, newValue) => { setSelectedSkills(newValue); setPage(0); }}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -806,7 +814,9 @@ export default function UsersPage() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {sortedUsers.map((user: User) => (
+              {sortedUsers
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((user: User) => (
                 <TableRow key={user.id}>
                   <TableCell>
                     <Typography variant="body2" fontWeight={600} color="primary">
@@ -939,6 +949,15 @@ export default function UsersPage() {
               )}
             </TableBody>
           </Table>
+          <TablePagination
+            component="div"
+            count={sortedUsers.length}
+            page={page}
+            onPageChange={(_, newPage) => setPage(newPage)}
+            rowsPerPage={rowsPerPage}
+            rowsPerPageOptions={[20]}
+            labelDisplayedRows={({ from, to, count }) => `${from}-${to} od ${count}`}
+          />
         </TableContainer>
       </Card>
 

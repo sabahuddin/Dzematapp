@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import {
@@ -27,6 +27,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TablePagination,
   Chip,
   IconButton,
   InputAdornment,
@@ -131,6 +132,9 @@ export default function MembershipFeesPage() {
   });
   const [editPaymentDialogOpen, setEditPaymentDialogOpen] = useState(false);
   const [editingPayment, setEditingPayment] = useState<any>(null);
+  const [gridPage, setGridPage] = useState(0);
+  const [paymentsPage, setPaymentsPage] = useState(0);
+  const rowsPerPage = 20;
 
   if (featureAccess.upgradeRequired) {
     return <UpgradeCTA moduleId="membership-fees" requiredPlan={featureAccess.requiredPlan || 'standard'} currentPlan={featureAccess.currentPlan || 'basic'} />;
@@ -277,6 +281,17 @@ export default function MembershipFeesPage() {
   });
 
   const orgSettings = orgSettingsQuery.data;
+  const allPayments = allPaymentsQuery.data || [];
+
+  useEffect(() => {
+    const maxGridPage = Math.max(0, Math.ceil(filteredGrid.length / rowsPerPage) - 1);
+    if (gridPage > maxGridPage) setGridPage(maxGridPage);
+  }, [filteredGrid.length, gridPage, rowsPerPage]);
+
+  useEffect(() => {
+    const maxPaymentsPage = Math.max(0, Math.ceil(allPayments.length / rowsPerPage) - 1);
+    if (paymentsPage > maxPaymentsPage) setPaymentsPage(maxPaymentsPage);
+  }, [allPayments.length, paymentsPage, rowsPerPage]);
 
   const handleAddPayment = () => {
     if (!newPayment.userId || !newPayment.amount) {
@@ -339,7 +354,7 @@ export default function MembershipFeesPage() {
                 fullWidth
                 placeholder="Pretraži po imenu..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => { setSearchTerm(e.target.value); setGridPage(0); setPaymentsPage(0); }}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -354,7 +369,7 @@ export default function MembershipFeesPage() {
               <FormControl fullWidth>
                 <Select
                   value={selectedYear}
-                  onChange={(e) => setSelectedYear(e.target.value as number | 'all')}
+                  onChange={(e) => { setSelectedYear(e.target.value as number | 'all'); setGridPage(0); setPaymentsPage(0); }}
                   displayEmpty
                   data-testid="select-year"
                 >
@@ -427,7 +442,9 @@ export default function MembershipFeesPage() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {filteredGrid.map((member) => (
+                {filteredGrid
+                  .slice(gridPage * rowsPerPage, gridPage * rowsPerPage + rowsPerPage)
+                  .map((member) => (
                   <TableRow key={member.userId} hover>
                     <TableCell sx={{ position: 'sticky', left: 0, bgcolor: 'background.paper', zIndex: 1 }}>
                       <Typography variant="body2" fontWeight="medium">
@@ -482,6 +499,15 @@ export default function MembershipFeesPage() {
                 ))}
               </TableBody>
             </Table>
+            <TablePagination
+              component="div"
+              count={filteredGrid.length}
+              page={gridPage}
+              onPageChange={(_, newPage) => setGridPage(newPage)}
+              rowsPerPage={rowsPerPage}
+              rowsPerPageOptions={[20]}
+              labelDisplayedRows={({ from, to, count }) => `${from}-${to} od ${count}`}
+            />
           </TableContainer>
         )}
       </TabPanel>
@@ -503,7 +529,9 @@ export default function MembershipFeesPage() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {(allPaymentsQuery.data || []).map((payment: any) => {
+                {(allPaymentsQuery.data || [])
+                  .slice(paymentsPage * rowsPerPage, paymentsPage * rowsPerPage + rowsPerPage)
+                  .map((payment: any) => {
                   const user = users.find(u => u.id === payment.userId);
                   return (
                     <TableRow key={payment.id} hover>
@@ -544,6 +572,15 @@ export default function MembershipFeesPage() {
                 })}
               </TableBody>
             </Table>
+            <TablePagination
+              component="div"
+              count={(allPaymentsQuery.data || []).length}
+              page={paymentsPage}
+              onPageChange={(_, newPage) => setPaymentsPage(newPage)}
+              rowsPerPage={rowsPerPage}
+              rowsPerPageOptions={[20]}
+              labelDisplayedRows={({ from, to, count }) => `${from}-${to} od ${count}`}
+            />
           </TableContainer>
         )}
       </TabPanel>
