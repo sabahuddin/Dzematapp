@@ -97,6 +97,48 @@
             text-decoration: underline;
         }
         
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+        
+        .footer-links a {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            margin: 0 8px;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .footer-impressum {
+            text-align: right;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.75rem;
+            line-height: 1.4;
+        }
+        
+        @media (max-width: 768px) {
+            .footer {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+            .footer-impressum {
+                text-align: center;
+            }
+        }
+        
         @media (max-width: 480px) {
             h1 {
                 font-size: 1.75rem;
@@ -124,6 +166,20 @@
         <p class="subtitle">Moderna platforma za upravljanje džematom.<br>Digitalizirajte vaš džemat sa alatima za članstvo, finansije, događaje i više.</p>
         <div class="coming-soon">Uskoro</div>
         <p class="contact">Kontakt: <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
+    </div>
+    
+    <div class="footer">
+        <div class="footer-links">
+            <a href="impressum.html">Impressum</a> |
+            <a href="agb.html">AGB (Terms)</a> |
+            <a href="datenschutz.html">Datenschutz (Privacy)</a> |
+            <a href="refund.html">Rückgaberichtlinien (Refund)</a>
+        </div>
+        <div class="footer-impressum">
+            Sabahudin Sijamhodzic<br>
+            Wiesentalstrasse 6b, 9000 St. Gallen, Schweiz<br>
+            <a href="mailto:info@dzematapp.com" style="color: rgba(255,255,255,0.9);">info@dzematapp.com</a>
+        </div>
     </div>
 </body>
 </html>

@@ -1,0 +1,22 @@
+Allgemeine Geschäftsbedingungen (AGB)
+Stand: 11. Dezember 2025
+1. Geltungsbereich
+Diese Allgemeinen Geschäftsbedingungen (nachfolgend „AGB“) regeln das Vertragsverhältnis zwischen Sijamhodzic Sabahudin (nachfolgend „Anbieter“), ansässig in Wiesentalstrasse 6b, CH-9000 St. Gallen, Schweiz, und den Nutzern der Software-Plattform „Dzematapp.com“ (nachfolgend „Kunde“ oder „Gemeinde“).
+2. Vertragsgegenstand
+(1) Der Anbieter stellt dem Kunden eine webbasierte Software (SaaS) zur Verwaltung von Mitgliedern und administrativen Aufgaben für religiöse Gemeinschaften zur Verfügung. (2) Die Software wird als „Software as a Service“ bereitgestellt. Der Kunde erhält das nicht-ausschließliche, zeitlich auf die Laufzeit des Vertrages beschränkte Recht, die Software über das Internet zu nutzen. Ein Anspruch auf Überlassung des Quellcodes besteht nicht.
+3. Vertragsschluss und Testphase
+(1) Der Vertrag kommt durch die Online-Registrierung und die Auswahl eines kostenpflichtigen Abonnements zustande. (2) Soweit eine kostenlose Testphase angeboten wird, geht diese nach Ablauf nicht automatisch in ein kostenpflichtiges Abo über, es sei denn, der Kunde hinterlegt aktiv Zahlungsdaten.
+4. Zahlungsabwicklung (Reseller / Merchant of Record)
+(1) Der Bestellprozess, die Rechnungsstellung und die Zahlungsabwicklung erfolgen über unseren autorisierten Wiederverkäufer (Merchant of Record): Paddle.com Market Ltd., Judd House, 18-29 Mora Street, London EC1V 8BT, United Kingdom. (2) Vertragspartner für den reinen Kaufvorgang ist Paddle.com. Es gelten zusätzlich die AGB von Paddle für Käufer. (3) Die Nutzungsgebühren sind im Voraus fällig (monatlich oder jährlich, je nach gewähltem Plan).
+5. Pflichten des Kunden
+(1) Der Kunde versichert, dass er als vertretungsberechtigte Person für seine Organisation (Džemat/Verein) handelt. (2) Der Kunde ist verpflichtet, seine Zugangsdaten geheim zu halten und vor dem Zugriff Dritter zu schützen. (3) Der Kunde trägt die alleinige Verantwortung für die Rechtmäßigkeit der von ihm in die Software eingegebenen Daten (insbesondere personenbezogene Daten seiner Mitglieder). Der Kunde garantiert, dass er über die notwendigen Einwilligungen gemäß Datenschutzrecht verfügt.
+6. Verfügbarkeit und Gewährleistung
+(1) Der Anbieter bemüht sich um eine höchstmögliche Verfügbarkeit der Software (Ziel: 99% im Jahresmittel). Wartungsarbeiten werden, soweit möglich, angekündigt. (2) Es wird keine Gewähr dafür übernommen, dass die Software fehlerfrei ist oder für den spezifischen Zweck des Kunden geeignet ist, der über die allgemeine Mitgliederverwaltung hinausgeht.
+7. Haftung
+(1) Der Anbieter haftet unbeschränkt für Schäden aus der Verletzung des Lebens, des Körpers oder der Gesundheit sowie für Schäden, die auf Vorsatz oder grober Fahrlässigkeit beruhen. (2) Für leichte Fahrlässigkeit haftet der Anbieter nur bei Verletzung wesentlicher Vertragspflichten. In diesem Fall ist die Haftung auf den bei Vertragsschluss vorhersehbaren, typischen Schaden begrenzt. (3) Eine weitergehende Haftung (z.B. für Datenverlust, entgangenen Gewinn) ist ausgeschlossen, soweit gesetzlich zulässig. Der Kunde ist für regelmäßige Backups seiner Daten (Export-Funktion) selbst verantwortlich.
+8. Laufzeit und Kündigung
+(1) Das Abonnement läuft auf unbestimmte Zeit und verlängert sich automatisch um den gewählten Zeitraum (Monat oder Jahr). (2) Der Kunde kann das Abonnement jederzeit zum Ende der aktuellen Laufzeit über die Kontoeinstellungen kündigen. Eine Rückerstattung für bereits angebrochene Zeiträume erfolgt grundsätzlich nicht, vorbehaltlich einer Kulanzregelung in den ersten 14 Tagen.
+9. Datenschutz
+Der Umgang mit personenbezogenen Daten richtet sich nach unserer Datenschutzerklärung. Der Kunde und der Anbieter schließen, soweit erforderlich, einen Auftragsverarbeitungsvertrag (AVV) gemäß Art. 28 DSGVO.
+10. Schlussbestimmungen
+(1) Es gilt das materielle Recht der Schweiz unter Ausschluss des UN-Kaufrechts. (2) Gerichtsstand für alle Streitigkeiten aus diesem Vertrag ist St. Gallen, Schweiz. (3) Sollte eine Bestimmung dieser AGB unwirksam sein, bleibt der Vertrag im Übrigen wirksam.
