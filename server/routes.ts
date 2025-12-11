@@ -12,6 +12,7 @@ import { seedDemoData } from "./seed-demo-data";
 import { requireFeature, getTenantSubscriptionInfo } from "./feature-access";
 import { generateCertificate, saveCertificate } from "./certificateService";
 import { processAndSaveToFolder, IMAGE_CONFIGS, generateImageFilename } from "./utils/image-processor";
+import { sendContactEmail } from "./resend";
 import { type User, insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema, insertImportantDateSchema, insertContributionPurposeSchema, insertFinancialContributionSchema, insertActivityLogSchema, insertEventAttendanceSchema, insertPointsSettingsSchema, insertBadgeSchema, insertUserBadgeSchema, insertProjectSchema, insertProposalSchema, insertReceiptSchema, insertCertificateTemplateSchema, insertUserCertificateSchema, insertMembershipApplicationSchema, insertAkikaApplicationSchema, insertMarriageApplicationSchema, insertServiceSchema, insertSponsorSchema, insertTenantSchema } from "@shared/schema";
 
 // Upload directories
@@ -163,6 +164,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Serve uploads directory as static files
   const uploadsPath = path.join(process.cwd(), 'public', 'uploads');
   app.use('/uploads', express.static(uploadsPath));
+
+  // Contact form endpoint (public, no auth required)
+  app.post("/api/contact", async (req, res) => {
+    try {
+      const { name, email, dzemat, message } = req.body;
+      
+      if (!name || !email || !message) {
+        return res.status(400).json({ message: "Name, email and message are required" });
+      }
+      
+      await sendContactEmail({ name, email, dzemat, message });
+      
+      res.json({ success: true, message: "Message sent successfully" });
+    } catch (error) {
+      console.error('Contact form error:', error);
+      res.status(500).json({ message: "Failed to send message. Please try again later." });
+    }
+  });
   
   // Event photo upload route - with WebP compression
   app.post("/api/upload/event-photo", requireAuth, eventUpload.single('photo'), async (req, res) => {
