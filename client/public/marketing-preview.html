@@ -8,7 +8,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Aladin&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.png">
     <link rel="apple-touch-icon" href="images/favicon.png">
     
@@ -25,11 +25,40 @@
             line-height: 1.6;
         }
         
+        .navbar {
+            background: linear-gradient(135deg, #3949AB 0%, #1E88E5 100%);
+            padding: 16px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+        }
+        
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+        
+        .navbar a:hover {
+            opacity: 1;
+        }
+        
         .hero {
             background: linear-gradient(135deg, #3949AB 0%, #1E88E5 50%, #26A69A 100%);
             color: #ffffff;
             text-align: center;
-            padding: 60px 20px 80px;
+            padding: 40px 20px 80px;
         }
         
         .hero-content {
@@ -38,11 +67,11 @@
         }
         
         .logo {
-            width: 70px;
-            height: 70px;
-            margin: 0 auto 20px;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 16px;
             background: rgba(255,255,255,0.15);
-            border-radius: 16px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -50,15 +79,17 @@
         }
         
         .logo img {
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
             object-fit: contain;
         }
         
-        h1 {
-            font-size: 2.75rem;
-            font-weight: 700;
+        .logo-text {
+            font-family: 'Aladin', cursive;
+            font-size: 3rem;
+            font-weight: 400;
             margin-bottom: 16px;
+            letter-spacing: 1px;
         }
         
         .hero-subtitle {
@@ -105,7 +136,7 @@
             border: 4px solid rgba(255,255,255,0.3);
         }
         
-        .features-section {
+        .modules-section {
             background: #ECEFF1;
             padding: 80px 20px;
         }
@@ -128,22 +159,51 @@
             margin-right: auto;
         }
         
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            max-width: 1100px;
-            margin: 0 auto;
+        .section-subtitle strong {
+            color: #3949AB;
+            font-weight: 600;
         }
         
-        .feature-card {
+        .modules-slideshow {
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .modules-slides {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+        
+        .modules-slide {
+            min-width: 100%;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            padding: 0 10px;
+        }
+        
+        @media (max-width: 900px) {
+            .modules-slide {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .modules-slide {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .module-card {
             background: #ffffff;
             padding: 32px;
             border-radius: 16px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.06);
         }
         
-        .feature-icon {
+        .module-icon {
             width: 56px;
             height: 56px;
             border-radius: 14px;
@@ -154,28 +214,66 @@
             margin-bottom: 20px;
         }
         
-        .feature-icon.blue { background: #E3F2FD; }
-        .feature-icon.green { background: #E8F5E9; }
-        .feature-icon.orange { background: #FFF3E0; }
-        .feature-icon.purple { background: #EDE7F6; }
-        .feature-icon.cyan { background: #E0F7FA; }
-        .feature-icon.red { background: #FFEBEE; }
+        .module-icon.blue { background: #E3F2FD; }
+        .module-icon.green { background: #E8F5E9; }
+        .module-icon.orange { background: #FFF3E0; }
+        .module-icon.purple { background: #EDE7F6; }
+        .module-icon.cyan { background: #E0F7FA; }
+        .module-icon.red { background: #FFEBEE; }
+        .module-icon.teal { background: #E0F2F1; }
+        .module-icon.amber { background: #FFF8E1; }
+        .module-icon.pink { background: #FCE4EC; }
+        .module-icon.indigo { background: #E8EAF6; }
         
-        .feature-title {
+        .module-title {
             font-size: 1.25rem;
             font-weight: 600;
             margin-bottom: 12px;
             color: #0D1B2A;
         }
         
-        .feature-desc {
+        .module-desc {
             color: #546E7A;
             font-size: 0.95rem;
+        }
+        
+        .slideshow-dots {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 40px;
+        }
+        
+        .slideshow-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #B0BEC5;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .slideshow-dot.active {
+            background: #3949AB;
+        }
+        
+        .slideshow-dot:hover {
+            background: #78909C;
         }
         
         .pricing-section {
             background: #ffffff;
             padding: 80px 20px;
+        }
+        
+        .pricing-highlight {
+            text-align: center;
+            color: #1E88E5;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: -32px;
+            margin-bottom: 48px;
         }
         
         .pricing-grid {
@@ -189,6 +287,12 @@
         @media (max-width: 1100px) {
             .pricing-grid {
                 grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .pricing-grid {
+                grid-template-columns: 1fr;
             }
         }
         
@@ -257,16 +361,17 @@
         
         .pricing-feature {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 12px;
-            padding: 10px 0;
-            font-size: 0.95rem;
+            padding: 8px 0;
+            font-size: 0.9rem;
             color: #0D1B2A;
         }
         
         .pricing-feature .check {
             color: #26A69A;
             font-weight: bold;
+            flex-shrink: 0;
         }
         
         .pricing-button {
@@ -314,6 +419,73 @@
             margin-right: auto;
         }
         
+        .contact-section {
+            background: #ECEFF1;
+            padding: 80px 20px;
+        }
+        
+        .contact-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .contact-form {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #0D1B2A;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #E0E0E0;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3949AB;
+        }
+        
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .submit-button {
+            width: 100%;
+            background: #3949AB;
+            color: white;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .submit-button:hover {
+            background: #303F9F;
+        }
+        
         .footer {
             background: #1a1a2e;
             color: #aaa;
@@ -352,10 +524,13 @@
         }
         
         @media (max-width: 768px) {
-            h1 { font-size: 2rem; }
+            .navbar-content {
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+            .logo-text { font-size: 2.5rem; }
             .hero-subtitle { font-size: 1.1rem; }
             .section-title { font-size: 1.75rem; }
-            .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
             .footer-content {
                 flex-direction: column;
                 text-align: center;
@@ -365,12 +540,22 @@
     </style>
 </head>
 <body>
-    <section class="hero">
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="#home">Home</a>
+            <a href="#moduli">Moduli</a>
+            <a href="#pricing">Cijena</a>
+            <a href="https://app.dzematapp.com">Demo</a>
+            <a href="#kontakt">Kontakt</a>
+        </div>
+    </nav>
+    
+    <section class="hero" id="home">
         <div class="hero-content">
             <div class="logo">
                 <img src="images/logo.png" alt="DžematApp Logo">
             </div>
-            <h1>DžematApp</h1>
+            <h1 class="logo-text">DžematApp</h1>
             <p class="hero-subtitle">Moderna platforma za upravljanje džematom. Digitalizirajte članstvo, finansije, događaje i komunikaciju sa zajednicom.</p>
             <a href="https://app.dzematapp.com" class="cta-button">Započnite besplatno</a>
         </div>
@@ -378,56 +563,128 @@
     
     <section class="preview-section">
         <div class="preview-container">
-            <img src="images/dashboard-preview.png" alt="DžematApp Dashboard" class="preview-image">
+            <img src="images/dashboard-preview.png" alt="DžematApp Dashboard Preview" class="preview-image">
         </div>
     </section>
     
-    <section class="features-section">
+    <section class="modules-section" id="moduli">
         <h2 class="section-title">Sve što vam treba na jednom mjestu</h2>
-        <p class="section-subtitle">Kompletno rješenje za upravljanje džematom - od članstva do finansija</p>
+        <p class="section-subtitle">Kompletno rješenje za upravljanje džematom - <strong>da uspješni džemati budu još uspješniji</strong></p>
         
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon blue">👥</div>
-                <h3 class="feature-title">Upravljanje članstvom</h3>
-                <p class="feature-desc">Evidencija članova sa svim potrebnim podacima, porodičnim vezama i historijom.</p>
+        <div class="modules-slideshow">
+            <div class="modules-slides" id="modulesSlides">
+                <div class="modules-slide">
+                    <div class="module-card">
+                        <div class="module-icon blue">👥</div>
+                        <h3 class="module-title">Upravljanje članstvom</h3>
+                        <p class="module-desc">Evidencija članova sa svim potrebnim podacima, porodičnim vezama i historijom.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon green">💳</div>
+                        <h3 class="module-title">Članarine i finansije</h3>
+                        <p class="module-desc">Praćenje uplata članarine, generisanje izvještaja i automatske notifikacije.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon orange">📅</div>
+                        <h3 class="module-title">Događaji i aktivnosti</h3>
+                        <p class="module-desc">Kalendar događaja sa prijavama, podsjećanjima i upravljanjem učesnicima.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon purple">✓</div>
+                        <h3 class="module-title">Zadaci i sekcije</h3>
+                        <p class="module-desc">Organizujte radne grupe, dodijelite zadatke i pratite napredak projekata.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon cyan">🕌</div>
+                        <h3 class="module-title">Vaktija</h3>
+                        <p class="module-desc">Integrisani kalendar namaza sa automatskim ažuriranjima za vašu lokaciju.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon red">📢</div>
+                        <h3 class="module-title">Obavijesti</h3>
+                        <p class="module-desc">Brza komunikacija sa članovima putem obavijesti i poruka.</p>
+                    </div>
+                </div>
+                
+                <div class="modules-slide">
+                    <div class="module-card">
+                        <div class="module-icon teal">📋</div>
+                        <h3 class="module-title">Projekti</h3>
+                        <p class="module-desc">Praćenje projekata od planiranja do završetka sa jasnim milestoneima.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon amber">📄</div>
+                        <h3 class="module-title">Dokumenti</h3>
+                        <p class="module-desc">Centralizovano skladištenje i dijeljenje dokumenata sa članovima.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon pink">💬</div>
+                        <h3 class="module-title">Poruke</h3>
+                        <p class="module-desc">Interna komunikacija između članova i uprave džemata.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon indigo">❓</div>
+                        <h3 class="module-title">Pitaj imama</h3>
+                        <p class="module-desc">Sistem za pitanja i odgovore sa imamom za vjernike.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon blue">📝</div>
+                        <h3 class="module-title">Zahtjevi i prijave</h3>
+                        <p class="module-desc">Upravljanje prijavama za akike, vjenčanja i druge usluge.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon green">📊</div>
+                        <h3 class="module-title">Dashboard</h3>
+                        <p class="module-desc">Pregled svih ključnih statistika i aktivnosti na jednom mjestu.</p>
+                    </div>
+                </div>
+                
+                <div class="modules-slide">
+                    <div class="module-card">
+                        <div class="module-icon orange">📰</div>
+                        <h3 class="module-title">Feed</h3>
+                        <p class="module-desc">Aktivnosti i novosti iz zajednice u realnom vremenu.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon purple">🛒</div>
+                        <h3 class="module-title">Prodavnica</h3>
+                        <p class="module-desc">Prodaja proizvoda, poklona i usluga za članove džemata.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon cyan">🏅</div>
+                        <h3 class="module-title">Značke</h3>
+                        <p class="module-desc">Priznanja i nagrade za aktivne i zaslužne članove.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon red">🎖️</div>
+                        <h3 class="module-title">Zahvalnice</h3>
+                        <p class="module-desc">Kreiranje i izdavanje zahvalnica članovima džemata.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon teal">🤝</div>
+                        <h3 class="module-title">Sponzori</h3>
+                        <p class="module-desc">Upravljanje sponzorstvima i donatorima džemata.</p>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-icon amber">📺</div>
+                        <h3 class="module-title">Mediji / Livestream</h3>
+                        <p class="module-desc">Upravljanje video sadržajem i prijenosom uživo.</p>
+                    </div>
+                </div>
             </div>
             
-            <div class="feature-card">
-                <div class="feature-icon green">💳</div>
-                <h3 class="feature-title">Članarine i finansije</h3>
-                <p class="feature-desc">Praćenje uplata članarine, generisanje izvještaja i automatske notifikacije.</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon orange">📅</div>
-                <h3 class="feature-title">Događaji i aktivnosti</h3>
-                <p class="feature-desc">Kalendar događaja sa prijavama, podsjećanjima i upravljanjem učesnicima.</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon purple">✓</div>
-                <h3 class="feature-title">Zadaci i sekcije</h3>
-                <p class="feature-desc">Organizujte radne grupe, dodijelite zadatke i pratite napredak projekata.</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon cyan">🕌</div>
-                <h3 class="feature-title">Vaktija</h3>
-                <p class="feature-desc">Integrisani kalendar namaza sa automatskim ažuriranjima za vašu lokaciju.</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon red">📢</div>
-                <h3 class="feature-title">Obavijesti</h3>
-                <p class="feature-desc">Brza komunikacija sa članovima putem obavijesti i poruka.</p>
+            <div class="slideshow-dots">
+                <div class="slideshow-dot active" onclick="goToSlide(0)"></div>
+                <div class="slideshow-dot" onclick="goToSlide(1)"></div>
+                <div class="slideshow-dot" onclick="goToSlide(2)"></div>
             </div>
         </div>
     </section>
     
     <section class="pricing-section" id="pricing">
         <h2 class="section-title">Odaberite pravi plan za vaš džemat</h2>
-        <p class="section-subtitle">Od besplatnog pristupa do kompletnog rješenja - svi planovi uključuju besplatnu probnu verziju</p>
+        <p class="section-subtitle">Od besplatnog pristupa do kompletnog rješenja</p>
+        <p class="pricing-highlight">Besplatna Full verzija 14 dana</p>
         
         <div class="pricing-grid">
             <div class="pricing-card">
@@ -501,8 +758,35 @@
     
     <section class="cta-section">
         <h2>Spremni da digitalizirate vaš džemat?</h2>
-        <p>Započnite besplatno i vidite kako DžematApp može pomoći vašoj zajednici.</p>
-        <a href="https://app.dzematapp.com" class="cta-button">Započnite besplatno</a>
+        <p>Započnite besplatno i uvjerite se kako DžematApp može pomoći vašem džematu.</p>
+        <a href="#kontakt" class="cta-button">Kontaktirajte nas</a>
+    </section>
+    
+    <section class="contact-section" id="kontakt">
+        <div class="contact-container">
+            <h2 class="section-title">Kontaktirajte nas</h2>
+            <p class="section-subtitle">Imate pitanja? Pišite nam i javit ćemo vam se u najkraćem mogućem roku.</p>
+            
+            <form class="contact-form" action="mailto:info@dzematapp.com" method="POST" enctype="text/plain">
+                <div class="form-group">
+                    <label for="name">Ime i prezime</label>
+                    <input type="text" id="name" name="name" required placeholder="Vaše ime">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email adresa</label>
+                    <input type="email" id="email" name="email" required placeholder="vas@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="dzemat">Naziv džemata (opcionalno)</label>
+                    <input type="text" id="dzemat" name="dzemat" placeholder="Npr. Islamska zajednica...">
+                </div>
+                <div class="form-group">
+                    <label for="message">Poruka</label>
+                    <textarea id="message" name="message" required placeholder="Kako vam možemo pomoći?"></textarea>
+                </div>
+                <button type="submit" class="submit-button">Pošaljite poruku</button>
+            </form>
+        </div>
     </section>
     
     <footer class="footer">
@@ -520,5 +804,25 @@
             </div>
         </div>
     </footer>
+    
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 3;
+        
+        function goToSlide(index) {
+            currentSlide = index;
+            const slides = document.getElementById('modulesSlides');
+            slides.style.transform = `translateX(-${index * 100}%)`;
+            
+            document.querySelectorAll('.slideshow-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+        }
+        
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            goToSlide(currentSlide);
+        }, 6000);
+    </script>
 </body>
 </html>
