@@ -336,7 +336,7 @@
             <h2 class="section-title">Bize Ulasin</h2>
             <p class="section-subtitle">Sorulariniz mi var? Bize yazin ve en kisa surede size donelim.</p>
             
-            <form class="contact-form" action="mailto:info@dzematapp.com" method="POST" enctype="text/plain">
+            <form class="contact-form" id="contactForm">
                 <div class="form-group">
                     <label for="name">Ad Soyad</label>
                     <input type="text" id="name" name="name" required placeholder="Adiniz">
@@ -355,6 +355,29 @@
                 </div>
                 <button type="submit" class="submit-button">Mesaj Gonder</button>
             </form>
+            <div id="formSuccess" style="display:none; text-align:center; padding: 40px;">
+                <div style="font-size: 48px; margin-bottom: 16px;">✓</div>
+                <h3 style="color: #26A69A; margin-bottom: 12px;">Sorgunuz icin tesekkurler!</h3>
+                <p style="margin-bottom: 20px;">Mesajiniz hazir. E-posta programiniz araciligiyla gondermek icin asagidaki dugmeye tiklayin.</p>
+                <a id="mailtoLink" href="#" style="display: inline-block; background: #1E88E5; color: white; padding: 14px 32px; border-radius: 10px; text-decoration: none; font-weight: 600;">E-posta programini ac</a>
+                <p style="margin-top: 16px; color: #666; font-size: 14px;">Veya bize dogrudan ulasin: <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
+            </div>
+            <script>
+                document.getElementById('contactForm').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const name = document.getElementById('name').value;
+                    const email = document.getElementById('email').value;
+                    const dzemat = document.getElementById('dzemat').value;
+                    const message = document.getElementById('message').value;
+                    const subject = 'DzematApp Sorgusu - ' + name;
+                    const body = 'Ad: ' + name + '\nE-posta: ' + email + '\nCami: ' + (dzemat || 'Belirtilmedi') + '\n\nMesaj:\n' + message;
+                    const mailtoUrl = 'mailto:info@dzematapp.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+                    document.getElementById('mailtoLink').href = mailtoUrl;
+                    this.style.display = 'none';
+                    document.getElementById('formSuccess').style.display = 'block';
+                    window.open(mailtoUrl, '_self');
+                });
+            </script>
         </div>
     </section>
     

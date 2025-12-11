@@ -861,7 +861,7 @@
             <h2 class="section-title">Kontaktirajte nas</h2>
             <p class="section-subtitle">Imate pitanja? Pišite nam i javit ćemo vam se u najkraćem mogućem roku.</p>
             
-            <form class="contact-form" action="mailto:info@dzematapp.com" method="POST" enctype="text/plain">
+            <form class="contact-form" id="contactForm">
                 <div class="form-group">
                     <label for="name">Ime i prezime</label>
                     <input type="text" id="name" name="name" required placeholder="Vaše ime">
@@ -880,6 +880,29 @@
                 </div>
                 <button type="submit" class="submit-button">Pošaljite poruku</button>
             </form>
+            <div id="formSuccess" style="display:none; text-align:center; padding: 40px;">
+                <div style="font-size: 48px; margin-bottom: 16px;">✓</div>
+                <h3 style="color: #26A69A; margin-bottom: 12px;">Hvala vam na upitu!</h3>
+                <p style="margin-bottom: 20px;">Vaša poruka je pripremljena. Kliknite dugme ispod da je pošaljete putem vašeg email programa.</p>
+                <a id="mailtoLink" href="#" style="display: inline-block; background: #1E88E5; color: white; padding: 14px 32px; border-radius: 10px; text-decoration: none; font-weight: 600;">Otvori email program</a>
+                <p style="margin-top: 16px; color: #666; font-size: 14px;">Ili nas direktno kontaktirajte na: <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
+            </div>
+            <script>
+                document.getElementById('contactForm').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const name = document.getElementById('name').value;
+                    const email = document.getElementById('email').value;
+                    const dzemat = document.getElementById('dzemat').value;
+                    const message = document.getElementById('message').value;
+                    const subject = 'Upit sa DžematApp - ' + name;
+                    const body = 'Ime: ' + name + '\nEmail: ' + email + '\nDžemat: ' + (dzemat || 'Nije navedeno') + '\n\nPoruka:\n' + message;
+                    const mailtoUrl = 'mailto:info@dzematapp.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+                    document.getElementById('mailtoLink').href = mailtoUrl;
+                    this.style.display = 'none';
+                    document.getElementById('formSuccess').style.display = 'block';
+                    window.open(mailtoUrl, '_self');
+                });
+            </script>
         </div>
     </section>
     

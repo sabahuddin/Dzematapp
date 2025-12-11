@@ -336,7 +336,7 @@
             <h2 class="section-title">Kontaktieren Sie uns</h2>
             <p class="section-subtitle">Haben Sie Fragen? Schreiben Sie uns und wir melden uns so schnell wie moglich.</p>
             
-            <form class="contact-form" action="mailto:info@dzematapp.com" method="POST" enctype="text/plain">
+            <form class="contact-form" id="contactForm">
                 <div class="form-group">
                     <label for="name">Vollstandiger Name</label>
                     <input type="text" id="name" name="name" required placeholder="Ihr Name">
@@ -355,6 +355,29 @@
                 </div>
                 <button type="submit" class="submit-button">Nachricht senden</button>
             </form>
+            <div id="formSuccess" style="display:none; text-align:center; padding: 40px;">
+                <div style="font-size: 48px; margin-bottom: 16px;">✓</div>
+                <h3 style="color: #26A69A; margin-bottom: 12px;">Vielen Dank fur Ihre Anfrage!</h3>
+                <p style="margin-bottom: 20px;">Ihre Nachricht ist bereit. Klicken Sie auf die Schaltflache unten, um sie uber Ihr E-Mail-Programm zu senden.</p>
+                <a id="mailtoLink" href="#" style="display: inline-block; background: #1E88E5; color: white; padding: 14px 32px; border-radius: 10px; text-decoration: none; font-weight: 600;">E-Mail-Programm offnen</a>
+                <p style="margin-top: 16px; color: #666; font-size: 14px;">Oder kontaktieren Sie uns direkt unter: <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
+            </div>
+            <script>
+                document.getElementById('contactForm').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const name = document.getElementById('name').value;
+                    const email = document.getElementById('email').value;
+                    const dzemat = document.getElementById('dzemat').value;
+                    const message = document.getElementById('message').value;
+                    const subject = 'Anfrage von DzematApp - ' + name;
+                    const body = 'Name: ' + name + '\nE-Mail: ' + email + '\nMoschee: ' + (dzemat || 'Nicht angegeben') + '\n\nNachricht:\n' + message;
+                    const mailtoUrl = 'mailto:info@dzematapp.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+                    document.getElementById('mailtoLink').href = mailtoUrl;
+                    this.style.display = 'none';
+                    document.getElementById('formSuccess').style.display = 'block';
+                    window.open(mailtoUrl, '_self');
+                });
+            </script>
         </div>
     </section>
     
