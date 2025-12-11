@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="DžematApp - Moderna platforma za upravljanje džematom. Uskoro dostupno.">
-    <title>DžematApp - Uskoro</title>
+    <meta name="description" content="DžematApp - Moderna platforma za upravljanje džematom. Članstvo, finansije, događaji i više.">
+    <title>DžematApp - Platforma za upravljanje džematom</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.png">
     <link rel="apple-touch-icon" href="images/favicon.png">
     
@@ -21,28 +21,28 @@
         
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #3949AB 0%, #1E88E5 50%, #26A69A 100%);
-            min-height: 100vh;
-            color: #ffffff;
-            text-align: center;
-            padding: 40px 20px 120px;
+            color: #0D1B2A;
+            line-height: 1.6;
         }
         
-        .container {
-            max-width: 1100px;
+        .hero {
+            background: linear-gradient(135deg, #3949AB 0%, #1E88E5 50%, #26A69A 100%);
+            color: #ffffff;
+            text-align: center;
+            padding: 60px 20px 80px;
+        }
+        
+        .hero-content {
+            max-width: 800px;
             margin: 0 auto;
         }
         
-        .header {
-            margin-bottom: 40px;
-        }
-        
         .logo {
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             margin: 0 auto 20px;
             background: rgba(255,255,255,0.15);
-            border-radius: 20px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -50,127 +50,285 @@
         }
         
         .logo img {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             object-fit: contain;
         }
         
         h1 {
-            font-size: 2.5rem;
+            font-size: 2.75rem;
             font-weight: 700;
-            margin-bottom: 12px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 16px;
         }
         
-        .subtitle {
-            font-size: 1.15rem;
-            font-weight: 400;
-            opacity: 0.9;
-            margin-bottom: 24px;
-            line-height: 1.6;
+        .hero-subtitle {
+            font-size: 1.25rem;
+            opacity: 0.95;
+            margin-bottom: 32px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
         
-        .coming-soon {
+        .cta-button {
             display: inline-block;
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(10px);
-            padding: 12px 32px;
+            background: #ffffff;
+            color: #3949AB;
+            padding: 16px 40px;
             border-radius: 50px;
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 600;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            border: 2px solid rgba(255,255,255,0.3);
-            margin-bottom: 40px;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        
+        .preview-section {
+            background: linear-gradient(180deg, #1E88E5 0%, #ECEFF1 100%);
+            padding: 0 20px 60px;
         }
         
         .preview-container {
+            max-width: 1100px;
+            margin: -40px auto 0;
             position: relative;
-            max-width: 1000px;
-            margin: 0 auto;
         }
         
         .preview-image {
             width: 100%;
             border-radius: 16px;
-            box-shadow: 0 25px 80px rgba(0,0,0,0.3), 0 10px 30px rgba(0,0,0,0.2);
-            border: 4px solid rgba(255,255,255,0.2);
+            box-shadow: 0 25px 80px rgba(0,0,0,0.25);
+            border: 4px solid rgba(255,255,255,0.3);
         }
         
-        .preview-badge {
-            position: absolute;
-            top: -12px;
-            right: 20px;
-            background: #26A69A;
-            color: white;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(38,166,154,0.4);
+        .features-section {
+            background: #ECEFF1;
+            padding: 80px 20px;
         }
         
-        .features {
-            display: flex;
-            justify-content: center;
-            gap: 32px;
-            margin-top: 40px;
-            flex-wrap: wrap;
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #0D1B2A;
         }
         
-        .feature {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.95rem;
-            opacity: 0.9;
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #546E7A;
+            margin-bottom: 48px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        
+        .feature-card {
+            background: #ffffff;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
         }
         
         .feature-icon {
-            width: 24px;
-            height: 24px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            font-size: 24px;
+            margin-bottom: 20px;
         }
         
-        .contact {
-            margin-top: 40px;
+        .feature-icon.blue { background: #E3F2FD; }
+        .feature-icon.green { background: #E8F5E9; }
+        .feature-icon.orange { background: #FFF3E0; }
+        .feature-icon.purple { background: #EDE7F6; }
+        .feature-icon.cyan { background: #E0F7FA; }
+        .feature-icon.red { background: #FFEBEE; }
+        
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #0D1B2A;
+        }
+        
+        .feature-desc {
+            color: #546E7A;
             font-size: 0.95rem;
-            opacity: 0.8;
         }
         
-        .contact a {
-            color: #ffffff;
-            text-decoration: none;
+        .pricing-section {
+            background: #ffffff;
+            padding: 80px 20px;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .pricing-card {
+            background: #ffffff;
+            border: 2px solid #E0E0E0;
+            border-radius: 20px;
+            padding: 40px 32px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+        }
+        
+        .pricing-card.popular {
+            border-color: #3949AB;
+            position: relative;
+        }
+        
+        .popular-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #3949AB;
+            color: white;
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-size: 0.8rem;
             font-weight: 600;
         }
         
-        .contact a:hover {
-            text-decoration: underline;
+        .pricing-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0D1B2A;
+            margin-bottom: 8px;
+        }
+        
+        .pricing-desc {
+            color: #546E7A;
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+        
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #3949AB;
+            margin-bottom: 4px;
+        }
+        
+        .pricing-period {
+            color: #546E7A;
+            font-size: 0.9rem;
+            margin-bottom: 32px;
+        }
+        
+        .pricing-features {
+            text-align: left;
+            margin-bottom: 32px;
+        }
+        
+        .pricing-feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            font-size: 0.95rem;
+            color: #0D1B2A;
+        }
+        
+        .pricing-feature .check {
+            color: #26A69A;
+            font-weight: bold;
+        }
+        
+        .pricing-button {
+            display: block;
+            background: #3949AB;
+            color: white;
+            padding: 14px 32px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        
+        .pricing-button:hover {
+            background: #303F9F;
+        }
+        
+        .pricing-card.popular .pricing-button {
+            background: #1E88E5;
+        }
+        
+        .pricing-card.popular .pricing-button:hover {
+            background: #1976D2;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, #3949AB 0%, #1E88E5 100%);
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+        }
+        
+        .cta-section h2 {
+            font-size: 2rem;
+            margin-bottom: 16px;
+        }
+        
+        .cta-section p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 32px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
         }
         
         .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0,0,0,0.4);
-            backdrop-filter: blur(10px);
-            padding: 16px 20px;
+            background: #1a1a2e;
+            color: #aaa;
+            padding: 40px 20px;
+        }
+        
+        .footer-content {
+            max-width: 1100px;
+            margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.85rem;
+            flex-wrap: wrap;
+            gap: 24px;
         }
         
         .footer-links a {
-            color: rgba(255,255,255,0.9);
+            color: #fff;
             text-decoration: none;
-            margin: 0 8px;
+            margin: 0 12px;
+            font-size: 0.9rem;
         }
         
         .footer-links a:hover {
@@ -179,99 +337,161 @@
         
         .footer-impressum {
             text-align: right;
-            color: rgba(255,255,255,0.8);
-            font-size: 0.75rem;
-            line-height: 1.4;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+        
+        .footer-impressum a {
+            color: #fff;
         }
         
         @media (max-width: 768px) {
-            .footer {
+            h1 { font-size: 2rem; }
+            .hero-subtitle { font-size: 1.1rem; }
+            .section-title { font-size: 1.75rem; }
+            .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+            .footer-content {
                 flex-direction: column;
-                gap: 16px;
                 text-align: center;
             }
-            .footer-impressum {
-                text-align: center;
-            }
-            .features {
-                gap: 16px;
-            }
-            h1 {
-                font-size: 2rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 1.5rem;
-            }
-            .subtitle {
-                font-size: 1rem;
-            }
-            .logo {
-                width: 60px;
-                height: 60px;
-            }
-            .logo img {
-                width: 40px;
-                height: 40px;
-            }
-            .feature {
-                font-size: 0.85rem;
-            }
+            .footer-impressum { text-align: center; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
+    <section class="hero">
+        <div class="hero-content">
             <div class="logo">
                 <img src="images/logo.png" alt="DžematApp Logo">
             </div>
             <h1>DžematApp</h1>
-            <p class="subtitle">Moderna platforma za upravljanje džematom.<br>Digitalizirajte vaš džemat sa alatima za članstvo, finansije, događaje i više.</p>
-            <div class="coming-soon">Uskoro</div>
+            <p class="hero-subtitle">Moderna platforma za upravljanje džematom. Digitalizirajte članstvo, finansije, događaje i komunikaciju sa zajednicom.</p>
+            <a href="https://app.dzematapp.com" class="cta-button">Započnite besplatno</a>
         </div>
-        
+    </section>
+    
+    <section class="preview-section">
         <div class="preview-container">
-            <div class="preview-badge">Dashboard Preview</div>
             <img src="images/dashboard-preview.png" alt="DžematApp Dashboard" class="preview-image">
         </div>
-        
-        <div class="features">
-            <div class="feature">
-                <div class="feature-icon">👥</div>
-                Upravljanje članstvom
-            </div>
-            <div class="feature">
-                <div class="feature-icon">💳</div>
-                Članarine i finansije
-            </div>
-            <div class="feature">
-                <div class="feature-icon">📅</div>
-                Događaji i aktivnosti
-            </div>
-            <div class="feature">
-                <div class="feature-icon">✓</div>
-                Zadaci i sekcije
-            </div>
-        </div>
-        
-        <p class="contact">Kontakt: <a href="mailto:info@dzematapp.com">info@dzematapp.com</a></p>
-    </div>
+    </section>
     
-    <div class="footer">
-        <div class="footer-links">
-            <a href="impressum.html">Impressum</a> |
-            <a href="agb.html">AGB (Terms)</a> |
-            <a href="datenschutz.html">Datenschutz (Privacy)</a> |
-            <a href="refund.html">Rückgaberichtlinien (Refund)</a>
+    <section class="features-section">
+        <h2 class="section-title">Sve što vam treba na jednom mjestu</h2>
+        <p class="section-subtitle">Kompletno rješenje za upravljanje džematom - od članstva do finansija</p>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon blue">👥</div>
+                <h3 class="feature-title">Upravljanje članstvom</h3>
+                <p class="feature-desc">Evidencija članova sa svim potrebnim podacima, porodičnim vezama i historijom.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon green">💳</div>
+                <h3 class="feature-title">Članarine i finansije</h3>
+                <p class="feature-desc">Praćenje uplata članarine, generisanje izvještaja i automatske notifikacije.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon orange">📅</div>
+                <h3 class="feature-title">Događaji i aktivnosti</h3>
+                <p class="feature-desc">Kalendar događaja sa prijavama, podsjećanjima i upravljanjem učesnicima.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon purple">✓</div>
+                <h3 class="feature-title">Zadaci i sekcije</h3>
+                <p class="feature-desc">Organizujte radne grupe, dodijelite zadatke i pratite napredak projekata.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon cyan">🕌</div>
+                <h3 class="feature-title">Vaktija</h3>
+                <p class="feature-desc">Integrisani kalendar namaza sa automatskim ažuriranjima za vašu lokaciju.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon red">📢</div>
+                <h3 class="feature-title">Obavijesti</h3>
+                <p class="feature-desc">Brza komunikacija sa članovima putem obavijesti i poruka.</p>
+            </div>
         </div>
-        <div class="footer-impressum">
-            Sabahudin Sijamhodzic<br>
-            Wiesentalstrasse 6b, 9000 St. Gallen, Schweiz<br>
-            <a href="mailto:info@dzematapp.com" style="color: rgba(255,255,255,0.9);">info@dzematapp.com</a>
+    </section>
+    
+    <section class="pricing-section" id="pricing">
+        <h2 class="section-title">Jednostavne cijene</h2>
+        <p class="section-subtitle">Odaberite plan koji odgovara veličini vašeg džemata</p>
+        
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <h3 class="pricing-name">Basic</h3>
+                <p class="pricing-desc">Za manje džemate</p>
+                <div class="pricing-price">€29</div>
+                <div class="pricing-period">mjesečno</div>
+                <div class="pricing-features">
+                    <div class="pricing-feature"><span class="check">✓</span> Do 200 članova</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Upravljanje članstvom</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Članarine</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Događaji</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Vaktija</div>
+                </div>
+                <a href="https://app.dzematapp.com" class="pricing-button">Odaberi Basic</a>
+            </div>
+            
+            <div class="pricing-card popular">
+                <div class="popular-badge">Najpopularnije</div>
+                <h3 class="pricing-name">Standard</h3>
+                <p class="pricing-desc">Za srednje džemate</p>
+                <div class="pricing-price">€39</div>
+                <div class="pricing-period">mjesečno</div>
+                <div class="pricing-features">
+                    <div class="pricing-feature"><span class="check">✓</span> Do 500 članova</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Sve iz Basic plana</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Sekcije i zadaci</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Dokumenti</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Pitaj imama</div>
+                </div>
+                <a href="https://app.dzematapp.com" class="pricing-button">Odaberi Standard</a>
+            </div>
+            
+            <div class="pricing-card">
+                <h3 class="pricing-name">Full</h3>
+                <p class="pricing-desc">Za velike džemate</p>
+                <div class="pricing-price">€49</div>
+                <div class="pricing-period">mjesečno</div>
+                <div class="pricing-features">
+                    <div class="pricing-feature"><span class="check">✓</span> Neograničeno članova</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Sve iz Standard plana</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Trgovina</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Sponzori</div>
+                    <div class="pricing-feature"><span class="check">✓</span> Prioritetna podrška</div>
+                </div>
+                <a href="https://app.dzematapp.com" class="pricing-button">Odaberi Full</a>
+            </div>
         </div>
-    </div>
+    </section>
+    
+    <section class="cta-section">
+        <h2>Spremni da digitalizirate vaš džemat?</h2>
+        <p>Započnite besplatno i vidite kako DžematApp može pomoći vašoj zajednici.</p>
+        <a href="https://app.dzematapp.com" class="cta-button">Započnite besplatno</a>
+    </section>
+    
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="impressum.html">Impressum</a> |
+                <a href="agb.html">AGB (Terms)</a> |
+                <a href="datenschutz.html">Datenschutz (Privacy)</a> |
+                <a href="refund.html">Rückgaberichtlinien (Refund)</a>
+            </div>
+            <div class="footer-impressum">
+                Sabahudin Sijamhodzic<br>
+                Wiesentalstrasse 6b, 9000 St. Gallen, Schweiz<br>
+                <a href="mailto:info@dzematapp.com">info@dzematapp.com</a>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
