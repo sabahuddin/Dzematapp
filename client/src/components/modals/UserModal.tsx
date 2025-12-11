@@ -578,8 +578,8 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
               </Grid>
             )}
 
-            {/* Row 6c: Membership Fee Amount - Admin only */}
-            {!isMemberEditingSelf && (
+            {/* Row 6c: Membership Fee Amount - Editable for admin, read-only for member */}
+            {!isMemberEditingSelf ? (
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
@@ -595,7 +595,21 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                   data-testid="input-membershipFeeAmount"
                 />
               </Grid>
-            )}
+            ) : formData.membershipFeeAmount ? (
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  label="Mjesečna članarina"
+                  value={`${formData.membershipFeeAmount} ${currency}`}
+                  disabled
+                  InputProps={{
+                    readOnly: true
+                  }}
+                  data-testid="text-membershipFeeAmount"
+                />
+              </Grid>
+            ) : null}
             
             {/* Row 7a: Skills (Full width or 50%) */}
             <Grid size={{ xs: 12, sm: isMemberEditingSelf ? 12 : 6 }}>
