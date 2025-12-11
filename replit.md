@@ -112,3 +112,12 @@ A companion React Native + Expo application for iOS and Android is located in th
 
 ## Custom Utilities
 - **useEdgeLockScroll**: Custom hook for iOS Safari bounce prevention.
+
+# Pending Integrations
+
+## Paddle Payment Integration (PENDING)
+- **Status**: Awaiting user to complete Paddle registration
+- **Plans to create in Paddle**: Basic €29/mo, Standard €39/mo, Full €49/mo
+- **Required from user**: Vendor ID, API Key, Product IDs
+- **Implementation**: Add checkout buttons to marketing site, webhooks for subscription status in app.dzematapp.com
+- **Note**: Paddle is Merchant of Record - handles VAT/taxes automatically (as specified in AGB documents)
