@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DžematApp Dashboard Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #ECEFF1;
+            color: #0D1B2A;
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            padding: 16px 0;
+            flex-shrink: 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 20px 24px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #3949AB;
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #3949AB, #1E88E5);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: #546E7A;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .nav-item:hover { background: #f5f5f5; }
+        .nav-item.active {
+            background: #E8EAF6;
+            color: #3949AB;
+            font-weight: 600;
+            border-left: 3px solid #3949AB;
+        }
+        
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .main {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+        
+        .prayer-times {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            background: #fff;
+            padding: 16px 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        
+        .prayer {
+            text-align: center;
+        }
+        
+        .prayer-name {
+            font-size: 0.75rem;
+            color: #546E7A;
+            margin-bottom: 4px;
+        }
+        
+        .prayer-time {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #0D1B2A;
+        }
+        
+        .calendar-link {
+            color: #1E88E5;
+            font-size: 0.85rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .stat-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .stat-icon.blue { background: #E3F2FD; color: #1E88E5; }
+        .stat-icon.cyan { background: #E0F7FA; color: #00ACC1; }
+        .stat-icon.orange { background: #FFF3E0; color: #FB8C00; }
+        .stat-icon.green { background: #E8F5E9; color: #43A047; }
+        
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #0D1B2A;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #546E7A;
+        }
+        
+        .cards-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .card-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .card-link {
+            color: #1E88E5;
+            font-size: 0.8rem;
+            text-decoration: none;
+        }
+        
+        .event-date {
+            background: linear-gradient(135deg, #3949AB, #1E88E5);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        
+        .event-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .event-location {
+            font-size: 0.85rem;
+            color: #546E7A;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .clanarina-stats {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 16px;
+        }
+        
+        .clanarina-big {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #26A69A;
+        }
+        
+        .clanarina-small {
+            font-size: 0.8rem;
+            color: #546E7A;
+        }
+        
+        .clanarina-count {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0D1B2A;
+        }
+        
+        .recent-payments {
+            font-size: 0.85rem;
+            color: #546E7A;
+            margin-bottom: 8px;
+        }
+        
+        .payment-row {
+            display: flex;
+            justify-content: flex-end;
+            color: #26A69A;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+        
+        .shop-stats {
+            display: flex;
+            gap: 32px;
+            margin-bottom: 16px;
+        }
+        
+        .shop-number {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+        
+        .shop-number.teal { color: #26A69A; }
+        .shop-number.gray { color: #B0BEC5; }
+        
+        .shop-label {
+            font-size: 0.75rem;
+            color: #546E7A;
+        }
+        
+        .product-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+        }
+        
+        .product-price {
+            color: #1E88E5;
+            font-weight: 600;
+        }
+        
+        .tasks-section {
+            background: #fff;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            margin-bottom: 24px;
+        }
+        
+        .tasks-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .tasks-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .tasks-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .task-stat {
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .task-stat.active { background: #E3F2FD; }
+        
+        .task-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        
+        .task-icon.gray { background: #ECEFF1; color: #78909C; }
+        .task-icon.blue { background: #E3F2FD; color: #1E88E5; }
+        .task-icon.orange { background: #FFF3E0; color: #FB8C00; }
+        .task-icon.green { background: #E8F5E9; color: #43A047; }
+        .task-icon.red { background: #FFEBEE; color: #E53935; }
+        .task-icon.purple { background: #EDE7F6; color: #7E57C2; }
+        
+        .task-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0D1B2A;
+        }
+        
+        .task-label {
+            font-size: 0.75rem;
+            color: #546E7A;
+        }
+        
+        .task-list {
+            border-top: 1px solid #eee;
+            padding-top: 16px;
+        }
+        
+        .task-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #B0BEC5;
+            border-radius: 4px;
+        }
+        
+        .task-checkbox.checked {
+            background: #43A047;
+            border-color: #43A047;
+        }
+        
+        .task-text {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+        
+        .task-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        .task-badge.in-progress { background: #E3F2FD; color: #1E88E5; }
+        .task-badge.pending { background: #FFF3E0; color: #FB8C00; }
+        .task-badge.done { background: #E8F5E9; color: #43A047; }
+        
+        .activity-section {
+            background: #fff;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        
+        .activity-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+        }
+        
+        .activity-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        
+        .activity-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3949AB, #1E88E5);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-text {
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+        
+        .activity-time {
+            font-size: 0.75rem;
+            color: #546E7A;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">DA</div>
+            DžematApp
+        </div>
+        
+        <div class="nav-item" style="background: #FFF3E0; color: #FB8C00;">
+            <div class="nav-icon">☰</div>
+            Zatvori/Otvori
+        </div>
+        
+        <div class="nav-item active">
+            <div class="nav-icon">📊</div>
+            Dashboard
+        </div>
+        
+        <div class="nav-item">
+            <div class="nav-icon">📰</div>
+            Feed
+        </div>
+        
+        <div class="nav-item">
+            <div class="nav-icon">👥</div>
+            Korisnici
+        </div>
+        
+        <div class="nav-item">
+            <div class="nav-icon">💰</div>
+            Finansije
+        </div>
+        
+        <div class="nav-item">
+            <div class="nav-icon">💳</div>
+            Članarina (Admin)
+        </div>
+        
+        <div class="nav-item">
+            <div class="nav-icon">📋</div>
+            Log aktivnosti
+        </div>
+        
+        <div class="nav-item">
+            <div class="nav-icon">📢</div>
+            Obavijesti
+        </div>
+        
+        <div class="nav-item">
+            <div class="nav-icon">📅</div>
+            Događaji
+        </div>
+        
+        <div class="nav-item">
+            <div class="nav-icon">👔</div>
+            Sekcije
+        </div>
+        
+        <div class="nav-item">
+            <div class="nav-icon">✉️</div>
+            Poruke
+        </div>
+        
+        <div class="nav-item">
+            <div class="nav-icon">🕌</div>
+            Pitaj imama
+        </div>
+        
+        <div class="nav-item">
+            <div class="nav-icon">📄</div>
+            Dokumenti
+        </div>
+        
+        <div class="nav-item">
+            <div class="nav-icon">🛒</div>
+            Trgovina
+        </div>
+        
+        <div class="nav-item">
+            <div class="nav-icon">🤝</div>
+            Sponzori
+        </div>
+        
+        <div class="nav-item">
+            <div class="nav-icon">📝</div>
+            Zahtjevi i prijave
+        </div>
+        
+        <div class="nav-item">
+            <div class="nav-icon">🕐</div>
+            Vaktija
+        </div>
+    </div>
+    
+    <div class="main">
+        <div class="prayer-times">
+            <div class="prayer">
+                <div class="prayer-name">Zora</div>
+                <div class="prayer-time">06:08</div>
+            </div>
+            <div class="prayer">
+                <div class="prayer-name">Izlazak sunca</div>
+                <div class="prayer-time">07:53</div>
+            </div>
+            <div class="prayer">
+                <div class="prayer-name">Podne</div>
+                <div class="prayer-time">12:21</div>
+            </div>
+            <div class="prayer">
+                <div class="prayer-name">Ikindija</div>
+                <div class="prayer-time">14:19</div>
+            </div>
+            <div class="prayer">
+                <div class="prayer-name">Akšam</div>
+                <div class="prayer-time">16:39</div>
+            </div>
+            <div class="prayer">
+                <div class="prayer-name">Jacija</div>
+                <div class="prayer-time">18:12</div>
+            </div>
+            <a href="#" class="calendar-link">Kalendar vaktija →</a>
+        </div>
+        
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon blue">👥</div>
+                <div>
+                    <div class="stat-value">427</div>
+                    <div class="stat-label">Ukupan broj korisnika</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon cyan">📢</div>
+                <div>
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">Nove obavijesti (7 dana)</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange">📅</div>
+                <div>
+                    <div class="stat-value">8</div>
+                    <div class="stat-label">Nadolazeći događaji</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">✓</div>
+                <div>
+                    <div class="stat-value">34</div>
+                    <div class="stat-label">Aktivni zadaci</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="cards-row">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">📅 Nadolazeći događaji</div>
+                    <a href="#" class="card-link">Svi događaji →</a>
+                </div>
+                <div class="event-date">12.12.2025.</div>
+                <div class="event-name">Večera</div>
+                <div class="event-location">📍 Velika sala Islamskog centra</div>
+                <div class="event-location">🕐 09:00</div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">💳 Članarina</div>
+                    <a href="#" class="card-link">Sve uplate →</a>
+                </div>
+                <div class="clanarina-stats">
+                    <div>
+                        <div class="clanarina-big">4.850 CHF</div>
+                        <div class="clanarina-small">Ukupno 2025</div>
+                    </div>
+                    <div>
+                        <div class="clanarina-count">312</div>
+                        <div class="clanarina-small">Članova platilo</div>
+                    </div>
+                </div>
+                <div class="recent-payments">Zadnje uplate:</div>
+                <div class="payment-row">150 CHF</div>
+                <div class="payment-row">80 CHF</div>
+                <div class="payment-row">120 CHF</div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">🛒 Shop</div>
+                    <a href="#" class="card-link">Svi proizvodi →</a>
+                </div>
+                <div class="shop-stats">
+                    <div>
+                        <div class="shop-number teal">18</div>
+                        <div class="shop-label">Ukupno proizvoda</div>
+                    </div>
+                    <div>
+                        <div class="shop-number gray">5</div>
+                        <div class="shop-label">Aktivnih</div>
+                    </div>
+                </div>
+                <div class="recent-payments">Najnoviji proizvodi:</div>
+                <div class="product-row">
+                    <span>Knjiga - Produktivni musliman</span>
+                    <span class="product-price">25 CHF</span>
+                </div>
+                <div class="product-row">
+                    <span>Halal meso</span>
+                    <span class="product-price">15 CHF</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tasks-section">
+            <div class="tasks-header">
+                <div class="tasks-title">Pregled zadataka</div>
+                <a href="#" class="card-link">Admin pogled - Svi zadaci</a>
+            </div>
+            
+            <div class="tasks-grid">
+                <div class="task-stat active">
+                    <div class="task-icon gray">📋</div>
+                    <div class="task-number">156</div>
+                    <div class="task-label">Svi</div>
+                </div>
+                <div class="task-stat">
+                    <div class="task-icon blue">⏳</div>
+                    <div class="task-number">34</div>
+                    <div class="task-label">U toku</div>
+                </div>
+                <div class="task-stat">
+                    <div class="task-icon orange">⏸️</div>
+                    <div class="task-number">18</div>
+                    <div class="task-label">Na čekanju</div>
+                </div>
+                <div class="task-stat">
+                    <div class="task-icon green">✓</div>
+                    <div class="task-number">89</div>
+                    <div class="task-label">Završeno</div>
+                </div>
+                <div class="task-stat">
+                    <div class="task-icon red">✕</div>
+                    <div class="task-number">3</div>
+                    <div class="task-label">Otkazano</div>
+                </div>
+                <div class="task-stat">
+                    <div class="task-icon purple">📦</div>
+                    <div class="task-number">12</div>
+                    <div class="task-label">Arhiva</div>
+                </div>
+            </div>
+            
+            <div class="task-list">
+                <div class="task-row">
+                    <div class="task-checkbox"></div>
+                    <div class="task-text">Pripremiti salu za iftar večeru</div>
+                    <span class="task-badge in-progress">U toku</span>
+                </div>
+                <div class="task-row">
+                    <div class="task-checkbox"></div>
+                    <div class="task-text">Kontaktirati sponzore za Ramazan</div>
+                    <span class="task-badge pending">Na čekanju</span>
+                </div>
+                <div class="task-row">
+                    <div class="task-checkbox checked"></div>
+                    <div class="task-text">Poslati obavijest o mevludu</div>
+                    <span class="task-badge done">Završeno</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="activity-section">
+            <div class="activity-title">Posljednje aktivnosti</div>
+            
+            <div class="activity-item">
+                <div class="activity-avatar">AH</div>
+                <div class="activity-content">
+                    <div class="activity-text"><strong>Ahmet Hodžić</strong> je uplatio članarinu za 2025.</div>
+                    <div class="activity-time">Prije 5 minuta</div>
+                </div>
+            </div>
+            
+            <div class="activity-item">
+                <div class="activity-avatar">MK</div>
+                <div class="activity-content">
+                    <div class="activity-text"><strong>Merima Kovačević</strong> se prijavila na događaj "Večera"</div>
+                    <div class="activity-time">Prije 23 minute</div>
+                </div>
+            </div>
+            
+            <div class="activity-item">
+                <div class="activity-avatar">ES</div>
+                <div class="activity-content">
+                    <div class="activity-text"><strong>Emir Smajlović</strong> je završio zadatak "Nabavka opreme"</div>
+                    <div class="activity-time">Prije 1 sat</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
