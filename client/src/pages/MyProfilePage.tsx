@@ -8,11 +8,13 @@ import UserModal from '@/components/modals/UserModal';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { formatDateForDisplay } from '@/utils/dateUtils';
+import { useCurrency } from '@/contexts/CurrencyContext';
 
 export default function MyProfilePage() {
   const { user: currentUser } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { currency } = useCurrency();
   const [modalOpen, setModalOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
 
@@ -218,6 +220,15 @@ export default function MyProfilePage() {
               </Typography>
               <Typography variant="body1" sx={{ fontWeight: 500 }}>
                 {formatDateForDisplay(user.membershipDate)}
+              </Typography>
+            </Box>
+
+            <Box>
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                Mjesečna članarina
+              </Typography>
+              <Typography variant="body1" sx={{ fontWeight: 500, color: '#3949AB' }}>
+                {user.membershipFeeAmount ? `${user.membershipFeeAmount} ${currency}` : '-'}
               </Typography>
             </Box>
 
