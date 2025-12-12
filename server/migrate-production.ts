@@ -76,6 +76,29 @@ export async function migrateProductionSchema(): Promise<void> {
       console.log("ℹ️  Membership currency sync skipped:", error.message);
     }
     
+    // Fix tenant enabled_modules with correct module IDs
+    console.log("📋 Fixing tenant enabled_modules with correct module IDs...");
+    try {
+      const fullModules = [
+        'dashboard', 'users', 'announcements', 'events', 'tasks', 'messages', 
+        'askImam', 'requests', 'shop', 'vaktija', 'finances', 'projects', 
+        'activity', 'badges', 'points', 'certificates', 'documents', 'media', 
+        'settings', 'guide'
+      ];
+      
+      // Update all tenants with subscription_tier = 'full' to have all modules
+      await client.query(`
+        UPDATE tenants 
+        SET enabled_modules = $1
+        WHERE subscription_tier = 'full'
+        AND id != 'tenant-superadmin-global'
+      `, [fullModules]);
+      
+      console.log("✅ Tenant enabled_modules fixed for full-tier tenants");
+    } catch (error: any) {
+      console.log("ℹ️  Tenant enabled_modules fix skipped:", error.message);
+    }
+    
     console.log("✅ Schema migration complete");
   } finally {
     client.release();
