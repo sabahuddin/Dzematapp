@@ -1,0 +1,11 @@
+{
+  "title": "DžematApp",
+  "username": "Kullanıcı adı",
+  "password": "Şifre",
+  "loginButton": "Giriş Yap",
+  "loggingIn": "Giriş yapılıyor...",
+  "guestButton": "Misafir",
+  "demoCredentials": "Demo bilgileri:",
+  "language": "Dil",
+  "selectLanguage": "Dil seçin"
+}

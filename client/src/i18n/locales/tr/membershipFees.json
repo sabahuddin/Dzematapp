@@ -1,0 +1,77 @@
+{
+  "title": "Članarina",
+  "settings": "Postavke",
+  "bulkUpload": "Bulk Upload",
+  "addPayment": "Dodaj uplatu",
+  "searchMembers": "Pretraži po imenu...",
+  "year": "Godina",
+  "month": "Mjesec",
+  "member": "Član",
+  "amount": "Iznos",
+  "total": "Ukupno",
+  "paymentsGrid": "Pregled uplatnica",
+  "uploadHistory": "Historija upload-a",
+  "noMembers": "Nema članova za prikaz.",
+  "settingsDialog": {
+    "title": "Postavke članarine",
+    "feeType": "Tip naplate",
+    "monthly": "Mjesečno",
+    "yearly": "Godišnje",
+    "monthlyAmount": "Mjesečni iznos",
+    "yearlyAmount": "Godišnji iznos",
+    "currency": "Valuta",
+    "fiscalYear": "Fiskalna godina",
+    "save": "Sačuvaj",
+    "cancel": "Otkaži"
+  },
+  "uploadDialog": {
+    "title": "Bulk Upload Uplata",
+    "description": "Uploadajte Excel ili CSV fajl sa uplatama.",
+    "requiredColumns": "Potrebne kolone: Ime i Prezime, Iznos, Godina, Mjesec",
+    "downloadTemplate": "Preuzmi template",
+    "selectFile": "Izaberi fajl",
+    "uploading": "Učitavanje..."
+  },
+  "addPaymentDialog": {
+    "title": "Dodaj pojedinačnu uplatu",
+    "selectMember": "Član",
+    "add": "Dodaj"
+  },
+  "uploadLog": {
+    "date": "Datum",
+    "fileName": "Fajl",
+    "processed": "Obrađeno",
+    "successful": "Uspješno",
+    "failed": "Neuspješno"
+  },
+  "myPayments": {
+    "title": "Moja članarina",
+    "viewHistory": "Vidi historiju",
+    "paidMonths": "Uplaćeni mjeseci",
+    "totalPaid": "Ukupno uplaćeno",
+    "noPayments": "Nemate evidentiranih uplata."
+  },
+  "months": {
+    "1": "Januar",
+    "2": "Februar",
+    "3": "Mart",
+    "4": "April",
+    "5": "Maj",
+    "6": "Juni",
+    "7": "Juli",
+    "8": "August",
+    "9": "Septembar",
+    "10": "Oktobar",
+    "11": "Novembar",
+    "12": "Decembar"
+  },
+  "messages": {
+    "settingsSaved": "Postavke uspješno sačuvane",
+    "settingsError": "Greška pri čuvanju postavki",
+    "paymentAdded": "Uplata uspješno dodana",
+    "paymentError": "Greška pri dodavanju uplate",
+    "uploadError": "Greška pri uploadu fajla",
+    "fillAllFields": "Popunite sva polja",
+    "adminOnly": "Samo administratori mogu pristupiti ovoj stranici."
+  }
+}

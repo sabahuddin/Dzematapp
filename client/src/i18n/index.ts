@@ -110,6 +110,33 @@ import certificatesSQ from './locales/sq/certificates.json';
 import applicationsSQ from './locales/sq/applications.json';
 import membershipFeesSQ from './locales/sq/membershipFees.json';
 
+// Import all TR (Turkish) translations
+import commonTR from './locales/tr/common.json';
+import loginTR from './locales/tr/login.json';
+import navigationTR from './locales/tr/navigation.json';
+import eventsTR from './locales/tr/events.json';
+import announcementsTR from './locales/tr/announcements.json';
+import usersTR from './locales/tr/users.json';
+import tasksTR from './locales/tr/tasks.json';
+import messagesTR from './locales/tr/messages.json';
+import shopTR from './locales/tr/shop.json';
+import vaktijaTR from './locales/tr/vaktija.json';
+import financesTR from './locales/tr/finances.json';
+import askImamTR from './locales/tr/askImam.json';
+import dashboardTR from './locales/tr/dashboard.json';
+import projectsTR from './locales/tr/projects.json';
+import badgesTR from './locales/tr/badges.json';
+import documentsTR from './locales/tr/documents.json';
+import activityTR from './locales/tr/activity.json';
+import quickTipsTR from './locales/tr/quickTips.json';
+import settingsTR from './locales/tr/settings.json';
+import requestsTR from './locales/tr/requests.json';
+import livestreamTR from './locales/tr/livestream.json';
+import guideTR from './locales/tr/guide.json';
+import certificatesTR from './locales/tr/certificates.json';
+import applicationsTR from './locales/tr/applications.json';
+import membershipFeesTR from './locales/tr/membershipFees.json';
+
 const resources = {
   bs: {
     common: commonBS,
@@ -218,6 +245,33 @@ const resources = {
     certificates: certificatesSQ,
     applications: applicationsSQ,
     membershipFees: membershipFeesSQ,
+  },
+  tr: {
+    common: commonTR,
+    login: loginTR,
+    navigation: navigationTR,
+    events: eventsTR,
+    announcements: announcementsTR,
+    users: usersTR,
+    tasks: tasksTR,
+    messages: messagesTR,
+    shop: shopTR,
+    vaktija: vaktijaTR,
+    finances: financesTR,
+    askImam: askImamTR,
+    dashboard: dashboardTR,
+    projects: projectsTR,
+    badges: badgesTR,
+    documents: documentsTR,
+    activity: activityTR,
+    quickTips: quickTipsTR,
+    settings: settingsTR,
+    requests: requestsTR,
+    livestream: livestreamTR,
+    guide: guideTR,
+    certificates: certificatesTR,
+    applications: applicationsTR,
+    membershipFees: membershipFeesTR,
   },
 };
 

@@ -1,0 +1,40 @@
+{
+  "title": "Brzi savjeti",
+  "tips": [
+    {
+      "title": "Prilagodite svoj Dashboard",
+      "description": "Kliknite na 'Prilagodi' dugme pored brzog pristupa da odaberete do 8 najčešće korištenih funkcija."
+    },
+    {
+      "title": "Dodajte događaje u kalendar",
+      "description": "Pritisnite 'Dodaj u Kalendar' dugme na stranici Događaji da dodate događaj direktno u vaš lični kalendar."
+    },
+    {
+      "title": "Pratite svoje bodove",
+      "description": "Pregledajte stranicu 'Log aktivnosti' da vidite kako zarađujete bodove kroz uplate, zadatke i događaje."
+    },
+    {
+      "title": "Zaslužite značke",
+      "description": "Sakupljajte bodove za aktivnosti u džematu i otključajte posebne značke. Pogledajte stranicu Značke za sve dostupne značke."
+    },
+    {
+      "title": "Donirajte za projekte",
+      "description": "Podržite projekte džemata kroz stranicu Projekti. Vaše uplate se automatski računaju prema ciljanom iznosu."
+    },
+    {
+      "title": "Pregledajte vaktije",
+      "description": "Današnje vaktije su prikazane na dashboard-u. Za mjesečni pregled kliknite na 'Kalendar vaktija'."
+    },
+    {
+      "title": "Kontaktirajte prodavače",
+      "description": "U DžematShop-u, kliknite na artikal i koristite 'Kontaktiraj prodavača' dugme da pošaljete direktnu poruku."
+    },
+    {
+      "title": "Pitajte imama",
+      "description": "Postavite pitanja Imamu anonimno ili javno kroz stranicu 'Pitaj Imama'. Odgovori se mogu arhivirati za buduću referencu."
+    }
+  ],
+  "previous": "Prethodni",
+  "next": "Sljedeći",
+  "tipNumber": "Savjet {{current}} od {{total}}"
+}

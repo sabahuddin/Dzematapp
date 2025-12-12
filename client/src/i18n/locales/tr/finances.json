@@ -1,0 +1,59 @@
+{
+  "title": "Finansije",
+  "myPayments": "Moje uplate",
+  "addPayment": "Dodaj uplatu",
+  "addNewPayment": "Dodaj novu uplatu",
+  "editPayment": "Uredi uplatu",
+  "deletePayment": "Obriši uplatu",
+  "amount": "Iznos",
+  "amountLabel": "Iznos (CHF)",
+  "amountInCHF": "{{amount}} CHF",
+  "purpose": "Svrha",
+  "purposeLabel": "Svrha uplate",
+  "selectPurpose": "Odaberi svrhu...",
+  "pointsValue": "Bodovi",
+  "purposes": {
+    "membership": "Članarina",
+    "donation": "Donacija",
+    "waqf": "Vakuf",
+    "sergija": "Sergija",
+    "other": "Ostalo"
+  },
+  "project": "Projekat",
+  "projectOptional": "Za projekat (opcionalno)",
+  "selectProject": "Odaberi projekat",
+  "noProject": "Nije za projekat",
+  "paymentDate": "Datum",
+  "paymentDateLabel": "Datum uplate",
+  "paymentMethod": "Način plaćanja",
+  "paymentMethods": {
+    "cash": "Gotovina",
+    "bank": "Banka"
+  },
+  "notes": "Napomena",
+  "bonusPoints": "Dodaj bodove",
+  "user": "Korisnik",
+  "selectUser": "Odaberi korisnika",
+  "unknown": "Nepoznato",
+  "searchPlaceholder": "Pretraži po korisniku, opisu ili tipu...",
+  "filterByPurpose": "Filtriraj po svrhi",
+  "allCategories": "Sve kategorije",
+  "allPurposes": "Sve svrhe",
+  "noPayments": "Nema finansijskih uplate",
+  "totalAmount": "Ukupan iznos: {{amount}} CHF",
+  "csvUpload": "Učitaj CSV",
+  "saving": "Spremanje...",
+  "messages": {
+    "created": "Uplata je kreirana",
+    "updated": "Uplata je ažurirana",
+    "deleted": "Uplata je obrisana",
+    "errorLoading": "Greška pri učitavanju finansijskih uplate. Molimo pokušajte ponovo.",
+    "errorSaving": "Greška pri spremanju uplate",
+    "errorDeleting": "Greška pri brisanju uplate",
+    "confirmDelete": "Jeste li sigurni da želite obrisati ovu uplatu?"
+  },
+  "validation": {
+    "userRequired": "Korisnik je obavezan",
+    "dateRequired": "Datum je obavezan"
+  }
+}

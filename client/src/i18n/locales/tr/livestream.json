@@ -1,0 +1,35 @@
+{
+  "title": "Livestream",
+  "subtitle": "Pratite lIVE dešavanja iz džemata",
+  "loading": "Učitavanje...",
+  "live": "UŽIVO",
+  "noActiveStream": {
+    "title": "Trenutno nema aktivnog livestream-a",
+    "description": "Livestream će biti dostupan kada administrator aktivira prenos",
+    "notActive": "Livestream nije aktivan",
+    "placeholder": "Ovdje će biti prikazan prenos kada administrator postavi livestream",
+    "watchLabel": "Ovdje možete pratiti:",
+    "items": {
+      "janaza": "Dženaza namaza",
+      "lectures": "Hutbe i predavanja",
+      "events": "Specijalne događaje",
+      "tarawih": "Teravija namaza (Ramazan)"
+    }
+  },
+  "externalLink": {
+    "available": "Livestream je dostupan na vanjskoj platformi",
+    "open": "Otvori livestream"
+  },
+  "info": {
+    "title": "O Live Prijenosu",
+    "description": "Livestream funkcionalnost omogućava svim članovima džemata i zainteresovanim osobama da prate važna dešavanja direktno sa bilo kojeg uređaja.",
+    "platformsLabel": "Podržane platforme:",
+    "platforms": {
+      "youtube": "YouTube Live",
+      "facebook": "Facebook live",
+      "twitch": "Twitch",
+      "embed": "Direktan embed kod",
+      "other": "Ostale streaming platforme"
+    }
+  }
+}
