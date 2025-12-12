@@ -40,7 +40,9 @@
   "loadingError": "Error loading data. Please try again.",
   "tabs": {
     "sections": "Sections",
-    "accessRequests": "Access Requests"
+    "proposals": "Proposals",
+    "accessRequests": "Access Requests",
+    "archive": "Archive"
   },
   "accessRequests": {
     "title": "Access Requests",

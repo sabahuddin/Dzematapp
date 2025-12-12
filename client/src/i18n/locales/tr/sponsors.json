@@ -1,0 +1,74 @@
+{
+  "title": "Sponsorlar",
+  "ourSponsors": "Sponsorlarımız",
+  "managementTitle": "Sponsor Yönetimi",
+  "addSponsor": "Sponsor Ekle",
+  "editSponsor": "Sponsoru Düzenle",
+  "deleteSponsor": "Sponsoru Sil",
+  "becomeSponsor": "Sponsorumuz Olun!",
+  "becomeSponsorDescription": "Topluluğumuzu destekleyin ve işinizi tanıtın. Size uygun sponsorluk seviyesini seçin.",
+  "applyForSponsorship": "Sponsorluk için Başvurun",
+  "noActiveSponsors": "Şu anda aktif sponsor yok.",
+  "pendingApplications": "{{count}} başvuru onay bekliyor",
+  "pricingSettings": "Sponsor Paketi Fiyat Ayarları",
+  "savePrices": "Fiyatları Kaydet",
+  "saving": "Kaydediliyor...",
+  "pricesSaved": "Sponsor paketi fiyatları kaydedildi",
+  "pricesSaveError": "Fiyatlar kaydedilirken hata oluştu",
+  "tiers": {
+    "gold": "Altın",
+    "silver": "Gümüş",
+    "bronze": "Bronz"
+  },
+  "tierSponsors": "{{tier}} Sponsorlar",
+  "tierAmount": "{{tier}} sponsor (tutar)",
+  "type": {
+    "company": "Şirket",
+    "individual": "Bireysel"
+  },
+  "status": {
+    "pending": "Beklemede",
+    "active": "Aktif",
+    "expired": "Süresi Doldu",
+    "rejected": "Reddedildi"
+  },
+  "table": {
+    "sponsor": "Sponsor",
+    "type": "Tür",
+    "tier": "Seviye",
+    "contact": "İletişim",
+    "status": "Durum",
+    "actions": "İşlemler"
+  },
+  "form": {
+    "name": "Ad",
+    "nameRequired": "Ad gerekli",
+    "email": "E-posta",
+    "emailInvalid": "Geçersiz e-posta",
+    "phone": "Telefon",
+    "website": "Web sitesi",
+    "websiteInvalid": "Geçersiz web sitesi URL'si",
+    "logoUrl": "Logo URL",
+    "selectType": "Tür seçin",
+    "selectTier": "Seviye seçin"
+  },
+  "currency": "Para Birimi",
+  "messages": {
+    "sponsorCreated": "Sponsorluk başvurusu gönderildi",
+    "sponsorUpdated": "Sponsor güncellendi",
+    "sponsorDeleted": "Sponsor silindi",
+    "sponsorApproved": "Sponsorluk onaylandı",
+    "sponsorRejected": "Sponsorluk reddedildi",
+    "error": "Bir hata oluştu",
+    "deleteError": "Silme hatası",
+    "reviewError": "İşleme hatası",
+    "confirmDelete": "Bu sponsoru silmek istediğinizden emin misiniz?",
+    "rejectionReasonRequired": "Red nedenini girmeniz gerekiyor"
+  },
+  "review": {
+    "approve": "Onayla",
+    "reject": "Reddet",
+    "notes": "Notlar",
+    "notesPlaceholder": "Not girin..."
+  }
+}

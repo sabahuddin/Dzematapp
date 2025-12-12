@@ -1,0 +1,74 @@
+{
+  "title": "Sponzori",
+  "ourSponsors": "Naši sponzori",
+  "managementTitle": "Upravljanje sponzorima",
+  "addSponsor": "Dodaj sponzora",
+  "editSponsor": "Uredi sponzora",
+  "deleteSponsor": "Obriši sponzora",
+  "becomeSponsor": "Postanite naš sponzor!",
+  "becomeSponsorDescription": "Podržite naš džemat i promovirajte vaš posao u našoj zajednici. Odaberite nivo sponzorstva koji vam odgovara.",
+  "applyForSponsorship": "Prijavite se za sponzorstvo",
+  "noActiveSponsors": "Trenutno nema aktivnih sponzora.",
+  "pendingApplications": "{{count}} prijava čeka na odobrenje",
+  "pricingSettings": "Podešavanje cijena sponzorskih paketa",
+  "savePrices": "Sačuvaj cijene",
+  "saving": "Čuvanje...",
+  "pricesSaved": "Cijene sponzorskih paketa su sačuvane",
+  "pricesSaveError": "Greška pri čuvanju cijena",
+  "tiers": {
+    "gold": "Zlatni",
+    "silver": "Srebreni",
+    "bronze": "Bronzani"
+  },
+  "tierSponsors": "{{tier}} sponzori",
+  "tierAmount": "{{tier}} sponzor (iznos)",
+  "type": {
+    "company": "Firma",
+    "individual": "Fizičko lice"
+  },
+  "status": {
+    "pending": "Na čekanju",
+    "active": "Aktivno",
+    "expired": "Isteklo",
+    "rejected": "Odbijeno"
+  },
+  "table": {
+    "sponsor": "Sponzor",
+    "type": "Tip",
+    "tier": "Nivo",
+    "contact": "Kontakt",
+    "status": "Status",
+    "actions": "Akcije"
+  },
+  "form": {
+    "name": "Naziv",
+    "nameRequired": "Naziv je obavezan",
+    "email": "Email",
+    "emailInvalid": "Neispravan email",
+    "phone": "Telefon",
+    "website": "Web stranica",
+    "websiteInvalid": "Neispravna web adresa",
+    "logoUrl": "URL loga",
+    "selectType": "Odaberi tip",
+    "selectTier": "Odaberi nivo"
+  },
+  "currency": "Valuta",
+  "messages": {
+    "sponsorCreated": "Prijava za sponzorstvo poslana",
+    "sponsorUpdated": "Sponzor ažuriran",
+    "sponsorDeleted": "Sponzor obrisan",
+    "sponsorApproved": "Sponzorstvo odobreno",
+    "sponsorRejected": "Sponzorstvo odbijeno",
+    "error": "Došlo je do greške",
+    "deleteError": "Greška pri brisanju",
+    "reviewError": "Greška pri obradi",
+    "confirmDelete": "Da li ste sigurni da želite obrisati ovog sponzora?",
+    "rejectionReasonRequired": "Morate unijeti razlog odbijanja"
+  },
+  "review": {
+    "approve": "Odobri",
+    "reject": "Odbij",
+    "notes": "Napomena",
+    "notesPlaceholder": "Unesite napomenu..."
+  }
+}

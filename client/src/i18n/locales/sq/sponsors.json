@@ -1,0 +1,74 @@
+{
+  "title": "Sponsorët",
+  "ourSponsors": "Sponsorët Tanë",
+  "managementTitle": "Menaxhimi i Sponsorëve",
+  "addSponsor": "Shto Sponsor",
+  "editSponsor": "Redakto Sponsorin",
+  "deleteSponsor": "Fshi Sponsorin",
+  "becomeSponsor": "Bëhuni Sponsori Ynë!",
+  "becomeSponsorDescription": "Mbështetni komunitetin tonë dhe promovoni biznesin tuaj. Zgjidhni nivelin e sponsorizimit që ju përshtatet.",
+  "applyForSponsorship": "Aplikoni për Sponsorizim",
+  "noActiveSponsors": "Aktualisht nuk ka sponsorë aktivë.",
+  "pendingApplications": "{{count}} aplikime presin miratimin",
+  "pricingSettings": "Cilësimet e Çmimeve të Paketave të Sponsorizimit",
+  "savePrices": "Ruaj Çmimet",
+  "saving": "Duke ruajtur...",
+  "pricesSaved": "Çmimet e paketave të sponsorizimit u ruajtën",
+  "pricesSaveError": "Gabim gjatë ruajtjes së çmimeve",
+  "tiers": {
+    "gold": "Artë",
+    "silver": "Argjend",
+    "bronze": "Bronz"
+  },
+  "tierSponsors": "Sponsorët {{tier}}",
+  "tierAmount": "Sponsor {{tier}} (shuma)",
+  "type": {
+    "company": "Kompani",
+    "individual": "Person Fizik"
+  },
+  "status": {
+    "pending": "Në Pritje",
+    "active": "Aktiv",
+    "expired": "Skaduar",
+    "rejected": "Refuzuar"
+  },
+  "table": {
+    "sponsor": "Sponsor",
+    "type": "Lloji",
+    "tier": "Niveli",
+    "contact": "Kontakti",
+    "status": "Statusi",
+    "actions": "Veprimet"
+  },
+  "form": {
+    "name": "Emri",
+    "nameRequired": "Emri është i detyrueshëm",
+    "email": "Email",
+    "emailInvalid": "Email i pavlefshëm",
+    "phone": "Telefoni",
+    "website": "Faqja e internetit",
+    "websiteInvalid": "URL e pavlefshme",
+    "logoUrl": "URL e logos",
+    "selectType": "Zgjidhni llojin",
+    "selectTier": "Zgjidhni nivelin"
+  },
+  "currency": "Monedha",
+  "messages": {
+    "sponsorCreated": "Aplikimi për sponsorizim u dërgua",
+    "sponsorUpdated": "Sponsori u përditësua",
+    "sponsorDeleted": "Sponsori u fshi",
+    "sponsorApproved": "Sponsorizimi u miratua",
+    "sponsorRejected": "Sponsorizimi u refuzua",
+    "error": "Ndodhi një gabim",
+    "deleteError": "Gabim gjatë fshirjes",
+    "reviewError": "Gabim gjatë përpunimit",
+    "confirmDelete": "Jeni të sigurt që dëshironi të fshini këtë sponsor?",
+    "rejectionReasonRequired": "Duhet të shkruani arsyen e refuzimit"
+  },
+  "review": {
+    "approve": "Mirato",
+    "reject": "Refuzo",
+    "notes": "Shënime",
+    "notesPlaceholder": "Shkruani shënime..."
+  }
+}

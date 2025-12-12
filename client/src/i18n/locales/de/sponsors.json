@@ -1,0 +1,74 @@
+{
+  "title": "Sponsoren",
+  "ourSponsors": "Unsere Sponsoren",
+  "managementTitle": "Sponsorenverwaltung",
+  "addSponsor": "Sponsor hinzufügen",
+  "editSponsor": "Sponsor bearbeiten",
+  "deleteSponsor": "Sponsor löschen",
+  "becomeSponsor": "Werden Sie unser Sponsor!",
+  "becomeSponsorDescription": "Unterstützen Sie unsere Gemeinde und werben Sie für Ihr Unternehmen. Wählen Sie die Sponsorenstufe, die zu Ihnen passt.",
+  "applyForSponsorship": "Für Sponsoring bewerben",
+  "noActiveSponsors": "Derzeit keine aktiven Sponsoren.",
+  "pendingApplications": "{{count}} Bewerbungen warten auf Genehmigung",
+  "pricingSettings": "Sponsorenpaket-Preiseinstellungen",
+  "savePrices": "Preise speichern",
+  "saving": "Speichern...",
+  "pricesSaved": "Sponsorenpaket-Preise gespeichert",
+  "pricesSaveError": "Fehler beim Speichern der Preise",
+  "tiers": {
+    "gold": "Gold",
+    "silver": "Silber",
+    "bronze": "Bronze"
+  },
+  "tierSponsors": "{{tier}} Sponsoren",
+  "tierAmount": "{{tier}} Sponsor (Betrag)",
+  "type": {
+    "company": "Firma",
+    "individual": "Privatperson"
+  },
+  "status": {
+    "pending": "Ausstehend",
+    "active": "Aktiv",
+    "expired": "Abgelaufen",
+    "rejected": "Abgelehnt"
+  },
+  "table": {
+    "sponsor": "Sponsor",
+    "type": "Typ",
+    "tier": "Stufe",
+    "contact": "Kontakt",
+    "status": "Status",
+    "actions": "Aktionen"
+  },
+  "form": {
+    "name": "Name",
+    "nameRequired": "Name ist erforderlich",
+    "email": "E-Mail",
+    "emailInvalid": "Ungültige E-Mail",
+    "phone": "Telefon",
+    "website": "Webseite",
+    "websiteInvalid": "Ungültige Webseiten-URL",
+    "logoUrl": "Logo-URL",
+    "selectType": "Typ auswählen",
+    "selectTier": "Stufe auswählen"
+  },
+  "currency": "Währung",
+  "messages": {
+    "sponsorCreated": "Sponsoring-Bewerbung eingereicht",
+    "sponsorUpdated": "Sponsor aktualisiert",
+    "sponsorDeleted": "Sponsor gelöscht",
+    "sponsorApproved": "Sponsoring genehmigt",
+    "sponsorRejected": "Sponsoring abgelehnt",
+    "error": "Ein Fehler ist aufgetreten",
+    "deleteError": "Fehler beim Löschen",
+    "reviewError": "Fehler bei der Bearbeitung",
+    "confirmDelete": "Sind Sie sicher, dass Sie diesen Sponsor löschen möchten?",
+    "rejectionReasonRequired": "Sie müssen einen Ablehnungsgrund eingeben"
+  },
+  "review": {
+    "approve": "Genehmigen",
+    "reject": "Ablehnen",
+    "notes": "Notizen",
+    "notesPlaceholder": "Notizen eingeben..."
+  }
+}

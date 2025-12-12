@@ -40,7 +40,9 @@
   "loadingError": "Fehler beim Laden der Daten. Bitte versuchen Sie es erneut.",
   "tabs": {
     "sections": "Sektionen",
-    "accessRequests": "Zugriffsanfragen"
+    "proposals": "Vorschläge",
+    "accessRequests": "Zugriffsanfragen",
+    "archive": "Archiv"
   },
   "accessRequests": {
     "title": "Zugriffsanfragen",

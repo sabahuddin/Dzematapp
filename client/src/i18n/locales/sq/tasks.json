@@ -40,7 +40,9 @@
   "loadingError": "Gabim gjatë ngarkimit të të dhënave. Ju lutemi provoni përsëri.",
   "tabs": {
     "sections": "Seksionet",
-    "accessRequests": "Kërkesat për Qasje"
+    "proposals": "Propozimet",
+    "accessRequests": "Kërkesat për Qasje",
+    "archive": "Arkiva"
   },
   "accessRequests": {
     "title": "Kërkesat për Qasje",

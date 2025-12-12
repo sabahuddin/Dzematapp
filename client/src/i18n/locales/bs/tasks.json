@@ -40,7 +40,9 @@
   "loadingError": "Greška pri učitavanju podataka. Molimo pokušajte ponovo.",
   "tabs": {
     "sections": "Sekcije",
-    "accessRequests": "Zahtjevi za pristup"
+    "proposals": "Prijedlozi",
+    "accessRequests": "Zahtjevi za pristup",
+    "archive": "Arhiva"
   },
   "accessRequests": {
     "title": "Zahtjevi za pristup",
