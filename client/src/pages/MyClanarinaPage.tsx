@@ -23,15 +23,12 @@ import { useQuery } from '@tanstack/react-query';
 import { Receipt, CheckCircle, Cancel } from '@mui/icons-material';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCurrency } from '@/contexts/CurrencyContext';
-
-const MONTHS = [
-  'Januar', 'Februar', 'Mart', 'April', 'Maj', 'Juni',
-  'Juli', 'August', 'Septembar', 'Oktobar', 'Novembar', 'Decembar'
-];
+import { useTranslation } from 'react-i18next';
 
 export default function MyClanarinaPage() {
   const { user } = useAuth();
   const { currency, formatPrice } = useCurrency();
+  const { t } = useTranslation(['membershipFees']);
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(currentYear);
 
@@ -69,7 +66,7 @@ export default function MyClanarinaPage() {
     <Box sx={{ p: { xs: 2, md: 3 }, maxWidth: 1200, mx: 'auto' }}>
       <Typography variant="h5" fontWeight="bold" sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 1 }}>
         <Receipt color="primary" />
-        Moja članarina
+        {t('membershipFees:myPayments.title')}
       </Typography>
 
       <Grid container spacing={3}>
@@ -77,13 +74,13 @@ export default function MyClanarinaPage() {
           <Card sx={{ height: '100%' }}>
             <CardContent>
               <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                Mjesečna članarina
+                {t('membershipFees:myPayments.monthlyFee')}
               </Typography>
               <Typography variant="h4" fontWeight="bold" color="primary">
-                {monthlyFee > 0 ? formatPrice(monthlyFee) : 'Nije postavljeno'}
+                {monthlyFee > 0 ? formatPrice(monthlyFee) : t('membershipFees:myPayments.notSet')}
               </Typography>
               <Typography variant="caption" color="text.secondary">
-                {feeType === 'monthly' ? 'Mjesečno plaćanje' : 'Godišnje plaćanje'}
+                {feeType === 'monthly' ? t('membershipFees:myPayments.monthlyPayment') : t('membershipFees:myPayments.yearlyPayment')}
               </Typography>
             </CardContent>
           </Card>
@@ -93,13 +90,13 @@ export default function MyClanarinaPage() {
           <Card sx={{ height: '100%' }}>
             <CardContent>
               <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                Uplaćeno ({selectedYear})
+                {t('membershipFees:myPayments.paidIn')} ({selectedYear})
               </Typography>
               <Typography variant="h4" fontWeight="bold" color="success.main">
                 {formatPrice(totalPaidThisYear)}
               </Typography>
               <Typography variant="caption" color="text.secondary">
-                {paidMonths.size} od 12 mjeseci
+                {paidMonths.size} {t('membershipFees:myPayments.monthsOf')}
               </Typography>
             </CardContent>
           </Card>
@@ -109,13 +106,13 @@ export default function MyClanarinaPage() {
           <Card sx={{ height: '100%' }}>
             <CardContent>
               <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                Duguje ({selectedYear})
+                {t('membershipFees:myPayments.owes')} ({selectedYear})
               </Typography>
               <Typography variant="h4" fontWeight="bold" color={owedThisYear > 0 ? 'error.main' : 'success.main'}>
                 {formatPrice(owedThisYear)}
               </Typography>
               <Typography variant="caption" color="text.secondary">
-                {owedThisYear > 0 ? `${12 - paidMonths.size} mjeseci neplaćeno` : 'Sve izmireno'}
+                {owedThisYear > 0 ? `${12 - paidMonths.size} ${t('membershipFees:myPayments.monthsUnpaid')}` : t('membershipFees:myPayments.allPaid')}
               </Typography>
             </CardContent>
           </Card>
@@ -125,13 +122,13 @@ export default function MyClanarinaPage() {
       <Card sx={{ mt: 3 }}>
         <CardContent>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-            <Typography variant="h6">Pregled po mjesecima</Typography>
+            <Typography variant="h6">{t('membershipFees:myPayments.monthlyOverview')}</Typography>
             <FormControl size="small" sx={{ minWidth: 120 }}>
-              <InputLabel>Godina</InputLabel>
+              <InputLabel>{t('membershipFees:year')}</InputLabel>
               <Select
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(e.target.value as number)}
-                label="Godina"
+                label={t('membershipFees:year')}
               >
                 {yearOptions.map(year => (
                   <MenuItem key={year} value={year}>{year}</MenuItem>
@@ -142,33 +139,32 @@ export default function MyClanarinaPage() {
 
           {monthlyFee === 0 ? (
             <Alert severity="info">
-              Vaša članarina još nije postavljena. Kontaktirajte administratora za više informacija.
+              {t('membershipFees:myPayments.feeNotSet')}
             </Alert>
           ) : (
             <TableContainer>
               <Table size="small">
                 <TableHead>
                   <TableRow>
-                    <TableCell sx={{ fontWeight: 'bold' }}>Mjesec</TableCell>
-                    <TableCell align="center" sx={{ fontWeight: 'bold' }}>Status</TableCell>
-                    <TableCell align="right" sx={{ fontWeight: 'bold' }}>Iznos</TableCell>
-                    <TableCell align="right" sx={{ fontWeight: 'bold' }}>Datum uplate</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }}>{t('membershipFees:month')}</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 'bold' }}>{t('membershipFees:myPayments.status')}</TableCell>
+                    <TableCell align="right" sx={{ fontWeight: 'bold' }}>{t('membershipFees:amount')}</TableCell>
+                    <TableCell align="right" sx={{ fontWeight: 'bold' }}>{t('membershipFees:myPayments.paymentDate')}</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {MONTHS.map((month, idx) => {
-                    const monthNum = idx + 1;
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((monthNum) => {
                     const payment = yearPayments.find((p: any) => p.coverageMonth === monthNum);
                     const isPaid = !!payment;
                     
                     return (
                       <TableRow key={monthNum} hover>
-                        <TableCell>{month}</TableCell>
+                        <TableCell>{t(`membershipFees:months.${monthNum}`)}</TableCell>
                         <TableCell align="center">
                           {isPaid ? (
                             <Chip 
                               icon={<CheckCircle />} 
-                              label="Plaćeno" 
+                              label={t('membershipFees:myPayments.paid')} 
                               color="success" 
                               size="small" 
                               variant="outlined"
@@ -176,7 +172,7 @@ export default function MyClanarinaPage() {
                           ) : (
                             <Chip 
                               icon={<Cancel />} 
-                              label="Neplaćeno" 
+                              label={t('membershipFees:myPayments.unpaid')} 
                               color="error" 
                               size="small" 
                               variant="outlined"
@@ -205,15 +201,15 @@ export default function MyClanarinaPage() {
       {payments.length > 0 && (
         <Card sx={{ mt: 3 }}>
           <CardContent>
-            <Typography variant="h6" sx={{ mb: 2 }}>Historija svih uplata</Typography>
+            <Typography variant="h6" sx={{ mb: 2 }}>{t('membershipFees:myPayments.allPaymentsHistory')}</Typography>
             <TableContainer>
               <Table size="small">
                 <TableHead>
                   <TableRow>
-                    <TableCell sx={{ fontWeight: 'bold' }}>Godina</TableCell>
-                    <TableCell sx={{ fontWeight: 'bold' }}>Mjesec</TableCell>
-                    <TableCell align="right" sx={{ fontWeight: 'bold' }}>Iznos</TableCell>
-                    <TableCell align="right" sx={{ fontWeight: 'bold' }}>Datum uplate</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }}>{t('membershipFees:year')}</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }}>{t('membershipFees:month')}</TableCell>
+                    <TableCell align="right" sx={{ fontWeight: 'bold' }}>{t('membershipFees:amount')}</TableCell>
+                    <TableCell align="right" sx={{ fontWeight: 'bold' }}>{t('membershipFees:myPayments.paymentDate')}</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>

@@ -60,7 +60,14 @@
     "monthsUnpaid": "months unpaid",
     "allPaid": "All paid",
     "paymentHistory": "Payment History",
-    "paymentCalendar": "Payment Calendar"
+    "paymentCalendar": "Payment Calendar",
+    "monthlyOverview": "Monthly Overview",
+    "status": "Status",
+    "paymentDate": "Payment Date",
+    "paid": "Paid",
+    "unpaid": "Unpaid",
+    "feeNotSet": "Your membership fee has not been set yet. Contact the administrator for more information.",
+    "allPaymentsHistory": "All Payments History"
   },
   "months": {
     "1": "January",

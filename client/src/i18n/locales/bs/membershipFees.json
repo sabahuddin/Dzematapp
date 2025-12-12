@@ -60,7 +60,14 @@
     "monthsUnpaid": "mjeseci neplaćeno",
     "allPaid": "Sve izmireno",
     "paymentHistory": "Historija uplata",
-    "paymentCalendar": "Kalendar uplata"
+    "paymentCalendar": "Kalendar uplata",
+    "monthlyOverview": "Pregled po mjesecima",
+    "status": "Status",
+    "paymentDate": "Datum uplate",
+    "paid": "Plaćeno",
+    "unpaid": "Neplaćeno",
+    "feeNotSet": "Vaša članarina još nije postavljena. Kontaktirajte administratora za više informacija.",
+    "allPaymentsHistory": "Historija svih uplata"
   },
   "months": {
     "1": "Januar",

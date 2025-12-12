@@ -60,7 +60,14 @@
     "monthsUnpaid": "ay ödenmemiş",
     "allPaid": "Hepsi ödendi",
     "paymentHistory": "Ödeme Geçmişi",
-    "paymentCalendar": "Ödeme Takvimi"
+    "paymentCalendar": "Ödeme Takvimi",
+    "monthlyOverview": "Aylık Genel Bakış",
+    "status": "Durum",
+    "paymentDate": "Ödeme Tarihi",
+    "paid": "Ödendi",
+    "unpaid": "Ödenmedi",
+    "feeNotSet": "Üyelik aidatınız henüz belirlenmedi. Daha fazla bilgi için yöneticiye başvurun.",
+    "allPaymentsHistory": "Tüm Ödeme Geçmişi"
   },
   "months": {
     "1": "Ocak",

@@ -60,7 +60,14 @@
     "monthsUnpaid": "Monate unbezahlt",
     "allPaid": "Alles bezahlt",
     "paymentHistory": "Zahlungsverlauf",
-    "paymentCalendar": "Zahlungskalender"
+    "paymentCalendar": "Zahlungskalender",
+    "monthlyOverview": "Monatsübersicht",
+    "status": "Status",
+    "paymentDate": "Zahlungsdatum",
+    "paid": "Bezahlt",
+    "unpaid": "Unbezahlt",
+    "feeNotSet": "Ihr Mitgliedsbeitrag wurde noch nicht festgelegt. Kontaktieren Sie den Administrator für weitere Informationen.",
+    "allPaymentsHistory": "Gesamter Zahlungsverlauf"
   },
   "months": {
     "1": "Januar",

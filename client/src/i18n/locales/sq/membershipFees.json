@@ -60,7 +60,14 @@
     "monthsUnpaid": "muaj të papaguar",
     "allPaid": "Të gjitha të paguara",
     "paymentHistory": "Historia e pagesave",
-    "paymentCalendar": "Kalendari i pagesave"
+    "paymentCalendar": "Kalendari i pagesave",
+    "monthlyOverview": "Pasqyra mujore",
+    "status": "Statusi",
+    "paymentDate": "Data e pagesës",
+    "paid": "Paguar",
+    "unpaid": "Papaguar",
+    "feeNotSet": "Anëtarësia juaj nuk është vendosur ende. Kontaktoni administratorin për më shumë informacion.",
+    "allPaymentsHistory": "Historia e të gjitha pagesave"
   },
   "months": {
     "1": "Janar",
