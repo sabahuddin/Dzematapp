@@ -9,6 +9,11 @@ interface User {
   isAdmin: boolean;
   isSuperAdmin?: boolean;
   tenantId?: string;
+  tenant?: {
+    id: string;
+    name: string;
+    enabledModules: string[];
+  };
 }
 
 interface AuthContextType {

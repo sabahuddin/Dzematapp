@@ -44,11 +44,15 @@ export function ModuleProvider({ children }: { children: React.ReactNode }) {
     if (user?.isSuperAdmin) {
       return Object.keys(ALL_MODULES);
     }
-    return (user as any)?.tenant?.enabledModules || ['dashboard', 'announcements', 'events', 'vaktija', 'users'];
+    // Get enabled modules from tenant, with fallback to basic modules
+    const tenantModules = user?.tenant?.enabledModules;
+    console.log('[ModuleContext] User tenant:', user?.tenant);
+    console.log('[ModuleContext] Enabled modules:', tenantModules);
+    return tenantModules || ['dashboard', 'announcements', 'events', 'vaktija', 'users'];
   }, [user]);
 
   const isModuleEnabled = (moduleId: ModuleId): boolean => {
-    if ((user as any)?.isSuperAdmin) return true;
+    if (user?.isSuperAdmin) return true;
     return enabledModules.includes(moduleId);
   };
 
