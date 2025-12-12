@@ -8,13 +8,19 @@
   "becomeSponsor": "Sponsorumuz Olun!",
   "becomeSponsorDescription": "Topluluğumuzu destekleyin ve işinizi tanıtın. Size uygun sponsorluk seviyesini seçin.",
   "applyForSponsorship": "Sponsorluk için Başvurun",
+  "applyTitle": "Sponsorluk Başvurusu",
   "noActiveSponsors": "Şu anda aktif sponsor yok.",
+  "noSponsors": "Sponsor yok",
   "pendingApplications": "{{count}} başvuru onay bekliyor",
   "pricingSettings": "Sponsor Paketi Fiyat Ayarları",
   "savePrices": "Fiyatları Kaydet",
   "saving": "Kaydediliyor...",
   "pricesSaved": "Sponsor paketi fiyatları kaydedildi",
   "pricesSaveError": "Fiyatlar kaydedilirken hata oluştu",
+  "tabs": {
+    "public": "Genel Görünüm",
+    "admin": "Yönetim"
+  },
   "tiers": {
     "gold": "Altın",
     "silver": "Gümüş",
@@ -42,17 +48,28 @@
   },
   "form": {
     "name": "Ad",
+    "nameLabel": "Ad (şirket veya tam ad)",
     "nameRequired": "Ad gerekli",
     "email": "E-posta",
     "emailInvalid": "Geçersiz e-posta",
     "phone": "Telefon",
     "website": "Web sitesi",
     "websiteInvalid": "Geçersiz web sitesi URL'si",
+    "websiteExample": "örn. https://www.sirket.com",
     "logoUrl": "Logo URL",
+    "logoHelp": "Logo resminizin linki",
     "selectType": "Tür seçin",
-    "selectTier": "Seviye seçin"
+    "selectTier": "Seviye seçin",
+    "tierLabel": "Sponsorluk Seviyesi"
   },
   "currency": "Para Birimi",
+  "common": {
+    "success": "Başarılı",
+    "error": "Hata",
+    "cancel": "İptal",
+    "save": "Kaydet",
+    "savingBtn": "Kaydediliyor..."
+  },
   "messages": {
     "sponsorCreated": "Sponsorluk başvurusu gönderildi",
     "sponsorUpdated": "Sponsor güncellendi",
@@ -68,6 +85,13 @@
   "review": {
     "approve": "Onayla",
     "reject": "Reddet",
+    "approveTitle": "Sponsorluğu Onayla",
+    "rejectTitle": "Sponsorluğu Reddet",
+    "approveConfirm": "\"{{name}}\" için sponsorluğu onaylamak istiyor musunuz?",
+    "rejectConfirm": "\"{{name}}\" için sponsorluğu reddetmek istiyor musunuz?",
+    "noteOptional": "Not (isteğe bağlı)",
+    "reasonRequired": "Red nedeni (zorunlu)",
+    "processing": "İşleniyor...",
     "notes": "Notlar",
     "notesPlaceholder": "Not girin..."
   }

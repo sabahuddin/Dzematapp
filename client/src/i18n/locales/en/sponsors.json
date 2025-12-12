@@ -8,13 +8,19 @@
   "becomeSponsor": "Become Our Sponsor!",
   "becomeSponsorDescription": "Support our community and promote your business. Choose the sponsorship level that suits you.",
   "applyForSponsorship": "Apply for Sponsorship",
+  "applyTitle": "Apply for Sponsorship",
   "noActiveSponsors": "Currently no active sponsors.",
+  "noSponsors": "No sponsors",
   "pendingApplications": "{{count}} applications pending approval",
   "pricingSettings": "Sponsor Package Pricing Settings",
   "savePrices": "Save Prices",
   "saving": "Saving...",
   "pricesSaved": "Sponsor package prices saved",
   "pricesSaveError": "Error saving prices",
+  "tabs": {
+    "public": "Public View",
+    "admin": "Administration"
+  },
   "tiers": {
     "gold": "Gold",
     "silver": "Silver",
@@ -42,17 +48,28 @@
   },
   "form": {
     "name": "Name",
+    "nameLabel": "Name (company or full name)",
     "nameRequired": "Name is required",
     "email": "Email",
     "emailInvalid": "Invalid email",
     "phone": "Phone",
     "website": "Website",
     "websiteInvalid": "Invalid website URL",
+    "websiteExample": "e.g. https://www.company.com",
     "logoUrl": "Logo URL",
+    "logoHelp": "Link to your logo image",
     "selectType": "Select type",
-    "selectTier": "Select tier"
+    "selectTier": "Select tier",
+    "tierLabel": "Sponsorship Level"
   },
   "currency": "Currency",
+  "common": {
+    "success": "Success",
+    "error": "Error",
+    "cancel": "Cancel",
+    "save": "Save",
+    "savingBtn": "Saving..."
+  },
   "messages": {
     "sponsorCreated": "Sponsorship application submitted",
     "sponsorUpdated": "Sponsor updated",
@@ -68,6 +85,13 @@
   "review": {
     "approve": "Approve",
     "reject": "Reject",
+    "approveTitle": "Approve Sponsorship",
+    "rejectTitle": "Reject Sponsorship",
+    "approveConfirm": "Do you want to approve sponsorship for \"{{name}}\"?",
+    "rejectConfirm": "Do you want to reject sponsorship for \"{{name}}\"?",
+    "noteOptional": "Note (optional)",
+    "reasonRequired": "Rejection reason (required)",
+    "processing": "Processing...",
     "notes": "Notes",
     "notesPlaceholder": "Enter notes..."
   }

@@ -8,13 +8,19 @@
   "becomeSponsor": "Postanite naš sponzor!",
   "becomeSponsorDescription": "Podržite naš džemat i promovirajte vaš posao u našoj zajednici. Odaberite nivo sponzorstva koji vam odgovara.",
   "applyForSponsorship": "Prijavite se za sponzorstvo",
+  "applyTitle": "Prijava za sponzorstvo",
   "noActiveSponsors": "Trenutno nema aktivnih sponzora.",
+  "noSponsors": "Nema sponzora",
   "pendingApplications": "{{count}} prijava čeka na odobrenje",
   "pricingSettings": "Podešavanje cijena sponzorskih paketa",
   "savePrices": "Sačuvaj cijene",
   "saving": "Čuvanje...",
   "pricesSaved": "Cijene sponzorskih paketa su sačuvane",
   "pricesSaveError": "Greška pri čuvanju cijena",
+  "tabs": {
+    "public": "Javni prikaz",
+    "admin": "Administracija"
+  },
   "tiers": {
     "gold": "Zlatni",
     "silver": "Srebreni",
@@ -42,17 +48,28 @@
   },
   "form": {
     "name": "Naziv",
+    "nameLabel": "Naziv (firme ili ime i prezime)",
     "nameRequired": "Naziv je obavezan",
     "email": "Email",
     "emailInvalid": "Neispravan email",
     "phone": "Telefon",
     "website": "Web stranica",
     "websiteInvalid": "Neispravna web adresa",
+    "websiteExample": "npr. https://www.firma.ba",
     "logoUrl": "URL loga",
+    "logoHelp": "Link do slike vašeg loga",
     "selectType": "Odaberi tip",
-    "selectTier": "Odaberi nivo"
+    "selectTier": "Odaberi nivo",
+    "tierLabel": "Nivo sponzorstva"
   },
   "currency": "Valuta",
+  "common": {
+    "success": "Uspješno",
+    "error": "Greška",
+    "cancel": "Otkaži",
+    "save": "Spremi",
+    "savingBtn": "Spremam..."
+  },
   "messages": {
     "sponsorCreated": "Prijava za sponzorstvo poslana",
     "sponsorUpdated": "Sponzor ažuriran",
@@ -68,6 +85,13 @@
   "review": {
     "approve": "Odobri",
     "reject": "Odbij",
+    "approveTitle": "Odobri sponzorstvo",
+    "rejectTitle": "Odbij sponzorstvo",
+    "approveConfirm": "Da li želite odobriti sponzorstvo za \"{{name}}\"?",
+    "rejectConfirm": "Da li želite odbiti sponzorstvo za \"{{name}}\"?",
+    "noteOptional": "Napomena (opcionalno)",
+    "reasonRequired": "Razlog odbijanja (obavezno)",
+    "processing": "Obrađujem...",
     "notes": "Napomena",
     "notesPlaceholder": "Unesite napomenu..."
   }

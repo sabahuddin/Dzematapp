@@ -8,13 +8,19 @@
   "becomeSponsor": "Werden Sie unser Sponsor!",
   "becomeSponsorDescription": "Unterstützen Sie unsere Gemeinde und werben Sie für Ihr Unternehmen. Wählen Sie die Sponsorenstufe, die zu Ihnen passt.",
   "applyForSponsorship": "Für Sponsoring bewerben",
+  "applyTitle": "Bewerbung für Sponsoring",
   "noActiveSponsors": "Derzeit keine aktiven Sponsoren.",
+  "noSponsors": "Keine Sponsoren",
   "pendingApplications": "{{count}} Bewerbungen warten auf Genehmigung",
   "pricingSettings": "Sponsorenpaket-Preiseinstellungen",
   "savePrices": "Preise speichern",
   "saving": "Speichern...",
   "pricesSaved": "Sponsorenpaket-Preise gespeichert",
   "pricesSaveError": "Fehler beim Speichern der Preise",
+  "tabs": {
+    "public": "Öffentliche Ansicht",
+    "admin": "Verwaltung"
+  },
   "tiers": {
     "gold": "Gold",
     "silver": "Silber",
@@ -42,17 +48,28 @@
   },
   "form": {
     "name": "Name",
+    "nameLabel": "Name (Firma oder vollständiger Name)",
     "nameRequired": "Name ist erforderlich",
     "email": "E-Mail",
     "emailInvalid": "Ungültige E-Mail",
     "phone": "Telefon",
     "website": "Webseite",
     "websiteInvalid": "Ungültige Webseiten-URL",
+    "websiteExample": "z.B. https://www.firma.de",
     "logoUrl": "Logo-URL",
+    "logoHelp": "Link zu Ihrem Logo-Bild",
     "selectType": "Typ auswählen",
-    "selectTier": "Stufe auswählen"
+    "selectTier": "Stufe auswählen",
+    "tierLabel": "Sponsorenstufe"
   },
   "currency": "Währung",
+  "common": {
+    "success": "Erfolg",
+    "error": "Fehler",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "savingBtn": "Speichern..."
+  },
   "messages": {
     "sponsorCreated": "Sponsoring-Bewerbung eingereicht",
     "sponsorUpdated": "Sponsor aktualisiert",
@@ -68,6 +85,13 @@
   "review": {
     "approve": "Genehmigen",
     "reject": "Ablehnen",
+    "approveTitle": "Sponsoring genehmigen",
+    "rejectTitle": "Sponsoring ablehnen",
+    "approveConfirm": "Möchten Sie das Sponsoring für \"{{name}}\" genehmigen?",
+    "rejectConfirm": "Möchten Sie das Sponsoring für \"{{name}}\" ablehnen?",
+    "noteOptional": "Notiz (optional)",
+    "reasonRequired": "Ablehnungsgrund (erforderlich)",
+    "processing": "Verarbeitung...",
     "notes": "Notizen",
     "notesPlaceholder": "Notizen eingeben..."
   }

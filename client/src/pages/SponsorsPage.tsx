@@ -71,19 +71,6 @@ const tierColors: Record<string, string> = {
   bronze: '#CD7F32'
 };
 
-const tierLabels: Record<string, string> = {
-  gold: 'Zlatni',
-  silver: 'Srebreni',
-  bronze: 'Bronzani'
-};
-
-const statusLabels: Record<string, string> = {
-  pending: 'Na čekanju',
-  active: 'Aktivno',
-  expired: 'Isteklo',
-  rejected: 'Odbijeno'
-};
-
 const statusColors: Record<string, 'default' | 'success' | 'warning' | 'error'> = {
   pending: 'warning',
   active: 'success',
@@ -94,7 +81,7 @@ const statusColors: Record<string, 'default' | 'success' | 'warning' | 'error'> 
 export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps = {}) {
   const { user: currentUser } = useAuth();
   const { toast } = useToast();
-  const { t } = useTranslation(['common']);
+  const { t } = useTranslation(['sponsors']);
   
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedSponsor, setSelectedSponsor] = useState<Sponsor | null>(null);
@@ -156,10 +143,10 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/sponsors/pricing'] });
-      toast({ title: 'Uspješno', description: 'Cijene sponzorskih paketa su sačuvane' });
+      toast({ title: t('common.success'), description: t('pricesSaved') });
     },
     onError: (error: Error) => {
-      toast({ title: 'Greška', description: error.message || 'Greška pri čuvanju cijena', variant: 'destructive' });
+      toast({ title: t('common.error'), description: error.message || t('pricesSaveError'), variant: 'destructive' });
     }
   });
 
@@ -173,10 +160,10 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
   };
 
   const formSchema = z.object({
-    name: z.string().min(1, 'Naziv je obavezan'),
+    name: z.string().min(1, t('form.nameRequired')),
     type: z.enum(['company', 'individual']),
     tier: z.enum(['bronze', 'silver', 'gold']),
-    email: z.string().email('Neispravan email').optional().or(z.literal('')),
+    email: z.string().email(t('form.emailInvalid')).optional().or(z.literal('')),
     phone: z.string().optional(),
     website: z.string()
       .transform((val) => {
@@ -195,7 +182,7 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
         } catch {
           return false;
         }
-      }, { message: 'Neispravna web adresa' })
+      }, { message: t('form.websiteInvalid') })
       .optional()
       .or(z.literal('')),
     logoUrl: z.string().optional(),
@@ -228,15 +215,15 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
       queryClient.invalidateQueries({ queryKey: ['/api/sponsors'] });
       queryClient.invalidateQueries({ queryKey: ['/api/sponsors/active'] });
       toast({ 
-        title: 'Uspješno', 
-        description: selectedSponsor ? 'Sponzor ažuriran' : 'Prijava za sponzorstvo poslana' 
+        title: t('common.success'), 
+        description: selectedSponsor ? t('messages.sponsorUpdated') : t('messages.sponsorCreated') 
       });
       handleCloseDialog();
     },
     onError: () => {
       toast({ 
-        title: 'Greška', 
-        description: 'Došlo je do greške', 
+        title: t('common.error'), 
+        description: t('messages.error'), 
         variant: 'destructive' 
       });
     }
@@ -249,10 +236,10 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/sponsors'] });
       queryClient.invalidateQueries({ queryKey: ['/api/sponsors/active'] });
-      toast({ title: 'Uspješno', description: 'Sponzor obrisan' });
+      toast({ title: t('common.success'), description: t('messages.sponsorDeleted') });
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri brisanju', variant: 'destructive' });
+      toast({ title: t('common.error'), description: t('messages.deleteError'), variant: 'destructive' });
     }
   });
 
@@ -265,15 +252,15 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
       queryClient.invalidateQueries({ queryKey: ['/api/sponsors'] });
       queryClient.invalidateQueries({ queryKey: ['/api/sponsors/active'] });
       toast({ 
-        title: 'Uspješno', 
-        description: reviewAction === 'approve' ? 'Sponzorstvo odobreno' : 'Sponzorstvo odbijeno' 
+        title: t('common.success'), 
+        description: reviewAction === 'approve' ? t('messages.sponsorApproved') : t('messages.sponsorRejected') 
       });
       setReviewDialogOpen(false);
       setSponsorToReview(null);
       setReviewNotes('');
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri obradi', variant: 'destructive' });
+      toast({ title: t('common.error'), description: t('messages.reviewError'), variant: 'destructive' });
     }
   });
 
@@ -315,7 +302,7 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
   });
 
   const handleDelete = (id: string) => {
-    if (window.confirm('Da li ste sigurni da želite obrisati ovog sponzora?')) {
+    if (window.confirm(t('messages.confirmDelete'))) {
       deleteSponsorMutation.mutate(id);
     }
   };
@@ -330,7 +317,7 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
   const handleConfirmReview = () => {
     if (sponsorToReview) {
       if (reviewAction === 'reject' && !reviewNotes.trim()) {
-        toast({ title: 'Greška', description: 'Morate unijeti razlog odbijanja', variant: 'destructive' });
+        toast({ title: t('common.error'), description: t('messages.rejectionReasonRequired'), variant: 'destructive' });
         return;
       }
       reviewSponsorMutation.mutate({
@@ -356,11 +343,11 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
   const renderPublicView = () => (
     <Box>
       <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: '#0D1B2A' }}>
-        Naši sponzori
+        {t('ourSponsors')}
       </Typography>
       
       {activeSponsors.length === 0 ? (
-        <Alert severity="info">Trenutno nema aktivnih sponzora.</Alert>
+        <Alert severity="info">{t('noActiveSponsors')}</Alert>
       ) : (
         <>
           {['gold', 'silver', 'bronze'].map(tier => {
@@ -372,7 +359,7 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
                   <EmojiEvents sx={{ color: tierColors[tier] }} />
                   <Typography variant="h6" sx={{ fontWeight: 600, color: tierColors[tier] }}>
-                    {tierLabels[tier]} sponzori
+                    {t('tierSponsors', { tier: t(`tiers.${tier}`) })}
                   </Typography>
                 </Box>
                 <Grid container spacing={2}>
@@ -405,7 +392,7 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
                             {sponsor.name}
                           </Typography>
                           <Chip 
-                            label={sponsor.type === 'company' ? 'Firma' : 'Fizičko lice'}
+                            label={sponsor.type === 'company' ? t('type.company') : t('type.individual')}
                             size="small"
                             sx={{ mt: 1 }}
                           />
@@ -474,15 +461,15 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
 
       <Card sx={{ mt: 4, p: 3, bgcolor: '#f5f7ff', borderRadius: '12px' }}>
         <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-          Postanite naš sponzor!
+          {t('becomeSponsor')}
         </Typography>
         <Typography variant="body2" sx={{ mb: 2 }}>
-          Podržite naš džemat i promovirajte vaš posao u našoj zajednici. Odaberite nivo sponzorstva koji vam odgovara.
+          {t('becomeSponsorDescription')}
         </Typography>
         <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 2 }}>
-          <Chip icon={<EmojiEvents sx={{ color: tierColors.bronze }} />} label={`Bronzani${getTierPriceLabel('bronze') ? ` - ${getTierPriceLabel('bronze')}` : ''}`} />
-          <Chip icon={<EmojiEvents sx={{ color: tierColors.silver }} />} label={`Srebreni${getTierPriceLabel('silver') ? ` - ${getTierPriceLabel('silver')}` : ''}`} />
-          <Chip icon={<EmojiEvents sx={{ color: tierColors.gold }} />} label={`Zlatni${getTierPriceLabel('gold') ? ` - ${getTierPriceLabel('gold')}` : ''}`} />
+          <Chip icon={<EmojiEvents sx={{ color: tierColors.bronze }} />} label={`${t('tiers.bronze')}${getTierPriceLabel('bronze') ? ` - ${getTierPriceLabel('bronze')}` : ''}`} />
+          <Chip icon={<EmojiEvents sx={{ color: tierColors.silver }} />} label={`${t('tiers.silver')}${getTierPriceLabel('silver') ? ` - ${getTierPriceLabel('silver')}` : ''}`} />
+          <Chip icon={<EmojiEvents sx={{ color: tierColors.gold }} />} label={`${t('tiers.gold')}${getTierPriceLabel('gold') ? ` - ${getTierPriceLabel('gold')}` : ''}`} />
         </Box>
         <Button 
           variant="contained" 
@@ -494,7 +481,7 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
             '&:hover': { bgcolor: '#1976D2' }
           }}
         >
-          Prijavite se za sponzorstvo
+          {t('applyForSponsorship')}
         </Button>
       </Card>
     </Box>
@@ -504,7 +491,7 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h5" sx={{ fontWeight: 600, color: '#0D1B2A' }}>
-          Upravljanje sponzorima
+          {t('managementTitle')}
         </Typography>
         <Button
           variant="contained"
@@ -516,13 +503,13 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
             '&:hover': { bgcolor: '#1976D2' }
           }}
         >
-          Dodaj sponzora
+          {t('addSponsor')}
         </Button>
       </Box>
 
       {pendingSponsors.length > 0 && (
         <Alert severity="warning" sx={{ mb: 3 }}>
-          {pendingSponsors.length} prijava čeka na odobrenje
+          {t('pendingApplications', { count: pendingSponsors.length })}
         </Alert>
       )}
 
@@ -530,11 +517,11 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
       <Card sx={{ mb: 3, p: 2 }}>
         <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
           <EmojiEvents sx={{ color: '#FFD700' }} />
-          Podešavanje cijena sponzorskih paketa
+          {t('pricingSettings')}
         </Typography>
         <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 2, mb: 2 }}>
           <TextField
-            label="Bronzani sponzor (iznos)"
+            label={t('tierAmount', { tier: t('tiers.bronze') })}
             type="number"
             value={bronzeAmount}
             onChange={(e) => setBronzeAmount(e.target.value)}
@@ -543,7 +530,7 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
             data-testid="input-bronze-amount"
           />
           <TextField
-            label="Srebreni sponzor (iznos)"
+            label={t('tierAmount', { tier: t('tiers.silver') })}
             type="number"
             value={silverAmount}
             onChange={(e) => setSilverAmount(e.target.value)}
@@ -552,7 +539,7 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
             data-testid="input-silver-amount"
           />
           <TextField
-            label="Zlatni sponzor (iznos)"
+            label={t('tierAmount', { tier: t('tiers.gold') })}
             type="number"
             value={goldAmount}
             onChange={(e) => setGoldAmount(e.target.value)}
@@ -561,10 +548,10 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
             data-testid="input-gold-amount"
           />
           <FormControl size="small" sx={{ minWidth: 100 }}>
-            <InputLabel>Valuta</InputLabel>
+            <InputLabel>{t('currency')}</InputLabel>
             <Select
               value={sponsorCurrency}
-              label="Valuta"
+              label={t('currency')}
               onChange={(e) => setSponsorCurrency(e.target.value)}
               data-testid="select-sponsor-currency"
             >
@@ -582,7 +569,7 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
           data-testid="button-save-pricing"
           sx={{ bgcolor: '#1E88E5', '&:hover': { bgcolor: '#1976D2' } }}
         >
-          {updatePricingMutation.isPending ? 'Čuvanje...' : 'Sačuvaj cijene'}
+          {updatePricingMutation.isPending ? t('saving') : t('savePrices')}
         </Button>
       </Card>
 
@@ -591,12 +578,12 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Sponzor</TableCell>
-                <TableCell>Tip</TableCell>
-                <TableCell>Nivo</TableCell>
-                <TableCell>Kontakt</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Akcije</TableCell>
+                <TableCell>{t('table.sponsor')}</TableCell>
+                <TableCell>{t('table.type')}</TableCell>
+                <TableCell>{t('table.tier')}</TableCell>
+                <TableCell>{t('table.contact')}</TableCell>
+                <TableCell>{t('table.status')}</TableCell>
+                <TableCell>{t('table.actions')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -617,14 +604,14 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
                   <TableCell>
                     <Chip 
                       icon={sponsor.type === 'company' ? <Business /> : <Person />}
-                      label={sponsor.type === 'company' ? 'Firma' : 'Fizičko lice'}
+                      label={sponsor.type === 'company' ? t('type.company') : t('type.individual')}
                       size="small"
                     />
                   </TableCell>
                   <TableCell>
                     <Chip 
                       icon={<EmojiEvents sx={{ color: tierColors[sponsor.tier] }} />}
-                      label={tierLabels[sponsor.tier]}
+                      label={t(`tiers.${sponsor.tier}`)}
                       size="small"
                       sx={{ 
                         bgcolor: `${tierColors[sponsor.tier]}20`,
@@ -650,7 +637,7 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
                   </TableCell>
                   <TableCell>
                     <Chip 
-                      label={statusLabels[sponsor.status]}
+                      label={t(`status.${sponsor.status}`)}
                       color={statusColors[sponsor.status]}
                       size="small"
                     />
@@ -700,7 +687,7 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
                 <TableRow>
                   <TableCell colSpan={6} sx={{ textAlign: 'center', py: 4 }}>
                     <Typography color="text.secondary">
-                      Nema sponzora
+                      {t('noSponsors')}
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -720,8 +707,8 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
           onChange={(_, v) => setActiveTab(v)} 
           sx={{ mb: 3, borderBottom: 1, borderColor: 'divider' }}
         >
-          <Tab label="Javni prikaz" data-testid="tab-public" />
-          <Tab label="Administracija" data-testid="tab-admin" />
+          <Tab label={t('tabs.public')} data-testid="tab-public" />
+          <Tab label={t('tabs.admin')} data-testid="tab-admin" />
         </Tabs>
       )}
 
@@ -730,13 +717,13 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
       <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
         <form onSubmit={handleSubmit}>
           <DialogTitle>
-            {selectedSponsor ? 'Uredi sponzora' : 'Prijava za sponzorstvo'}
+            {selectedSponsor ? t('editSponsor') : t('applyTitle')}
           </DialogTitle>
           <DialogContent>
             <Stack spacing={2} sx={{ mt: 1 }}>
               <TextField
                 fullWidth
-                label="Naziv (firme ili ime i prezime)"
+                label={t('form.nameLabel')}
                 {...form.register('name')}
                 error={!!form.formState.errors.name}
                 helperText={form.formState.errors.name?.message}
@@ -745,31 +732,31 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
               />
               
               <FormControl fullWidth>
-                <InputLabel>Tip</InputLabel>
+                <InputLabel>{t('table.type')}</InputLabel>
                 <Select
                   {...form.register('type')}
                   defaultValue={form.getValues('type')}
-                  label="Tip"
+                  label={t('table.type')}
                   data-testid="select-type"
                 >
-                  <MenuItem value="company">Firma</MenuItem>
-                  <MenuItem value="individual">Fizičko lice</MenuItem>
+                  <MenuItem value="company">{t('type.company')}</MenuItem>
+                  <MenuItem value="individual">{t('type.individual')}</MenuItem>
                 </Select>
               </FormControl>
 
               <FormControl fullWidth>
-                <InputLabel>Nivo sponzorstva</InputLabel>
+                <InputLabel>{t('form.tierLabel')}</InputLabel>
                 <Select
                   {...form.register('tier')}
                   defaultValue={form.getValues('tier')}
-                  label="Nivo sponzorstva"
+                  label={t('form.tierLabel')}
                   data-testid="select-tier"
                 >
                   <MenuItem value="bronze">
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%', justifyContent: 'space-between' }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <EmojiEvents sx={{ color: tierColors.bronze }} />
-                        Bronzani
+                        {t('tiers.bronze')}
                       </Box>
                       {getTierPriceLabel('bronze') && (
                         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
@@ -782,7 +769,7 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%', justifyContent: 'space-between' }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <EmojiEvents sx={{ color: tierColors.silver }} />
-                        Srebreni
+                        {t('tiers.silver')}
                       </Box>
                       {getTierPriceLabel('silver') && (
                         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
@@ -795,7 +782,7 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%', justifyContent: 'space-between' }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <EmojiEvents sx={{ color: tierColors.gold }} />
-                        Zlatni
+                        {t('tiers.gold')}
                       </Box>
                       {getTierPriceLabel('gold') && (
                         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
@@ -809,7 +796,7 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
 
               <TextField
                 fullWidth
-                label="Email"
+                label={t('form.email')}
                 type="email"
                 {...form.register('email')}
                 error={!!form.formState.errors.email}
@@ -819,32 +806,32 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
 
               <TextField
                 fullWidth
-                label="Telefon"
+                label={t('form.phone')}
                 {...form.register('phone')}
                 data-testid="input-phone"
               />
 
               <TextField
                 fullWidth
-                label="Web stranica"
+                label={t('form.website')}
                 {...form.register('website')}
                 error={!!form.formState.errors.website}
-                helperText={form.formState.errors.website?.message || 'npr. https://www.firma.ba'}
+                helperText={form.formState.errors.website?.message || t('form.websiteExample')}
                 data-testid="input-website"
               />
 
               <TextField
                 fullWidth
-                label="URL loga/slike"
+                label={t('form.logoUrl')}
                 {...form.register('logoUrl')}
-                helperText="Link do slike vašeg loga"
+                helperText={t('form.logoHelp')}
                 data-testid="input-logo"
               />
             </Stack>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDialog} data-testid="button-cancel">
-              Otkaži
+              {t('common.cancel')}
             </Button>
             <Button 
               type="submit" 
@@ -852,7 +839,7 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
               disabled={saveSponsorMutation.isPending}
               data-testid="button-save"
             >
-              {saveSponsorMutation.isPending ? 'Spremam...' : 'Spremi'}
+              {saveSponsorMutation.isPending ? t('common.savingBtn') : t('common.save')}
             </Button>
           </DialogActions>
         </form>
@@ -860,20 +847,20 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
 
       <Dialog open={reviewDialogOpen} onClose={() => setReviewDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>
-          {reviewAction === 'approve' ? 'Odobri sponzorstvo' : 'Odbij sponzorstvo'}
+          {reviewAction === 'approve' ? t('review.approveTitle') : t('review.rejectTitle')}
         </DialogTitle>
         <DialogContent>
           <Typography sx={{ mb: 2 }}>
             {reviewAction === 'approve' 
-              ? `Da li želite odobriti sponzorstvo za "${sponsorToReview?.name}"?`
-              : `Da li želite odbiti sponzorstvo za "${sponsorToReview?.name}"?`
+              ? t('review.approveConfirm', { name: sponsorToReview?.name })
+              : t('review.rejectConfirm', { name: sponsorToReview?.name })
             }
           </Typography>
           <TextField
             fullWidth
             multiline
             rows={3}
-            label={reviewAction === 'approve' ? 'Napomena (opcionalno)' : 'Razlog odbijanja (obavezno)'}
+            label={reviewAction === 'approve' ? t('review.noteOptional') : t('review.reasonRequired')}
             value={reviewNotes}
             onChange={(e) => setReviewNotes(e.target.value)}
             required={reviewAction === 'reject'}
@@ -881,7 +868,7 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setReviewDialogOpen(false)}>Otkaži</Button>
+          <Button onClick={() => setReviewDialogOpen(false)}>{t('common.cancel')}</Button>
           <Button 
             onClick={handleConfirmReview}
             variant="contained"
@@ -889,7 +876,7 @@ export default function SponsorsPage({ hideHeader = false }: SponsorsPageProps =
             disabled={reviewSponsorMutation.isPending}
             data-testid="button-confirm-review"
           >
-            {reviewSponsorMutation.isPending ? 'Obrađujem...' : (reviewAction === 'approve' ? 'Odobri' : 'Odbij')}
+            {reviewSponsorMutation.isPending ? t('review.processing') : (reviewAction === 'approve' ? t('review.approve') : t('review.reject'))}
           </Button>
         </DialogActions>
       </Dialog>

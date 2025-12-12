@@ -8,13 +8,19 @@
   "becomeSponsor": "Bëhuni Sponsori Ynë!",
   "becomeSponsorDescription": "Mbështetni komunitetin tonë dhe promovoni biznesin tuaj. Zgjidhni nivelin e sponsorizimit që ju përshtatet.",
   "applyForSponsorship": "Aplikoni për Sponsorizim",
+  "applyTitle": "Aplikim për Sponsorizim",
   "noActiveSponsors": "Aktualisht nuk ka sponsorë aktivë.",
+  "noSponsors": "Nuk ka sponsorë",
   "pendingApplications": "{{count}} aplikime presin miratimin",
   "pricingSettings": "Cilësimet e Çmimeve të Paketave të Sponsorizimit",
   "savePrices": "Ruaj Çmimet",
   "saving": "Duke ruajtur...",
   "pricesSaved": "Çmimet e paketave të sponsorizimit u ruajtën",
   "pricesSaveError": "Gabim gjatë ruajtjes së çmimeve",
+  "tabs": {
+    "public": "Pamja Publike",
+    "admin": "Administrimi"
+  },
   "tiers": {
     "gold": "Artë",
     "silver": "Argjend",
@@ -42,17 +48,28 @@
   },
   "form": {
     "name": "Emri",
+    "nameLabel": "Emri (kompania ose emri i plotë)",
     "nameRequired": "Emri është i detyrueshëm",
     "email": "Email",
     "emailInvalid": "Email i pavlefshëm",
     "phone": "Telefoni",
     "website": "Faqja e internetit",
     "websiteInvalid": "URL e pavlefshme",
+    "websiteExample": "p.sh. https://www.kompani.al",
     "logoUrl": "URL e logos",
+    "logoHelp": "Linku i imazhit të logos tuaj",
     "selectType": "Zgjidhni llojin",
-    "selectTier": "Zgjidhni nivelin"
+    "selectTier": "Zgjidhni nivelin",
+    "tierLabel": "Niveli i Sponsorizimit"
   },
   "currency": "Monedha",
+  "common": {
+    "success": "Sukses",
+    "error": "Gabim",
+    "cancel": "Anulo",
+    "save": "Ruaj",
+    "savingBtn": "Duke ruajtur..."
+  },
   "messages": {
     "sponsorCreated": "Aplikimi për sponsorizim u dërgua",
     "sponsorUpdated": "Sponsori u përditësua",
@@ -68,6 +85,13 @@
   "review": {
     "approve": "Mirato",
     "reject": "Refuzo",
+    "approveTitle": "Mirato Sponsorizimin",
+    "rejectTitle": "Refuzo Sponsorizimin",
+    "approveConfirm": "Dëshironi të miratoni sponsorizimin për \"{{name}}\"?",
+    "rejectConfirm": "Dëshironi të refuzoni sponsorizimin për \"{{name}}\"?",
+    "noteOptional": "Shënim (opsional)",
+    "reasonRequired": "Arsyeja e refuzimit (e detyrueshme)",
+    "processing": "Duke përpunuar...",
     "notes": "Shënime",
     "notesPlaceholder": "Shkruani shënime..."
   }
