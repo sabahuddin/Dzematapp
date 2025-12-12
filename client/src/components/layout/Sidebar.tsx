@@ -86,12 +86,12 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
   }> = [
     { path: '/dashboard', label: t('navigation:menu.dashboard'), icon: Dashboard },
     { path: '/super-admin/panel', label: 'Super Admin Panel', icon: AdminPanelSettings, superAdminOnly: true },
-    { path: '/feed', label: 'Feed', icon: DynamicFeed },
+    { path: '/feed', label: t('navigation:menu.feed'), icon: DynamicFeed },
     { path: '/users', label: t('navigation:menu.users'), icon: People, adminOnly: true },
-    { path: '/my-activities', label: 'Moje aktivnosti', icon: Timeline, memberOnly: true },
+    { path: '/my-activities', label: t('navigation:menu.myActivities'), icon: Timeline, memberOnly: true },
     { path: '/finances', label: t('navigation:menu.finances'), icon: AttachMoney, adminOnly: true },
-    { path: '/membership-fees', label: 'Članarina (Admin)', icon: Receipt, adminOnly: true },
-    { path: '/my-clanarina', label: 'Moja članarina', icon: Receipt, memberOnly: true },
+    { path: '/membership-fees', label: t('navigation:menu.membershipFees'), icon: Receipt, adminOnly: true },
+    { path: '/my-clanarina', label: t('navigation:menu.myMembership'), icon: Receipt, memberOnly: true },
     { path: '/activity-log', label: t('navigation:menu.activityLog'), icon: Timeline, adminOnly: true },
     { path: '/announcements', label: t('navigation:menu.announcements'), icon: Campaign, showBadge: true },
     { path: '/events', label: t('navigation:menu.events'), icon: Event, showBadge: true },
@@ -104,7 +104,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     { path: '/applications', label: t('navigation:menu.applications'), icon: Assignment },
     { path: '/vaktija', label: t('navigation:menu.vaktija'), icon: Schedule },
     { path: '/vodic', label: t('navigation:menu.guide'), icon: Info },
-    { path: '/projects', label: 'Projekti', icon: Work, adminOnly: true },
+    { path: '/projects', label: t('navigation:menu.projects'), icon: Work, adminOnly: true },
   ];
 
   const mediaItems = [
@@ -392,7 +392,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
               <ListItemIcon sx={{ color: 'inherit', minWidth: collapsed ? 'auto' : 40, justifyContent: 'center' }}>
                 <Settings />
               </ListItemIcon>
-              {!collapsed && <ListItemText primary="Podešavanja" />}
+              {!collapsed && <ListItemText primary={t('navigation:settings')} />}
             </ListItemButton>
           </ListItem>
         )}

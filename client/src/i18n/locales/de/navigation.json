@@ -1,10 +1,13 @@
 {
   "menu": {
     "dashboard": "Dashboard",
+    "feed": "Feed",
     "users": "Benutzer",
     "profile": "Profil",
     "finances": "Finanzen",
     "myPayments": "Meine Zahlungen",
+    "membershipFees": "Mitgliedsbeiträge (Admin)",
+    "myMembership": "Meine Mitgliedschaft",
     "activityLog": "Aktivitätsprotokoll",
     "myActivities": "Meine Aktivitäten",
     "announcements": "Ankündigungen",
@@ -15,6 +18,7 @@
     "askImam": "Frage den Imam",
     "documents": "Dokumente",
     "shop": "Shop",
+    "sponsors": "Sponsoren",
     "requests": "Anfragen",
     "applications": "Anfragen und Anmeldungen",
     "livestream": "Livestream",

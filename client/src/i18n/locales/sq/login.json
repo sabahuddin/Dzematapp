@@ -7,5 +7,20 @@
   "guestButton": "Mysafir",
   "demoCredentials": "Të dhënat demo:",
   "language": "Gjuha",
-  "selectLanguage": "Zgjidh gjuhën"
+  "selectLanguage": "Zgjidh gjuhën",
+  "tenantCode": "Kodi i xhamisë",
+  "firstLogin": "Hyrja e parë",
+  "enterTenantCode": "Shkruani kodin e organizatës që keni marrë nga administratori.",
+  "verifying": "Duke verifikuar...",
+  "confirm": "Konfirmo",
+  "forDemoAccess": "Për qasje demo përdorni:",
+  "code": "Kodi",
+  "switchTenant": "Shkruani kodin e një xhamie (tjetër)",
+  "installApp": "Instalo DžematApp",
+  "useAsRealApp": "Përdorni si aplikacion të vërtetë",
+  "install": "Instalo",
+  "enterOrgCode": "Ju lutemi shkruani kodin e organizatës",
+  "invalidOrgCode": "Kod i pavlefshëm i organizatës",
+  "errorVerifyingCode": "Gabim gjatë verifikimit të kodit",
+  "mustSetupOrg": "Së pari duhet të vendosni organizatën"
 }

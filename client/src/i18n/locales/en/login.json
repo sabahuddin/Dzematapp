@@ -7,5 +7,20 @@
   "guestButton": "Guest",
   "demoCredentials": "Demo credentials:",
   "language": "Language",
-  "selectLanguage": "Select language"
+  "selectLanguage": "Select language",
+  "tenantCode": "Congregation code",
+  "firstLogin": "First login",
+  "enterTenantCode": "Enter your organization code received from the administrator.",
+  "verifying": "Verifying...",
+  "confirm": "Confirm",
+  "forDemoAccess": "For demo access use:",
+  "code": "Code",
+  "switchTenant": "Enter code for (another) congregation",
+  "installApp": "Install DžematApp",
+  "useAsRealApp": "Use as a real app",
+  "install": "Install",
+  "enterOrgCode": "Please enter organization code",
+  "invalidOrgCode": "Invalid organization code",
+  "errorVerifyingCode": "Error verifying code",
+  "mustSetupOrg": "You must first set up the organization"
 }

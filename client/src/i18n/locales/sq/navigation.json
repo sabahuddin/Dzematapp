@@ -1,10 +1,13 @@
 {
   "menu": {
     "dashboard": "Dashboard",
+    "feed": "Aktivitetet",
     "users": "Përdoruesit",
     "profile": "Profili",
     "finances": "Financat",
     "myPayments": "Pagesat e Mia",
+    "membershipFees": "Anëtarësimet (Admin)",
+    "myMembership": "Anëtarësimi Im",
     "activityLog": "Log i aktiviteteve",
     "myActivities": "Aktivitetet e Mia",
     "announcements": "Njoftimet",
@@ -15,6 +18,7 @@
     "askImam": "Pyet Imamin",
     "documents": "Dokumentet",
     "shop": "Dyqani",
+    "sponsors": "Sponsorët",
     "requests": "Kërkesa",
     "applications": "Kërkesa dhe Aplikimet",
     "livestream": "Livestream",

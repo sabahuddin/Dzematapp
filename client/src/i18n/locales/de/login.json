@@ -7,5 +7,20 @@
   "guestButton": "Gast",
   "demoCredentials": "Demo-Zugangsdaten:",
   "language": "Sprache",
-  "selectLanguage": "Sprache wählen"
+  "selectLanguage": "Sprache wählen",
+  "tenantCode": "Gemeinde-Code",
+  "firstLogin": "Erstanmeldung",
+  "enterTenantCode": "Geben Sie den Organisationscode ein, den Sie vom Administrator erhalten haben.",
+  "verifying": "Überprüfen...",
+  "confirm": "Bestätigen",
+  "forDemoAccess": "Für Demo-Zugang verwenden Sie:",
+  "code": "Code",
+  "switchTenant": "Code einer (anderen) Gemeinde eingeben",
+  "installApp": "DžematApp installieren",
+  "useAsRealApp": "Als echte App verwenden",
+  "install": "Installieren",
+  "enterOrgCode": "Bitte geben Sie den Organisationscode ein",
+  "invalidOrgCode": "Ungültiger Organisationscode",
+  "errorVerifyingCode": "Fehler bei der Codeüberprüfung",
+  "mustSetupOrg": "Sie müssen zuerst die Organisation einrichten"
 }

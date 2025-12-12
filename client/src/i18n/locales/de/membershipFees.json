@@ -49,7 +49,18 @@
     "viewHistory": "Verlauf anzeigen",
     "paidMonths": "Bezahlte Monate",
     "totalPaid": "Gesamtbetrag",
-    "noPayments": "Keine Zahlungen erfasst."
+    "noPayments": "Keine Zahlungen erfasst.",
+    "monthlyFee": "Monatlicher Beitrag",
+    "notSet": "Nicht festgelegt",
+    "monthlyPayment": "Monatliche Zahlung",
+    "yearlyPayment": "Jährliche Zahlung",
+    "paidIn": "Bezahlt in",
+    "owes": "Schuldet",
+    "monthsOf": "von 12 Monaten",
+    "monthsUnpaid": "Monate unbezahlt",
+    "allPaid": "Alles bezahlt",
+    "paymentHistory": "Zahlungsverlauf",
+    "paymentCalendar": "Zahlungskalender"
   },
   "months": {
     "1": "Januar",

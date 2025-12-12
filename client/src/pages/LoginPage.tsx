@@ -65,7 +65,7 @@ export default function LoginPage() {
 
   const handleVerifyTenant = async () => {
     if (!tenantCode.trim()) {
-      setError('Molimo unesite kod organizacije');
+      setError(t('login:enterOrgCode'));
       return;
     }
 
@@ -87,10 +87,10 @@ export default function LoginPage() {
         setTenantCode('');
       } else {
         const errorData = await response.json();
-        setError(errorData.message || 'Neispravan kod organizacije');
+        setError(errorData.message || t('login:invalidOrgCode'));
       }
     } catch (err) {
-      setError('Greška pri provjeri koda');
+      setError(t('login:errorVerifyingCode'));
     } finally {
       setVerifyingTenant(false);
     }
@@ -129,7 +129,7 @@ export default function LoginPage() {
     setError('');
 
     if (!storedTenantId) {
-      setError('Morate prvo postaviti organizaciju');
+      setError(t('login:mustSetupOrg'));
       setLoading(false);
       return;
     }
@@ -253,17 +253,17 @@ export default function LoginPage() {
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                 <Alert severity="info" sx={{ mb: 1 }}>
                   <Typography variant="body2" sx={{ fontWeight: 500, mb: 0.5 }}>
-                    Prva prijava
+                    {t('login:firstLogin')}
                   </Typography>
                   <Typography variant="caption">
-                    Unesite kod vaše organizacije koji ste dobili od administratora.
+                    {t('login:enterTenantCode')}
                   </Typography>
                 </Alert>
 
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label="Kod džemata"
+                  label={t('login:tenantCode')}
                   value={tenantCode}
                   onChange={(e) => setTenantCode(e.target.value.toUpperCase())}
                   placeholder="DEMO2025"
@@ -283,15 +283,15 @@ export default function LoginPage() {
                   sx={{ py: 1.5, fontSize: '1rem' }}
                   data-testid="button-verify-tenant"
                 >
-                  {verifyingTenant ? 'Provjeravam...' : 'Potvrdi'}
+                  {verifyingTenant ? t('login:verifying') : t('login:confirm')}
                 </Button>
 
                 <Box sx={{ mt: 2, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
                   <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
-                    Za demo pristup koristite:
+                    {t('login:forDemoAccess')}
                   </Typography>
                   <Typography variant="caption" color="text.secondary" sx={{ display: 'block', fontWeight: 600 }}>
-                    Kod: DEMO2025
+                    {t('login:code')}: DEMO2025
                   </Typography>
                 </Box>
               </Box>
@@ -359,7 +359,7 @@ export default function LoginPage() {
                     sx={{ cursor: 'pointer' }}
                     data-testid="link-change-tenant"
                   >
-                    Unesi kod (drugoga) džemata
+                    {t('login:switchTenant')}
                   </MuiLink>
                 </Box>
 
@@ -403,10 +403,10 @@ export default function LoginPage() {
           <Download />
           <Box sx={{ flex: 1 }}>
             <Typography variant="body2" sx={{ fontWeight: 600 }}>
-              Instalirajte DžematApp
+              {t('login:installApp')}
             </Typography>
             <Typography variant="caption">
-              Koristite kao pravu aplikaciju
+              {t('login:useAsRealApp')}
             </Typography>
           </Box>
           <Button
@@ -419,7 +419,7 @@ export default function LoginPage() {
               '&:hover': { bgcolor: 'grey.100' }
             }}
           >
-            Instaliraj
+            {t('login:install')}
           </Button>
           <IconButton
             size="small"

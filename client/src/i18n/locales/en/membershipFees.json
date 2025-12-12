@@ -49,7 +49,18 @@
     "viewHistory": "View History",
     "paidMonths": "Paid Months",
     "totalPaid": "Total Paid",
-    "noPayments": "No payments recorded."
+    "noPayments": "No payments recorded.",
+    "monthlyFee": "Monthly Fee",
+    "notSet": "Not set",
+    "monthlyPayment": "Monthly payment",
+    "yearlyPayment": "Yearly payment",
+    "paidIn": "Paid in",
+    "owes": "Owes",
+    "monthsOf": "of 12 months",
+    "monthsUnpaid": "months unpaid",
+    "allPaid": "All paid",
+    "paymentHistory": "Payment History",
+    "paymentCalendar": "Payment Calendar"
   },
   "months": {
     "1": "January",

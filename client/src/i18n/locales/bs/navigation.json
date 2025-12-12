@@ -1,10 +1,13 @@
 {
   "menu": {
     "dashboard": "Dashboard",
+    "feed": "Aktivnosti",
     "users": "Korisnici",
     "profile": "Profil",
     "finances": "Finansije",
     "myPayments": "Moje uplate",
+    "membershipFees": "Članarina (Admin)",
+    "myMembership": "Moja članarina",
     "activityLog": "Log aktivnosti",
     "myActivities": "Moje aktivnosti",
     "announcements": "Obavijesti",

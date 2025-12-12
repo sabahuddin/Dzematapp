@@ -7,5 +7,20 @@
   "guestButton": "Gost",
   "demoCredentials": "Demo podaci:",
   "language": "Jezik",
-  "selectLanguage": "Odaberi jezik"
+  "selectLanguage": "Odaberi jezik",
+  "tenantCode": "Kod džemata",
+  "firstLogin": "Prva prijava",
+  "enterTenantCode": "Unesite kod vaše organizacije koji ste dobili od administratora.",
+  "verifying": "Provjeravam...",
+  "confirm": "Potvrdi",
+  "forDemoAccess": "Za demo pristup koristite:",
+  "code": "Kod",
+  "switchTenant": "Unesi kod (drugoga) džemata",
+  "installApp": "Instalirajte DžematApp",
+  "useAsRealApp": "Koristite kao pravu aplikaciju",
+  "install": "Instaliraj",
+  "enterOrgCode": "Molimo unesite kod organizacije",
+  "invalidOrgCode": "Neispravan kod organizacije",
+  "errorVerifyingCode": "Greška pri provjeri koda",
+  "mustSetupOrg": "Morate prvo postaviti organizaciju"
 }

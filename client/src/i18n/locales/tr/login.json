@@ -7,5 +7,20 @@
   "guestButton": "Misafir",
   "demoCredentials": "Demo bilgileri:",
   "language": "Dil",
-  "selectLanguage": "Dil seçin"
+  "selectLanguage": "Dil seçin",
+  "tenantCode": "Cemaat kodu",
+  "firstLogin": "İlk giriş",
+  "enterTenantCode": "Yöneticiden aldığınız organizasyon kodunu girin.",
+  "verifying": "Doğrulanıyor...",
+  "confirm": "Onayla",
+  "forDemoAccess": "Demo erişimi için kullanın:",
+  "code": "Kod",
+  "switchTenant": "(Başka) bir cemaat kodu girin",
+  "installApp": "DžematApp'ı yükleyin",
+  "useAsRealApp": "Gerçek uygulama olarak kullanın",
+  "install": "Yükle",
+  "enterOrgCode": "Lütfen organizasyon kodunu girin",
+  "invalidOrgCode": "Geçersiz organizasyon kodu",
+  "errorVerifyingCode": "Kod doğrulama hatası",
+  "mustSetupOrg": "Önce organizasyonu ayarlamalısınız"
 }

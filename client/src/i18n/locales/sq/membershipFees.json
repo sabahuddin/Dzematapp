@@ -49,7 +49,18 @@
     "viewHistory": "Shiko historinë",
     "paidMonths": "Muajt e paguar",
     "totalPaid": "Totali i paguar",
-    "noPayments": "Nuk ka pagesa të regjistruara."
+    "noPayments": "Nuk ka pagesa të regjistruara.",
+    "monthlyFee": "Tarifa mujore",
+    "notSet": "Nuk është vendosur",
+    "monthlyPayment": "Pagesë mujore",
+    "yearlyPayment": "Pagesë vjetore",
+    "paidIn": "Paguar në",
+    "owes": "Borxh",
+    "monthsOf": "nga 12 muaj",
+    "monthsUnpaid": "muaj të papaguar",
+    "allPaid": "Të gjitha të paguara",
+    "paymentHistory": "Historia e pagesave",
+    "paymentCalendar": "Kalendari i pagesave"
   },
   "months": {
     "1": "Janar",

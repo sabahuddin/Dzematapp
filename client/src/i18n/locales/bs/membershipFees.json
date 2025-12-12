@@ -49,7 +49,18 @@
     "viewHistory": "Vidi historiju",
     "paidMonths": "Uplaćeni mjeseci",
     "totalPaid": "Ukupno uplaćeno",
-    "noPayments": "Nemate evidentiranih uplata."
+    "noPayments": "Nemate evidentiranih uplata.",
+    "monthlyFee": "Mjesečna članarina",
+    "notSet": "Nije postavljeno",
+    "monthlyPayment": "Mjesečno plaćanje",
+    "yearlyPayment": "Godišnje plaćanje",
+    "paidIn": "Uplaćeno",
+    "owes": "Duguje",
+    "monthsOf": "od 12 mjeseci",
+    "monthsUnpaid": "mjeseci neplaćeno",
+    "allPaid": "Sve izmireno",
+    "paymentHistory": "Historija uplata",
+    "paymentCalendar": "Kalendar uplata"
   },
   "months": {
     "1": "Januar",
