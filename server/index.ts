@@ -51,6 +51,22 @@ app.set('trust proxy', 1);
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: false, limit: '5mb' }));
 
+// CORS for marketing site contact form (dzematapp.com -> app.dzematapp.com)
+app.use('/api/contact', (req, res, next) => {
+  const allowedOrigins = ['https://dzematapp.com', 'https://www.dzematapp.com'];
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 // Session store: ALWAYS use database if DATABASE_URL is available (for production/Replit)
 // Only use MemoryStore if there's no database configured
 const isReplitDeployment = !!process.env.REPL_ID;
