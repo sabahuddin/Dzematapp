@@ -253,10 +253,10 @@ export default function OrganizationSettingsPage({ hideHeader = false }: Organiz
                               <SelectValue placeholder={t("organization.fields.selectCurrency")} />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="BAM">BAM (Bosanska marka)</SelectItem>
-                              <SelectItem value="CHF">CHF (Švicarski franak)</SelectItem>
-                              <SelectItem value="EUR">EUR (Euro)</SelectItem>
-                              <SelectItem value="USD">USD (Američki dolar)</SelectItem>
+                              <SelectItem value="BAM">{t("organization.fields.currencyBAM")}</SelectItem>
+                              <SelectItem value="CHF">{t("organization.fields.currencyCHF")}</SelectItem>
+                              <SelectItem value="EUR">{t("organization.fields.currencyEUR")}</SelectItem>
+                              <SelectItem value="USD">{t("organization.fields.currencyUSD")}</SelectItem>
                             </SelectContent>
                           </Select>
                         </FormControl>
