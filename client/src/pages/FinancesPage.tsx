@@ -559,13 +559,13 @@ export default function FinancesPage() {
 
       {/* Manage Purposes Dialog */}
       <Dialog open={purposeDialogOpen} onClose={() => setPurposeDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Upravljanje svrhama uplata</DialogTitle>
+        <DialogTitle>{t('finances:purposeDialog.title')}</DialogTitle>
         <DialogContent sx={{ pt: 3, px: 3 }}>
           {/* Existing purposes list */}
           {purposesQuery.data && purposesQuery.data.length > 0 && (
             <Box sx={{ mb: 3 }}>
               <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
-                Postojeće svrhe:
+                {t('finances:purposeDialog.existingPurposes')}
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 {purposesQuery.data.map((purpose: ContributionPurpose) => (
