@@ -273,16 +273,16 @@ export default function OrganizationSettingsPage({ hideHeader = false }: Organiz
                       <FormItem>
                         <FormLabel className="flex items-center gap-2">
                           <Coins size={16} />
-                          Tip članarine
+                          {t("organization.fields.membershipFeeType")}
                         </FormLabel>
                         <FormControl>
                           <Select onValueChange={field.onChange} value={field.value || "monthly"}>
                             <SelectTrigger data-testid="select-membership-fee-type">
-                              <SelectValue placeholder="Odaberite tip članarine" />
+                              <SelectValue placeholder={t("organization.fields.membershipFeeTypePlaceholder")} />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="monthly">Mjesečno</SelectItem>
-                              <SelectItem value="yearly">Godišnje</SelectItem>
+                              <SelectItem value="monthly">{t("organization.fields.membershipFeeTypeMonthly")}</SelectItem>
+                              <SelectItem value="yearly">{t("organization.fields.membershipFeeTypeYearly")}</SelectItem>
                             </SelectContent>
                           </Select>
                         </FormControl>
@@ -309,13 +309,13 @@ export default function OrganizationSettingsPage({ hideHeader = false }: Organiz
                         <FormItem>
                           <FormLabel className="flex items-center gap-2">
                             <Facebook size={16} />
-                            Facebook URL
+                            {t("organization.fields.facebookUrlLabel")}
                           </FormLabel>
                           <FormControl>
                             <Input 
                               {...field} 
                               value={field.value || ""}
-                              placeholder="https://facebook.com/vasa-stranica" 
+                              placeholder={t("organization.fields.facebookPlaceholder")} 
                               data-testid="input-org-facebook"
                             />
                           </FormControl>
@@ -332,13 +332,13 @@ export default function OrganizationSettingsPage({ hideHeader = false }: Organiz
                         <FormItem>
                           <FormLabel className="flex items-center gap-2">
                             <Instagram size={16} />
-                            Instagram URL
+                            {t("organization.fields.instagramUrlLabel")}
                           </FormLabel>
                           <FormControl>
                             <Input 
                               {...field} 
                               value={field.value || ""}
-                              placeholder="https://instagram.com/vas-nalog" 
+                              placeholder={t("organization.fields.instagramPlaceholder")} 
                               data-testid="input-org-instagram"
                             />
                           </FormControl>
@@ -357,13 +357,13 @@ export default function OrganizationSettingsPage({ hideHeader = false }: Organiz
                         <FormItem>
                           <FormLabel className="flex items-center gap-2">
                             <Youtube size={16} />
-                            YouTube URL
+                            {t("organization.fields.youtubeUrlLabel")}
                           </FormLabel>
                           <FormControl>
                             <Input 
                               {...field} 
                               value={field.value || ""}
-                              placeholder="https://youtube.com/@vas-kanal" 
+                              placeholder={t("organization.fields.youtubePlaceholder")} 
                               data-testid="input-org-youtube"
                             />
                           </FormControl>
@@ -380,13 +380,13 @@ export default function OrganizationSettingsPage({ hideHeader = false }: Organiz
                         <FormItem>
                           <FormLabel className="flex items-center gap-2">
                             <Twitter size={16} />
-                            X (Twitter) URL
+                            {t("organization.fields.twitterUrlLabel")}
                           </FormLabel>
                           <FormControl>
                             <Input 
                               {...field} 
                               value={field.value || ""}
-                              placeholder="https://x.com/vas-nalog" 
+                              placeholder={t("organization.fields.twitterPlaceholder")} 
                               data-testid="input-org-twitter"
                             />
                           </FormControl>
