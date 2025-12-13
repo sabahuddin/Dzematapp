@@ -150,7 +150,10 @@
       "livestreamTitle": "Livestream-Titel (optional)",
       "livestreamTitleHelper": "Wird über dem Videoplayer angezeigt (z.B. 'Freitagspredigt live')",
       "livestreamUrl": "Livestream URL oder Embed-Code",
-      "livestreamUrlHelper": "YouTube-Link, Facebook-Link oder iFrame-Embed-Code"
+      "livestreamUrlHelper": "YouTube-Link, Facebook-Link oder iFrame-Embed-Code",
+      "livestreamDescription": "Sendebeschreibung (\"Sie können hier zusehen...\")",
+      "livestreamDescriptionPlaceholder": "Geben Sie Text ein, der als Sendebeschreibung angezeigt wird",
+      "livestreamDescriptionHelper": "Dieser Text wird auf der Seite angezeigt, wenn es keine aktive Übertragung gibt"
     },
     "preview": {
       "title": "Vorschau",

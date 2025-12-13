@@ -150,7 +150,10 @@
       "livestreamTitle": "Livestream Title (optional)",
       "livestreamTitleHelper": "Displayed above video player (e.g. 'Friday sermon live')",
       "livestreamUrl": "Livestream URL or Embed code",
-      "livestreamUrlHelper": "YouTube link, Facebook link, or iframe embed code"
+      "livestreamUrlHelper": "YouTube link, Facebook link, or iframe embed code",
+      "livestreamDescription": "Broadcast description (\"You can watch here...\")",
+      "livestreamDescriptionPlaceholder": "Enter text to be displayed as broadcast description",
+      "livestreamDescriptionHelper": "This text will be displayed on the page when there is no active broadcast"
     },
     "preview": {
       "title": "Preview",

@@ -150,7 +150,10 @@
       "livestreamTitle": "Titulli i Livestream (opsionale)",
       "livestreamTitleHelper": "Shfaqet mbi video playerin (p.sh. 'Hutbja e xhumasë live')",
       "livestreamUrl": "Livestream URL ose Kodi Embed",
-      "livestreamUrlHelper": "Linku i YouTube, linku i Facebook, ose kodi iframe embed"
+      "livestreamUrlHelper": "Linku i YouTube, linku i Facebook, ose kodi iframe embed",
+      "livestreamDescription": "Përshkrimi i transmetimit (\"Mund ta shikoni këtu...\")",
+      "livestreamDescriptionPlaceholder": "Vendosni tekstin për të shfaqur si përshkrim transmetimi",
+      "livestreamDescriptionHelper": "Ky tekst do të shfaqet në faqe kur nuk ka transmetim aktiv"
     },
     "preview": {
       "title": "Parashikimi",

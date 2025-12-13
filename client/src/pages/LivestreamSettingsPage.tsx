@@ -350,18 +350,18 @@ export default function LivestreamSettingsPage() {
                   name="livestreamDescription"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Opis prenošenja ("Ovdje možete pratiti...")</FormLabel>
+                      <FormLabel>{t("livestreamSettings.fields.livestreamDescription")}</FormLabel>
                       <FormControl>
                         <Textarea 
                           {...field} 
                           value={field.value || ""}
-                          placeholder="Unesite tekst koji će biti prikazan kao opis prenošenja"
+                          placeholder={t("livestreamSettings.fields.livestreamDescriptionPlaceholder")}
                           rows={3}
                           data-testid="input-livestream-description"
                         />
                       </FormControl>
                       <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
-                        Ovaj tekst će biti prikazan na stranici kada nema aktivnog prenošenja
+                        {t("livestreamSettings.fields.livestreamDescriptionHelper")}
                       </Typography>
                       <FormMessage />
                     </FormItem>

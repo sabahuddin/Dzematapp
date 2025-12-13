@@ -150,7 +150,10 @@
       "livestreamTitle": "Naslov livestream-a (opciono)",
       "livestreamTitleHelper": "Prikazuje se iznad video playera (npr. 'Džuma hutba uživo')",
       "livestreamUrl": "Livestream URL ili Embed kod",
-      "livestreamUrlHelper": "YouTube link, Facebook link, ili iframe embed kod"
+      "livestreamUrlHelper": "YouTube link, Facebook link, ili iframe embed kod",
+      "livestreamDescription": "Opis pronošenja (\"Ovdje možete pratiti...\")",
+      "livestreamDescriptionPlaceholder": "Unesite tekst koji će biti prikazan kao opis pronošenja",
+      "livestreamDescriptionHelper": "Ovaj tekst će biti prikazan na stranici kada nema aktivnog pronošenja"
     },
     "preview": {
       "title": "Pregled",
