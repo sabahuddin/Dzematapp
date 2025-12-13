@@ -8,6 +8,7 @@
   "selectCSV": "CSV-Datei auswählen",
   "deleteAll": "Alle löschen",
   "upload": "Hochladen",
+  "downloadTemplate": "Vorlage CSV herunterladen",
   "prayerNames": {
     "fajr": "Fajr",
     "sunrise": "Sonnenaufgang",

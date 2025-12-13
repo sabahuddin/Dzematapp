@@ -8,6 +8,7 @@
   "selectCSV": "Select CSV file",
   "deleteAll": "Delete all",
   "upload": "Upload",
+  "downloadTemplate": "Download template CSV",
   "prayerNames": {
     "fajr": "Fajr",
     "sunrise": "Sunrise",

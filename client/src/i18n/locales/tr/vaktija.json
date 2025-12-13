@@ -8,6 +8,7 @@
   "selectCSV": "Odaberi CSV fajl",
   "deleteAll": "Obriši sve",
   "upload": "Učitaj",
+  "downloadTemplate": "Preuzmi template CSV",
   "prayerNames": {
     "fajr": "Zora",
     "sunrise": "Izlazak sunca",

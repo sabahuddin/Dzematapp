@@ -413,7 +413,7 @@ export default function VaktijaPage() {
               sx={{ mb: 2 }}
               data-testid="button-download-template"
             >
-              Preuzmi template CSV
+              {t('vaktija:downloadTemplate')}
             </Button>
             
             <input

@@ -8,6 +8,7 @@
   "selectCSV": "Zgjidh skedarin CSV",
   "deleteAll": "Fshi të gjitha",
   "upload": "Ngarko",
+  "downloadTemplate": "Shkarko shabllon CSV",
   "prayerNames": {
     "fajr": "Agimi",
     "sunrise": "Lindja",
