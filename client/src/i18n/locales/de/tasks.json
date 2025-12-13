@@ -93,6 +93,8 @@
     "assignToMembers": "An Mitglieder zuweisen",
     "selectMembers": "Mitglieder auswählen...",
     "dueDate": "Fälligkeitsdatum",
+    "estimatedPrice": "Geschätzter Preis",
+    "pointValue": "Punktwert",
     "taskCount": "Aufgaben ({{count}})",
     "noTasksForSection": "Keine Aufgaben für diese Sektion",
     "createFirstTask": "Erste Aufgabe erstellen",

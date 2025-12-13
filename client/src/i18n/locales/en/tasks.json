@@ -114,6 +114,8 @@
     "assignToMembers": "Assign to members",
     "selectMembers": "Select members...",
     "dueDate": "Due date",
+    "estimatedPrice": "Estimated price",
+    "pointValue": "Point value",
     "taskCount": "Tasks ({{count}})",
     "noTasksForSection": "No tasks for this section",
     "createFirstTask": "Create First Task",

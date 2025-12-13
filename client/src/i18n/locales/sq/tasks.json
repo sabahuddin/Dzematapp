@@ -93,6 +93,8 @@
     "assignToMembers": "Cakto tek anëtarët",
     "selectMembers": "Zgjidh anëtarët...",
     "dueDate": "Afati përfundimtar",
+    "estimatedPrice": "Çmim i vlerësuar",
+    "pointValue": "Vlera e pikës",
     "taskCount": "Detyrat ({{count}})",
     "noTasksForSection": "Nuk ka detyra për këtë seksion",
     "createFirstTask": "Krijo Detyrën e Parë",

@@ -93,6 +93,8 @@
     "assignToMembers": "Üyelere ata",
     "selectMembers": "Üyeleri seçin...",
     "dueDate": "Son tarih",
+    "estimatedPrice": "Tahmini fiyat",
+    "pointValue": "Puan değeri",
     "taskCount": "Görevler ({{count}})",
     "noTasksForSection": "Bu grup için görev yok",
     "createFirstTask": "İlk Görevi Oluştur",

@@ -1493,6 +1493,7 @@ interface ProposalsReviewContentProps {
 
 function ProposalsReviewContent({ proposals, workGroups, users, onApprove, onReject, isLoading, readOnly = false }: ProposalsReviewContentProps) {
   const { formatPrice } = useCurrency();
+  const { t } = useTranslation(['tasks', 'common']);
   const [selectedProposal, setSelectedProposal] = useState<any | null>(null);
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
   const [reviewAction, setReviewAction] = useState<'approve' | 'reject'>('approve');

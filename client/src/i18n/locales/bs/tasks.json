@@ -114,6 +114,8 @@
     "assignToMembers": "Dodijeli članovima",
     "selectMembers": "Odaberi članove...",
     "dueDate": "Rok izvršavanja",
+    "estimatedPrice": "Procjenjena cijena",
+    "pointValue": "Bodovna vrijednost",
     "taskCount": "Zadaci ({{count}})",
     "noTasksForSection": "Nema zadataka za ovu sekciju",
     "createFirstTask": "Kreiraj prvi zadatak",
