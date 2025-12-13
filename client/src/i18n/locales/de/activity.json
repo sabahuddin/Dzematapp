@@ -131,7 +131,9 @@
   },
   "badgesSection": {
     "noBadgesAssigned": "Keine Abzeichen zugewiesen",
+    "noBadgesEarned": "Sie haben noch keine Abzeichen verdient",
     "badge": "Abzeichen",
+    "badgeManagement": "Abzeichen-Verwaltung",
     "assignmentDate": "Zuweisungsdatum",
     "unknownUser": "Unbekannter Benutzer",
     "unknownBadge": "Unbekanntes Abzeichen",
@@ -145,10 +147,12 @@
     "eventsAttended": "Besuchte Veranstaltungen",
     "value": "Wert",
     "saving": "Wird gespeichert...",
-    "save": "Speichern"
+    "save": "Speichern",
+    "earnedOn": "Verdient"
   },
   "issueSection": {
     "selectTemplate": "Vorlage auswählen",
+    "template": "Vorlage",
     "messageOptional": "Nachricht (optional)",
     "selectUsers": "Benutzer auswählen",
     "searchByNameOrDob": "Nach Name oder Geburtsdatum suchen...",

@@ -764,9 +764,9 @@ export default function ActivityLogPage() {
         <Card>
           <Box sx={{ p: 3 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-              <Typography variant="h6" sx={{ fontWeight: 600 }}>Upravljanje značkama</Typography>
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>{t('activity:badgesSection.badgeManagement')}</Typography>
               <Button variant="contained" startIcon={<Add />} onClick={() => { setSelectedBadge(null); badgeForm.reset(); setBadgeDialogOpen(true); }} data-testid="button-add-badge">
-                Dodaj novu značku
+                {t('activity:badgesSection.addNewBadge')}
               </Button>
             </Box>
 
@@ -774,11 +774,11 @@ export default function ActivityLogPage() {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <SortableHeaderCell sortKey="name" onSort={badgesSort.handleSort} currentSortKey={badgesSort.sortKey} currentSortDirection={badgesSort.sortDirection}>Naziv</SortableHeaderCell>
-                    <SortableHeaderCell sortKey="description" onSort={badgesSort.handleSort} currentSortKey={badgesSort.sortKey} currentSortDirection={badgesSort.sortDirection}>Opis</SortableHeaderCell>
-                    <SortableHeaderCell sortKey="criteriaType" onSort={badgesSort.handleSort} currentSortKey={badgesSort.sortKey} currentSortDirection={badgesSort.sortDirection}>Kriterij</SortableHeaderCell>
-                    <SortableHeaderCell sortKey="criteriaValue" onSort={badgesSort.handleSort} currentSortKey={badgesSort.sortKey} currentSortDirection={badgesSort.sortDirection}>Vrijednost</SortableHeaderCell>
-                    <TableCell>Akcije</TableCell>
+                    <SortableHeaderCell sortKey="name" onSort={badgesSort.handleSort} currentSortKey={badgesSort.sortKey} currentSortDirection={badgesSort.sortDirection}>{t('activity:badgesSection.name')}</SortableHeaderCell>
+                    <SortableHeaderCell sortKey="description" onSort={badgesSort.handleSort} currentSortKey={badgesSort.sortKey} currentSortDirection={badgesSort.sortDirection}>{t('common:description')}</SortableHeaderCell>
+                    <SortableHeaderCell sortKey="criteriaType" onSort={badgesSort.handleSort} currentSortKey={badgesSort.sortKey} currentSortDirection={badgesSort.sortDirection}>{t('activity:badgesSection.criteriaType')}</SortableHeaderCell>
+                    <SortableHeaderCell sortKey="criteriaValue" onSort={badgesSort.handleSort} currentSortKey={badgesSort.sortKey} currentSortDirection={badgesSort.sortDirection}>{t('activity:badgesSection.value')}</SortableHeaderCell>
+                    <TableCell>{t('common:actions')}</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -811,9 +811,9 @@ export default function ActivityLogPage() {
       {currentTabKey === 'badges-earned' && !currentUser?.isAdmin && (
         <Card>
           <Box sx={{ p: 3 }}>
-            <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>Značke ({earnedBadges.length})</Typography>
+            <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>{t('activity:tabs.badges')} ({earnedBadges.length})</Typography>
             {earnedBadges.length === 0 ? (
-              <Alert severity="info">Još niste osvojili nijednu značku</Alert>
+              <Alert severity="info">{t('activity:badgesSection.noBadgesEarned')}</Alert>
             ) : (
               <Stack spacing={2}>
                 {earnedBadges.map((badge: any) => (
@@ -823,7 +823,7 @@ export default function ActivityLogPage() {
                       <Box sx={{ flex: 1 }}>
                         <Typography variant="h6" sx={{ fontWeight: 600 }}>{badge.name}</Typography>
                         <Typography variant="body2" color="text.secondary">{badge.description}</Typography>
-                        {badge.earnedAt && <Typography variant="caption" sx={{ display: 'block', mt: 1 }}>Osvojena: {new Date(badge.earnedAt).toLocaleDateString('hr-HR')}</Typography>}
+                        {badge.earnedAt && <Typography variant="caption" sx={{ display: 'block', mt: 1 }}>{t('activity:badgesSection.earnedOn')}: {new Date(badge.earnedAt).toLocaleDateString('hr-HR')}</Typography>}
                       </Box>
                     </Box>
                   </Card>
@@ -844,10 +844,10 @@ export default function ActivityLogPage() {
         <Stack spacing={3}>
           <Card>
             <Box sx={{ p: 3 }}>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>Izbor šablona</Typography>
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>{t('activity:issueSection.selectTemplate')}</Typography>
               <FormControl fullWidth>
-                <InputLabel>Šablon</InputLabel>
-                <Select value={selectedTemplate} label="Šablon" onChange={(e) => setSelectedTemplate(e.target.value)} data-testid="select-template">
+                <InputLabel>{t('activity:issueSection.template')}</InputLabel>
+                <Select value={selectedTemplate} label={t('activity:issueSection.template')} onChange={(e) => setSelectedTemplate(e.target.value)} data-testid="select-template">
                   {(templatesQuery.data as CertificateTemplate[])?.map((template) => (
                     <MenuItem key={template.id} value={template.id}>{template.name}</MenuItem>
                   ))}

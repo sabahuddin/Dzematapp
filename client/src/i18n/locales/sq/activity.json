@@ -131,7 +131,9 @@
   },
   "badgesSection": {
     "noBadgesAssigned": "Nuk ka distinktivë të caktuar",
+    "noBadgesEarned": "Ju nuk keni fituar asnjë distinktiv ende",
     "badge": "Distinktiv",
+    "badgeManagement": "Menaxhimi i distinktivëve",
     "assignmentDate": "Data e caktimit",
     "unknownUser": "Përdorues i panjohur",
     "unknownBadge": "Distinktiv i panjohur",
@@ -145,10 +147,12 @@
     "eventsAttended": "Ngjarjet e vizituara",
     "value": "Vlera",
     "saving": "Duke ruajtur...",
-    "save": "Ruaj"
+    "save": "Ruaj",
+    "earnedOn": "Fituar"
   },
   "issueSection": {
     "selectTemplate": "Zgjidh shabllon",
+    "template": "Shabllon",
     "messageOptional": "Mesazh (opsional)",
     "selectUsers": "Zgjidh përdoruesit",
     "searchByNameOrDob": "Kërko sipas emrit ose datës së lindjes...",

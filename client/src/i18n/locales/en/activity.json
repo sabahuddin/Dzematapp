@@ -131,7 +131,9 @@
   },
   "badgesSection": {
     "noBadgesAssigned": "No badges assigned",
+    "noBadgesEarned": "You haven't earned any badges yet",
     "badge": "Badge",
+    "badgeManagement": "Badge Management",
     "assignmentDate": "Assignment Date",
     "unknownUser": "Unknown user",
     "unknownBadge": "Unknown badge",
@@ -145,10 +147,12 @@
     "eventsAttended": "Events attended",
     "value": "Value",
     "saving": "Saving...",
-    "save": "Save"
+    "save": "Save",
+    "earnedOn": "Earned"
   },
   "issueSection": {
     "selectTemplate": "Select Template",
+    "template": "Template",
     "messageOptional": "Message (optional)",
     "selectUsers": "Select users",
     "searchByNameOrDob": "Search by name or date of birth...",

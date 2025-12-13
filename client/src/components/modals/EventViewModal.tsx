@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import {
   Dialog,
   DialogTitle,
@@ -29,6 +30,7 @@ export default function EventViewModal({
   onClose, 
   event
 }: EventViewModalProps) {
+  const { t } = useTranslation('events');
   const [rsvpModalOpen, setRsvpModalOpen] = useState(false);
 
   // Fetch RSVP stats to check capacity (must be before any conditional returns)
@@ -118,7 +120,7 @@ export default function EventViewModal({
               <CalendarMonth sx={{ color: 'primary.main', fontSize: 28 }} />
               <Box>
                 <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                  Datum i vrijeme
+                  {t('dateTime')}
                 </Typography>
                 <Typography variant="body1" sx={{ fontWeight: 500 }}>
                   {formatDateTime(event.dateTime)}
@@ -131,7 +133,7 @@ export default function EventViewModal({
               <LocationOn sx={{ color: 'primary.main', fontSize: 28 }} />
               <Box>
                 <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                  Lokacija
+                  {t('location')}
                 </Typography>
                 <Typography variant="body1" sx={{ fontWeight: 500 }}>
                   {event.location}
@@ -145,7 +147,7 @@ export default function EventViewModal({
                 <People sx={{ color: 'primary.main', fontSize: 28 }} />
                 <Box>
                   <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                    Maksimalan broj učesnika
+                    {t('maxAttendees')}
                   </Typography>
                   <Typography variant="body1" sx={{ fontWeight: 500 }}>
                     {event.maxAttendees}
@@ -160,12 +162,12 @@ export default function EventViewModal({
                 <Schedule sx={{ color: 'primary.main', fontSize: 28 }} />
                 <Box>
                   <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                    Podsjetnik
+                    {t('reminder')}
                   </Typography>
                   <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                    {event.reminderTime === '7_days' && '7 dana prije'}
-                    {event.reminderTime === '24_hours' && '24 sata prije'}
-                    {event.reminderTime === '2_hours' && '2 sata prije'}
+                    {event.reminderTime === '7_days' && t('reminderOptions.7_days')}
+                    {event.reminderTime === '24_hours' && t('reminderOptions.24_hours')}
+                    {event.reminderTime === '2_hours' && t('reminderOptions.2_hours')}
                   </Typography>
                 </Box>
               </Box>
@@ -177,7 +179,7 @@ export default function EventViewModal({
             {event.description && (
               <Box>
                 <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
-                  Detaljan opis
+                  {t('detailedDescription')}
                 </Typography>
                 <Box
                   sx={{
@@ -211,22 +213,22 @@ export default function EventViewModal({
                 {isPastEvent ? (
                   <Alert severity="warning" icon={<People />}>
                     <Typography variant="body2">
-                      Ovaj događaj je završen. Retroaktivna prijava nije moguća.
+                      {t('pastEventWarning')}
                     </Typography>
                   </Alert>
                 ) : isCapacityReached ? (
                   <Alert severity="error" icon={<People />}>
                     <Typography variant="body2">
-                      Maksimalan broj učesnika je dostignut ({event.maxAttendees}). Prijava dolaska više nije moguća.
+                      {t('capacityReached', { max: event.maxAttendees })}
                     </Typography>
                   </Alert>
                 ) : (
                   <Alert severity="info" icon={<People />}>
                     <Typography variant="body2">
-                      Prijava dolaska je omogućena za ovaj događaj.
-                      {event.requireAdultsChildren && ' Potrebno je navesti broj odraslih i djece.'}
+                      {t('rsvpInfo')}
+                      {event.requireAdultsChildren && ` ${t('requireAdultsChildren')}`}
                       {event.maxAttendees && rsvpQuery.data && (
-                        <> Trenutno prijavljeno: {rsvpQuery.data.totalAttendees} / {event.maxAttendees}</>
+                        <> {t('currentlyRegistered', { current: rsvpQuery.data.totalAttendees, max: event.maxAttendees })}</>
                       )}
                     </Typography>
                   </Alert>
@@ -243,7 +245,7 @@ export default function EventViewModal({
             startIcon={<CalendarMonth />}
             data-testid="button-add-to-calendar"
           >
-            Dodaj u kalendar
+            {t('addToCalendar')}
           </Button>
           
           {event.rsvpEnabled && !isCapacityReached && !isPastEvent && (
@@ -253,7 +255,7 @@ export default function EventViewModal({
               startIcon={<People />}
               data-testid="button-rsvp"
             >
-              {event.requireAdultsChildren ? 'Prijava dolaska' : 'Prijavi me'}
+              {event.requireAdultsChildren ? t('rsvpButtonLong') : t('rsvpButton')}
             </Button>
           )}
         </DialogActions>

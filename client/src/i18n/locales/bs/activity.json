@@ -131,7 +131,9 @@
   },
   "badgesSection": {
     "noBadgesAssigned": "Nema dodjeljenih značaka",
+    "noBadgesEarned": "Još niste osvojili nijednu značku",
     "badge": "Značka",
+    "badgeManagement": "Upravljanje značkama",
     "assignmentDate": "Datum dodjele",
     "unknownUser": "Nepoznat korisnik",
     "unknownBadge": "Nepoznata značka",
@@ -145,10 +147,12 @@
     "eventsAttended": "Posjećeni eventi",
     "value": "Vrijednost",
     "saving": "Spremanje...",
-    "save": "Spremi"
+    "save": "Spremi",
+    "earnedOn": "Osvojena"
   },
   "issueSection": {
     "selectTemplate": "Odaberi šablon",
+    "template": "Šablon",
     "messageOptional": "Poruka (opcionalno)",
     "selectUsers": "Odaberi korisnike",
     "searchByNameOrDob": "Pretraži po imenu ili datumu rođenja...",
