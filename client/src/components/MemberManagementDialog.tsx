@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Dialog,
@@ -45,6 +46,7 @@ export default function MemberManagementDialog({
   onClose, 
   workGroup 
 }: MemberManagementDialogProps) {
+  const { t } = useTranslation('tasks');
   const [addMemberModalOpen, setAddMemberModalOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -67,13 +69,13 @@ export default function MemberManagementDialog({
       queryClient.invalidateQueries({ queryKey: ['/api/work-groups'] });
       toast({ 
         title: 'Uspjeh', 
-        description: 'Član je uspješno uklonjen iz sekcije' 
+        description: t('memberManagement.memberRemoved') 
       });
     },
     onError: () => {
       toast({ 
         title: 'Greška', 
-        description: 'Greška pri uklanjanju člana', 
+        description: t('memberManagement.memberRemoveError'), 
         variant: 'destructive' 
       });
     }
@@ -90,40 +92,40 @@ export default function MemberManagementDialog({
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: [`/api/work-groups/${workGroup.id}/members`] });
       queryClient.invalidateQueries({ queryKey: ['/api/work-groups'] });
-      const action = variables.isModerator ? 'postavljen' : 'uklonjen';
+      const action = variables.isModerator ? t('memberManagement.set') : t('memberManagement.removed');
       toast({ 
         title: 'Uspjeh', 
-        description: `Moderator status je ${action}` 
+        description: `${t('memberManagement.moderatorStatus')} ${action}` 
       });
     },
     onError: () => {
       toast({ 
         title: 'Greška', 
-        description: 'Greška pri izmjeni moderator statusa', 
+        description: t('memberManagement.moderatorError'), 
         variant: 'destructive' 
       });
     }
   });
 
   const handleRemoveMember = (userId: string, userName: string) => {
-    if (confirm(`Jeste li sigurni da želite ukloniti ${userName} iz sekcije?`)) {
+    if (confirm(`${t('memberManagement.removeMemberConfirm')} ${userName} ${t('memberManagement.fromSection')}`)) {
       removeMemberMutation.mutate(userId);
     }
   };
 
   const handleToggleModerator = (userId: string, currentStatus: boolean, userName: string) => {
-    const action = currentStatus ? 'ukloniti moderator status' : 'postaviti kao moderatora';
-    if (confirm(`Jeste li sigurni da želite ${action} za ${userName}?`)) {
+    const action = currentStatus ? t('memberManagement.removeModerator') : t('memberManagement.setModerator');
+    if (confirm(`${t('memberManagement.toggleModeratorConfirm')} ${action} ${t('memberManagement.for')} ${userName}?`)) {
       toggleModeratorMutation.mutate({ userId, isModerator: !currentStatus });
     }
   };
 
   const formatJoinDate = (date: string | Date | null) => {
-    if (!date) return 'Nepoznat datum';
+    if (!date) return t('memberManagement.unknownDate');
     try {
       return new Date(date).toLocaleDateString('hr-HR');
     } catch {
-      return 'Nepoznat datum';
+      return t('memberManagement.unknownDate');
     }
   };
 
@@ -132,12 +134,12 @@ export default function MemberManagementDialog({
       <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
         <DialogContent>
           <Alert severity="error">
-            Greška pri učitavanju članova. Molimo zatvorite i pokušajte ponovo.
+            {t('memberManagement.errorLoading')}
           </Alert>
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose} data-testid="button-close-error">
-            Zatvori
+            {t('memberManagement.close')}
           </Button>
         </DialogActions>
       </Dialog>
@@ -158,7 +160,7 @@ export default function MemberManagementDialog({
         <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <People />
-            <span>Upravljanje Članovima - {workGroup.name}</span>
+            <span>{t('memberManagement.title')} - {workGroup.name}</span>
           </Box>
           <IconButton onClick={onClose} data-testid="close-member-management-dialog">
             <Close />
@@ -176,7 +178,7 @@ export default function MemberManagementDialog({
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <People sx={{ fontSize: 20 }} />
-                Članovi Sekcije
+                {t('memberManagement.sectionMembers')}
                 {membersQuery.data && (
                   <Chip 
                     label={membersQuery.data.length} 
@@ -193,7 +195,7 @@ export default function MemberManagementDialog({
                 onClick={() => setAddMemberModalOpen(true)}
                 data-testid="button-add-new-member"
               >
-                Dodaj Člana
+                {t('memberManagement.addMember')}
               </Button>
             </Box>
 
@@ -207,10 +209,10 @@ export default function MemberManagementDialog({
               <Box sx={{ textAlign: 'center', py: 4 }}>
                 <People sx={{ fontSize: 48, color: 'text.disabled', mb: 2 }} />
                 <Typography color="text.secondary" variant="h6">
-                  Nema članova u sekciji
+                  {t('memberManagement.noMembers')}
                 </Typography>
                 <Typography color="text.secondary" variant="body2" sx={{ mb: 3 }}>
-                  Dodajte prvog člana klikom na dugme "Dodaj Člana"
+                  {t('memberManagement.addFirstMember')}
                 </Typography>
                 <Button
                   variant="contained"
@@ -218,7 +220,7 @@ export default function MemberManagementDialog({
                   onClick={() => setAddMemberModalOpen(true)}
                   data-testid="button-add-first-member"
                 >
-                  Dodaj Prvog Člana
+                  {t('memberManagement.addFirstMemberButton')}
                 </Button>
               </Box>
             ) : (
@@ -248,7 +250,7 @@ export default function MemberManagementDialog({
                             {isModerator && (
                               <Chip 
                                 icon={<Star sx={{ fontSize: 16 }} />}
-                                label="Moderator" 
+                                label={t('common:status.inProgress')} 
                                 size="small" 
                                 color="warning"
                                 sx={{ fontWeight: 600 }}
@@ -268,7 +270,7 @@ export default function MemberManagementDialog({
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                               <CalendarMonth sx={{ fontSize: 14, color: 'text.secondary' }} />
                               <Typography variant="body2" color="text.secondary">
-                                Pridružen: {formatJoinDate(member.joinedAt)}
+                                {t('memberManagement.joinedOn')}: {formatJoinDate(member.joinedAt)}
                               </Typography>
                             </Box>
                           </Box>
@@ -287,7 +289,7 @@ export default function MemberManagementDialog({
                                 }
                               }}
                               data-testid={`button-toggle-moderator-${user?.id || member.userId}`}
-                              title={isModerator ? 'Ukloni moderator status' : 'Postavi kao moderatora'}
+                              title={isModerator ? t('memberManagement.removeModerator') : t('memberManagement.makeModerator')}
                             >
                               {toggleModeratorMutation.isPending ? (
                                 <CircularProgress size={20} />
@@ -333,7 +335,7 @@ export default function MemberManagementDialog({
             variant="outlined"
             data-testid="button-close-member-management"
           >
-            Zatvori
+            {t('memberManagement.close')}
           </Button>
         </DialogActions>
       </Dialog>
