@@ -128,5 +128,8 @@
   "common": {
     "success": "Sukses",
     "error": "Gabim"
-  }
+  },
+  "membershipFeeAmountLabel": "Shuma e kuotës së anëtarësimit",
+  "membershipFeeAmountPlaceholder": "p.sh. 30",
+  "monthlyMembershipFee": "Kuota mujore e anëtarësimit"
 }

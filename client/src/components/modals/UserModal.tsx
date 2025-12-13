@@ -584,11 +584,11 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label="Iznos članarine"
+                  label={t('membershipFeeAmountLabel')}
                   type="number"
                   value={formData.membershipFeeAmount}
                   onChange={handleChange('membershipFeeAmount')}
-                  placeholder="npr. 30"
+                  placeholder={t('membershipFeeAmountPlaceholder')}
                   InputProps={{
                     endAdornment: <Typography variant="body2" color="text.secondary">{currency}</Typography>
                   }}
@@ -600,7 +600,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label="Mjesečna članarina"
+                  label={t('monthlyMembershipFee')}
                   value={`${formData.membershipFeeAmount} ${currency}`}
                   disabled
                   InputProps={{

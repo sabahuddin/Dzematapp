@@ -126,7 +126,10 @@
     "error": "Greška pri učitavanju korisnika"
   },
   "common": {
-    "success": "Uspjeh",
-    "error": "Greška"
-  }
+    "success": "Başarılı",
+    "error": "Hata"
+  },
+  "membershipFeeAmountLabel": "Üyelik aidatı tutarı",
+  "membershipFeeAmountPlaceholder": "örn. 30",
+  "monthlyMembershipFee": "Aylık üyelik aidatı"
 }

@@ -128,5 +128,8 @@
   "common": {
     "success": "Uspjeh",
     "error": "Greška"
-  }
+  },
+  "membershipFeeAmountLabel": "Iznos članarine",
+  "membershipFeeAmountPlaceholder": "npr. 30",
+  "monthlyMembershipFee": "Mjesečna članarina"
 }

@@ -128,5 +128,8 @@
   "common": {
     "success": "Success",
     "error": "Error"
-  }
+  },
+  "membershipFeeAmountLabel": "Membership fee amount",
+  "membershipFeeAmountPlaceholder": "e.g. 30",
+  "monthlyMembershipFee": "Monthly membership fee"
 }
