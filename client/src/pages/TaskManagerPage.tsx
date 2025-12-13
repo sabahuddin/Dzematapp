@@ -2031,28 +2031,28 @@ function TaskCreateDialog({ open, onClose, workGroup, members, onSave }: TaskCre
           <TextField
             id="task-estimated-cost"
             variant="outlined"
-            label="Procijenjena cijena"
+            label={t('taskDialog.estimatedCost')}
             type="number"
             value={estimatedCost}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEstimatedCost(e.target.value)}
             fullWidth
-            placeholder="Opciono"
+            placeholder={t('taskDialog.optional')}
             data-testid="input-task-estimated-cost"
           />
           <TextField
             id="task-points-value"
             variant="outlined"
             select
-            label="Bodovna vrijednost"
+            label={t('taskDialog.pointsValue')}
             value={pointsValue}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPointsValue(e.target.value)}
             fullWidth
             data-testid="select-task-points-value"
           >
-            <MenuItem value="10">10 bodova (Laki zadatak)</MenuItem>
-            <MenuItem value="20">20 bodova (Srednji zadatak)</MenuItem>
-            <MenuItem value="30">30 bodova (Težak zadatak)</MenuItem>
-            <MenuItem value="50">50 bodova (Default)</MenuItem>
+            <MenuItem value="10">{t('task.pointsValues.easy')}</MenuItem>
+            <MenuItem value="20">{t('task.pointsValues.medium')}</MenuItem>
+            <MenuItem value="30">{t('task.pointsValues.hard')}</MenuItem>
+            <MenuItem value="50">{t('task.pointsValues.default')}</MenuItem>
           </TextField>
         </Box>
       </DialogContent>
