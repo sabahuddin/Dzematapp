@@ -331,6 +331,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
+      // Fetch tenant to get enabledModules
+      let tenant = null;
+      try {
+        tenant = await storage.getTenant(tenantId);
+      } catch (e) {
+        console.error('[LOGIN] Error fetching tenant:', e);
+      }
+      
       // Create session with tenantId
       req.session.userId = user.id;
       req.session.tenantId = tenantId;
@@ -363,7 +371,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
             isAdmin: user.isAdmin || hasImamRole,
             isSuperAdmin: false,
             totalPoints: user.totalPoints || 0,
-            tenantId: tenantId
+            tenantId: tenantId,
+            tenant: tenant ? {
+              id: tenant.id,
+              name: tenant.name,
+              enabledModules: tenant.enabledModules || ['dashboard', 'announcements', 'events', 'vaktija', 'users']
+            } : null
           } 
         });
       });
@@ -435,9 +448,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid Super Admin credentials" });
       }
 
+      // Fetch global tenant to get enabledModules
+      const SUPERADMIN_TENANT_ID = 'tenant-superadmin-global';
+      let tenant = null;
+      try {
+        tenant = await storage.getTenant(SUPERADMIN_TENANT_ID);
+      } catch (e) {
+        console.error('[SUPERADMIN LOGIN] Error fetching tenant:', e);
+      }
+      
       // Create session with global SuperAdmin tenant ID
       // SuperAdmin is NOT associated with any regular tenant
-      const SUPERADMIN_TENANT_ID = 'tenant-superadmin-global';
       
       try {
         req.session.userId = superAdminUser.id;
@@ -466,7 +487,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
             isAdmin: true,
             isSuperAdmin: true,
             totalPoints: 0,
-            tenantId: SUPERADMIN_TENANT_ID
+            tenantId: SUPERADMIN_TENANT_ID,
+            tenant: tenant ? {
+              id: tenant.id,
+              name: tenant.name,
+              enabledModules: tenant.enabledModules || ['dashboard', 'announcements', 'events', 'vaktija', 'users']
+            } : null
           } 
         });
       } catch (sessionErr) {
@@ -482,7 +508,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
             isAdmin: true,
             isSuperAdmin: true,
             totalPoints: 0,
-            tenantId: SUPERADMIN_TENANT_ID
+            tenantId: SUPERADMIN_TENANT_ID,
+            tenant: tenant ? {
+              id: tenant.id,
+              name: tenant.name,
+              enabledModules: tenant.enabledModules || ['dashboard', 'announcements', 'events', 'vaktija', 'users']
+            } : null
           } 
         });
       }
