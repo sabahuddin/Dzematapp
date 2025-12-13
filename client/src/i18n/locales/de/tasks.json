@@ -157,5 +157,18 @@
     "approve": "Genehmigen",
     "reject": "Ablehnen",
     "noRequests": "Keine Zugriffsanfragen"
+  },
+  "addMemberModal": {
+    "title": "Mitglied hinzufügen - {{name}}",
+    "selectUserDescription": "Wählen Sie den Benutzer aus, den Sie zur Gruppe hinzufügen möchten",
+    "selectUser": "Benutzer auswählen",
+    "selectUserRequired": "Bitte wählen Sie einen Benutzer aus",
+    "noUsersAvailable": "Keine Benutzer zum Hinzufügen verfügbar",
+    "allUsersAreMembers": "Alle Benutzer sind bereits Mitglieder dieser Gruppe oder es sind keine registrierten Benutzer vorhanden.",
+    "addMember": "Mitglied hinzufügen",
+    "memberAdded": "Mitglied wurde erfolgreich zur Gruppe hinzugefügt",
+    "addError": "Fehler beim Hinzufügen des Mitglieds",
+    "alreadyMember": "Benutzer ist bereits Mitglied dieser Gruppe",
+    "loadError": "Fehler beim Laden der Daten. Bitte schließen und erneut versuchen."
   }
 }

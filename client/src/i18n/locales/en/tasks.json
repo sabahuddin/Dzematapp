@@ -157,5 +157,18 @@
     "approve": "Approve",
     "reject": "Reject",
     "noRequests": "No access requests"
+  },
+  "addMemberModal": {
+    "title": "Add Member - {{name}}",
+    "selectUserDescription": "Select the user you want to add to this section",
+    "selectUser": "Select user",
+    "selectUserRequired": "Please select a user",
+    "noUsersAvailable": "No users available to add",
+    "allUsersAreMembers": "All users are already members of this section or there are no registered users.",
+    "addMember": "Add Member",
+    "memberAdded": "Member was successfully added to the section",
+    "addError": "Error adding member",
+    "alreadyMember": "User is already a member of this section",
+    "loadError": "Error loading data. Please close and try again."
   }
 }

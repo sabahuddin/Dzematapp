@@ -157,5 +157,18 @@
     "approve": "Mirato",
     "reject": "Refuzo",
     "noRequests": "Nuk ka kërkesa për qasje"
+  },
+  "addMemberModal": {
+    "title": "Shto Anëtar - {{name}}",
+    "selectUserDescription": "Përzgjidhni përdoruesin që dëshironi të shtoni në këtë seksion",
+    "selectUser": "Përzgjidhni përdoruesin",
+    "selectUserRequired": "Ju lutem përzgjidhni një përdorues",
+    "noUsersAvailable": "Nuk ka përdorues të disponueshëm për të shtuar",
+    "allUsersAreMembers": "Të gjithë përdoruesit janë tashmë anëtarë të këtij seksioni ose nuk ka përdorues të regjistruar.",
+    "addMember": "Shto Anëtar",
+    "memberAdded": "Anëtari u shtua me sukses në seksion",
+    "addError": "Gabim në shtimin e anëtarit",
+    "alreadyMember": "Përdoruesi është tashmë anëtar i këtij seksioni",
+    "loadError": "Gabim në ngarkimin e të dhënave. Ju lutem mbyllni dhe provoni përsëri."
   }
 }

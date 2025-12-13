@@ -157,5 +157,18 @@
     "approve": "Odobri",
     "reject": "Odbij",
     "noRequests": "Nema zahtjeva za pristup"
+  },
+  "addMemberModal": {
+    "title": "Dodaj člana - {{name}}",
+    "selectUserDescription": "Odaberite korisnika kojeg želite dodati u sekciju",
+    "selectUser": "Odaberite korisnika",
+    "selectUserRequired": "Molimo odaberite korisnika",
+    "noUsersAvailable": "Nema dostupnih korisnika za dodavanje",
+    "allUsersAreMembers": "Svi korisnici su već članovi ove sekcije ili nema registriranih korisnika.",
+    "addMember": "Dodaj člana",
+    "memberAdded": "Član je uspješno dodan u sekciju",
+    "addError": "Greška pri dodavanju člana",
+    "alreadyMember": "Korisnik je već član ove sekcije",
+    "loadError": "Greška pri učitavanju podataka. Molimo zatvorite i pokušajte ponovo."
   }
 }

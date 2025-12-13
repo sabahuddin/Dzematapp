@@ -157,5 +157,18 @@
     "approve": "Onayla",
     "reject": "Reddet",
     "noRequests": "Erişim isteği yok"
+  },
+  "addMemberModal": {
+    "title": "Üye Ekle - {{name}}",
+    "selectUserDescription": "Bu bölüme eklemek istediğiniz kullanıcıyı seçin",
+    "selectUser": "Kullanıcı seçin",
+    "selectUserRequired": "Lütfen bir kullanıcı seçin",
+    "noUsersAvailable": "Eklenecek kullanıcı yok",
+    "allUsersAreMembers": "Tüm kullanıcılar zaten bu bölümün üyesi veya kayıtlı kullanıcı yok.",
+    "addMember": "Üye Ekle",
+    "memberAdded": "Üye bölüme başarıyla eklendi",
+    "addError": "Üye ekleme hatası",
+    "alreadyMember": "Kullanıcı zaten bu bölümün üyesi",
+    "loadError": "Veri yükleme hatası. Lütfen kapatın ve tekrar deneyin."
   }
 }
