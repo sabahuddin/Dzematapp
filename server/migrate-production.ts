@@ -92,11 +92,11 @@ export async function migrateProductionSchema(): Promise<void> {
     console.log("📋 Fixing tenant enabled_modules with correct module IDs...");
     try {
       const fullModules = [
-        'dashboard', 'users', 'announcements', 'events', 'tasks', 'messages', 
-        'askImam', 'ask-imam', 'requests', 'shop', 'marketplace', 'vaktija', 
+        'dashboard', 'users', 'announcements', 'events', 'tasks', 'workgroups', 'membership',
+        'messages', 'askImam', 'requests', 'shop', 'marketplace', 'vaktija', 
         'finances', 'projects', 'activity', 'activity-log', 'badges', 'points', 
         'certificates', 'documents', 'media', 'livestream', 'settings', 'guide', 
-        'vodic', 'sponsors', 'applications'
+        'sponsors', 'applications'
       ];
       
       // Update all tenants with subscription_tier = 'full' to have all modules
