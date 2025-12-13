@@ -32,6 +32,14 @@
     "selectFile": "Izaberi fajl",
     "uploading": "Učitavanje..."
   },
+  "bulkUpload": {
+    "title": "Bulk Upload Uplata",
+    "description": "Uploadajte Excel ili CSV fajl sa uplatama.",
+    "columns": "Kolone: Članski broj, Ime i Prezime, Iznos, Godina, Mjesec",
+    "downloadTemplate": "Preuzmi template",
+    "selectFile": "Izaberi fajl",
+    "close": "Zatvori"
+  },
   "addPaymentDialog": {
     "title": "Dodaj pojedinačnu uplatu",
     "selectMember": "Član",

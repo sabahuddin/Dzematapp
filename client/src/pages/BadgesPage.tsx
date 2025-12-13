@@ -141,13 +141,13 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
       });
       toast({ 
         title: t('common:common.success'), 
-        description: data.message || 'Značke provjerene za sve korisnike'
+        description: data.message || t('badges:messages.allBadgesChecked')
       });
     },
     onError: () => {
       toast({ 
         title: t('common:common.error'), 
-        description: 'Greška prilikom provjere znački', 
+        description: t('badges:messages.errorCheckingBadges'), 
         variant: 'destructive' 
       });
     }
@@ -190,17 +190,12 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
   };
 
   const handleFormSubmit = async () => {
-    console.log('[BADGES] handleFormSubmit CALLED!');
-    alert('Spremi kliknut!'); // DEBUG - remove after testing
-    
     const isValid = await form.trigger();
-    console.log('[BADGES] Form validation result:', isValid);
     
     if (!isValid) {
-      console.log('[BADGES] Form errors:', form.formState.errors);
       toast({
-        title: 'Greška u formi',
-        description: 'Molimo popunite sva obavezna polja.',
+        title: t('common:common.error'),
+        description: t('badges:validation.allFieldsRequired'),
         variant: 'destructive'
       });
       return;
@@ -218,7 +213,7 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
   };
 
   const handleCheckAllBadges = () => {
-    if (window.confirm('Ova akcija će provjeriti i dodijeliti značke za SVE korisnike. Može potrajati nekoliko sekundi. Nastaviti?')) {
+    if (window.confirm(t('badges:messages.checkAllConfirm'))) {
       checkAllBadgesMutation.mutate();
     }
   };
@@ -433,8 +428,6 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
                 type="button"
                 disabled={saveBadgeMutation.isPending}
                 onClick={() => {
-                  console.log('[BADGES] PURE HTML Save clicked!');
-                  alert('Spremi kliknut - HTML button!');
                   handleFormSubmit();
                 }}
                 style={{

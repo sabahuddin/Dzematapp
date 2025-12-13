@@ -81,5 +81,14 @@
       "paymentMethod": "Način plaćanja",
       "notes": "Napomene"
     }
+  },
+  "purposeDialog": {
+    "title": "Upravljanje svrhama uplata",
+    "existingPurposes": "Postojeće svrhe:"
+  },
+  "buttons": {
+    "creating": "Kreiram...",
+    "addPurpose": "Dodaj svrhu",
+    "close": "Zatvori"
   }
 }

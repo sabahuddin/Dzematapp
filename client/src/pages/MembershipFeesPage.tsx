@@ -624,15 +624,15 @@ export default function MembershipFeesPage() {
 
       {/* Upload Dialog */}
       <Dialog open={uploadDialogOpen} onClose={() => { setUploadDialogOpen(false); setUploadResult(null); }} maxWidth="sm" fullWidth>
-        <DialogTitle>Bulk Upload Uplata</DialogTitle>
+        <DialogTitle>{t('membershipFees:bulkUpload.title')}</DialogTitle>
         <DialogContent>
           <Box sx={{ textAlign: 'center', py: 3 }}>
             <CloudUpload sx={{ fontSize: 64, color: 'primary.main', mb: 2 }} />
             <Typography variant="body1" paragraph>
-              Uploadajte Excel ili CSV fajl sa uplatama.
+              {t('membershipFees:bulkUpload.description')}
             </Typography>
             <Typography variant="body2" color="text.secondary" paragraph>
-              Kolone: <strong>Članski broj, Ime i Prezime, Iznos, Godina, Mjesec</strong>
+              {t('membershipFees:bulkUpload.columns')}
             </Typography>
             
             <input
@@ -649,7 +649,7 @@ export default function MembershipFeesPage() {
                 startIcon={<Download />}
                 onClick={downloadTemplate}
               >
-                Preuzmi template
+                {t('membershipFees:bulkUpload.downloadTemplate')}
               </Button>
               <Button
                 variant="contained"
@@ -657,7 +657,7 @@ export default function MembershipFeesPage() {
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploadFileMutation.isPending}
               >
-                {uploadFileMutation.isPending ? 'Učitavanje...' : 'Izaberi fajl'}
+                {uploadFileMutation.isPending ? 'Učitavanje...' : t('membershipFees:bulkUpload.selectFile')}
               </Button>
             </Box>
 
@@ -681,7 +681,7 @@ export default function MembershipFeesPage() {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => { setUploadDialogOpen(false); setUploadResult(null); }}>Zatvori</Button>
+          <Button onClick={() => { setUploadDialogOpen(false); setUploadResult(null); }}>{t('membershipFees:bulkUpload.close')}</Button>
         </DialogActions>
       </Dialog>
 

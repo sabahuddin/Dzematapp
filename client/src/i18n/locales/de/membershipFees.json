@@ -32,6 +32,14 @@
     "selectFile": "Datei auswählen",
     "uploading": "Hochladen..."
   },
+  "bulkUpload": {
+    "title": "Massen-Upload Zahlung",
+    "description": "Laden Sie Excel- oder CSV-Datei mit Zahlungen hoch.",
+    "columns": "Spalten: Registrierungsnummer, Vollständiger Name, Betrag, Jahr, Monat",
+    "downloadTemplate": "Vorlage herunterladen",
+    "selectFile": "Datei auswählen",
+    "close": "Schließen"
+  },
   "addPaymentDialog": {
     "title": "Einzelzahlung hinzufügen",
     "selectMember": "Mitglied",

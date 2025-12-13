@@ -81,5 +81,14 @@
       "paymentMethod": "Payment Method",
       "notes": "Notes"
     }
+  },
+  "purposeDialog": {
+    "title": "Manage payment purposes",
+    "existingPurposes": "Existing purposes:"
+  },
+  "buttons": {
+    "creating": "Creating...",
+    "addPurpose": "Add Purpose",
+    "close": "Close"
   }
 }

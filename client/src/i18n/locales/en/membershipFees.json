@@ -32,6 +32,14 @@
     "selectFile": "Select File",
     "uploading": "Uploading..."
   },
+  "bulkUpload": {
+    "title": "Bulk Upload Payment",
+    "description": "Upload Excel or CSV file with payments.",
+    "columns": "Columns: Registry Number, Full Name, Amount, Year, Month",
+    "downloadTemplate": "Download template",
+    "selectFile": "Select file",
+    "close": "Close"
+  },
   "addPaymentDialog": {
     "title": "Add Individual Payment",
     "selectMember": "Member",

@@ -44,13 +44,17 @@
     "errorSaving": "Fehler beim Speichern des Abzeichens",
     "errorDeleting": "Fehler beim Löschen des Abzeichens",
     "errorLoading": "Fehler beim Laden der Abzeichen. Bitte versuchen Sie es erneut.",
-    "confirmDelete": "Sind Sie sicher, dass Sie dieses Abzeichen löschen möchten?"
+    "confirmDelete": "Sind Sie sicher, dass Sie dieses Abzeichen löschen möchten?",
+    "allBadgesChecked": "Abzeichen für alle Benutzer überprüft",
+    "errorCheckingBadges": "Fehler beim Überprüfen von Abzeichen",
+    "checkAllConfirm": "Diese Aktion überprüft und vergibt Abzeichen für ALLE Benutzer. Kann einige Sekunden dauern. Fortfahren?"
   },
   "validation": {
     "nameRequired": "Name ist erforderlich",
     "descriptionRequired": "Beschreibung ist erforderlich",
     "criteriaTypeRequired": "Kriterientyp ist erforderlich",
-    "criteriaValuePositive": "Der Wert muss positiv sein"
+    "criteriaValuePositive": "Der Wert muss positiv sein",
+    "allFieldsRequired": "Bitte füllen Sie alle erforderlichen Felder aus."
   },
   "emptyState": "Keine Abzeichen definiert. Fügen Sie ein neues Abzeichen über die Schaltfläche \"Abzeichen hinzufügen\" hinzu.",
   "accessDenied": "Sie haben keine Berechtigung, auf diese Seite zuzugreifen.",

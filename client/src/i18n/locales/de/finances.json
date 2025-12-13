@@ -81,5 +81,14 @@
       "paymentMethod": "Zahlungsmethode",
       "notes": "Notizen"
     }
+  },
+  "purposeDialog": {
+    "title": "Zahlungszwecke verwalten",
+    "existingPurposes": "Vorhandene Zwecke:"
+  },
+  "buttons": {
+    "creating": "Erstellen...",
+    "addPurpose": "Zweck hinzufügen",
+    "close": "Schließen"
   }
 }
