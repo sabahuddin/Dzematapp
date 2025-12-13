@@ -138,6 +138,8 @@ export async function seedDefaultTenant() {
       const trialEnd = new Date();
       trialEnd.setDate(trialEnd.getDate() + 30);
 
+      const fullModules = ['dashboard', 'users', 'announcements', 'events', 'tasks', 'messages', 'askImam', 'ask-imam', 'requests', 'shop', 'marketplace', 'vaktija', 'finances', 'projects', 'activity', 'activity-log', 'badges', 'points', 'certificates', 'documents', 'media', 'livestream', 'settings', 'guide', 'vodic', 'sponsors', 'applications'];
+      
       const defaultTenantData: any = {
         id: DEFAULT_TENANT_ID,
         name: 'Demo Džemat',
@@ -154,6 +156,7 @@ export async function seedDefaultTenant() {
         trialEndsAt: trialEnd,
         locale: 'bs',
         currency: 'CHF',
+        enabledModules: fullModules,
         isActive: true,
       };
       

@@ -93,9 +93,10 @@ export async function migrateProductionSchema(): Promise<void> {
     try {
       const fullModules = [
         'dashboard', 'users', 'announcements', 'events', 'tasks', 'messages', 
-        'askImam', 'requests', 'shop', 'vaktija', 'finances', 'projects', 
-        'activity', 'badges', 'points', 'certificates', 'documents', 'media', 
-        'settings', 'guide'
+        'askImam', 'ask-imam', 'requests', 'shop', 'marketplace', 'vaktija', 
+        'finances', 'projects', 'activity', 'activity-log', 'badges', 'points', 
+        'certificates', 'documents', 'media', 'livestream', 'settings', 'guide', 
+        'vodic', 'sponsors', 'applications'
       ];
       
       // Update all tenants with subscription_tier = 'full' to have all modules
