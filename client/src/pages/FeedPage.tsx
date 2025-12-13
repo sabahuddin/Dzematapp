@@ -180,7 +180,13 @@ export default function FeedPage() {
                   <Box sx={{ flex: 1 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
                       <Typography variant="h6" component="h3" sx={{ fontWeight: 600 }}>
-                        {item.type === 'new_member' ? `${t('feed:newMember')}: ${item.description?.split(' ').map((n: string) => n[0]).join('')}` : item.title}
+                        {item.type === 'new_member' 
+                          ? `${t('feed:newMember')}: ${item.description?.split(' ').map((n: string) => n[0]).join('')}` 
+                          : item.type === 'certificate_issued'
+                          ? t('feed:certificateIssued')
+                          : item.type === 'shop_item'
+                          ? t('feed:newService')
+                          : item.title}
                       </Typography>
                       {item.isClickable && (
                         <ArrowForward 

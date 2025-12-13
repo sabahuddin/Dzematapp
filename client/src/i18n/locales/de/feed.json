@@ -2,5 +2,7 @@
   "title": "Feed",
   "allCommunityActivities": "Alle Gemeindeaktivitäten",
   "noActivities": "Keine Aktivitäten vorhanden",
-  "newMember": "Neues Mitglied"
+  "newMember": "Neues Mitglied",
+  "newService": "Neuer Service",
+  "certificateIssued": "Urkunde ausgestellt"
 }

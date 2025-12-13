@@ -2,5 +2,7 @@
   "title": "Feed",
   "allCommunityActivities": "All community activities",
   "noActivities": "No activities to display",
-  "newMember": "New member"
+  "newMember": "New member",
+  "newService": "New service",
+  "certificateIssued": "Certificate issued"
 }
