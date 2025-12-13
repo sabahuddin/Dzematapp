@@ -6,14 +6,15 @@ import ContactInfoTab from '../components/ContactInfoTab';
 import OrganizationSettingsPage from './OrganizationSettingsPage';
 
 export default function SettingsPage() {
-  const { t } = useTranslation('navigation');
+  const { t: tNav } = useTranslation('navigation');
+  const { t } = useTranslation('settings');
   const [activeTab, setActiveTab] = useState(0);
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
         <SettingsIcon size={32} />
-        <h1 style={{ margin: 0, fontSize: '2rem', fontWeight: 600 }}>{t('settings')}</h1>
+        <h1 style={{ margin: 0, fontSize: '2rem', fontWeight: 600 }}>{tNav('settings')}</h1>
       </Box>
 
       <Tabs
