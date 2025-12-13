@@ -3252,7 +3252,7 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
     <Box sx={{ p: 3 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h6" sx={{ fontWeight: 600 }}>
-          Zadaci: {workGroup?.name}
+          {t('taskDialog.title', { name: workGroup?.name })}
         </Typography>
         {isModeratorOrAdmin() && (
           <Button
@@ -3267,8 +3267,8 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
 
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
         <Tabs value={archiveTab} onChange={(_, newValue) => setArchiveTab(newValue)} aria-label="task archive tabs">
-          <Tab label={`Aktivni (${activeTasks.length})`} data-testid="tab-active-tasks" />
-          <Tab label={`Arhiva (${archivedTasks.length})`} data-testid="tab-archived-tasks" />
+          <Tab label={t('taskDialog.activeTab', { count: activeTasks.length })} data-testid="tab-active-tasks" />
+          <Tab label={t('taskDialog.archiveTab', { count: archivedTasks.length })} data-testid="tab-archived-tasks" />
         </Tabs>
       </Box>
 
