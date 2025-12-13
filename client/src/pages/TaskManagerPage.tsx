@@ -319,9 +319,9 @@ function AdminTasksArchive({ workGroups, users, currentUser }: AdminTasksArchive
   const getStatusLabel = (status: string) => {
     switch (status) {
       case 'završeno':
-        return 'Završeno';
+        return t('task.status.zavrseno');
       case 'arhiva':
-        return 'Arhivirano';
+        return t('task.status.arhiva');
       default:
         return status;
     }
@@ -1131,7 +1131,7 @@ export default function TaskManagerPage() {
             <Card>
               <CardContent sx={{ textAlign: 'center', py: 6 }}>
                 <Typography color="text.secondary">
-                  Nema dostupnih javnih sekcija za pristup
+                  {t('noPublicSectionsAvailable')}
                 </Typography>
               </CardContent>
             </Card>
@@ -1160,7 +1160,7 @@ export default function TaskManagerPage() {
             <Card>
               <CardContent sx={{ textAlign: 'center', py: 6 }}>
                 <Typography color="text.secondary">
-                  Nema dostupnih javnih sekcija za pristup
+                  {t('noPublicSectionsAvailable')}
                 </Typography>
               </CardContent>
             </Card>

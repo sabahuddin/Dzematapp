@@ -23,6 +23,15 @@
   "adults": "Odrasli",
   "children": "Djeca",
   "detailedDescription": "Detaljan opis",
+  "eventPhoto": "Fotografija događaja",
+  "selectPhoto": "Odaberi fotografiju",
+  "pointsForAttendance": "Bodovi za prisustvo",
+  "pointsOptions": {
+    "10": "10 Bodova",
+    "20": "20 Bodova",
+    "30": "30 Bodova",
+    "50": "50 Bodova"
+  },
   "reminder": "Podsjetnik",
   "reminderOptions": {
     "7_days": "7 dana prije",

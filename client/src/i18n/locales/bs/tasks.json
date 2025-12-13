@@ -100,6 +100,10 @@
   "createProposalFor": "Kreiraj prijedlog za",
   "viewTasks": "Pogledaj Zadatke",
   "loadingError": "Greška pri učitavanju",
+  "noPublicSectionsAvailable": "Nema dostupnih javnih sekcija za pristup",
+  "unknownUser": "Nepoznat korisnik",
+  "unknownGroup": "Nepoznata grupa",
+  "notMemberOfAnySection": "Niste član nijedne sekcije",
   "toasts": {
     "sectionCreated": "Sekcija je uspješno kreirana",
     "sectionCreateError": "Greška pri kreiranju sekcije",
@@ -118,5 +122,18 @@
   },
   "members": {
     "count_many": "{count} članova"
+  },
+  "accessRequests": {
+    "userName": "Ime korisnika",
+    "sectionName": "Naziv sekcije",
+    "requestDate": "Datum zahtjeva",
+    "status": "Status",
+    "actions": "Akcije",
+    "pending": "Na čekanju",
+    "approved": "Odobreno",
+    "rejected": "Odbijeno",
+    "approve": "Odobri",
+    "reject": "Odbij",
+    "noRequests": "Nema zahtjeva za pristup"
   }
 }

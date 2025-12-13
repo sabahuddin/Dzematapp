@@ -23,6 +23,15 @@
   "adults": "Të rritur",
   "children": "Fëmijë",
   "detailedDescription": "Përshkrim i detajuar",
+  "eventPhoto": "Foto e Ngjarjes",
+  "selectPhoto": "Zgjidhni Foton",
+  "pointsForAttendance": "Pikë për Pjesëmarrje",
+  "pointsOptions": {
+    "10": "10 Pikë",
+    "20": "20 Pikë",
+    "30": "30 Pikë",
+    "50": "50 Pikë"
+  },
   "reminder": "Kujtesë",
   "reminderOptions": {
     "7_days": "7 ditë para",

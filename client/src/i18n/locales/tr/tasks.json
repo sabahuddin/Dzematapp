@@ -100,6 +100,10 @@
   "createProposalFor": "İçin öneri oluştur",
   "viewTasks": "Görevleri Görüntüle",
   "loadingError": "Yükleme Hatası",
+  "noPublicSectionsAvailable": "Erişim için kullanılabilir kamu bölümü yok",
+  "unknownUser": "Bilinmeyen Kullanıcı",
+  "unknownGroup": "Bilinmeyen Grup",
+  "notMemberOfAnySection": "Herhangi bir bölümün üyesi değilsiniz",
   "toasts": {
     "sectionCreated": "Bölüm başarıyla oluşturuldu",
     "sectionCreateError": "Bölüm oluşturma hatası",
@@ -118,5 +122,18 @@
   },
   "members": {
     "count_many": "{count} üye"
+  },
+  "accessRequests": {
+    "userName": "Kullanıcı Adı",
+    "sectionName": "Bölüm Adı",
+    "requestDate": "İstek Tarihi",
+    "status": "Durum",
+    "actions": "İşlemler",
+    "pending": "Beklemede",
+    "approved": "Onaylandı",
+    "rejected": "Reddedildi",
+    "approve": "Onayla",
+    "reject": "Reddet",
+    "noRequests": "Erişim isteği yok"
   }
 }

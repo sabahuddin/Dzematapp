@@ -100,6 +100,10 @@
   "createProposalFor": "Create proposal for",
   "viewTasks": "View Tasks",
   "loadingError": "Loading Error",
+  "noPublicSectionsAvailable": "No public sections available for access",
+  "unknownUser": "Unknown User",
+  "unknownGroup": "Unknown Group",
+  "notMemberOfAnySection": "You are not a member of any section",
   "toasts": {
     "sectionCreated": "Section created successfully",
     "sectionCreateError": "Error creating section",
@@ -118,5 +122,18 @@
   },
   "members": {
     "count_many": "{count} members"
+  },
+  "accessRequests": {
+    "userName": "User Name",
+    "sectionName": "Section Name",
+    "requestDate": "Request Date",
+    "status": "Status",
+    "actions": "Actions",
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "approve": "Approve",
+    "reject": "Reject",
+    "noRequests": "No access requests"
   }
 }

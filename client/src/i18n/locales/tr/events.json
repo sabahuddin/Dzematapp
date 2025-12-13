@@ -23,6 +23,15 @@
   "adults": "Odrasli",
   "children": "Djeca",
   "detailedDescription": "Detaljan opis",
+  "eventPhoto": "Etkinlik Fotoğrafı",
+  "selectPhoto": "Fotoğraf Seç",
+  "pointsForAttendance": "Katılım Puanları",
+  "pointsOptions": {
+    "10": "10 Puan",
+    "20": "20 Puan",
+    "30": "30 Puan",
+    "50": "50 Puan"
+  },
   "reminder": "Podsjetnik",
   "reminderOptions": {
     "7_days": "7 dana prije",

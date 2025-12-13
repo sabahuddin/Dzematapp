@@ -253,7 +253,7 @@ export default function EventModal({
             {!isReadOnly && (
               <Box>
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  Fotografija događaja
+                  {t('events:eventPhoto')}
                 </Typography>
                 {photoPreview ? (
                   <Box sx={{ position: 'relative', display: 'inline-block' }}>
@@ -289,7 +289,7 @@ export default function EventModal({
                     component="label"
                     startIcon={<CalendarMonth />}
                   >
-                    Odaberi fotografiju
+                    {t('events:selectPhoto')}
                     <input
                       type="file"
                       hidden
@@ -390,17 +390,17 @@ export default function EventModal({
             />
             
             <FormControl fullWidth variant="outlined" disabled={isReadOnly}>
-              <InputLabel>Bodovi za Prisustvo</InputLabel>
+              <InputLabel>{t('events:pointsForAttendance')}</InputLabel>
               <Select
                 value={formData.pointsValue}
                 onChange={(e) => setFormData(prev => ({ ...prev, pointsValue: Number(e.target.value) }))}
-                label="Bodovi za Prisustvo"
+                label={t('events:pointsForAttendance')}
                 data-testid="select-pointsValue"
               >
-                <MenuItem value={10} data-testid="option-points-10">10 Bodova</MenuItem>
-                <MenuItem value={20} data-testid="option-points-20">20 Bodova</MenuItem>
-                <MenuItem value={30} data-testid="option-points-30">30 Bodova</MenuItem>
-                <MenuItem value={50} data-testid="option-points-50">50 Bodova</MenuItem>
+                <MenuItem value={10} data-testid="option-points-10">{t('events:pointsOptions.10')}</MenuItem>
+                <MenuItem value={20} data-testid="option-points-20">{t('events:pointsOptions.20')}</MenuItem>
+                <MenuItem value={30} data-testid="option-points-30">{t('events:pointsOptions.30')}</MenuItem>
+                <MenuItem value={50} data-testid="option-points-50">{t('events:pointsOptions.50')}</MenuItem>
               </Select>
             </FormControl>
             

@@ -23,6 +23,15 @@
   "adults": "Adults",
   "children": "Children",
   "detailedDescription": "Detailed description",
+  "eventPhoto": "Event Photo",
+  "selectPhoto": "Select Photo",
+  "pointsForAttendance": "Points for Attendance",
+  "pointsOptions": {
+    "10": "10 Points",
+    "20": "20 Points",
+    "30": "30 Points",
+    "50": "50 Points"
+  },
   "reminder": "Reminder",
   "reminderOptions": {
     "7_days": "7 days before",

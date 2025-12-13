@@ -23,6 +23,15 @@
   "adults": "Erwachsene",
   "children": "Kinder",
   "detailedDescription": "Detaillierte Beschreibung",
+  "eventPhoto": "Veranstaltungsfoto",
+  "selectPhoto": "Foto auswählen",
+  "pointsForAttendance": "Punkte für Teilnahme",
+  "pointsOptions": {
+    "10": "10 Punkte",
+    "20": "20 Punkte",
+    "30": "30 Punkte",
+    "50": "50 Punkte"
+  },
   "reminder": "Erinnerung",
   "reminderOptions": {
     "7_days": "7 Tage vorher",

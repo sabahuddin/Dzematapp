@@ -100,6 +100,10 @@
   "createProposalFor": "Krijo propozim për",
   "viewTasks": "Shfaq Detyrat",
   "loadingError": "Gabim në ngarkim",
+  "noPublicSectionsAvailable": "Nuk ka seksione publike të disponueshme për qasje",
+  "unknownUser": "Përdorues i Panjohur",
+  "unknownGroup": "Grup i Panjohur",
+  "notMemberOfAnySection": "Nuk jeni anëtar i asnjë seksioni",
   "toasts": {
     "sectionCreated": "Seksioni u krijua me sukses",
     "sectionCreateError": "Gabim në krijimin e seksionit",
@@ -118,5 +122,18 @@
   },
   "members": {
     "count_many": "{count} anëtarë"
+  },
+  "accessRequests": {
+    "userName": "Emri i Përdoruesit",
+    "sectionName": "Emri i Seksionit",
+    "requestDate": "Data e Kërkesës",
+    "status": "Statusi",
+    "actions": "Veprimet",
+    "pending": "Pezull",
+    "approved": "Miratuar",
+    "rejected": "Refuzuar",
+    "approve": "Mirato",
+    "reject": "Refuzo",
+    "noRequests": "Nuk ka kërkesa për qasje"
   }
 }

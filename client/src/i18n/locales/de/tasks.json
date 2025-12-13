@@ -100,6 +100,10 @@
   "createProposalFor": "Vorschlag erstellen für",
   "viewTasks": "Aufgaben anzeigen",
   "loadingError": "Ladefehler",
+  "noPublicSectionsAvailable": "Keine öffentlichen Gruppen für Zugang verfügbar",
+  "unknownUser": "Unbekannter Benutzer",
+  "unknownGroup": "Unbekannte Gruppe",
+  "notMemberOfAnySection": "Sie sind kein Mitglied einer Gruppe",
   "toasts": {
     "sectionCreated": "Gruppe wurde erfolgreich erstellt",
     "sectionCreateError": "Fehler beim Erstellen der Gruppe",
@@ -118,5 +122,18 @@
   },
   "members": {
     "count_many": "{count} Mitglieder"
+  },
+  "accessRequests": {
+    "userName": "Benutzername",
+    "sectionName": "Gruppenname",
+    "requestDate": "Anfragedatum",
+    "status": "Status",
+    "actions": "Aktionen",
+    "pending": "Ausstehend",
+    "approved": "Genehmigt",
+    "rejected": "Abgelehnt",
+    "approve": "Genehmigen",
+    "reject": "Ablehnen",
+    "noRequests": "Keine Zugriffsanfragen"
   }
 }
