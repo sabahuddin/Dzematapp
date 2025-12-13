@@ -113,6 +113,9 @@
     "makeModerator": "Cakto si moderator",
     "removeModerator": "Hiq moderatorin"
   },
+  "mySections": "Seksionet e mia",
+  "noOtherSections": "Nuk ka seksione të tjera",
+  "requestAccess": "Kërko Qasje",
   "createSection": "Krijo Seksion",
   "editSection": "Redakto Seksion",
   "joinSection": "Bashkohuni në Seksion",
@@ -131,6 +134,11 @@
     "sectionCreateError": "Gabim në krijimin e seksionit",
     "sectionUpdated": "Seksioni u përditësua me sukses",
     "sectionUpdateError": "Gabim në përditësimin e seksionit",
+    "sectionArchived": "Seksioni është arkivuar.",
+    "sectionUnarchived": "Seksioni është rikthyer nga arkivi.",
+    "sectionArchiveError": "Gabim në arkivimin e seksionit.",
+    "sectionDeleted": "Seksioni është fshirë.",
+    "sectionDeleteError": "Gabim në fshirjen e seksionit.",
     "accessRequestSent": "Kërkesa për qasje u dërgua",
     "accessRequestError": "Gabim në dërgimin e kërkesës",
     "requestApproved": "Kërkesa u miratua",
@@ -143,7 +151,7 @@
     "taskDeleted": "Detyra u fshi"
   },
   "members": {
-    "count_many": "{count} anëtarë"
+    "count_many": "{{count}} anëtarë"
   },
   "accessRequests": {
     "userName": "Emri i Përdoruesit",
@@ -157,6 +165,25 @@
     "approve": "Mirato",
     "reject": "Refuzo",
     "noRequests": "Nuk ka kërkesa për qasje"
+  },
+  "archive": "Arkivo",
+  "unarchive": "Rikthe nga arkivi",
+  "delete": "Fshi",
+  "joinToComment": "Bashkohuni në këtë seksion për të komentuar.",
+  "confirmDelete": {
+    "title": "Konfirmo Fshirjen",
+    "message": "Jeni i sigurt që dëshironi të fshini seksionin",
+    "permanent": "Ky veprim është i përhershëm dhe nuk mund të zhbëhet.",
+    "cancel": "Anulo",
+    "delete": "Fshi",
+    "deleting": "Po fshihet..."
+  },
+  "confirmJoin": {
+    "title": "Konfirmo Qasjen",
+    "message": "Jeni i sigurt që dëshironi të jeni anëtar i këtij seksioni?",
+    "cancel": "Anulo",
+    "sending": "Po dërgohet...",
+    "confirm": "Po"
   },
   "addMemberModal": {
     "title": "Shto Anëtar - {{name}}",

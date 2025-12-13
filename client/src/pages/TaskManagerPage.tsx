@@ -627,11 +627,11 @@ export default function TaskManagerPage() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['/api/work-groups'] });
       setEditWorkGroupModalOpen(false);
-      const message = data.archived ? 'Sekcija je arhivirana.' : 'Sekcija je vraćena iz arhive.';
+      const message = data.archived ? t('toasts.sectionArchived') : t('toasts.sectionUnarchived');
       toast({ title: t('common:success'), description: message });
     },
     onError: () => {
-      toast({ title: t('common:error'), description: 'Greška prilikom arhiviranja sekcije.', variant: 'destructive' });
+      toast({ title: t('common:error'), description: t('toasts.sectionArchiveError'), variant: 'destructive' });
     }
   });
 
@@ -642,10 +642,10 @@ export default function TaskManagerPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/work-groups'] });
       setEditWorkGroupModalOpen(false);
-      toast({ title: t('common:success'), description: 'Sekcija je obrisana.' });
+      toast({ title: t('common:success'), description: t('toasts.sectionDeleted') });
     },
     onError: () => {
-      toast({ title: t('common:error'), description: 'Greška prilikom brisanja sekcije.', variant: 'destructive' });
+      toast({ title: t('common:error'), description: t('toasts.sectionDeleteError'), variant: 'destructive' });
     }
   });
 
@@ -895,8 +895,8 @@ export default function TaskManagerPage() {
       {isClanIO && (
         <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
           <Tabs value={tabValue} onChange={handleTabChange} aria-label="clan io tabs">
-            <Tab label="Moje sekcije" data-testid="tab-my-sections-io" />
-            <Tab label="Zatraži pristup" data-testid="tab-request-access-io" />
+            <Tab label={t('mySections')} data-testid="tab-my-sections-io" />
+            <Tab label={t('requestAccess')} data-testid="tab-request-access-io" />
           </Tabs>
         </Box>
       )}
@@ -904,8 +904,8 @@ export default function TaskManagerPage() {
       {isRegularClan && (
         <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
           <Tabs value={tabValue} onChange={handleTabChange} aria-label="clan user tabs">
-            <Tab label="Moje sekcije" data-testid="tab-my-sections" />
-            <Tab label="Zatraži pristup" data-testid="tab-request-access" />
+            <Tab label={t('mySections')} data-testid="tab-my-sections" />
+            <Tab label={t('requestAccess')} data-testid="tab-request-access" />
           </Tabs>
         </Box>
       )}
@@ -1061,7 +1061,7 @@ export default function TaskManagerPage() {
                 <Card>
                   <CardContent sx={{ textAlign: 'center', py: 6 }}>
                     <Typography color="text.secondary">
-                      Nema drugih sekcija
+                      {t('noOtherSections')}
                     </Typography>
                   </CardContent>
                 </Card>
@@ -1322,7 +1322,7 @@ export default function TaskManagerPage() {
                 data-testid="button-archive-section"
                 sx={{ mr: 1 }}
               >
-                {selectedWorkGroup?.archived ? 'Vrati iz arhive' : 'Arhiviraj'}
+                {selectedWorkGroup?.archived ? t('unarchive') : t('archive')}
               </Button>
               <Button 
                 onClick={handleDeleteWorkGroup}
@@ -1330,7 +1330,7 @@ export default function TaskManagerPage() {
                 disabled={deleteWorkGroupMutation.isPending}
                 data-testid="button-delete-section"
               >
-                Obriši
+                {t('delete')}
               </Button>
             </Box>
           )}
@@ -1355,16 +1355,16 @@ export default function TaskManagerPage() {
         onClose={() => setConfirmDeleteDialogOpen(false)}
         maxWidth="sm"
       >
-        <DialogTitle>Potvrdite brisanje</DialogTitle>
+        <DialogTitle>{t('confirmDelete.title')}</DialogTitle>
         <DialogContent>
           <Typography>
-            Jeste li sigurni da želite obrisati sekciju "{selectedWorkGroup?.name}"? 
-            Ova akcija je trajna i ne može se poništiti.
+            {t('confirmDelete.message')} "{selectedWorkGroup?.name}"? 
+            {t('confirmDelete.permanent')}
           </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setConfirmDeleteDialogOpen(false)} data-testid="button-cancel-delete">
-            Otkaži
+            {t('confirmDelete.cancel')}
           </Button>
           <Button 
             onClick={confirmDeleteWorkGroup} 
@@ -1373,7 +1373,7 @@ export default function TaskManagerPage() {
             disabled={deleteWorkGroupMutation.isPending}
             data-testid="button-confirm-delete"
           >
-            {deleteWorkGroupMutation.isPending ? 'Brišem...' : 'Obriši'}
+            {deleteWorkGroupMutation.isPending ? t('confirmDelete.deleting') : t('confirmDelete.delete')}
           </Button>
         </DialogActions>
       </Dialog>
@@ -1424,10 +1424,10 @@ export default function TaskManagerPage() {
         fullWidth
         data-testid="dialog-confirm-join"
       >
-        <DialogTitle>Potvrda pristupa</DialogTitle>
+        <DialogTitle>{t('confirmJoin.title')}</DialogTitle>
         <DialogContent>
           <Typography>
-            Jeste li sigurni da želite biti član ove sekcije?
+            {t('confirmJoin.message')}
           </Typography>
           {workGroupToJoin && (
             <Box sx={{ mt: 2, p: 2, bgcolor: 'hsl(0 0% 98%)', borderRadius: 1 }}>
@@ -1447,7 +1447,7 @@ export default function TaskManagerPage() {
             onClick={handleCancelJoinRequest} 
             data-testid="button-cancel-join-request"
           >
-            OTKAŽI
+            {t('confirmJoin.cancel')}
           </Button>
           <Button 
             onClick={handleConfirmJoinRequest} 
@@ -1455,7 +1455,7 @@ export default function TaskManagerPage() {
             disabled={createAccessRequestMutation.isPending}
             data-testid="button-confirm-join-request"
           >
-            {createAccessRequestMutation.isPending ? 'Slanje...' : 'DA'}
+            {createAccessRequestMutation.isPending ? t('confirmJoin.sending') : t('confirmJoin.confirm')}
           </Button>
         </DialogActions>
       </Dialog>
@@ -2730,7 +2730,7 @@ function TaskDetailDialog({
               
               {!canComment && (
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2, p: 2, bgcolor: 'action.hover', borderRadius: 1 }}>
-                  Postanite član sekcije da biste mogli komentirati.
+                  {t('joinToComment')}
                 </Typography>
               )}
 

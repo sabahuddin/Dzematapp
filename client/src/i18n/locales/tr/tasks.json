@@ -113,6 +113,9 @@
     "makeModerator": "Moderatör olarak ayarla",
     "removeModerator": "Moderatörü kaldır"
   },
+  "mySections": "Bölümlerim",
+  "noOtherSections": "Başka bölüm yok",
+  "requestAccess": "Erişim İste",
   "createSection": "Bölüm Oluştur",
   "editSection": "Bölümü Düzenle",
   "joinSection": "Bölüme Katıl",
@@ -131,6 +134,11 @@
     "sectionCreateError": "Bölüm oluşturma hatası",
     "sectionUpdated": "Bölüm başarıyla güncellendi",
     "sectionUpdateError": "Bölüm güncellemesi hatası",
+    "sectionArchived": "Bölüm arşivlendi.",
+    "sectionUnarchived": "Bölüm arşivden geri yüklendi.",
+    "sectionArchiveError": "Bölüm arşivleme hatası.",
+    "sectionDeleted": "Bölüm silindi.",
+    "sectionDeleteError": "Bölüm silme hatası.",
     "accessRequestSent": "Erişim isteği gönderildi",
     "accessRequestError": "İstek gönderme hatası",
     "requestApproved": "İstek onaylandı",
@@ -143,7 +151,7 @@
     "taskDeleted": "Görev silindi"
   },
   "members": {
-    "count_many": "{count} üye"
+    "count_many": "{{count}} üye"
   },
   "accessRequests": {
     "userName": "Kullanıcı Adı",
@@ -157,6 +165,25 @@
     "approve": "Onayla",
     "reject": "Reddet",
     "noRequests": "Erişim isteği yok"
+  },
+  "archive": "Arşivle",
+  "unarchive": "Arşivden geri yükle",
+  "delete": "Sil",
+  "joinToComment": "Yorum yapabilmek için bu bölüme katılın.",
+  "confirmDelete": {
+    "title": "Silmeyi Onayla",
+    "message": "Bölümü silmek istediğinizden emin misiniz",
+    "permanent": "Bu işlem kalıcıdır ve geri alınamaz.",
+    "cancel": "İptal",
+    "delete": "Sil",
+    "deleting": "Siliniyor..."
+  },
+  "confirmJoin": {
+    "title": "Erişimi Onayla",
+    "message": "Bu bölümün üyesi olmak istediğinizden emin misiniz?",
+    "cancel": "İptal",
+    "sending": "Gönderiliyor...",
+    "confirm": "Evet"
   },
   "addMemberModal": {
     "title": "Üye Ekle - {{name}}",

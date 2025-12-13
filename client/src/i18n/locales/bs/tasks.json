@@ -113,6 +113,9 @@
     "makeModerator": "Postavi kao moderatora",
     "removeModerator": "Ukloni moderatora"
   },
+  "mySections": "Moje sekcije",
+  "noOtherSections": "Nema drugih sekcija",
+  "requestAccess": "Zatraži pristup",
   "createSection": "Kreiraj Sekciju",
   "editSection": "Uredi Sekciju",
   "joinSection": "Pridruži se Sekciji",
@@ -131,6 +134,11 @@
     "sectionCreateError": "Greška pri kreiranju sekcije",
     "sectionUpdated": "Sekcija je uspješno ažurirana",
     "sectionUpdateError": "Greška pri ažuriranju sekcije",
+    "sectionArchived": "Sekcija je arhivirana.",
+    "sectionUnarchived": "Sekcija je vraćena iz arhive.",
+    "sectionArchiveError": "Greška prilikom arhiviranja sekcije.",
+    "sectionDeleted": "Sekcija je obrisana.",
+    "sectionDeleteError": "Greška prilikom brisanja sekcije.",
     "accessRequestSent": "Zahtjev za pristup je poslан",
     "accessRequestError": "Greška pri slanju zahtjeva",
     "requestApproved": "Zahtjev je odobren",
@@ -143,7 +151,7 @@
     "taskDeleted": "Zadatak je obrisan"
   },
   "members": {
-    "count_many": "{count} članova"
+    "count_many": "{{count}} članova"
   },
   "accessRequests": {
     "userName": "Ime korisnika",
@@ -157,6 +165,25 @@
     "approve": "Odobri",
     "reject": "Odbij",
     "noRequests": "Nema zahtjeva za pristup"
+  },
+  "archive": "Arhiviraj",
+  "unarchive": "Vrati iz arhive",
+  "delete": "Obriši",
+  "joinToComment": "Postanite član sekcije da biste mogli komentirati.",
+  "confirmDelete": {
+    "title": "Potvrdite brisanje",
+    "message": "Jeste li sigurni da želite obrisati sekciju",
+    "permanent": "Ova akcija je trajna i ne može se poništiti.",
+    "cancel": "Otkaži",
+    "delete": "Obriši",
+    "deleting": "Brišem..."
+  },
+  "confirmJoin": {
+    "title": "Potvrda pristupa",
+    "message": "Jeste li sigurni da želite biti član ove sekcije?",
+    "cancel": "Otkaži",
+    "sending": "Slanje...",
+    "confirm": "Da"
   },
   "addMemberModal": {
     "title": "Dodaj člana - {{name}}",

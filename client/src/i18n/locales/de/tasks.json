@@ -113,6 +113,9 @@
     "makeModerator": "Als Moderator festlegen",
     "removeModerator": "Moderator entfernen"
   },
+  "mySections": "Meine Gruppen",
+  "noOtherSections": "Keine anderen Gruppen",
+  "requestAccess": "Zugang beantragen",
   "createSection": "Gruppe erstellen",
   "editSection": "Gruppe bearbeiten",
   "joinSection": "Gruppe beitreten",
@@ -131,6 +134,11 @@
     "sectionCreateError": "Fehler beim Erstellen der Gruppe",
     "sectionUpdated": "Gruppe wurde erfolgreich aktualisiert",
     "sectionUpdateError": "Fehler beim Aktualisieren der Gruppe",
+    "sectionArchived": "Gruppe wurde archiviert.",
+    "sectionUnarchived": "Gruppe wurde aus dem Archiv wiederhergestellt.",
+    "sectionArchiveError": "Fehler beim Archivieren der Gruppe.",
+    "sectionDeleted": "Gruppe wurde gelöscht.",
+    "sectionDeleteError": "Fehler beim Löschen der Gruppe.",
     "accessRequestSent": "Zugriffsanfrage wurde gesendet",
     "accessRequestError": "Fehler beim Senden der Anfrage",
     "requestApproved": "Anfrage genehmigt",
@@ -143,7 +151,7 @@
     "taskDeleted": "Aufgabe gelöscht"
   },
   "members": {
-    "count_many": "{count} Mitglieder"
+    "count_many": "{{count}} Mitglieder"
   },
   "accessRequests": {
     "userName": "Benutzername",
@@ -157,6 +165,25 @@
     "approve": "Genehmigen",
     "reject": "Ablehnen",
     "noRequests": "Keine Zugriffsanfragen"
+  },
+  "archive": "Archivieren",
+  "unarchive": "Aus Archiv wiederherstellen",
+  "delete": "Löschen",
+  "joinToComment": "Treten Sie dieser Gruppe bei, um kommentieren zu können.",
+  "confirmDelete": {
+    "title": "Löschen bestätigen",
+    "message": "Sind Sie sicher, dass Sie die Gruppe löschen möchten",
+    "permanent": "Diese Aktion ist dauerhaft und kann nicht rückgängig gemacht werden.",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "deleting": "Wird gelöscht..."
+  },
+  "confirmJoin": {
+    "title": "Zugang bestätigen",
+    "message": "Sind Sie sicher, dass Sie Mitglied dieser Gruppe werden möchten?",
+    "cancel": "Abbrechen",
+    "sending": "Wird gesendet...",
+    "confirm": "Ja"
   },
   "addMemberModal": {
     "title": "Mitglied hinzufügen - {{name}}",

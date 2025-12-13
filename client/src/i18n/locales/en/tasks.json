@@ -113,6 +113,9 @@
     "makeModerator": "Set as moderator",
     "removeModerator": "Remove moderator"
   },
+  "mySections": "My Sections",
+  "noOtherSections": "No other sections",
+  "requestAccess": "Request Access",
   "createSection": "Create Section",
   "editSection": "Edit Section",
   "joinSection": "Join Section",
@@ -131,6 +134,11 @@
     "sectionCreateError": "Error creating section",
     "sectionUpdated": "Section updated successfully",
     "sectionUpdateError": "Error updating section",
+    "sectionArchived": "Section has been archived.",
+    "sectionUnarchived": "Section has been restored from archive.",
+    "sectionArchiveError": "Error archiving section.",
+    "sectionDeleted": "Section has been deleted.",
+    "sectionDeleteError": "Error deleting section.",
     "accessRequestSent": "Access request sent",
     "accessRequestError": "Error sending request",
     "requestApproved": "Request approved",
@@ -143,7 +151,7 @@
     "taskDeleted": "Task deleted"
   },
   "members": {
-    "count_many": "{count} members"
+    "count_many": "{{count}} members"
   },
   "accessRequests": {
     "userName": "User Name",
@@ -157,6 +165,25 @@
     "approve": "Approve",
     "reject": "Reject",
     "noRequests": "No access requests"
+  },
+  "archive": "Archive",
+  "unarchive": "Restore from archive",
+  "delete": "Delete",
+  "joinToComment": "Join this section to be able to comment.",
+  "confirmDelete": {
+    "title": "Confirm Delete",
+    "message": "Are you sure you want to delete section",
+    "permanent": "This action is permanent and cannot be undone.",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "deleting": "Deleting..."
+  },
+  "confirmJoin": {
+    "title": "Confirm Access",
+    "message": "Are you sure you want to be a member of this section?",
+    "cancel": "Cancel",
+    "sending": "Sending...",
+    "confirm": "Yes"
   },
   "addMemberModal": {
     "title": "Add Member - {{name}}",
