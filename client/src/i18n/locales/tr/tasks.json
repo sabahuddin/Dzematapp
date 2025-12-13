@@ -132,7 +132,7 @@
   "manageMembers": "Üyeleri Yönet",
   "manageTasks": "Görevleri Yönet",
   "createProposal": "Öneri Oluştur",
-  "createProposalFor": "İçin öneri oluştur",
+  "createProposalFor": "{{name}} için öneri oluştur",
   "viewTasks": "Görevleri Görüntüle",
   "loadingError": "Yükleme Hatası",
   "noPublicSectionsAvailable": "Erişim için kullanılabilir kamu bölümü yok",

@@ -132,7 +132,7 @@
   "manageMembers": "Upravljanje Članovima",
   "manageTasks": "Upravljanje Zadacima",
   "createProposal": "Kreiraj Prijedlog",
-  "createProposalFor": "Kreiraj prijedlog za",
+  "createProposalFor": "Kreiraj prijedlog za {{name}}",
   "viewTasks": "Pogledaj Zadatke",
   "loadingError": "Greška pri učitavanju",
   "noPublicSectionsAvailable": "Nema dostupnih javnih sekcija za pristup",

@@ -132,7 +132,7 @@
   "manageMembers": "Manage Members",
   "manageTasks": "Manage Tasks",
   "createProposal": "Create Proposal",
-  "createProposalFor": "Create proposal for",
+  "createProposalFor": "Create proposal for {{name}}",
   "viewTasks": "View Tasks",
   "loadingError": "Loading Error",
   "noPublicSectionsAvailable": "No public sections available for access",

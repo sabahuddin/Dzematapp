@@ -132,7 +132,7 @@
   "manageMembers": "Menaxho Anëtarët",
   "manageTasks": "Menaxho Detyrat",
   "createProposal": "Krijo Propozim",
-  "createProposalFor": "Krijo propozim për",
+  "createProposalFor": "Krijo propozim për {{name}}",
   "viewTasks": "Shfaq Detyrat",
   "loadingError": "Gabim në ngarkim",
   "noPublicSectionsAvailable": "Nuk ka seksione publike të disponueshme për qasje",

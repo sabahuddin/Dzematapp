@@ -132,7 +132,7 @@
   "manageMembers": "Mitglieder verwalten",
   "manageTasks": "Aufgaben verwalten",
   "createProposal": "Vorschlag erstellen",
-  "createProposalFor": "Vorschlag erstellen für",
+  "createProposalFor": "Vorschlag erstellen für {{name}}",
   "viewTasks": "Aufgaben anzeigen",
   "loadingError": "Ladefehler",
   "noPublicSectionsAvailable": "Keine öffentlichen Gruppen für Zugang verfügbar",
