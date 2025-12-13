@@ -10,7 +10,7 @@
   "selectLanguage": "Select language",
   "tenantCode": "Congregation code",
   "firstLogin": "First login",
-  "enterTenantCode": "Enter your organization code received from the administrator.",
+  "enterTenantCode": "Enter your congregation code received from the administrator.",
   "verifying": "Verifying...",
   "confirm": "Confirm",
   "forDemoAccess": "For demo access use:",
@@ -19,8 +19,8 @@
   "installApp": "Install DžematApp",
   "useAsRealApp": "Use as a real app",
   "install": "Install",
-  "enterOrgCode": "Please enter organization code",
-  "invalidOrgCode": "Invalid organization code",
+  "enterOrgCode": "Please enter congregation code",
+  "invalidOrgCode": "Invalid congregation code",
   "errorVerifyingCode": "Error verifying code",
-  "mustSetupOrg": "You must first set up the organization"
+  "mustSetupOrg": "You must first set up the congregation"
 }
