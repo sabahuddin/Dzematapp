@@ -29,6 +29,7 @@ import certificatesBS from './locales/bs/certificates.json';
 import applicationsBS from './locales/bs/applications.json';
 import membershipFeesBS from './locales/bs/membershipFees.json';
 import sponsorsBS from './locales/bs/sponsors.json';
+import feedBS from './locales/bs/feed.json';
 
 // Import all DE translations
 import commonDE from './locales/de/common.json';
@@ -57,6 +58,7 @@ import certificatesDE from './locales/de/certificates.json';
 import applicationsDE from './locales/de/applications.json';
 import membershipFeesDE from './locales/de/membershipFees.json';
 import sponsorsDE from './locales/de/sponsors.json';
+import feedDE from './locales/de/feed.json';
 
 // Import all EN translations
 import commonEN from './locales/en/common.json';
@@ -85,6 +87,7 @@ import certificatesEN from './locales/en/certificates.json';
 import applicationsEN from './locales/en/applications.json';
 import membershipFeesEN from './locales/en/membershipFees.json';
 import sponsorsEN from './locales/en/sponsors.json';
+import feedEN from './locales/en/feed.json';
 
 // Import all SQ (Albanian) translations
 import commonSQ from './locales/sq/common.json';
@@ -113,6 +116,7 @@ import certificatesSQ from './locales/sq/certificates.json';
 import applicationsSQ from './locales/sq/applications.json';
 import membershipFeesSQ from './locales/sq/membershipFees.json';
 import sponsorsSQ from './locales/sq/sponsors.json';
+import feedSQ from './locales/sq/feed.json';
 
 // Import all TR (Turkish) translations
 import commonTR from './locales/tr/common.json';
@@ -141,6 +145,7 @@ import certificatesTR from './locales/tr/certificates.json';
 import applicationsTR from './locales/tr/applications.json';
 import membershipFeesTR from './locales/tr/membershipFees.json';
 import sponsorsTR from './locales/tr/sponsors.json';
+import feedTR from './locales/tr/feed.json';
 
 const resources = {
   bs: {
@@ -170,6 +175,7 @@ const resources = {
     applications: applicationsBS,
     membershipFees: membershipFeesBS,
     sponsors: sponsorsBS,
+    feed: feedBS,
   },
   de: {
     common: commonDE,
@@ -198,6 +204,7 @@ const resources = {
     applications: applicationsDE,
     membershipFees: membershipFeesDE,
     sponsors: sponsorsDE,
+    feed: feedDE,
   },
   en: {
     common: commonEN,
@@ -226,6 +233,7 @@ const resources = {
     applications: applicationsEN,
     membershipFees: membershipFeesEN,
     sponsors: sponsorsEN,
+    feed: feedEN,
   },
   sq: {
     common: commonSQ,
@@ -254,6 +262,7 @@ const resources = {
     applications: applicationsSQ,
     membershipFees: membershipFeesSQ,
     sponsors: sponsorsSQ,
+    feed: feedSQ,
   },
   tr: {
     common: commonTR,
@@ -282,6 +291,7 @@ const resources = {
     applications: applicationsTR,
     membershipFees: membershipFeesTR,
     sponsors: sponsorsTR,
+    feed: feedTR,
   },
 };
 
