@@ -107,6 +107,7 @@ export async function seedDefaultTenant() {
         subscriptionStatus: 'active',
         locale: 'bs',
         currency: 'CHF',
+        defaultCurrency: 'CHF',
         isActive: false, // NOT active for regular access
       });
       console.log('✅ SuperAdmin global tenant created\n');
@@ -145,6 +146,7 @@ export async function seedDefaultTenant() {
         trialEndsAt: trialEnd,
         locale: 'bs',
         currency: 'CHF',
+        defaultCurrency: 'CHF',
         isActive: true,
       }).returning();
 

@@ -50,6 +50,7 @@ interface TenantFormData {
   email: string;
   subscriptionTier: string;
   enabledModules: string[];
+  currency?: string;
 }
 
 export default function TenantManagementPage() {
@@ -65,7 +66,8 @@ export default function TenantManagementPage() {
     subdomain: '',
     email: '',
     subscriptionTier: 'basic',
-    enabledModules: DEFAULT_MODULES
+    enabledModules: DEFAULT_MODULES,
+    currency: 'CHF'
   });
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [tenantToDelete, setTenantToDelete] = useState<Tenant | null>(null);
@@ -145,7 +147,8 @@ export default function TenantManagementPage() {
         subdomain: tenant.subdomain || '',
         email: tenant.email,
         subscriptionTier: tenant.subscriptionTier,
-        enabledModules: (tenant as any).enabledModules || DEFAULT_MODULES
+        enabledModules: (tenant as any).enabledModules || DEFAULT_MODULES,
+        currency: (tenant as any).defaultCurrency || 'CHF'
       });
     } else {
       setSelectedTenant(null);
@@ -156,7 +159,8 @@ export default function TenantManagementPage() {
         subdomain: '',
         email: '',
         subscriptionTier: 'basic',
-        enabledModules: DEFAULT_MODULES
+        enabledModules: DEFAULT_MODULES,
+        currency: 'CHF'
       });
     }
     setModalOpen(true);
@@ -429,6 +433,21 @@ export default function TenantManagementPage() {
               <MenuItem value="basic" data-testid="option-basic">Basic - €29/mjesečno</MenuItem>
               <MenuItem value="standard" data-testid="option-standard">Standard - €79/mjesečno</MenuItem>
               <MenuItem value="full" data-testid="option-full">Full - €149/mjesečno</MenuItem>
+            </TextField>
+
+            <TextField
+              label="Zadana valuta"
+              value={formData.currency || 'CHF'}
+              onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
+              select
+              fullWidth
+              helperText="Valuta koja će biti zadana pri kreiranju organizacijskih podataka"
+              data-testid="select-currency"
+            >
+              <MenuItem value="BAM" data-testid="option-bam">BAM (Bosanska marka)</MenuItem>
+              <MenuItem value="CHF" data-testid="option-chf">CHF (Švicarski franak)</MenuItem>
+              <MenuItem value="EUR" data-testid="option-eur">EUR (Euro)</MenuItem>
+              <MenuItem value="USD" data-testid="option-usd">USD (Američki dolar)</MenuItem>
             </TextField>
 
             <Divider sx={{ my: 2 }} />

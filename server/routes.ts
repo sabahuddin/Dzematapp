@@ -6426,6 +6426,21 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       const newTenant = await storage.createTenant(validated);
       console.log('[TENANT CREATE] ✅ Tenant created:', newTenant.id);
       
+      // Auto-create organization settings with default currency
+      try {
+        await storage.updateOrganizationSettings(newTenant.id, {
+          name: newTenant.name,
+          address: '',
+          phone: '',
+          email: newTenant.email,
+          currency: newTenant.defaultCurrency || 'CHF',
+          membershipFeeType: 'monthly'
+        });
+        console.log('[TENANT CREATE] ✅ Organization settings created with currency:', newTenant.defaultCurrency);
+      } catch (settingsError: any) {
+        console.error('[TENANT CREATE] ⚠️ Warning: Could not create org settings:', settingsError.message);
+      }
+      
       // Auto-create admin user for the new tenant with UNIQUE email
       // Use tenant code in email to guarantee uniqueness
       const adminUsername = 'admin';

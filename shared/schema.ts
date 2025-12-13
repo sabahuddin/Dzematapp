@@ -1298,6 +1298,7 @@ export const tenants = pgTable("tenants", {
   isActive: boolean("is_active").default(true).notNull(),
   locale: text("locale").default("bs").notNull(), // Default language
   currency: text("currency").default("CHF").notNull(),
+  defaultCurrency: text("default_currency").default("CHF").notNull(), // Default currency for org settings
   
   // Module Access - array of enabled module IDs
   enabledModules: text("enabled_modules").array().default(sql`ARRAY['dashboard', 'announcements', 'events', 'vaktija', 'users']::text[]`),
