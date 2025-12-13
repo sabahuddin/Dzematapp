@@ -55,5 +55,31 @@
   "validation": {
     "userRequired": "Korisnik je obavezan",
     "dateRequired": "Datum je obavezan"
+  },
+  "exportToExcel": "Exportuj u Excel",
+  "purposeButton": "Svrha",
+  "purposeMessages": {
+    "created": "Svrha je kreirana",
+    "deleted": "Svrha je obrisana",
+    "updated": "Svrha je ažurirana",
+    "errorCreating": "Greška pri kreiranju svrhe",
+    "errorDeleting": "Greška pri brisanju svrhe",
+    "errorUpdating": "Greška pri ažuriranju svrhe",
+    "confirmDelete": "Jeste li sigurni da želite obrisati ovu svrhu?"
+  },
+  "export": {
+    "success": "Excel fajl je preuzet",
+    "title": "Spisak finansijskih uplata",
+    "filename": "Finansije",
+    "total": "UKUPNO:",
+    "headers": {
+      "user": "Korisnik",
+      "amount": "Iznos",
+      "purpose": "Svrha",
+      "project": "Projekat",
+      "paymentDate": "Datum uplate",
+      "paymentMethod": "Način plaćanja",
+      "notes": "Napomene"
+    }
   }
 }

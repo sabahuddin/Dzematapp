@@ -55,5 +55,31 @@
     "dateRequired": "Datum ist erforderlich"
   },
   "selectPurpose": "Zweck auswählen...",
-  "pointsValue": "Punkte"
+  "pointsValue": "Punkte",
+  "exportToExcel": "Nach Excel exportieren",
+  "purposeButton": "Zweck",
+  "purposeMessages": {
+    "created": "Zweck erstellt",
+    "deleted": "Zweck gelöscht",
+    "updated": "Zweck aktualisiert",
+    "errorCreating": "Fehler beim Erstellen des Zwecks",
+    "errorDeleting": "Fehler beim Löschen des Zwecks",
+    "errorUpdating": "Fehler beim Aktualisieren des Zwecks",
+    "confirmDelete": "Möchten Sie diesen Zweck wirklich löschen?"
+  },
+  "export": {
+    "success": "Excel-Datei heruntergeladen",
+    "title": "Liste der Finanzzahlungen",
+    "filename": "Finanzen",
+    "total": "GESAMT:",
+    "headers": {
+      "user": "Benutzer",
+      "amount": "Betrag",
+      "purpose": "Zweck",
+      "project": "Projekt",
+      "paymentDate": "Zahlungsdatum",
+      "paymentMethod": "Zahlungsmethode",
+      "notes": "Notizen"
+    }
+  }
 }

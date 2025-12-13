@@ -177,10 +177,10 @@ export default function FinancesPage() {
       queryClient.invalidateQueries({ queryKey: ['/api/contribution-purposes'] });
       setNewPurposeName('');
       setNewPurposeDesc('');
-      toast({ title: 'Uspjeh', description: 'Svrha je kreirana' });
+      toast({ title: t('common:common.success'), description: t('finances:purposeMessages.created') });
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri kreiranju svrhe', variant: 'destructive' });
+      toast({ title: t('common:common.error'), description: t('finances:purposeMessages.errorCreating'), variant: 'destructive' });
     }
   });
 
@@ -191,15 +191,15 @@ export default function FinancesPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/contribution-purposes'] });
-      toast({ title: 'Uspjeh', description: 'Svrha je obrisana' });
+      toast({ title: t('common:common.success'), description: t('finances:purposeMessages.deleted') });
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri brisanju svrhe', variant: 'destructive' });
+      toast({ title: t('common:common.error'), description: t('finances:purposeMessages.errorDeleting'), variant: 'destructive' });
     }
   });
 
   const handleDeletePurpose = (id: string) => {
-    if (window.confirm('Jeste li sigurni da želite obrisati ovu svrhu?')) {
+    if (window.confirm(t('finances:purposeMessages.confirmDelete'))) {
       deletePurposeMutation.mutate(id);
     }
   };
@@ -211,13 +211,13 @@ export default function FinancesPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/contribution-purposes'] });
-      toast({ title: 'Uspjeh', description: 'Svrha je ažurirana' });
+      toast({ title: t('common:common.success'), description: t('finances:purposeMessages.updated') });
       setEditingPurpose(null);
       setEditPurposeName('');
       setEditPurposeDesc('');
     },
     onError: () => {
-      toast({ title: 'Greška', description: 'Greška pri ažuriranju svrhe', variant: 'destructive' });
+      toast({ title: t('common:common.error'), description: t('finances:purposeMessages.errorUpdating'), variant: 'destructive' });
     }
   });
 
@@ -355,28 +355,28 @@ export default function FinancesPage() {
 
     // Calculate total
     const total = filteredContributions.reduce((sum, c) => sum + Number(c.amount), 0);
-    const summaryRow = ['UKUPNO:', formatPrice(total), '', '', '', '', ''];
+    const summaryRow = [t('finances:export.total'), formatPrice(total), '', '', '', '', ''];
 
     exportToExcel({
-      title: 'Spisak finansijskih uplata',
-      filename: 'Finansije',
-      sheetName: 'Finansije',
+      title: t('finances:export.title'),
+      filename: t('finances:export.filename'),
+      sheetName: t('finances:export.filename'),
       headers: [
-        'Korisnik',
-        'Iznos',
-        'Svrha',
-        'Projekat',
-        'Datum uplate',
-        'Način plaćanja',
-        'Napomene'
+        t('finances:export.headers.user'),
+        t('finances:export.headers.amount'),
+        t('finances:export.headers.purpose'),
+        t('finances:export.headers.project'),
+        t('finances:export.headers.paymentDate'),
+        t('finances:export.headers.paymentMethod'),
+        t('finances:export.headers.notes')
       ],
       data: financeData,
       summaryRow
     });
 
     toast({
-      title: 'Uspjeh',
-      description: 'Excel fajl je preuzet'
+      title: t('common:common.success'),
+      description: t('finances:export.success')
     });
   };
 
@@ -410,7 +410,7 @@ export default function FinancesPage() {
               onClick={handleExportFinancesToExcel}
               data-testid="button-export-excel"
             >
-              Exportuj u Excel
+              {t('finances:exportToExcel')}
             </Button>
             <Button
               variant="contained"
@@ -418,7 +418,7 @@ export default function FinancesPage() {
               onClick={() => setPurposeDialogOpen(true)}
               data-testid="button-add-purpose"
             >
-              Svrha
+              {t('finances:purposeButton')}
             </Button>
             <Button
               variant="contained"

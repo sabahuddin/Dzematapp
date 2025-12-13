@@ -55,5 +55,31 @@
     "dateRequired": "Date is required"
   },
   "selectPurpose": "Select purpose...",
-  "pointsValue": "Points"
+  "pointsValue": "Points",
+  "exportToExcel": "Export to Excel",
+  "purposeButton": "Purpose",
+  "purposeMessages": {
+    "created": "Purpose created",
+    "deleted": "Purpose deleted",
+    "updated": "Purpose updated",
+    "errorCreating": "Error creating purpose",
+    "errorDeleting": "Error deleting purpose",
+    "errorUpdating": "Error updating purpose",
+    "confirmDelete": "Are you sure you want to delete this purpose?"
+  },
+  "export": {
+    "success": "Excel file downloaded",
+    "title": "List of financial payments",
+    "filename": "Finances",
+    "total": "TOTAL:",
+    "headers": {
+      "user": "User",
+      "amount": "Amount",
+      "purpose": "Purpose",
+      "project": "Project",
+      "paymentDate": "Payment Date",
+      "paymentMethod": "Payment Method",
+      "notes": "Notes"
+    }
+  }
 }
