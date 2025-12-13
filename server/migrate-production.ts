@@ -76,6 +76,18 @@ export async function migrateProductionSchema(): Promise<void> {
       console.log("ℹ️  Membership currency sync skipped:", error.message);
     }
     
+    // Add default_currency column if it doesn't exist
+    console.log("📋 Adding default_currency column to tenants...");
+    try {
+      await client.query(`
+        ALTER TABLE tenants 
+        ADD COLUMN IF NOT EXISTS default_currency text DEFAULT 'CHF'
+      `);
+      console.log("✅ default_currency column added");
+    } catch (error: any) {
+      console.log("ℹ️  default_currency column already exists or fix skipped:", error.message);
+    }
+
     // Fix tenant enabled_modules with correct module IDs
     console.log("📋 Fixing tenant enabled_modules with correct module IDs...");
     try {

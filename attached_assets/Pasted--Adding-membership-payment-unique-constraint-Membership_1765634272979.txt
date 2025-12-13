@@ -1,0 +1,98 @@
+📋 Adding membership payment unique constraint...
+✅ Membership payment constraint added
+📋 Updating admin usernames to new standard...
+✅ Admin usernames and names updated
+📋 Adding missing columns to existing tables...
+✅ Processed 214 column fixes (0 skipped)
+📋 Fixing NOT NULL constraints on created_by_id columns...
+✅ Fixed 4 NOT NULL constraints
+📋 Fixing NOT NULL constraints on legacy 'title' columns...
+✅ Fixed events.start_date NOT NULL constraint
+✅ Synced events.date_time → start_date
+✅ Fixed 1 legacy 'title' NOT NULL constraints
+📋 Fixing membership_applications nullable fields...
+  ✓ country
+  ✓ email
+  ✓ employment_status
+  ✓ occupation
+  ✓ skills_hobbies
+  ✓ spouse_name
+  ✓ spouse_phone
+  ✓ children_info
+  ✓ reviewed_by_id
+  ✓ reviewed_at
+  ✓ review_notes
+  ✓ photo
+✅ Fixed 12 membership_applications nullable constraints
+📋 Assigning registry numbers to existing members...
+✅ Assigned registry numbers to 0 existing members
+📋 Migrating user foreign key constraints to CASCADE...
+✅ Migrated 26 foreign key constraints to CASCADE
+📋 Migrating title->name for legacy tables...
+  ✅ Migrated events: copied title->name
+✅ Migrated 1 tables (title->name)
+📋 Syncing membership settings currency with organization...
+✅ Membership currency synced with organization settings
+📋 Fixing tenant enabled_modules with correct module IDs...
+✅ Tenant enabled_modules fixed for full-tier tenants
+✅ Schema migration complete
+📋 Verifying all schema tables exist...
+✅ All 47 tables verified
+✅ Database schema synchronized successfully!
+[INIT] Registering /api/auth/superadmin/login endpoint
+📂 Serving static files from: /app/dist/public
+1:52:32 PM [express] serving on port 3000
+✅ Admin user already exists
+🌱 Starting default tenant seed...
+📋 Creating subscription plans...
+📋 Updating existing subscription plans with latest modules...
+✅ Full plan modules updated
+🔐 Creating SuperAdmin global tenant...
+❌ Seed failed: error: column "default_currency" does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async seedDefaultTenant (file:///app/dist/index.js:3645:38)
+    at async startSeeding (file:///app/dist/index.js:11920:5) {
+  length: 117,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '277',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3716',
+  routine: 'errorMissingColumn'
+}
+Seed error: error: column "default_currency" does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async seedDefaultTenant (file:///app/dist/index.js:3645:38)
+    at async startSeeding (file:///app/dist/index.js:11920:5) {
+  length: 117,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '277',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3716',
+  routine: 'errorMissingColumn'
+}

@@ -96,7 +96,7 @@ export async function seedDefaultTenant() {
       .limit(1);
 
     if (existingSuperAdminTenant.length === 0) {
-      await db.insert(tenants).values({
+      const superAdminTenantData: any = {
         id: SUPERADMIN_TENANT_ID,
         name: 'SuperAdmin Global',
         slug: 'superadmin-global',
@@ -107,9 +107,17 @@ export async function seedDefaultTenant() {
         subscriptionStatus: 'active',
         locale: 'bs',
         currency: 'CHF',
-        defaultCurrency: 'CHF',
         isActive: false, // NOT active for regular access
-      });
+      };
+      
+      // Only add defaultCurrency if it's being used (it might not exist in older databases)
+      try {
+        superAdminTenantData.defaultCurrency = 'CHF';
+      } catch (error) {
+        // Column might not exist yet - that's OK, it will be created by migration
+      }
+      
+      await db.insert(tenants).values(superAdminTenantData);
       console.log('✅ SuperAdmin global tenant created\n');
     } else {
       console.log('ℹ️  SuperAdmin global tenant already exists\n');
@@ -130,7 +138,7 @@ export async function seedDefaultTenant() {
       const trialEnd = new Date();
       trialEnd.setDate(trialEnd.getDate() + 30);
 
-      [defaultTenant] = await db.insert(tenants).values({
+      const defaultTenantData: any = {
         id: DEFAULT_TENANT_ID,
         name: 'Demo Džemat',
         slug: 'demo-dzemat',
@@ -146,9 +154,17 @@ export async function seedDefaultTenant() {
         trialEndsAt: trialEnd,
         locale: 'bs',
         currency: 'CHF',
-        defaultCurrency: 'CHF',
         isActive: true,
-      }).returning();
+      };
+      
+      // Only add defaultCurrency if it's being used (it might not exist in older databases)
+      try {
+        defaultTenantData.defaultCurrency = 'CHF';
+      } catch (error) {
+        // Column might not exist yet - that's OK, it will be created by migration
+      }
+      
+      [defaultTenant] = await db.insert(tenants).values(defaultTenantData).returning();
 
       console.log(`✅ Default tenant created: ${defaultTenant.name}\n`);
     } else {
