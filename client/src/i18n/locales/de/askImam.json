@@ -25,6 +25,7 @@
   "noUnansweredQuestions": "Keine unbeantworteten Fragen",
   "noAnsweredQuestions": "Keine beantworteten Fragen",
   "searchQuestions": "Fragen durchsuchen...",
+  "filterByStatus": "Nach Status filtern",
   "readStatus": "Gelesen",
   "unread": "Ungelesen",
   "answerQuestion": "Frage beantworten",

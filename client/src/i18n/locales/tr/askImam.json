@@ -25,6 +25,7 @@
   "noUnansweredQuestions": "Yanıtlanmamış soru yok",
   "noAnsweredQuestions": "Yanıtlanmış soru yok",
   "searchQuestions": "Soru ara...",
+  "filterByStatus": "Duruma göre filtrele",
   "readStatus": "Okundu",
   "unread": "Okunmadı",
   "answerQuestion": "Soruyu yanıtla",

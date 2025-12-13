@@ -25,6 +25,7 @@
   "noUnansweredQuestions": "Nuk ka pyetje pa përgjigje",
   "noAnsweredQuestions": "Nuk ka pyetje të përgjigjura",
   "searchQuestions": "Kërko pyetje...",
+  "filterByStatus": "Filtro sipas statusit",
   "readStatus": "Lexuar",
   "unread": "E palexuar",
   "answerQuestion": "Përgjigju pyetjes",

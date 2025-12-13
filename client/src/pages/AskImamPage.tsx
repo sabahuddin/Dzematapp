@@ -226,7 +226,7 @@ export default function AskImamPage() {
                 <TextField
                   {...params}
                   variant="outlined"
-                  placeholder="Filtriraj po statusu"
+                  placeholder={t('askImam:filterByStatus')}
                   data-testid="input-status-filter"
                 />
               )}
