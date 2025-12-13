@@ -91,6 +91,14 @@
     "11": "November",
     "12": "December"
   },
+  "applications": "Membership Applications",
+  "applicationsDescription": "View all membership application requests",
+  "loading": "Loading...",
+  "status": {
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected"
+  },
   "messages": {
     "settingsSaved": "Settings saved successfully",
     "settingsError": "Error saving settings",
@@ -98,6 +106,11 @@
     "paymentError": "Error adding payment",
     "uploadError": "Error uploading file",
     "fillAllFields": "Please fill all fields",
-    "adminOnly": "Only administrators can access this page."
+    "adminOnly": "Only administrators can access this page.",
+    "reviewSuccess": "Application reviewed",
+    "reviewError": "Error reviewing application",
+    "deleteSuccess": "Application deleted",
+    "deleteError": "Error deleting application",
+    "deleteConfirm": "Are you sure you want to delete this application?"
   }
 }

@@ -83,6 +83,14 @@
     "11": "Nëntor",
     "12": "Dhjetor"
   },
+  "applications": "Aplikacionet e anëtarësimit",
+  "applicationsDescription": "Shikoni të gjithë kërkesat e aplikacionit të anëtarësimit",
+  "loading": "Po ngarkohet...",
+  "status": {
+    "pending": "Në pritje",
+    "approved": "Miratuar",
+    "rejected": "Refuzuar"
+  },
   "messages": {
     "settingsSaved": "Cilësimet u ruajtën me sukses",
     "settingsError": "Gabim gjatë ruajtjes së cilësimeve",
@@ -90,6 +98,11 @@
     "paymentError": "Gabim gjatë shtimit të pagesës",
     "uploadError": "Gabim gjatë ngarkimit të skedarit",
     "fillAllFields": "Ju lutemi plotësoni të gjitha fushat",
-    "adminOnly": "Vetëm administratorët mund të kenë qasje në këtë faqe."
+    "adminOnly": "Vetëm administratorët mund të kenë qasje në këtë faqe.",
+    "reviewSuccess": "Aplikacioni u rishqyrtua",
+    "reviewError": "Gabim gjatë rishqyrtimit të aplikacionit",
+    "deleteSuccess": "Aplikacioni u fshi",
+    "deleteError": "Gabim gjatë fshirjes së aplikacionit",
+    "deleteConfirm": "Jeni të sigurt që dëshironi të fshini këtë aplikacion?"
   }
 }

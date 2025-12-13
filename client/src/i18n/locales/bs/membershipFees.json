@@ -91,6 +91,14 @@
     "11": "Novembar",
     "12": "Decembar"
   },
+  "applications": "Pristupnice",
+  "applicationsDescription": "Pregled svih zahtjeva za članstvo",
+  "loading": "Učitavanje...",
+  "status": {
+    "pending": "Na čekanju",
+    "approved": "Odobreno",
+    "rejected": "Odbijeno"
+  },
   "messages": {
     "settingsSaved": "Postavke uspješno sačuvane",
     "settingsError": "Greška pri čuvanju postavki",
@@ -98,6 +106,11 @@
     "paymentError": "Greška pri dodavanju uplate",
     "uploadError": "Greška pri uploadu fajla",
     "fillAllFields": "Popunite sva polja",
-    "adminOnly": "Samo administratori mogu pristupiti ovoj stranici."
+    "adminOnly": "Samo administratori mogu pristupiti ovoj stranici.",
+    "reviewSuccess": "Pristupnica je pregledana",
+    "reviewError": "Greška pri pregledu pristupnice",
+    "deleteSuccess": "Pristupnica je obrisana",
+    "deleteError": "Greška pri brisanju pristupnice",
+    "deleteConfirm": "Da li ste sigurni da želite obrisati ovu pristupnicu?"
   }
 }

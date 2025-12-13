@@ -91,6 +91,14 @@
     "11": "November",
     "12": "Dezember"
   },
+  "applications": "Anträge",
+  "applicationsDescription": "Übersicht aller Mitgliedschaftsanträge",
+  "loading": "Wird geladen...",
+  "status": {
+    "pending": "Ausstehend",
+    "approved": "Genehmigt",
+    "rejected": "Abgelehnt"
+  },
   "messages": {
     "settingsSaved": "Einstellungen erfolgreich gespeichert",
     "settingsError": "Fehler beim Speichern der Einstellungen",
@@ -98,6 +106,11 @@
     "paymentError": "Fehler beim Hinzufügen der Zahlung",
     "uploadError": "Fehler beim Hochladen der Datei",
     "fillAllFields": "Bitte füllen Sie alle Felder aus",
-    "adminOnly": "Nur Administratoren haben Zugriff auf diese Seite."
+    "adminOnly": "Nur Administratoren haben Zugriff auf diese Seite.",
+    "reviewSuccess": "Antrag wurde überprüft",
+    "reviewError": "Fehler beim Überprüfen des Antrags",
+    "deleteSuccess": "Antrag gelöscht",
+    "deleteError": "Fehler beim Löschen des Antrags",
+    "deleteConfirm": "Sind Sie sicher, dass Sie diesen Antrag löschen möchten?"
   }
 }

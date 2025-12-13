@@ -83,6 +83,14 @@
     "11": "Kasım",
     "12": "Aralık"
   },
+  "applications": "Üyelik Başvuruları",
+  "applicationsDescription": "Tüm üyelik başvuru taleplerini görüntüleyin",
+  "loading": "Yükleniyor...",
+  "status": {
+    "pending": "Bekleme",
+    "approved": "Onaylandı",
+    "rejected": "Reddedildi"
+  },
   "messages": {
     "settingsSaved": "Ayarlar başarıyla kaydedildi",
     "settingsError": "Ayarlar kaydedilirken hata",
@@ -90,6 +98,11 @@
     "paymentError": "Ödeme eklenirken hata",
     "uploadError": "Dosya yüklenirken hata",
     "fillAllFields": "Lütfen tüm alanları doldurun",
-    "adminOnly": "Bu sayfaya yalnızca yöneticiler erişebilir."
+    "adminOnly": "Bu sayfaya yalnızca yöneticiler erişebilir.",
+    "reviewSuccess": "Başvuru incelendi",
+    "reviewError": "Başvuru incelenirken hata",
+    "deleteSuccess": "Başvuru silindi",
+    "deleteError": "Başvuru silinirken hata",
+    "deleteConfirm": "Bu başvuruyu silmek istediğinizden emin misiniz?"
   }
 }

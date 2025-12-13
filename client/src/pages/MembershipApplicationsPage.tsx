@@ -27,11 +27,13 @@ import {
 } from '@mui/material';
 import { Visibility, CheckCircle, Cancel, Delete, Print } from '@mui/icons-material';
 import { useQuery, useMutation } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { queryClient, apiRequest } from '@/lib/queryClient';
 import type { MembershipApplication } from '@shared/schema';
 import { useToast } from '@/hooks/use-toast';
 
 export function MembershipApplicationsList() {
+  const { t } = useTranslation('membershipFees');
   const [selectedApplication, setSelectedApplication] = useState<MembershipApplication | null>(null);
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
   const [reviewNotes, setReviewNotes] = useState('');
@@ -53,8 +55,8 @@ export function MembershipApplicationsList() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/membership-applications'] });
       toast({
-        title: 'Uspješno',
-        description: 'Pristupnica je pregledana',
+        title: t('messages.reviewSuccess'),
+        description: t('messages.reviewSuccess'),
       });
       setReviewDialogOpen(false);
       setSelectedApplication(null);
@@ -62,8 +64,8 @@ export function MembershipApplicationsList() {
     },
     onError: () => {
       toast({
-        title: 'Greška',
-        description: 'Greška pri pregledu pristupnice',
+        title: t('messages.reviewError'),
+        description: t('messages.reviewError'),
         variant: 'destructive',
       });
     },
@@ -77,14 +79,14 @@ export function MembershipApplicationsList() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/membership-applications'] });
       toast({
-        title: 'Uspješno',
-        description: 'Pristupnica je obrisana',
+        title: t('messages.deleteSuccess'),
+        description: t('messages.deleteSuccess'),
       });
     },
     onError: () => {
       toast({
-        title: 'Greška',
-        description: 'Greška pri brisanju pristupnice',
+        title: t('messages.deleteError'),
+        description: t('messages.deleteError'),
         variant: 'destructive',
       });
     },
@@ -110,7 +112,7 @@ export function MembershipApplicationsList() {
   };
 
   const handleDelete = (id: string) => {
-    if (confirm('Da li ste sigurni da želite obrisati ovu pristupnicu?')) {
+    if (confirm(t('messages.deleteConfirm'))) {
       deleteMutation.mutate(id);
     }
   };
@@ -372,11 +374,11 @@ export function MembershipApplicationsList() {
   const getStatusLabel = (status: string) => {
     switch (status) {
       case 'pending':
-        return 'Na čekanju';
+        return t('status.pending');
       case 'approved':
-        return 'Odobreno';
+        return t('status.approved');
       case 'rejected':
-        return 'Odbijeno';
+        return t('status.rejected');
       default:
         return status;
     }
@@ -385,7 +387,7 @@ export function MembershipApplicationsList() {
   if (isLoading) {
     return (
       <Box sx={{ p: 3 }}>
-        <Typography>Učitavanje...</Typography>
+        <Typography>{t('loading')}</Typography>
       </Box>
     );
   }
@@ -393,10 +395,10 @@ export function MembershipApplicationsList() {
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom>
-        Pristupnice
+        {t('applications')}
       </Typography>
       <Typography variant="body2" color="text.secondary" paragraph>
-        Pregled svih zahtjeva za članstvo
+        {t('applicationsDescription')}
       </Typography>
 
       <TableContainer component={Paper}>
