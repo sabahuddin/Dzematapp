@@ -76,7 +76,7 @@ export async function seedDefaultTenant() {
       // UPDATE existing plans with latest modules
       console.log('📋 Updating existing subscription plans with latest modules...');
       
-      const fullPlanModules = ['dashboard', 'users', 'announcements', 'events', 'tasks', 'messages', 'askImam', 'ask-imam', 'requests', 'shop', 'marketplace', 'vaktija', 'finances', 'projects', 'activity', 'activity-log', 'badges', 'points', 'certificates', 'documents', 'media', 'livestream', 'settings', 'guide', 'vodic', 'sponsors', 'applications'];
+      const fullPlanModules = ['dashboard', 'users', 'announcements', 'events', 'tasks', 'workgroups', 'membership', 'messages', 'askImam', 'requests', 'shop', 'marketplace', 'vaktija', 'finances', 'projects', 'activity', 'activity-log', 'badges', 'points', 'certificates', 'documents', 'media', 'livestream', 'settings', 'guide', 'sponsors', 'applications'];
       
       await db
         .update(subscriptionPlans)
@@ -138,7 +138,7 @@ export async function seedDefaultTenant() {
       const trialEnd = new Date();
       trialEnd.setDate(trialEnd.getDate() + 30);
 
-      const fullModules = ['dashboard', 'users', 'announcements', 'events', 'tasks', 'messages', 'askImam', 'ask-imam', 'requests', 'shop', 'marketplace', 'vaktija', 'finances', 'projects', 'activity', 'activity-log', 'badges', 'points', 'certificates', 'documents', 'media', 'livestream', 'settings', 'guide', 'vodic', 'sponsors', 'applications'];
+      const fullModules = ['dashboard', 'users', 'announcements', 'events', 'tasks', 'workgroups', 'membership', 'messages', 'askImam', 'requests', 'shop', 'marketplace', 'vaktija', 'finances', 'projects', 'activity', 'activity-log', 'badges', 'points', 'certificates', 'documents', 'media', 'livestream', 'settings', 'guide', 'sponsors', 'applications'];
       
       const defaultTenantData: any = {
         id: DEFAULT_TENANT_ID,
