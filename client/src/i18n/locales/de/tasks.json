@@ -1,5 +1,13 @@
 {
   "title": "Aufgabenverwaltung",
+  "sectionName": "Gruppenname",
+  "description": "Beschreibung",
+  "visibility": {
+    "label": "Sichtbarkeit",
+    "public": "Öffentliche Gruppe",
+    "private": "Private Gruppe"
+  },
+  "otherSections": "Andere Gruppen",
   "taskDialog": {
     "title": "Aufgaben: {name}",
     "createNew": "Neu erstellen",
@@ -21,7 +29,10 @@
     "edit": "Bearbeiten",
     "move": "Verschieben",
     "delete": "Löschen",
-    "noTasksForSection": "Keine Aufgaben für diese Gruppe"
+    "noTasksForSection": "Keine Aufgaben für diese Gruppe",
+    "markAsComplete": "Als erledigt markieren",
+    "assigned": "Zugewiesen",
+    "deadline": "Frist"
   },
   "task": {
     "status": {
@@ -36,14 +47,25 @@
       "medium": "20 Punkte (Mittlere Aufgabe)",
       "hard": "30 Punkte (Schwierige Aufgabe)",
       "default": "50 Punkte (Standard)"
-    }
+    },
+    "noTasks": "Keine Aufgaben"
+  },
+  "dashboard": {
+    "inProgress": "In Bearbeitung",
+    "pending": "Ausstehend",
+    "completed": "Abgeschlossen",
+    "cancelled": "Abgebrochen",
+    "archived": "Archiviert"
   },
   "tabs": {
     "sections": "Meine Gruppen",
     "myGroups": "Meine Gruppen",
     "publicGroups": "Öffentliche Gruppen",
     "accessRequests": "Zugriffsanfragen",
-    "proposals": "Vorschläge"
+    "proposals": "Vorschläge",
+    "allTasksArchive": "Archiv aller Aufgaben",
+    "active": "Aktiv",
+    "archive": "Archiv"
   },
   "archive": {
     "title": "Archiv aller Aufgaben",

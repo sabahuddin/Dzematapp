@@ -1,5 +1,13 @@
 {
   "title": "Görev Yöneticisi",
+  "sectionName": "Bölüm Adı",
+  "description": "Açıklama",
+  "visibility": {
+    "label": "Görünürlük",
+    "public": "Genel Bölüm",
+    "private": "Özel Bölüm"
+  },
+  "otherSections": "Diğer Bölümler",
   "taskDialog": {
     "title": "Görevler: {name}",
     "createNew": "Yeni Oluştur",
@@ -21,7 +29,10 @@
     "edit": "Düzenle",
     "move": "Taşı",
     "delete": "Sil",
-    "noTasksForSection": "Bu bölüm için görev yok"
+    "noTasksForSection": "Bu bölüm için görev yok",
+    "markAsComplete": "Tamamlandı olarak işaretle",
+    "assigned": "Atandı",
+    "deadline": "Son tarih"
   },
   "task": {
     "status": {
@@ -36,14 +47,25 @@
       "medium": "20 puan (Orta görev)",
       "hard": "30 puan (Zor görev)",
       "default": "50 puan (Varsayılan)"
-    }
+    },
+    "noTasks": "Görev yok"
+  },
+  "dashboard": {
+    "inProgress": "Devam Ediyor",
+    "pending": "Beklemede",
+    "completed": "Tamamlandı",
+    "cancelled": "İptal Edildi",
+    "archived": "Arşivlendi"
   },
   "tabs": {
     "sections": "Gruplarım",
     "myGroups": "Gruplarım",
     "publicGroups": "Kamu Grupları",
     "accessRequests": "Erişim İstekleri",
-    "proposals": "Öneriler"
+    "proposals": "Öneriler",
+    "allTasksArchive": "Tüm Görevlerin Arşivi",
+    "active": "Aktif",
+    "archive": "Arşiv"
   },
   "archive": {
     "title": "Tüm Görevlerin Arşivi",

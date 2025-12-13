@@ -1,5 +1,13 @@
 {
   "title": "Upravljač zadacima",
+  "sectionName": "Naziv sekcije",
+  "description": "Opis",
+  "visibility": {
+    "label": "Vidljivost",
+    "public": "Javna sekcija",
+    "private": "Privatna sekcija"
+  },
+  "otherSections": "Ostale sekcije",
   "taskDialog": {
     "title": "Zadaci: {name}",
     "createNew": "Kreiraj novi",
@@ -21,7 +29,10 @@
     "edit": "Uredi",
     "move": "Premjesti",
     "delete": "Obriši",
-    "noTasksForSection": "Nema zadataka za ovu sekciju"
+    "noTasksForSection": "Nema zadataka za ovu sekciju",
+    "markAsComplete": "Označi kao završeno",
+    "assigned": "Dodijeljeno",
+    "deadline": "Rok"
   },
   "task": {
     "status": {
@@ -36,14 +47,25 @@
       "medium": "20 bodova (Srednji zadatak)",
       "hard": "30 bodova (Težak zadatak)",
       "default": "50 bodova (Default)"
-    }
+    },
+    "noTasks": "Nema zadataka"
+  },
+  "dashboard": {
+    "inProgress": "U toku",
+    "pending": "Na čekanju",
+    "completed": "Završeno",
+    "cancelled": "Otkazano",
+    "archived": "Arhivirano"
   },
   "tabs": {
     "sections": "Moje sekcije",
     "myGroups": "Moje sekcije",
     "publicGroups": "Javne sekcije",
     "accessRequests": "Zahtjevi pristupa",
-    "proposals": "Prijedlozi"
+    "proposals": "Prijedlozi",
+    "allTasksArchive": "Arhiva svih zadataka",
+    "active": "Aktivni",
+    "archive": "Arhiva"
   },
   "archive": {
     "title": "Arhiva svih zadataka",

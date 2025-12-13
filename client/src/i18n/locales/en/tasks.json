@@ -1,5 +1,13 @@
 {
   "title": "Task Manager",
+  "sectionName": "Section Name",
+  "description": "Description",
+  "visibility": {
+    "label": "Visibility",
+    "public": "Public Section",
+    "private": "Private Section"
+  },
+  "otherSections": "Other Sections",
   "taskDialog": {
     "title": "Tasks: {name}",
     "createNew": "Create New",
@@ -21,7 +29,10 @@
     "edit": "Edit",
     "move": "Move",
     "delete": "Delete",
-    "noTasksForSection": "No tasks for this section"
+    "noTasksForSection": "No tasks for this section",
+    "markAsComplete": "Mark as complete",
+    "assigned": "Assigned",
+    "deadline": "Deadline"
   },
   "task": {
     "status": {
@@ -36,14 +47,25 @@
       "medium": "20 points (Medium task)",
       "hard": "30 points (Hard task)",
       "default": "50 points (Default)"
-    }
+    },
+    "noTasks": "No tasks"
+  },
+  "dashboard": {
+    "inProgress": "In Progress",
+    "pending": "Pending",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "archived": "Archived"
   },
   "tabs": {
     "sections": "My Groups",
     "myGroups": "My Groups",
     "publicGroups": "Public Groups",
     "accessRequests": "Access Requests",
-    "proposals": "Proposals"
+    "proposals": "Proposals",
+    "allTasksArchive": "All Tasks Archive",
+    "active": "Active",
+    "archive": "Archive"
   },
   "archive": {
     "title": "Archive of All Tasks",

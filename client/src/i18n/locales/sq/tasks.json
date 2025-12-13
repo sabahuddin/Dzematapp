@@ -1,5 +1,13 @@
 {
   "title": "Menaxhimi i Detyrave",
+  "sectionName": "Emri i Seksionit",
+  "description": "Përshkrimi",
+  "visibility": {
+    "label": "Dukshmëria",
+    "public": "Seksioni Publik",
+    "private": "Seksioni Privat"
+  },
+  "otherSections": "Seksione të tjera",
   "taskDialog": {
     "title": "Detyrat: {name}",
     "createNew": "Krijo të Rejën",
@@ -21,7 +29,10 @@
     "edit": "Redakto",
     "move": "Zhvendos",
     "delete": "Fshi",
-    "noTasksForSection": "Nuk ka detyra për këtë seksion"
+    "noTasksForSection": "Nuk ka detyra për këtë seksion",
+    "markAsComplete": "Shëno si të përfunduar",
+    "assigned": "Caktuar",
+    "deadline": "Afati"
   },
   "task": {
     "status": {
@@ -36,14 +47,25 @@
       "medium": "20 pikë (Detyra mesatare)",
       "hard": "30 pikë (Detyra e vështirë)",
       "default": "50 pikë (Parazgjedhje)"
-    }
+    },
+    "noTasks": "Nuk ka detyra"
+  },
+  "dashboard": {
+    "inProgress": "Në Progres",
+    "pending": "Pezull",
+    "completed": "E Plotësuar",
+    "cancelled": "Anuluar",
+    "archived": "E Arkivuar"
   },
   "tabs": {
     "sections": "Grupet e mia",
     "myGroups": "Grupet e mia",
     "publicGroups": "Grupet Publike",
     "accessRequests": "Kërkesën për Qasje",
-    "proposals": "Propozimet"
+    "proposals": "Propozimet",
+    "allTasksArchive": "Arkivi i të gjitha detyrave",
+    "active": "Aktive",
+    "archive": "Arkivi"
   },
   "archive": {
     "title": "Arkivi i të gjitha detyrave",
