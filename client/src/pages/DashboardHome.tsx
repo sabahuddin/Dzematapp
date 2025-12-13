@@ -456,16 +456,16 @@ export default function DashboardHome() {
                         {currentPoints.toLocaleString()}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
-                        ukupno bodova
+                        {t('dashboard:totalPointsLabel')}
                       </Typography>
                     </Box>
                     {nextPointsBadge && (
                       <Box sx={{ textAlign: 'right' }}>
                         <Typography variant="body2" sx={{ fontWeight: 600, color: 'hsl(14 100% 45%)' }}>
-                          {(nextThreshold - currentPoints).toLocaleString()} bodova
+                          {(nextThreshold - currentPoints).toLocaleString()} {t('dashboard:pointsLabel')}
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
-                          do sljedeće značke
+                          {t('dashboard:toNextBadge')}
                         </Typography>
                       </Box>
                     )}
@@ -484,7 +484,7 @@ export default function DashboardHome() {
                   />
                   {nextPointsBadge && (
                     <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
-                      Sljedeća značka: {nextPointsBadge.icon} {nextPointsBadge.name} ({nextThreshold.toLocaleString()} bodova)
+                      {t('dashboard:nextBadgeLabel')} {nextPointsBadge.icon} {nextPointsBadge.name} ({nextThreshold.toLocaleString()} {t('dashboard:pointsLabel')})
                     </Typography>
                   )}
                 </Box>
@@ -1186,12 +1186,12 @@ export default function DashboardHome() {
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Payment sx={{ color: '#26A69A' }} />
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                  Članarina
+                  {t('dashboard:membershipFees')}
                 </Typography>
               </Box>
               <Link href="/membership-fees">
                 <Button size="small" endIcon={<ArrowForward />} sx={{ textTransform: 'none' }} data-testid="link-membership-fees">
-                  Sve uplate
+                  {t('dashboard:allPayments')}
                 </Button>
               </Link>
             </Box>
@@ -1214,16 +1214,16 @@ export default function DashboardHome() {
                         <Typography variant="h4" sx={{ fontWeight: 700, color: '#26A69A' }}>
                           {formatPrice(totalThisYear)}
                         </Typography>
-                        <Typography variant="caption" color="text.secondary">Ukupno {currentYear}</Typography>
+                        <Typography variant="caption" color="text.secondary">{t('dashboard:totalYear', { year: currentYear })}</Typography>
                       </Box>
                       <Box sx={{ textAlign: 'center' }}>
                         <Typography variant="h4" sx={{ fontWeight: 700, color: '#26A69A' }}>
                           {uniqueMembers}
                         </Typography>
-                        <Typography variant="caption" color="text.secondary">Članova platilo</Typography>
+                        <Typography variant="caption" color="text.secondary">{t('dashboard:membersPaid')}</Typography>
                       </Box>
                     </Box>
-                    <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>Zadnje uplate:</Typography>
+                    <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>{t('dashboard:recentPayments')}</Typography>
                     {payments.slice(0, 3).map((payment: any) => (
                       <Box key={payment.id} sx={{ display: 'flex', justifyContent: 'space-between', py: 1, borderBottom: '1px solid hsl(0 0% 92%)' }}>
                         <Typography variant="body2">{payment.user?.firstName} {payment.user?.lastName}</Typography>
@@ -1232,7 +1232,7 @@ export default function DashboardHome() {
                     ))}
                     {payments.length === 0 && (
                       <Typography color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
-                        Nema uplata
+                        {t('dashboard:noPayments')}
                       </Typography>
                     )}
                   </Box>
@@ -1249,12 +1249,12 @@ export default function DashboardHome() {
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Store sx={{ color: '#3949AB' }} />
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                  Shop
+                  {t('dashboard:shop')}
                 </Typography>
               </Box>
               <Link href="/shop">
                 <Button size="small" endIcon={<ArrowForward />} sx={{ textTransform: 'none' }} data-testid="link-shop">
-                  Svi proizvodi
+                  {t('dashboard:allProducts')}
                 </Button>
               </Link>
             </Box>
@@ -1274,16 +1274,16 @@ export default function DashboardHome() {
                         <Typography variant="h4" sx={{ fontWeight: 700, color: '#3949AB' }}>
                           {products.length}
                         </Typography>
-                        <Typography variant="caption" color="text.secondary">Ukupno proizvoda</Typography>
+                        <Typography variant="caption" color="text.secondary">{t('dashboard:totalProducts')}</Typography>
                       </Box>
                       <Box sx={{ textAlign: 'center' }}>
                         <Typography variant="h4" sx={{ fontWeight: 700, color: '#3949AB' }}>
                           {activeProducts.length}
                         </Typography>
-                        <Typography variant="caption" color="text.secondary">Aktivnih</Typography>
+                        <Typography variant="caption" color="text.secondary">{t('dashboard:active')}</Typography>
                       </Box>
                     </Box>
-                    <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>Najnoviji proizvodi:</Typography>
+                    <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>{t('dashboard:latestProducts')}</Typography>
                     {products.slice(0, 3).map((product: any) => (
                       <Box key={product.id} sx={{ display: 'flex', justifyContent: 'space-between', py: 1, borderBottom: '1px solid hsl(0 0% 92%)' }}>
                         <Typography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '60%' }}>
@@ -1294,7 +1294,7 @@ export default function DashboardHome() {
                     ))}
                     {products.length === 0 && (
                       <Typography color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
-                        Nema proizvoda
+                        {t('dashboard:noProducts')}
                       </Typography>
                     )}
                   </Box>

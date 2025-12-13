@@ -77,5 +77,21 @@
   },
   "feed": {
     "empty": "Nuk ka aktivitete"
-  }
+  },
+  "totalPointsLabel": "pikë totale",
+  "pointsLabel": "pikë",
+  "toNextBadge": "deri te shenja e ardhshme",
+  "nextBadgeLabel": "Shenja e ardhshme:",
+  "membershipFees": "Kuotat e Anëtarësimit",
+  "allPayments": "Të gjitha pagesat",
+  "totalYear": "Totali {{year}}",
+  "membersPaid": "Anëtarë kanë paguar",
+  "recentPayments": "Pagesat e fundit:",
+  "noPayments": "Nuk ka pagesa",
+  "shop": "Dyqani",
+  "allProducts": "Të gjitha produktet",
+  "totalProducts": "Produkte totale",
+  "active": "Aktive",
+  "latestProducts": "Produktet më të reja:",
+  "noProducts": "Nuk ka produkte"
 }

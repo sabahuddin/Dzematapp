@@ -77,5 +77,21 @@
   },
   "feed": {
     "empty": "Nema aktivnosti"
-  }
+  },
+  "totalPointsLabel": "ukupno bodova",
+  "pointsLabel": "bodova",
+  "toNextBadge": "do sljedeće značke",
+  "nextBadgeLabel": "Sljedeća značka:",
+  "membershipFees": "Članarina",
+  "allPayments": "Sve uplate",
+  "totalYear": "Ukupno {{year}}",
+  "membersPaid": "Članova platilo",
+  "recentPayments": "Zadnje uplate:",
+  "noPayments": "Nema uplata",
+  "shop": "Shop",
+  "allProducts": "Svi proizvodi",
+  "totalProducts": "Ukupno proizvoda",
+  "active": "Aktivnih",
+  "latestProducts": "Najnoviji proizvodi:",
+  "noProducts": "Nema proizvoda"
 }

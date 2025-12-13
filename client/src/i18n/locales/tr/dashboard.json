@@ -77,5 +77,21 @@
   },
   "feed": {
     "empty": "Aktivite yok"
-  }
+  },
+  "totalPointsLabel": "toplam puan",
+  "pointsLabel": "puan",
+  "toNextBadge": "sonraki rozete kalan",
+  "nextBadgeLabel": "Sonraki rozet:",
+  "membershipFees": "Üyelik Aidatları",
+  "allPayments": "Tüm ödemeler",
+  "totalYear": "Toplam {{year}}",
+  "membersPaid": "Üye ödedi",
+  "recentPayments": "Son ödemeler:",
+  "noPayments": "Ödeme yok",
+  "shop": "Mağaza",
+  "allProducts": "Tüm ürünler",
+  "totalProducts": "Toplam ürün",
+  "active": "Aktif",
+  "latestProducts": "En yeni ürünler:",
+  "noProducts": "Ürün yok"
 }

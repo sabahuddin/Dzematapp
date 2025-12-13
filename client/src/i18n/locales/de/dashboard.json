@@ -77,5 +77,21 @@
   },
   "feed": {
     "empty": "Keine Aktivitäten"
-  }
+  },
+  "totalPointsLabel": "Gesamtpunkte",
+  "pointsLabel": "Punkte",
+  "toNextBadge": "bis zum nächsten Abzeichen",
+  "nextBadgeLabel": "Nächstes Abzeichen:",
+  "membershipFees": "Mitgliedsbeiträge",
+  "allPayments": "Alle Zahlungen",
+  "totalYear": "Gesamt {{year}}",
+  "membersPaid": "Mitglieder bezahlt",
+  "recentPayments": "Letzte Zahlungen:",
+  "noPayments": "Keine Zahlungen",
+  "shop": "Shop",
+  "allProducts": "Alle Produkte",
+  "totalProducts": "Produkte gesamt",
+  "active": "Aktiv",
+  "latestProducts": "Neueste Produkte:",
+  "noProducts": "Keine Produkte"
 }
