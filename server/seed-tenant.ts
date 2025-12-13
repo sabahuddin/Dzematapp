@@ -64,7 +64,7 @@ export async function seedDefaultTenant() {
           priceMonthly: '149.00',
           priceYearly: '1490.00',
           currency: 'EUR',
-          enabledModules: ['dashboard', 'users', 'announcements', 'events', 'tasks', 'messages', 'askImam', 'ask-imam', 'requests', 'shop', 'marketplace', 'vaktija', 'finances', 'projects', 'activity', 'activity-log', 'badges', 'points', 'certificates', 'documents', 'media', 'livestream', 'settings', 'guide', 'vodic', 'sponsors', 'applications'],
+          enabledModules: ['dashboard', 'users', 'announcements', 'events', 'tasks', 'workgroups', 'membership', 'messages', 'askImam', 'requests', 'shop', 'marketplace', 'vaktija', 'finances', 'projects', 'activity', 'activity-log', 'badges', 'points', 'certificates', 'documents', 'media', 'livestream', 'settings', 'guide', 'sponsors', 'applications'],
           readOnlyModules: [],
           maxUsers: null,
           maxStorage: null,
