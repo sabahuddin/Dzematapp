@@ -198,10 +198,10 @@ export default function MembershipFeesPage() {
       queryClient.invalidateQueries({ queryKey: ['/api/membership-fees/payments'] });
       setAddPaymentDialogOpen(false);
       setNewPayment({ userId: '', amount: '', coverageYear: currentYear, coverageMonth: 1, autoDistribute: true });
-      toast({ title: 'Uplata uspješno dodana', variant: 'default' });
+      toast({ title: t('membershipFees:messages.paymentAdded'), variant: 'default' });
     },
     onError: () => {
-      toast({ title: 'Greška pri dodavanju uplate', variant: 'destructive' });
+      toast({ title: t('membershipFees:messages.paymentError'), variant: 'destructive' });
     }
   });
 
@@ -214,10 +214,10 @@ export default function MembershipFeesPage() {
       queryClient.invalidateQueries({ queryKey: ['/api/membership-fees/payments'] });
       setEditPaymentDialogOpen(false);
       setEditingPayment(null);
-      toast({ title: 'Uplata uspješno izmijenjena', variant: 'default' });
+      toast({ title: t('membershipFees:messages.paymentUpdated'), variant: 'default' });
     },
     onError: () => {
-      toast({ title: 'Greška pri izmjeni uplate', variant: 'destructive' });
+      toast({ title: t('membershipFees:messages.paymentUpdateError'), variant: 'destructive' });
     }
   });
 
@@ -228,10 +228,10 @@ export default function MembershipFeesPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/membership-fees/members-grid', selectedYear] });
       queryClient.invalidateQueries({ queryKey: ['/api/membership-fees/payments'] });
-      toast({ title: 'Uplata uspješno obrisana', variant: 'default' });
+      toast({ title: t('membershipFees:messages.paymentDeleted'), variant: 'default' });
     },
     onError: () => {
-      toast({ title: 'Greška pri brisanju uplate', variant: 'destructive' });
+      toast({ title: t('membershipFees:messages.paymentDeleteError'), variant: 'destructive' });
     }
   });
 
@@ -256,10 +256,10 @@ export default function MembershipFeesPage() {
       queryClient.invalidateQueries({ queryKey: ['/api/membership-fees/members-grid', selectedYear] });
       queryClient.invalidateQueries({ queryKey: ['/api/membership-fees/upload-logs'] });
       setUploadResult(data);
-      toast({ title: data.message, variant: 'default' });
+      toast({ title: t('membershipFees:uploadResult.successMessage', { successful: data.successful, processed: data.processed }), variant: 'default' });
     },
     onError: () => {
-      toast({ title: 'Greška pri uploadu fajla', variant: 'destructive' });
+      toast({ title: t('membershipFees:messages.uploadError'), variant: 'destructive' });
     }
   });
 
@@ -295,7 +295,7 @@ export default function MembershipFeesPage() {
 
   const handleAddPayment = () => {
     if (!newPayment.userId || !newPayment.amount) {
-      toast({ title: 'Popunite sva polja', variant: 'destructive' });
+      toast({ title: t('membershipFees:messages.fillAllFields'), variant: 'destructive' });
       return;
     }
     createPaymentMutation.mutate(newPayment);
@@ -303,27 +303,33 @@ export default function MembershipFeesPage() {
 
   const downloadTemplate = () => {
     const templateYear = selectedYear === 'all' ? currentYear : selectedYear;
+    const regNumCol = t('membershipFees:templateColumns.registryNumber');
+    const fullNameCol = t('membershipFees:templateColumns.fullName');
+    const amountCol = t('membershipFees:templateColumns.amount');
+    const yearCol = t('membershipFees:templateColumns.year');
+    const monthCol = t('membershipFees:templateColumns.month');
+    
     const templateData = [
-      { 'Članski broj': 1, 'Ime i Prezime': 'Mujo Mujić', 'Iznos': 30, 'Godina': templateYear, 'Mjesec': 1 },
-      { 'Članski broj': 1, 'Ime i Prezime': 'Mujo Mujić', 'Iznos': 30, 'Godina': templateYear, 'Mjesec': 2 },
-      { 'Članski broj': 1, 'Ime i Prezime': 'Mujo Mujić', 'Iznos': 30, 'Godina': templateYear, 'Mjesec': 3 },
-      { 'Članski broj': 2, 'Ime i Prezime': 'Haso Hasić', 'Iznos': 50, 'Godina': templateYear, 'Mjesec': 1 },
+      { [regNumCol]: 1, [fullNameCol]: 'John Doe', [amountCol]: 30, [yearCol]: templateYear, [monthCol]: 1 },
+      { [regNumCol]: 1, [fullNameCol]: 'John Doe', [amountCol]: 30, [yearCol]: templateYear, [monthCol]: 2 },
+      { [regNumCol]: 1, [fullNameCol]: 'John Doe', [amountCol]: 30, [yearCol]: templateYear, [monthCol]: 3 },
+      { [regNumCol]: 2, [fullNameCol]: 'Jane Smith', [amountCol]: 50, [yearCol]: templateYear, [monthCol]: 1 },
     ];
     
     const worksheet = XLSX.utils.json_to_sheet(templateData);
-    worksheet['!cols'] = [{ wch: 12 }, { wch: 25 }, { wch: 10 }, { wch: 10 }, { wch: 10 }];
+    worksheet['!cols'] = [{ wch: 15 }, { wch: 25 }, { wch: 10 }, { wch: 10 }, { wch: 10 }];
     
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, t('membershipFees:title'));
     
-    XLSX.writeFile(workbook, `clanarina_template_${templateYear}.xlsx`);
+    XLSX.writeFile(workbook, `membership_fees_template_${templateYear}.xlsx`);
   };
 
   if (!currentUser?.isAdmin) {
     return (
       <Box sx={{ p: 3 }}>
         <Alert severity="warning">
-          Samo administratori mogu pristupiti ovoj stranici.
+          {t('membershipFees:messages.adminOnly')}
         </Alert>
       </Box>
     );
@@ -434,10 +440,10 @@ export default function MembershipFeesPage() {
                     </TableCell>
                   ))}
                   <TableCell align="center" sx={{ fontWeight: 'bold', bgcolor: 'success.main', color: 'white' }}>
-                    Uplaćeno
+                    {t('membershipFees:paid')}
                   </TableCell>
                   <TableCell align="center" sx={{ fontWeight: 'bold', bgcolor: 'error.main', color: 'white' }}>
-                    Duguje
+                    {t('membershipFees:owed')}
                   </TableCell>
                 </TableRow>
               </TableHead>
@@ -506,7 +512,7 @@ export default function MembershipFeesPage() {
               onPageChange={(_, newPage) => setGridPage(newPage)}
               rowsPerPage={rowsPerPage}
               rowsPerPageOptions={[20]}
-              labelDisplayedRows={({ from, to, count }) => `${from}-${to} od ${count}`}
+              labelDisplayedRows={({ from, to, count }) => t('membershipFees:pagination.displayedRows', { from, to, count })}
             />
           </TableContainer>
         )}
@@ -520,12 +526,12 @@ export default function MembershipFeesPage() {
             <Table size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Član</TableCell>
-                  <TableCell align="center" sx={{ fontWeight: 'bold' }}>Iznos</TableCell>
-                  <TableCell align="center" sx={{ fontWeight: 'bold' }}>Godina</TableCell>
-                  <TableCell align="center" sx={{ fontWeight: 'bold' }}>Mjesec</TableCell>
-                  <TableCell align="center" sx={{ fontWeight: 'bold' }}>Datum uplate</TableCell>
-                  <TableCell align="center" sx={{ fontWeight: 'bold' }}>Akcije</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>{t('membershipFees:member')}</TableCell>
+                  <TableCell align="center" sx={{ fontWeight: 'bold' }}>{t('membershipFees:amount')}</TableCell>
+                  <TableCell align="center" sx={{ fontWeight: 'bold' }}>{t('membershipFees:year')}</TableCell>
+                  <TableCell align="center" sx={{ fontWeight: 'bold' }}>{t('membershipFees:month')}</TableCell>
+                  <TableCell align="center" sx={{ fontWeight: 'bold' }}>{t('membershipFees:paymentDate')}</TableCell>
+                  <TableCell align="center" sx={{ fontWeight: 'bold' }}>{t('membershipFees:actions')}</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -536,7 +542,7 @@ export default function MembershipFeesPage() {
                   return (
                     <TableRow key={payment.id} hover>
                       <TableCell>
-                        {user ? `${user.registryNumber ? `#${user.registryNumber} - ` : ''}${user.firstName} ${user.lastName}` : 'Nepoznat'}
+                        {user ? `${user.registryNumber ? `#${user.registryNumber} - ` : ''}${user.firstName} ${user.lastName}` : t('membershipFees:unknown')}
                       </TableCell>
                       <TableCell align="center">{payment.amount}</TableCell>
                       <TableCell align="center">{payment.coverageYear}</TableCell>
@@ -558,7 +564,7 @@ export default function MembershipFeesPage() {
                           size="small"
                           color="error"
                           onClick={() => {
-                            if (confirm('Da li ste sigurni da želite obrisati ovu uplatu?')) {
+                            if (confirm(t('membershipFees:messages.deleteConfirmPayment'))) {
                               deletePaymentMutation.mutate(payment.id);
                             }
                           }}
@@ -579,7 +585,7 @@ export default function MembershipFeesPage() {
               onPageChange={(_, newPage) => setPaymentsPage(newPage)}
               rowsPerPage={rowsPerPage}
               rowsPerPageOptions={[20]}
-              labelDisplayedRows={({ from, to, count }) => `${from}-${to} od ${count}`}
+              labelDisplayedRows={({ from, to, count }) => t('membershipFees:pagination.displayedRows', { from, to, count })}
             />
           </TableContainer>
         )}
@@ -593,11 +599,11 @@ export default function MembershipFeesPage() {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Datum</TableCell>
-                  <TableCell>Fajl</TableCell>
-                  <TableCell align="center">Obrađeno</TableCell>
-                  <TableCell align="center">Uspješno</TableCell>
-                  <TableCell align="center">Neuspješno</TableCell>
+                  <TableCell>{t('membershipFees:uploadLog.date')}</TableCell>
+                  <TableCell>{t('membershipFees:uploadLog.fileName')}</TableCell>
+                  <TableCell align="center">{t('membershipFees:uploadLog.processed')}</TableCell>
+                  <TableCell align="center">{t('membershipFees:uploadLog.successful')}</TableCell>
+                  <TableCell align="center">{t('membershipFees:uploadLog.failed')}</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -624,15 +630,15 @@ export default function MembershipFeesPage() {
 
       {/* Upload Dialog */}
       <Dialog open={uploadDialogOpen} onClose={() => { setUploadDialogOpen(false); setUploadResult(null); }} maxWidth="sm" fullWidth>
-        <DialogTitle>{t('membershipFees:bulkUpload.title')}</DialogTitle>
+        <DialogTitle>{t('membershipFees:bulkUploadDialog.title')}</DialogTitle>
         <DialogContent>
           <Box sx={{ textAlign: 'center', py: 3 }}>
             <CloudUpload sx={{ fontSize: 64, color: 'primary.main', mb: 2 }} />
             <Typography variant="body1" paragraph>
-              {t('membershipFees:bulkUpload.description')}
+              {t('membershipFees:bulkUploadDialog.description')}
             </Typography>
             <Typography variant="body2" color="text.secondary" paragraph>
-              {t('membershipFees:bulkUpload.columns')}
+              {t('membershipFees:bulkUploadDialog.columns')}
             </Typography>
             
             <input
@@ -649,7 +655,7 @@ export default function MembershipFeesPage() {
                 startIcon={<Download />}
                 onClick={downloadTemplate}
               >
-                {t('membershipFees:bulkUpload.downloadTemplate')}
+                {t('membershipFees:bulkUploadDialog.downloadTemplate')}
               </Button>
               <Button
                 variant="contained"
@@ -657,18 +663,18 @@ export default function MembershipFeesPage() {
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploadFileMutation.isPending}
               >
-                {uploadFileMutation.isPending ? 'Učitavanje...' : t('membershipFees:bulkUpload.selectFile')}
+                {uploadFileMutation.isPending ? t('membershipFees:bulkUploadDialog.uploading') : t('membershipFees:bulkUploadDialog.selectFile')}
               </Button>
             </Box>
 
             {uploadResult && (
               <Alert severity={uploadResult.failed > 0 ? 'warning' : 'success'} sx={{ mt: 3, textAlign: 'left' }}>
                 <Typography variant="body2">
-                  <strong>Rezultat:</strong> {uploadResult.successful} od {uploadResult.processed} uplata uspješno uneseno.
+                  <strong>{t('membershipFees:uploadResult.result')}:</strong> {t('membershipFees:uploadResult.successMessage', { successful: uploadResult.successful, processed: uploadResult.processed })}
                 </Typography>
                 {uploadResult.errors?.length > 0 && (
                   <Box sx={{ mt: 1 }}>
-                    <Typography variant="caption" color="error">Greške:</Typography>
+                    <Typography variant="caption" color="error">{t('membershipFees:uploadResult.errors')}:</Typography>
                     <ul style={{ margin: 0, paddingLeft: 20 }}>
                       {uploadResult.errors.slice(0, 5).map((err: string, idx: number) => (
                         <li key={idx}><Typography variant="caption">{err}</Typography></li>
@@ -681,7 +687,7 @@ export default function MembershipFeesPage() {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => { setUploadDialogOpen(false); setUploadResult(null); }}>{t('membershipFees:bulkUpload.close')}</Button>
+          <Button onClick={() => { setUploadDialogOpen(false); setUploadResult(null); }}>{t('membershipFees:bulkUploadDialog.close')}</Button>
         </DialogActions>
       </Dialog>
 

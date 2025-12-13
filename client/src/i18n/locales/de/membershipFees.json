@@ -9,9 +9,35 @@
   "member": "Mitglied",
   "amount": "Betrag",
   "total": "Gesamt",
+  "paid": "Bezahlt",
+  "owed": "Schuldet",
+  "paymentDate": "Zahlungsdatum",
+  "actions": "Aktionen",
+  "unknown": "Unbekannt",
   "paymentsGrid": "Zahlungsübersicht",
+  "paymentsOverview": "Zahlungsübersicht",
+  "allPayments": "Alle Zahlungen",
   "uploadHistory": "Upload-Verlauf",
+  "allYears": "Alle Jahre",
+  "monthlyFee": "Monatlicher Beitrag",
+  "yearlyFee": "Jährlicher Beitrag",
   "noMembers": "Keine Mitglieder anzuzeigen.",
+  "loading": "Wird geladen...",
+  "pagination": {
+    "displayedRows": "{{from}}-{{to}} von {{count}}"
+  },
+  "uploadResult": {
+    "result": "Ergebnis",
+    "successMessage": "{{successful}} von {{processed}} Zahlungen erfolgreich hochgeladen.",
+    "errors": "Fehler"
+  },
+  "templateColumns": {
+    "registryNumber": "Registrierungsnummer",
+    "fullName": "Vollständiger Name",
+    "amount": "Betrag",
+    "year": "Jahr",
+    "month": "Monat"
+  },
   "settingsDialog": {
     "title": "Beitragseinstellungen",
     "feeType": "Beitragsart",
@@ -24,20 +50,13 @@
     "save": "Speichern",
     "cancel": "Abbrechen"
   },
-  "uploadDialog": {
+  "bulkUploadDialog": {
     "title": "Zahlungen Massenupload",
     "description": "Laden Sie eine Excel- oder CSV-Datei mit Zahlungen hoch.",
-    "requiredColumns": "Erforderliche Spalten: Vollständiger Name, Betrag, Jahr, Monat",
-    "downloadTemplate": "Vorlage herunterladen",
-    "selectFile": "Datei auswählen",
-    "uploading": "Hochladen..."
-  },
-  "bulkUploadForm": {
-    "title": "Massen-Upload Zahlung",
-    "description": "Laden Sie Excel- oder CSV-Datei mit Zahlungen hoch.",
     "columns": "Spalten: Registrierungsnummer, Vollständiger Name, Betrag, Jahr, Monat",
     "downloadTemplate": "Vorlage herunterladen",
     "selectFile": "Datei auswählen",
+    "uploading": "Hochladen...",
     "close": "Schließen"
   },
   "addPaymentDialog": {
@@ -107,7 +126,6 @@
   },
   "applications": "Anträge",
   "applicationsDescription": "Übersicht aller Mitgliedschaftsanträge",
-  "loading": "Wird geladen...",
   "status": {
     "pending": "Ausstehend",
     "approved": "Genehmigt",
@@ -117,19 +135,19 @@
     "settingsSaved": "Einstellungen erfolgreich gespeichert",
     "settingsError": "Fehler beim Speichern der Einstellungen",
     "paymentAdded": "Zahlung erfolgreich hinzugefügt",
+    "paymentUpdated": "Zahlung erfolgreich geändert",
+    "paymentDeleted": "Zahlung erfolgreich gelöscht",
     "paymentError": "Fehler beim Hinzufügen der Zahlung",
+    "paymentUpdateError": "Fehler beim Ändern der Zahlung",
+    "paymentDeleteError": "Fehler beim Löschen der Zahlung",
     "uploadError": "Fehler beim Hochladen der Datei",
     "fillAllFields": "Bitte füllen Sie alle Felder aus",
     "adminOnly": "Nur Administratoren haben Zugriff auf diese Seite.",
+    "deleteConfirmPayment": "Sind Sie sicher, dass Sie diese Zahlung löschen möchten?",
     "reviewSuccess": "Antrag wurde überprüft",
     "reviewError": "Fehler beim Überprüfen des Antrags",
     "deleteSuccess": "Antrag gelöscht",
     "deleteError": "Fehler beim Löschen des Antrags",
     "deleteConfirm": "Sind Sie sicher, dass Sie diesen Antrag löschen möchten?"
-  },
-  "allYears": "Alle Jahre",
-  "monthlyFee": "Monatlicher Beitrag",
-  "yearlyFee": "Jährlicher Beitrag",
-  "paymentsOverview": "Zahlungsübersicht",
-  "allPayments": "Alle Zahlungen"
+  }
 }

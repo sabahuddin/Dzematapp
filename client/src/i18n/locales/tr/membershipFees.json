@@ -9,9 +9,35 @@
   "member": "Üye",
   "amount": "Tutar",
   "total": "Toplam",
+  "paid": "Ödendi",
+  "owed": "Borç",
+  "paymentDate": "Ödeme Tarihi",
+  "actions": "İşlemler",
+  "unknown": "Bilinmiyor",
   "paymentsGrid": "Ödeme Genel Görünümü",
+  "paymentsOverview": "Ödeme Genel Görünümü",
+  "allPayments": "Tüm Ödemeler",
   "uploadHistory": "Yükleme Geçmişi",
+  "allYears": "Tüm yıllar",
+  "monthlyFee": "Aylık Aidat",
+  "yearlyFee": "Yıllık Aidat",
   "noMembers": "Gösterilecek üye yok.",
+  "loading": "Yükleniyor...",
+  "pagination": {
+    "displayedRows": "{{from}}-{{to}} / {{count}}"
+  },
+  "uploadResult": {
+    "result": "Sonuç",
+    "successMessage": "{{successful}} / {{processed}} ödeme başarıyla yüklendi.",
+    "errors": "Hatalar"
+  },
+  "templateColumns": {
+    "registryNumber": "Kayıt Numarası",
+    "fullName": "Tam Ad",
+    "amount": "Tutar",
+    "year": "Yıl",
+    "month": "Ay"
+  },
   "settingsDialog": {
     "title": "Aidat Ayarları",
     "feeType": "Aidat Türü",
@@ -24,20 +50,13 @@
     "save": "Kaydet",
     "cancel": "İptal"
   },
-  "uploadDialog": {
-    "title": "Toplu Ödeme Yükleme",
-    "description": "Ödemelerle birlikte Excel veya CSV dosyası yükleyin.",
-    "requiredColumns": "Gerekli sütunlar: Tam Ad, Tutar, Yıl, Ay",
-    "downloadTemplate": "Şablonu İndir",
-    "selectFile": "Dosya Seç",
-    "uploading": "Yükleniyor..."
-  },
-  "bulkUploadForm": {
+  "bulkUploadDialog": {
     "title": "Toplu Ödeme Yükleme",
     "description": "Ödemelerle birlikte Excel veya CSV dosyası yükleyin.",
     "columns": "Sütunlar: Kayıt Numarası, Tam Ad, Tutar, Yıl, Ay",
     "downloadTemplate": "Şablonu İndir",
     "selectFile": "Dosya Seç",
+    "uploading": "Yükleniyor...",
     "close": "Kapat"
   },
   "addPaymentDialog": {
@@ -107,7 +126,6 @@
   },
   "applications": "Üyelik Başvuruları",
   "applicationsDescription": "Tüm üyelik başvuru taleplerini görüntüleyin",
-  "loading": "Yükleniyor...",
   "status": {
     "pending": "Bekleme",
     "approved": "Onaylandı",
@@ -117,19 +135,19 @@
     "settingsSaved": "Ayarlar başarıyla kaydedildi",
     "settingsError": "Ayarlar kaydedilirken hata",
     "paymentAdded": "Ödeme başarıyla eklendi",
+    "paymentUpdated": "Ödeme başarıyla güncellendi",
+    "paymentDeleted": "Ödeme başarıyla silindi",
     "paymentError": "Ödeme eklenirken hata",
+    "paymentUpdateError": "Ödeme güncellenirken hata",
+    "paymentDeleteError": "Ödeme silinirken hata",
     "uploadError": "Dosya yüklenirken hata",
     "fillAllFields": "Lütfen tüm alanları doldurun",
     "adminOnly": "Bu sayfaya yalnızca yöneticiler erişebilir.",
+    "deleteConfirmPayment": "Bu ödemeyi silmek istediğinizden emin misiniz?",
     "reviewSuccess": "Başvuru incelendi",
     "reviewError": "Başvuru incelenirken hata",
     "deleteSuccess": "Başvuru silindi",
     "deleteError": "Başvuru silinirken hata",
     "deleteConfirm": "Bu başvuruyu silmek istediğinizden emin misiniz?"
-  },
-  "allYears": "Tüm yıllar",
-  "monthlyFee": "Aylık Aidat",
-  "yearlyFee": "Yıllık Aidat",
-  "paymentsOverview": "Ödeme Genel Görünümü",
-  "allPayments": "Tüm Ödemeler"
+  }
 }

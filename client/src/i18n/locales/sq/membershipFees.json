@@ -9,9 +9,35 @@
   "member": "Anëtari",
   "amount": "Shuma",
   "total": "Totali",
+  "paid": "Paguar",
+  "owed": "Borxh",
+  "paymentDate": "Data e pagesës",
+  "actions": "Veprimet",
+  "unknown": "I panjohur",
   "paymentsGrid": "Pasqyra e pagesave",
+  "paymentsOverview": "Pasqyra e pagesave",
+  "allPayments": "Të gjitha pagesat",
   "uploadHistory": "Historia e ngarkimeve",
+  "allYears": "Të gjitha vitet",
+  "monthlyFee": "Tarifa mujore",
+  "yearlyFee": "Tarifa vjetore",
   "noMembers": "Nuk ka anëtarë për t'u shfaqur.",
+  "loading": "Po ngarkohet...",
+  "pagination": {
+    "displayedRows": "{{from}}-{{to}} nga {{count}}"
+  },
+  "uploadResult": {
+    "result": "Rezultati",
+    "successMessage": "{{successful}} nga {{processed}} pagesa u ngarkuan me sukses.",
+    "errors": "Gabimet"
+  },
+  "templateColumns": {
+    "registryNumber": "Numri i regjistrit",
+    "fullName": "Emri i plotë",
+    "amount": "Shuma",
+    "year": "Viti",
+    "month": "Muaji"
+  },
   "settingsDialog": {
     "title": "Cilësimet e anëtarësisë",
     "feeType": "Lloji i tarifës",
@@ -24,20 +50,13 @@
     "save": "Ruaj",
     "cancel": "Anulo"
   },
-  "uploadDialog": {
-    "title": "Ngarkim në masë i pagesave",
-    "description": "Ngarkoni një skedar Excel ose CSV me pagesa.",
-    "requiredColumns": "Kolonat e nevojshme: Emri i plotë, Shuma, Viti, Muaji",
-    "downloadTemplate": "Shkarko shabllonin",
-    "selectFile": "Zgjidh skedarin",
-    "uploading": "Duke ngarkuar..."
-  },
-  "bulkUploadForm": {
+  "bulkUploadDialog": {
     "title": "Ngarkim në masë i pagesave",
     "description": "Ngarkoni një skedar Excel ose CSV me pagesa.",
     "columns": "Kolonat: Numri i regjistrit, Emri i plotë, Shuma, Viti, Muaji",
     "downloadTemplate": "Shkarko shabllonin",
     "selectFile": "Zgjidh skedarin",
+    "uploading": "Duke ngarkuar...",
     "close": "Mbyll"
   },
   "addPaymentDialog": {
@@ -107,7 +126,6 @@
   },
   "applications": "Aplikacionet e anëtarësimit",
   "applicationsDescription": "Shikoni të gjithë kërkesat e aplikacionit të anëtarësimit",
-  "loading": "Po ngarkohet...",
   "status": {
     "pending": "Në pritje",
     "approved": "Miratuar",
@@ -117,19 +135,19 @@
     "settingsSaved": "Cilësimet u ruajtën me sukses",
     "settingsError": "Gabim gjatë ruajtjes së cilësimeve",
     "paymentAdded": "Pagesa u shtua me sukses",
+    "paymentUpdated": "Pagesa u përditësua me sukses",
+    "paymentDeleted": "Pagesa u fshi me sukses",
     "paymentError": "Gabim gjatë shtimit të pagesës",
+    "paymentUpdateError": "Gabim gjatë përditësimit të pagesës",
+    "paymentDeleteError": "Gabim gjatë fshirjes së pagesës",
     "uploadError": "Gabim gjatë ngarkimit të skedarit",
     "fillAllFields": "Ju lutemi plotësoni të gjitha fushat",
     "adminOnly": "Vetëm administratorët mund të kenë qasje në këtë faqe.",
+    "deleteConfirmPayment": "Jeni të sigurt që dëshironi të fshini këtë pagesë?",
     "reviewSuccess": "Aplikacioni u rishqyrtua",
     "reviewError": "Gabim gjatë rishqyrtimit të aplikacionit",
     "deleteSuccess": "Aplikacioni u fshi",
     "deleteError": "Gabim gjatë fshirjes së aplikacionit",
     "deleteConfirm": "Jeni të sigurt që dëshironi të fshini këtë aplikacion?"
-  },
-  "allYears": "Të gjitha vitet",
-  "monthlyFee": "Tarifa mujore",
-  "yearlyFee": "Tarifa vjetore",
-  "paymentsOverview": "Pasqyra e pagesave",
-  "allPayments": "Të gjitha pagesat"
+  }
 }

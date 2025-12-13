@@ -9,9 +9,35 @@
   "member": "Member",
   "amount": "Amount",
   "total": "Total",
+  "paid": "Paid",
+  "owed": "Owed",
+  "paymentDate": "Payment Date",
+  "actions": "Actions",
+  "unknown": "Unknown",
   "paymentsGrid": "Payments Overview",
+  "paymentsOverview": "Payments Overview",
+  "allPayments": "All Payments",
   "uploadHistory": "Upload History",
+  "allYears": "All Years",
+  "monthlyFee": "Monthly Fee",
+  "yearlyFee": "Yearly Fee",
   "noMembers": "No members to display.",
+  "loading": "Loading...",
+  "pagination": {
+    "displayedRows": "{{from}}-{{to}} of {{count}}"
+  },
+  "uploadResult": {
+    "result": "Result",
+    "successMessage": "{{successful}} of {{processed}} payments successfully uploaded.",
+    "errors": "Errors"
+  },
+  "templateColumns": {
+    "registryNumber": "Registry Number",
+    "fullName": "Full Name",
+    "amount": "Amount",
+    "year": "Year",
+    "month": "Month"
+  },
   "settingsDialog": {
     "title": "Membership Fee Settings",
     "feeType": "Fee Type",
@@ -24,26 +50,33 @@
     "save": "Save",
     "cancel": "Cancel"
   },
-  "uploadDialog": {
+  "bulkUploadDialog": {
     "title": "Bulk Upload Payments",
     "description": "Upload an Excel or CSV file with payments.",
-    "requiredColumns": "Required columns: Full Name, Amount, Year, Month",
+    "columns": "Columns: Registry Number, Full Name, Amount, Year, Month",
     "downloadTemplate": "Download Template",
     "selectFile": "Select File",
-    "uploading": "Uploading..."
-  },
-  "bulkUpload": {
-    "title": "Bulk Upload Payment",
-    "description": "Upload Excel or CSV file with payments.",
-    "columns": "Columns: Registry Number, Full Name, Amount, Year, Month",
-    "downloadTemplate": "Download template",
-    "selectFile": "Select file",
+    "uploading": "Uploading...",
     "close": "Close"
   },
   "addPaymentDialog": {
     "title": "Add Individual Payment",
     "selectMember": "Member",
+    "amount": "Amount",
+    "year": "Year",
+    "month": "Month",
+    "autoDistribute": "Automatically distribute to months (if amount exceeds fee)",
+    "cancel": "Cancel",
     "add": "Add"
+  },
+  "editPaymentDialog": {
+    "title": "Edit Payment",
+    "member": "Member",
+    "amount": "Amount",
+    "year": "Year",
+    "month": "Month",
+    "cancel": "Cancel",
+    "save": "Save"
   },
   "uploadLog": {
     "date": "Date",
@@ -93,7 +126,6 @@
   },
   "applications": "Membership Applications",
   "applicationsDescription": "View all membership application requests",
-  "loading": "Loading...",
   "status": {
     "pending": "Pending",
     "approved": "Approved",
@@ -103,10 +135,15 @@
     "settingsSaved": "Settings saved successfully",
     "settingsError": "Error saving settings",
     "paymentAdded": "Payment added successfully",
+    "paymentUpdated": "Payment updated successfully",
+    "paymentDeleted": "Payment deleted successfully",
     "paymentError": "Error adding payment",
+    "paymentUpdateError": "Error updating payment",
+    "paymentDeleteError": "Error deleting payment",
     "uploadError": "Error uploading file",
     "fillAllFields": "Please fill all fields",
     "adminOnly": "Only administrators can access this page.",
+    "deleteConfirmPayment": "Are you sure you want to delete this payment?",
     "reviewSuccess": "Application reviewed",
     "reviewError": "Error reviewing application",
     "deleteSuccess": "Application deleted",
