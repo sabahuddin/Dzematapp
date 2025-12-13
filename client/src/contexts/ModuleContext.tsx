@@ -11,8 +11,6 @@ export const ALL_MODULES = {
   vaktija: { id: 'vaktija', name: 'Vaktija', icon: 'AccessTime' },
   users: { id: 'users', name: 'Članovi', icon: 'People' },
   tasks: { id: 'tasks', name: 'Zadaci', icon: 'Assignment' },
-  workgroups: { id: 'workgroups', name: 'Sekcije', icon: 'Groups' },
-  membership: { id: 'membership', name: 'Članarina', icon: 'Payment' },
   messages: { id: 'messages', name: 'Poruke', icon: 'Mail' },
   askImam: { id: 'askImam', name: 'Pitanja za Imama', icon: 'QuestionAnswer' },
   'ask-imam': { id: 'ask-imam', name: 'Ask Imam (EN)', icon: 'QuestionAnswer' },
@@ -34,7 +32,6 @@ export const ALL_MODULES = {
   vodic: { id: 'vodic', name: 'Vodič', icon: 'Help' },
   sponsors: { id: 'sponsors', name: 'Sponzori', icon: 'Favorite' },
   applications: { id: 'applications', name: 'Aplikacije', icon: 'Description' },
-  imam_qa: { id: 'imam_qa', name: 'Pitanja za Imama (old)', icon: 'QuestionAnswer' },
 } as const;
 
 export type ModuleId = keyof typeof ALL_MODULES;
