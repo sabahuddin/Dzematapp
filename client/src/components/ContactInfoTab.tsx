@@ -1,10 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { Box, Card, Typography, CircularProgress, Alert } from '@mui/material';
 import { Phone, Mail, MapPin, Facebook, Instagram, Youtube, Twitter } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { OrganizationSettings } from '@shared/schema';
 import { SiFacebook, SiInstagram, SiYoutube, SiX } from 'react-icons/si';
 
 export default function ContactInfoTab() {
+  const { t } = useTranslation('settings');
   const { data: settings, isLoading, isError } = useQuery({
     queryKey: ['/api/organization-settings']
   }) as { data: OrganizationSettings | undefined; isLoading: boolean; isError: boolean };
@@ -20,7 +22,7 @@ export default function ContactInfoTab() {
   if (isError || !settings) {
     return (
       <Alert severity="error">
-        Greška pri učitavanju kontakt informacija
+        {t('organization.toast.error')}
       </Alert>
     );
   }
@@ -30,14 +32,14 @@ export default function ContactInfoTab() {
       {/* Basic Contact Info */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h6" sx={{ mb: 3, fontWeight: 600, color: '#0D1B2A' }}>
-          Osnovni podaci
+          {t('organization.basicInfo')}
         </Typography>
         
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           {/* Organization Name */}
           <Box>
             <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.secondary', mb: 0.5 }}>
-              Naziv organizacije
+              {t('organization.fields.name')}
             </Typography>
             <Typography variant="body1">
               {settings.name}
@@ -49,7 +51,7 @@ export default function ContactInfoTab() {
             <MapPin size={20} style={{ color: '#3949AB', marginTop: 2 }} />
             <Box>
               <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.secondary', mb: 0.5 }}>
-                Adresa
+                {t('organization.fields.address')}
               </Typography>
               <Typography variant="body1">
                 {settings.address}
@@ -62,7 +64,7 @@ export default function ContactInfoTab() {
             <Phone size={20} style={{ color: '#3949AB', marginTop: 2 }} />
             <Box>
               <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.secondary', mb: 0.5 }}>
-                Telefon
+                {t('organization.fields.phone')}
               </Typography>
               <Typography variant="body1">
                 {settings.phone}
@@ -75,7 +77,7 @@ export default function ContactInfoTab() {
             <Mail size={20} style={{ color: '#3949AB', marginTop: 2 }} />
             <Box>
               <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.secondary', mb: 0.5 }}>
-                Email
+                {t('organization.fields.email')}
               </Typography>
               <Typography variant="body1">
                 {settings.email}
@@ -89,7 +91,7 @@ export default function ContactInfoTab() {
       {(settings.facebookUrl || settings.instagramUrl || settings.youtubeUrl || settings.twitterUrl) && (
         <Box>
           <Typography variant="h6" sx={{ mb: 3, fontWeight: 600, color: '#0D1B2A' }}>
-            Društvene mreže
+            {t('organization.socialMedia')}
           </Typography>
           
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
