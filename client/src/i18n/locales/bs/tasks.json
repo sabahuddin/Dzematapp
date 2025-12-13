@@ -1,10 +1,14 @@
 {
   "title": "Upravljač zadacima",
   "taskDialog": {
+    "title": "Zadaci: {name}",
+    "createNew": "Kreiraj novi",
     "createNewTask": "Kreiraj novi zadatak",
     "taskTitle": "Naziv zadatka",
     "taskDescription": "Opis zadatka",
+    "image": "Slika",
     "addImage": "Dodaj sliku",
+    "changeImage": "Promijeni sliku",
     "status": "Status",
     "assignToMembers": "Dodijeli članovima",
     "selectMembers": "Odaberi članove...",
@@ -13,7 +17,11 @@
     "pointsValue": "Bodovna vrijednost",
     "optional": "Opciono",
     "cancel": "Otkaži",
-    "save": "Sačuvaj"
+    "save": "Sačuvaj",
+    "edit": "Uredi",
+    "move": "Premjesti",
+    "delete": "Obriši",
+    "noTasksForSection": "Nema zadataka za ovu sekciju"
   },
   "task": {
     "status": {
@@ -31,12 +39,28 @@
     }
   },
   "tabs": {
+    "sections": "Moje sekcije",
     "myGroups": "Moje sekcije",
     "publicGroups": "Javne sekcije",
     "accessRequests": "Zahtjevi pristupa",
     "proposals": "Prijedlozi"
   },
   "archive": {
+    "title": "Arhiva svih zadataka",
+    "allPeriods": "Svi periodi",
+    "allSections": "Sve sekcije",
+    "allUsers": "Svi korisnici",
+    "last7days": "Zadnjih 7 dana",
+    "last30days": "Zadnjih 30 dana",
+    "last90days": "Zadnjih 90 dana",
+    "periodLabel": "Period",
+    "sectionLabel": "Sekcija",
+    "userLabel": "Korisnik",
+    "assigned": "Dodijeljeno",
+    "completed": "Završeno",
+    "totalArchived": "Ukupno arhivirano",
+    "noArchivedTasks": "Nema arhiviranih zadataka",
+    "noArchivedTasksSimple": "Nema zadataka",
     "readOnlyLabel": "(Samo čitanje)",
     "sectionUnknown": "Nepoznata sekcija"
   },
@@ -67,6 +91,15 @@
     "makeModerator": "Postavi kao moderatora",
     "removeModerator": "Ukloni moderatora"
   },
+  "createSection": "Kreiraj Sekciju",
+  "editSection": "Uredi Sekciju",
+  "joinSection": "Pridruži se Sekciji",
+  "manageMembers": "Upravljanje Članovima",
+  "manageTasks": "Upravljanje Zadacima",
+  "createProposal": "Kreiraj Prijedlog",
+  "createProposalFor": "Kreiraj prijedlog za",
+  "viewTasks": "Pogledaj Zadatke",
+  "loadingError": "Greška pri učitavanju",
   "toasts": {
     "sectionCreated": "Sekcija je uspješno kreirana",
     "sectionCreateError": "Greška pri kreiranju sekcije",
@@ -82,5 +115,8 @@
     "taskStatusUpdated": "Status zadatka je ažuriran",
     "taskUpdateError": "Greška pri ažuriranju zadatka",
     "taskDeleted": "Zadatak je obrisan"
+  },
+  "members": {
+    "count_many": "{count} članova"
   }
 }

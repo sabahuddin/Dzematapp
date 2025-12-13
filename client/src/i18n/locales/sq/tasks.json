@@ -1,10 +1,14 @@
 {
   "title": "Menaxhimi i Detyrave",
   "taskDialog": {
+    "title": "Detyrat: {name}",
+    "createNew": "Krijo të Rejën",
     "createNewTask": "Krijo detyrën e re",
     "taskTitle": "Titulla e detyrës",
     "taskDescription": "Përshkrimi i detyrës",
+    "image": "Imazhi",
     "addImage": "Shto imazh",
+    "changeImage": "Ndryshoni imazhin",
     "status": "Statusi",
     "assignToMembers": "Cakto anëtarëve",
     "selectMembers": "Përzgjidhni anëtarët...",
@@ -13,7 +17,11 @@
     "pointsValue": "Vlera e pikëve",
     "optional": "Opsionale",
     "cancel": "Anulo",
-    "save": "Ruaj"
+    "save": "Ruaj",
+    "edit": "Redakto",
+    "move": "Zhvendos",
+    "delete": "Fshi",
+    "noTasksForSection": "Nuk ka detyra për këtë seksion"
   },
   "task": {
     "status": {
@@ -31,12 +39,28 @@
     }
   },
   "tabs": {
+    "sections": "Grupet e mia",
     "myGroups": "Grupet e mia",
     "publicGroups": "Grupet Publike",
     "accessRequests": "Kërkesën për Qasje",
     "proposals": "Propozimet"
   },
   "archive": {
+    "title": "Arkivi i të gjitha detyrave",
+    "allPeriods": "Të gjitha periudhët",
+    "allSections": "Të gjitha seksionet",
+    "allUsers": "Të gjithë përdoruesit",
+    "last7days": "Këto 7 ditë të fundit",
+    "last30days": "Këto 30 ditë të fundit",
+    "last90days": "Këto 90 ditë të fundit",
+    "periodLabel": "Periudha",
+    "sectionLabel": "Seksioni",
+    "userLabel": "Përdoruesi",
+    "assigned": "Caktuar",
+    "completed": "E Plotësuar",
+    "totalArchived": "Gjithsej i Arkivuar",
+    "noArchivedTasks": "Nuk ka detyra të arkivuara",
+    "noArchivedTasksSimple": "Nuk ka detyra",
     "readOnlyLabel": "(Vetëm lexim)",
     "sectionUnknown": "Seksioni i Panjohur"
   },
@@ -67,6 +91,15 @@
     "makeModerator": "Cakto si moderator",
     "removeModerator": "Hiq moderatorin"
   },
+  "createSection": "Krijo Seksion",
+  "editSection": "Redakto Seksion",
+  "joinSection": "Bashkohuni në Seksion",
+  "manageMembers": "Menaxho Anëtarët",
+  "manageTasks": "Menaxho Detyrat",
+  "createProposal": "Krijo Propozim",
+  "createProposalFor": "Krijo propozim për",
+  "viewTasks": "Shfaq Detyrat",
+  "loadingError": "Gabim në ngarkim",
   "toasts": {
     "sectionCreated": "Seksioni u krijua me sukses",
     "sectionCreateError": "Gabim në krijimin e seksionit",
@@ -82,5 +115,8 @@
     "taskStatusUpdated": "Statusi i detyrës u përditësua",
     "taskUpdateError": "Gabim në përditësimin e detyrës",
     "taskDeleted": "Detyra u fshi"
+  },
+  "members": {
+    "count_many": "{count} anëtarë"
   }
 }

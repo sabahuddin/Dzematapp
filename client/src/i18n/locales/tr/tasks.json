@@ -1,10 +1,14 @@
 {
   "title": "Görev Yöneticisi",
   "taskDialog": {
+    "title": "Görevler: {name}",
+    "createNew": "Yeni Oluştur",
     "createNewTask": "Yeni Görev Oluştur",
     "taskTitle": "Görev başlığı",
     "taskDescription": "Görev açıklaması",
+    "image": "Resim",
     "addImage": "Resim Ekle",
+    "changeImage": "Resim Değiştir",
     "status": "Durum",
     "assignToMembers": "Üyelere Ata",
     "selectMembers": "Üyeleri seçin...",
@@ -13,7 +17,11 @@
     "pointsValue": "Puan Değeri",
     "optional": "İsteğe Bağlı",
     "cancel": "İptal",
-    "save": "Kaydet"
+    "save": "Kaydet",
+    "edit": "Düzenle",
+    "move": "Taşı",
+    "delete": "Sil",
+    "noTasksForSection": "Bu bölüm için görev yok"
   },
   "task": {
     "status": {
@@ -31,12 +39,28 @@
     }
   },
   "tabs": {
+    "sections": "Gruplarım",
     "myGroups": "Gruplarım",
     "publicGroups": "Kamu Grupları",
     "accessRequests": "Erişim İstekleri",
     "proposals": "Öneriler"
   },
   "archive": {
+    "title": "Tüm Görevlerin Arşivi",
+    "allPeriods": "Tüm Dönemler",
+    "allSections": "Tüm Bölümler",
+    "allUsers": "Tüm Kullanıcılar",
+    "last7days": "Son 7 gün",
+    "last30days": "Son 30 gün",
+    "last90days": "Son 90 gün",
+    "periodLabel": "Dönem",
+    "sectionLabel": "Bölüm",
+    "userLabel": "Kullanıcı",
+    "assigned": "Atandı",
+    "completed": "Tamamlandı",
+    "totalArchived": "Toplam Arşivlenen",
+    "noArchivedTasks": "Arşivlenen görev yok",
+    "noArchivedTasksSimple": "Görev yok",
     "readOnlyLabel": "(Salt Okunur)",
     "sectionUnknown": "Bilinmeyen Bölüm"
   },
@@ -67,6 +91,15 @@
     "makeModerator": "Moderatör olarak ayarla",
     "removeModerator": "Moderatörü kaldır"
   },
+  "createSection": "Bölüm Oluştur",
+  "editSection": "Bölümü Düzenle",
+  "joinSection": "Bölüme Katıl",
+  "manageMembers": "Üyeleri Yönet",
+  "manageTasks": "Görevleri Yönet",
+  "createProposal": "Öneri Oluştur",
+  "createProposalFor": "İçin öneri oluştur",
+  "viewTasks": "Görevleri Görüntüle",
+  "loadingError": "Yükleme Hatası",
   "toasts": {
     "sectionCreated": "Bölüm başarıyla oluşturuldu",
     "sectionCreateError": "Bölüm oluşturma hatası",
@@ -82,5 +115,8 @@
     "taskStatusUpdated": "Görev durumu güncellendi",
     "taskUpdateError": "Görev güncellemesi hatası",
     "taskDeleted": "Görev silindi"
+  },
+  "members": {
+    "count_many": "{count} üye"
   }
 }

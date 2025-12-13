@@ -1,10 +1,14 @@
 {
   "title": "Task Manager",
   "taskDialog": {
+    "title": "Tasks: {name}",
+    "createNew": "Create New",
     "createNewTask": "Create New Task",
     "taskTitle": "Task title",
     "taskDescription": "Task description",
+    "image": "Image",
     "addImage": "Add image",
+    "changeImage": "Change image",
     "status": "Status",
     "assignToMembers": "Assign to members",
     "selectMembers": "Select members...",
@@ -13,7 +17,11 @@
     "pointsValue": "Points value",
     "optional": "Optional",
     "cancel": "Cancel",
-    "save": "Save"
+    "save": "Save",
+    "edit": "Edit",
+    "move": "Move",
+    "delete": "Delete",
+    "noTasksForSection": "No tasks for this section"
   },
   "task": {
     "status": {
@@ -31,12 +39,28 @@
     }
   },
   "tabs": {
+    "sections": "My Groups",
     "myGroups": "My Groups",
     "publicGroups": "Public Groups",
     "accessRequests": "Access Requests",
     "proposals": "Proposals"
   },
   "archive": {
+    "title": "Archive of All Tasks",
+    "allPeriods": "All Periods",
+    "allSections": "All Sections",
+    "allUsers": "All Users",
+    "last7days": "Last 7 days",
+    "last30days": "Last 30 days",
+    "last90days": "Last 90 days",
+    "periodLabel": "Period",
+    "sectionLabel": "Section",
+    "userLabel": "User",
+    "assigned": "Assigned",
+    "completed": "Completed",
+    "totalArchived": "Total Archived",
+    "noArchivedTasks": "No archived tasks",
+    "noArchivedTasksSimple": "No tasks",
     "readOnlyLabel": "(Read-only)",
     "sectionUnknown": "Unknown Section"
   },
@@ -67,6 +91,15 @@
     "makeModerator": "Set as moderator",
     "removeModerator": "Remove moderator"
   },
+  "createSection": "Create Section",
+  "editSection": "Edit Section",
+  "joinSection": "Join Section",
+  "manageMembers": "Manage Members",
+  "manageTasks": "Manage Tasks",
+  "createProposal": "Create Proposal",
+  "createProposalFor": "Create proposal for",
+  "viewTasks": "View Tasks",
+  "loadingError": "Loading Error",
   "toasts": {
     "sectionCreated": "Section created successfully",
     "sectionCreateError": "Error creating section",
@@ -82,5 +115,8 @@
     "taskStatusUpdated": "Task status updated",
     "taskUpdateError": "Error updating task",
     "taskDeleted": "Task deleted"
+  },
+  "members": {
+    "count_many": "{count} members"
   }
 }
