@@ -55,6 +55,12 @@
     "noTasks": "Nuk ka detyra"
   },
   "dashboard": {
+    "title": "Pasqyra e Detyrave",
+    "all": "Të gjitha",
+    "adminView": "Pamja Admin",
+    "moderatorView": "Pamja Moderator",
+    "noTasks": "Nuk ka detyra",
+    "recentActivities": "Aktivitetet e Fundit",
     "inProgress": "Në Progres",
     "pending": "Pezull",
     "completed": "E Plotësuar",

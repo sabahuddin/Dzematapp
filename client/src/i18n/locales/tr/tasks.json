@@ -55,6 +55,12 @@
     "noTasks": "Görev yok"
   },
   "dashboard": {
+    "title": "Görev Özeti",
+    "all": "Tümü",
+    "adminView": "Yönetici Görünümü",
+    "moderatorView": "Moderatör Görünümü",
+    "noTasks": "Görev yok",
+    "recentActivities": "Son Aktiviteler",
     "inProgress": "Devam Ediyor",
     "pending": "Beklemede",
     "completed": "Tamamlandı",

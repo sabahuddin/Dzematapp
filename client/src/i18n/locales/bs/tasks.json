@@ -55,6 +55,12 @@
     "noTasks": "Nema zadataka"
   },
   "dashboard": {
+    "title": "Pregled zadataka",
+    "all": "Sve",
+    "adminView": "Admin pogled",
+    "moderatorView": "Moderator pogled",
+    "noTasks": "Nema zadataka",
+    "recentActivities": "Nedavne aktivnosti",
     "inProgress": "U toku",
     "pending": "Na čekanju",
     "completed": "Završeno",

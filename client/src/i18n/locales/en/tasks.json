@@ -55,6 +55,12 @@
     "noTasks": "No tasks"
   },
   "dashboard": {
+    "title": "Tasks Overview",
+    "all": "All",
+    "adminView": "Admin View",
+    "moderatorView": "Moderator View",
+    "noTasks": "No tasks",
+    "recentActivities": "Recent Activities",
     "inProgress": "In Progress",
     "pending": "Pending",
     "completed": "Completed",
