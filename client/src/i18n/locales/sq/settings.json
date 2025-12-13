@@ -1,4 +1,8 @@
 {
+  "settings": {
+    "contactInfo": "Të dhënat e kontaktit",
+    "organizationalData": "Të dhënat e Organizatës"
+  },
   "organization": {
     "title": "Të dhënat e Organizatës",
     "subtitle": "Këto të dhëna do të shfaqen në fund të aplikacionit dhe do të jenë të disponueshme për të gjithë përdoruesit.",

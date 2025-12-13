@@ -1,4 +1,8 @@
 {
+  "settings": {
+    "contactInfo": "Kontakt informacije",
+    "organizationalData": "Organizacijski podaci"
+  },
   "organization": {
     "title": "Organizacioni podaci",
     "subtitle": "Ovi podaci će biti prikazani u podnožju aplikacije i dostupni svim korisnicima.",

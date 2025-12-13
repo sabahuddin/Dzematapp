@@ -1,4 +1,8 @@
 {
+  "settings": {
+    "contactInfo": "Contact information",
+    "organizationalData": "Organization data"
+  },
   "organization": {
     "title": "Organization Information",
     "subtitle": "This information will be displayed in the application footer and available to all users.",

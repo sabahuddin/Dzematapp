@@ -1,4 +1,8 @@
 {
+  "settings": {
+    "contactInfo": "Kontaktdaten",
+    "organizationalData": "Organisationsdaten"
+  },
   "organization": {
     "title": "Organisationsdaten",
     "subtitle": "Diese Daten werden in der Fußzeile der Anwendung angezeigt und sind für alle Benutzer zugänglich.",
