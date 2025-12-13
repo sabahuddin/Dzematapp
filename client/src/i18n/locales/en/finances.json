@@ -10,6 +10,8 @@
   "amountInCHF": "{{amount}} CHF",
   "purpose": "Purpose",
   "purposeLabel": "Payment purpose",
+  "selectPurpose": "Select purpose...",
+  "pointsValue": "Points",
   "purposes": {
     "membership": "Membership",
     "donation": "Donation",
@@ -54,8 +56,6 @@
     "userRequired": "User is required",
     "dateRequired": "Date is required"
   },
-  "selectPurpose": "Select purpose...",
-  "pointsValue": "Points",
   "exportToExcel": "Export to Excel",
   "purposeButton": "Purpose",
   "purposeMessages": {
@@ -84,7 +84,15 @@
   },
   "purposeDialog": {
     "title": "Manage payment purposes",
-    "existingPurposes": "Existing purposes:"
+    "existingPurposes": "Existing purposes:",
+    "addNewPurpose": "Add new purpose:",
+    "purposeName": "Purpose Name",
+    "purposeDescription": "Description (optional)",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving...",
+    "creating": "Creating...",
+    "close": "Close"
   },
   "buttons": {
     "creating": "Creating...",

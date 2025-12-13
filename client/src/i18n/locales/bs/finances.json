@@ -84,7 +84,15 @@
   },
   "purposeDialog": {
     "title": "Upravljanje svrhama uplata",
-    "existingPurposes": "Postojeće svrhe:"
+    "existingPurposes": "Postojeće svrhe:",
+    "addNewPurpose": "Dodaj novu svrhu:",
+    "purposeName": "Naziv svrhe",
+    "purposeDescription": "Opis (opcionalno)",
+    "cancel": "Odustani",
+    "save": "Spremi",
+    "saving": "Spremam...",
+    "creating": "Kreiram...",
+    "close": "Zatvori"
   },
   "buttons": {
     "creating": "Kreiram...",

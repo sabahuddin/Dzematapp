@@ -584,7 +584,7 @@ export default function FinancesPage() {
                         <TextField
                           fullWidth
                           size="small"
-                          label="Naziv svrhe"
+                          label={t('finances:purposeDialog.purposeName')}
                           value={editPurposeName}
                           onChange={(e) => setEditPurposeName(e.target.value)}
                           data-testid={`input-edit-purpose-name-${purpose.id}`}
@@ -592,7 +592,7 @@ export default function FinancesPage() {
                         <TextField
                           fullWidth
                           size="small"
-                          label="Opis (opcionalno)"
+                          label={t('finances:purposeDialog.purposeDescription')}
                           value={editPurposeDesc}
                           onChange={(e) => setEditPurposeDesc(e.target.value)}
                           data-testid={`input-edit-purpose-desc-${purpose.id}`}
@@ -604,7 +604,7 @@ export default function FinancesPage() {
                             disabled={updatePurposeMutation.isPending}
                             data-testid={`button-cancel-edit-purpose-${purpose.id}`}
                           >
-                            Odustani
+                            {t('finances:purposeDialog.cancel')}
                           </Button>
                           <Button 
                             size="small" 
@@ -613,7 +613,7 @@ export default function FinancesPage() {
                             disabled={updatePurposeMutation.isPending || !editPurposeName.trim()}
                             data-testid={`button-save-edit-purpose-${purpose.id}`}
                           >
-                            {updatePurposeMutation.isPending ? 'Spremam...' : 'Spremi'}
+                            {updatePurposeMutation.isPending ? t('finances:purposeDialog.saving') : t('finances:purposeDialog.save')}
                           </Button>
                         </Box>
                       </Box>
@@ -663,11 +663,11 @@ export default function FinancesPage() {
 
           {/* Add new purpose form */}
           <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600 }}>
-            Dodaj novu svrhu:
+            {t('finances:purposeDialog.addNewPurpose')}
           </Typography>
           <TextField
             fullWidth
-            label="Naziv svrhe"
+            label={t('finances:purposeDialog.purposeName')}
             value={newPurposeName}
             onChange={(e) => setNewPurposeName(e.target.value)}
             sx={{ mb: 2 }}
@@ -675,7 +675,7 @@ export default function FinancesPage() {
           />
           <TextField
             fullWidth
-            label="Opis (opcionalno)"
+            label={t('finances:purposeDialog.purposeDescription')}
             multiline
             rows={2}
             value={newPurposeDesc}
@@ -685,7 +685,7 @@ export default function FinancesPage() {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setPurposeDialogOpen(false)} data-testid="button-cancel-purpose">
-            Zatvori
+            {t('finances:purposeDialog.close')}
           </Button>
           <Button
             variant="contained"
@@ -693,7 +693,7 @@ export default function FinancesPage() {
             disabled={createPurposeMutation.isPending || !newPurposeName}
             data-testid="button-save-purpose"
           >
-            {createPurposeMutation.isPending ? 'Kreiram...' : 'Dodaj svrhu'}
+            {createPurposeMutation.isPending ? t('finances:purposeDialog.creating') : t('finances:buttons.addPurpose')}
           </Button>
         </DialogActions>
       </Dialog>

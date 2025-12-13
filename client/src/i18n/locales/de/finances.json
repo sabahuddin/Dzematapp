@@ -10,12 +10,14 @@
   "amountInCHF": "{{amount}} CHF",
   "purpose": "Zweck",
   "purposeLabel": "Zahlungszweck",
+  "selectPurpose": "Zweck auswählen...",
+  "pointsValue": "Punkte",
   "purposes": {
     "membership": "Mitgliedsbeitrag",
     "donation": "Spende",
-    "waqf": "Waqf",
+    "waqf": "Wakif",
     "sergija": "Sergija",
-    "other": "Sonstiges"
+    "other": "Sonstige"
   },
   "project": "Projekt",
   "projectOptional": "Für Projekt (optional)",
@@ -23,12 +25,12 @@
   "noProject": "Kein Projekt",
   "paymentDate": "Datum",
   "paymentDateLabel": "Zahlungsdatum",
-  "paymentMethod": "Zahlungsmethode",
+  "paymentMethod": "Zahlungsart",
   "paymentMethods": {
     "cash": "Bargeld",
     "bank": "Bank"
   },
-  "notes": "Notizen",
+  "notes": "Notiz",
   "bonusPoints": "Punkte hinzufügen",
   "user": "Benutzer",
   "selectUser": "Benutzer auswählen",
@@ -37,25 +39,23 @@
   "filterByPurpose": "Nach Zweck filtern",
   "allCategories": "Alle Kategorien",
   "allPurposes": "Alle Zwecke",
-  "noPayments": "Keine Zahlungen",
+  "noPayments": "Keine Finanzzahlungen",
   "totalAmount": "Gesamtbetrag: {{amount}} CHF",
   "csvUpload": "CSV hochladen",
   "saving": "Speichern...",
   "messages": {
-    "created": "Zahlung wurde erstellt",
-    "updated": "Zahlung wurde aktualisiert",
-    "deleted": "Zahlung wurde gelöscht",
-    "errorLoading": "Fehler beim Laden der Zahlungen. Bitte versuchen Sie es erneut.",
+    "created": "Zahlung erstellt",
+    "updated": "Zahlung aktualisiert",
+    "deleted": "Zahlung gelöscht",
+    "errorLoading": "Fehler beim Laden von Finanzzahlungen. Bitte versuchen Sie es erneut.",
     "errorSaving": "Fehler beim Speichern der Zahlung",
     "errorDeleting": "Fehler beim Löschen der Zahlung",
-    "confirmDelete": "Möchten Sie diese Zahlung wirklich löschen?"
+    "confirmDelete": "Sind Sie sicher, dass Sie diese Zahlung löschen möchten?"
   },
   "validation": {
-    "userRequired": "Benutzer ist erforderlich",
-    "dateRequired": "Datum ist erforderlich"
+    "userRequired": "Benutzer erforderlich",
+    "dateRequired": "Datum erforderlich"
   },
-  "selectPurpose": "Zweck auswählen...",
-  "pointsValue": "Punkte",
   "exportToExcel": "Nach Excel exportieren",
   "purposeButton": "Zweck",
   "purposeMessages": {
@@ -65,7 +65,7 @@
     "errorCreating": "Fehler beim Erstellen des Zwecks",
     "errorDeleting": "Fehler beim Löschen des Zwecks",
     "errorUpdating": "Fehler beim Aktualisieren des Zwecks",
-    "confirmDelete": "Möchten Sie diesen Zweck wirklich löschen?"
+    "confirmDelete": "Sind Sie sicher, dass Sie diesen Zweck löschen möchten?"
   },
   "export": {
     "success": "Excel-Datei heruntergeladen",
@@ -78,16 +78,24 @@
       "purpose": "Zweck",
       "project": "Projekt",
       "paymentDate": "Zahlungsdatum",
-      "paymentMethod": "Zahlungsmethode",
+      "paymentMethod": "Zahlungsart",
       "notes": "Notizen"
     }
   },
   "purposeDialog": {
     "title": "Zahlungszwecke verwalten",
-    "existingPurposes": "Vorhandene Zwecke:"
+    "existingPurposes": "Bestehende Zwecke:",
+    "addNewPurpose": "Neuen Zweck hinzufügen:",
+    "purposeName": "Zweckname",
+    "purposeDescription": "Beschreibung (optional)",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "saving": "Speichern...",
+    "creating": "Erstelle...",
+    "close": "Schließen"
   },
   "buttons": {
-    "creating": "Erstellen...",
+    "creating": "Erstelle...",
     "addPurpose": "Zweck hinzufügen",
     "close": "Schließen"
   }

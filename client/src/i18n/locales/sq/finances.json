@@ -10,6 +10,8 @@
   "amountInCHF": "{{amount}} CHF",
   "purpose": "Qëllimi",
   "purposeLabel": "Qëllimi i pagesës",
+  "selectPurpose": "Zgjidhni qëllimin...",
+  "pointsValue": "Pikët",
   "purposes": {
     "membership": "Anëtarësimi",
     "donation": "Donacioni",
@@ -54,6 +56,47 @@
     "userRequired": "Përdoruesi është i detyrueshëm",
     "dateRequired": "Data është e detyrueshme"
   },
-  "selectPurpose": "Zgjidhni qëllimin...",
-  "pointsValue": "Pikët"
+  "exportToExcel": "Eksporto në Excel",
+  "purposeButton": "Qëllimi",
+  "purposeMessages": {
+    "created": "Qëllimi u krijua",
+    "deleted": "Qëllimi u fshi",
+    "updated": "Qëllimi u përditësua",
+    "errorCreating": "Gabim në krijimin e qëllimit",
+    "errorDeleting": "Gabim në fshirjen e qëllimit",
+    "errorUpdating": "Gabim në përditësimin e qëllimit",
+    "confirmDelete": "Jeni të sigurt që dëshironi të fshini këtë qëllim?"
+  },
+  "export": {
+    "success": "Skedari Excel u shkarkua",
+    "title": "Lista e pagesave financiare",
+    "filename": "Financat",
+    "total": "GJITHSEJ:",
+    "headers": {
+      "user": "Përdoruesi",
+      "amount": "Shuma",
+      "purpose": "Qëllimi",
+      "project": "Projekti",
+      "paymentDate": "Data e pagesës",
+      "paymentMethod": "Mënyra e pagesës",
+      "notes": "Shënime"
+    }
+  },
+  "purposeDialog": {
+    "title": "Menaxho qëllimet e pagesave",
+    "existingPurposes": "Qëllimet ekzistuese:",
+    "addNewPurpose": "Shto qëllim të ri:",
+    "purposeName": "Emri i Qëllimit",
+    "purposeDescription": "Përshkrim (opsionale)",
+    "cancel": "Anulo",
+    "save": "Ruaj",
+    "saving": "Duke ruajtur...",
+    "creating": "Duke krijuar...",
+    "close": "Mbyll"
+  },
+  "buttons": {
+    "creating": "Duke krijuar...",
+    "addPurpose": "Shto Qëllim",
+    "close": "Mbyll"
+  }
 }

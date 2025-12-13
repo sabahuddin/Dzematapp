@@ -55,5 +55,48 @@
   "validation": {
     "userRequired": "Kullanıcı gerekli",
     "dateRequired": "Tarih gerekli"
+  },
+  "exportToExcel": "Excel'e Aktar",
+  "purposeButton": "Amaç",
+  "purposeMessages": {
+    "created": "Amaç oluşturuldu",
+    "deleted": "Amaç silindi",
+    "updated": "Amaç güncellendi",
+    "errorCreating": "Amaç oluşturulurken hata oluştu",
+    "errorDeleting": "Amaç silinirken hata oluştu",
+    "errorUpdating": "Amaç güncellenirken hata oluştu",
+    "confirmDelete": "Bu amacı silmek istediğinizden emin misiniz?"
+  },
+  "export": {
+    "success": "Excel dosyası indirildi",
+    "title": "Mali ödemeler listesi",
+    "filename": "Finans",
+    "total": "TOPLAM:",
+    "headers": {
+      "user": "Kullanıcı",
+      "amount": "Tutar",
+      "purpose": "Amaç",
+      "project": "Proje",
+      "paymentDate": "Ödeme tarihi",
+      "paymentMethod": "Ödeme yöntemi",
+      "notes": "Notlar"
+    }
+  },
+  "purposeDialog": {
+    "title": "Ödeme amaçlarını yönet",
+    "existingPurposes": "Mevcut amaçlar:",
+    "addNewPurpose": "Yeni amaç ekle:",
+    "purposeName": "Amaç Adı",
+    "purposeDescription": "Açıklama (isteğe bağlı)",
+    "cancel": "İptal",
+    "save": "Kaydet",
+    "saving": "Kaydediliyor...",
+    "creating": "Oluşturuluyor...",
+    "close": "Kapat"
+  },
+  "buttons": {
+    "creating": "Oluşturuluyor...",
+    "addPurpose": "Amaç Ekle",
+    "close": "Kapat"
   }
 }
