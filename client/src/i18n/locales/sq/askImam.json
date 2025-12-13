@@ -1,5 +1,17 @@
 {
   "title": "Pyet Imamin",
+  "table": {
+    "subject": "Tema",
+    "author": "Autori",
+    "datePosted": "Data e publikimit",
+    "status": "Statusi",
+    "actions": "Veprimet"
+  },
+  "statusFilter": {
+    "all": "Të gjitha",
+    "unanswered": "Pa përgjigje",
+    "archive": "Arkivi"
+  },
   "descriptionAdmin": "Përgjigju pyetjeve të anëtarëve",
   "descriptionUser": "Bëni një pyetje dhe merrni përgjigje nga imami",
   "newQuestion": "Pyetje e Re",

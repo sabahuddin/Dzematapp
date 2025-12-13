@@ -1,5 +1,17 @@
 {
   "title": "Ask Imam",
+  "table": {
+    "subject": "Subject",
+    "author": "Author",
+    "datePosted": "Date Posted",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "statusFilter": {
+    "all": "All",
+    "unanswered": "Unanswered",
+    "archive": "Archive"
+  },
   "descriptionAdmin": "Answer members' questions",
   "descriptionUser": "Ask a question and get an answer from the Imam",
   "newQuestion": "New Question",

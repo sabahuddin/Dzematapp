@@ -162,7 +162,7 @@ export default function AskImamPage() {
   };
 
   const statusOptions = user?.isAdmin 
-    ? ['Svi', 'Neodgovorena', 'Arhiva'] 
+    ? [t('askImam:statusFilter.all'), t('askImam:statusFilter.unanswered'), t('askImam:statusFilter.archive')] 
     : [];
 
   const filteredQuestions = myQuestions.filter((q) => {
@@ -240,11 +240,11 @@ export default function AskImamPage() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ fontWeight: 600 }}>Tema</TableCell>
-                {user?.isAdmin && <TableCell sx={{ fontWeight: 600 }}>Autor</TableCell>}
-                <TableCell sx={{ fontWeight: 600 }}>Datum objave</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('askImam:table.subject')}</TableCell>
+                {user?.isAdmin && <TableCell sx={{ fontWeight: 600 }}>{t('askImam:table.author')}</TableCell>}
+                <TableCell sx={{ fontWeight: 600 }}>{t('askImam:table.datePosted')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('askImam:table.status')}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{t('askImam:table.actions')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

@@ -1,5 +1,17 @@
 {
   "title": "Frage den Imam",
+  "table": {
+    "subject": "Thema",
+    "author": "Autor",
+    "datePosted": "Veröffentlichungsdatum",
+    "status": "Status",
+    "actions": "Aktionen"
+  },
+  "statusFilter": {
+    "all": "Alle",
+    "unanswered": "Unbeantwortet",
+    "archive": "Archiv"
+  },
   "descriptionAdmin": "Beantworte Fragen der Mitglieder",
   "descriptionUser": "Stellen Sie eine Frage und erhalten Sie eine Antwort vom Imam",
   "newQuestion": "Neue Frage",

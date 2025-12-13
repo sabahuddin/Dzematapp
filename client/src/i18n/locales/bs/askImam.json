@@ -1,5 +1,17 @@
 {
   "title": "Pitaj imama",
+  "table": {
+    "subject": "Tema",
+    "author": "Autor",
+    "datePosted": "Datum objave",
+    "status": "Status",
+    "actions": "Akcije"
+  },
+  "statusFilter": {
+    "all": "Svi",
+    "unanswered": "Neodgovorena",
+    "archive": "Arhiva"
+  },
   "descriptionAdmin": "Odgovori na pitanja članova",
   "descriptionUser": "Postavite pitanje i dobijte odgovor od imama",
   "newQuestion": "Novo pitanje",

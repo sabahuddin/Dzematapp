@@ -1,5 +1,17 @@
 {
   "title": "İmama Sor",
+  "table": {
+    "subject": "Konu",
+    "author": "Yazar",
+    "datePosted": "Yayın tarihi",
+    "status": "Durum",
+    "actions": "İşlemler"
+  },
+  "statusFilter": {
+    "all": "Tümü",
+    "unanswered": "Yanıtlanmamış",
+    "archive": "Arşiv"
+  },
   "descriptionAdmin": "Üyelerin sorularını yanıtlayın",
   "descriptionUser": "Soru sorun ve imamdan cevap alın",
   "newQuestion": "Yeni Soru",
