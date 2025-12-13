@@ -123,7 +123,8 @@
     "messageError": "Gabim gjatë dërgimit të mesazhit",
     "messageRequired": "Ju lutemi shkruani përmbajtjen e mesazhit",
     "nameRequired": "Emri është i detyrueshëm",
-    "error": "Gabim"
+    "error": "Gabim",
+    "ownerNotFound": "Pronari nuk u gjet"
   },
   "messages": {
     "newOrder": "Porosi e re nga XhematShop",

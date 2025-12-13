@@ -53,5 +53,7 @@
   "validation": {
     "userRequired": "Përdoruesi është i detyrueshëm",
     "dateRequired": "Data është e detyrueshme"
-  }
+  },
+  "selectPurpose": "Zgjidhni qëllimin...",
+  "pointsValue": "Pikët"
 }

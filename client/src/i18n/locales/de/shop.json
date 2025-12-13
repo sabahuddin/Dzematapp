@@ -123,7 +123,8 @@
     "messageError": "Fehler beim Senden der Nachricht",
     "messageRequired": "Bitte geben Sie den Nachrichteninhalt ein",
     "nameRequired": "Name ist erforderlich",
-    "error": "Fehler"
+    "error": "Fehler",
+    "ownerNotFound": "Besitzer nicht gefunden"
   },
   "messages": {
     "newOrder": "Neue Bestellung aus DžematShop",

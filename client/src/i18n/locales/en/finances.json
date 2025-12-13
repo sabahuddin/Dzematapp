@@ -53,5 +53,7 @@
   "validation": {
     "userRequired": "User is required",
     "dateRequired": "Date is required"
-  }
+  },
+  "selectPurpose": "Select purpose...",
+  "pointsValue": "Points"
 }

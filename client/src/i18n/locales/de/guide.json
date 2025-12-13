@@ -334,6 +334,23 @@
       "member": "Mitglieder greifen auf das Livestream-Modul zu, wo sie Live-Übertragungen von Freitagsgebeten, Mevluds, Vorträgen und anderen Programmen direkt aus der Anwendung ansehen können. Der Videoplayer verfügt über Standardsteuerungen (Abspielen, Pause, Lautstärke, Vollbild) und erkennt automatisch, wann die Übertragung live ist. Keine YouTube-Registrierung zum Ansehen erforderlich.",
       "all": "Gäste (nicht angemeldete Benutzer) haben ebenfalls Zugriff auf das Livestream-Modul, was es der breiteren Gemeinschaft ermöglicht, das Gemeindeprogramm ohne Anmeldung zu verfolgen. Dies erweitert die Reichweite der Übertragung und ermöglicht die Einbeziehung aller Interessierten."
     },
+    "sponsors": {
+      "title": "Sponsoren",
+      "shortDesc": "Sponsoring und Firmenwerbung in der Gemeinde",
+      "description": "Modul zur Verwaltung von Gemeinde-Sponsoring. Ermöglicht Unternehmen und Privatpersonen, die Gemeinde durch Sponsoring-Pakete (Bronze, Silber, Gold) mit jährlicher Laufzeit zu unterstützen. Sponsoren erhalten Sichtbarkeit auf der Sponsorenseite mit ihrem Logo, Kontaktinformationen und Website-Link.",
+      "features": [
+        "Drei Sponsoring-Stufen: Bronze, Silber und Gold",
+        "Jährliche Sponsoring-Dauer (automatisch 1 Jahr ab Genehmigung)",
+        "Anzeige des Sponsor-Logos, der Kontaktdaten und der Website",
+        "Genehmigungs-Workflow: Antrag → Admin-Prüfung → Genehmigung/Ablehnung",
+        "Anpassbare Preise für jede Sponsoring-Stufe",
+        "Öffentliche Sichtbarkeit genehmigter Sponsoren",
+        "Antragsmöglichkeit für Privatpersonen und Unternehmen"
+      ],
+      "admin": "Der Admin legt die Preise für jede Sponsoring-Stufe (Bronze, Silber, Gold) in CHF fest. Wenn ein Sponsoring-Antrag eingeht, prüft der Admin ihn, kann eine Notiz hinzufügen und entscheidet, ob er genehmigt oder abgelehnt wird. Genehmigte Sponsoren erhalten automatisch eine einjährige Laufzeit. Der Admin kann Sponsor-Daten bearbeiten und abgelaufene Sponsorings löschen.",
+      "member": "Mitglieder können alle aktiven Gemeinde-Sponsoren nach Stufen geordnet einsehen. Für jeden Sponsor sehen sie Logo, Name, Kontaktinformationen (Telefon, E-Mail, Website) mit der Möglichkeit zur direkten Kontaktaufnahme. Mitglieder können einen Sponsoring-Antrag im Namen ihres Unternehmens oder als Privatperson einreichen.",
+      "all": "Gäste können aktive Sponsoren einsehen und einen Sponsoring-Antrag ohne Anmeldung einreichen. Dies ermöglicht der breiteren Gemeinschaft, die Gemeinde zu unterstützen und Werbung innerhalb der Gemeinschaft zu erhalten."
+    },
     "settings": {
       "title": "Einstellungen",
       "shortDesc": "Anwendungs- und Profileinstellungen",

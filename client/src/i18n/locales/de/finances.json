@@ -53,5 +53,7 @@
   "validation": {
     "userRequired": "Benutzer ist erforderlich",
     "dateRequired": "Datum ist erforderlich"
-  }
+  },
+  "selectPurpose": "Zweck auswählen...",
+  "pointsValue": "Punkte"
 }

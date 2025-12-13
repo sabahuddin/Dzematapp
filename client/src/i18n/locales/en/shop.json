@@ -123,7 +123,8 @@
     "messageError": "Error sending message",
     "messageRequired": "Please enter message content",
     "nameRequired": "Name is required",
-    "error": "Error"
+    "error": "Error",
+    "ownerNotFound": "Owner not found"
   },
   "messages": {
     "newOrder": "New order from Shop",

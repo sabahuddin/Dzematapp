@@ -334,6 +334,23 @@
       "member": "Members access Livestream module where they can watch live broadcasts of Friday prayers, mevluds, lectures and other programs directly from application. Video player has standard controls (play, pause, volume, full-screen) and automatically detects when broadcast is live. No YouTube registration required for watching.",
       "all": "Guests (non-logged users) also have access to livestream module which enables wider community to follow congregation program without need for logging in. This extends broadcast reach and enables inclusion of all interested parties."
     },
+    "sponsors": {
+      "title": "Sponsors",
+      "shortDesc": "Sponsorships and company promotions in the congregation",
+      "description": "Module for managing congregation sponsorships. Allows companies and individuals to support the congregation through sponsorship packages (Bronze, Silver, Gold) with annual duration. Sponsors receive visibility on the sponsors page with their logo, contact information and website link.",
+      "features": [
+        "Three sponsorship levels: Bronze, Silver and Gold",
+        "Annual sponsorship duration (automatically 1 year from approval)",
+        "Display of sponsor logo, contact details and website",
+        "Approval workflow: application → admin review → approve/reject",
+        "Customizable prices for each sponsorship level",
+        "Public visibility of approved sponsors",
+        "Application option for individuals and companies"
+      ],
+      "admin": "Admin sets prices for each sponsorship level (Bronze, Silver, Gold) in CHF. When a sponsorship application arrives, admin reviews it, can add a note and decides whether to approve or reject it. Approved sponsors automatically receive a one-year duration. Admin can edit sponsor data and delete expired sponsorships.",
+      "member": "Members can view all active congregation sponsors organized by levels. For each sponsor they see logo, name, contact information (phone, email, website) with option for direct contact. Members can submit a sponsorship application on behalf of their company or as an individual.",
+      "all": "Guests can view active sponsors and submit a sponsorship application without logging in. This enables the wider community to support the congregation and receive promotion within the community."
+    },
     "settings": {
       "title": "Settings",
       "shortDesc": "Application and profile settings",

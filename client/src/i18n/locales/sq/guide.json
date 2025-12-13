@@ -2,7 +2,7 @@
   "pageHeader": {
     "title": "Udhëzuesi i DžematApp",
     "subtitle": "Udhëzime të plota për përdorimin e aplikacionit",
-    "downloadPDF": "Shkarko PDF"
+    "downloadPdf": "Shkarko PDF"
   },
   "introduction": {
     "title": "Rreth aplikacionit",
@@ -333,6 +333,23 @@
       "admin": "Admini në cilësimet e Livestream fut lidhjen YouTube (URL) të kanalit ose videos që përdoret për transmetimet. Lidhja integrohet automatikisht në aplikacion dhe bëhet e disponueshme për të gjithë përdoruesit. Admini mund ta ndryshojë lidhjen në një kanal ose video të ri në çdo kohë. Nuk kërkohet njohuri teknike - thjesht kopjoni URL-në e YouTube dhe sistemi automatikisht e shfaq atë.",
       "member": "Anëtarët aksesojnë modulin Livestream ku mund të shikojnë transmetimet live të namazit të xhumasë, mevludeve, ligjëratave dhe programeve të tjera drejtpërdrejt nga aplikacioni. Playeri i videos ka kontrolle standarde (luaj, pauzë, volumi, ekran i plotë) dhe automatikisht detekton kur transmetimi është live. Nuk kërkohet regjistrimi në YouTube për shikimin.",
       "all": "Mysafirët (përdoruesit e paloguar) gjithashtu kanë akses në modulin livestream që mundëson komunitetin më të gjerë të ndjekë programin e xhematit pa nevojën për hyrje. Kjo zgjeron shtrirjen e transmetimit dhe mundëson përfshirjen e të gjithë të interesuarve."
+    },
+    "sponsors": {
+      "title": "Sponsorët",
+      "shortDesc": "Sponsorizimet dhe promovimi i kompanive në xhemat",
+      "description": "Moduli për menaxhimin e sponsorizimeve të xhematit. Mundëson kompanitë dhe individët të mbështesin xhematin përmes paketave të sponsorizimit (Bronzi, Argjendi, Ari) me kohëzgjatje vjetore. Sponsorët marrin dukshmëri në faqen e sponsorëve me logon e tyre, informacionet e kontaktit dhe lidhjen e faqes së internetit.",
+      "features": [
+        "Tre nivele sponsorizimi: Bronzi, Argjendi dhe Ari",
+        "Kohëzgjatja vjetore e sponsorizimit (automatikisht 1 vit nga miratimi)",
+        "Shfaqja e logos së sponsorit, detajeve të kontaktit dhe faqes së internetit",
+        "Rrjedha e punës së miratimit: aplikimi → rishikimi i adminit → miratim/refuzim",
+        "Çmime të personalizueshme për çdo nivel sponsorizimi",
+        "Dukshmëria publike e sponsorëve të miratuar",
+        "Mundësia e aplikimit për individë dhe kompani"
+      ],
+      "admin": "Admini vendos çmimet për çdo nivel sponsorizimi (Bronzi, Argjendi, Ari) në CHF. Kur mbërrin një aplikim sponsorizimi, admini e rishikon atë, mund të shtojë një shënim dhe vendos nëse do ta miratojë ose refuzojë. Sponsorët e miratuar automatikisht marrin një kohëzgjatje njëvjeçare. Admini mund të modifikojë të dhënat e sponsorit dhe të fshijë sponsorizimet e skaduara.",
+      "member": "Anëtarët mund të shohin të gjithë sponsorët aktivë të xhematit të organizuar sipas niveleve. Për çdo sponsor shohin logon, emrin, informacionet e kontaktit (telefoni, email, faqja e internetit) me mundësinë e kontaktit të drejtpërdrejtë. Anëtarët mund të paraqesin një aplikim sponsorizimi në emër të kompanisë së tyre ose si individ.",
+      "all": "Mysafirët mund të shohin sponsorët aktivë dhe të paraqesin një aplikim sponsorizimi pa u hyrë. Kjo mundëson komunitetin më të gjerë të mbështesë xhematin dhe të marrë promovim brenda komunitetit."
     },
     "settings": {
       "title": "Cilësimet",
