@@ -63,7 +63,8 @@
     "noArchivedTasksSimple": "Nema arhiviranih zadataka",
     "sectionUnknown": "Nepoznata sekcija",
     "completed": "Završeno",
-    "assigned": "Dodijeljeno"
+    "assigned": "Dodijeljeno",
+    "readOnlyLabel": "(Samo čitanje)"
   },
   "accessRequests": {
     "title": "Zahtjevi za pristup",

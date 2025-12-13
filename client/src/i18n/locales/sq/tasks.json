@@ -79,7 +79,8 @@
     "commentAdded": "Komenti u shtua me sukses",
     "commentAddError": "Gabim gjatë shtimit të komentit",
     "taskDeleted": "Detyra u fshi me sukses",
-    "taskDeleteError": "Gabim gjatë fshirjes së detyrës"
+    "taskDeleteError": "Gabim gjatë fshirjes së detyrës",
+    "readOnlyLabel": "(Vetëm Lexim)"
   },
   "taskDialog": {
     "title": "Menaxhimi i Detyrave - {{name}}",

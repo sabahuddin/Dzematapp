@@ -63,7 +63,8 @@
     "noArchivedTasksSimple": "No archived tasks",
     "sectionUnknown": "Unknown section",
     "completed": "Completed",
-    "assigned": "Assigned"
+    "assigned": "Assigned",
+    "readOnlyLabel": "(Read-Only)"
   },
   "accessRequests": {
     "title": "Access Requests",

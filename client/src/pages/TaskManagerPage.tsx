@@ -428,16 +428,16 @@ function AdminTasksArchive({ workGroups, users, currentUser }: AdminTasksArchive
                         size="small"
                       />
                       <Typography variant="caption" color="text.secondary">
-                        Sekcija: {getWorkGroupName(task.workGroupId)}
+                        {t('archive.sectionLabel')}: {getWorkGroupName(task.workGroupId)}
                       </Typography>
                       {task.assignedUserIds && task.assignedUserIds.length > 0 && (
                         <Typography variant="caption" color="text.secondary">
-                          Dodijeljeno: {task.assignedUserIds.map((uid: string) => getUserName(uid)).join(', ')}
+                          {t('archive.assigned')}: {task.assignedUserIds.map((uid: string) => getUserName(uid)).join(', ')}
                         </Typography>
                       )}
                       {task.completedAt && (
                         <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
-                          Završeno: {new Date(task.completedAt).toLocaleDateString('hr-HR', {
+                          {t('archive.completed')}: {new Date(task.completedAt).toLocaleDateString('hr-HR', {
                             year: 'numeric',
                             month: 'long',
                             day: 'numeric'
@@ -1547,7 +1547,7 @@ function ProposalsReviewContent({ proposals, workGroups, users, onApprove, onRej
       <Card>
         <CardContent>
           <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-            {readOnly ? 'Prijedlozi (Read-Only)' : 'Prijedlozi za Odobrenje'}
+            {t('tabs.proposals')} {readOnly && t('archive.readOnlyLabel')}
           </Typography>
           
           {readOnly && (
@@ -3201,7 +3201,7 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
                       )}
                       {isArchive && task.completedAt && (
                         <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
-                          Završeno: {new Date(task.completedAt).toLocaleDateString('hr-HR')}
+                          {t('archive.completed')}: {new Date(task.completedAt).toLocaleDateString('hr-HR')}
                         </Typography>
                       )}
                     </Box>

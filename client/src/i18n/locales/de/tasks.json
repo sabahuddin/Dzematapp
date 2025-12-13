@@ -79,7 +79,8 @@
     "commentAdded": "Kommentar wurde erfolgreich hinzugefügt",
     "commentAddError": "Fehler beim Hinzufügen des Kommentars",
     "taskDeleted": "Aufgabe wurde erfolgreich gelöscht",
-    "taskDeleteError": "Fehler beim Löschen der Aufgabe"
+    "taskDeleteError": "Fehler beim Löschen der Aufgabe",
+    "readOnlyLabel": "(Schreibgeschützt)"
   },
   "taskDialog": {
     "title": "Aufgabenverwaltung - {{name}}",
