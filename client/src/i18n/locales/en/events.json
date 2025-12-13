@@ -70,6 +70,11 @@
     "noImportantDates": "No important dates",
     "dateFormatError": "Date must be in dd.mm format (e.g. 15.03)"
   },
+  "qrModal": {
+    "title": "QR Code for Attendance",
+    "scanDescription": "Visitors scan this code to check in and earn {{points}} points.",
+    "printButton": "Print QR Code"
+  },
   "toast": {
     "success": "Success",
     "error": "Error",

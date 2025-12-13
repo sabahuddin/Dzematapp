@@ -1125,7 +1125,7 @@ export default function EventsPage() {
         <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <QrCode2 sx={{ color: '#3949AB' }} />
-            QR Kod za Check-in
+            {t('qrModal.title')}
           </Box>
           <IconButton onClick={() => { setQrModalOpen(false); setQrEvent(null); setQrCodeDataUrl(''); }}>
             <Close />
@@ -1150,7 +1150,7 @@ export default function EventsPage() {
               )}
               
               <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                Posjetioci skeniraju ovaj kod da prijave prisustvo i dobiju {qrEvent.pointsValue || 20} bodova.
+                {t('qrModal.scanDescription', { points: qrEvent.pointsValue || 20 })}
               </Typography>
               
               <Button
@@ -1161,7 +1161,7 @@ export default function EventsPage() {
                 sx={{ bgcolor: '#3949AB', '&:hover': { bgcolor: '#303F9F' } }}
                 data-testid="button-print-qr"
               >
-                Štampaj QR Kod
+                {t('qrModal.printButton')}
               </Button>
             </Box>
           )}

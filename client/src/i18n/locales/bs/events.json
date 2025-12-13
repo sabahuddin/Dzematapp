@@ -70,6 +70,11 @@
     "noImportantDates": "Nema važnih datuma",
     "dateFormatError": "Datum mora biti u formatu dd.mm (npr. 15.03)"
   },
+  "qrModal": {
+    "title": "QR Kod za Prisustvo",
+    "scanDescription": "Posjetioci skeniraju ovaj kod da prijave prisustvo i dobiju {{points}} bodova.",
+    "printButton": "Štampaj QR Kod"
+  },
   "toast": {
     "success": "Uspjeh",
     "error": "Greška",

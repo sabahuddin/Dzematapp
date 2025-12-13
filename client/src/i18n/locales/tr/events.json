@@ -70,8 +70,13 @@
     "noImportantDates": "Nema važnih datuma",
     "dateFormatError": "Datum mora biti u formatu dd.mm (npr. 15.03)"
   },
+  "qrModal": {
+    "title": "Katılım için QR Kod",
+    "scanDescription": "Ziyaretçiler bu kodu tarayarak giriş yapar ve {{points}} puan kazanır.",
+    "printButton": "QR Kodu Yazdır"
+  },
   "toast": {
-    "success": "Uspjeh",
+    "success": "Başarılı",
     "error": "Greška",
     "eventCreated": "Događaj je uspješno kreiran",
     "eventCreateError": "Greška pri kreiranju događaja",

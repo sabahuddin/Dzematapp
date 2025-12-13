@@ -70,6 +70,11 @@
     "noImportantDates": "Keine wichtigen Termine",
     "dateFormatError": "Datum muss im Format tt.mm sein (z.B. 15.03)"
   },
+  "qrModal": {
+    "title": "QR-Code für Anwesenheit",
+    "scanDescription": "Besucher scannen diesen Code, um sich anzumelden und {{points}} Punkte zu erhalten.",
+    "printButton": "QR-Code drucken"
+  },
   "toast": {
     "success": "Erfolgreich",
     "error": "Fehler",

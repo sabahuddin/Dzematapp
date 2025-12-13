@@ -70,6 +70,11 @@
     "noImportantDates": "Nuk ka data të rëndësishme",
     "dateFormatError": "Data duhet të jetë në formatin dd.mm (p.sh. 15.03)"
   },
+  "qrModal": {
+    "title": "Kodi QR për Pjesëmarrje",
+    "scanDescription": "Vizitorët skanojnë këtë kod për të regjistruar pjesëmarrjen dhe për të fituar {{points}} pikë.",
+    "printButton": "Printo Kodin QR"
+  },
   "toast": {
     "success": "Sukses",
     "error": "Gabim",
