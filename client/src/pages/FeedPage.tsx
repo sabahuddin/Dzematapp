@@ -30,7 +30,7 @@ import { useFeatureAccess } from '@/hooks/useFeatureAccess';
 import { UpgradeCTA } from '@/components/UpgradeCTA';
 
 export default function FeedPage() {
-  const { t, i18n } = useTranslation(['common']);
+  const { t } = useTranslation(['feed', 'common']);
   const [, setLocation] = useLocation();
   const featureAccess = useFeatureAccess('feed');
 
@@ -126,16 +126,16 @@ export default function FeedPage() {
     <Box>
       <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant="h4" component="h1">
-          Feed
+          {t('feed:title')}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Sve aktivnosti u džematu
+          {t('feed:allCommunityActivities')}
         </Typography>
       </Box>
 
       {feedItems.length === 0 ? (
         <Alert severity="info">
-          Nema aktivnosti za prikaz
+          {t('feed:noActivities')}
         </Alert>
       ) : (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -180,7 +180,7 @@ export default function FeedPage() {
                   <Box sx={{ flex: 1 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
                       <Typography variant="h6" component="h3" sx={{ fontWeight: 600 }}>
-                        {item.type === 'new_member' ? `Novi član: ${item.description?.split(' ').map((n: string) => n[0]).join('')}` : item.title}
+                        {item.type === 'new_member' ? `${t('feed:newMember')}: ${item.description?.split(' ').map((n: string) => n[0]).join('')}` : item.title}
                       </Typography>
                       {item.isClickable && (
                         <ArrowForward 

@@ -182,10 +182,10 @@ export default function ActivityLogPage() {
 
   // Badge form - omit tenantId from validation (added in mutation)
   const badgeFormSchema = insertBadgeSchema.omit({ tenantId: true }).extend({
-    name: z.string().min(1, 'Naziv je obavezan'),
-    description: z.string().min(1, 'Opis je obavezan'),
-    criteriaType: z.string().min(1, 'Tip kriterija je obavezan'),
-    criteriaValue: z.number().min(0, 'Vrijednost mora biti pozitivna'),
+    name: z.string().min(1, t('activity:validation.nameRequired')),
+    description: z.string().min(1, t('activity:validation.descriptionRequired')),
+    criteriaType: z.string().min(1, t('activity:validation.criteriaTypeRequired')),
+    criteriaValue: z.number().min(0, t('activity:validation.valueMustBePositive')),
   });
 
   const badgeForm = useForm<z.infer<typeof badgeFormSchema>>({
@@ -202,7 +202,7 @@ export default function ActivityLogPage() {
   // Mutations
   const issueMutation = useMutation({
     mutationFn: async () => {
-      if (!selectedTemplate || selectedUsers.size === 0) throw new Error("Template i korisnici su obavezni");
+      if (!selectedTemplate || selectedUsers.size === 0) throw new Error(t('activity:issueSection.templateAndUsersRequired'));
       return apiRequest('/api/certificates/issue', 'POST', {
         templateId: selectedTemplate,
         userIds: Array.from(selectedUsers),
@@ -210,14 +210,14 @@ export default function ActivityLogPage() {
       });
     },
     onSuccess: (data: any) => {
-      toast({ title: "Uspješno", description: `Izdato ${data.count} zahvalnica` });
+      toast({ title: t('activity:success'), description: t('activity:messages.certificatesIssued', { count: data.count }) });
       setSelectedUsers(new Set());
       setSelectedTemplate("");
       setCustomMessage("");
       queryClient.invalidateQueries({ queryKey: ['/api/certificates/all'] });
     },
     onError: (error: Error) => {
-      toast({ title: "Greška", description: error.message, variant: "destructive" });
+      toast({ title: t('activity:error'), description: error.message, variant: "destructive" });
     },
   });
 
@@ -232,13 +232,13 @@ export default function ActivityLogPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/badges'] });
-      toast({ title: "Uspješno", description: selectedBadge ? "Značka ažurirana" : "Značka kreirана" });
+      toast({ title: t('activity:success'), description: selectedBadge ? t('activity:messages.badgeUpdated') : t('activity:messages.badgeCreated') });
       setBadgeDialogOpen(false);
       setSelectedBadge(null);
       badgeForm.reset();
     },
     onError: (error: Error) => {
-      toast({ title: "Greška", description: error.message, variant: "destructive" });
+      toast({ title: t('activity:error'), description: error.message, variant: "destructive" });
     },
   });
 
@@ -248,10 +248,10 @@ export default function ActivityLogPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/badges'] });
-      toast({ title: "Uspješno", description: "Značka obrisana" });
+      toast({ title: t('activity:success'), description: t('activity:messages.badgeDeleted') });
     },
     onError: (error: Error) => {
-      toast({ title: "Greška", description: error.message, variant: "destructive" });
+      toast({ title: t('activity:error'), description: error.message, variant: "destructive" });
     },
   });
 
@@ -261,10 +261,10 @@ export default function ActivityLogPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/certificates/templates'] });
-      toast({ title: "Uspješno", description: "Šablon obrisan" });
+      toast({ title: t('activity:success'), description: t('activity:messages.templateDeleted') });
     },
     onError: (error: Error) => {
-      toast({ title: "Greška", description: error.message, variant: "destructive" });
+      toast({ title: t('activity:error'), description: error.message, variant: "destructive" });
     },
   });
 
@@ -277,10 +277,10 @@ export default function ActivityLogPage() {
       queryClient.invalidateQueries({ queryKey: ['/api/certificates/user'] });
       setDeleteCertificateOpen(false);
       setCertificateToDelete(null);
-      toast({ title: "Uspješno", description: "Zahvalnica obrisana" });
+      toast({ title: t('activity:success'), description: t('activity:messages.certificateDeleted') });
     },
     onError: (error: Error) => {
-      toast({ title: "Greška", description: error.message, variant: "destructive" });
+      toast({ title: t('activity:error'), description: error.message, variant: "destructive" });
     },
   });
 
@@ -305,12 +305,12 @@ export default function ActivityLogPage() {
       queryClient.invalidateQueries({ queryKey: ['/api/badges'] });
       queryClient.invalidateQueries({ queryKey: ['/api/user-badges'] });
       toast({ 
-        title: "Uspješno", 
-        description: `Preračunato bodova za ${data.usersProcessed} korisnika` 
+        title: t('activity:success'), 
+        description: t('activity:messages.pointsRecalculated', { count: data.usersProcessed }) 
       });
     },
     onError: (error: Error) => {
-      toast({ title: "Greška", description: error.message, variant: "destructive" });
+      toast({ title: t('activity:error'), description: error.message, variant: "destructive" });
     },
   });
 
@@ -329,7 +329,7 @@ export default function ActivityLogPage() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    toast({ title: "Preuzimanje", description: "Zahvalnica je preuzeta" });
+    toast({ title: t('activity:messages.downloading'), description: t('activity:messages.certificateDownloaded') });
   };
 
   const handleDeleteCertificateClick = (cert: UserCertificate) => {
@@ -413,7 +413,7 @@ export default function ActivityLogPage() {
 
   const handleExportActivityLogsToExcel = () => {
     if (!filteredActivities || filteredActivities.length === 0) {
-      toast({ title: 'Greška', description: 'Nema podataka za export', variant: 'destructive' });
+      toast({ title: t('users:common.error'), description: t('activity:exportError'), variant: 'destructive' });
       return;
     }
 
@@ -426,14 +426,20 @@ export default function ActivityLogPage() {
     ]);
 
     exportToExcel({
-      title: 'Zapisnik aktivnosti',
-      filename: 'Aktivnosti',
-      sheetName: 'Aktivnosti',
-      headers: ['Korisnik', 'Tip aktivnosti', 'Opis', 'Bodovi', 'Datum'],
+      title: t('activity:export.title'),
+      filename: t('activity:export.filename'),
+      sheetName: t('activity:export.sheetName'),
+      headers: [
+        t('activity:export.headers.user'),
+        t('activity:export.headers.activityType'),
+        t('activity:export.headers.description'),
+        t('activity:export.headers.points'),
+        t('activity:export.headers.date')
+      ],
       data: activityData
     });
 
-    toast({ title: 'Uspjeh', description: 'Excel fajl je preuzet' });
+    toast({ title: t('users:common.success'), description: t('activity:exportSuccess') });
   };
 
   const isLoading = activityLogsQuery.isLoading || contributionsQuery.isLoading || badgesQuery.isLoading || userBadgesQuery.isLoading || certificatesQuery.isLoading;
@@ -446,11 +452,11 @@ export default function ActivityLogPage() {
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h5" sx={{ fontWeight: 600 }}>
-          {currentUser?.isAdmin ? 'Pregled' : 'Moje aktivnosti'}
+          {currentUser?.isAdmin ? t('activity:overview') : t('activity:myActivities')}
         </Typography>
         {currentUser?.isAdmin && currentTabKey === 'activities' && (
           <Button variant="outlined" startIcon={<Download />} onClick={handleExportActivityLogsToExcel} data-testid="button-export-excel">
-            Exportuj u Excel
+            {t('activity:exportToExcel')}
           </Button>
         )}
       </Box>
@@ -479,21 +485,21 @@ export default function ActivityLogPage() {
           }
         }}
       >
-        <Tab label="Aktivnosti" data-testid="tab-activities" />
-        <Tab icon={<AttachMoney />} iconPosition="start" label="Uplate" data-testid="tab-contributions" />
-        <Tab icon={<EmojiEvents />} iconPosition="start" label="Bodovi" data-testid="tab-bodove" />
+        <Tab label={t('activity:tabs.activities')} data-testid="tab-activities" />
+        <Tab icon={<AttachMoney />} iconPosition="start" label={t('activity:tabs.contributions')} data-testid="tab-contributions" />
+        <Tab icon={<EmojiEvents />} iconPosition="start" label={t('activity:tabs.points')} data-testid="tab-bodove" />
         {currentUser?.isAdmin ? (
           [
-            <Tab key="badges-manage" icon={<BadgeOutlined />} iconPosition="start" label="Značke" data-testid="tab-badges-manage" />,
-            <Tab key="issued-badges" icon={<BadgeOutlined />} iconPosition="start" label="Dodjeljene značke" data-testid="tab-issued-badges" />,
-            <Tab key="templates" label="Šabloni zahvala" data-testid="tab-templates" />,
-            <Tab key="issue" icon={<SendIcon />} iconPosition="start" label="Dodjeli zahvalnicu" data-testid="tab-issue" />,
-            <Tab key="issued" icon={<ReceiptLong />} iconPosition="start" label="Dodijeljene zahvale" data-testid="tab-issued" />
+            <Tab key="badges-manage" icon={<BadgeOutlined />} iconPosition="start" label={t('activity:tabs.badges')} data-testid="tab-badges-manage" />,
+            <Tab key="issued-badges" icon={<BadgeOutlined />} iconPosition="start" label={t('activity:tabs.assignedBadges')} data-testid="tab-issued-badges" />,
+            <Tab key="templates" label={t('activity:tabs.certificateTemplates')} data-testid="tab-templates" />,
+            <Tab key="issue" icon={<SendIcon />} iconPosition="start" label={t('activity:tabs.assignCertificate')} data-testid="tab-issue" />,
+            <Tab key="issued" icon={<ReceiptLong />} iconPosition="start" label={t('activity:tabs.assignedCertificates')} data-testid="tab-issued" />
           ]
         ) : (
           [
-            <Tab key="badges-earned" icon={<BadgeOutlined />} iconPosition="start" label={`Značke (${earnedBadges.length})`} data-testid="tab-badges-earned" />,
-            <Tab key="zahvale" icon={<ReceiptLong />} iconPosition="start" label="Zahvale" data-testid="tab-zahvale" />
+            <Tab key="badges-earned" icon={<BadgeOutlined />} iconPosition="start" label={`${t('activity:tabs.badges')} (${earnedBadges.length})`} data-testid="tab-badges-earned" />,
+            <Tab key="zahvale" icon={<ReceiptLong />} iconPosition="start" label={t('activity:tabs.certificates')} data-testid="tab-zahvale" />
           ]
         )}
       </Tabs>
@@ -584,17 +590,17 @@ export default function ActivityLogPage() {
         <Card>
           <Box sx={{ p: 3 }}>
             {(contributionsQuery.data as FinancialContribution[])?.length === 0 ? (
-              <Alert severity="info">{currentUser?.isAdmin ? 'Nema uplata' : 'Još niste napravili nijednu uplatu'}</Alert>
+              <Alert severity="info">{currentUser?.isAdmin ? t('activity:contributions.noPayments') : t('activity:contributions.noPaymentsMember')}</Alert>
             ) : (
               <TableContainer>
                 <Table>
                   <TableHead>
                     <TableRow>
-                      {currentUser?.isAdmin && <SortableHeaderCell sortKey="userId" onSort={contributionsSort.handleSort} currentSortKey={contributionsSort.sortKey} currentSortDirection={contributionsSort.sortDirection}>Korisnik</SortableHeaderCell>}
-                      <SortableHeaderCell sortKey="amount" onSort={contributionsSort.handleSort} currentSortKey={contributionsSort.sortKey} currentSortDirection={contributionsSort.sortDirection}>Iznos</SortableHeaderCell>
-                      <SortableHeaderCell sortKey="purpose" onSort={contributionsSort.handleSort} currentSortKey={contributionsSort.sortKey} currentSortDirection={contributionsSort.sortDirection}>Svrha</SortableHeaderCell>
-                      <SortableHeaderCell sortKey="paymentDate" onSort={contributionsSort.handleSort} currentSortKey={contributionsSort.sortKey} currentSortDirection={contributionsSort.sortDirection}>Datum</SortableHeaderCell>
-                      <SortableHeaderCell sortKey="notes" onSort={contributionsSort.handleSort} currentSortKey={contributionsSort.sortKey} currentSortDirection={contributionsSort.sortDirection}>Napomena</SortableHeaderCell>
+                      {currentUser?.isAdmin && <SortableHeaderCell sortKey="userId" onSort={contributionsSort.handleSort} currentSortKey={contributionsSort.sortKey} currentSortDirection={contributionsSort.sortDirection}>{t('activity:user')}</SortableHeaderCell>}
+                      <SortableHeaderCell sortKey="amount" onSort={contributionsSort.handleSort} currentSortKey={contributionsSort.sortKey} currentSortDirection={contributionsSort.sortDirection}>{t('activity:contributions.amount')}</SortableHeaderCell>
+                      <SortableHeaderCell sortKey="purpose" onSort={contributionsSort.handleSort} currentSortKey={contributionsSort.sortKey} currentSortDirection={contributionsSort.sortDirection}>{t('activity:contributions.purpose')}</SortableHeaderCell>
+                      <SortableHeaderCell sortKey="paymentDate" onSort={contributionsSort.handleSort} currentSortKey={contributionsSort.sortKey} currentSortDirection={contributionsSort.sortDirection}>{t('activity:date')}</SortableHeaderCell>
+                      <SortableHeaderCell sortKey="notes" onSort={contributionsSort.handleSort} currentSortKey={contributionsSort.sortKey} currentSortDirection={contributionsSort.sortDirection}>{t('activity:contributions.note')}</SortableHeaderCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -623,10 +629,10 @@ export default function ActivityLogPage() {
               <EmojiEvents sx={{ fontSize: 40, color: 'hsl(14 100% 45%)' }} />
               <Box>
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                  {currentUser?.isAdmin ? 'Pregled svih bodova' : 'Vaši bodovi'}
+                  {currentUser?.isAdmin ? t('activity:pointsSection.allPointsOverview') : t('activity:pointsSection.yourPoints')}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {currentUser?.isAdmin ? 'Bodovi svih članova' : 'Detaljan pregled svih bodova koje ste zaradili'}
+                  {currentUser?.isAdmin ? t('activity:pointsSection.allMembersPoints') : t('activity:pointsSection.yourPointsDescription')}
                 </Typography>
               </Box>
             </Box>
@@ -636,8 +642,8 @@ export default function ActivityLogPage() {
               <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap', alignItems: 'center' }}>
                 <TextField 
                   variant="outlined" 
-                  label="Pretraži po imenu"
-                  placeholder="Pretraži po imenu..." 
+                  label={t('activity:pointsSection.searchByName')}
+                  placeholder={`${t('activity:pointsSection.searchByName')}...`} 
                   value={userSearchTerm} 
                   onChange={(e) => setUserSearchTerm(e.target.value)} 
                   fullWidth 
@@ -646,13 +652,13 @@ export default function ActivityLogPage() {
                   data-testid="input-bodove-search"
                 />
                 <FormControl sx={{ minWidth: 200 }}>
-                  <InputLabel>Tip aktivnosti</InputLabel>
-                  <Select value={filterType} label="Tip aktivnosti" onChange={(e) => setFilterType(e.target.value)} data-testid="select-bodove-type">
-                    <MenuItem value="all">Sve</MenuItem>
-                    <MenuItem value="task_completed">Završeni zadaci</MenuItem>
-                    <MenuItem value="event_rsvp">RSVP na događaj</MenuItem>
-                    <MenuItem value="contribution_made">Doprinos</MenuItem>
-                    <MenuItem value="badge_earned">Osvojena značka</MenuItem>
+                  <InputLabel>{t('activity:pointsSection.activityType')}</InputLabel>
+                  <Select value={filterType} label={t('activity:pointsSection.activityType')} onChange={(e) => setFilterType(e.target.value)} data-testid="select-bodove-type">
+                    <MenuItem value="all">{t('activity:pointsSection.all')}</MenuItem>
+                    <MenuItem value="task_completed">{t('activity:pointsSection.tasksCompleted')}</MenuItem>
+                    <MenuItem value="event_rsvp">{t('activity:pointsSection.eventRsvp')}</MenuItem>
+                    <MenuItem value="contribution_made">{t('activity:pointsSection.contribution')}</MenuItem>
+                    <MenuItem value="badge_earned">{t('activity:pointsSection.badgeEarned')}</MenuItem>
                   </Select>
                 </FormControl>
                 <Button 
@@ -663,7 +669,7 @@ export default function ActivityLogPage() {
                   startIcon={<Refresh />}
                   data-testid="button-recalculate-points"
                 >
-                  {recalculatePointsMutation.isPending ? 'Preračunavanje...' : 'Preračunaj bodove'}
+                  {recalculatePointsMutation.isPending ? t('activity:pointsSection.recalculating') : t('activity:pointsSection.recalculatePoints')}
                 </Button>
               </Box>
             )}
@@ -678,7 +684,7 @@ export default function ActivityLogPage() {
                       {((activityLogsQuery.data as ActivityLog[]) || []).reduce((sum, entry) => sum + (entry.points || 0), 0)}
                     </Typography>
                     <Typography variant="body1" color="text.secondary">
-                      Ukupno bodova
+                      {t('activity:pointsSection.totalPoints')}
                     </Typography>
                   </Box>
                 </Box>
@@ -690,11 +696,11 @@ export default function ActivityLogPage() {
               <Table>
                 <TableHead>
                   <TableRow>
-                    {currentUser?.isAdmin && <SortableHeaderCell sortKey="userId" onSort={activitiesSort.handleSort} currentSortKey={activitiesSort.sortKey} currentSortDirection={activitiesSort.sortDirection}>Korisnik</SortableHeaderCell>}
-                    <SortableHeaderCell sortKey="activityType" onSort={activitiesSort.handleSort} currentSortKey={activitiesSort.sortKey} currentSortDirection={activitiesSort.sortDirection}>Tip Aktivnosti</SortableHeaderCell>
-                    <SortableHeaderCell sortKey="description" onSort={activitiesSort.handleSort} currentSortKey={activitiesSort.sortKey} currentSortDirection={activitiesSort.sortDirection}>Opis</SortableHeaderCell>
-                    <SortableHeaderCell sortKey="points" onSort={activitiesSort.handleSort} currentSortKey={activitiesSort.sortKey} currentSortDirection={activitiesSort.sortDirection}>Bodovi</SortableHeaderCell>
-                    <SortableHeaderCell sortKey="createdAt" onSort={activitiesSort.handleSort} currentSortKey={activitiesSort.sortKey} currentSortDirection={activitiesSort.sortDirection}>Datum</SortableHeaderCell>
+                    {currentUser?.isAdmin && <SortableHeaderCell sortKey="userId" onSort={activitiesSort.handleSort} currentSortKey={activitiesSort.sortKey} currentSortDirection={activitiesSort.sortDirection}>{t('activity:user')}</SortableHeaderCell>}
+                    <SortableHeaderCell sortKey="activityType" onSort={activitiesSort.handleSort} currentSortKey={activitiesSort.sortKey} currentSortDirection={activitiesSort.sortDirection}>{t('activity:activityType')}</SortableHeaderCell>
+                    <SortableHeaderCell sortKey="description" onSort={activitiesSort.handleSort} currentSortKey={activitiesSort.sortKey} currentSortDirection={activitiesSort.sortDirection}>{t('activity:description')}</SortableHeaderCell>
+                    <SortableHeaderCell sortKey="points" onSort={activitiesSort.handleSort} currentSortKey={activitiesSort.sortKey} currentSortDirection={activitiesSort.sortDirection}>{t('activity:points')}</SortableHeaderCell>
+                    <SortableHeaderCell sortKey="createdAt" onSort={activitiesSort.handleSort} currentSortKey={activitiesSort.sortKey} currentSortDirection={activitiesSort.sortDirection}>{t('activity:date')}</SortableHeaderCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -713,7 +719,7 @@ export default function ActivityLogPage() {
                       <TableRow>
                         <TableCell colSpan={currentUser?.isAdmin ? 5 : 4} sx={{ textAlign: 'center', py: 4 }}>
                           <Typography color="text.secondary">
-                            Nema aktivnosti za prikaz
+                            {t('activity:pointsSection.noActivities')}
                           </Typography>
                         </TableCell>
                       </TableRow>
@@ -850,7 +856,7 @@ export default function ActivityLogPage() {
               
               {selectedTemplate && (
                 <Box sx={{ mt: 2 }}>
-                  <TextField fullWidth multiline rows={3} label="Poruka (opcionalno)" value={customMessage} onChange={(e) => setCustomMessage(e.target.value)} data-testid="input-custom-message" />
+                  <TextField fullWidth multiline rows={3} label={t('activity:issueSection.messageOptional')} value={customMessage} onChange={(e) => setCustomMessage(e.target.value)} data-testid="input-custom-message" />
                 </Box>
               )}
             </Box>
@@ -859,9 +865,9 @@ export default function ActivityLogPage() {
           {selectedTemplate && (
             <Card>
               <Box sx={{ p: 3 }}>
-                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>Odaberi korisnike ({selectedUsers.size}/{filteredUsers.length})</Typography>
+                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>{t('activity:issueSection.selectUsers')} ({selectedUsers.size}/{filteredUsers.length})</Typography>
 
-                <TextField fullWidth placeholder="Pretraži po imenu ili datumu rođenja..." value={userSearchTerm} onChange={(e) => setUserSearchTerm(e.target.value)} sx={{ mb: 2 }} data-testid="input-user-search" />
+                <TextField fullWidth placeholder={t('activity:issueSection.searchByNameOrDob')} value={userSearchTerm} onChange={(e) => setUserSearchTerm(e.target.value)} sx={{ mb: 2 }} data-testid="input-user-search" />
 
                 <Box sx={{ mb: 2 }}>
                   <Checkbox checked={selectedUsers.size === filteredUsers.length && filteredUsers.length > 0} onChange={() => {
@@ -871,7 +877,7 @@ export default function ActivityLogPage() {
                       setSelectedUsers(new Set(filteredUsers.map(u => u.id)));
                     }
                   }} />
-                  <Typography component="span" variant="body2">Odaberi sve</Typography>
+                  <Typography component="span" variant="body2">{t('activity:issueSection.selectAll')}</Typography>
                 </Box>
 
                 <TableContainer sx={{ maxHeight: 400 }}>
@@ -879,8 +885,8 @@ export default function ActivityLogPage() {
                     <TableHead>
                       <TableRow>
                         <TableCell sx={{ width: 50 }}><Checkbox /></TableCell>
-                        <TableCell>Korisnik</TableCell>
-                        <TableCell>Datum rođenja</TableCell>
+                        <TableCell>{t('activity:user')}</TableCell>
+                        <TableCell>{t('activity:issueSection.dateOfBirth')}</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -907,7 +913,7 @@ export default function ActivityLogPage() {
 
                 <Box sx={{ mt: 3 }}>
                   <Button fullWidth variant="contained" color="primary" onClick={() => issueMutation.mutate()} disabled={selectedUsers.size === 0 || issueMutation.isPending} data-testid="button-issue-certificates">
-                    {issueMutation.isPending ? 'Slanje...' : `Dodjeli zahvalnicu (${selectedUsers.size})`}
+                    {issueMutation.isPending ? t('activity:issueSection.sending') : `${t('activity:issueSection.issueCertificate')} (${selectedUsers.size})`}
                   </Button>
                 </Box>
               </Box>
@@ -921,17 +927,17 @@ export default function ActivityLogPage() {
         <Card>
           <Box sx={{ p: 3 }}>
             {(certificatesQuery.data as UserCertificate[])?.length === 0 ? (
-              <Alert severity="info">Nema dodijeljenih zahvalnica</Alert>
+              <Alert severity="info">{t('activity:certificateSection.noCertificatesIssued')}</Alert>
             ) : (
               <TableContainer>
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell sx={{ width: 80 }}>Pregled</TableCell>
-                      <SortableHeaderCell sortKey="userId" onSort={certificatesSort.handleSort} currentSortKey={certificatesSort.sortKey} currentSortDirection={certificatesSort.sortDirection}>Korisnik</SortableHeaderCell>
-                      <SortableHeaderCell sortKey="recipientName" onSort={certificatesSort.handleSort} currentSortKey={certificatesSort.sortKey} currentSortDirection={certificatesSort.sortDirection}>Primatelj</SortableHeaderCell>
-                      <SortableHeaderCell sortKey="issuedAt" onSort={certificatesSort.handleSort} currentSortKey={certificatesSort.sortKey} currentSortDirection={certificatesSort.sortDirection}>Datum izdavanja</SortableHeaderCell>
-                      <TableCell>Akcije</TableCell>
+                      <TableCell sx={{ width: 80 }}>{t('activity:certificateSection.preview')}</TableCell>
+                      <SortableHeaderCell sortKey="userId" onSort={certificatesSort.handleSort} currentSortKey={certificatesSort.sortKey} currentSortDirection={certificatesSort.sortDirection}>{t('activity:user')}</SortableHeaderCell>
+                      <SortableHeaderCell sortKey="recipientName" onSort={certificatesSort.handleSort} currentSortKey={certificatesSort.sortKey} currentSortDirection={certificatesSort.sortDirection}>{t('activity:certificateSection.recipient')}</SortableHeaderCell>
+                      <SortableHeaderCell sortKey="issuedAt" onSort={certificatesSort.handleSort} currentSortKey={certificatesSort.sortKey} currentSortDirection={certificatesSort.sortDirection}>{t('activity:certificateSection.issueDate')}</SortableHeaderCell>
+                      <TableCell>{t('activity:certificateSection.actions')}</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -941,7 +947,7 @@ export default function ActivityLogPage() {
                           <Box 
                             component="img" 
                             src={cert.certificateImagePath} 
-                            alt="Zahvalnica"
+                            alt={t('activity:certificate')}
                             sx={{ 
                               width: 60, 
                               height: 40, 
@@ -964,7 +970,7 @@ export default function ActivityLogPage() {
                               size="small" 
                               onClick={() => handleViewCertificate(cert)}
                               sx={{ color: 'primary.main' }}
-                              title="Pogledaj"
+                              title={t('activity:certificateSection.view')}
                               data-testid={`button-view-${cert.id}`}
                             >
                               <Visibility fontSize="small" />
@@ -973,7 +979,7 @@ export default function ActivityLogPage() {
                               size="small" 
                               onClick={() => handleDownloadCertificate(cert)}
                               sx={{ color: 'success.main' }}
-                              title="Preuzmi"
+                              title={t('activity:certificateSection.download')}
                               data-testid={`button-download-${cert.id}`}
                             >
                               <Download fontSize="small" />
@@ -982,7 +988,7 @@ export default function ActivityLogPage() {
                               size="small" 
                               onClick={() => handleDeleteCertificateClick(cert)}
                               sx={{ color: 'error.main' }}
-                              title="Obriši"
+                              title={t('activity:certificateSection.delete')}
                               data-testid={`button-delete-${cert.id}`}
                             >
                               <Delete fontSize="small" />
@@ -1007,25 +1013,25 @@ export default function ActivityLogPage() {
               <ReceiptLong sx={{ fontSize: 40, color: 'hsl(14 100% 45%)' }} />
               <Box>
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                  Vaše zahvale
+                  {t('activity:certificateSection.yourCertificates')}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Zahvale koje ste dobili za vaše doprinos
+                  {t('activity:certificateSection.certificatesDescription')}
                 </Typography>
               </Box>
             </Box>
 
             {(certificatesQuery.data as UserCertificate[])?.length === 0 ? (
-              <Alert severity="info">Još niste dobili nijednu zahvalnicu</Alert>
+              <Alert severity="info">{t('activity:certificateSection.noCertificatesReceived')}</Alert>
             ) : (
               <TableContainer>
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell sx={{ width: 80 }}>Pregled</TableCell>
-                      <SortableHeaderCell sortKey="recipientName" onSort={certificatesSort.handleSort} currentSortKey={certificatesSort.sortKey} currentSortDirection={certificatesSort.sortDirection}>Primatelj</SortableHeaderCell>
-                      <SortableHeaderCell sortKey="issuedAt" onSort={certificatesSort.handleSort} currentSortKey={certificatesSort.sortKey} currentSortDirection={certificatesSort.sortDirection}>Datum izdavanja</SortableHeaderCell>
-                      <TableCell>Akcije</TableCell>
+                      <TableCell sx={{ width: 80 }}>{t('activity:certificateSection.preview')}</TableCell>
+                      <SortableHeaderCell sortKey="recipientName" onSort={certificatesSort.handleSort} currentSortKey={certificatesSort.sortKey} currentSortDirection={certificatesSort.sortDirection}>{t('activity:certificateSection.recipient')}</SortableHeaderCell>
+                      <SortableHeaderCell sortKey="issuedAt" onSort={certificatesSort.handleSort} currentSortKey={certificatesSort.sortKey} currentSortDirection={certificatesSort.sortDirection}>{t('activity:certificateSection.issueDate')}</SortableHeaderCell>
+                      <TableCell>{t('activity:certificateSection.actions')}</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -1035,7 +1041,7 @@ export default function ActivityLogPage() {
                           <Box 
                             component="img" 
                             src={cert.certificateImagePath} 
-                            alt="Zahvalnica"
+                            alt={t('activity:certificate')}
                             sx={{ 
                               width: 60, 
                               height: 40, 
@@ -1050,7 +1056,7 @@ export default function ActivityLogPage() {
                           />
                           {!cert.viewed && (
                             <Chip 
-                              label="Novo" 
+                              label={t('activity:certificateSection.new')} 
                               size="small" 
                               color="primary" 
                               sx={{ ml: 1, fontSize: '0.65rem', height: 18 }}
@@ -1065,7 +1071,7 @@ export default function ActivityLogPage() {
                               size="small" 
                               onClick={() => handleViewCertificate(cert)}
                               sx={{ color: 'primary.main' }}
-                              title="Pogledaj"
+                              title={t('activity:certificateSection.view')}
                               data-testid={`button-view-${cert.id}`}
                             >
                               <Visibility fontSize="small" />
@@ -1074,7 +1080,7 @@ export default function ActivityLogPage() {
                               size="small" 
                               onClick={() => handleDownloadCertificate(cert)}
                               sx={{ color: 'success.main' }}
-                              title="Preuzmi"
+                              title={t('activity:certificateSection.download')}
                               data-testid={`button-download-${cert.id}`}
                             >
                               <Download fontSize="small" />
@@ -1096,23 +1102,23 @@ export default function ActivityLogPage() {
         <Card>
           <Box sx={{ p: 3 }}>
             {allIssuedBadges.length === 0 ? (
-              <Alert severity="info">Nema dodjeljenih značaka</Alert>
+              <Alert severity="info">{t('activity:badgesSection.noBadgesAssigned')}</Alert>
             ) : (
               <TableContainer>
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell>Korisnik</TableCell>
-                      <TableCell>Značka</TableCell>
-                      <TableCell>Opis</TableCell>
-                      <TableCell>Datum dodjele</TableCell>
+                      <TableCell>{t('activity:user')}</TableCell>
+                      <TableCell>{t('activity:badgesSection.badge')}</TableCell>
+                      <TableCell>{t('activity:description')}</TableCell>
+                      <TableCell>{t('activity:badgesSection.assignmentDate')}</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {allIssuedBadges.map((item: any) => (
                       <TableRow key={`${item.userId}-${item.badgeId}`}>
-                        <TableCell><Typography variant="body2">{item.user ? `${item.user.firstName} ${item.user.lastName}` : 'Nepoznat korisnik'}</Typography></TableCell>
-                        <TableCell><Typography variant="body2" sx={{ fontWeight: 600 }}>{item.badge?.name || 'Nepoznata značka'}</Typography></TableCell>
+                        <TableCell><Typography variant="body2">{item.user ? `${item.user.firstName} ${item.user.lastName}` : t('activity:badgesSection.unknownUser')}</Typography></TableCell>
+                        <TableCell><Typography variant="body2" sx={{ fontWeight: 600 }}>{item.badge?.name || t('activity:badgesSection.unknownBadge')}</Typography></TableCell>
                         <TableCell><Typography variant="body2" color="text.secondary">{item.badge?.description || '-'}</Typography></TableCell>
                         <TableCell>{item.earnedAt ? new Date(item.earnedAt).toLocaleDateString('hr-HR') : '-'}</TableCell>
                       </TableRow>
@@ -1135,7 +1141,7 @@ export default function ActivityLogPage() {
           <Card sx={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 9999, width: '90%', maxWidth: 500, p: 3, boxShadow: 24 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                {selectedBadge ? 'Uredi značku' : 'Dodaj novu značku'}
+                {selectedBadge ? t('activity:badgesSection.editBadge') : t('activity:badgesSection.addNewBadge')}
               </Typography>
               <IconButton onClick={() => { setBadgeDialogOpen(false); setSelectedBadge(null); badgeForm.reset(); }}>
                 <Close />
@@ -1144,7 +1150,7 @@ export default function ActivityLogPage() {
             <Stack spacing={2}>
               <TextField 
                 fullWidth 
-                label="Naziv" 
+                label={t('activity:badgesSection.name')} 
                 {...badgeForm.register('name')} 
                 error={!!badgeForm.formState.errors.name} 
                 helperText={badgeForm.formState.errors.name?.message} 
@@ -1152,34 +1158,34 @@ export default function ActivityLogPage() {
               />
               <TextField 
                 fullWidth 
-                label="Opis" 
+                label={t('activity:description')} 
                 {...badgeForm.register('description')} 
                 error={!!badgeForm.formState.errors.description} 
                 helperText={badgeForm.formState.errors.description?.message} 
                 data-testid="input-badge-description" 
               />
               <FormControl fullWidth>
-                <InputLabel>Tip kriterija</InputLabel>
+                <InputLabel>{t('activity:badgesSection.criteriaType')}</InputLabel>
                 <Select 
                   value={badgeForm.watch('criteriaType') || 'points_total'}
                   onChange={(e) => badgeForm.setValue('criteriaType', e.target.value)}
-                  label="Tip kriterija" 
+                  label={t('activity:badgesSection.criteriaType')} 
                   data-testid="select-criteria-type"
                   MenuProps={{ 
                     sx: { zIndex: 10000 },
                     disablePortal: false
                   }}
                 >
-                  <MenuItem value="points_total">Ukupno bodova</MenuItem>
-                  <MenuItem value="contributions_amount">Iznos doprinosa</MenuItem>
-                  <MenuItem value="tasks_completed">Završeni zadaci</MenuItem>
-                  <MenuItem value="events_attended">Posjećeni eventi</MenuItem>
+                  <MenuItem value="points_total">{t('activity:badgesSection.totalPoints')}</MenuItem>
+                  <MenuItem value="contributions_amount">{t('activity:badgesSection.contributionAmount')}</MenuItem>
+                  <MenuItem value="tasks_completed">{t('activity:badgesSection.tasksCompleted')}</MenuItem>
+                  <MenuItem value="events_attended">{t('activity:badgesSection.eventsAttended')}</MenuItem>
                 </Select>
               </FormControl>
               <TextField 
                 fullWidth 
                 type="number" 
-                label="Vrijednost"
+                label={t('activity:badgesSection.value')}
                 value={badgeForm.watch('criteriaValue') ?? 0}
                 onChange={(e) => badgeForm.setValue('criteriaValue', parseInt(e.target.value) || 0)}
                 error={!!badgeForm.formState.errors.criteriaValue} 
@@ -1189,7 +1195,7 @@ export default function ActivityLogPage() {
             </Stack>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 3 }}>
               <Button onClick={() => { setBadgeDialogOpen(false); setSelectedBadge(null); badgeForm.reset(); }}>
-                Otkaži
+                {t('activity:certificateSection.cancel')}
               </Button>
               <Button 
                 variant="contained" 
@@ -1210,7 +1216,7 @@ export default function ActivityLogPage() {
                 }} 
                 data-testid="button-save-badge"
               >
-                {saveBadgeMutation.isPending ? 'Spremanje...' : 'Spremi'}
+                {saveBadgeMutation.isPending ? t('activity:badgesSection.saving') : t('activity:badgesSection.save')}
               </Button>
             </Box>
           </Card>
@@ -1226,7 +1232,7 @@ export default function ActivityLogPage() {
           />
           <Card sx={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 9999, width: '95%', maxWidth: 900, maxHeight: '90vh', overflow: 'auto', p: 3, boxShadow: 24 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Typography variant="h6">Zahvalnica - {selectedCertificate.recipientName}</Typography>
+              <Typography variant="h6">{t('activity:certificate')} - {selectedCertificate.recipientName}</Typography>
               <IconButton onClick={() => setViewCertificateOpen(false)}>
                 <Close />
               </IconButton>
@@ -1235,7 +1241,7 @@ export default function ActivityLogPage() {
               <Box
                 component="img"
                 src={selectedCertificate.certificateImagePath}
-                alt={`Zahvalnica za ${selectedCertificate.recipientName}`}
+                alt={`${t('activity:certificate')} - ${selectedCertificate.recipientName}`}
                 sx={{ 
                   width: '100%', 
                   maxHeight: '60vh',
@@ -1259,7 +1265,7 @@ export default function ActivityLogPage() {
                 onClick={() => handleDownloadCertificate(selectedCertificate)}
                 data-testid="button-download-full"
               >
-                Preuzmi
+                {t('activity:certificateSection.download')}
               </Button>
               <Button 
                 variant="outlined"
@@ -1269,7 +1275,7 @@ export default function ActivityLogPage() {
                 }}
                 data-testid="button-print"
               >
-                Ispiši
+                {t('activity:certificateSection.print')}
               </Button>
             </Box>
           </Card>
@@ -1284,12 +1290,12 @@ export default function ActivityLogPage() {
             onClick={() => setDeleteCertificateOpen(false)}
           />
           <Card sx={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 9999, width: '90%', maxWidth: 400, p: 3, boxShadow: 24 }}>
-            <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>Obriši zahvalnicu</Typography>
+            <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>{t('activity:certificateSection.deleteCertificate')}</Typography>
             <Typography sx={{ mb: 3 }}>
-              Jeste li sigurni da želite obrisati zahvalnicu za "{certificateToDelete.recipientName}"?
+              {t('activity:certificateSection.confirmDeleteCertificate', { name: certificateToDelete.recipientName })}
             </Typography>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-              <Button onClick={() => setDeleteCertificateOpen(false)}>Otkaži</Button>
+              <Button onClick={() => setDeleteCertificateOpen(false)}>{t('activity:certificateSection.cancel')}</Button>
               <Button 
                 variant="contained" 
                 color="error"
@@ -1297,7 +1303,7 @@ export default function ActivityLogPage() {
                 disabled={deleteCertificateMutation.isPending}
                 data-testid="button-confirm-delete"
               >
-                {deleteCertificateMutation.isPending ? 'Brisanje...' : 'Obriši'}
+                {deleteCertificateMutation.isPending ? t('activity:certificateSection.deleting') : t('activity:certificateSection.delete')}
               </Button>
             </Box>
           </Card>

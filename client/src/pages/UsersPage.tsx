@@ -164,7 +164,7 @@ export default function UsersPage() {
     switch (status) {
       case 'aktivan': return t('users:membershipStatuses.aktivan');
       case 'pasivan': return t('users:membershipStatuses.pasivan');
-      case 'član porodice': return 'Član porodice';
+      case 'član porodice': return t('users:membershipStatuses.clan_porodice');
       default: return status;
     }
   };
@@ -684,7 +684,7 @@ export default function UsersPage() {
             onClick={handleExportUsersToExcel}
             data-testid="button-export-excel"
           >
-            Exportuj u Excel
+            {t('users:exportToExcel')}
           </Button>
           <Button
             variant="outlined"

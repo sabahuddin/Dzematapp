@@ -44,5 +44,65 @@
   "allTypes": "Tüm türler",
   "thisMonth": "Bu ay",
   "lastMonth": "Geçen ay",
-  "thisYear": "Bu yıl"
+  "thisYear": "Bu yıl",
+  "overview": "Genel Bakış",
+  "exportToExcel": "Excel'e Aktar",
+  "tabs": {
+    "activities": "Aktiviteler",
+    "contributions": "Ödemeler",
+    "points": "Puanlar",
+    "badges": "Rozetler",
+    "assignedBadges": "Atanan rozetler",
+    "certificateTemplates": "Sertifika şablonları",
+    "assignCertificate": "Sertifika ata",
+    "assignedCertificates": "Atanan sertifikalar",
+    "certificates": "Sertifikalar"
+  },
+  "exportError": "Dışa aktarılacak veri yok",
+  "exportSuccess": "Excel dosyası indirildi",
+  "export": {
+    "title": "Aktivite Günlüğü",
+    "filename": "Aktiviteler",
+    "sheetName": "Aktiviteler",
+    "headers": {
+      "user": "Kullanıcı",
+      "activityType": "Aktivite türü",
+      "description": "Açıklama",
+      "points": "Puanlar",
+      "date": "Tarih"
+    }
+  },
+  "error": "Hata",
+  "success": "Başarılı",
+  "messages": {
+    "certificatesIssued": "{{count}} sertifika verildi",
+    "badgeUpdated": "Rozet güncellendi",
+    "badgeCreated": "Rozet oluşturuldu",
+    "badgeDeleted": "Rozet silindi",
+    "templateDeleted": "Şablon silindi",
+    "certificateDeleted": "Sertifika silindi",
+    "pointsRecalculated": "{{count}} kullanıcı için puanlar yeniden hesaplandı",
+    "downloading": "İndiriliyor",
+    "certificateDownloaded": "Sertifika indirildi"
+  },
+  "certificate": "Sertifika",
+  "certificateSection": {
+    "preview": "Önizleme",
+    "recipient": "Alıcı",
+    "issueDate": "Veriliş Tarihi",
+    "actions": "Eylemler",
+    "view": "Görüntüle",
+    "download": "İndir",
+    "delete": "Sil",
+    "yourCertificates": "Sertifikalarınız",
+    "certificatesDescription": "Katkılarınız için aldığınız sertifikalar",
+    "noCertificatesIssued": "Sertifika verilmedi",
+    "noCertificatesReceived": "Henüz sertifika almadınız",
+    "new": "Yeni",
+    "print": "Yazdır",
+    "deleteCertificate": "Sertifikayı sil",
+    "confirmDeleteCertificate": "\"{{name}}\" için sertifikayı silmek istediğinizden emin misiniz?",
+    "cancel": "İptal",
+    "deleting": "Siliniyor..."
+  }
 }

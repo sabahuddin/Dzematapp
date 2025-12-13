@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Dialog,
   DialogTitle,
@@ -39,6 +40,7 @@ interface UploadResult {
 }
 
 export default function BulkUploadModal({ open, onClose }: BulkUploadModalProps) {
+  const { t } = useTranslation(['users']);
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -61,10 +63,10 @@ export default function BulkUploadModal({ open, onClose }: BulkUploadModalProps)
       document.body.removeChild(a);
     },
     onSuccess: () => {
-      toast({ title: 'Uspjeh', description: 'Template fajl je preuzet' });
+      toast({ title: t('users:bulkUploadModal.success'), description: t('users:bulkUploadModal.templateDownloaded') });
     },
     onError: (error: Error) => {
-      toast({ title: 'Greška', description: error.message || 'Greška pri preuzimanju template fajla', variant: 'destructive' });
+      toast({ title: t('users:bulkUploadModal.error'), description: error.message || t('users:bulkUploadModal.templateDownloadError'), variant: 'destructive' });
     }
   });
 
@@ -82,21 +84,21 @@ export default function BulkUploadModal({ open, onClose }: BulkUploadModalProps)
       
       if (data.errorCount === 0) {
         toast({ 
-          title: 'Uspjeh', 
-          description: `Uspješno importovano ${data.successCount} korisnika` 
+          title: t('users:bulkUploadModal.success'), 
+          description: t('users:bulkUploadModal.usersImported', { count: data.successCount })
         });
       } else {
         toast({ 
-          title: 'Djelimičan uspjeh', 
-          description: `Importovano ${data.successCount} korisnika, ${data.errorCount} greški`,
+          title: t('users:bulkUploadModal.partialSuccess'), 
+          description: t('users:bulkUploadModal.usersImportedWithErrors', { success: data.successCount, errors: data.errorCount }),
           variant: 'destructive'
         });
       }
     },
     onError: (error: Error) => {
       toast({ 
-        title: 'Greška', 
-        description: error.message || 'Greška pri upload-u fajla', 
+        title: t('users:bulkUploadModal.error'), 
+        description: error.message || t('users:bulkUploadModal.uploadError'), 
         variant: 'destructive' 
       });
     }
@@ -106,8 +108,8 @@ export default function BulkUploadModal({ open, onClose }: BulkUploadModalProps)
     if (file.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && 
         file.type !== 'application/vnd.ms-excel') {
       toast({ 
-        title: 'Greška', 
-        description: 'Molimo uploadujte Excel fajl (.xlsx ili .xls)', 
+        title: t('users:bulkUploadModal.error'), 
+        description: t('users:bulkUploadModal.invalidFileType'), 
         variant: 'destructive' 
       });
       return;
@@ -164,7 +166,7 @@ export default function BulkUploadModal({ open, onClose }: BulkUploadModalProps)
       data-testid="dialog-bulk-upload"
     >
       <DialogTitle>
-        Bulk Upload Korisnika
+        {t('users:bulkUploadModal.title')}
       </DialogTitle>
       
       <DialogContent>
@@ -177,7 +179,7 @@ export default function BulkUploadModal({ open, onClose }: BulkUploadModalProps)
             fullWidth
             data-testid="button-download-template"
           >
-            {downloadTemplateMutation.isPending ? 'Preuzimanje...' : 'Preuzmi Template'}
+            {downloadTemplateMutation.isPending ? t('users:bulkUploadModal.downloading') : t('users:bulkUploadModal.downloadTemplate')}
           </Button>
         </Box>
 
@@ -204,10 +206,10 @@ export default function BulkUploadModal({ open, onClose }: BulkUploadModalProps)
         >
           <CloudUpload sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} />
           <Typography variant="h6" gutterBottom>
-            {selectedFile ? selectedFile.name : 'Prevucite fajl ovdje ili kliknite za upload'}
+            {selectedFile ? selectedFile.name : t('users:bulkUploadModal.dropzoneText')}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Podržani formati: .xlsx, .xls
+            {t('users:bulkUploadModal.supportedFormats')}
           </Typography>
           <input
             ref={fileInputRef}
@@ -223,7 +225,7 @@ export default function BulkUploadModal({ open, onClose }: BulkUploadModalProps)
           <Box sx={{ mt: 2 }}>
             <LinearProgress />
             <Typography variant="body2" sx={{ mt: 1, textAlign: 'center' }}>
-              Upload u toku...
+              {t('users:bulkUploadModal.uploading')}
             </Typography>
           </Box>
         )}
@@ -236,14 +238,14 @@ export default function BulkUploadModal({ open, onClose }: BulkUploadModalProps)
               data-testid="alert-upload-result"
             >
               <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                Rezultat importa:
+                {t('users:bulkUploadModal.importResult')}
               </Typography>
               <Typography variant="body2">
-                ✓ Uspješno: {uploadResult.successCount} korisnika
+                ✓ {t('users:bulkUploadModal.successCount', { count: uploadResult.successCount })}
               </Typography>
               {uploadResult.errorCount > 0 && (
                 <Typography variant="body2">
-                  ✗ Greške: {uploadResult.errorCount} redova
+                  ✗ {t('users:bulkUploadModal.errorCount', { count: uploadResult.errorCount })}
                 </Typography>
               )}
             </Alert>
@@ -251,15 +253,15 @@ export default function BulkUploadModal({ open, onClose }: BulkUploadModalProps)
             {uploadResult.results.success.length > 0 && (
               <Box sx={{ mb: 2 }}>
                 <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
-                  Uspješno importovani korisnici:
+                  {t('users:bulkUploadModal.successfullyImported')}
                 </Typography>
                 <TableContainer component={Paper} variant="outlined" sx={{ maxHeight: 200 }}>
                   <Table size="small" stickyHeader>
                     <TableHead>
                       <TableRow>
-                        <TableCell>Red</TableCell>
-                        <TableCell>Ime i Prezime</TableCell>
-                        <TableCell>Korisničko ime</TableCell>
+                        <TableCell>{t('users:bulkUploadModal.row')}</TableCell>
+                        <TableCell>{t('users:bulkUploadModal.nameAndSurname')}</TableCell>
+                        <TableCell>{t('users:bulkUploadModal.usernameColumn')}</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -281,14 +283,14 @@ export default function BulkUploadModal({ open, onClose }: BulkUploadModalProps)
             {uploadResult.results.errors.length > 0 && (
               <Box>
                 <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600, color: 'error.main' }}>
-                  Greške pri importu:
+                  {t('users:bulkUploadModal.importErrors')}
                 </Typography>
                 <TableContainer component={Paper} variant="outlined" sx={{ maxHeight: 300 }}>
                   <Table size="small" stickyHeader>
                     <TableHead>
                       <TableRow>
-                        <TableCell>Red</TableCell>
-                        <TableCell>Greške</TableCell>
+                        <TableCell>{t('users:bulkUploadModal.row')}</TableCell>
+                        <TableCell>{t('users:bulkUploadModal.errors')}</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -323,7 +325,7 @@ export default function BulkUploadModal({ open, onClose }: BulkUploadModalProps)
           onClick={handleClose} 
           data-testid="button-close"
         >
-          Zatvori
+          {t('users:bulkUploadModal.close')}
         </Button>
         <Button
           variant="contained"
@@ -331,7 +333,7 @@ export default function BulkUploadModal({ open, onClose }: BulkUploadModalProps)
           disabled={!selectedFile || uploadMutation.isPending}
           data-testid="button-upload"
         >
-          {uploadMutation.isPending ? 'Upload...' : 'Upload Fajl'}
+          {uploadMutation.isPending ? t('users:bulkUploadModal.upload') : t('users:bulkUploadModal.uploadFile')}
         </Button>
       </DialogActions>
     </Dialog>
