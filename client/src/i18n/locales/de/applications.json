@@ -131,5 +131,15 @@
     "submittedAt": "Eingereicht am",
     "status": "Status",
     "adminNotes": "Anmerkung des Administrators"
+  },
+  "admin": {
+    "membershipApplications": "Mitgliedsanträge",
+    "incomingAkikaTitle": "Eingegangene Akika-Anträge",
+    "submitNewAkika": "Neuen Akika-Antrag einreichen"
+  },
+  "buttons": {
+    "cancel": "Abbrechen",
+    "reject": "Ablehnen",
+    "approve": "Genehmigen"
   }
 }

@@ -185,7 +185,7 @@ function WorkGroupCard({ workGroup, onManageMembers, onManageTasks, onJoinReques
                   onClick={() => onCreateProposal(workGroup)}
                   data-testid={`button-create-proposal-${workGroup.id}`}
                 >
-                  Kreiraj prijedlog
+                  {t('createProposal')}
                 </Button>
               </>
             ) : isModerator ? (
@@ -203,7 +203,7 @@ function WorkGroupCard({ workGroup, onManageMembers, onManageTasks, onJoinReques
                   onClick={() => onCreateProposal(workGroup)}
                   data-testid={`button-create-proposal-${workGroup.id}`}
                 >
-                  Kreiraj prijedlog
+                  {t('createProposal')}
                 </Button>
               </>
             ) : isMember ? (
@@ -297,12 +297,12 @@ function AdminTasksArchive({ workGroups, users, currentUser }: AdminTasksArchive
 
   const getWorkGroupName = (workGroupId: string) => {
     const workGroup = workGroups.find(wg => wg.id === workGroupId);
-    return workGroup?.name || 'Nepoznata sekcija';
+    return workGroup?.name || t('archive.sectionUnknown');
   };
 
   const getUserName = (userId: string) => {
     const user = users.find(u => u.id === userId);
-    return user ? `${user.firstName} ${user.lastName}` : 'Nepoznat korisnik';
+    return user ? `${user.firstName} ${user.lastName}` : t('unknownUser');
   };
 
   const getStatusColor = (status: string) => {
@@ -338,14 +338,14 @@ function AdminTasksArchive({ workGroups, users, currentUser }: AdminTasksArchive
   return (
     <Box>
       <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
-        Arhiva svih zadataka
+        {t('archive.title')}
       </Typography>
 
       <Card sx={{ mb: 3 }}>
         <Box sx={{ p: 2, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
           <TextField
             select
-            label="Sekcija"
+            label={t('archive.sectionLabel')}
             value={selectedWorkGroupId}
             onChange={(e) => setSelectedWorkGroupId(e.target.value)}
             sx={{ minWidth: 200 }}
@@ -353,7 +353,7 @@ function AdminTasksArchive({ workGroups, users, currentUser }: AdminTasksArchive
             InputLabelProps={{ shrink: true }}
             data-testid="select-archive-workgroup"
           >
-            <MenuItem value="all">Sve sekcije</MenuItem>
+            <MenuItem value="all">{t('archive.allSections')}</MenuItem>
             {workGroups.map((wg) => (
               <MenuItem key={wg.id} value={wg.id}>{wg.name}</MenuItem>
             ))}
@@ -361,7 +361,7 @@ function AdminTasksArchive({ workGroups, users, currentUser }: AdminTasksArchive
 
           <TextField
             select
-            label="Korisnik"
+            label={t('archive.userLabel')}
             value={selectedUserId}
             onChange={(e) => setSelectedUserId(e.target.value)}
             sx={{ minWidth: 200 }}
@@ -369,7 +369,7 @@ function AdminTasksArchive({ workGroups, users, currentUser }: AdminTasksArchive
             InputLabelProps={{ shrink: true }}
             data-testid="select-archive-user"
           >
-            <MenuItem value="all">Svi korisnici</MenuItem>
+            <MenuItem value="all">{t('archive.allUsers')}</MenuItem>
             {users.map((u) => (
               <MenuItem key={u.id} value={u.id}>{u.firstName} {u.lastName}</MenuItem>
             ))}
@@ -377,7 +377,7 @@ function AdminTasksArchive({ workGroups, users, currentUser }: AdminTasksArchive
 
           <TextField
             select
-            label="Period"
+            label={t('archive.periodLabel')}
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value as any)}
             sx={{ minWidth: 200 }}
@@ -385,16 +385,16 @@ function AdminTasksArchive({ workGroups, users, currentUser }: AdminTasksArchive
             InputLabelProps={{ shrink: true }}
             data-testid="select-archive-date"
           >
-            <MenuItem value="all">Svi periodi</MenuItem>
-            <MenuItem value="last7days">Zadnjih 7 dana</MenuItem>
-            <MenuItem value="last30days">Zadnjih 30 dana</MenuItem>
-            <MenuItem value="last90days">Zadnjih 90 dana</MenuItem>
+            <MenuItem value="all">{t('archive.allPeriods')}</MenuItem>
+            <MenuItem value="last7days">{t('archive.last7days')}</MenuItem>
+            <MenuItem value="last30days">{t('archive.last30days')}</MenuItem>
+            <MenuItem value="last90days">{t('archive.last90days')}</MenuItem>
           </TextField>
         </Box>
       </Card>
 
       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        Ukupno arhiviranih zadataka: {archivedTasks.length}
+        {t('archive.totalArchived')}: {archivedTasks.length}
       </Typography>
 
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -454,7 +454,7 @@ function AdminTasksArchive({ workGroups, users, currentUser }: AdminTasksArchive
           <Card>
             <CardContent sx={{ textAlign: 'center', py: 6 }}>
               <Typography color="text.secondary">
-                Nema arhiviranih zadataka koji zadovoljavaju izabrane filtere.
+                {t('archive.noArchivedTasks')}
               </Typography>
             </CardContent>
           </Card>
@@ -886,8 +886,8 @@ export default function TaskManagerPage() {
           <Tabs value={tabValue} onChange={handleTabChange} aria-label="admin tabs">
             <Tab label={t('tabs.sections')} data-testid="tab-work-groups" />
             <Tab label={t('tabs.accessRequests')} data-testid="tab-access-requests" />
-            <Tab label="Prijedlozi" data-testid="tab-proposals" />
-            <Tab label="Arhiva svih zadataka" data-testid="tab-all-tasks-archive" />
+            <Tab label={t('tabs.proposals')} data-testid="tab-proposals" />
+            <Tab label={t('tabs.allTasksArchive')} data-testid="tab-all-tasks-archive" />
           </Tabs>
         </Box>
       )}
@@ -1523,7 +1523,7 @@ function ProposalsReviewContent({ proposals, workGroups, users, onApprove, onRej
   };
 
   const getWorkGroupName = (workGroupId: string) => {
-    return workGroups.find((wg: any) => wg.id === workGroupId)?.name || 'Nepoznata sekcija';
+    return workGroups.find((wg: any) => wg.id === workGroupId)?.name || t('archive.sectionUnknown');
   };
 
   const getUserName = (userId: string) => {
@@ -1755,7 +1755,7 @@ function ProposalModal({ open, onClose, workGroup, currentUserId }: ProposalModa
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-      <DialogTitle>Kreiraj prijedlog za {workGroup?.name}</DialogTitle>
+      <DialogTitle>{t('createProposalFor', { name: workGroup?.name })}</DialogTitle>
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
           <TextField
@@ -3229,7 +3229,7 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
           <Card>
             <CardContent sx={{ textAlign: 'center', py: 6 }}>
               <Typography color="text.secondary">
-                {isArchive ? 'Nema arhiviranih zadataka' : t('taskDialog.noTasksForSection')}
+                {isArchive ? t('archive.noArchivedTasksSimple') : t('taskDialog.noTasksForSection')}
               </Typography>
               {!isArchive && isModeratorOrAdmin() && (
                 <Button

@@ -456,12 +456,12 @@ export default function ShopPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/services'] });
-      toast({ title: "Usluga dodana" });
+      toast({ title: t('shop:services.added') });
       setServiceModalOpen(false);
       setServiceForm({ name: "", description: "", photos: [], price: "", duration: "", type: "offer" });
     },
     onError: () => {
-      toast({ title: "Greška pri dodavanju usluge", variant: "destructive" });
+      toast({ title: t('shop:services.addError'), variant: "destructive" });
     }
   });
 
@@ -472,13 +472,13 @@ export default function ShopPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/services'] });
-      toast({ title: "Usluga ažurirana" });
+      toast({ title: t('shop:services.updated') });
       setServiceModalOpen(false);
       setEditingService(null);
       setServiceForm({ name: "", description: "", photos: [], price: "", duration: "", type: "offer" });
     },
     onError: () => {
-      toast({ title: "Greška pri ažuriranju usluge", variant: "destructive" });
+      toast({ title: t('shop:services.updateError'), variant: "destructive" });
     }
   });
 
@@ -488,10 +488,10 @@ export default function ShopPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/services'] });
-      toast({ title: "Usluga obrisana" });
+      toast({ title: t('shop:services.deleted') });
     },
     onError: () => {
-      toast({ title: "Greška pri brisanju usluge", variant: "destructive" });
+      toast({ title: t('shop:services.deleteError'), variant: "destructive" });
     }
   });
 
@@ -742,18 +742,18 @@ export default function ShopPage() {
           <TextField
             fullWidth
             size="small"
-            label="Pretraži"
-            placeholder="Pretraži..."
+            label={t('shop:search.label')}
+            placeholder={t('shop:search.placeholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             InputLabelProps={{ shrink: true }}
             data-testid="input-search"
           />
           <FormControl size="small" sx={{ minWidth: 150 }}>
-            <InputLabel>Kategorija</InputLabel>
+            <InputLabel>{t('shop:search.categoryLabel')}</InputLabel>
             <Select
               value={searchCategory}
-              label="Kategorija"
+              label={t('shop:search.categoryLabel')}
               onChange={(e) => {
                 const value = e.target.value as typeof searchCategory;
                 setSearchCategory(value);
@@ -764,11 +764,11 @@ export default function ShopPage() {
               }}
               data-testid="select-search-category"
             >
-              <MenuItem value="all">Sve</MenuItem>
-              <MenuItem value="sell">Prodajem</MenuItem>
-              <MenuItem value="gift">Poklanjam</MenuItem>
-              <MenuItem value="need">Tražim</MenuItem>
-              <MenuItem value="offer">Nudim</MenuItem>
+              <MenuItem value="all">{t('shop:search.all')}</MenuItem>
+              <MenuItem value="sell">{t('shop:search.sell')}</MenuItem>
+              <MenuItem value="gift">{t('shop:search.gift')}</MenuItem>
+              <MenuItem value="need">{t('shop:search.need')}</MenuItem>
+              <MenuItem value="offer">{t('shop:search.offer')}</MenuItem>
             </Select>
           </FormControl>
         </Box>
@@ -843,7 +843,7 @@ export default function ShopPage() {
       {/* Global Search Results - when searching with "all" category */}
       {searchQuery.trim() && searchCategory === "all" && (
         <Box sx={{ mb: 3 }}>
-          <Typography variant="h6" sx={{ mb: 2 }}>Rezultati pretrage: "{searchQuery}"</Typography>
+          <Typography variant="h6" sx={{ mb: 2 }}>{t('shop:filters.searchResults', { query: searchQuery })}</Typography>
           
           {/* Džemat Shop Products Results */}
           {filteredProducts.length > 0 && (
@@ -866,7 +866,7 @@ export default function ShopPage() {
               </Box>
               {filteredProducts.length > 6 && (
                 <Button size="small" onClick={() => { setSearchCategory("all"); setActiveTab(0); }}>
-                  Prikaži sve ({filteredProducts.length})
+                  {t('shop:filters.showAll', { count: filteredProducts.length })}
                 </Button>
               )}
             </Box>
@@ -876,7 +876,7 @@ export default function ShopPage() {
           {sellItems.length > 0 && (
             <Box sx={{ mb: 3 }}>
               <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
-                <ShoppingCart fontSize="small" /> Prodajem ({sellItems.length})
+                <ShoppingCart fontSize="small" /> {t('shop:tabs.sell')} ({sellItems.length})
               </Typography>
               <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 2 }}>
                 {sellItems.slice(0, 6).map((item) => (
@@ -893,7 +893,7 @@ export default function ShopPage() {
               </Box>
               {sellItems.length > 6 && (
                 <Button size="small" onClick={() => { setSearchCategory("sell"); setActiveTab(1); }}>
-                  Prikaži sve ({sellItems.length})
+                  {t('shop:filters.showAll', { count: sellItems.length })}
                 </Button>
               )}
             </Box>
@@ -903,7 +903,7 @@ export default function ShopPage() {
           {giftItems.length > 0 && (
             <Box sx={{ mb: 3 }}>
               <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
-                <CardGiftcard fontSize="small" /> Poklanjam ({giftItems.length})
+                <CardGiftcard fontSize="small" /> {t('shop:tabs.gift')} ({giftItems.length})
               </Typography>
               <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 2 }}>
                 {giftItems.slice(0, 6).map((item) => (
@@ -919,7 +919,7 @@ export default function ShopPage() {
               </Box>
               {giftItems.length > 6 && (
                 <Button size="small" onClick={() => { setSearchCategory("gift"); setActiveTab(2); }}>
-                  Prikaži sve ({giftItems.length})
+                  {t('shop:filters.showAll', { count: giftItems.length })}
                 </Button>
               )}
             </Box>
@@ -929,7 +929,7 @@ export default function ShopPage() {
           {filteredServices.length > 0 && (
             <Box sx={{ mb: 3 }}>
               <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Build fontSize="small" /> Usluge ({filteredServices.length})
+                <Build fontSize="small" /> {t('shop:tabs.services')} ({filteredServices.length})
               </Typography>
               <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 2 }}>
                 {filteredServices.slice(0, 6).map((service) => (
@@ -946,7 +946,7 @@ export default function ShopPage() {
               </Box>
               {filteredServices.length > 6 && (
                 <Button size="small" onClick={() => { setSearchCategory("offer"); setActiveTab(3); }}>
-                  Prikaži sve ({filteredServices.length})
+                  {t('shop:filters.showAll', { count: filteredServices.length })}
                 </Button>
               )}
             </Box>
@@ -954,7 +954,7 @@ export default function ShopPage() {
 
           {/* No results message */}
           {filteredProducts.length === 0 && sellItems.length === 0 && giftItems.length === 0 && filteredServices.length === 0 && (
-            <Typography color="text.secondary">Nema rezultata za "{searchQuery}"</Typography>
+            <Typography color="text.secondary">{t('shop:filters.noResults', { query: searchQuery })}</Typography>
           )}
         </Box>
       )}
@@ -1370,7 +1370,7 @@ export default function ShopPage() {
                       )}
                       {service.category && (
                         <Chip 
-                          label={service.category === 'need' ? 'Tražim' : 'Nudim'} 
+                          label={service.category === 'need' ? t('shop:search.need') : t('shop:search.offer')} 
                           color={service.category === 'need' ? 'warning' : 'success'}
                           size="small" 
                         />
@@ -1424,7 +1424,7 @@ export default function ShopPage() {
               })}
             </Box>
           ) : (
-            <Typography color="text.secondary">Nema dostupnih usluga</Typography>
+            <Typography color="text.secondary">{t('shop:services.noServices')}</Typography>
           )}
         </Box>
       )}
@@ -1843,15 +1843,15 @@ export default function ShopPage() {
               fullWidth
             />
             <FormControl fullWidth>
-              <InputLabel>Vrsta usluge</InputLabel>
+              <InputLabel>{t('shop:services.typeLabel')}</InputLabel>
               <Select
                 value={serviceForm.type}
-                label="Vrsta usluge"
+                label={t('shop:services.typeLabel')}
                 onChange={(e) => setServiceForm({ ...serviceForm, type: e.target.value as "offer" | "need" })}
                 data-testid="select-service-type"
               >
-                <MenuItem value="offer">Nudim</MenuItem>
-                <MenuItem value="need">Tražim</MenuItem>
+                <MenuItem value="offer">{t('shop:search.offer')}</MenuItem>
+                <MenuItem value="need">{t('shop:search.need')}</MenuItem>
               </Select>
             </FormControl>
 
@@ -1899,7 +1899,7 @@ export default function ShopPage() {
           <Button
             onClick={() => {
               if (!serviceForm.name || !serviceForm.description) {
-                toast({ title: "Naziv i opis su obavezni", variant: "destructive" });
+                toast({ title: t('shop:services.nameDescriptionRequired'), variant: "destructive" });
                 return;
               }
               if (editingService) {

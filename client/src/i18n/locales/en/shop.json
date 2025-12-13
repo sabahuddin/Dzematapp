@@ -131,5 +131,31 @@
     "orderContent": "{{user}} wants to buy: {{product}}{{quantity}}",
     "quantityLabel": " (Quantity: {{quantity}})",
     "shopMessage": "Message from Shop"
+  },
+  "search": {
+    "label": "Search",
+    "placeholder": "Search...",
+    "categoryLabel": "Category",
+    "all": "All",
+    "sell": "Selling",
+    "gift": "Gifting",
+    "need": "Looking for",
+    "offer": "Offering"
+  },
+  "services": {
+    "added": "Service added",
+    "addError": "Error adding service",
+    "updated": "Service updated",
+    "updateError": "Error updating service",
+    "deleted": "Service deleted",
+    "deleteError": "Error deleting service",
+    "typeLabel": "Service type",
+    "nameDescriptionRequired": "Name and description are required",
+    "noServices": "No services available"
+  },
+  "filters": {
+    "noResults": "No results for \"{{query}}\"",
+    "showAll": "Show all ({{count}})",
+    "searchResults": "Search results: \"{{query}}\""
   }
 }

@@ -42,7 +42,28 @@
     "sections": "Sections",
     "proposals": "Proposals",
     "accessRequests": "Access Requests",
-    "archive": "Archive"
+    "archive": "Archive",
+    "allTasksArchive": "All Tasks Archive"
+  },
+  "createProposal": "Create Proposal",
+  "createProposalFor": "Create proposal for {{name}}",
+  "archive": {
+    "title": "All Tasks Archive",
+    "sectionLabel": "Section",
+    "allSections": "All sections",
+    "userLabel": "User",
+    "allUsers": "All users",
+    "periodLabel": "Period",
+    "allPeriods": "All periods",
+    "last7days": "Last 7 days",
+    "last30days": "Last 30 days",
+    "last90days": "Last 90 days",
+    "totalArchived": "Total archived tasks",
+    "noArchivedTasks": "No archived tasks match the selected filters.",
+    "noArchivedTasksSimple": "No archived tasks",
+    "sectionUnknown": "Unknown section",
+    "completed": "Completed",
+    "assigned": "Assigned"
   },
   "accessRequests": {
     "title": "Access Requests",

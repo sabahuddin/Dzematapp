@@ -131,5 +131,15 @@
     "submittedAt": "Podneseno",
     "status": "Status",
     "adminNotes": "Napomena administratora"
+  },
+  "admin": {
+    "membershipApplications": "Pristupnice",
+    "incomingAkikaTitle": "Pristigle akika prijave",
+    "submitNewAkika": "Podnesite novu akika prijavu"
+  },
+  "buttons": {
+    "cancel": "Otkaži",
+    "reject": "Odbij",
+    "approve": "Odobri"
   }
 }

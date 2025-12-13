@@ -37,7 +37,18 @@
     "errorUpdate": "Fehler beim Aktualisieren der Vorlage",
     "errorDelete": "Fehler beim Löschen der Vorlage",
     "errorPngOnly": "Nur PNG-Format erlaubt",
-    "imageRequired": "Vorlagenbild ist erforderlich"
+    "imageRequired": "Vorlagenbild ist erforderlich",
+    "replaceImageOptional": "Bild ersetzen (optional)",
+    "selectNewImage": "Neues Bild auswählen",
+    "positionPreviewHint": "Roter Rahmen zeigt die ungefähre Position des Namens auf der Vorlage",
+    "positionCenteringHint": "Zum Zentrieren: X=512, Y=165. Passen Sie nach Bedarf mit der Vorschau oben an.",
+    "fontRecommendationHint": "Empfohlen: Schriftgröße 64-80px für gute Lesbarkeit",
+    "deleteTitle": "Löschen bestätigen",
+    "deleteConfirmMessage": "Sind Sie sicher, dass Sie diese Vorlage löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+    "cancelDelete": "Abbrechen",
+    "deleting": "Löschen...",
+    "delete": "Löschen",
+    "descriptionHeader": "Beschreibung"
   },
   "issue": {
     "pageTitle": "Urkunden ausstellen",

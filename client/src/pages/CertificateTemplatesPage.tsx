@@ -138,14 +138,14 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/certificates/templates'] });
       toast({
-        title: "Uspješno",
-        description: "Template je kreiran",
+        title: t('common:success'),
+        description: t('templates.created'),
       });
       handleCloseModal();
     },
     onError: (error: Error) => {
       toast({
-        title: "Greška",
+        title: t('common:error'),
         description: error.message,
         variant: "destructive",
       });
@@ -184,14 +184,14 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/certificates/templates'] });
       toast({
-        title: "Uspješno",
-        description: "Template je ažuriran",
+        title: t('common:success'),
+        description: t('templates.updated'),
       });
       handleCloseModal();
     },
     onError: (error: Error) => {
       toast({
-        title: "Greška",
+        title: t('common:error'),
         description: error.message,
         variant: "destructive",
       });
@@ -205,13 +205,13 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/certificates/templates'] });
       toast({
-        title: "Uspješno",
-        description: "Template je obrisan",
+        title: t('common:success'),
+        description: t('templates.deleted'),
       });
     },
     onError: (error: Error) => {
       toast({
-        title: "Greška",
+        title: t('common:error'),
         description: error.message,
         variant: "destructive",
       });
@@ -226,8 +226,8 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
       
       if (!selectedFile && !selectedTemplate) {
         toast({
-          title: "Greška",
-          description: "Morate odabrati sliku za template",
+          title: t('common:error'),
+          description: t('templates.imageRequired'),
           variant: "destructive",
         });
         return;
@@ -242,8 +242,8 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
       console.log('[CERT FORM] Validation errors:', formErrors);
       const errorMessages = Object.values(formErrors).map(e => e?.message).filter(Boolean).join(', ');
       toast({
-        title: "Greška u formi",
-        description: errorMessages || "Provjerite sva polja",
+        title: t('common:error'),
+        description: errorMessages || t('common:checkAllFields'),
         variant: "destructive",
       });
     }
@@ -284,8 +284,8 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
     if (file) {
       if (file.type !== 'image/png') {
         toast({
-          title: "Greška",
-          description: "Dozvoljen je samo PNG format",
+          title: t('common:error'),
+          description: t('templates.errorPngOnly'),
           variant: "destructive",
         });
         return;
@@ -326,7 +326,7 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
       {!hideHeader && (
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
           <Typography variant="h5" sx={{ fontWeight: 600 }} data-testid="text-page-title">
-            Zahvalnice - Templatei
+            {t('templates.pageTitle')}
           </Typography>
           <Button
             variant="contained"
@@ -334,7 +334,7 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
             onClick={() => handleOpenModal()}
             data-testid="button-add-template"
           >
-            Dodaj novi template
+            {t('templates.addTemplate')}
           </Button>
         </Box>
       )}
@@ -347,7 +347,7 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
             onClick={() => handleOpenModal()}
             data-testid="button-add-template"
           >
-            Dodaj novi template
+            {t('templates.addTemplate')}
           </Button>
         </Box>
       )}
@@ -357,19 +357,19 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
           {templates.length === 0 ? (
             <Box sx={{ textAlign: 'center', py: 8 }}>
               <Typography color="text.secondary" data-testid="text-no-templates">
-                Nema kreiranih template-a
+                {t('templates.noTemplates')}
               </Typography>
             </Box>
           ) : (
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ fontWeight: 600 }}>Slika</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Naziv</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Opis</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Font</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Pozicija</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>{t('templates.image')}</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>{t('templates.name')}</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>{t('templates.descriptionHeader')}</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>{t('templates.font')}</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>{t('templates.position')}</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>{t('templates.actions')}</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -435,21 +435,21 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
       <Dialog open={modalOpen} onClose={handleCloseModal} maxWidth="md" fullWidth>
         <form onSubmit={handleFormSubmitWithValidation}>
           <DialogTitle data-testid="text-modal-title">
-            {selectedTemplate ? "Uredi template" : "Dodaj novi template"}
+            {selectedTemplate ? t('templates.editTemplate') : t('templates.addNewTemplate')}
           </DialogTitle>
           <DialogContent>
             <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 3 }}>
               <Typography variant="caption" color="text.secondary">
                 {selectedTemplate
-                  ? "Ažurirajte informacije o template-u"
-                  : "Kreiranje novog template-a za zahvalnice"}
+                  ? t('templates.updateInfo')
+                  : t('templates.createNew')}
               </Typography>
 
               {/* File Upload */}
               {!selectedTemplate && (
                 <Box>
                   <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                    Template slika (PNG)
+                    {t('templates.templateImage')}
                   </Typography>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     <input
@@ -466,7 +466,7 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
                       onClick={() => document.getElementById('template-upload')?.click()}
                       data-testid="button-upload-file"
                     >
-                      {selectedFile ? "Promeni sliku" : "Izaberi sliku"}
+                      {selectedFile ? t('templates.changeImage') : t('templates.selectImage')}
                     </Button>
                     {selectedFile && (
                       <Typography variant="body2" color="text.secondary">
@@ -503,7 +503,7 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
                         </Box>
                       </Box>
                       <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
-                        Crveni okvir pokazuje približnu poziciju imena na template-u
+                        {t('templates.positionPreviewHint')}
                       </Typography>
                     </Box>
                   )}
@@ -513,7 +513,7 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
               {selectedTemplate && previewUrl && (
                 <Box>
                   <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                    Trenutna slika
+                    {t('templates.currentImage')}
                   </Typography>
                   <Box sx={{ position: 'relative', display: 'inline-block' }}>
                     <img
@@ -542,11 +542,11 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
                     </Box>
                   </Box>
                   <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
-                    Crveni okvir pokazuje približnu poziciju imena na template-u
+                    {t('templates.positionPreviewHint')}
                   </Typography>
                   <Box sx={{ mt: 2 }}>
                     <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                      Zamijeni sliku (opcionalno)
+                      {t('templates.replaceImageOptional')}
                     </Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                       <input
@@ -563,7 +563,7 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
                         onClick={() => document.getElementById('template-upload-edit')?.click()}
                         data-testid="button-upload-file-edit"
                       >
-                        {selectedFile ? "Promeni sliku" : "Izaberi novu sliku"}
+                        {selectedFile ? t('templates.changeImage') : t('templates.selectNewImage')}
                       </Button>
                       {selectedFile && (
                         <Typography variant="body2" color="text.secondary">
@@ -577,7 +577,7 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
 
               <TextField
                 fullWidth
-                label="Naziv"
+                label={t('templates.name')}
                 {...register('name')}
                 error={!!errors.name}
                 helperText={errors.name?.message}
@@ -587,7 +587,7 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
 
               <TextField
                 fullWidth
-                label="Opis (opcionalno)"
+                label={t('templates.description')}
                 multiline
                 rows={2}
                 {...register('description')}
@@ -600,7 +600,7 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
                 <Stack direction="row" spacing={2}>
                   <TextField
                     fullWidth
-                    label="Pozicija X"
+                    label={t('templates.positionX')}
                     type="number"
                     {...register('textPositionX', { 
                       valueAsNumber: true,
@@ -613,7 +613,7 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
                   />
                   <TextField
                     fullWidth
-                    label="Pozicija Y"
+                    label={t('templates.positionY')}
                     type="number"
                     {...register('textPositionY', { 
                       valueAsNumber: true,
@@ -626,7 +626,7 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
                   />
                 </Stack>
                 <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
-                  💡 Za centriranje: X=512, Y=165. Prilagodite prema potrebi koristeći preview gore.
+                  💡 {t('templates.positionCenteringHint')}
                 </Typography>
               </Box>
 
@@ -634,7 +634,7 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
                 <Stack direction="row" spacing={2}>
                   <TextField
                     fullWidth
-                    label="Veličina fonta"
+                    label={t('templates.fontSize')}
                     type="number"
                     {...register('fontSize', { 
                       valueAsNumber: true,
@@ -650,10 +650,10 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
                     control={control}
                     render={({ field }) => (
                       <FormControl fullWidth error={!!errors.fontColor} required>
-                        <InputLabel>Boja fonta</InputLabel>
+                        <InputLabel>{t('templates.fontColor')}</InputLabel>
                         <Select
                           {...field}
-                          label="Boja fonta"
+                          label={t('templates.fontColor')}
                           data-testid="select-font-color"
                         >
                           {FONT_COLORS.map((colorOption) => (
@@ -678,7 +678,7 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
                   />
                 </Stack>
                 <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
-                  💡 Preporučeno: Font 64-80px za dobru čitljivost
+                  💡 {t('templates.fontRecommendationHint')}
                 </Typography>
               </Box>
 
@@ -690,15 +690,15 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
                     {...field}
                     select
                     fullWidth
-                    label="Poravnanje teksta"
+                    label={t('templates.textAlign')}
                     error={!!errors.textAlign}
                     helperText={errors.textAlign?.message}
                     required
                     data-testid="select-text-align"
                   >
-                    <MenuItem value="left">Lijevo</MenuItem>
-                    <MenuItem value="center">Centar</MenuItem>
-                    <MenuItem value="right">Desno</MenuItem>
+                    <MenuItem value="left">{t('templates.alignLeft')}</MenuItem>
+                    <MenuItem value="center">{t('templates.alignCenter')}</MenuItem>
+                    <MenuItem value="right">{t('templates.alignRight')}</MenuItem>
                   </TextField>
                 )}
               />
@@ -709,7 +709,7 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
               onClick={handleCloseModal}
               data-testid="button-cancel"
             >
-              Otkaži
+              {t('templates.cancel')}
             </Button>
             <Button
               type="button"
@@ -722,8 +722,8 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
               }}
             >
               {createMutation.isPending || updateMutation.isPending
-                ? "Čuvanje..."
-                : "Sačuvaj"}
+                ? t('templates.saving')
+                : t('templates.save')}
             </Button>
           </DialogActions>
         </form>
@@ -736,10 +736,10 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle>Potvrda brisanja</DialogTitle>
+        <DialogTitle>{t('templates.deleteTitle')}</DialogTitle>
         <DialogContent>
           <Typography variant="body2" color="text.secondary" sx={{ pt: 1 }}>
-            Da li ste sigurni da želite obrisati ovaj template? Ova akcija se ne može poništiti.
+            {t('templates.deleteConfirmMessage')}
           </Typography>
         </DialogContent>
         <DialogActions>
@@ -747,7 +747,7 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
             onClick={() => setDeleteModalOpen(false)}
             data-testid="button-cancel-delete"
           >
-            Odustani
+            {t('templates.cancelDelete')}
           </Button>
           <Button
             variant="contained"
@@ -756,7 +756,7 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
             disabled={deleteMutation.isPending}
             data-testid="button-confirm-delete"
           >
-            {deleteMutation.isPending ? "Brisanje..." : "Obriši"}
+            {deleteMutation.isPending ? t('templates.deleting') : t('templates.delete')}
           </Button>
         </DialogActions>
       </Dialog>

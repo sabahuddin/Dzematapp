@@ -1630,7 +1630,7 @@ function IncomingAkikaApplications() {
             onClick={() => setReviewDialogOpen(false)}
             data-testid="button-cancel-review"
           >
-            Otkaži
+            {t("buttons.cancel")}
           </Button>
           <Button
             onClick={handleReject}
@@ -1639,7 +1639,7 @@ function IncomingAkikaApplications() {
             disabled={reviewMutation.isPending}
             data-testid="button-confirm-reject"
           >
-            Odbij
+            {t("buttons.reject")}
           </Button>
           <Button
             onClick={handleApprove}
@@ -1648,7 +1648,7 @@ function IncomingAkikaApplications() {
             disabled={reviewMutation.isPending}
             data-testid="button-confirm-approve"
           >
-            Odobri
+            {t("buttons.approve")}
           </Button>
         </DialogActions>
       </Dialog>
@@ -1702,7 +1702,7 @@ export default function ApplicationsPage() {
               />
               <Tab 
                 icon={user?.isAdmin ? <PersonAdd /> : <ListIcon />} 
-                label={user?.isAdmin ? "Pristupnice" : t("myApplications.title")} 
+                label={user?.isAdmin ? t("admin.membershipApplications") : t("myApplications.title")} 
                 iconPosition="start"
                 data-testid={user?.isAdmin ? "tab-membership-applications" : "tab-my-applications"}
               />
@@ -1711,10 +1711,10 @@ export default function ApplicationsPage() {
             <TabPanel value={tabValue} index={0}>
               {user?.isAdmin ? (
                 <Box>
-                  <Typography variant="h6" sx={{ mb: 2 }}>Pristigle akika prijave</Typography>
+                  <Typography variant="h6" sx={{ mb: 2 }}>{t("admin.incomingAkikaTitle")}</Typography>
                   <IncomingAkikaApplications />
                   <Divider sx={{ my: 4 }} />
-                  <Typography variant="h6" sx={{ mb: 2 }}>Podnesite novu akika prijavu</Typography>
+                  <Typography variant="h6" sx={{ mb: 2 }}>{t("admin.submitNewAkika")}</Typography>
                   <AkikaApplicationForm />
                 </Box>
               ) : (

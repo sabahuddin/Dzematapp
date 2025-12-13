@@ -37,7 +37,18 @@
     "errorUpdate": "Error updating template",
     "errorDelete": "Error deleting template",
     "errorPngOnly": "Only PNG format allowed",
-    "imageRequired": "Template image is required"
+    "imageRequired": "Template image is required",
+    "replaceImageOptional": "Replace image (optional)",
+    "selectNewImage": "Select new image",
+    "positionPreviewHint": "Red border shows the approximate position of the name on the template",
+    "positionCenteringHint": "For centering: X=512, Y=165. Adjust as needed using the preview above.",
+    "fontRecommendationHint": "Recommended: Font 64-80px for good readability",
+    "deleteTitle": "Confirm deletion",
+    "deleteConfirmMessage": "Are you sure you want to delete this template? This action cannot be undone.",
+    "cancelDelete": "Cancel",
+    "deleting": "Deleting...",
+    "delete": "Delete",
+    "descriptionHeader": "Description"
   },
   "issue": {
     "pageTitle": "Issue Certificates",

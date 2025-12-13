@@ -131,5 +131,31 @@
     "orderContent": "{{user}} želi kupiti: {{product}}{{quantity}}",
     "quantityLabel": " (Količina: {{quantity}})",
     "shopMessage": "Poruka sa Shop-a"
+  },
+  "search": {
+    "label": "Pretraži",
+    "placeholder": "Pretraži...",
+    "categoryLabel": "Kategorija",
+    "all": "Sve",
+    "sell": "Prodajem",
+    "gift": "Poklanjam",
+    "need": "Tražim",
+    "offer": "Nudim"
+  },
+  "services": {
+    "added": "Usluga dodana",
+    "addError": "Greška pri dodavanju usluge",
+    "updated": "Usluga ažurirana",
+    "updateError": "Greška pri ažuriranju usluge",
+    "deleted": "Usluga obrisana",
+    "deleteError": "Greška pri brisanju usluge",
+    "typeLabel": "Vrsta usluge",
+    "nameDescriptionRequired": "Naziv i opis su obavezni",
+    "noServices": "Nema dostupnih usluga"
+  },
+  "filters": {
+    "noResults": "Nema rezultata za \"{{query}}\"",
+    "showAll": "Prikaži sve ({{count}})",
+    "searchResults": "Rezultati pretrage: \"{{query}}\""
   }
 }

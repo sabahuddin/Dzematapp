@@ -131,5 +131,15 @@
     "submittedAt": "Submitted on",
     "status": "Status",
     "adminNotes": "Admin Notes"
+  },
+  "admin": {
+    "membershipApplications": "Membership Applications",
+    "incomingAkikaTitle": "Incoming Akika Applications",
+    "submitNewAkika": "Submit a new akika application"
+  },
+  "buttons": {
+    "cancel": "Cancel",
+    "reject": "Reject",
+    "approve": "Approve"
   }
 }

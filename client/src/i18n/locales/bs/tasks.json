@@ -42,7 +42,28 @@
     "sections": "Sekcije",
     "proposals": "Prijedlozi",
     "accessRequests": "Zahtjevi za pristup",
-    "archive": "Arhiva"
+    "archive": "Arhiva",
+    "allTasksArchive": "Arhiva svih zadataka"
+  },
+  "createProposal": "Kreiraj prijedlog",
+  "createProposalFor": "Kreiraj prijedlog za {{name}}",
+  "archive": {
+    "title": "Arhiva svih zadataka",
+    "sectionLabel": "Sekcija",
+    "allSections": "Sve sekcije",
+    "userLabel": "Korisnik",
+    "allUsers": "Svi korisnici",
+    "periodLabel": "Period",
+    "allPeriods": "Svi periodi",
+    "last7days": "Zadnjih 7 dana",
+    "last30days": "Zadnjih 30 dana",
+    "last90days": "Zadnjih 90 dana",
+    "totalArchived": "Ukupno arhiviranih zadataka",
+    "noArchivedTasks": "Nema arhiviranih zadataka koji zadovoljavaju izabrane filtere.",
+    "noArchivedTasksSimple": "Nema arhiviranih zadataka",
+    "sectionUnknown": "Nepoznata sekcija",
+    "completed": "Završeno",
+    "assigned": "Dodijeljeno"
   },
   "accessRequests": {
     "title": "Zahtjevi za pristup",
