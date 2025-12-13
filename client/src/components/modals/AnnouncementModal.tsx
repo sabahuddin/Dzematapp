@@ -183,7 +183,7 @@ export default function AnnouncementModal({
               <Schedule sx={{ color: '#3949AB', fontSize: 28, mt: 0.5 }} />
               <Box>
                 <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                  Objavljeno
+                  {t('announcements:modal.published')}
                 </Typography>
                 <Typography variant="body1" sx={{ fontWeight: 500 }}>
                   {new Date(announcement?.publishDate || Date.now()).toLocaleDateString('bs-BA', { 
@@ -200,7 +200,7 @@ export default function AnnouncementModal({
               <Article sx={{ color: '#3949AB', fontSize: 28, mt: 0.5 }} />
               <Box sx={{ flex: 1 }}>
                 <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
-                  Sadržaj
+                  {t('announcements:modal.contentLabel')}
                 </Typography>
                 <Box sx={{ 
                   p: 2, 
@@ -279,7 +279,7 @@ export default function AnnouncementModal({
                     <Box sx={{ py: 2 }}>
                       <CloudUpload sx={{ fontSize: 40, color: '#3949AB', mb: 1 }} />
                       <Typography variant="body2" sx={{ color: '#3949AB', fontWeight: 500 }}>
-                        Dodaj sliku obavijesti
+                        {t('announcements:modal.addImage')}
                       </Typography>
                     </Box>
                   )}

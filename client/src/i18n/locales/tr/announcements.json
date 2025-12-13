@@ -50,8 +50,11 @@
     "fileTooLarge": "Fajl {{fileName}} je prevelik. Maksimalna veličina je {{size}}MB.",
     "fileDeleteSuccess": "Fajl je uspješno obrisan",
     "fileDeleteError": "Greška pri brisanju fajla",
-    "featuredLabel": "Istaknuta obavijest",
-    "save": "Spremi"
+    "featuredLabel": "Öne Çıkan Duyuru",
+    "save": "Kaydet",
+    "addImage": "Duyuru resmi ekle",
+    "published": "Yayınlandı",
+    "contentLabel": "İçerik"
   },
   "messages": {
     "createSuccess": "Obavijest je uspješno kreirana",

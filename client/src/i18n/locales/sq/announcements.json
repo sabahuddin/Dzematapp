@@ -51,7 +51,10 @@
     "fileDeleteSuccess": "Skedari u fshi me sukses",
     "fileDeleteError": "Gabim gjatë fshirjes së skedarit",
     "featuredLabel": "Njoftim i Veçuar",
-    "save": "Ruaj"
+    "save": "Ruaj",
+    "addImage": "Shto foto të njoftimit",
+    "published": "E publikuar",
+    "contentLabel": "Përmbajtja"
   },
   "messages": {
     "createSuccess": "Njoftimi u krijua me sukses",

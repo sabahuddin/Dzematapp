@@ -51,7 +51,10 @@
     "fileDeleteSuccess": "Datei erfolgreich gelöscht",
     "fileDeleteError": "Fehler beim Löschen der Datei",
     "featuredLabel": "Hervorgehobene Ankündigung",
-    "save": "Speichern"
+    "save": "Speichern",
+    "addImage": "Ankündigungsbild hinzufügen",
+    "published": "Veröffentlicht",
+    "contentLabel": "Inhalt"
   },
   "messages": {
     "createSuccess": "Ankündigung erfolgreich erstellt",

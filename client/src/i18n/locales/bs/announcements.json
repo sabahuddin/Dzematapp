@@ -51,7 +51,10 @@
     "fileDeleteSuccess": "Fajl je uspješno obrisan",
     "fileDeleteError": "Greška pri brisanju fajla",
     "featuredLabel": "Istaknuta obavijest",
-    "save": "Spremi"
+    "save": "Spremi",
+    "addImage": "Dodaj sliku obavijesti",
+    "published": "Objavljeno",
+    "contentLabel": "Sadržaj"
   },
   "messages": {
     "createSuccess": "Obavijest je uspješno kreirana",

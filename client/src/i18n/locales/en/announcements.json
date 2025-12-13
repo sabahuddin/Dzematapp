@@ -51,7 +51,10 @@
     "fileDeleteSuccess": "File deleted successfully",
     "fileDeleteError": "Error deleting file",
     "featuredLabel": "Featured Announcement",
-    "save": "Save"
+    "save": "Save",
+    "addImage": "Add announcement image",
+    "published": "Published",
+    "contentLabel": "Content"
   },
   "messages": {
     "createSuccess": "Announcement created successfully",
