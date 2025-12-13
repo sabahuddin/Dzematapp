@@ -314,7 +314,7 @@ export default function MembershipFeesPage() {
     worksheet['!cols'] = [{ wch: 12 }, { wch: 25 }, { wch: 10 }, { wch: 10 }, { wch: 10 }];
     
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Članarina');
+    XLSX.utils.book_append_sheet(workbook, worksheet, t('membershipFees:title'));
     
     XLSX.writeFile(workbook, `clanarina_template_${templateYear}.xlsx`);
   };
@@ -334,7 +334,7 @@ export default function MembershipFeesPage() {
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h4" fontWeight="bold">
           <Receipt sx={{ mr: 1, verticalAlign: 'middle' }} />
-          Članarina
+          {t('membershipFees:title')}
         </Typography>
         <Button
           variant="contained"
@@ -342,7 +342,7 @@ export default function MembershipFeesPage() {
           onClick={() => setUploadDialogOpen(true)}
           data-testid="button-bulk-upload"
         >
-          Bulk Upload
+          {t('membershipFees:bulkUpload')}
         </Button>
       </Box>
 
@@ -352,7 +352,7 @@ export default function MembershipFeesPage() {
             <Grid size={{ xs: 12, sm: 4 }}>
               <TextField
                 fullWidth
-                placeholder="Pretraži po imenu..."
+                placeholder={t('membershipFees:searchMembers')}
                 value={searchTerm}
                 onChange={(e) => { setSearchTerm(e.target.value); setGridPage(0); setPaymentsPage(0); }}
                 InputProps={{
@@ -373,7 +373,7 @@ export default function MembershipFeesPage() {
                   displayEmpty
                   data-testid="select-year"
                 >
-                  <MenuItem value="all">Sve godine</MenuItem>
+                  <MenuItem value="all">{t('membershipFees:allYears')}</MenuItem>
                   {yearOptions.filter(y => y !== 'all').map(year => (
                     <MenuItem key={String(year)} value={year}>{year}</MenuItem>
                   ))}
@@ -388,13 +388,13 @@ export default function MembershipFeesPage() {
                 fullWidth
                 data-testid="button-add-payment"
               >
-                Dodaj uplatu
+                {t('membershipFees:addPayment')}
               </Button>
             </Grid>
             <Grid size={{ xs: 12, sm: 3 }}>
               {settings && (
                 <Chip 
-                  label={orgSettings?.membershipFeeType === 'monthly' ? 'Mjesečna naplata' : 'Godišnja naplata'} 
+                  label={orgSettings?.membershipFeeType === 'monthly' ? t('membershipFees:monthlyFee') : t('membershipFees:yearlyFee')} 
                   color="primary"
                   variant="outlined"
                 />
@@ -405,9 +405,9 @@ export default function MembershipFeesPage() {
       </Card>
 
       <Tabs value={tabValue} onChange={(_, v) => setTabValue(v)} sx={{ mb: 2 }}>
-        <Tab label="Pregled uplatnica" data-testid="tab-payments-grid" />
-        <Tab label="Sve uplate" data-testid="tab-all-payments" />
-        <Tab label="Historija upload-a" data-testid="tab-upload-history" />
+        <Tab label={t('membershipFees:paymentsOverview')} data-testid="tab-payments-grid" />
+        <Tab label={t('membershipFees:allPayments')} data-testid="tab-all-payments" />
+        <Tab label={t('membershipFees:uploadHistory')} data-testid="tab-upload-history" />
       </Tabs>
 
       <TabPanel value={tabValue} index={0}>
@@ -416,17 +416,17 @@ export default function MembershipFeesPage() {
             <CircularProgress />
           </Box>
         ) : filteredGrid.length === 0 ? (
-          <Alert severity="info">Nema članova za prikaz.</Alert>
+          <Alert severity="info">{t('membershipFees:noMembers')}</Alert>
         ) : (
           <TableContainer component={Card}>
             <Table size="small">
               <TableHead>
                 <TableRow>
                   <TableCell sx={{ fontWeight: 'bold', position: 'sticky', left: 0, bgcolor: 'background.paper', zIndex: 1 }}>
-                    Član
+                    {t('membershipFees:member')}
                   </TableCell>
                   <TableCell align="center" sx={{ fontWeight: 'bold', minWidth: 80 }}>
-                    Članarina
+                    {t('membershipFees:title')}
                   </TableCell>
                   {selectedYear !== 'all' && MONTHS.map((month, idx) => (
                     <TableCell key={idx} align="center" sx={{ fontWeight: 'bold', minWidth: 50 }}>
@@ -687,16 +687,16 @@ export default function MembershipFeesPage() {
 
       {/* Add Payment Dialog */}
       <Dialog open={addPaymentDialogOpen} onClose={() => setAddPaymentDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Dodaj pojedinačnu uplatu</DialogTitle>
+        <DialogTitle>{t('membershipFees:addPaymentDialog.title')}</DialogTitle>
         <DialogContent>
           <Grid container spacing={2} sx={{ mt: 1 }}>
             <Grid size={{ xs: 12 }}>
               <FormControl fullWidth>
-                <InputLabel>Član</InputLabel>
+                <InputLabel>{t('membershipFees:addPaymentDialog.selectMember')}</InputLabel>
                 <Select
                   value={newPayment.userId}
                   onChange={(e) => setNewPayment({ ...newPayment, userId: e.target.value })}
-                  label="Član"
+                  label={t('membershipFees:addPaymentDialog.selectMember')}
                 >
                   {users.filter(u => u.status === 'aktivan' && !u.isAdmin).map((user: any) => (
                     <MenuItem key={user.id} value={user.id}>
@@ -709,7 +709,7 @@ export default function MembershipFeesPage() {
             <Grid size={{ xs: 6 }}>
               <TextField
                 fullWidth
-                label="Iznos"
+                label={t('membershipFees:addPaymentDialog.amount')}
                 type="number"
                 value={newPayment.amount}
                 onChange={(e) => setNewPayment({ ...newPayment, amount: e.target.value })}
@@ -717,11 +717,11 @@ export default function MembershipFeesPage() {
             </Grid>
             <Grid size={{ xs: 6 }}>
               <FormControl fullWidth>
-                <InputLabel>Godina</InputLabel>
+                <InputLabel>{t('membershipFees:addPaymentDialog.year')}</InputLabel>
                 <Select
                   value={newPayment.coverageYear}
                   onChange={(e) => setNewPayment({ ...newPayment, coverageYear: e.target.value as number })}
-                  label="Godina"
+                  label={t('membershipFees:addPaymentDialog.year')}
                 >
                   {yearOptions.filter(y => y !== 'all').map(year => (
                     <MenuItem key={String(year)} value={year}>{year}</MenuItem>
@@ -731,11 +731,11 @@ export default function MembershipFeesPage() {
             </Grid>
             <Grid size={{ xs: 12 }}>
               <FormControl fullWidth>
-                <InputLabel>Mjesec</InputLabel>
+                <InputLabel>{t('membershipFees:addPaymentDialog.month')}</InputLabel>
                 <Select
                   value={newPayment.coverageMonth}
                   onChange={(e) => setNewPayment({ ...newPayment, coverageMonth: e.target.value as number })}
-                  label="Mjesec"
+                  label={t('membershipFees:addPaymentDialog.month')}
                 >
                   {MONTHS.map((month, idx) => (
                     <MenuItem key={idx + 1} value={idx + 1}>{month}</MenuItem>
@@ -752,34 +752,34 @@ export default function MembershipFeesPage() {
                     color="primary"
                   />
                 }
-                label="Automatski rasporedi na mjesece (ako iznos prelazi članarinu)"
+                label={t('membershipFees:addPaymentDialog.autoDistribute')}
               />
             </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setAddPaymentDialogOpen(false)}>Otkaži</Button>
+          <Button onClick={() => setAddPaymentDialogOpen(false)}>{t('membershipFees:addPaymentDialog.cancel')}</Button>
           <Button variant="contained" onClick={handleAddPayment} disabled={createPaymentMutation.isPending}>
-            Dodaj
+            {t('membershipFees:addPaymentDialog.add')}
           </Button>
         </DialogActions>
       </Dialog>
 
       {/* Edit Payment Dialog */}
       <Dialog open={editPaymentDialogOpen} onClose={() => setEditPaymentDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Izmijeni uplatu</DialogTitle>
+        <DialogTitle>{t('membershipFees:editPaymentDialog.title')}</DialogTitle>
         <DialogContent>
           {editingPayment && (
             <Grid container spacing={2} sx={{ mt: 1 }}>
               <Grid size={{ xs: 12 }}>
                 <Typography variant="body2" color="text.secondary">
-                  Član: {users.find(u => u.id === editingPayment.userId)?.firstName} {users.find(u => u.id === editingPayment.userId)?.lastName}
+                  {t('membershipFees:editPaymentDialog.member')}: {users.find(u => u.id === editingPayment.userId)?.firstName} {users.find(u => u.id === editingPayment.userId)?.lastName}
                 </Typography>
               </Grid>
               <Grid size={{ xs: 6 }}>
                 <TextField
                   fullWidth
-                  label="Iznos"
+                  label={t('membershipFees:editPaymentDialog.amount')}
                   type="number"
                   value={editingPayment.amount || ''}
                   onChange={(e) => setEditingPayment({ ...editingPayment, amount: e.target.value })}
@@ -787,11 +787,11 @@ export default function MembershipFeesPage() {
               </Grid>
               <Grid size={{ xs: 6 }}>
                 <FormControl fullWidth>
-                  <InputLabel>Godina</InputLabel>
+                  <InputLabel>{t('membershipFees:editPaymentDialog.year')}</InputLabel>
                   <Select
                     value={editingPayment.coverageYear || currentYear}
                     onChange={(e) => setEditingPayment({ ...editingPayment, coverageYear: e.target.value as number })}
-                    label="Godina"
+                    label={t('membershipFees:editPaymentDialog.year')}
                   >
                     {yearOptions.filter(y => y !== 'all').map(year => (
                       <MenuItem key={String(year)} value={year}>{year}</MenuItem>
@@ -801,11 +801,11 @@ export default function MembershipFeesPage() {
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <FormControl fullWidth>
-                  <InputLabel>Mjesec</InputLabel>
+                  <InputLabel>{t('membershipFees:editPaymentDialog.month')}</InputLabel>
                   <Select
                     value={editingPayment.coverageMonth || 1}
                     onChange={(e) => setEditingPayment({ ...editingPayment, coverageMonth: e.target.value as number })}
-                    label="Mjesec"
+                    label={t('membershipFees:editPaymentDialog.month')}
                   >
                     {MONTHS.map((month, idx) => (
                       <MenuItem key={idx + 1} value={idx + 1}>{month}</MenuItem>
@@ -817,7 +817,7 @@ export default function MembershipFeesPage() {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setEditPaymentDialogOpen(false)}>Otkaži</Button>
+          <Button onClick={() => setEditPaymentDialogOpen(false)}>{t('membershipFees:editPaymentDialog.cancel')}</Button>
           <Button 
             variant="contained" 
             onClick={() => {
@@ -834,7 +834,7 @@ export default function MembershipFeesPage() {
             }} 
             disabled={updatePaymentMutation.isPending}
           >
-            Sačuvaj
+            {t('membershipFees:editPaymentDialog.save')}
           </Button>
         </DialogActions>
       </Dialog>

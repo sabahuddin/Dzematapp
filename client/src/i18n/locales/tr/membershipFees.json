@@ -32,10 +32,32 @@
     "selectFile": "Dosya Seç",
     "uploading": "Yükleniyor..."
   },
+  "bulkUploadForm": {
+    "title": "Toplu Ödeme Yükleme",
+    "description": "Ödemelerle birlikte Excel veya CSV dosyası yükleyin.",
+    "columns": "Sütunlar: Kayıt Numarası, Tam Ad, Tutar, Yıl, Ay",
+    "downloadTemplate": "Şablonu İndir",
+    "selectFile": "Dosya Seç",
+    "close": "Kapat"
+  },
   "addPaymentDialog": {
     "title": "Bireysel Ödeme Ekle",
     "selectMember": "Üye",
+    "amount": "Tutar",
+    "year": "Yıl",
+    "month": "Ay",
+    "autoDistribute": "Otomatik olarak aylara dağıt (tutar aidatı aşarsa)",
+    "cancel": "İptal",
     "add": "Ekle"
+  },
+  "editPaymentDialog": {
+    "title": "Ödemeyi Düzenle",
+    "member": "Üye",
+    "amount": "Tutar",
+    "year": "Yıl",
+    "month": "Ay",
+    "cancel": "İptal",
+    "save": "Kaydet"
   },
   "uploadLog": {
     "date": "Tarih",
@@ -104,5 +126,10 @@
     "deleteSuccess": "Başvuru silindi",
     "deleteError": "Başvuru silinirken hata",
     "deleteConfirm": "Bu başvuruyu silmek istediğinizden emin misiniz?"
-  }
+  },
+  "allYears": "Tüm yıllar",
+  "monthlyFee": "Aylık Aidat",
+  "yearlyFee": "Yıllık Aidat",
+  "paymentsOverview": "Ödeme Genel Görünümü",
+  "allPayments": "Tüm Ödemeler"
 }

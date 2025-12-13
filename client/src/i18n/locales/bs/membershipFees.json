@@ -112,5 +112,34 @@
     "deleteSuccess": "Pristupnica je obrisana",
     "deleteError": "Greška pri brisanju pristupnice",
     "deleteConfirm": "Da li ste sigurni da želite obrisati ovu pristupnicu?"
+  },
+  "bulkUpload": "Bulk Upload",
+  "searchMembers": "Pretraži po imenu...",
+  "allYears": "Sve godine",
+  "monthlyFee": "Mjesečna naplata",
+  "yearlyFee": "Godišnja naplata",
+  "paymentsOverview": "Pregled uplatnica",
+  "allPayments": "Sve uplate",
+  "uploadHistory": "Historija upload-a",
+  "noMembers": "Nema članova za prikaz.",
+  "member": "Član",
+  "addPaymentDialog": {
+    "title": "Dodaj pojedinačnu uplatu",
+    "selectMember": "Član",
+    "amount": "Iznos",
+    "year": "Godina",
+    "month": "Mjesec",
+    "autoDistribute": "Automatski rasporedi na mjesece (ako iznos prelazi članarinu)",
+    "cancel": "Otkaži",
+    "add": "Dodaj"
+  },
+  "editPaymentDialog": {
+    "title": "Izmijeni uplatu",
+    "member": "Član",
+    "amount": "Iznos",
+    "year": "Godina",
+    "month": "Mjesec",
+    "cancel": "Otkaži",
+    "save": "Sačuvaj"
   }
 }

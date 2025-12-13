@@ -32,7 +32,7 @@
     "selectFile": "Datei auswählen",
     "uploading": "Hochladen..."
   },
-  "bulkUpload": {
+  "bulkUploadForm": {
     "title": "Massen-Upload Zahlung",
     "description": "Laden Sie Excel- oder CSV-Datei mit Zahlungen hoch.",
     "columns": "Spalten: Registrierungsnummer, Vollständiger Name, Betrag, Jahr, Monat",
@@ -43,7 +43,21 @@
   "addPaymentDialog": {
     "title": "Einzelzahlung hinzufügen",
     "selectMember": "Mitglied",
+    "amount": "Betrag",
+    "year": "Jahr",
+    "month": "Monat",
+    "autoDistribute": "Automatisch auf Monate verteilen (wenn Betrag Beitrag übersteigt)",
+    "cancel": "Abbrechen",
     "add": "Hinzufügen"
+  },
+  "editPaymentDialog": {
+    "title": "Zahlung bearbeiten",
+    "member": "Mitglied",
+    "amount": "Betrag",
+    "year": "Jahr",
+    "month": "Monat",
+    "cancel": "Abbrechen",
+    "save": "Speichern"
   },
   "uploadLog": {
     "date": "Datum",
@@ -112,5 +126,10 @@
     "deleteSuccess": "Antrag gelöscht",
     "deleteError": "Fehler beim Löschen des Antrags",
     "deleteConfirm": "Sind Sie sicher, dass Sie diesen Antrag löschen möchten?"
-  }
+  },
+  "allYears": "Alle Jahre",
+  "monthlyFee": "Monatlicher Beitrag",
+  "yearlyFee": "Jährlicher Beitrag",
+  "paymentsOverview": "Zahlungsübersicht",
+  "allPayments": "Alle Zahlungen"
 }

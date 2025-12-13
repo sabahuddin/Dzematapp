@@ -32,10 +32,32 @@
     "selectFile": "Zgjidh skedarin",
     "uploading": "Duke ngarkuar..."
   },
+  "bulkUploadForm": {
+    "title": "Ngarkim në masë i pagesave",
+    "description": "Ngarkoni një skedar Excel ose CSV me pagesa.",
+    "columns": "Kolonat: Numri i regjistrit, Emri i plotë, Shuma, Viti, Muaji",
+    "downloadTemplate": "Shkarko shabllonin",
+    "selectFile": "Zgjidh skedarin",
+    "close": "Mbyll"
+  },
   "addPaymentDialog": {
     "title": "Shto pagesë individuale",
     "selectMember": "Anëtari",
+    "amount": "Shuma",
+    "year": "Viti",
+    "month": "Muaji",
+    "autoDistribute": "Shpërnda automatikisht në muaj (nëse shuma tejkalon tarifën)",
+    "cancel": "Anulo",
     "add": "Shto"
+  },
+  "editPaymentDialog": {
+    "title": "Redakto pagesën",
+    "member": "Anëtari",
+    "amount": "Shuma",
+    "year": "Viti",
+    "month": "Muaji",
+    "cancel": "Anulo",
+    "save": "Ruaj"
   },
   "uploadLog": {
     "date": "Data",
@@ -104,5 +126,10 @@
     "deleteSuccess": "Aplikacioni u fshi",
     "deleteError": "Gabim gjatë fshirjes së aplikacionit",
     "deleteConfirm": "Jeni të sigurt që dëshironi të fshini këtë aplikacion?"
-  }
+  },
+  "allYears": "Të gjitha vitet",
+  "monthlyFee": "Tarifa mujore",
+  "yearlyFee": "Tarifa vjetore",
+  "paymentsOverview": "Pasqyra e pagesave",
+  "allPayments": "Të gjitha pagesat"
 }
