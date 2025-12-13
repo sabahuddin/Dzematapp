@@ -58,6 +58,7 @@ import MembershipFeesPage from "@/pages/MembershipFeesPage";
 import MyClanarinaPage from "@/pages/MyClanarinaPage";
 import NotFound from "@/pages/not-found";
 import EventCheckinPage from "@/pages/EventCheckinPage";
+import AllSectionsPage from "@/pages/AllSectionsPage";
 
 // Layout
 import DashboardLayout from "@/components/layout/DashboardLayout";
@@ -881,6 +882,14 @@ function Router() {
         </ProtectedRoute>
       </Route>
       
+      <Route path="/sections">
+        <ProtectedRoute>
+          <ModuleGuard moduleId="workgroups">
+            <AllSectionsPage />
+          </ModuleGuard>
+        </ProtectedRoute>
+      </Route>
+      
       <Route path="/messages">
         <ProtectedRoute>
           <MessagesPage />
@@ -889,7 +898,7 @@ function Router() {
       
       <Route path="/ask-imam">
         <ProtectedRoute>
-          <ModuleGuard moduleId="imam_qa">
+          <ModuleGuard moduleId="askImam">
             <AskImamPage />
           </ModuleGuard>
         </ProtectedRoute>
