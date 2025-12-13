@@ -126,6 +126,17 @@
   },
   "applications": "Pristupnice",
   "applicationsDescription": "Pregled svih zahtjeva za članstvo",
+  "tableHeaders": {
+    "fullName": "Ime i prezime",
+    "email": "Email",
+    "phone": "Telefon",
+    "dateOfBirth": "Datum rođenja",
+    "monthlyFee": "Mjesečna članarina",
+    "status": "Status",
+    "applicationDate": "Datum prijave",
+    "actions": "Akcije",
+    "noApplications": "Nema pristupnica"
+  },
   "status": {
     "pending": "Na čekanju",
     "approved": "Odobreno",

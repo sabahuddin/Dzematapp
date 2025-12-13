@@ -126,6 +126,17 @@
   },
   "applications": "Membership Applications",
   "applicationsDescription": "View all membership application requests",
+  "tableHeaders": {
+    "fullName": "Full Name",
+    "email": "Email",
+    "phone": "Phone",
+    "dateOfBirth": "Date of Birth",
+    "monthlyFee": "Monthly Fee",
+    "status": "Status",
+    "applicationDate": "Application Date",
+    "actions": "Actions",
+    "noApplications": "No applications"
+  },
   "status": {
     "pending": "Pending",
     "approved": "Approved",

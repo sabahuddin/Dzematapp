@@ -405,21 +405,21 @@ export function MembershipApplicationsList() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Ime i prezime</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Telefon</TableCell>
-              <TableCell>Datum rođenja</TableCell>
-              <TableCell>Mjesečna članarina</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Datum prijave</TableCell>
-              <TableCell>Akcije</TableCell>
+              <TableCell>{t('tableHeaders.fullName')}</TableCell>
+              <TableCell>{t('tableHeaders.email')}</TableCell>
+              <TableCell>{t('tableHeaders.phone')}</TableCell>
+              <TableCell>{t('tableHeaders.dateOfBirth')}</TableCell>
+              <TableCell>{t('tableHeaders.monthlyFee')}</TableCell>
+              <TableCell>{t('tableHeaders.status')}</TableCell>
+              <TableCell>{t('tableHeaders.applicationDate')}</TableCell>
+              <TableCell>{t('tableHeaders.actions')}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {applications.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={8} align="center">
-                  <Typography color="text.secondary">Nema pristupnica</Typography>
+                  <Typography color="text.secondary">{t('tableHeaders.noApplications')}</Typography>
                 </TableCell>
               </TableRow>
             ) : (

@@ -126,6 +126,17 @@
   },
   "applications": "Anträge",
   "applicationsDescription": "Übersicht aller Mitgliedschaftsanträge",
+  "tableHeaders": {
+    "fullName": "Vollständiger Name",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "dateOfBirth": "Geburtsdatum",
+    "monthlyFee": "Monatsbeitrag",
+    "status": "Status",
+    "applicationDate": "Antragsdatum",
+    "actions": "Aktionen",
+    "noApplications": "Keine Anträge"
+  },
   "status": {
     "pending": "Ausstehend",
     "approved": "Genehmigt",

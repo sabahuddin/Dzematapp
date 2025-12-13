@@ -126,6 +126,17 @@
   },
   "applications": "Aplikacionet e anëtarësimit",
   "applicationsDescription": "Shikoni të gjithë kërkesat e aplikacionit të anëtarësimit",
+  "tableHeaders": {
+    "fullName": "Emri i plotë",
+    "email": "Email",
+    "phone": "Telefoni",
+    "dateOfBirth": "Data e lindjes",
+    "monthlyFee": "Tarifa mujore",
+    "status": "Statusi",
+    "applicationDate": "Data e aplikimit",
+    "actions": "Veprimet",
+    "noApplications": "Nuk ka aplikacione"
+  },
   "status": {
     "pending": "Në pritje",
     "approved": "Miratuar",

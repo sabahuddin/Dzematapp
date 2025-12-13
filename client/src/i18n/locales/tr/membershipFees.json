@@ -126,6 +126,17 @@
   },
   "applications": "Üyelik Başvuruları",
   "applicationsDescription": "Tüm üyelik başvuru taleplerini görüntüleyin",
+  "tableHeaders": {
+    "fullName": "Ad Soyad",
+    "email": "E-posta",
+    "phone": "Telefon",
+    "dateOfBirth": "Doğum Tarihi",
+    "monthlyFee": "Aylık Aidat",
+    "status": "Durum",
+    "applicationDate": "Başvuru Tarihi",
+    "actions": "İşlemler",
+    "noApplications": "Başvuru yok"
+  },
   "status": {
     "pending": "Bekleme",
     "approved": "Onaylandı",
