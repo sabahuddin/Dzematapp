@@ -26,6 +26,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { exportToExcel } from '@/utils/excelExport';
+import { useTranslation } from 'react-i18next';
 
 interface EventRSVPModalProps {
   open: boolean;
@@ -36,6 +37,7 @@ interface EventRSVPModalProps {
 export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalProps) {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation(['events', 'common']);
   const [adultsCount, setAdultsCount] = useState<string>('1');
   const [childrenCount, setChildrenCount] = useState<string>('0');
 
@@ -86,15 +88,15 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
       queryClient.invalidateQueries({ queryKey: ['/api/events', event.id, 'rsvps'] });
       queryClient.invalidateQueries({ queryKey: ['/api/events'] });
       toast({
-        title: 'Uspjeh',
-        description: 'Uspješno ste se prijavili za događaj'
+        title: t('toast.success'),
+        description: t('rsvpModal.successRegistered')
       });
       onClose();
     },
     onError: () => {
       toast({
-        title: 'Greška',
-        description: 'Greška pri prijavi za događaj',
+        title: t('toast.error'),
+        description: t('rsvpModal.errorRegister'),
         variant: 'destructive'
       });
     }
@@ -109,15 +111,15 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
       queryClient.invalidateQueries({ queryKey: ['/api/events', event.id, 'rsvps'] });
       queryClient.invalidateQueries({ queryKey: ['/api/events'] });
       toast({
-        title: 'Uspjeh',
-        description: 'Uspješno ste ažurirali prijavu'
+        title: t('toast.success'),
+        description: t('rsvpModal.successUpdated')
       });
       onClose();
     },
     onError: () => {
       toast({
-        title: 'Greška',
-        description: 'Greška pri ažuriranju prijave',
+        title: t('toast.error'),
+        description: t('rsvpModal.errorUpdate'),
         variant: 'destructive'
       });
     }
@@ -134,8 +136,8 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
       queryClient.invalidateQueries({ queryKey: ['/api/events', event.id, 'rsvps'] });
       queryClient.invalidateQueries({ queryKey: ['/api/events'] });
       toast({
-        title: 'Uspjeh',
-        description: 'Uspješno ste otkazali prijavu'
+        title: t('toast.success'),
+        description: t('rsvpModal.successCancelled')
       });
       if (!user?.isAdmin) {
         onClose();
@@ -143,8 +145,8 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
     },
     onError: () => {
       toast({
-        title: 'Greška',
-        description: 'Greška pri otkazivanju prijave',
+        title: t('toast.error'),
+        description: t('rsvpModal.errorCancel'),
         variant: 'destructive'
       });
     }
@@ -162,13 +164,13 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
   };
 
   const handleDelete = () => {
-    if (window.confirm('Da li ste sigurni da želite otkazati prijavu?')) {
+    if (window.confirm(t('rsvpModal.confirmCancel'))) {
       deleteRsvpMutation.mutate(undefined);
     }
   };
 
   const handleAdminDeleteRsvp = (rsvpId: string) => {
-    if (window.confirm('Da li ste sigurni da želite obrisati ovu prijavu?')) {
+    if (window.confirm(t('rsvpModal.confirmDelete'))) {
       deleteRsvpMutation.mutate(rsvpId);
     }
   };
@@ -195,21 +197,21 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
 
     // Summary row
     const totals = getTotalAttendees();
-    const summaryRow = ['UKUPNO:', totals.adults, totals.children, totals.total];
+    const summaryRow = [t('rsvpModal.excelTotal'), totals.adults, totals.children, totals.total];
 
     // Export using helper function
     exportToExcel({
-      title: `Spisak prijavljenih za događaj - ${event.name}`,
-      filename: `Prijave_${event.name.replace(/[^a-zA-Z0-9]/g, '_')}`,
-      sheetName: 'Prijavljeni',
-      headers: ['Ime i prezime', 'Odrasli', 'Djeca', 'Ukupno'],
+      title: `${t('rsvpModal.excelTitle')} - ${event.name}`,
+      filename: `Registrations_${event.name.replace(/[^a-zA-Z0-9]/g, '_')}`,
+      sheetName: t('rsvpModal.excelSheet'),
+      headers: [t('rsvpModal.excelNameHeader'), t('rsvpModal.adultsCount'), t('rsvpModal.childrenCount'), t('rsvpModal.total')],
       data: participantData,
       summaryRow
     });
 
     toast({
-      title: 'Uspjeh',
-      description: 'Excel fajl je preuzet'
+      title: t('toast.success'),
+      description: t('rsvpModal.excelExported')
     });
   };
 
@@ -220,7 +222,7 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
     return (
       <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
         <DialogTitle>
-          Pregled - {event.name}
+          {t('rsvpModal.overview')} - {event.name}
         </DialogTitle>
         
         <DialogContent>
@@ -232,10 +234,10 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
             <Box sx={{ pt: 2 }}>
               <Box sx={{ mb: 3, p: 2, bgcolor: 'hsl(0 0% 96%)', borderRadius: 1 }}>
                 <Typography variant="body1" sx={{ fontWeight: 600 }}>
-                  Ukupno prijavljenih: {totals.total} osoba
+                  {t('rsvpModal.totalRegistered')}: {totals.total} {t('rsvpModal.people')}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Odraslih: {totals.adults} | Djece: {totals.children}
+                  {t('rsvpModal.adultsCount')}: {totals.adults} | {t('rsvpModal.childrenCount')}: {totals.children}
                 </Typography>
               </Box>
 
@@ -244,11 +246,11 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
                   <Table size="small">
                     <TableHead>
                       <TableRow sx={{ bgcolor: 'hsl(0 0% 98%)' }}>
-                        <TableCell sx={{ fontWeight: 600 }}>Korisnik</TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>Odrasli</TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>Djeca</TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>Ukupno</TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>Akcije</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>{t('rsvpModal.user')}</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>{t('rsvpModal.adultsCount')}</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>{t('rsvpModal.childrenCount')}</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>{t('rsvpModal.total')}</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>{t('actions')}</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -280,7 +282,7 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
                 </TableContainer>
               ) : (
                 <Alert severity="info">
-                  Još niko nije prijavljen za ovaj događaj.
+                  {t('rsvpModal.noRegistrations')}
                 </Alert>
               )}
             </Box>
@@ -295,11 +297,11 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
             disabled={!allRsvps || !allRsvps.rsvps || allRsvps.rsvps.length === 0}
             data-testid="button-export-excel"
           >
-            Exportuj u Excel
+            {t('rsvpModal.exportExcel')}
           </Button>
           <Box sx={{ flexGrow: 1 }} />
           <Button onClick={onClose} data-testid="button-close-admin-rsvp">
-            Zatvori
+            {t('rsvpModal.close')}
           </Button>
         </DialogActions>
       </Dialog>
@@ -310,7 +312,7 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>
-        {userRsvp ? 'Ažuriraj Prijavu' : 'Prijavi se za Događaj'}
+        {userRsvp ? t('rsvpModal.updateRsvp') : t('rsvpModal.registerEvent')}
       </DialogTitle>
       
       <DialogContent>
@@ -340,14 +342,14 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
 
             {event.requireAdultsChildren && (
               <Alert severity="info">
-                Za ovaj događaj je potrebno unijeti broj odraslih i djece.
+                {t('rsvpModal.requireAdultsChildrenInfo')}
               </Alert>
             )}
 
             <TextField
               fullWidth
               type="number"
-              label="Broj Odraslih"
+              label={t('rsvpModal.adultsLabel')}
               value={adultsCount}
               onChange={(e) => setAdultsCount(e.target.value)}
               onBlur={(e) => {
@@ -362,7 +364,7 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
             <TextField
               fullWidth
               type="number"
-              label="Broj Djece"
+              label={t('rsvpModal.childrenLabel')}
               value={childrenCount}
               onChange={(e) => setChildrenCount(e.target.value)}
               onBlur={(e) => {
@@ -384,12 +386,12 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
             disabled={deleteRsvpMutation.isPending}
             data-testid="button-delete-rsvp"
           >
-            Otkaži Prijavu
+            {t('rsvpModal.cancelRsvp')}
           </Button>
         )}
         <Box sx={{ flex: 1 }} />
         <Button onClick={onClose} data-testid="button-cancel-rsvp">
-          Zatvori
+          {t('rsvpModal.close')}
         </Button>
         <Button
           onClick={handleSubmit}
@@ -397,7 +399,7 @@ export default function EventRSVPModal({ open, onClose, event }: EventRSVPModalP
           disabled={createRsvpMutation.isPending || updateRsvpMutation.isPending}
           data-testid="button-submit-rsvp"
         >
-          {userRsvp ? 'Ažuriraj' : 'Prijavi se'}
+          {userRsvp ? t('rsvpModal.update') : t('rsvpModal.register')}
         </Button>
       </DialogActions>
     </Dialog>
