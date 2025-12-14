@@ -435,6 +435,63 @@
             background: #303F9F;
         }
         
+        .access-notice {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
+            border: 2px solid #FF9800;
+            border-radius: 16px;
+            padding: 24px 32px;
+            margin-top: 40px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 4px 20px rgba(255, 152, 0, 0.2);
+        }
+        
+        .notice-icon {
+            font-size: 40px;
+            flex-shrink: 0;
+        }
+        
+        .notice-content h3 {
+            color: #E65100;
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+        
+        .notice-content p {
+            color: #5D4037;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+        
+        .notice-bonus {
+            background: #FF9800;
+            color: white !important;
+            padding: 10px 16px;
+            border-radius: 8px;
+            margin-top: 12px !important;
+        }
+        
+        .captcha-group {
+            background: #f5f5f5;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px dashed #ccc;
+        }
+        
+        .captcha-group label {
+            color: #3949AB;
+            font-weight: 600;
+        }
+        
+        .captcha-group input {
+            max-width: 150px;
+        }
+        
         .pricing-card.popular .pricing-button {
             background: #1E88E5;
         }
@@ -797,7 +854,7 @@
                     <div class="pricing-feature"><span class="check">✓</span> Glavne info o džematu</div>
                     <div class="pricing-feature"><span class="check">✓</span> Pristupnica (prijava za članstvo)</div>
                 </div>
-                <a href="https://app.dzematapp.com" class="pricing-button" style="background: #78909C;">Besplatni pristup</a>
+                <a href="#kontakt" class="pricing-button" style="background: #78909C;">Besplatni pristup</a>
             </div>
             
             <div class="pricing-card">
@@ -812,7 +869,7 @@
                     <div class="pricing-feature"><span class="check">✓</span> Dokumenti</div>
                     <div class="pricing-feature"><span class="check">✓</span> Zahtjevi i prijave</div>
                 </div>
-                <a href="https://app.dzematapp.com" class="pricing-button">Odaberi Basic</a>
+                <a href="#kontakt" class="pricing-button">Odaberi Basic</a>
             </div>
             
             <div class="pricing-card popular">
@@ -832,7 +889,7 @@
                     <div class="pricing-feature"><span class="check">✓</span> Poruke</div>
                     <div class="pricing-feature"><span class="check">✓</span> Pitaj imama</div>
                 </div>
-                <a href="https://app.dzematapp.com" class="pricing-button">Odaberi Standard</a>
+                <a href="#kontakt" class="pricing-button">Odaberi Standard</a>
             </div>
             
             <div class="pricing-card">
@@ -850,7 +907,16 @@
                     <div class="pricing-feature"><span class="check">✓</span> Mediji / Livestream</div>
                     <div class="pricing-feature"><span class="check">✓</span> Prioritetna podrška</div>
                 </div>
-                <a href="https://app.dzematapp.com" class="pricing-button">Odaberi Full</a>
+                <a href="#kontakt" class="pricing-button">Odaberi Full</a>
+            </div>
+        </div>
+        
+        <div class="access-notice">
+            <div class="notice-icon">🚀</div>
+            <div class="notice-content">
+                <h3>Zatražite pristup odmah!</h3>
+                <p>Trenutno primamo nove džemate samo putem upita. Kontaktirajte nas danas da vam aktiviramo nalog.</p>
+                <p class="notice-bonus"><strong>Bonus:</strong> Svi džemati koji se jave do kraja 2025. godine dobijaju FULL paket besplatno do 1. marta 2026!</p>
             </div>
         </div>
     </section>
@@ -883,6 +949,10 @@
                     <label for="message">Poruka</label>
                     <textarea id="message" name="message" required placeholder="Kako vam možemo pomoći?"></textarea>
                 </div>
+                <div class="form-group captcha-group">
+                    <label for="captcha">Zaštita od spam-a: Koliko je 2 + 5?</label>
+                    <input type="text" id="captcha" name="captcha" required placeholder="Unesite odgovor" autocomplete="off">
+                </div>
                 <button type="submit" class="submit-button">Pošaljite poruku</button>
             </form>
             <div id="formSuccess" style="display:none; text-align:center; padding: 40px;">
@@ -898,6 +968,15 @@
             <script>
                 document.getElementById('contactForm').addEventListener('submit', async function(e) {
                     e.preventDefault();
+                    
+                    const captchaAnswer = document.getElementById('captcha').value.trim();
+                    if (captchaAnswer !== '7') {
+                        alert('Neispravan odgovor na zaštitno pitanje. Molimo pokušajte ponovo.');
+                        document.getElementById('captcha').value = '';
+                        document.getElementById('captcha').focus();
+                        return;
+                    }
+                    
                     const submitBtn = this.querySelector('button[type="submit"]');
                     submitBtn.disabled = true;
                     submitBtn.textContent = 'Šaljem...';

@@ -102,6 +102,14 @@
         .footer-links a:hover { text-decoration: underline; }
         .footer-copyright { font-size: 0.9rem; color: #888; }
         @media (max-width: 768px) { .navbar { flex-direction: column; padding: 12px 20px; } .navbar-content { gap: 15px; flex-wrap: wrap; justify-content: center; } .lang-switcher { position: static; order: -1; margin-bottom: 10px; align-self: flex-end; } .logo-text { font-size: 2.5rem; } .hero-subtitle { font-size: 1.1rem; } .section-title { font-size: 1.75rem; } .footer-content { flex-direction: column; text-align: center; } }
+        .access-notice { display: flex; align-items: flex-start; gap: 20px; background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%); border: 2px solid #FF9800; border-radius: 16px; padding: 24px 32px; margin-top: 40px; max-width: 900px; margin-left: auto; margin-right: auto; box-shadow: 0 4px 20px rgba(255, 152, 0, 0.2); }
+        .notice-icon { font-size: 40px; flex-shrink: 0; }
+        .notice-content h3 { color: #E65100; font-size: 1.3rem; margin-bottom: 8px; }
+        .notice-content p { color: #5D4037; font-size: 1rem; line-height: 1.6; margin-bottom: 8px; }
+        .notice-bonus { background: #FF9800; color: white !important; padding: 10px 16px; border-radius: 8px; margin-top: 12px !important; }
+        .captcha-group { background: #f5f5f5; padding: 16px; border-radius: 8px; border: 1px dashed #ccc; }
+        .captcha-group label { color: #3949AB; font-weight: 600; }
+        .captcha-group input { max-width: 150px; }
     </style>
 </head>
 <body>
@@ -267,7 +275,7 @@
                     <div class="pricing-feature"><span class="check">✓</span> Moschee-Info</div>
                     <div class="pricing-feature"><span class="check">✓</span> Mitgliedschaftsantrag</div>
                 </div>
-                <a href="https://app.dzematapp.com" class="pricing-button" style="background: #78909C;">Kostenloser Zugang</a>
+                <a href="#kontakt" class="pricing-button" style="background: #78909C;">Kostenloser Zugang</a>
             </div>
             
             <div class="pricing-card">
@@ -282,7 +290,7 @@
                     <div class="pricing-feature"><span class="check">✓</span> Dokumente</div>
                     <div class="pricing-feature"><span class="check">✓</span> Antrage</div>
                 </div>
-                <a href="https://app.dzematapp.com" class="pricing-button">Basic wahlen</a>
+                <a href="#kontakt" class="pricing-button">Basic wahlen</a>
             </div>
             
             <div class="pricing-card popular">
@@ -302,7 +310,7 @@
                     <div class="pricing-feature"><span class="check">✓</span> Nachrichten</div>
                     <div class="pricing-feature"><span class="check">✓</span> Frag den Imam</div>
                 </div>
-                <a href="https://app.dzematapp.com" class="pricing-button">Standard wahlen</a>
+                <a href="#kontakt" class="pricing-button">Standard wahlen</a>
             </div>
             
             <div class="pricing-card">
@@ -320,7 +328,16 @@
                     <div class="pricing-feature"><span class="check">✓</span> Medien / Livestream</div>
                     <div class="pricing-feature"><span class="check">✓</span> Prioritatssupport</div>
                 </div>
-                <a href="https://app.dzematapp.com" class="pricing-button">Full wahlen</a>
+                <a href="#kontakt" class="pricing-button">Full wahlen</a>
+            </div>
+        </div>
+        
+        <div class="access-notice">
+            <div class="notice-icon">🚀</div>
+            <div class="notice-content">
+                <h3>Jetzt Zugang anfordern!</h3>
+                <p>Wir nehmen derzeit neue Moscheen nur auf Anfrage an. Kontaktieren Sie uns heute, um Ihr Konto zu aktivieren.</p>
+                <p class="notice-bonus"><strong>Bonus:</strong> Alle Moscheen, die sich bis Ende 2025 anmelden, erhalten das FULL-Paket kostenlos bis 1. März 2026!</p>
             </div>
         </div>
     </section>
@@ -353,6 +370,10 @@
                     <label for="message">Nachricht</label>
                     <textarea id="message" name="message" required placeholder="Wie konnen wir Ihnen helfen?"></textarea>
                 </div>
+                <div class="form-group captcha-group">
+                    <label for="captcha">Spam-Schutz: Was ist 2 + 5?</label>
+                    <input type="text" id="captcha" name="captcha" required placeholder="Ihre Antwort" autocomplete="off">
+                </div>
                 <button type="submit" class="submit-button">Nachricht senden</button>
             </form>
             <div id="formSuccess" style="display:none; text-align:center; padding: 40px;">
@@ -368,6 +389,13 @@
             <script>
                 document.getElementById('contactForm').addEventListener('submit', async function(e) {
                     e.preventDefault();
+                    
+                    const captchaAnswer = document.getElementById('captcha').value.trim();
+                    if (captchaAnswer !== '7') {
+                        alert('Falsche Antwort auf die Sicherheitsfrage. Bitte versuchen Sie es erneut.');
+                        return;
+                    }
+                    
                     const submitBtn = this.querySelector('button[type="submit"]');
                     submitBtn.disabled = true;
                     submitBtn.textContent = 'Senden...';
