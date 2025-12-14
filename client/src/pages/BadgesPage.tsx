@@ -465,7 +465,7 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
                 <TableRow key={badge.id}>
                   <TableCell>
                     <Chip
-                      icon={<EmojiEvents />}
+                      icon={<span style={{ fontSize: '18px', marginLeft: '4px' }}>{badge.icon || '🏅'}</span>}
                       label={badge.name}
                       color="warning"
                       data-testid={`badge-name-${badge.id}`}

@@ -129,7 +129,7 @@ export default function IssuedBadgesTab() {
                     </TableCell>
                     <TableCell>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <EmojiEvents color="primary" fontSize="small" />
+                        <span style={{ fontSize: '24px' }}>{issuedBadge.badge.icon || '🏅'}</span>
                         <Box>
                           <Typography variant="body2" fontWeight="medium">
                             {issuedBadge.badge.name}
