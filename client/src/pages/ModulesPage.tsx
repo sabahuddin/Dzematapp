@@ -34,7 +34,7 @@ interface ModuleItem {
 
 export default function ModulesPage() {
   const [, setLocation] = useLocation();
-  const { t } = useTranslation();
+  const { t } = useTranslation('navigation');
   const { user, logout } = useAuth();
 
   const handleLogout = async () => {
@@ -42,34 +42,34 @@ export default function ModulesPage() {
     setLocation('/login');
   };
 
-  // Ordered same as webapp sidebar menu
+  // Ordered same as webapp sidebar menu - using translation keys
   const modules: ModuleItem[] = [
-    { icon: <Feed sx={{ fontSize: 48 }} />, label: 'Feed', description: 'Aktivnosti zajednice', route: '/feed', testId: 'module-feed' },
-    { icon: <Person sx={{ fontSize: 48 }} />, label: 'Moj Profil', description: 'Vaši podaci i postavke', route: '/my-profile', testId: 'module-profile' },
-    { icon: <People sx={{ fontSize: 48 }} />, label: user?.isAdmin ? 'Korisnici' : 'Moje aktivnosti', description: user?.isAdmin ? 'Članovi džemata' : 'Bodovi, uplate, značke', route: user?.isAdmin ? '/users' : '/my-activities', testId: 'module-users' },
-    { icon: <BarChart sx={{ fontSize: 48 }} />, label: 'Finansije', description: 'Finansijski pregled', route: '/finances', testId: 'module-finances', adminOnly: true },
-    { icon: <Receipt sx={{ fontSize: 48 }} />, label: user?.isAdmin ? 'Članarina (Admin)' : 'Moja članarina', description: 'Pregled uplata članarine', route: user?.isAdmin ? '/membership-fees' : '/my-clanarina', testId: 'module-membership-fees' },
-    { icon: <BarChart sx={{ fontSize: 48 }} />, label: 'Izvještaj aktivnosti', description: 'Pregled aktivnosti', route: '/activity-log', testId: 'module-activity', adminOnly: true },
-    { icon: <AccountBalance sx={{ fontSize: 48 }} />, label: 'Projekti', description: 'Projekti džemata', route: '/projects', testId: 'module-projects' },
-    { icon: <Announcement sx={{ fontSize: 48 }} />, label: 'Obavještenja', description: 'Obavještenja džemata', route: '/announcements', testId: 'module-announcements' },
-    { icon: <CalendarMonth sx={{ fontSize: 48 }} />, label: 'Događaji', description: 'Događaji i aktivnosti', route: '/events', testId: 'module-events' },
-    { icon: <Assignment sx={{ fontSize: 48 }} />, label: user?.isAdmin ? 'Zadaci' : 'Sekcije', description: 'Sekcije i zadaci', route: '/tasks', testId: 'module-tasks' },
-    { icon: <Email sx={{ fontSize: 48 }} />, label: 'Poruke', description: 'Obavještenja i poruke', route: '/messages', testId: 'module-messages' },
-    { icon: <Help sx={{ fontSize: 48 }} />, label: 'Pitaj Imama', description: 'Pitanja za imama', route: '/ask-imam', testId: 'module-ask-imam' },
-    { icon: <Description sx={{ fontSize: 48 }} />, label: 'Dokumenti', description: 'Dokumenti džemata', route: '/documents', testId: 'module-documents' },
-    { icon: <Store sx={{ fontSize: 48 }} />, label: 'Trgovina', description: 'DžematShop i oglasnik', route: '/shop', testId: 'module-shop' },
-    { icon: <EmojiEvents sx={{ fontSize: 48 }} />, label: 'Sponzori', description: 'Naši sponzori', route: '/sponsors', testId: 'module-sponsors' },
-    { icon: <Assignment sx={{ fontSize: 48 }} />, label: 'Prijave', description: 'Pristupnica, Akika, Vjenčanje', route: '/applications', testId: 'module-applications' },
-    { icon: <MenuBook sx={{ fontSize: 48 }} />, label: 'Vaktija', description: 'Raspored namaza', route: '/vaktija', testId: 'module-vaktija' },
-    { icon: <Help sx={{ fontSize: 48 }} />, label: 'Vodič', description: 'Vodič kroz aplikaciju', route: '/vodic', testId: 'module-guide' },
-    { icon: <Tv sx={{ fontSize: 48 }} />, label: 'Media', description: 'Livestream i snimci', route: '/livestream', testId: 'module-media' },
-    { icon: <Settings sx={{ fontSize: 48 }} />, label: 'Podešavanja', description: 'Podešavanja džemata', route: '/settings', testId: 'module-settings', adminOnly: true },
+    { icon: <Feed sx={{ fontSize: 48 }} />, label: t('menu.feed'), description: '', route: '/feed', testId: 'module-feed' },
+    { icon: <Person sx={{ fontSize: 48 }} />, label: t('menu.profile'), description: '', route: '/my-profile', testId: 'module-profile' },
+    { icon: <People sx={{ fontSize: 48 }} />, label: user?.isAdmin ? t('menu.users') : t('menu.myActivities'), description: '', route: user?.isAdmin ? '/users' : '/my-activities', testId: 'module-users' },
+    { icon: <BarChart sx={{ fontSize: 48 }} />, label: t('menu.finances'), description: '', route: '/finances', testId: 'module-finances', adminOnly: true },
+    { icon: <Receipt sx={{ fontSize: 48 }} />, label: user?.isAdmin ? t('menu.membershipFees') : t('menu.myMembership'), description: '', route: user?.isAdmin ? '/membership-fees' : '/my-clanarina', testId: 'module-membership-fees' },
+    { icon: <BarChart sx={{ fontSize: 48 }} />, label: t('menu.activityLog'), description: '', route: '/activity-log', testId: 'module-activity', adminOnly: true },
+    { icon: <AccountBalance sx={{ fontSize: 48 }} />, label: t('menu.projects'), description: '', route: '/projects', testId: 'module-projects' },
+    { icon: <Announcement sx={{ fontSize: 48 }} />, label: t('menu.announcements'), description: '', route: '/announcements', testId: 'module-announcements' },
+    { icon: <CalendarMonth sx={{ fontSize: 48 }} />, label: t('menu.events'), description: '', route: '/events', testId: 'module-events' },
+    { icon: <Assignment sx={{ fontSize: 48 }} />, label: user?.isAdmin ? t('menu.tasks') : t('menu.sections'), description: '', route: '/tasks', testId: 'module-tasks' },
+    { icon: <Email sx={{ fontSize: 48 }} />, label: t('menu.messages'), description: '', route: '/messages', testId: 'module-messages' },
+    { icon: <Help sx={{ fontSize: 48 }} />, label: t('menu.askImam'), description: '', route: '/ask-imam', testId: 'module-ask-imam' },
+    { icon: <Description sx={{ fontSize: 48 }} />, label: t('menu.documents'), description: '', route: '/documents', testId: 'module-documents' },
+    { icon: <Store sx={{ fontSize: 48 }} />, label: t('menu.shop'), description: '', route: '/shop', testId: 'module-shop' },
+    { icon: <EmojiEvents sx={{ fontSize: 48 }} />, label: t('menu.sponsors'), description: '', route: '/sponsors', testId: 'module-sponsors' },
+    { icon: <Assignment sx={{ fontSize: 48 }} />, label: t('menu.applications'), description: '', route: '/applications', testId: 'module-applications' },
+    { icon: <MenuBook sx={{ fontSize: 48 }} />, label: t('menu.vaktija'), description: '', route: '/vaktija', testId: 'module-vaktija' },
+    { icon: <Help sx={{ fontSize: 48 }} />, label: t('menu.guide'), description: '', route: '/vodic', testId: 'module-guide' },
+    { icon: <Tv sx={{ fontSize: 48 }} />, label: t('menu.livestream'), description: '', route: '/livestream', testId: 'module-media' },
+    { icon: <Settings sx={{ fontSize: 48 }} />, label: t('settings'), description: '', route: '/settings', testId: 'module-settings', adminOnly: true },
   ].filter(m => !m.adminOnly || user?.isAdmin);
 
   return (
     <Box>
       <Typography variant="h5" sx={{ mb: 3, fontWeight: 700, color: '#0D1B2A' }}>
-        Moduli
+        {t('modules', { defaultValue: 'Modules' })}
       </Typography>
       
       <Box
@@ -128,7 +128,7 @@ export default function ModulesPage() {
           data-testid="button-logout"
           sx={{ px: 4 }}
         >
-          Odjava
+          {t('appBar.logout')}
         </Button>
       </Box>
     </Box>
