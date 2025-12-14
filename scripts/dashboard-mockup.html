@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920, height=1080">
+  <title>DžematApp Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #ECEFF1; color: #0D1B2A; }
+    
+    .container { display: flex; height: 1080px; width: 1920px; }
+    
+    /* Sidebar */
+    .sidebar { width: 240px; background: #fff; padding: 16px 0; display: flex; flex-direction: column; }
+    .logo { display: flex; align-items: center; gap: 12px; padding: 8px 20px; margin-bottom: 16px; }
+    .logo-circle { width: 40px; height: 40px; background: #1E88E5; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .logo-circle svg { width: 24px; height: 24px; fill: white; }
+    .logo-text { font-weight: 700; font-size: 18px; color: #0D1B2A; }
+    
+    .toggle-btn { margin: 0 16px 16px; padding: 10px 16px; background: #1E88E5; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+    
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; color: #546E7A; font-size: 14px; cursor: pointer; }
+    .nav-item.active { background: #E3F2FD; color: #1E88E5; border-right: 3px solid #1E88E5; }
+    .nav-item svg { width: 20px; height: 20px; }
+    
+    /* Main content */
+    .main { flex: 1; padding: 24px; overflow: hidden; }
+    
+    /* Header */
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .header-left h1 { font-size: 24px; font-weight: 600; }
+    .header-left p { color: #546E7A; font-size: 14px; }
+    .header-right { display: flex; align-items: center; gap: 12px; }
+    .avatar { width: 40px; height: 40px; background: #1E88E5; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; }
+    .user-info { text-align: right; }
+    .user-name { font-weight: 600; font-size: 14px; }
+    .user-role { color: #546E7A; font-size: 12px; }
+    
+    /* Prayer times */
+    .prayer-times { background: white; border-radius: 12px; padding: 16px 24px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; }
+    .prayer-item { text-align: center; }
+    .prayer-name { font-size: 12px; color: #546E7A; margin-bottom: 4px; }
+    .prayer-time { font-size: 18px; font-weight: 600; }
+    .prayer-link { color: #1E88E5; font-size: 14px; text-decoration: none; }
+    
+    /* Stats row */
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 24px; }
+    .stat-card { background: white; border-radius: 16px; padding: 20px; display: flex; align-items: center; gap: 16px; }
+    .stat-icon { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .stat-icon.blue { background: #E3F2FD; color: #1E88E5; }
+    .stat-icon.teal { background: #E0F2F1; color: #26A69A; }
+    .stat-icon.orange { background: #FFF3E0; color: #FB8C00; }
+    .stat-icon.green { background: #E8F5E9; color: #43A047; }
+    .stat-value { font-size: 32px; font-weight: 700; }
+    .stat-label { font-size: 13px; color: #546E7A; }
+    
+    /* Three column section */
+    .three-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+    
+    .card { background: white; border-radius: 16px; padding: 20px; }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .card-title { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+    .card-link { color: #1E88E5; font-size: 13px; text-decoration: none; }
+    
+    /* Events card */
+    .event-date { background: #1E88E5; color: white; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 16px; }
+    .event-date-text { font-size: 24px; font-weight: 700; }
+    .event-item { padding: 12px 0; border-bottom: 1px solid #ECEFF1; }
+    .event-name { font-weight: 600; font-size: 14px; }
+    .event-meta { font-size: 12px; color: #546E7A; display: flex; gap: 12px; margin-top: 4px; }
+    
+    /* Membership card */
+    .membership-total { background: linear-gradient(135deg, #1E88E5, #1565C0); color: white; border-radius: 12px; padding: 20px; display: flex; justify-content: space-around; text-align: center; margin-bottom: 16px; }
+    .membership-amount { font-size: 28px; font-weight: 700; }
+    .membership-label { font-size: 12px; opacity: 0.9; }
+    .membership-count { font-size: 32px; font-weight: 700; }
+    
+    .payment-list { }
+    .payment-item { display: flex; justify-content: space-between; padding: 8px 0; font-size: 13px; }
+    .payment-amount { color: #26A69A; font-weight: 600; }
+    
+    /* Shop card */
+    .shop-stats { display: flex; gap: 16px; margin-bottom: 16px; }
+    .shop-stat { flex: 1; background: #F5F5F5; border-radius: 12px; padding: 16px; text-align: center; }
+    .shop-stat-value { font-size: 28px; font-weight: 700; color: #1E88E5; }
+    .shop-stat-label { font-size: 12px; color: #546E7A; }
+    
+    .product-list { }
+    .product-item { display: flex; justify-content: space-between; padding: 8px 0; font-size: 13px; }
+    .product-price { color: #1E88E5; font-weight: 600; }
+    
+    /* Tasks section */
+    .tasks-section { background: white; border-radius: 16px; padding: 20px; }
+    .tasks-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .tasks-title { font-size: 18px; font-weight: 600; }
+    .tasks-link { color: #1E88E5; font-size: 13px; }
+    
+    .task-stats { display: flex; gap: 16px; margin-bottom: 20px; }
+    .task-stat { flex: 1; background: #F8F9FA; border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 12px; }
+    .task-stat.active { background: #E3F2FD; }
+    .task-stat-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .task-stat-icon.all { background: #1E88E5; color: white; }
+    .task-stat-icon.progress { background: #FB8C00; color: white; }
+    .task-stat-icon.pending { background: #EF5350; color: white; }
+    .task-stat-icon.done { background: #26A69A; color: white; }
+    .task-stat-icon.cancelled { background: #78909C; color: white; }
+    .task-stat-icon.archived { background: #546E7A; color: white; }
+    .task-stat-value { font-size: 24px; font-weight: 700; }
+    .task-stat-label { font-size: 12px; color: #546E7A; }
+    
+    .task-list { background: #F8F9FA; border-radius: 12px; padding: 20px; }
+    .task-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #E0E0E0; }
+    .task-item:last-child { border-bottom: none; }
+    .task-checkbox { width: 20px; height: 20px; border: 2px solid #1E88E5; border-radius: 4px; }
+    .task-checkbox.checked { background: #1E88E5; }
+    .task-content { flex: 1; }
+    .task-name { font-weight: 500; font-size: 14px; }
+    .task-due { font-size: 12px; color: #546E7A; }
+    .task-assignee { display: flex; align-items: center; gap: 8px; }
+    .task-avatar { width: 28px; height: 28px; background: #1E88E5; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 11px; font-weight: 600; }
+    .task-badge { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 500; }
+    .task-badge.progress { background: #FFF3E0; color: #FB8C00; }
+    .task-badge.pending { background: #FFEBEE; color: #EF5350; }
+    .task-badge.done { background: #E8F5E9; color: #43A047; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="logo">
+        <div class="logo-circle">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        </div>
+        <span class="logo-text">DžematApp</span>
+      </div>
+      <button class="toggle-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+        <span id="toggleText">Toggle Sidebar</span>
+      </button>
+      <div class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+        <span>Dashboard</span>
+      </div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg><span id="navFeed">Feed</span></div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><span id="navUsers">Users</span></div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg><span id="navFinances">Finances</span></div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg><span id="navMembership">Membership Fees</span></div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg><span id="navActivity">Activity Log</span></div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 9h-2V5h2v6zm0 4h-2v-2h2v2z"/></svg><span id="navAnnouncements">Announcements</span></div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg><span id="navEvents">Events</span></div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg><span id="navSections">Sections</span></div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg><span id="navMessages">Messages</span></div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main">
+      <div class="header">
+        <div class="header-left">
+          <h1>Dashboard</h1>
+          <p id="welcomeText">Welcome to DžematApp Admin Panel</p>
+        </div>
+        <div class="header-right">
+          <div class="user-info">
+            <div class="user-name">Admin Džemat</div>
+            <div class="user-role">Administrator</div>
+          </div>
+          <div class="avatar">AD</div>
+        </div>
+      </div>
+      
+      <!-- Prayer Times -->
+      <div class="prayer-times">
+        <div class="prayer-item"><div class="prayer-name">Fajr</div><div class="prayer-time">06:10</div></div>
+        <div class="prayer-item"><div class="prayer-name" id="sunriseLabel">Sunrise</div><div class="prayer-time">07:56</div></div>
+        <div class="prayer-item"><div class="prayer-name">Dhuhr</div><div class="prayer-time">12:22</div></div>
+        <div class="prayer-item"><div class="prayer-name">Asr</div><div class="prayer-time">14:19</div></div>
+        <div class="prayer-item"><div class="prayer-name">Maghrib</div><div class="prayer-time">16:39</div></div>
+        <div class="prayer-item"><div class="prayer-name">Isha</div><div class="prayer-time">18:12</div></div>
+        <a href="#" class="prayer-link" id="prayerCalendar">Prayer calendar →</a>
+      </div>
+      
+      <!-- Stats Row -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-icon blue"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
+          <div><div class="stat-value">478</div><div class="stat-label" id="totalUsersLabel">Total Users</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon teal"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div>
+          <div><div class="stat-value">5</div><div class="stat-label" id="newAnnouncementsLabel">New Announcements (7 days)</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon orange"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2z"/></svg></div>
+          <div><div class="stat-value">8</div><div class="stat-label" id="upcomingEventsLabel">Upcoming Events</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></div>
+          <div><div class="stat-value">17</div><div class="stat-label" id="activeTasksLabel">Active Tasks</div></div>
+        </div>
+      </div>
+      
+      <!-- Three Column Section -->
+      <div class="three-cols">
+        <!-- Events Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="#1E88E5"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2z"/></svg><span id="upcomingEventsTitle">Upcoming Events</span></div>
+            <a href="#" class="card-link" id="allEventsLink">All Events →</a>
+          </div>
+          <div class="event-date"><div class="event-date-text">14.12.2025.</div></div>
+          <div class="event-item">
+            <div class="event-name" id="event1Name">Community Iftar</div>
+            <div class="event-meta"><span>📍 Mosque Hall</span><span>🕐 18:30</span></div>
+          </div>
+          <div class="event-item">
+            <div class="event-name" id="event2Name">Youth Meeting</div>
+            <div class="event-meta"><span>📍 Conference Room</span><span>🕐 15:00</span></div>
+          </div>
+        </div>
+        
+        <!-- Membership Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="#1E88E5"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z"/></svg><span id="membershipTitle">Membership Fees</span></div>
+            <a href="#" class="card-link" id="allPaymentsLink">All payments →</a>
+          </div>
+          <div class="membership-total">
+            <div><div class="membership-amount" id="totalAmount">4.850 EUR</div><div class="membership-label" id="total2025Label">Total 2025</div></div>
+            <div><div class="membership-count">142</div><div class="membership-label" id="membersPaidLabel">Members paid</div></div>
+          </div>
+          <div class="payment-list">
+            <div class="payment-item"><span id="payment1Label">Recent payments:</span><span></span></div>
+            <div class="payment-item"><span>Ahmet Hodžić</span><span class="payment-amount" id="payment1Amount">25 EUR</span></div>
+            <div class="payment-item"><span>Merima Begović</span><span class="payment-amount" id="payment2Amount">25 EUR</span></div>
+            <div class="payment-item"><span>Senad Muratović</span><span class="payment-amount" id="payment3Amount">50 EUR</span></div>
+          </div>
+        </div>
+        
+        <!-- Shop Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="#1E88E5"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1z"/></svg><span>Shop</span></div>
+            <a href="#" class="card-link" id="allProductsLink">All products →</a>
+          </div>
+          <div class="shop-stats">
+            <div class="shop-stat"><div class="shop-stat-value">42</div><div class="shop-stat-label" id="totalProductsLabel">Total products</div></div>
+            <div class="shop-stat"><div class="shop-stat-value" style="color: #26A69A;">12</div><div class="shop-stat-label" id="activeLabel">Active</div></div>
+          </div>
+          <div class="product-list">
+            <div class="product-item"><span id="latestProductsLabel">Latest products:</span><span></span></div>
+            <div class="product-item"><span id="product1Name">Prayer Rug Premium</span><span class="product-price" id="product1Price">35 EUR</span></div>
+            <div class="product-item"><span id="product2Name">Quran Stand</span><span class="product-price" id="product2Price">22 EUR</span></div>
+            <div class="product-item"><span id="product3Name">Tasbih Beads</span><span class="product-price" id="product3Price">8 EUR</span></div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tasks Section -->
+      <div class="tasks-section">
+        <div class="tasks-header">
+          <div class="tasks-title" id="tasksOverviewTitle">Tasks Overview</div>
+          <a href="#" class="tasks-link" id="adminViewLink">Admin View →</a>
+        </div>
+        <div class="task-stats">
+          <div class="task-stat active">
+            <div class="task-stat-icon all"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg></div>
+            <div><div class="task-stat-value">17</div><div class="task-stat-label" id="allLabel">All</div></div>
+          </div>
+          <div class="task-stat">
+            <div class="task-stat-icon progress"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8z"/></svg></div>
+            <div><div class="task-stat-value">5</div><div class="task-stat-label" id="inProgressLabel">In Progress</div></div>
+          </div>
+          <div class="task-stat">
+            <div class="task-stat-icon pending"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+            <div><div class="task-stat-value">4</div><div class="task-stat-label" id="pendingLabel">Pending</div></div>
+          </div>
+          <div class="task-stat">
+            <div class="task-stat-icon done"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+            <div><div class="task-stat-value">6</div><div class="task-stat-label" id="completedLabel">Completed</div></div>
+          </div>
+          <div class="task-stat">
+            <div class="task-stat-icon cancelled"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div>
+            <div><div class="task-stat-value">1</div><div class="task-stat-label" id="cancelledLabel">Cancelled</div></div>
+          </div>
+          <div class="task-stat">
+            <div class="task-stat-icon archived"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27z"/></svg></div>
+            <div><div class="task-stat-value">1</div><div class="task-stat-label" id="archivedLabel">Archived</div></div>
+          </div>
+        </div>
+        <div class="task-list">
+          <div class="task-item">
+            <div class="task-checkbox"></div>
+            <div class="task-content"><div class="task-name" id="task1Name">Prepare Friday sermon materials</div><div class="task-due" id="task1Due">Due: Dec 15, 2025</div></div>
+            <div class="task-assignee"><div class="task-avatar">IH</div></div>
+            <div class="task-badge progress" id="task1Status">In Progress</div>
+          </div>
+          <div class="task-item">
+            <div class="task-checkbox"></div>
+            <div class="task-content"><div class="task-name" id="task2Name">Update member contact list</div><div class="task-due" id="task2Due">Due: Dec 18, 2025</div></div>
+            <div class="task-assignee"><div class="task-avatar">MB</div></div>
+            <div class="task-badge pending" id="task2Status">Pending</div>
+          </div>
+          <div class="task-item">
+            <div class="task-checkbox checked"></div>
+            <div class="task-content"><div class="task-name" id="task3Name">Organize charity collection</div><div class="task-due" id="task3Due">Due: Dec 12, 2025</div></div>
+            <div class="task-assignee"><div class="task-avatar">AH</div></div>
+            <div class="task-badge done" id="task3Status">Completed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    const translations = {
+      bs: {
+        toggleText: "Zatvori/Otvori",
+        navFeed: "Aktivnosti",
+        navUsers: "Korisnici",
+        navFinances: "Finansije",
+        navMembership: "Članarina",
+        navActivity: "Log aktivnosti",
+        navAnnouncements: "Obavijesti",
+        navEvents: "Događaji",
+        navSections: "Sekcije",
+        navMessages: "Poruke",
+        welcomeText: "Dobrodošli u DžematApp Admin Panel",
+        sunriseLabel: "Izlazak sunca",
+        prayerCalendar: "Kalendar vaktije →",
+        totalUsersLabel: "Ukupan broj korisnika",
+        newAnnouncementsLabel: "Nove obavijesti (7 dana)",
+        upcomingEventsLabel: "Nadolazeći događaji",
+        activeTasksLabel: "Aktivni zadaci",
+        upcomingEventsTitle: "Nadolazeći događaji",
+        allEventsLink: "Svi događaji →",
+        event1Name: "Zajednički iftar",
+        event2Name: "Sastanak omladine",
+        membershipTitle: "Članarina",
+        allPaymentsLink: "Sve uplate →",
+        total2025Label: "Ukupno 2025",
+        membersPaidLabel: "Članova platilo",
+        payment1Label: "Zadnje uplate:",
+        allProductsLink: "Svi proizvodi →",
+        totalProductsLabel: "Ukupno proizvoda",
+        activeLabel: "Aktivnih",
+        latestProductsLabel: "Najnoviji proizvodi:",
+        product1Name: "Serdžada premium",
+        product2Name: "Stalak za Kur'an",
+        product3Name: "Tespih",
+        tasksOverviewTitle: "Pregled zadataka",
+        adminViewLink: "Admin pogled →",
+        allLabel: "Sve",
+        inProgressLabel: "U toku",
+        pendingLabel: "Na čekanju",
+        completedLabel: "Završeno",
+        cancelledLabel: "Otkazano",
+        archivedLabel: "Arhivirano",
+        task1Name: "Priprema materijala za džumu",
+        task2Name: "Ažuriranje liste članova",
+        task3Name: "Organizacija humanitarne akcije",
+        task1Due: "Rok: 15.12.2025.",
+        task2Due: "Rok: 18.12.2025.",
+        task3Due: "Rok: 12.12.2025.",
+        task1Status: "U toku",
+        task2Status: "Na čekanju",
+        task3Status: "Završeno",
+        currency: "BAM",
+        totalAmount: "9.500 BAM",
+        payment1Amount: "50 BAM",
+        payment2Amount: "50 BAM",
+        payment3Amount: "100 BAM",
+        product1Price: "70 BAM",
+        product2Price: "45 BAM",
+        product3Price: "15 BAM"
+      },
+      de: {
+        toggleText: "Schließen/Öffnen",
+        navFeed: "Feed",
+        navUsers: "Benutzer",
+        navFinances: "Finanzen",
+        navMembership: "Mitgliedsbeiträge",
+        navActivity: "Aktivitätsprotokoll",
+        navAnnouncements: "Ankündigungen",
+        navEvents: "Veranstaltungen",
+        navSections: "Sektionen",
+        navMessages: "Nachrichten",
+        welcomeText: "Willkommen im DžematApp Admin Panel",
+        sunriseLabel: "Sonnenaufgang",
+        prayerCalendar: "Gebetskalender →",
+        totalUsersLabel: "Gesamtanzahl Benutzer",
+        newAnnouncementsLabel: "Neue Ankündigungen (7 Tage)",
+        upcomingEventsLabel: "Bevorstehende Veranstaltungen",
+        activeTasksLabel: "Aktive Aufgaben",
+        upcomingEventsTitle: "Bevorstehende Veranstaltungen",
+        allEventsLink: "Alle Veranstaltungen →",
+        event1Name: "Gemeinsames Iftar",
+        event2Name: "Jugendtreffen",
+        membershipTitle: "Mitgliedsbeiträge",
+        allPaymentsLink: "Alle Zahlungen →",
+        total2025Label: "Gesamt 2025",
+        membersPaidLabel: "Mitglieder bezahlt",
+        payment1Label: "Letzte Zahlungen:",
+        allProductsLink: "Alle Produkte →",
+        totalProductsLabel: "Produkte gesamt",
+        activeLabel: "Aktiv",
+        latestProductsLabel: "Neueste Produkte:",
+        product1Name: "Gebetsteppich Premium",
+        product2Name: "Koran-Ständer",
+        product3Name: "Gebetskette",
+        tasksOverviewTitle: "Aufgabenübersicht",
+        adminViewLink: "Admin-Ansicht →",
+        allLabel: "Alle",
+        inProgressLabel: "In Bearbeitung",
+        pendingLabel: "Ausstehend",
+        completedLabel: "Abgeschlossen",
+        cancelledLabel: "Abgebrochen",
+        archivedLabel: "Archiviert",
+        task1Name: "Freitagspredigt vorbereiten",
+        task2Name: "Mitgliederliste aktualisieren",
+        task3Name: "Spendensammlung organisieren",
+        task1Due: "Fällig: 15.12.2025",
+        task2Due: "Fällig: 18.12.2025",
+        task3Due: "Fällig: 12.12.2025",
+        task1Status: "In Bearbeitung",
+        task2Status: "Ausstehend",
+        task3Status: "Abgeschlossen",
+        currency: "EUR",
+        totalAmount: "4.850 EUR",
+        payment1Amount: "25 EUR",
+        payment2Amount: "25 EUR",
+        payment3Amount: "50 EUR",
+        product1Price: "35 EUR",
+        product2Price: "22 EUR",
+        product3Price: "8 EUR"
+      },
+      en: {
+        toggleText: "Toggle Sidebar",
+        navFeed: "Feed",
+        navUsers: "Users",
+        navFinances: "Finances",
+        navMembership: "Membership Fees",
+        navActivity: "Activity Log",
+        navAnnouncements: "Announcements",
+        navEvents: "Events",
+        navSections: "Sections",
+        navMessages: "Messages",
+        welcomeText: "Welcome to DžematApp Admin Panel",
+        sunriseLabel: "Sunrise",
+        prayerCalendar: "Prayer calendar →",
+        totalUsersLabel: "Total Users",
+        newAnnouncementsLabel: "New Announcements (7 days)",
+        upcomingEventsLabel: "Upcoming Events",
+        activeTasksLabel: "Active Tasks",
+        upcomingEventsTitle: "Upcoming Events",
+        allEventsLink: "All Events →",
+        event1Name: "Community Iftar",
+        event2Name: "Youth Meeting",
+        membershipTitle: "Membership Fees",
+        allPaymentsLink: "All payments →",
+        total2025Label: "Total 2025",
+        membersPaidLabel: "Members paid",
+        payment1Label: "Recent payments:",
+        allProductsLink: "All products →",
+        totalProductsLabel: "Total products",
+        activeLabel: "Active",
+        latestProductsLabel: "Latest products:",
+        product1Name: "Prayer Rug Premium",
+        product2Name: "Quran Stand",
+        product3Name: "Tasbih Beads",
+        tasksOverviewTitle: "Tasks Overview",
+        adminViewLink: "Admin View →",
+        allLabel: "All",
+        inProgressLabel: "In Progress",
+        pendingLabel: "Pending",
+        completedLabel: "Completed",
+        cancelledLabel: "Cancelled",
+        archivedLabel: "Archived",
+        task1Name: "Prepare Friday sermon materials",
+        task2Name: "Update member contact list",
+        task3Name: "Organize charity collection",
+        task1Due: "Due: Dec 15, 2025",
+        task2Due: "Due: Dec 18, 2025",
+        task3Due: "Due: Dec 12, 2025",
+        task1Status: "In Progress",
+        task2Status: "Pending",
+        task3Status: "Completed",
+        currency: "USD",
+        totalAmount: "5,200 USD",
+        payment1Amount: "30 USD",
+        payment2Amount: "30 USD",
+        payment3Amount: "60 USD",
+        product1Price: "40 USD",
+        product2Price: "25 USD",
+        product3Price: "10 USD"
+      },
+      sq: {
+        toggleText: "Hap/Mbyll",
+        navFeed: "Aktivitetet",
+        navUsers: "Përdoruesit",
+        navFinances: "Financat",
+        navMembership: "Anëtarësia",
+        navActivity: "Regjistri i aktivitetit",
+        navAnnouncements: "Njoftimet",
+        navEvents: "Ngjarjet",
+        navSections: "Seksionet",
+        navMessages: "Mesazhet",
+        welcomeText: "Mirësevini në DžematApp Admin Panel",
+        sunriseLabel: "Lindja e diellit",
+        prayerCalendar: "Kalendari i namazit →",
+        totalUsersLabel: "Përdorues gjithsej",
+        newAnnouncementsLabel: "Njoftime të reja (7 ditë)",
+        upcomingEventsLabel: "Ngjarjet e ardhshme",
+        activeTasksLabel: "Detyra aktive",
+        upcomingEventsTitle: "Ngjarjet e ardhshme",
+        allEventsLink: "Të gjitha ngjarjet →",
+        event1Name: "Iftar i përbashkët",
+        event2Name: "Takimi i rinisë",
+        membershipTitle: "Anëtarësia",
+        allPaymentsLink: "Të gjitha pagesat →",
+        total2025Label: "Gjithsej 2025",
+        membersPaidLabel: "Anëtarë të paguar",
+        payment1Label: "Pagesat e fundit:",
+        allProductsLink: "Të gjitha produktet →",
+        totalProductsLabel: "Produkte gjithsej",
+        activeLabel: "Aktive",
+        latestProductsLabel: "Produktet e fundit:",
+        product1Name: "Sexhade Premium",
+        product2Name: "Mbajtëse Kurani",
+        product3Name: "Tesbih",
+        tasksOverviewTitle: "Përmbledhja e detyrave",
+        adminViewLink: "Pamja e Adminit →",
+        allLabel: "Të gjitha",
+        inProgressLabel: "Në progres",
+        pendingLabel: "Në pritje",
+        completedLabel: "Përfunduar",
+        cancelledLabel: "Anuluar",
+        archivedLabel: "Arkivuar",
+        task1Name: "Përgatitja e materialeve për xhuma",
+        task2Name: "Përditëso listën e anëtarëve",
+        task3Name: "Organizo mbledhjen e bamirësisë",
+        task1Due: "Afati: 15.12.2025",
+        task2Due: "Afati: 18.12.2025",
+        task3Due: "Afati: 12.12.2025",
+        task1Status: "Në progres",
+        task2Status: "Në pritje",
+        task3Status: "Përfunduar",
+        currency: "EUR",
+        totalAmount: "4.850 EUR",
+        payment1Amount: "25 EUR",
+        payment2Amount: "25 EUR",
+        payment3Amount: "50 EUR",
+        product1Price: "35 EUR",
+        product2Price: "22 EUR",
+        product3Price: "8 EUR"
+      },
+      tr: {
+        toggleText: "Aç/Kapat",
+        navFeed: "Akış",
+        navUsers: "Kullanıcılar",
+        navFinances: "Finans",
+        navMembership: "Üyelik Aidatları",
+        navActivity: "Aktivite Günlüğü",
+        navAnnouncements: "Duyurular",
+        navEvents: "Etkinlikler",
+        navSections: "Bölümler",
+        navMessages: "Mesajlar",
+        welcomeText: "DžematApp Yönetici Paneline Hoş Geldiniz",
+        sunriseLabel: "Güneş Doğuşu",
+        prayerCalendar: "Namaz takvimi →",
+        totalUsersLabel: "Toplam Kullanıcı",
+        newAnnouncementsLabel: "Yeni Duyurular (7 gün)",
+        upcomingEventsLabel: "Yaklaşan Etkinlikler",
+        activeTasksLabel: "Aktif Görevler",
+        upcomingEventsTitle: "Yaklaşan Etkinlikler",
+        allEventsLink: "Tüm Etkinlikler →",
+        event1Name: "Topluluk İftarı",
+        event2Name: "Gençlik Toplantısı",
+        membershipTitle: "Üyelik Aidatları",
+        allPaymentsLink: "Tüm ödemeler →",
+        total2025Label: "Toplam 2025",
+        membersPaidLabel: "Ödeme yapan üye",
+        payment1Label: "Son ödemeler:",
+        allProductsLink: "Tüm ürünler →",
+        totalProductsLabel: "Toplam ürün",
+        activeLabel: "Aktif",
+        latestProductsLabel: "Son ürünler:",
+        product1Name: "Seccade Premium",
+        product2Name: "Kuran Standı",
+        product3Name: "Tesbih",
+        tasksOverviewTitle: "Görev Özeti",
+        adminViewLink: "Yönetici Görünümü →",
+        allLabel: "Tümü",
+        inProgressLabel: "Devam Eden",
+        pendingLabel: "Beklemede",
+        completedLabel: "Tamamlandı",
+        cancelledLabel: "İptal Edildi",
+        archivedLabel: "Arşivlendi",
+        task1Name: "Cuma hutbesi hazırla",
+        task2Name: "Üye listesini güncelle",
+        task3Name: "Yardım kampanyası düzenle",
+        task1Due: "Bitiş: 15.12.2025",
+        task2Due: "Bitiş: 18.12.2025",
+        task3Due: "Bitiş: 12.12.2025",
+        task1Status: "Devam Eden",
+        task2Status: "Beklemede",
+        task3Status: "Tamamlandı",
+        currency: "EUR",
+        totalAmount: "4.850 EUR",
+        payment1Amount: "25 EUR",
+        payment2Amount: "25 EUR",
+        payment3Amount: "50 EUR",
+        product1Price: "35 EUR",
+        product2Price: "22 EUR",
+        product3Price: "8 EUR"
+      }
+    };
+    
+    function applyTranslations(lang) {
+      const t = translations[lang] || translations.en;
+      const elements = [
+        'toggleText', 'navFeed', 'navUsers', 'navFinances', 'navMembership', 'navActivity',
+        'navAnnouncements', 'navEvents', 'navSections', 'navMessages', 'welcomeText', 'sunriseLabel',
+        'prayerCalendar', 'totalUsersLabel', 'newAnnouncementsLabel', 'upcomingEventsLabel',
+        'activeTasksLabel', 'upcomingEventsTitle', 'allEventsLink', 'event1Name', 'event2Name',
+        'membershipTitle', 'allPaymentsLink', 'total2025Label', 'membersPaidLabel', 'payment1Label',
+        'allProductsLink', 'totalProductsLabel', 'activeLabel', 'latestProductsLabel',
+        'product1Name', 'product2Name', 'product3Name', 'tasksOverviewTitle', 'adminViewLink',
+        'allLabel', 'inProgressLabel', 'pendingLabel', 'completedLabel', 'cancelledLabel',
+        'archivedLabel', 'task1Name', 'task2Name', 'task3Name', 'task1Due', 'task2Due', 'task3Due',
+        'task1Status', 'task2Status', 'task3Status', 'totalAmount', 'payment1Amount', 'payment2Amount',
+        'payment3Amount', 'product1Price', 'product2Price', 'product3Price'
+      ];
+      
+      elements.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && t[id]) {
+          el.textContent = t[id];
+        }
+      });
+    }
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const lang = urlParams.get('lang') || 'en';
+    applyTranslations(lang);
+  </script>
+</body>
+</html>
