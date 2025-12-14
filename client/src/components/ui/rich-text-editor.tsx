@@ -2,6 +2,7 @@ import { useState, useRef, useMemo, useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton } from '@mui/material';
 import { Visibility, Close } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 
 interface RichTextEditorProps {
   value: string;
@@ -24,6 +25,7 @@ export default function RichTextEditor({
   readOnly = false,
   'data-testid': dataTestId,
 }: RichTextEditorProps) {
+  const { t } = useTranslation('common');
   const [previewOpen, setPreviewOpen] = useState(false);
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [selectedImageSrc, setSelectedImageSrc] = useState('');
@@ -206,7 +208,7 @@ export default function RichTextEditor({
           disabled={!value || value === '<p><br></p>'}
           data-testid={`${dataTestId}-preview-button`}
         >
-          Pregled
+          {t('common.preview')}
         </Button>
       </Box>
 
@@ -219,7 +221,7 @@ export default function RichTextEditor({
           sx: { borderRadius: 2 }
         }}
       >
-        <DialogTitle>Pregled Sadržaja</DialogTitle>
+        <DialogTitle>{t('common.previewContent')}</DialogTitle>
         <DialogContent>
           <Box
             sx={{

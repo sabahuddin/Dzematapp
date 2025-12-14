@@ -68,7 +68,9 @@
     "sending": "Gönderiliyor...",
     "messageSent": "Mesaj başarıyla gönderildi",
     "messageSendError": "Mesaj gönderilemedi",
-    "viewAll": "Tümünü gör"
+    "viewAll": "Tümünü gör",
+    "preview": "Önizleme",
+    "previewContent": "İçerik Önizlemesi"
   },
   "messages": {
     "saveSuccess": "Başarıyla kaydedildi",

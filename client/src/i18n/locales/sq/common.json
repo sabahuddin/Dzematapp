@@ -68,7 +68,9 @@
     "sending": "Duke dërguar...",
     "messageSent": "Mesazhi u dërgua me sukses",
     "messageSendError": "Nuk është e mundur të dërgohet mesazhi",
-    "viewAll": "Shiko të gjitha"
+    "viewAll": "Shiko të gjitha",
+    "preview": "Parashiko",
+    "previewContent": "Parashikimi i Përmbajtjes"
   },
   "messages": {
     "saveSuccess": "U ruajt me sukses",
