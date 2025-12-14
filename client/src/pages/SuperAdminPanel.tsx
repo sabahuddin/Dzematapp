@@ -28,9 +28,12 @@ import {
   MenuItem,
   Checkbox,
   FormControlLabel,
-  Divider
+  Divider,
+  Tabs,
+  Tab
 } from '@mui/material';
-import { Add, Edit, Delete, Visibility, CheckCircle, Cancel, PersonOff, Extension } from '@mui/icons-material';
+import { Add, Edit, Delete, Visibility, CheckCircle, Cancel, PersonOff, Extension, Analytics, Business } from '@mui/icons-material';
+import AnalyticsTab from "@/components/AnalyticsTab";
 import { ALL_MODULES } from '../contexts/ModuleContext';
 
 const DEFAULT_MODULES = ['dashboard', 'announcements', 'events', 'vaktija', 'users'];
@@ -48,6 +51,7 @@ interface TenantStats {
 export default function SuperAdminPanel() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState(0);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedTenant, setSelectedTenant] = useState<Tenant | null>(null);
   const [statsDialogOpen, setStatsDialogOpen] = useState(false);
@@ -374,6 +378,19 @@ export default function SuperAdminPanel() {
         Super Admin Panel
       </Typography>
 
+      <Tabs 
+        value={activeTab} 
+        onChange={(_, newValue) => setActiveTab(newValue)}
+        sx={{ mb: 2, borderBottom: 1, borderColor: 'divider' }}
+      >
+        <Tab icon={<Business />} label="Tenanti" data-testid="tab-tenants" />
+        <Tab icon={<Analytics />} label="Analitika" data-testid="tab-analytics" />
+      </Tabs>
+
+      {activeTab === 1 && <AnalyticsTab />}
+
+      {activeTab === 0 && (
+      <>
       {/* Tenant Management */}
       <Box sx={{ mb: 2, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'flex-end', gap: 1, flexWrap: 'wrap' }}>
             <Button 
@@ -763,6 +780,8 @@ export default function SuperAdminPanel() {
           <Button onClick={() => setStatsDialogOpen(false)}>Zatvori</Button>
         </DialogActions>
       </Dialog>
+      </>
+      )}
     </Box>
   );
 }

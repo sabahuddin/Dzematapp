@@ -13,7 +13,7 @@ import { requireFeature, getTenantSubscriptionInfo } from "./feature-access";
 import { generateCertificate, saveCertificate } from "./certificateService";
 import { processAndSaveToFolder, IMAGE_CONFIGS, generateImageFilename } from "./utils/image-processor";
 import { sendContactEmail } from "./resend";
-import { type User, insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema, insertImportantDateSchema, insertContributionPurposeSchema, insertFinancialContributionSchema, insertActivityLogSchema, insertEventAttendanceSchema, insertPointsSettingsSchema, insertBadgeSchema, insertUserBadgeSchema, insertProjectSchema, insertProposalSchema, insertReceiptSchema, insertCertificateTemplateSchema, insertUserCertificateSchema, insertMembershipApplicationSchema, insertAkikaApplicationSchema, insertMarriageApplicationSchema, insertServiceSchema, insertSponsorSchema, insertTenantSchema } from "@shared/schema";
+import { type User, insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema, insertImportantDateSchema, insertContributionPurposeSchema, insertFinancialContributionSchema, insertActivityLogSchema, insertEventAttendanceSchema, insertPointsSettingsSchema, insertBadgeSchema, insertUserBadgeSchema, insertProjectSchema, insertProposalSchema, insertReceiptSchema, insertCertificateTemplateSchema, insertUserCertificateSchema, insertMembershipApplicationSchema, insertAkikaApplicationSchema, insertMarriageApplicationSchema, insertServiceSchema, insertSponsorSchema, insertTenantSchema, insertPageViewSchema } from "@shared/schema";
 
 // Upload directories
 const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'photos');
@@ -7289,6 +7289,125 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     }
   });
 
+  // =====================================================
+  // Analytics Routes (SuperAdmin)
+  // =====================================================
+
+  // Track page view (public endpoint - no auth required)
+  app.post("/api/analytics/track", async (req, res) => {
+    try {
+      const { site, path, visitorId, sessionId, referrer } = req.body;
+      
+      if (!site || !path) {
+        return res.status(400).json({ message: "site and path are required" });
+      }
+
+      // Parse User-Agent
+      const userAgent = req.headers['user-agent'] || '';
+      const deviceType = parseDeviceType(userAgent);
+      const os = parseOS(userAgent);
+      const browser = parseBrowser(userAgent);
+
+      // Get country from IP (simplified - in production use a geo-IP service)
+      const ip = req.headers['x-forwarded-for']?.toString().split(',')[0] || req.ip || '';
+      const country = await getCountryFromIP(ip);
+
+      await storage.createPageView({
+        site,
+        path,
+        visitorId: visitorId || null,
+        sessionId: sessionId || null,
+        deviceType,
+        os,
+        browser,
+        country,
+        city: null,
+        referrer: referrer || null
+      });
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error('[ANALYTICS] Error tracking page view:', error);
+      res.status(500).json({ message: "Failed to track page view" });
+    }
+  });
+
+  // Get analytics stats (SuperAdmin only)
+  app.get("/api/analytics/stats", requireSuperAdmin, async (req, res) => {
+    try {
+      const { site, days } = req.query;
+      
+      // Validate site parameter
+      const validSites = ['marketing', 'app', 'all', undefined];
+      const siteParam = site === 'all' ? undefined : (site as string | undefined);
+      if (site && !validSites.includes(site as string)) {
+        return res.status(400).json({ message: "Invalid site parameter. Must be 'marketing', 'app', or 'all'" });
+      }
+      
+      // Validate days parameter
+      let daysParam = 30;
+      if (days) {
+        const parsedDays = parseInt(days as string);
+        if (isNaN(parsedDays) || parsedDays < 1 || parsedDays > 365) {
+          return res.status(400).json({ message: "Invalid days parameter. Must be a number between 1 and 365" });
+        }
+        daysParam = parsedDays;
+      }
+      
+      const stats = await storage.getPageViewStats(siteParam, daysParam);
+      res.json(stats);
+    } catch (error) {
+      console.error('[ANALYTICS] Error getting stats:', error);
+      res.status(500).json({ message: "Failed to get analytics stats" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
+}
+
+// Helper functions for User-Agent parsing (used by analytics tracking)
+function parseDeviceType(userAgent: string): string {
+  const ua = userAgent.toLowerCase();
+  if (/ipad|tablet|playbook|silk/.test(ua)) return 'tablet';
+  if (/mobile|iphone|ipod|android.*mobile|webos|blackberry|opera mini|opera mobi|iemobile/.test(ua)) return 'mobile';
+  return 'desktop';
+}
+
+function parseOS(userAgent: string): string {
+  const ua = userAgent.toLowerCase();
+  if (/iphone|ipad|ipod/.test(ua)) return 'iOS';
+  if (/android/.test(ua)) return 'Android';
+  if (/windows/.test(ua)) return 'Windows';
+  if (/mac os|macos/.test(ua)) return 'macOS';
+  if (/linux/.test(ua)) return 'Linux';
+  if (/chromeos/.test(ua)) return 'ChromeOS';
+  return 'Other';
+}
+
+function parseBrowser(userAgent: string): string {
+  const ua = userAgent.toLowerCase();
+  if (/edg/.test(ua)) return 'Edge';
+  if (/opr|opera/.test(ua)) return 'Opera';
+  if (/chrome|crios/.test(ua)) return 'Chrome';
+  if (/firefox|fxios/.test(ua)) return 'Firefox';
+  if (/safari/.test(ua)) return 'Safari';
+  if (/msie|trident/.test(ua)) return 'IE';
+  return 'Other';
+}
+
+async function getCountryFromIP(ip: string): Promise<string | null> {
+  if (!ip || ip === '::1' || ip.startsWith('127.') || ip.startsWith('192.168.') || ip.startsWith('10.')) {
+    return null;
+  }
+  try {
+    const response = await fetch(`http://ip-api.com/json/${ip}?fields=countryCode`);
+    if (response.ok) {
+      const data = await response.json();
+      return data.countryCode || null;
+    }
+  } catch (error) {
+    console.log('[ANALYTICS] Could not get country for IP:', ip);
+  }
+  return null;
 }

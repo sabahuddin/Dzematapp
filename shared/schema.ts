@@ -1422,7 +1422,42 @@ export const auditLogs = pgTable("audit_logs", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// Page Views Analytics - SuperAdmin analytics tracking
+export const pageViews = pgTable("page_views", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  
+  // Site identification (marketing site vs app)
+  site: text("site").notNull(), // "marketing" or "app"
+  
+  // Page info
+  path: text("path").notNull(), // e.g., "/", "/pricing", "/dashboard"
+  
+  // Visitor info (anonymized)
+  visitorId: text("visitor_id"), // Anonymous visitor fingerprint
+  sessionId: text("session_id"), // Session identifier
+  
+  // Device & Browser info (from User-Agent)
+  deviceType: text("device_type"), // "desktop", "mobile", "tablet"
+  os: text("os"), // "iOS", "Android", "Windows", "macOS", "Linux"
+  browser: text("browser"), // "Chrome", "Safari", "Firefox", etc.
+  
+  // Geolocation (from IP)
+  country: text("country"), // "CH", "DE", "AT", "BA", etc.
+  city: text("city"),
+  
+  // Referrer
+  referrer: text("referrer"),
+  
+  // Timestamp
+  visitedAt: timestamp("visited_at").defaultNow().notNull(),
+});
+
 // Insert Schemas
+export const insertPageViewSchema = createInsertSchema(pageViews).omit({
+  id: true,
+  visitedAt: true,
+});
+
 export const insertTenantSchema = createInsertSchema(tenants).omit({
   id: true,
   createdAt: true,
@@ -1477,3 +1512,7 @@ export type MembershipPayment = typeof membershipPayments.$inferSelect;
 export type InsertMembershipPayment = z.infer<typeof insertMembershipPaymentSchema>;
 export type MembershipUploadLog = typeof membershipUploadLogs.$inferSelect;
 export type InsertMembershipUploadLog = z.infer<typeof insertMembershipUploadLogSchema>;
+
+// Analytics Types
+export type PageView = typeof pageViews.$inferSelect;
+export type InsertPageView = z.infer<typeof insertPageViewSchema>;
