@@ -1,0 +1,27 @@
+{
+  "title": "Mein Profil",
+  "editProfile": "Profil bearbeiten",
+  "userNotFound": "Benutzer nicht gefunden",
+  "memberId": "Mitgliedsnummer",
+  "noFamilyMembers": "Keine Familienmitglieder",
+  "roles": {
+    "admin": "Administrator",
+    "boardMember": "Vorstandsmitglied",
+    "member": "Mitglied",
+    "familyMember": "Familienmitglied"
+  },
+  "fields": {
+    "username": "Benutzername",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "dateOfBirth": "Geburtsdatum",
+    "address": "Adresse",
+    "city": "Stadt",
+    "postalCode": "Postleitzahl",
+    "memberSince": "Mitglied seit",
+    "monthlyFee": "Monatsbeitrag",
+    "skills": "Fähigkeiten",
+    "categories": "Kategorien",
+    "familyMembers": "Familienmitglieder"
+  }
+}

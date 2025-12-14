@@ -1,0 +1,27 @@
+{
+  "title": "Moj profil",
+  "editProfile": "Uredi profil",
+  "userNotFound": "Korisnik nije pronađen",
+  "memberId": "Članski broj",
+  "noFamilyMembers": "Nema članova porodice",
+  "roles": {
+    "admin": "Administrator",
+    "boardMember": "Član IO",
+    "member": "Član",
+    "familyMember": "Član porodice"
+  },
+  "fields": {
+    "username": "Korisničko ime",
+    "email": "Email",
+    "phone": "Telefon",
+    "dateOfBirth": "Datum rođenja",
+    "address": "Adresa",
+    "city": "Grad",
+    "postalCode": "Poštanski broj",
+    "memberSince": "Član od",
+    "monthlyFee": "Mjesečna članarina",
+    "skills": "Vještine",
+    "categories": "Kategorije",
+    "familyMembers": "Članovi porodice"
+  }
+}

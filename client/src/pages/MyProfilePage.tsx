@@ -9,12 +9,14 @@ import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { formatDateForDisplay } from '@/utils/dateUtils';
 import { useCurrency } from '@/contexts/CurrencyContext';
+import { useTranslation } from 'react-i18next';
 
 export default function MyProfilePage() {
   const { user: currentUser } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { currency } = useCurrency();
+  const { t } = useTranslation(['profile', 'common']);
   const [modalOpen, setModalOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
 
@@ -57,10 +59,10 @@ export default function MyProfilePage() {
 
   const getRoleLabel = (role: string) => {
     const roleMap: { [key: string]: string } = {
-      admin: 'Admin',
-      clanIO: 'Član IO',
-      clan: 'Član',
-      clanPorodice: 'Član porodice'
+      admin: t('profile:roles.admin'),
+      clanIO: t('profile:roles.boardMember'),
+      clan: t('profile:roles.member'),
+      clanPorodice: t('profile:roles.familyMember')
     };
     return roleMap[role] || role;
   };
@@ -78,7 +80,7 @@ export default function MyProfilePage() {
   if (isLoading) {
     return (
       <Box sx={{ p: 3 }}>
-        <Typography>Učitavanje...</Typography>
+        <Typography>{t('common:common.loading')}</Typography>
       </Box>
     );
   }
@@ -86,7 +88,7 @@ export default function MyProfilePage() {
   if (!user) {
     return (
       <Box sx={{ p: 3 }}>
-        <Typography>Korisnik nije pronađen</Typography>
+        <Typography>{t('profile:userNotFound')}</Typography>
       </Box>
     );
   }
@@ -95,7 +97,7 @@ export default function MyProfilePage() {
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h5" sx={{ fontWeight: 600, color: '#3949AB' }}>
-          Moj Profil
+          {t('profile:title')}
         </Typography>
         <Button
           variant="contained"
@@ -112,7 +114,7 @@ export default function MyProfilePage() {
             }
           }}
         >
-          Uredi profil
+          {t('profile:editProfile')}
         </Button>
       </Box>
 
@@ -129,7 +131,7 @@ export default function MyProfilePage() {
             <Box>
               {user.registryNumber && (
                 <Typography variant="body2" sx={{ color: '#3949AB', fontWeight: 600, mb: 0.5 }} data-testid="text-registry-number">
-                  ID člana: #{user.registryNumber}
+                  {t('profile:memberId')}: #{user.registryNumber}
                 </Typography>
               )}
               <Typography variant="h5" sx={{ fontWeight: 600, mb: 1 }}>
@@ -153,7 +155,7 @@ export default function MyProfilePage() {
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 3 }}>
             <Box>
               <Typography variant="body2" color="text.secondary" gutterBottom>
-                Korisničko ime
+                {t('profile:fields.username')}
               </Typography>
               <Typography variant="body1" sx={{ fontWeight: 500 }}>
                 {user.username || '-'}
@@ -162,7 +164,7 @@ export default function MyProfilePage() {
 
             <Box>
               <Typography variant="body2" color="text.secondary" gutterBottom>
-                Email
+                {t('profile:fields.email')}
               </Typography>
               <Typography variant="body1" sx={{ fontWeight: 500 }}>
                 {user.email || '-'}
@@ -171,7 +173,7 @@ export default function MyProfilePage() {
 
             <Box>
               <Typography variant="body2" color="text.secondary" gutterBottom>
-                Telefon
+                {t('profile:fields.phone')}
               </Typography>
               <Typography variant="body1" sx={{ fontWeight: 500 }}>
                 {user.phone || '-'}
@@ -180,7 +182,7 @@ export default function MyProfilePage() {
 
             <Box>
               <Typography variant="body2" color="text.secondary" gutterBottom>
-                Datum rođenja
+                {t('profile:fields.dateOfBirth')}
               </Typography>
               <Typography variant="body1" sx={{ fontWeight: 500 }}>
                 {formatDateForDisplay(user.dateOfBirth)}
@@ -189,7 +191,7 @@ export default function MyProfilePage() {
 
             <Box>
               <Typography variant="body2" color="text.secondary" gutterBottom>
-                Adresa
+                {t('profile:fields.address')}
               </Typography>
               <Typography variant="body1" sx={{ fontWeight: 500 }}>
                 {user.address || '-'}
@@ -198,7 +200,7 @@ export default function MyProfilePage() {
 
             <Box>
               <Typography variant="body2" color="text.secondary" gutterBottom>
-                Grad
+                {t('profile:fields.city')}
               </Typography>
               <Typography variant="body1" sx={{ fontWeight: 500 }}>
                 {user.city || '-'}
@@ -207,7 +209,7 @@ export default function MyProfilePage() {
 
             <Box>
               <Typography variant="body2" color="text.secondary" gutterBottom>
-                Poštanski broj
+                {t('profile:fields.postalCode')}
               </Typography>
               <Typography variant="body1" sx={{ fontWeight: 500 }}>
                 {user.postalCode || '-'}
@@ -216,7 +218,7 @@ export default function MyProfilePage() {
 
             <Box>
               <Typography variant="body2" color="text.secondary" gutterBottom>
-                Član od
+                {t('profile:fields.memberSince')}
               </Typography>
               <Typography variant="body1" sx={{ fontWeight: 500 }}>
                 {formatDateForDisplay(user.membershipDate)}
@@ -225,7 +227,7 @@ export default function MyProfilePage() {
 
             <Box>
               <Typography variant="body2" color="text.secondary" gutterBottom>
-                Mjesečna članarina
+                {t('profile:fields.monthlyFee')}
               </Typography>
               <Typography variant="body1" sx={{ fontWeight: 500, color: '#3949AB' }}>
                 {user.membershipFeeAmount ? `${user.membershipFeeAmount} ${currency}` : '-'}
@@ -235,7 +237,7 @@ export default function MyProfilePage() {
             {user.skills && user.skills.length > 0 && (
               <Box sx={{ gridColumn: '1 / -1' }}>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
-                  Vještine
+                  {t('profile:fields.skills')}
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 1 }}>
                   {user.skills.map((skill: string, index: number) => (
@@ -248,7 +250,7 @@ export default function MyProfilePage() {
             {user.categories && user.categories.length > 0 && (
               <Box sx={{ gridColumn: '1 / -1' }}>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
-                  Kategorije
+                  {t('profile:fields.categories')}
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 1 }}>
                   {user.categories.map((category: string, index: number) => (
@@ -262,7 +264,7 @@ export default function MyProfilePage() {
             <Box sx={{ gridColumn: '1 / -1' }}>
               <Divider sx={{ my: 2 }} />
               <Typography variant="body2" color="text.secondary" gutterBottom>
-                Članovi porodice
+                {t('profile:fields.familyMembers')}
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 1 }}>
                 {familyRelationships && familyRelationships.length > 0 ? (
@@ -287,7 +289,7 @@ export default function MyProfilePage() {
                   ))
                 ) : (
                   <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
-                    Nema članova porodice
+                    {t('profile:noFamilyMembers')}
                   </Typography>
                 )}
               </Box>

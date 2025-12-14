@@ -31,6 +31,7 @@ import membershipFeesBS from './locales/bs/membershipFees.json';
 import sponsorsBS from './locales/bs/sponsors.json';
 import feedBS from './locales/bs/feed.json';
 import guestBS from './locales/bs/guest.json';
+import profileBS from './locales/bs/profile.json';
 
 // Import all DE translations
 import commonDE from './locales/de/common.json';
@@ -61,6 +62,7 @@ import membershipFeesDE from './locales/de/membershipFees.json';
 import sponsorsDE from './locales/de/sponsors.json';
 import feedDE from './locales/de/feed.json';
 import guestDE from './locales/de/guest.json';
+import profileDE from './locales/de/profile.json';
 
 // Import all EN translations
 import commonEN from './locales/en/common.json';
@@ -91,6 +93,7 @@ import membershipFeesEN from './locales/en/membershipFees.json';
 import sponsorsEN from './locales/en/sponsors.json';
 import feedEN from './locales/en/feed.json';
 import guestEN from './locales/en/guest.json';
+import profileEN from './locales/en/profile.json';
 
 // Import all SQ (Albanian) translations
 import commonSQ from './locales/sq/common.json';
@@ -121,6 +124,7 @@ import membershipFeesSQ from './locales/sq/membershipFees.json';
 import sponsorsSQ from './locales/sq/sponsors.json';
 import feedSQ from './locales/sq/feed.json';
 import guestSQ from './locales/sq/guest.json';
+import profileSQ from './locales/sq/profile.json';
 
 // Import all TR (Turkish) translations
 import commonTR from './locales/tr/common.json';
@@ -151,6 +155,7 @@ import membershipFeesTR from './locales/tr/membershipFees.json';
 import sponsorsTR from './locales/tr/sponsors.json';
 import feedTR from './locales/tr/feed.json';
 import guestTR from './locales/tr/guest.json';
+import profileTR from './locales/tr/profile.json';
 
 const resources = {
   bs: {
@@ -182,6 +187,7 @@ const resources = {
     sponsors: sponsorsBS,
     feed: feedBS,
     guest: guestBS,
+    profile: profileBS,
   },
   de: {
     common: commonDE,
@@ -212,6 +218,7 @@ const resources = {
     sponsors: sponsorsDE,
     feed: feedDE,
     guest: guestDE,
+    profile: profileDE,
   },
   en: {
     common: commonEN,
@@ -242,6 +249,7 @@ const resources = {
     sponsors: sponsorsEN,
     feed: feedEN,
     guest: guestEN,
+    profile: profileEN,
   },
   sq: {
     common: commonSQ,
@@ -272,6 +280,7 @@ const resources = {
     sponsors: sponsorsSQ,
     feed: feedSQ,
     guest: guestSQ,
+    profile: profileSQ,
   },
   tr: {
     common: commonTR,
@@ -302,6 +311,7 @@ const resources = {
     sponsors: sponsorsTR,
     feed: feedTR,
     guest: guestTR,
+    profile: profileTR,
   },
 };
 

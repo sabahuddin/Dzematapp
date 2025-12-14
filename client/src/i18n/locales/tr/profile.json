@@ -1,0 +1,27 @@
+{
+  "title": "Profilim",
+  "editProfile": "Profili düzenle",
+  "userNotFound": "Kullanıcı bulunamadı",
+  "memberId": "Üye numarası",
+  "noFamilyMembers": "Aile üyesi yok",
+  "roles": {
+    "admin": "Yönetici",
+    "boardMember": "Yönetim kurulu üyesi",
+    "member": "Üye",
+    "familyMember": "Aile üyesi"
+  },
+  "fields": {
+    "username": "Kullanıcı adı",
+    "email": "E-posta",
+    "phone": "Telefon",
+    "dateOfBirth": "Doğum tarihi",
+    "address": "Adres",
+    "city": "Şehir",
+    "postalCode": "Posta kodu",
+    "memberSince": "Üyelik tarihi",
+    "monthlyFee": "Aylık aidat",
+    "skills": "Yetenekler",
+    "categories": "Kategoriler",
+    "familyMembers": "Aile üyeleri"
+  }
+}

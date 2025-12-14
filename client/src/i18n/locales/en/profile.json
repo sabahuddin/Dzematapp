@@ -1,0 +1,27 @@
+{
+  "title": "My Profile",
+  "editProfile": "Edit profile",
+  "userNotFound": "User not found",
+  "memberId": "Member ID",
+  "noFamilyMembers": "No family members",
+  "roles": {
+    "admin": "Admin",
+    "boardMember": "Board Member",
+    "member": "Member",
+    "familyMember": "Family Member"
+  },
+  "fields": {
+    "username": "Username",
+    "email": "Email",
+    "phone": "Phone",
+    "dateOfBirth": "Date of birth",
+    "address": "Address",
+    "city": "City",
+    "postalCode": "Postal code",
+    "memberSince": "Member since",
+    "monthlyFee": "Monthly fee",
+    "skills": "Skills",
+    "categories": "Categories",
+    "familyMembers": "Family members"
+  }
+}

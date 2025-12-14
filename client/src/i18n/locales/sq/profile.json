@@ -1,0 +1,27 @@
+{
+  "title": "Profili im",
+  "editProfile": "Ndrysho profilin",
+  "userNotFound": "Përdoruesi nuk u gjet",
+  "memberId": "ID e anëtarit",
+  "noFamilyMembers": "Nuk ka anëtarë të familjes",
+  "roles": {
+    "admin": "Administrator",
+    "boardMember": "Anëtar i bordit",
+    "member": "Anëtar",
+    "familyMember": "Anëtar i familjes"
+  },
+  "fields": {
+    "username": "Emri i përdoruesit",
+    "email": "Email",
+    "phone": "Telefoni",
+    "dateOfBirth": "Data e lindjes",
+    "address": "Adresa",
+    "city": "Qyteti",
+    "postalCode": "Kodi postar",
+    "memberSince": "Anëtar që nga",
+    "monthlyFee": "Tarifa mujore",
+    "skills": "Aftësitë",
+    "categories": "Kategoritë",
+    "familyMembers": "Anëtarët e familjes"
+  }
+}
