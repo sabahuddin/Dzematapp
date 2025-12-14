@@ -221,7 +221,7 @@ export default function MobileDashboard() {
 
         {/* Announcements Section */}
         <SectionCard 
-          title={t('dashboard:announcements')}
+          title={t('navigation:sidebar.announcements')}
           icon={<Campaign />}
           linkTo="/announcements"
           linkText={t('common:common.viewAll')}
