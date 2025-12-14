@@ -2,7 +2,7 @@
   "title": "Profilim",
   "editProfile": "Profili düzenle",
   "userNotFound": "Kullanıcı bulunamadı",
-  "memberId": "Üye numarası",
+  "memberId": "User ID",
   "noFamilyMembers": "Aile üyesi yok",
   "roles": {
     "admin": "Yönetici",

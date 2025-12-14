@@ -2,7 +2,7 @@
   "title": "Profili im",
   "editProfile": "Ndrysho profilin",
   "userNotFound": "Përdoruesi nuk u gjet",
-  "memberId": "ID e anëtarit",
+  "memberId": "User ID",
   "noFamilyMembers": "Nuk ka anëtarë të familjes",
   "roles": {
     "admin": "Administrator",

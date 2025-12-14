@@ -381,7 +381,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                   border: '2px solid #3949AB'
                 }}>
                   <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
-                    ID ČLANA
+                    User ID
                   </Typography>
                   <Typography variant="h5" sx={{ fontWeight: 700, color: '#3949AB' }}>
                     {(user as any).registryNumber !== undefined && (user as any).registryNumber !== null 

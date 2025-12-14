@@ -2,7 +2,7 @@
   "title": "My Profile",
   "editProfile": "Edit profile",
   "userNotFound": "User not found",
-  "memberId": "Member ID",
+  "memberId": "User ID",
   "noFamilyMembers": "No family members",
   "roles": {
     "admin": "Admin",

@@ -2,7 +2,7 @@
   "title": "Moj profil",
   "editProfile": "Uredi profil",
   "userNotFound": "Korisnik nije pronađen",
-  "memberId": "Članski broj",
+  "memberId": "User ID",
   "noFamilyMembers": "Nema članova porodice",
   "roles": {
     "admin": "Administrator",
