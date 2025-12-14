@@ -31,6 +31,10 @@ import {
   Description,
   OndemandVideo,
   Handshake,
+  Payment,
+  TaskAlt,
+  Leaderboard,
+  QrCode2,
 } from '@mui/icons-material';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
@@ -100,9 +104,29 @@ export default function GuidePage() {
       color: '#3949AB',
     },
     {
+      icon: <Payment sx={{ fontSize: 28 }} />,
+      key: 'membershipFees',
+      color: '#26A69A',
+    },
+    {
       icon: <FolderOpen sx={{ fontSize: 28 }} />,
       key: 'projects',
       color: 'hsl(291 64% 32%)',
+    },
+    {
+      icon: <TaskAlt sx={{ fontSize: 28 }} />,
+      key: 'taskManager',
+      color: 'hsl(207 88% 55%)',
+    },
+    {
+      icon: <Leaderboard sx={{ fontSize: 28 }} />,
+      key: 'recognitions',
+      color: 'hsl(14 100% 45%)',
+    },
+    {
+      icon: <QrCode2 sx={{ fontSize: 28 }} />,
+      key: 'eventCheckin',
+      color: '#3949AB',
     },
     {
       icon: <Timeline sx={{ fontSize: 28 }} />,
