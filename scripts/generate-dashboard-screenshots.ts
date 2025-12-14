@@ -3,11 +3,11 @@ import path from 'path';
 import fs from 'fs';
 
 const languages = [
-  { code: 'bs', name: 'Bosnian', file: 'dashboard-preview-bs.png' },
-  { code: 'de', name: 'German', file: 'dashboard-preview-de.png' },
-  { code: 'en', name: 'English', file: 'dashboard-preview-en.png' },
-  { code: 'sq', name: 'Albanian', file: 'dashboard-preview-al.png' },
-  { code: 'tr', name: 'Turkish', file: 'dashboard-preview-tr.png' },
+  { code: 'bs', name: 'Bosnian', file: 'dashboard-preview-bs.png', currency: 'BAM' },
+  { code: 'de', name: 'German', file: 'dashboard-preview-de.png', currency: 'EUR' },
+  { code: 'en', name: 'English', file: 'dashboard-preview-en.png', currency: 'USD' },
+  { code: 'sq', name: 'Albanian', file: 'dashboard-preview-al.png', currency: 'EUR' },
+  { code: 'tr', name: 'Turkish', file: 'dashboard-preview-tr.png', currency: 'EUR' },
 ];
 
 const APP_URL = process.env.APP_URL || 'http://localhost:5000';
@@ -55,11 +55,12 @@ async function generateScreenshots() {
     await page.waitForTimeout(3000);
     
     for (const lang of languages) {
-      console.log(`\nGenerating screenshot for ${lang.name} (${lang.code})...`);
+      console.log(`\nGenerating screenshot for ${lang.name} (${lang.code}), currency: ${lang.currency}...`);
       
-      await page.evaluate((langCode) => {
+      await page.evaluate(({ langCode, currency }) => {
         localStorage.setItem('language', langCode);
-      }, lang.code);
+        localStorage.setItem('currency', currency);
+      }, { langCode: lang.code, currency: lang.currency });
       
       await page.reload({ waitUntil: 'networkidle' });
       await page.waitForTimeout(2000);
