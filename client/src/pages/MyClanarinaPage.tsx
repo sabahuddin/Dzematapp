@@ -221,7 +221,7 @@ export default function MyClanarinaPage() {
                     .map((payment: any) => (
                       <TableRow key={payment.id} hover>
                         <TableCell>{payment.coverageYear}</TableCell>
-                        <TableCell>{MONTHS[payment.coverageMonth - 1]}</TableCell>
+                        <TableCell>{t(`membershipFees:months.${payment.coverageMonth}`)}</TableCell>
                         <TableCell align="right">{formatPrice(parseFloat(payment.amount))}</TableCell>
                         <TableCell align="right">
                           {payment.paidAt 

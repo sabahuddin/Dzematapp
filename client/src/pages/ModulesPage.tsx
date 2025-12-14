@@ -76,9 +76,10 @@ export default function ModulesPage() {
         sx={{
           display: 'grid',
           gridTemplateColumns: {
-            xs: 'repeat(3, 1fr)',
-            sm: 'repeat(4, 1fr)',
-            md: 'repeat(5, 1fr)',
+            xs: 'repeat(2, 1fr)',
+            sm: 'repeat(3, 1fr)',
+            md: 'repeat(4, 1fr)',
+            lg: 'repeat(5, 1fr)',
           },
           gap: 2,
         }}
