@@ -62,6 +62,8 @@ import AllSectionsPage from "@/pages/AllSectionsPage";
 
 // Layout
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import CookieConsent from "@/components/CookieConsent";
+import { usePageTracking, trackPageView } from "@/hooks/useAnalytics";
 
 // Create Material-UI theme - Spiritual Tech Indigo
 const theme = createTheme({
@@ -985,6 +987,11 @@ function Router() {
   );
 }
 
+function AnalyticsWrapper({ children }: { children: ReactNode }) {
+  usePageTracking();
+  return <>{children}</>;
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -995,8 +1002,11 @@ function App() {
             <AuthProvider>
               <ModuleProvider>
                 <TooltipProvider>
-                  <Toaster />
-                  <Router />
+                  <AnalyticsWrapper>
+                    <Toaster />
+                    <Router />
+                    <CookieConsent onAccept={() => trackPageView()} />
+                  </AnalyticsWrapper>
                 </TooltipProvider>
               </ModuleProvider>
             </AuthProvider>
