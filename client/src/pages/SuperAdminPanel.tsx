@@ -688,8 +688,10 @@ export default function SuperAdminPanel() {
                   label="Valuta"
                   data-testid="select-currency"
                 >
-                  <MenuItem value="CHF">CHF</MenuItem>
-                  <MenuItem value="EUR">EUR</MenuItem>
+                  <MenuItem value="BAM">BAM (Bosanska marka)</MenuItem>
+                  <MenuItem value="CHF">CHF (Švicarski franak)</MenuItem>
+                  <MenuItem value="EUR">EUR (Euro)</MenuItem>
+                  <MenuItem value="USD">USD (Američki dolar)</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
