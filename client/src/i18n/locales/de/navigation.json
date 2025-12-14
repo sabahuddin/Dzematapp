@@ -61,5 +61,12 @@
   "fallbackOrgName": "Islamische Gemeinde",
   "fallbackAddress": "Gemeinde Straße 123",
   "fallbackPhone": "+387 33 123 456",
-  "fallbackEmail": "info@dzemat.ba"
+  "fallbackEmail": "info@dzemat.ba",
+  "bottomNav": {
+    "home": "Startseite",
+    "announcements": "Ankündigungen",
+    "events": "Veranstaltungen",
+    "shop": "Shop",
+    "more": "Mehr"
+  }
 }

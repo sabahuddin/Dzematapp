@@ -1,38 +1,38 @@
 {
-  "title": "Zahtjevi i Prijave",
-  "newRequest": "Novi zahtjev",
-  "loading": "Učitavanje...",
-  "noRequests": "Nemate podnesenih zahtjeva",
-  "submitFirstRequest": "Podnesi prvi zahtjev",
+  "title": "Talepler ve Başvurular",
+  "newRequest": "Yeni Talep",
+  "loading": "Yükleniyor...",
+  "noRequests": "Gönderilmiş talebiniz yok",
+  "submitFirstRequest": "İlk Talebi Gönder",
   "requestTypes": {
-    "wedding": "Prijava vjenčanja",
-    "mekteb": "Prijava djeteta u mekteb",
-    "facility": "Zahtjev za korištenje prostorija",
-    "akika": "Prijava akike"
+    "wedding": "Düğün Başvurusu",
+    "mekteb": "Çocuk Mektep Kaydı",
+    "facility": "Tesis Kullanım Talebi",
+    "akika": "Akika Başvurusu"
   },
   "status": {
-    "pending": "Na čekanju",
-    "approved": "Odobreno",
-    "rejected": "Odbijeno"
+    "pending": "Beklemede",
+    "approved": "Onaylandı",
+    "rejected": "Reddedildi"
   },
   "dialog": {
-    "title": "Novi zahtjev / Prijava",
-    "selectType": "Odaberi tip zahtjeva",
-    "noteLabel": "Napomena (opciono)",
-    "formNotAvailable": "Forma za ovaj tip zahtjeva će biti dostupna uskoro. Molimo kontaktirajte administratora za više informacija.",
-    "cancel": "Otkaži",
-    "submit": "Pošalji",
-    "submitting": "Slanje..."
+    "title": "Yeni Talep / Başvuru",
+    "selectType": "Talep Türünü Seçin",
+    "noteLabel": "Not (isteğe bağlı)",
+    "formNotAvailable": "Bu talep türü için form yakında kullanılabilir olacak. Daha fazla bilgi için yöneticiyle iletişime geçin.",
+    "cancel": "İptal",
+    "submit": "Gönder",
+    "submitting": "Gönderiliyor..."
   },
   "card": {
-    "submittedLabel": "Poslato:",
-    "adminNotesLabel": "Napomena administratora:"
+    "submittedLabel": "Gönderildi:",
+    "adminNotesLabel": "Yönetici Notu:"
   },
   "toast": {
-    "success": "Uspješno",
-    "successDescription": "Vaš zahtjev je poslat",
-    "error": "Greška",
-    "errorDescription": "Nije moguće poslati zahtjev",
-    "selectTypeError": "Molimo odaberite tip zahtjeva"
+    "success": "Başarılı",
+    "successDescription": "Talebiniz gönderildi",
+    "error": "Hata",
+    "errorDescription": "Talep gönderilemedi",
+    "selectTypeError": "Lütfen bir talep türü seçin"
   }
 }

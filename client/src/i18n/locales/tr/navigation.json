@@ -61,5 +61,12 @@
   "fallbackOrgName": "İslam Cemaati",
   "fallbackAddress": "Camii Sokak 123",
   "fallbackPhone": "+90 212 123 45 67",
-  "fallbackEmail": "info@cemaat.com"
+  "fallbackEmail": "info@cemaat.com",
+  "bottomNav": {
+    "home": "Ana Sayfa",
+    "announcements": "Duyurular",
+    "events": "Etkinlikler",
+    "shop": "Mağaza",
+    "more": "Daha Fazla"
+  }
 }

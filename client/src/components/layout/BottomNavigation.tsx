@@ -1,11 +1,13 @@
 import { BottomNavigation as MuiBottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
 import { Home, CalendarMonth, Campaign, Store, Apps } from '@mui/icons-material';
 import { useLocation } from 'wouter';
+import { useTranslation } from 'react-i18next';
 
 export const BOTTOM_NAV_HEIGHT = 64;
 
 export default function BottomNavigation() {
   const [location, setLocation] = useLocation();
+  const { t } = useTranslation('navigation');
 
   const getActiveTab = () => {
     if (location === '/' || location === '/dashboard') return 0;
@@ -51,27 +53,27 @@ export default function BottomNavigation() {
         }}
       >
         <BottomNavigationAction
-          label="Početna"
+          label={t('bottomNav.home')}
           icon={<Home />}
           data-testid="bottom-nav-home"
         />
         <BottomNavigationAction
-          label="Obavještenja"
+          label={t('bottomNav.announcements')}
           icon={<Campaign />}
           data-testid="bottom-nav-announcements"
         />
         <BottomNavigationAction
-          label="Događaji"
+          label={t('bottomNav.events')}
           icon={<CalendarMonth />}
           data-testid="bottom-nav-events"
         />
         <BottomNavigationAction
-          label="Prodavnica"
+          label={t('bottomNav.shop')}
           icon={<Store />}
           data-testid="bottom-nav-shop"
         />
         <BottomNavigationAction
-          label="Više"
+          label={t('bottomNav.more')}
           icon={<Apps />}
           data-testid="bottom-nav-modules"
         />

@@ -61,5 +61,12 @@
   "fallbackOrgName": "Islamic Community",
   "fallbackAddress": "Congregation Street 123",
   "fallbackPhone": "+387 33 123 456",
-  "fallbackEmail": "info@congregation.ba"
+  "fallbackEmail": "info@congregation.ba",
+  "bottomNav": {
+    "home": "Home",
+    "announcements": "Announcements",
+    "events": "Events",
+    "shop": "Shop",
+    "more": "More"
+  }
 }

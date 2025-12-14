@@ -61,5 +61,12 @@
   "fallbackOrgName": "Komuniteti Islamik",
   "fallbackAddress": "Rruga e Xhematit 123",
   "fallbackPhone": "+387 33 123 456",
-  "fallbackEmail": "info@xhemat.ba"
+  "fallbackEmail": "info@xhemat.ba",
+  "bottomNav": {
+    "home": "Ballina",
+    "announcements": "Njoftimet",
+    "events": "Ngjarjet",
+    "shop": "Dyqani",
+    "more": "Më shumë"
+  }
 }
