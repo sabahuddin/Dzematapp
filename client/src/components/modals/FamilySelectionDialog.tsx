@@ -29,6 +29,7 @@ import { Close, Search, Person, Link as LinkIcon, PersonAdd } from '@mui/icons-m
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useAuth } from '@/hooks/useAuth';
+import { useTranslation } from 'react-i18next';
 
 interface FamilySelectionDialogProps {
   open: boolean;
@@ -52,6 +53,7 @@ function TabPanel(props: TabPanelProps) {
 }
 
 export default function FamilySelectionDialog({ open, onClose, userId }: FamilySelectionDialogProps) {
+  const { t } = useTranslation('users');
   const { user: currentUser } = useAuth();
   const isAdmin = currentUser?.isAdmin || currentUser?.isSuperAdmin || false;
   
@@ -261,7 +263,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
       }}
     >
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        Dodaj člana porodice
+        {t('family.addMember')}
         <IconButton onClick={handleClose} data-testid="close-family-dialog">
           <Close />
         </IconButton>
@@ -275,13 +277,13 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
               <Tab 
                 icon={<LinkIcon />} 
                 iconPosition="start" 
-                label="Poveži postojećeg člana" 
+                label={t('family.linkExistingTab')} 
                 data-testid="tab-link-existing"
               />
               <Tab 
                 icon={<PersonAdd />} 
                 iconPosition="start" 
-                label="Kreiraj novog člana" 
+                label={t('family.createNewTab')} 
                 data-testid="tab-create-new"
               />
             </Tabs>
@@ -291,13 +293,13 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
         {/* Tab 0: Link Existing Member - ADMIN ONLY */}
         {isAdmin && <TabPanel value={tabValue} index={0}>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            Pretražite postojeće članove i povežite ih kao porodicu.
+            {t('family.linkExistingDescription')}
           </Typography>
           
           <TextField
             fullWidth
             variant="outlined"
-            placeholder="Pretraži po imenu, prezimenu ili emailu..."
+            placeholder={t('family.searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             sx={{ mb: 2 }}
@@ -320,7 +322,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
               {filteredUsers.length === 0 ? (
                 <Box sx={{ p: 3, textAlign: 'center' }}>
                   <Typography color="text.secondary">
-                    {searchQuery ? 'Nema rezultata pretrage' : 'Nema dostupnih članova za povezivanje'}
+                    {searchQuery ? t('family.noSearchResults') : t('family.noAvailableForLinking')}
                   </Typography>
                 </Box>
               ) : (
@@ -344,7 +346,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
                       </ListItemAvatar>
                       <ListItemText
                         primary={`${user.firstName} ${user.lastName}`}
-                        secondary={user.email || user.username || 'Bez kontakta'}
+                        secondary={user.email || user.username || t('family.noContact')}
                       />
                       {user.status && (
                         <Chip 
@@ -364,13 +366,13 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
           {selectedExistingUser && (
             <Box sx={{ mt: 2, p: 2, backgroundColor: '#f5f5f5', borderRadius: 1 }}>
               <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                Odabrano: {selectedExistingUser.firstName} {selectedExistingUser.lastName}
+                {t('family.selected')}: {selectedExistingUser.firstName} {selectedExistingUser.lastName}
               </Typography>
               <FormControl fullWidth size="small" required>
-                <InputLabel>Tip odnosa</InputLabel>
+                <InputLabel>{t('family.relationshipType')}</InputLabel>
                 <Select
                   value={existingUserRelationship}
-                  label="Tip odnosa"
+                  label={t('family.relationshipType')}
                   onChange={(e) => setExistingUserRelationship(e.target.value)}
                   data-testid="select-existing-relationship"
                 >
@@ -389,7 +391,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
         {isAdmin ? (
           <TabPanel value={tabValue} index={1}>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              Kreirajte novog člana koji će automatski biti dodan kao član porodice.
+              {t('family.createNewDescription')}
             </Typography>
             
             <Grid container spacing={2}>
@@ -397,7 +399,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label="Ime"
+                  label={t('firstName')}
                   value={newUserData.firstName}
                   onChange={handleNewUserChange('firstName')}
                   required
@@ -409,7 +411,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label="Prezime"
+                  label={t('lastName')}
                   value={newUserData.lastName}
                   onChange={handleNewUserChange('lastName')}
                   required
@@ -421,10 +423,10 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label="Korisničko ime"
+                  label={t('username')}
                   value={newUserData.username}
                   onChange={handleNewUserChange('username')}
-                  helperText="Opciono"
+                  helperText={t('family.optional')}
                   data-testid="input-new-username"
                 />
               </Grid>
@@ -433,11 +435,11 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label="Email"
+                  label={t('email')}
                   type="email"
                   value={newUserData.email}
                   onChange={handleNewUserChange('email')}
-                  helperText="Opciono"
+                  helperText={t('family.optional')}
                   data-testid="input-new-email"
                 />
               </Grid>
@@ -446,21 +448,21 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label="Šifra"
+                  label={t('password')}
                   type="password"
                   value={newUserData.password}
                   onChange={handleNewUserChange('password')}
-                  helperText="Opciono"
+                  helperText={t('family.optional')}
                   data-testid="input-new-password"
                 />
               </Grid>
               
               <Grid size={{ xs: 12, sm: 6 }}>
                 <FormControl fullWidth required>
-                  <InputLabel>Tip odnosa</InputLabel>
+                  <InputLabel>{t('family.relationshipType')}</InputLabel>
                   <Select
                     value={newUserData.relationship}
-                    label="Tip odnosa"
+                    label={t('family.relationshipType')}
                     onChange={(e) => setNewUserData(prev => ({ ...prev, relationship: e.target.value }))}
                     data-testid="select-new-relationship"
                   >
@@ -478,7 +480,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
           /* Non-admin: Show create form directly without TabPanel */
           <Box>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              Kreirajte novog člana koji će automatski biti dodan kao član vaše porodice.
+              {t('family.createNewDescriptionMember')}
             </Typography>
             
             <Grid container spacing={2}>
@@ -486,7 +488,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label="Ime"
+                  label={t('firstName')}
                   value={newUserData.firstName}
                   onChange={handleNewUserChange('firstName')}
                   required
@@ -498,7 +500,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label="Prezime"
+                  label={t('lastName')}
                   value={newUserData.lastName}
                   onChange={handleNewUserChange('lastName')}
                   required
@@ -510,10 +512,10 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label="Korisničko ime"
+                  label={t('username')}
                   value={newUserData.username}
                   onChange={handleNewUserChange('username')}
-                  helperText="Opciono"
+                  helperText={t('family.optional')}
                   data-testid="input-new-username"
                 />
               </Grid>
@@ -522,11 +524,11 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label="Email"
+                  label={t('email')}
                   type="email"
                   value={newUserData.email}
                   onChange={handleNewUserChange('email')}
-                  helperText="Opciono"
+                  helperText={t('family.optional')}
                   data-testid="input-new-email"
                 />
               </Grid>
@@ -535,21 +537,21 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
                 <TextField
                   fullWidth
                   variant="outlined"
-                  label="Šifra"
+                  label={t('password')}
                   type="password"
                   value={newUserData.password}
                   onChange={handleNewUserChange('password')}
-                  helperText="Opciono"
+                  helperText={t('family.optional')}
                   data-testid="input-new-password"
                 />
               </Grid>
               
               <Grid size={{ xs: 12, sm: 6 }}>
                 <FormControl fullWidth required>
-                  <InputLabel>Tip odnosa</InputLabel>
+                  <InputLabel>{t('family.relationshipType')}</InputLabel>
                   <Select
                     value={newUserData.relationship}
-                    label="Tip odnosa"
+                    label={t('family.relationshipType')}
                     onChange={(e) => setNewUserData(prev => ({ ...prev, relationship: e.target.value }))}
                     data-testid="select-new-relationship"
                   >
@@ -572,7 +574,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
           variant="outlined"
           data-testid="button-cancel"
         >
-          Odustani
+          {t('family.cancel')}
         </Button>
         
         {/* For admins: show link button on tab 0, create button on tab 1 */}
@@ -589,7 +591,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
             startIcon={<LinkIcon />}
             data-testid="button-link-existing"
           >
-            {linkExistingMutation.isPending ? 'Povezujem...' : 'Poveži člana'}
+            {linkExistingMutation.isPending ? t('family.linking') : t('family.linkMember')}
           </Button>
         ) : (
           <Button 
@@ -604,7 +606,7 @@ export default function FamilySelectionDialog({ open, onClose, userId }: FamilyS
             startIcon={<PersonAdd />}
             data-testid="button-add-new"
           >
-            {createUserMutation.isPending ? 'Kreira se...' : 'Kreiraj i dodaj'}
+            {createUserMutation.isPending ? t('family.creating') : t('family.createAndAdd')}
           </Button>
         )}
       </DialogActions>
