@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import i18n from "@/i18n";
 
 interface SubscriptionPlan {
   name: string;
@@ -95,21 +96,28 @@ function getRequiredPlan(moduleId: string): string {
 }
 
 /**
- * Get user-friendly module display name
+ * Get user-friendly module display name using i18n
  */
 export function getModuleDisplayName(moduleId: string): string {
-  const displayNames: Record<string, string> = {
-    "shop": "DžematShop",
-    "marketplace": "Marketplace",
-    "certificates": "Zahvalnice",
-    "badges": "Značke i priznanja",
-    "livestream": "Live prijenos",
-    "ask-imam": "Pitaj imama",
-    "tasks": "Sekcije i zadaci",
-    "messages": "Poruke",
-    "finances": "Potpune finansije",
-    "applications": "Pristupnice i aplikacije"
+  const t = i18n.t.bind(i18n);
+  
+  const translationKeys: Record<string, string> = {
+    "shop": "navigation:menu.shop",
+    "marketplace": "common:entityTypes.shop_item",
+    "certificates": "navigation:menu.allCertificates",
+    "badges": "navigation:menu.badges",
+    "livestream": "navigation:menu.livestream",
+    "ask-imam": "navigation:menu.askImam",
+    "tasks": "navigation:menu.tasks",
+    "messages": "navigation:menu.messages",
+    "finances": "navigation:menu.finances",
+    "applications": "navigation:menu.applications"
   };
   
-  return displayNames[moduleId] || moduleId;
+  const key = translationKeys[moduleId];
+  if (key) {
+    return t(key);
+  }
+  
+  return moduleId;
 }

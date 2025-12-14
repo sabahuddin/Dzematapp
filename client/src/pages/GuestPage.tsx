@@ -34,6 +34,7 @@ import {
 import { Announcement, Event, Assignment, Schedule, CheckCircle, ChildCare, Favorite } from '@mui/icons-material';
 import { useLocation } from 'wouter';
 import { useQuery, useMutation } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import type { Announcement as AnnouncementType, Event as EventType, PrayerTime } from '@shared/schema';
 import { format } from 'date-fns';
 import { DzematLogo } from '@/components/DzematLogo';
@@ -72,6 +73,8 @@ interface MembershipSettingsPublic {
 }
 
 function MembershipApplicationForm() {
+  const { t } = useTranslation('guest');
+  
   // Fetch membership settings for dynamic fee display
   const { data: membershipSettings } = useQuery<MembershipSettingsPublic>({
     queryKey: ['/api/membership-settings/public'],
@@ -83,7 +86,7 @@ function MembershipApplicationForm() {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-    gender: 'muško',
+    gender: 'male',
     dateOfBirth: '',
     placeOfBirth: '',
     streetAddress: '',
@@ -91,7 +94,7 @@ function MembershipApplicationForm() {
     city: '',
     occupation: '',
     skillsHobbies: '',
-    maritalStatus: 'neoženjen/neudana',
+    maritalStatus: 'single',
     spouseName: '',
     childrenInfo: '',
     monthlyFee: String(suggestedFee),
@@ -135,7 +138,7 @@ function MembershipApplicationForm() {
 
     // Validate captcha
     if (parseInt(captchaInput) !== captcha.answer) {
-      setSubmitError('Neispravan odgovor na sigurnosno pitanje. Pokušajte ponovo.');
+      setSubmitError(t('application.captchaError'));
       // Regenerate captcha
       const a = Math.floor(Math.random() * 10) + 1;
       const b = Math.floor(Math.random() * 10) + 1;
@@ -171,7 +174,7 @@ function MembershipApplicationForm() {
       setFormData({
         firstName: '',
         lastName: '',
-        gender: 'muško',
+        gender: 'male',
         dateOfBirth: '',
         placeOfBirth: '',
         streetAddress: '',
@@ -179,7 +182,7 @@ function MembershipApplicationForm() {
         city: '',
         occupation: '',
         skillsHobbies: '',
-        maritalStatus: 'neoženjen/neudana',
+        maritalStatus: 'single',
         spouseName: '',
         childrenInfo: '',
         monthlyFee: String(suggestedFee),
@@ -190,7 +193,7 @@ function MembershipApplicationForm() {
       });
     } catch (error) {
       console.error('Application submission failed:', error);
-      setSubmitError('Greška pri slanju zahtjeva. Pokušajte ponovo.');
+      setSubmitError(t('application.submitError'));
     }
   };
 
@@ -204,13 +207,13 @@ function MembershipApplicationForm() {
       <Box sx={{ maxWidth: 600, mx: 'auto', textAlign: 'center', py: 4 }}>
         <CheckCircle sx={{ fontSize: 80, color: 'success.main', mb: 2 }} />
         <Typography variant="h5" gutterBottom color="success.main">
-          Zahtjev uspješno poslan!
+          {t('application.successTitle')}
         </Typography>
         <Typography variant="body1" color="text.secondary" paragraph>
-          Hvala vam na prijavi za članstvo u našem džematu.
+          {t('application.successMessage')}
         </Typography>
         <Typography variant="body2" color="text.secondary" paragraph>
-          Pregledaćemo vaš zahtjev i kontaktirati vas uskoro.
+          {t('application.successDescription')}
         </Typography>
         <Button 
           variant="contained" 
@@ -218,7 +221,7 @@ function MembershipApplicationForm() {
           sx={{ mt: 2 }}
           data-testid="button-submit-another"
         >
-          Pošalji novu pristupnicu
+          {t('application.submitAnother')}
         </Button>
       </Box>
     );
@@ -227,10 +230,10 @@ function MembershipApplicationForm() {
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 800, mx: 'auto' }}>
       <Typography variant="h5" gutterBottom>
-        Zahtjev za članstvo
+        {t('application.title')}
       </Typography>
       <Typography variant="body2" color="text.secondary" paragraph>
-        Popunite formu ispod kako biste aplicirali za članstvo u našem džematu.
+        {t('application.description')}
       </Typography>
 
       {submitError && (
@@ -241,7 +244,7 @@ function MembershipApplicationForm() {
 
       <Card sx={{ p: 3, mb: 3 }}>
         <Typography variant="h6" gutterBottom>
-          Lični podaci
+          {t('application.personalData')}
         </Typography>
         
         <Grid container spacing={2}>
@@ -249,7 +252,7 @@ function MembershipApplicationForm() {
             <TextField
               fullWidth
               required
-              label="Ime"
+              label={t('application.firstName')}
               value={formData.firstName}
               onChange={handleChange('firstName')}
               data-testid="input-firstName"
@@ -259,7 +262,7 @@ function MembershipApplicationForm() {
             <TextField
               fullWidth
               required
-              label="Prezime"
+              label={t('application.lastName')}
               value={formData.lastName}
               onChange={handleChange('lastName')}
               data-testid="input-lastName"
@@ -268,15 +271,15 @@ function MembershipApplicationForm() {
 
           <Grid size={{ xs: 12 }}>
             <FormControl component="fieldset">
-              <FormLabel component="legend">Pol</FormLabel>
+              <FormLabel component="legend">{t('application.gender')}</FormLabel>
               <RadioGroup
                 row
                 value={formData.gender}
                 onChange={handleChange('gender')}
                 data-testid="radio-gender"
               >
-                <FormControlLabel value="muško" control={<Radio />} label="Muško" />
-                <FormControlLabel value="žensko" control={<Radio />} label="Žensko" />
+                <FormControlLabel value="male" control={<Radio />} label={t('application.male')} />
+                <FormControlLabel value="female" control={<Radio />} label={t('application.female')} />
               </RadioGroup>
             </FormControl>
           </Grid>
@@ -286,7 +289,7 @@ function MembershipApplicationForm() {
               fullWidth
               required
               type="date"
-              label="Datum rođenja"
+              label={t('application.dateOfBirth')}
               value={formData.dateOfBirth}
               onChange={handleChange('dateOfBirth')}
               InputLabelProps={{ shrink: true }}
@@ -297,7 +300,7 @@ function MembershipApplicationForm() {
             <TextField
               fullWidth
               required
-              label="Mjesto rođenja"
+              label={t('application.placeOfBirth')}
               value={formData.placeOfBirth}
               onChange={handleChange('placeOfBirth')}
               data-testid="input-placeOfBirth"
@@ -308,7 +311,7 @@ function MembershipApplicationForm() {
             <TextField
               fullWidth
               required
-              label="Adresa"
+              label={t('application.address')}
               value={formData.streetAddress}
               onChange={handleChange('streetAddress')}
               data-testid="input-streetAddress"
@@ -318,7 +321,7 @@ function MembershipApplicationForm() {
             <TextField
               fullWidth
               required
-              label="Poštanski broj"
+              label={t('application.postalCode')}
               value={formData.postalCode}
               onChange={handleChange('postalCode')}
               data-testid="input-postalCode"
@@ -328,7 +331,7 @@ function MembershipApplicationForm() {
             <TextField
               fullWidth
               required
-              label="Grad"
+              label={t('application.city')}
               value={formData.city}
               onChange={handleChange('city')}
               data-testid="input-city"
@@ -339,7 +342,7 @@ function MembershipApplicationForm() {
             <TextField
               fullWidth
               required
-              label="Zanimanje"
+              label={t('application.occupation')}
               value={formData.occupation}
               onChange={handleChange('occupation')}
               data-testid="input-occupation"
@@ -348,7 +351,7 @@ function MembershipApplicationForm() {
           <Grid size={{ xs: 12 }}>
             <TextField
               fullWidth
-              label="Posebne sposobnosti (opciono)"
+              label={t('application.skills')}
               value={formData.skillsHobbies}
               onChange={handleChange('skillsHobbies')}
               multiline
@@ -361,32 +364,32 @@ function MembershipApplicationForm() {
 
       <Card sx={{ p: 3, mb: 3 }}>
         <Typography variant="h6" gutterBottom>
-          Porodični podaci
+          {t('application.familyData')}
         </Typography>
 
         <Grid container spacing={2}>
           <Grid size={{ xs: 12 }}>
             <FormControl fullWidth>
-              <InputLabel>Bračno stanje</InputLabel>
+              <InputLabel>{t('application.maritalStatus')}</InputLabel>
               <Select
                 value={formData.maritalStatus}
                 onChange={(e) => setFormData(prev => ({ ...prev, maritalStatus: e.target.value }))}
-                label="Bračno stanje"
+                label={t('application.maritalStatus')}
                 data-testid="select-maritalStatus"
               >
-                <MenuItem value="neoženjen/neudana">Neoženjen/Neudana</MenuItem>
-                <MenuItem value="oženjen/udata">Oženjen/Udata</MenuItem>
-                <MenuItem value="razveden/razvedena">Razveden/Razvedena</MenuItem>
-                <MenuItem value="udovac/udovica">Udovac/Udovica</MenuItem>
+                <MenuItem value="single">{t('application.single')}</MenuItem>
+                <MenuItem value="married">{t('application.married')}</MenuItem>
+                <MenuItem value="divorced">{t('application.divorced')}</MenuItem>
+                <MenuItem value="widowed">{t('application.widowed')}</MenuItem>
               </Select>
             </FormControl>
           </Grid>
 
-          {(formData.maritalStatus === 'oženjen/udata') && (
+          {(formData.maritalStatus === 'married') && (
             <Grid size={{ xs: 12 }}>
               <TextField
                 fullWidth
-                label="Ime bračnog partnera"
+                label={t('application.spouseName')}
                 value={formData.spouseName}
                 onChange={handleChange('spouseName')}
                 data-testid="input-spouseName"
@@ -397,12 +400,12 @@ function MembershipApplicationForm() {
           <Grid size={{ xs: 12 }}>
             <TextField
               fullWidth
-              label="Djeca (imena i godine rođenja, opciono)"
+              label={t('application.children')}
               value={formData.childrenInfo}
               onChange={handleChange('childrenInfo')}
               multiline
               rows={2}
-              placeholder="Npr: Amir (2010), Amina (2015)"
+              placeholder={t('application.childrenPlaceholder')}
               data-testid="input-childrenInfo"
             />
           </Grid>
@@ -411,45 +414,45 @@ function MembershipApplicationForm() {
 
       <Card sx={{ p: 3, mb: 3 }}>
         <Typography variant="h6" gutterBottom>
-          Podaci o članstvu
+          {t('application.membershipData')}
         </Typography>
 
         <Grid container spacing={2}>
           <Grid size={{ xs: 12 }}>
             <FormControl fullWidth>
-              <InputLabel>Visina mjesečne članarine</InputLabel>
+              <InputLabel>{t('application.monthlyFee')}</InputLabel>
               <Select
                 value={formData.monthlyFee}
                 onChange={(e) => setFormData(prev => ({ ...prev, monthlyFee: e.target.value }))}
-                label="Visina mjesečne članarine"
+                label={t('application.monthlyFee')}
                 data-testid="select-monthlyFee"
               >
                 {[30, 40, 50, 60, 70, 80, 90, 100].map((amount) => (
                   <MenuItem key={amount} value={String(amount)}>
-                    {amount} {currency}{amount === suggestedFee ? ' (preporučeno)' : ''}
+                    {amount} {currency}{amount === suggestedFee ? ` (${t('application.recommended')})` : ''}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
             {membershipSettings && (
               <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
-                Preporučena visina članarine: {suggestedFee} {currency}
+                {t('application.suggestedFee')}: {suggestedFee} {currency}
               </Typography>
             )}
           </Grid>
 
           <Grid size={{ xs: 12 }}>
             <FormControl fullWidth>
-              <InputLabel>Način dostave računa</InputLabel>
+              <InputLabel>{t('application.invoiceDelivery')}</InputLabel>
               <Select
                 value={formData.invoiceDelivery}
                 onChange={(e) => setFormData(prev => ({ ...prev, invoiceDelivery: e.target.value }))}
-                label="Način dostave računa"
+                label={t('application.invoiceDelivery')}
                 data-testid="select-invoiceDelivery"
               >
-                <MenuItem value="email">Email</MenuItem>
-                <MenuItem value="pošta">Poštom</MenuItem>
-                <MenuItem value="lično">Lično preuzimanje</MenuItem>
+                <MenuItem value="email">{t('application.email')}</MenuItem>
+                <MenuItem value="mail">{t('application.mail')}</MenuItem>
+                <MenuItem value="pickup">{t('application.pickup')}</MenuItem>
               </Select>
             </FormControl>
           </Grid>
@@ -458,7 +461,7 @@ function MembershipApplicationForm() {
             <TextField
               fullWidth
               required
-              label="Email"
+              label={t('application.email')}
               type="email"
               value={formData.email}
               onChange={handleChange('email')}
@@ -469,7 +472,7 @@ function MembershipApplicationForm() {
             <TextField
               fullWidth
               required
-              label="Telefon"
+              label={t('application.phone')}
               value={formData.phone}
               onChange={handleChange('phone')}
               data-testid="input-phone"
@@ -481,7 +484,7 @@ function MembershipApplicationForm() {
               fullWidth
               required
               type="date"
-              label="Datum pristupanja"
+              label={t('application.membershipStartDate')}
               value={formData.membershipStartDate}
               onChange={handleChange('membershipStartDate')}
               InputLabelProps={{ shrink: true }}
@@ -511,17 +514,17 @@ function MembershipApplicationForm() {
       {/* Security Captcha */}
       <Card sx={{ p: 3, mt: 3 }}>
         <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
-          Sigurnosno pitanje
+          {t('application.securityQuestion')}
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Typography variant="body1">
-            Koliko je {captcha.a} + {captcha.b} = ?
+            {t('application.captchaQuestion')} {captcha.a} + {captcha.b} = ?
           </Typography>
           <TextField
             size="small"
             value={captchaInput}
             onChange={(e) => setCaptchaInput(e.target.value)}
-            placeholder="Unesite odgovor"
+            placeholder={t('application.captchaPlaceholder')}
             sx={{ width: 120 }}
             data-testid="input-captcha"
           />
@@ -536,7 +539,7 @@ function MembershipApplicationForm() {
           disabled={submitApplicationMutation.isPending || !captchaInput}
           data-testid="button-submit-application"
         >
-          {submitApplicationMutation.isPending ? 'Slanje...' : 'Pošalji zahtjev'}
+          {submitApplicationMutation.isPending ? t('application.submitting') : t('application.submit')}
         </Button>
       </Stack>
     </Box>
@@ -544,6 +547,7 @@ function MembershipApplicationForm() {
 }
 
 export default function GuestPage() {
+  const { t } = useTranslation('guest');
   const [, setLocation] = useLocation();
   const [tabValue, setTabValue] = useState(0);
 
@@ -578,14 +582,14 @@ export default function GuestPage() {
         <Toolbar sx={{ gap: 1 }}>
           <DzematLogo size={48} />
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: 'hsl(207 88% 55%)' }}>
-            DžematApp - Gost pristup
+            {t('pageTitle')}
           </Typography>
           <Button 
             onClick={handleBackToLogin} 
             data-testid="button-back-to-login"
             sx={{ color: 'hsl(207 88% 55%)' }}
           >
-            Nazad na prijavu
+            {t('backToLogin')}
           </Button>
         </Toolbar>
       </AppBar>
@@ -601,25 +605,25 @@ export default function GuestPage() {
             >
               <Tab 
                 icon={<Announcement />} 
-                label="Obavještenja" 
+                label={t('tabs.announcements')} 
                 iconPosition="start"
                 data-testid="tab-announcements"
               />
               <Tab 
                 icon={<Event />} 
-                label="Događaji" 
+                label={t('tabs.events')} 
                 iconPosition="start"
                 data-testid="tab-events"
               />
               <Tab 
                 icon={<Schedule />} 
-                label="Vaktija" 
+                label={t('tabs.vaktija')} 
                 iconPosition="start"
                 data-testid="tab-vaktija"
               />
               <Tab 
                 icon={<Assignment />} 
-                label="Pristupnica" 
+                label={t('tabs.membership')} 
                 iconPosition="start"
                 data-testid="tab-membership"
               />
@@ -627,12 +631,12 @@ export default function GuestPage() {
 
             <TabPanel value={tabValue} index={0}>
               <Typography variant="h5" gutterBottom>
-                Obavještenja
+                {t('sections.announcements')}
               </Typography>
               {announcementsLoading ? (
-                <Typography>Učitavanje...</Typography>
+                <Typography>{t('sections.loading')}</Typography>
               ) : announcements.length === 0 ? (
-                <Typography color="text.secondary">Nema obavještenja.</Typography>
+                <Typography color="text.secondary">{t('sections.noAnnouncements')}</Typography>
               ) : (
                 <Stack spacing={2}>
                   {announcements.map((announcement) => (
@@ -661,12 +665,12 @@ export default function GuestPage() {
 
             <TabPanel value={tabValue} index={1}>
               <Typography variant="h5" gutterBottom>
-                Događaji
+                {t('sections.events')}
               </Typography>
               {eventsLoading ? (
-                <Typography>Učitavanje...</Typography>
+                <Typography>{t('sections.loading')}</Typography>
               ) : events.length === 0 ? (
-                <Typography color="text.secondary">Nema događaja.</Typography>
+                <Typography color="text.secondary">{t('sections.noEvents')}</Typography>
               ) : (
                 <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>
                   {events.map((event) => (
@@ -701,7 +705,7 @@ export default function GuestPage() {
 
             <TabPanel value={tabValue} index={2}>
               <Typography variant="h5" gutterBottom>
-                Vaktija
+                {t('sections.vaktija')}
               </Typography>
               
               {/* Today's Prayer Times */}
@@ -712,13 +716,13 @@ export default function GuestPage() {
               ) : todayPrayerTime ? (
                 <Paper sx={{ p: 3, mb: 4, bgcolor: 'hsl(207 90% 95%)' }}>
                   <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: 'hsl(207 88% 55%)' }}>
-                    Današnja vaktija - {todayPrayerTime.date}
+                    {t('sections.todaysPrayerTimes')} - {todayPrayerTime.date}
                   </Typography>
                   <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
                     <Box sx={{ flex: '1 1 150px' }}>
                       <Card>
                         <CardContent sx={{ textAlign: 'center' }}>
-                          <Typography variant="caption" color="text.secondary">Zora</Typography>
+                          <Typography variant="caption" color="text.secondary">{t('prayerTimes.fajr')}</Typography>
                           <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.fajr}</Typography>
                         </CardContent>
                       </Card>
@@ -726,7 +730,7 @@ export default function GuestPage() {
                     <Box sx={{ flex: '1 1 150px' }}>
                       <Card>
                         <CardContent sx={{ textAlign: 'center' }}>
-                          <Typography variant="caption" color="text.secondary">Podne</Typography>
+                          <Typography variant="caption" color="text.secondary">{t('prayerTimes.dhuhr')}</Typography>
                           <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.dhuhr}</Typography>
                         </CardContent>
                       </Card>
@@ -734,7 +738,7 @@ export default function GuestPage() {
                     <Box sx={{ flex: '1 1 150px' }}>
                       <Card>
                         <CardContent sx={{ textAlign: 'center' }}>
-                          <Typography variant="caption" color="text.secondary">Ikindija</Typography>
+                          <Typography variant="caption" color="text.secondary">{t('prayerTimes.asr')}</Typography>
                           <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.asr}</Typography>
                         </CardContent>
                       </Card>
@@ -742,7 +746,7 @@ export default function GuestPage() {
                     <Box sx={{ flex: '1 1 150px' }}>
                       <Card>
                         <CardContent sx={{ textAlign: 'center' }}>
-                          <Typography variant="caption" color="text.secondary">Akšam</Typography>
+                          <Typography variant="caption" color="text.secondary">{t('prayerTimes.maghrib')}</Typography>
                           <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.maghrib}</Typography>
                         </CardContent>
                       </Card>
@@ -750,7 +754,7 @@ export default function GuestPage() {
                     <Box sx={{ flex: '1 1 150px' }}>
                       <Card>
                         <CardContent sx={{ textAlign: 'center' }}>
-                          <Typography variant="caption" color="text.secondary">Jacija</Typography>
+                          <Typography variant="caption" color="text.secondary">{t('prayerTimes.isha')}</Typography>
                           <Typography variant="h6" sx={{ fontWeight: 600 }}>{todayPrayerTime.isha}</Typography>
                         </CardContent>
                       </Card>
@@ -758,19 +762,19 @@ export default function GuestPage() {
                   </Box>
                 </Paper>
               ) : (
-                <Typography color="text.secondary" sx={{ mb: 4 }}>Nema podataka o današnjim vaktijama.</Typography>
+                <Typography color="text.secondary" sx={{ mb: 4 }}>{t('sections.noPrayerData')}</Typography>
               )}
 
               {/* Monthly Prayer Times Table */}
               <Typography variant="h6" gutterBottom sx={{ mt: 3, mb: 2 }}>
-                Mjesečne vaktije
+                {t('sections.prayerCalendar')}
               </Typography>
               {allPrayerLoading ? (
                 <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
                   <CircularProgress />
                 </Box>
               ) : allPrayerTimes.length === 0 ? (
-                <Typography color="text.secondary">Nema učitanih vaktija.</Typography>
+                <Typography color="text.secondary">{t('sections.noPrayerData')}</Typography>
               ) : (
                 (() => {
                   // Group prayer times by month
@@ -796,14 +800,17 @@ export default function GuestPage() {
                     return dateA.getTime() - dateB.getTime();
                   });
 
-                  const monthNames = [
-                    'Januar', 'Februar', 'Mart', 'April', 'Maj', 'Juni',
-                    'Juli', 'August', 'Septembar', 'Oktobar', 'Novembar', 'Decembar'
-                  ];
+                  // Use Intl for localized month names based on current i18n language
+                  const getLocalizedMonthName = (monthNum: number, yearNum: number) => {
+                    const date = new Date(yearNum, monthNum - 1, 1);
+                    const locale = localStorage.getItem('language') || 'bs';
+                    const localeMap: Record<string, string> = { bs: 'bs-Latn-BA', de: 'de-DE', en: 'en-US', sq: 'sq-AL', tr: 'tr-TR' };
+                    return new Intl.DateTimeFormat(localeMap[locale] || 'bs-Latn-BA', { month: 'long' }).format(date);
+                  };
 
                   return sortedMonthKeys.map((monthYear) => {
                     const [month, year] = monthYear.split('.');
-                    const monthName = monthNames[parseInt(month) - 1];
+                    const monthName = getLocalizedMonthName(parseInt(month), parseInt(year));
                     const prayerTimes = monthGroups[monthYear];
 
                     return (
@@ -815,12 +822,12 @@ export default function GuestPage() {
                           <Table size="small">
                             <TableHead>
                               <TableRow sx={{ bgcolor: 'hsl(0 0% 96%)' }}>
-                                <TableCell sx={{ fontWeight: 600 }}>Datum</TableCell>
-                                <TableCell sx={{ fontWeight: 600 }}>Zora</TableCell>
-                                <TableCell sx={{ fontWeight: 600 }}>Podne</TableCell>
-                                <TableCell sx={{ fontWeight: 600 }}>Ikindija</TableCell>
-                                <TableCell sx={{ fontWeight: 600 }}>Akšam</TableCell>
-                                <TableCell sx={{ fontWeight: 600 }}>Jacija</TableCell>
+                                <TableCell sx={{ fontWeight: 600 }}>{t('sections.date')}</TableCell>
+                                <TableCell sx={{ fontWeight: 600 }}>{t('prayerTimes.fajr')}</TableCell>
+                                <TableCell sx={{ fontWeight: 600 }}>{t('prayerTimes.dhuhr')}</TableCell>
+                                <TableCell sx={{ fontWeight: 600 }}>{t('prayerTimes.asr')}</TableCell>
+                                <TableCell sx={{ fontWeight: 600 }}>{t('prayerTimes.maghrib')}</TableCell>
+                                <TableCell sx={{ fontWeight: 600 }}>{t('prayerTimes.isha')}</TableCell>
                               </TableRow>
                             </TableHead>
                             <TableBody>
