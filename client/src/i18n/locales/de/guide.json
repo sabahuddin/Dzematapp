@@ -222,6 +222,22 @@
       "admin": "Der Admin fügt Zahlungen mit allen Details hinzu: Mitglied, das eingezahlt hat, Betrag in CHF, Zweck (Kategorie), Zahlungsdatum, optionale Verknüpfung mit einem Projekt. Kann bestehende Zahlungen bearbeiten und im Fehlerfall löschen. Der Admin sieht alle Zahlungen aller Mitglieder, kann nach Kategorien filtern und Berichte erstellen. Das System weist Mitgliedern automatisch Punkte für ihre Zahlungen zu.",
       "member": "Mitglieder können nur ihre eigenen Zahlungen und ihre Historie anzeigen. Sie sehen, wie viel sie insgesamt eingezahlt haben, nach welchen Kategorien und welche Projekte durch ihre Zahlungen unterstützt wurden. Sie können keine Zahlungen hinzufügen, ändern oder löschen - das kann nur der Admin. Mitglieder sehen Punkte, die sie durch ihre finanziellen Beiträge verdient haben."
     },
+    "membershipFees": {
+      "title": "Mitgliedsbeitrag",
+      "shortDesc": "Verwaltung und Verfolgung von Mitgliedsbeiträgen",
+      "description": "System zur Erfassung und Verfolgung der jährlichen Mitgliedsbeiträge der Gemeindemitglieder. Ermöglicht dem Admin eine genaue Aufzeichnung darüber, wer den Mitgliedsbeitrag gezahlt hat, für welchen Zeitraum und wie viel noch offen ist.",
+      "features": [
+        "Jährlicher Mitgliedsbeitrag mit einstellbarem Betrag",
+        "Automatische Erstellung von Zahlungen für alle Mitglieder",
+        "Statusverfolgung: Bezahlt, Nicht bezahlt, Teilweise bezahlt",
+        "Filterung nach Zahlungsstatus und Jahr",
+        "Import von Mitgliedern aus Excel-Datei",
+        "Berichte über Beitragseinzug",
+        "Verknüpfung mit dem Finanzmodul"
+      ],
+      "admin": "Der Admin legt den jährlichen Mitgliedsbeitrag fest und erstellt Zahlungen für alle aktiven Mitglieder. Kann Zahlung als bezahlt markieren, sehen wer nicht bezahlt hat und Erinnerungen senden. Admin hat Übersicht aller Mitgliedsbeiträge nach Jahren mit Filterung nach Status. Kann Mitglieder aus Excel-Datei für Massenerstellung importieren.",
+      "member": "Mitglieder sehen ihren Mitgliedsbeitragsstatus - ob bezahlt, wie viel sie schulden und für welchen Zeitraum. Können auf die Historie ihrer Mitgliedsbeitragszahlungen über die Jahre zugreifen. Mitglieder erhalten Erinnerungen, wenn sich ihr Zahlungstermin nähert."
+    },
     "projects": {
       "title": "Projekte",
       "shortDesc": "Gemeindeprojekte und Spenden",
@@ -237,6 +253,55 @@
       ],
       "admin": "Der Admin erstellt neue Projekte mit Name, detaillierter Beschreibung, Zielbetrag und Status. Wenn ein Mitglied Geld einzahlt, kann der Admin diese Zahlung mit dem Projekt verknüpfen, was den aktuellen Projektbetrag automatisch aktualisiert. Der Admin kann Projekte bearbeiten, den Status ändern und eine Liste aller mit dem Projekt verknüpften Spenden sehen. Das System berechnet automatisch den Prozentsatz der Zielerreichung.",
       "member": "Mitglieder sehen alle Gemeindeprojekte, den Fortschritt der Mittelbeschaffung und können sich über den Zweck des Projekts informieren. Wenn ein Mitglied Geld einzahlt und der Admin es mit dem Projekt verknüpft, wird dies als Beitrag zum Projekt aufgezeichnet und das Mitglied erhält eine spezielle Aktivität im Activity Log. Mitglieder sehen eine transparente Anzeige, wie ihre Beiträge verwendet werden."
+    },
+    "taskManager": {
+      "title": "Task Manager",
+      "shortDesc": "Zentraler Überblick über alle Aufgaben",
+      "description": "Zentraler Überblick über alle Aufgaben aus allen Bereichen an einem Ort. Task Manager ermöglicht Admins und Moderatoren schnellen Einblick in alle aktiven Aufgaben, deren Status und Fristen, ohne jeden Bereich einzeln prüfen zu müssen.",
+      "features": [
+        "Kanban-Ansicht der Aufgaben nach Status",
+        "Filterung nach Bereich, Priorität und Frist",
+        "Schnellansicht aller Aufgaben mit ausstehender Genehmigung",
+        "Massenaktionen für mehrere Aufgaben gleichzeitig",
+        "Aufgabenübersicht nach Benutzern",
+        "Export von Aufgabenberichten",
+        "Statistik der abgeschlossenen Aufgaben"
+      ],
+      "admin": "Der Admin sieht alle Aufgaben aus allen Bereichen an einem Ort. Kann schnell Aufgaben genehmigen, die auf Genehmigung warten, überlastete Mitglieder sehen, überfällige Aufgaben identifizieren und die Produktivität der Bereiche verfolgen. Task Manager dient als Steuerungszentrale für die Arbeitsverwaltung in der Gemeinde.",
+      "moderator": "Moderatoren sehen Aufgaben aus den Bereichen, die sie verwalten. Können schnell alle Aufgabenstatus überprüfen, abgeschlossene genehmigen und neue erstellen, ohne durch einzelne Bereiche zu navigieren."
+    },
+    "recognitions": {
+      "title": "Anerkennungen (Rangliste)",
+      "shortDesc": "Ranking und Anerkennung für aktive Mitglieder",
+      "description": "System zur öffentlichen Anerkennung der aktivsten Gemeindemitglieder. Die Rangliste zeigt das Ranking der Mitglieder nach Punkten, Abzeichen und Beiträgen und motiviert Mitglieder zu aktiverer Teilnahme.",
+      "features": [
+        "Rangliste mit Ranking nach Punkten",
+        "Anzeige der Top 10, 20 oder aller Mitglieder",
+        "Kategorien: Gesamtpunkte, Aufgaben, Veranstaltungen, Spenden",
+        "Monatliche und jährliche Übersichten",
+        "Visuelle Anzeige verdienter Abzeichen",
+        "Medaillen für die Top 3 Positionen",
+        "Personalisierter Rang für jedes Mitglied"
+      ],
+      "admin": "Der Admin kann detaillierte Statistiken aller Mitglieder sehen, Aktivitätstrends analysieren und Daten für Belohnungen nutzen. Kann sehen, welche Mitglieder in welchen Kategorien am aktivsten sind und Anerkennungen planen.",
+      "member": "Mitglieder sehen ihre Position in der Rangliste und können um einen besseren Platz wetteifern. Sehen, wer die aktivsten Gemeindemitglieder sind, und können sich von ihrem Beispiel inspirieren lassen. Das Gamifikationssystem motiviert zu aktiverer Teilnahme."
+    },
+    "eventCheckin": {
+      "title": "Event Check-in (QR-Code)",
+      "shortDesc": "Anwesenheitsregistrierung per QR-Code",
+      "description": "System zur schnellen Anwesenheitsregistrierung bei Veranstaltungen per QR-Code-Scan. Jede Veranstaltung hat einen einzigartigen QR-Code, den Mitglieder bei der Ankunft scannen, wodurch sie automatisch ihre Anwesenheit bestätigen und Punkte verdienen.",
+      "features": [
+        "Einzigartiger QR-Code für jede Veranstaltung",
+        "Scannen per Handy-Kamera",
+        "Automatische Punktevergabe für Anwesenheit",
+        "Möglichkeit zur Gastregistrierung",
+        "Echtzeit-Liste der Anwesenden",
+        "Veranstaltungsbesuchsstatistiken",
+        "Drucken von QR-Codes für Poster"
+      ],
+      "admin": "Der Admin generiert für jede Veranstaltung einen QR-Code und kann ihn drucken oder digital teilen. Sieht eine Echtzeit-Liste, wer den Code gescannt hat und an der Veranstaltung teilgenommen hat. Kann Anwesende manuell hinzufügen, die die App nicht haben. Das System vergibt automatisch Punkte an alle, die sich registrieren.",
+      "member": "Mitglieder scannen bei der Ankunft zur Veranstaltung den QR-Code und bestätigen automatisch ihre Anwesenheit. Das System vergibt sofort Punkte und zeigt die Registrierungsbestätigung an. Keine manuelle Anmeldung erforderlich - einfach den Code scannen.",
+      "all": "Gäste können ebenfalls den QR-Code scannen und ihren Namen für die Anwesenheitsregistrierung eingeben. Dies ermöglicht die Verfolgung der Gesamtbesucherzahl, einschließlich derjenigen, die keine Gemeindemitglieder sind."
     },
     "activity": {
       "title": "Aktivitäten (Activity Log)",

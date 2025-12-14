@@ -222,6 +222,22 @@
       "admin": "Admin dodaje uplate sa svim detaljima: član koji je uplatio, iznos u CHF, svrha (kategorija), datum uplate, opciono povezivanje sa projektom. Može uređivati postojeće uplate i brisati ih u slučaju greške. Admin vidi sve uplate svih članova, može filtrirati po kategorijama i izvući izvještaje. Sistem automatski dodjeljuje bodove članovima za njihove uplate.",
       "member": "Članovi mogu pregledati samo svoje uplate i njihovu historiju. Vide koliko su ukupno uplatili, po kojim kategorijama i koji projekti su podržani njihovim uplatama. Ne mogu dodavati, mijenjati ili brisati uplate - to može samo admin. Članovi vide bodove koje su zaradili kroz svoje finansijske priloge."
     },
+    "membershipFees": {
+      "title": "Članarina",
+      "shortDesc": "Evidencija i praćenje članarina",
+      "description": "Sistem za evidenciju i praćenje godišnjih članarina članova džemata. Omogućava adminu da vodi preciznu evidenciju ko je platio članarinu, za koji period i koliko duguje.",
+      "features": [
+        "Godišnja članarina sa podešavanjem iznosa",
+        "Automatsko kreiranje uplata za sve članove",
+        "Praćenje statusa: Plaćeno, Neplaćeno, Djelomično plaćeno",
+        "Filtriranje po statusu plaćanja i godini",
+        "Import članova iz Excel fajla",
+        "Izvještaji o naplati članarine",
+        "Povezivanje sa finansijskim modulom"
+      ],
+      "admin": "Admin postavlja godišnji iznos članarine i kreira uplate za sve aktivne članove. Može označiti uplatu kao plaćenu kada član uplati, vidjeti ko nije platio i slati podsjetike. Admin ima pregled svih članarina po godinama sa mogućnošću filtriranja po statusu. Može importovati članove iz Excel fajla za masovno kreiranje.",
+      "member": "Članovi vide status svoje članarine - da li je plaćena, koliko duguju i za koji period. Mogu pristupiti historiji svojih uplata članarine kroz godine. Članovi primaju podsjetike kada im se približi rok za plaćanje."
+    },
     "projects": {
       "title": "Projekti",
       "shortDesc": "Projekti džemata i donacije",
@@ -237,6 +253,55 @@
       ],
       "admin": "Admin kreira nove projekte sa nazivom, detaljnim opisom, ciljnim iznosom i statusom. Kada član uplati novac, admin može povezati tu uplatu sa projektom, što automatski ažurira trenutni iznos projekta. Admin može uređivati projekte, mijenjati status i vidjeti listu svih donacija povezanih sa projektom. Sistem automatski računa procenat ispunjenja cilja.",
       "member": "Članovi pregledaju sve projekte džemata, vide napredak sakupljanja sredstava i mogu se informisati o svrsi projekta. Kada član uplati novac i admin ga poveže sa projektom, to se evidentira kao doprinos projektu i član dobija posebnu aktivnost u Activity Log-u. Članovi vide transparentan prikaz kako se njihovi prilozi koriste."
+    },
+    "taskManager": {
+      "title": "Task Manager",
+      "shortDesc": "Centralni pregled svih zadataka",
+      "description": "Centralni pregled svih zadataka iz svih sekcija na jednom mjestu. Task Manager omogućava adminu i moderatorima brz uvid u sve aktivne zadatke, njihove statuse i rokove bez potrebe da pregledaju svaku sekciju pojedinačno.",
+      "features": [
+        "Kanban prikaz zadataka po statusima",
+        "Filtriranje po sekciji, prioritetu i roku",
+        "Brzi pregled svih zadataka na čekanju odobrenja",
+        "Bulk akcije za više zadataka odjednom",
+        "Pregled zadataka po korisnicima",
+        "Export izvještaja o zadacima",
+        "Statistika završenih zadataka"
+      ],
+      "admin": "Admin vidi sve zadatke iz svih sekcija na jednom mjestu. Može brzo odobriti zadatke koji čekaju odobrenje, vidjeti preopterećene članove, identificirati zakašnjele zadatke i pratiti produktivnost sekcija. Task Manager služi kao kontrolna ploča za upravljanje radom u džematu.",
+      "moderator": "Moderatori vide zadatke iz sekcija kojima upravljaju. Mogu brzo pregledati status svih zadataka, odobriti završene i kreirati nove bez navigacije kroz pojedinačne sekcije."
+    },
+    "recognitions": {
+      "title": "Priznanja (Leaderboard)",
+      "shortDesc": "Rangiranje i priznanja za aktivne članove",
+      "description": "Sistem za javno priznanje najaktivnijih članova džemata. Leaderboard prikazuje rangiranje članova po bodovima, značkama i doprinosima, motivirajući članove na aktivnije učešće.",
+      "features": [
+        "Leaderboard sa rangiranjem po bodovima",
+        "Prikaz top 10, 20 ili svih članova",
+        "Kategorije: Ukupno bodova, Zadaci, Događaji, Donacije",
+        "Mjesečni i godišnji pregledi",
+        "Vizualni prikaz osvojenih značaka",
+        "Medalje za top 3 pozicije",
+        "Personalizovani rang svakog člana"
+      ],
+      "admin": "Admin može vidjeti detaljnu statistiku svih članova, analizirati trendove aktivnosti i koristiti podatke za nagrađivanje. Može vidjeti koji članovi su najaktivniji u kojim kategorijama i planirati priznanja.",
+      "member": "Članovi vide svoju poziciju na leaderboard-u i mogu se takmičiti za bolje mjesto. Vide ko su najaktivniji članovi džemata i mogu se inspirisati njihovim primjerom. Sistem gamifikacije motiviše aktivnije učešće."
+    },
+    "eventCheckin": {
+      "title": "Event Check-in (QR kod)",
+      "shortDesc": "Prijava prisustva putem QR koda",
+      "description": "Sistem za brzu prijavu prisustva na događajima putem skeniranja QR koda. Svaki događaj ima jedinstveni QR kod koji članovi skeniraju pri dolasku, čime automatski potvrđuju prisustvo i zarađuju bodove.",
+      "features": [
+        "Jedinstveni QR kod za svaki događaj",
+        "Skeniranje putem kamere mobitela",
+        "Automatska dodjela bodova za prisustvo",
+        "Mogućnost prijave gostiju",
+        "Real-time lista prisutnih",
+        "Statistika posjećenosti događaja",
+        "Štampanje QR kodova za postere"
+      ],
+      "admin": "Admin generiše QR kod za svaki događaj i može ga štampati ili dijeliti digitalno. Vidi real-time listu ko je skenirao kod i pristupio događaju. Može ručno dodati prisutne koji nemaju aplikaciju. Sistem automatski dodjeljuje bodove svima koji se prijave.",
+      "member": "Članovi skeniraju QR kod pri dolasku na događaj i automatski potvrđuju svoje prisustvo. Sistem im odmah dodjeljuje bodove i prikazuje potvrdu prijave. Ne trebaju se ručno prijavljivati - dovoljno je skenirati kod.",
+      "all": "Gosti mogu također skenirati QR kod i unijeti svoje ime za prijavu prisustva. Ovo omogućava praćenje ukupnog broja posjetilaca, uključujući one koji nisu članovi džemata."
     },
     "activity": {
       "title": "Aktivnosti (Activity Log)",

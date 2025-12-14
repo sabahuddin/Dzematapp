@@ -222,6 +222,22 @@
       "admin": "Admin adds contributions with all details: member who contributed, amount in CHF, purpose (category), contribution date, optional linking with project. Can edit existing contributions and delete them in case of error. Admin sees all contributions from all members, can filter by categories and generate reports. System automatically awards points to members for their contributions.",
       "member": "Members can view only their contributions and their history. See how much they contributed in total, by which categories and which projects were supported by their contributions. Cannot add, change or delete contributions - only admin can do that. Members see points they earned through their financial contributions."
     },
+    "membershipFees": {
+      "title": "Membership Fees",
+      "shortDesc": "Membership fee tracking and management",
+      "description": "System for tracking and managing annual membership fees of congregation members. Enables admin to keep precise records of who paid membership fee, for which period and how much they owe.",
+      "features": [
+        "Annual membership fee with adjustable amount",
+        "Automatic creation of payments for all members",
+        "Status tracking: Paid, Unpaid, Partially paid",
+        "Filtering by payment status and year",
+        "Import members from Excel file",
+        "Membership fee collection reports",
+        "Integration with finances module"
+      ],
+      "admin": "Admin sets annual membership fee amount and creates payments for all active members. Can mark payment as paid when member pays, see who hasn't paid and send reminders. Admin has overview of all membership fees by year with filtering by status. Can import members from Excel file for bulk creation.",
+      "member": "Members see their membership fee status - whether it's paid, how much they owe and for which period. Can access history of their membership fee payments through the years. Members receive reminders when their payment deadline approaches."
+    },
     "projects": {
       "title": "Projects",
       "shortDesc": "Congregation projects and donations",
@@ -237,6 +253,55 @@
       ],
       "admin": "Admin creates new projects with name, detailed description, target amount and status. When member contributes money, admin can link that contribution with project, which automatically updates current project amount. Admin can edit projects, change status and see list of all donations linked with project. System automatically calculates percentage of goal completion.",
       "member": "Members view all congregation projects, see fundraising progress and can get informed about project purpose. When member contributes money and admin links it with project, it's recorded as project contribution and member gets special activity in Activity Log. Members see transparent display of how their contributions are used."
+    },
+    "taskManager": {
+      "title": "Task Manager",
+      "shortDesc": "Central overview of all tasks",
+      "description": "Central overview of all tasks from all sections in one place. Task Manager enables admins and moderators quick insight into all active tasks, their statuses and deadlines without needing to check each section individually.",
+      "features": [
+        "Kanban view of tasks by status",
+        "Filtering by section, priority and deadline",
+        "Quick view of all tasks pending approval",
+        "Bulk actions for multiple tasks at once",
+        "Task overview by users",
+        "Export task reports",
+        "Completed tasks statistics"
+      ],
+      "admin": "Admin sees all tasks from all sections in one place. Can quickly approve tasks awaiting approval, see overloaded members, identify overdue tasks and track section productivity. Task Manager serves as control panel for managing work in congregation.",
+      "moderator": "Moderators see tasks from sections they manage. Can quickly review all task statuses, approve completed ones and create new ones without navigating through individual sections."
+    },
+    "recognitions": {
+      "title": "Recognitions (Leaderboard)",
+      "shortDesc": "Ranking and recognition for active members",
+      "description": "System for public recognition of most active congregation members. Leaderboard displays member ranking by points, badges and contributions, motivating members to participate more actively.",
+      "features": [
+        "Leaderboard with ranking by points",
+        "Display top 10, 20 or all members",
+        "Categories: Total points, Tasks, Events, Donations",
+        "Monthly and yearly overviews",
+        "Visual display of earned badges",
+        "Medals for top 3 positions",
+        "Personalized rank for each member"
+      ],
+      "admin": "Admin can see detailed statistics of all members, analyze activity trends and use data for rewarding. Can see which members are most active in which categories and plan recognitions.",
+      "member": "Members see their position on leaderboard and can compete for better place. See who are the most active congregation members and can be inspired by their example. Gamification system motivates more active participation."
+    },
+    "eventCheckin": {
+      "title": "Event Check-in (QR Code)",
+      "shortDesc": "Attendance registration via QR code",
+      "description": "System for quick event attendance registration via QR code scanning. Each event has unique QR code that members scan upon arrival, automatically confirming attendance and earning points.",
+      "features": [
+        "Unique QR code for each event",
+        "Scanning via phone camera",
+        "Automatic point award for attendance",
+        "Guest registration option",
+        "Real-time attendee list",
+        "Event attendance statistics",
+        "Printing QR codes for posters"
+      ],
+      "admin": "Admin generates QR code for each event and can print it or share digitally. Sees real-time list of who scanned code and attended event. Can manually add attendees who don't have the app. System automatically awards points to everyone who registers.",
+      "member": "Members scan QR code upon event arrival and automatically confirm their attendance. System immediately awards points and displays registration confirmation. No need for manual registration - just scan the code.",
+      "all": "Guests can also scan QR code and enter their name for attendance registration. This enables tracking total number of visitors, including those who are not congregation members."
     },
     "activity": {
       "title": "Activity Log",

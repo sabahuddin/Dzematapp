@@ -222,6 +222,22 @@
       "admin": "Admini shton pagesa me të gjitha detajet: anëtari që ka paguar, shuma në CHF, qëllimi (kategoria), data e pagesës, lidhja opsionale me projektin. Mund të modifikojë pagesat ekzistuese dhe t'i fshijë ato në rast gabimi. Admini sheh të gjitha pagesat e të gjithë anëtarëve, mund t'i filtrojë sipas kategorive dhe të nxjerrë raporte. Sistemi automatikisht cakton pikë anëtarëve për pagesat e tyre.",
       "member": "Anëtarët mund të shfletojnë vetëm pagesat e tyre dhe historinë e tyre. Shohin sa kanë paguar gjithsej, sipas cilave kategori dhe cilat projekte janë mbështetur nga pagesat e tyre. Nuk mund të shtojnë, ndryshojnë ose fshijnë pagesa - këtë mund ta bëjë vetëm admini. Anëtarët shohin pikët që kanë fituar përmes kontributeve të tyre financiare."
     },
+    "membershipFees": {
+      "title": "Kotizacioni",
+      "shortDesc": "Menaxhimi dhe ndjekja e kotizacioneve",
+      "description": "Sistemi për evidencën dhe ndjekjen e kotizacioneve vjetore të anëtarëve të xhematit. Mundëson adminin të mbajë evidencë të saktë se kush ka paguar kotizacionin, për cilën periudhë dhe sa borxh ka.",
+      "features": [
+        "Kotizacion vjetor me shumë të rregullueshme",
+        "Krijimi automatik i pagesave për të gjithë anëtarët",
+        "Ndjekja e statusit: Paguar, Papaguar, Pjesërisht paguar",
+        "Filtrimi sipas statusit të pagesës dhe vitit",
+        "Importi i anëtarëve nga skedari Excel",
+        "Raporte mbi mbledhjen e kotizacionit",
+        "Lidhja me modulin e financave"
+      ],
+      "admin": "Admini vendos shumën e kotizacionit vjetor dhe krijon pagesa për të gjithë anëtarët aktivë. Mund të shënojë pagesën si të paguar kur anëtari paguan, të shohë kush nuk ka paguar dhe të dërgojë kujtesa. Admini ka pamje të të gjitha kotizacioneve sipas viteve me filtrim sipas statusit.",
+      "member": "Anëtarët shohin statusin e kotizacionit të tyre - nëse është paguar, sa borxh kanë dhe për cilën periudhë. Mund të aksesojnë historinë e pagesave të kotizacionit përmes viteve. Anëtarët marrin kujtesa kur afrohet afati i pagesës."
+    },
     "projects": {
       "title": "Projektet",
       "shortDesc": "Projektet e xhematit dhe donacionet",
@@ -237,6 +253,55 @@
       ],
       "admin": "Admini krijon projekte të reja me emër, përshkrim të detajuar, shumë të synuar dhe status. Kur një anëtar paguan para, admini mund ta lidhë atë pagesë me projektin, që automatikisht përditëson shumën aktuale të projektit. Admini mund të modifikojë projektet, të ndryshojë statusin dhe të shohë listën e të gjitha donacioneve të lidhura me projektin. Sistemi automatikisht llogarit përqindjen e përmbushjes së qëllimit.",
       "member": "Anëtarët shfletojnë të gjitha projektet e xhematit, shohin progresin e mbledhjes së fondeve dhe mund të informohen për qëllimin e projektit. Kur një anëtar paguan para dhe admini i lidh ato me projektin, kjo regjistrohet si kontribut në projekt dhe anëtari merr një aktivitet të veçantë në Activity Log. Anëtarët shohin një pamje transparente se si përdoren kontributet e tyre."
+    },
+    "taskManager": {
+      "title": "Task Manager",
+      "shortDesc": "Pamje qendrore e të gjitha detyrave",
+      "description": "Pamje qendrore e të gjitha detyrave nga të gjitha seksionet në një vend. Task Manager mundëson adminëve dhe moderatorëve shikim të shpejtë të të gjitha detyrave aktive, statuseve dhe afateve pa nevojën për të kontrolluar çdo seksion veçmas.",
+      "features": [
+        "Pamje Kanban e detyrave sipas statusit",
+        "Filtrimi sipas seksionit, prioritetit dhe afatit",
+        "Shikim i shpejtë i të gjitha detyrave në pritje të miratimit",
+        "Veprime në masë për disa detyra njëkohësisht",
+        "Pamje e detyrave sipas përdoruesve",
+        "Eksporti i raporteve të detyrave",
+        "Statistikat e detyrave të përfunduara"
+      ],
+      "admin": "Admini sheh të gjitha detyrat nga të gjitha seksionet në një vend. Mund të miratojë shpejt detyrat në pritje, të shohë anëtarët e ngarkuar, të identifikojë detyrat e vonuara dhe të ndjekë produktivitetin e seksioneve. Task Manager shërben si panel kontrolli për menaxhimin e punës në xhemat.",
+      "moderator": "Moderatorët shohin detyrat nga seksionet që menaxhojnë. Mund të rishikojnë shpejt të gjitha statuset e detyrave, të miratojnë të përfunduarat dhe të krijojnë të reja pa naviguar nëpër seksione individuale."
+    },
+    "recognitions": {
+      "title": "Njohjet (Ranglista)",
+      "shortDesc": "Rangimi dhe njohja për anëtarët aktivë",
+      "description": "Sistemi për njohjen publike të anëtarëve më aktivë të xhematit. Ranglista shfaq rangimin e anëtarëve sipas pikëve, simboleve dhe kontributeve, duke motivuar anëtarët të marrin pjesë më aktivisht.",
+      "features": [
+        "Ranglistë me rangim sipas pikëve",
+        "Shfaqja e top 10, 20 ose të gjithë anëtarëve",
+        "Kategoritë: Pikë totale, Detyra, Ngjarje, Donacione",
+        "Pamje mujore dhe vjetore",
+        "Shfaqje vizuale e simboleve të fituara",
+        "Medalje për top 3 pozicionet",
+        "Rang i personalizuar për çdo anëtar"
+      ],
+      "admin": "Admini mund të shohë statistika të detajuara të të gjithë anëtarëve, të analizojë tendencat e aktivitetit dhe të përdorë të dhënat për shpërblime. Mund të shohë cilët anëtarë janë më aktivë në cilat kategori dhe të planifikojë njohjet.",
+      "member": "Anëtarët shohin pozicionin e tyre në ranglistë dhe mund të konkurrojnë për vend më të mirë. Shohin kush janë anëtarët më aktivë të xhematit dhe mund të inspirohen nga shembulli i tyre. Sistemi i gamifikacionit motivon pjesëmarrje më aktive."
+    },
+    "eventCheckin": {
+      "title": "Event Check-in (Kodi QR)",
+      "shortDesc": "Regjistrimi i prezencës përmes kodit QR",
+      "description": "Sistemi për regjistrimin e shpejtë të prezencës në ngjarje përmes skanimit të kodit QR. Çdo ngjarje ka kod QR unik që anëtarët skanojnë në mbërritje, duke konfirmuar automatikisht prezencën dhe duke fituar pikë.",
+      "features": [
+        "Kod QR unik për çdo ngjarje",
+        "Skanimi përmes kamerës së telefonit",
+        "Dhënia automatike e pikëve për prezencë",
+        "Mundësia e regjistrimit të mysafirëve",
+        "Listë në kohë reale e të pranishmëve",
+        "Statistikat e pjesëmarrjes në ngjarje",
+        "Printimi i kodeve QR për postere"
+      ],
+      "admin": "Admini gjeneron kod QR për çdo ngjarje dhe mund ta printojë ose ta ndajë dixhitalisht. Sheh listë në kohë reale të atyre që kanë skanuar kodin dhe kanë marrë pjesë në ngjarje. Mund të shtojë manualisht të pranishmit që nuk kanë aplikacionin. Sistemi automatikisht jep pikë të gjithëve që regjistrohen.",
+      "member": "Anëtarët skanojnë kodin QR në mbërritje në ngjarje dhe konfirmojnë automatikisht prezencën e tyre. Sistemi menjëherë jep pikë dhe shfaq konfirmimin e regjistrimit. Nuk ka nevojë për regjistrim manual - mjafton të skanosh kodin.",
+      "all": "Mysafirët gjithashtu mund të skanojnë kodin QR dhe të fusin emrin e tyre për regjistrimin e prezencës. Kjo mundëson ndjekjen e numrit total të vizitorëve, përfshirë ata që nuk janë anëtarë të xhematit."
     },
     "activity": {
       "title": "Aktivitetet (Activity Log)",
