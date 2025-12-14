@@ -74,6 +74,8 @@ DžematApp operates as a SaaS platform with strict tenant isolation:
 - **Media/Livestream**: Management for live streams and media.
 - **Documents**: Upload and management system.
 - **Activity Feed**: Real-time display of community activities.
+- **Analytics Module**: SuperAdmin-only analytics dashboard with page view tracking, visitor statistics, device/browser/OS breakdown, and geographic distribution.
+- **Cookie Consent**: GDPR-compliant cookie consent banner with localStorage persistence, required before analytics tracking activates.
 
 ## Mobile App
 A companion React Native + Expo application for iOS and Android is located in the `mobile/` directory, featuring Expo Router, login/authentication, dashboard, tab navigation, and a robust API client, all built with TypeScript.
@@ -112,6 +114,25 @@ A companion React Native + Expo application for iOS and Android is located in th
 
 ## Custom Utilities
 - **useEdgeLockScroll**: Custom hook for iOS Safari bounce prevention.
+- **usePageTracking**: Analytics hook that tracks page views with consent awareness.
+- **useAnalytics**: Provides consent status and manual tracking functions.
+
+## Analytics & Privacy
+
+### Cookie Consent System
+- **Component**: `CookieConsent.tsx` - GDPR-compliant banner displayed on first visit
+- **Storage Key**: `dzematapp_cookie_consent` in localStorage with version tracking
+- **States**: `pending`, `accepted`, `rejected`
+- **Behavior**: Analytics tracking only activates after explicit user consent
+
+### Analytics Tracking
+- **Database Table**: `page_views` stores site, path, visitor/session IDs, device info, OS, browser, country
+- **API Endpoints**:
+  - `POST /api/analytics/track` - Public endpoint to record page views (requires cookie consent on client)
+  - `GET /api/analytics/stats` - SuperAdmin only, returns aggregated statistics with filters
+- **Frontend Integration**: `usePageTracking` hook in App.tsx tracks route changes via wouter's `useLocation`
+- **Visitor Tracking**: Anonymous visitor ID (localStorage) and session ID (sessionStorage)
+- **Site Detection**: Automatically detects `marketing` (dzematapp.com) vs `app` (app.dzematapp.com)
 
 # Pending Integrations
 
