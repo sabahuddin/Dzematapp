@@ -1,6 +1,7 @@
 {
   "title": "Aktivite Günlüğü",
   "myActivities": "Aktivitelerim",
+  "myActivitiesDescription": "Tüm aktivitelerinizin, puanlarınızın ve ödüllerinizin genel görünümü",
   "activityType": "Aktivite türü",
   "date": "Tarih",
   "points": "Puanlar",
@@ -33,6 +34,7 @@
   "activityLabels": {
     "task_completed": "Görev tamamlandı",
     "event_rsvp": "Etkinlik kaydı",
+    "event_attendance": "Etkinlik katılımı",
     "announcement_read": "Duyuru okundu",
     "contribution_made": "Ödeme yapıldı",
     "badge_earned": "Rozet kazanıldı",
@@ -48,15 +50,50 @@
   "overview": "Genel Bakış",
   "exportToExcel": "Excel'e Aktar",
   "tabs": {
+    "all": "Tümü",
     "activities": "Aktiviteler",
     "contributions": "Ödemeler",
+    "payments": "Ödemeler",
     "points": "Puanlar",
     "badges": "Rozetler",
+    "certificates": "Sertifikalar",
     "assignedBadges": "Atanan rozetler",
     "certificateTemplates": "Sertifika şablonları",
     "assignCertificate": "Sertifika ata",
-    "assignedCertificates": "Atanan sertifikalar",
-    "certificates": "Sertifikalar"
+    "assignedCertificates": "Atanan sertifikalar"
+  },
+  "tableHeaders": {
+    "type": "Tür",
+    "description": "Açıklama",
+    "points": "Puanlar",
+    "date": "Tarih",
+    "amount": "Tutar",
+    "purpose": "Amaç"
+  },
+  "summary": {
+    "pointsSuffix": "puan",
+    "badgesCount": "{{count}} rozet",
+    "paymentsCount": "{{count}} ödeme",
+    "certificatesCount": "{{count}} sertifika",
+    "totalPoints": "Toplam puan",
+    "pointsByActivity": "Aktiviteye göre puanlar"
+  },
+  "labels": {
+    "payment": "Ödeme",
+    "badge": "Rozet",
+    "certificate": "Sertifika",
+    "earnedBadge": "Kazanılan rozet: {{name}}",
+    "earned": "Kazanıldı",
+    "issued": "Verildi",
+    "view": "Görüntüle",
+    "thankYouMessage": "Katkılarınız için teşekkür ederiz"
+  },
+  "emptyStates": {
+    "noActivities": "Aktivite yok",
+    "noPayments": "Ödeme yok",
+    "noPointsYet": "Henüz puan kazanmadınız",
+    "noBadgesYet": "Henüz rozet kazanmadınız",
+    "noCertificatesYet": "Henüz sertifika almadınız"
   },
   "exportError": "Dışa aktarılacak veri yok",
   "exportSuccess": "Excel dosyası indirildi",

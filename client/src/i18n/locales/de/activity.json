@@ -1,6 +1,7 @@
 {
   "title": "Aktivitätsprotokoll",
   "myActivities": "Meine Aktivitäten",
+  "myActivitiesDescription": "Übersicht aller Ihrer Aktivitäten, Punkte und Auszeichnungen",
   "activityType": "Aktivitätstyp",
   "date": "Datum",
   "points": "Punkte",
@@ -32,7 +33,8 @@
   },
   "activityLabels": {
     "task_completed": "Aufgabe abgeschlossen",
-    "event_rsvp": "RSVP für Veranstaltung",
+    "event_rsvp": "Veranstaltungsanmeldung",
+    "event_attendance": "Veranstaltungsteilnahme",
     "announcement_read": "Ankündigung gelesen",
     "contribution_made": "Zahlung getätigt",
     "badge_earned": "Abzeichen verdient",
@@ -48,15 +50,50 @@
   "overview": "Übersicht",
   "exportToExcel": "Nach Excel exportieren",
   "tabs": {
+    "all": "Alle",
     "activities": "Aktivitäten",
     "contributions": "Zahlungen",
+    "payments": "Zahlungen",
     "points": "Punkte",
     "badges": "Abzeichen",
+    "certificates": "Zertifikate",
     "assignedBadges": "Zugewiesene Abzeichen",
     "certificateTemplates": "Zertifikatvorlagen",
     "assignCertificate": "Zertifikat zuweisen",
-    "assignedCertificates": "Zugewiesene Zertifikate",
-    "certificates": "Zertifikate"
+    "assignedCertificates": "Zugewiesene Zertifikate"
+  },
+  "tableHeaders": {
+    "type": "Typ",
+    "description": "Beschreibung",
+    "points": "Punkte",
+    "date": "Datum",
+    "amount": "Betrag",
+    "purpose": "Zweck"
+  },
+  "summary": {
+    "pointsSuffix": "Punkte",
+    "badgesCount": "{{count}} Abzeichen",
+    "paymentsCount": "{{count}} Zahlungen",
+    "certificatesCount": "{{count}} Zertifikate",
+    "totalPoints": "Gesamtpunkte",
+    "pointsByActivity": "Punkte nach Aktivität"
+  },
+  "labels": {
+    "payment": "Zahlung",
+    "badge": "Abzeichen",
+    "certificate": "Zertifikat",
+    "earnedBadge": "Abzeichen verdient: {{name}}",
+    "earned": "Verdient",
+    "issued": "Ausgestellt",
+    "view": "Ansehen",
+    "thankYouMessage": "Vielen Dank für Ihren Beitrag"
+  },
+  "emptyStates": {
+    "noActivities": "Keine Aktivitäten",
+    "noPayments": "Keine Zahlungen",
+    "noPointsYet": "Sie haben noch keine Punkte verdient",
+    "noBadgesYet": "Sie haben noch keine Abzeichen verdient",
+    "noCertificatesYet": "Sie haben noch keine Zertifikate erhalten"
   },
   "exportError": "Keine Daten zum Exportieren",
   "exportSuccess": "Excel-Datei wurde heruntergeladen",

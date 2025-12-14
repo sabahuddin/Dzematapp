@@ -1,6 +1,7 @@
 {
   "title": "Log i Aktiviteteve",
   "myActivities": "Aktivitetet e Mia",
+  "myActivitiesDescription": "Përmbledhje e të gjitha aktiviteteve, pikëve dhe çmimeve tuaja",
   "activityType": "Lloji i aktivitetit",
   "date": "Data",
   "points": "Pikë",
@@ -32,7 +33,8 @@
   },
   "activityLabels": {
     "task_completed": "Detyra e përfunduar",
-    "event_rsvp": "RSVP në ngjarje",
+    "event_rsvp": "Regjistrimi në ngjarje",
+    "event_attendance": "Pjesëmarrja në ngjarje",
     "announcement_read": "Njoftimi i lexuar",
     "contribution_made": "Pagesa e kryer",
     "badge_earned": "Distinktivi i fituar",
@@ -48,15 +50,50 @@
   "overview": "Përmbledhje",
   "exportToExcel": "Eksporto në Excel",
   "tabs": {
+    "all": "Të gjitha",
     "activities": "Aktivitetet",
     "contributions": "Pagesat",
+    "payments": "Pagesat",
     "points": "Pikët",
     "badges": "Distinktivët",
+    "certificates": "Certifikatat",
     "assignedBadges": "Distinktivët e caktuar",
     "certificateTemplates": "Shabllonet e certifikatave",
     "assignCertificate": "Cakto certifikatën",
-    "assignedCertificates": "Certifikatat e caktuara",
-    "certificates": "Certifikatat"
+    "assignedCertificates": "Certifikatat e caktuara"
+  },
+  "tableHeaders": {
+    "type": "Lloji",
+    "description": "Përshkrimi",
+    "points": "Pikë",
+    "date": "Data",
+    "amount": "Shuma",
+    "purpose": "Qëllimi"
+  },
+  "summary": {
+    "pointsSuffix": "pikë",
+    "badgesCount": "{{count}} distinktivë",
+    "paymentsCount": "{{count}} pagesa",
+    "certificatesCount": "{{count}} certifikata",
+    "totalPoints": "Pikë totale",
+    "pointsByActivity": "Pikë sipas aktivitetit"
+  },
+  "labels": {
+    "payment": "Pagesë",
+    "badge": "Distinktiv",
+    "certificate": "Certifikatë",
+    "earnedBadge": "Distinktiv i fituar: {{name}}",
+    "earned": "Fituar",
+    "issued": "Lëshuar",
+    "view": "Shiko",
+    "thankYouMessage": "Faleminderit për kontributin tuaj"
+  },
+  "emptyStates": {
+    "noActivities": "Nuk ka aktivitete",
+    "noPayments": "Nuk ka pagesa",
+    "noPointsYet": "Ende nuk keni fituar pikë",
+    "noBadgesYet": "Ende nuk keni fituar asnjë distinktiv",
+    "noCertificatesYet": "Ende nuk keni marrë asnjë certifikatë"
   },
   "exportError": "Nuk ka të dhëna për eksport",
   "exportSuccess": "Skedari Excel u shkarkua",

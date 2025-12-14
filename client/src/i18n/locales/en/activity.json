@@ -1,6 +1,7 @@
 {
   "title": "Activity Log",
   "myActivities": "My activities",
+  "myActivitiesDescription": "Overview of all your activities, points and recognition",
   "activityType": "Activity type",
   "date": "Date",
   "points": "Points",
@@ -33,6 +34,7 @@
   "activityLabels": {
     "task_completed": "Task completed",
     "event_rsvp": "Event RSVP",
+    "event_attendance": "Event attendance",
     "announcement_read": "Announcement read",
     "contribution_made": "Contribution made",
     "badge_earned": "Badge earned",
@@ -48,15 +50,50 @@
   "overview": "Overview",
   "exportToExcel": "Export to Excel",
   "tabs": {
+    "all": "All",
     "activities": "Activities",
     "contributions": "Contributions",
+    "payments": "Payments",
     "points": "Points",
     "badges": "Badges",
+    "certificates": "Certificates",
     "assignedBadges": "Assigned badges",
     "certificateTemplates": "Certificate templates",
     "assignCertificate": "Assign certificate",
-    "assignedCertificates": "Assigned certificates",
-    "certificates": "Certificates"
+    "assignedCertificates": "Assigned certificates"
+  },
+  "tableHeaders": {
+    "type": "Type",
+    "description": "Description",
+    "points": "Points",
+    "date": "Date",
+    "amount": "Amount",
+    "purpose": "Purpose"
+  },
+  "summary": {
+    "pointsSuffix": "points",
+    "badgesCount": "{{count}} badges",
+    "paymentsCount": "{{count}} payments",
+    "certificatesCount": "{{count}} certificates",
+    "totalPoints": "Total points",
+    "pointsByActivity": "Points by activity"
+  },
+  "labels": {
+    "payment": "Payment",
+    "badge": "Badge",
+    "certificate": "Certificate",
+    "earnedBadge": "Earned badge: {{name}}",
+    "earned": "Earned",
+    "issued": "Issued",
+    "view": "View",
+    "thankYouMessage": "Thank you for your contribution"
+  },
+  "emptyStates": {
+    "noActivities": "No activities",
+    "noPayments": "No payments",
+    "noPointsYet": "You haven't earned any points yet",
+    "noBadgesYet": "You haven't earned any badges yet",
+    "noCertificatesYet": "You haven't received any certificates yet"
   },
   "exportError": "No data to export",
   "exportSuccess": "Excel file downloaded",

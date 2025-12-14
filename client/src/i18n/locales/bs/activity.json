@@ -1,6 +1,7 @@
 {
   "title": "Log aktivnosti",
   "myActivities": "Moje aktivnosti",
+  "myActivitiesDescription": "Pregled svih vaših aktivnosti, bodova i priznanja",
   "activityType": "Tip aktivnosti",
   "date": "Datum",
   "points": "Bodovi",
@@ -32,7 +33,8 @@
   },
   "activityLabels": {
     "task_completed": "Zadatak izvršen",
-    "event_rsvp": "RSVP na događaj",
+    "event_rsvp": "Prijava na događaj",
+    "event_attendance": "Prisustvo događaju",
     "announcement_read": "Obavijest pročitana",
     "contribution_made": "Uplata izvršena",
     "badge_earned": "Značka osvojena",
@@ -48,15 +50,50 @@
   "overview": "Pregled",
   "exportToExcel": "Exportuj u Excel",
   "tabs": {
+    "all": "Sve",
     "activities": "Aktivnosti",
     "contributions": "Uplate",
+    "payments": "Uplate",
     "points": "Bodovi",
     "badges": "Značke",
+    "certificates": "Zahvale",
     "assignedBadges": "Dodijeljene značke",
     "certificateTemplates": "Šabloni zahvala",
     "assignCertificate": "Dodijeli zahvalnicu",
-    "assignedCertificates": "Dodijeljene zahvale",
-    "certificates": "Zahvale"
+    "assignedCertificates": "Dodijeljene zahvale"
+  },
+  "tableHeaders": {
+    "type": "Tip",
+    "description": "Opis",
+    "points": "Bodovi",
+    "date": "Datum",
+    "amount": "Iznos",
+    "purpose": "Svrha"
+  },
+  "summary": {
+    "pointsSuffix": "bodova",
+    "badgesCount": "{{count}} znački",
+    "paymentsCount": "{{count}} uplata",
+    "certificatesCount": "{{count}} zahvalnica",
+    "totalPoints": "Ukupno bodova",
+    "pointsByActivity": "Bodovi po aktivnostima"
+  },
+  "labels": {
+    "payment": "Uplata",
+    "badge": "Značka",
+    "certificate": "Zahvalnica",
+    "earnedBadge": "Osvojena značka: {{name}}",
+    "earned": "Osvojeno",
+    "issued": "Izdato",
+    "view": "Pogledaj",
+    "thankYouMessage": "Zahvaljujemo na doprinosu"
+  },
+  "emptyStates": {
+    "noActivities": "Nema aktivnosti",
+    "noPayments": "Nema uplata",
+    "noPointsYet": "Još niste zaradili bodove",
+    "noBadgesYet": "Još niste osvojili nijednu značku",
+    "noCertificatesYet": "Još nemate primljenih zahvalnica"
   },
   "exportError": "Nema podataka za export",
   "exportSuccess": "Excel fajl je preuzet",

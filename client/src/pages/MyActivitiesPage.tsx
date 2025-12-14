@@ -122,17 +122,7 @@ export default function MyActivitiesPage() {
   };
 
   const getActivityLabel = (type: string) => {
-    const labels: Record<string, string> = {
-      'task_completed': 'Završen zadatak',
-      'event_rsvp': 'Prijava na događaj',
-      'event_attendance': 'Prisustvo događaju',
-      'announcement_read': 'Pročitano obavještenje',
-      'contribution_made': 'Uplata',
-      'badge_earned': 'Osvojena značka',
-      'profile_updated': 'Ažuriran profil',
-      'project_contribution': 'Doprinos projektu'
-    };
-    return labels[type] || type;
+    return t(`activityLabels.${type}`, { defaultValue: type });
   };
 
   const allItemsSorted = [
@@ -157,9 +147,9 @@ export default function MyActivitiesPage() {
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
         <Timeline sx={{ fontSize: 32, color: 'primary.main' }} />
         <Box>
-          <Typography variant="h5" fontWeight={600}>Moje aktivnosti</Typography>
+          <Typography variant="h5" fontWeight={600}>{t('myActivities')}</Typography>
           <Typography variant="body2" color="text.secondary">
-            Pregled svih vaših aktivnosti, bodova i priznanja
+            {t('myActivitiesDescription')}
           </Typography>
         </Box>
       </Box>
@@ -169,10 +159,10 @@ export default function MyActivitiesPage() {
           <TrendingUp sx={{ fontSize: 40, color: 'hsl(14 100% 45%)' }} />
           <Box>
             <Typography variant="h4" sx={{ fontWeight: 700, color: 'hsl(14 100% 45%)' }}>
-              {totalPoints} bodova
+              {totalPoints} {t('summary.pointsSuffix')}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {earnedBadges.length} znački • {contributions.length} uplata • {certificates.length} zahvalnica
+              {t('summary.badgesCount', { count: earnedBadges.length })} • {t('summary.paymentsCount', { count: contributions.length })} • {t('summary.certificatesCount', { count: certificates.length })}
             </Typography>
           </Box>
         </Box>
@@ -185,11 +175,11 @@ export default function MyActivitiesPage() {
           variant="scrollable"
           scrollButtons="auto"
         >
-          <Tab label="Sve" icon={<Timeline />} iconPosition="start" />
-          <Tab label="Uplate" icon={<AttachMoney />} iconPosition="start" />
-          <Tab label="Bodovi" icon={<EmojiEvents />} iconPosition="start" />
-          <Tab label="Značke" icon={<BadgeOutlined />} iconPosition="start" />
-          <Tab label="Zahvale" icon={<ReceiptLong />} iconPosition="start" />
+          <Tab label={t('tabs.all')} icon={<Timeline />} iconPosition="start" />
+          <Tab label={t('tabs.payments')} icon={<AttachMoney />} iconPosition="start" />
+          <Tab label={t('tabs.points')} icon={<EmojiEvents />} iconPosition="start" />
+          <Tab label={t('tabs.badges')} icon={<BadgeOutlined />} iconPosition="start" />
+          <Tab label={t('tabs.certificates')} icon={<ReceiptLong />} iconPosition="start" />
         </Tabs>
       </Box>
 
@@ -199,17 +189,17 @@ export default function MyActivitiesPage() {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Tip</TableCell>
-                  <TableCell>Opis</TableCell>
-                  <TableCell>Bodovi</TableCell>
-                  <TableCell>Datum</TableCell>
+                  <TableCell>{t('tableHeaders.type')}</TableCell>
+                  <TableCell>{t('tableHeaders.description')}</TableCell>
+                  <TableCell>{t('tableHeaders.points')}</TableCell>
+                  <TableCell>{t('tableHeaders.date')}</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {allItemsSorted.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={4} sx={{ textAlign: 'center', py: 4 }}>
-                      <Typography color="text.secondary">Nema aktivnosti</Typography>
+                      <Typography color="text.secondary">{t('emptyStates.noActivities')}</Typography>
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -240,7 +230,7 @@ export default function MyActivitiesPage() {
                       return (
                         <TableRow key={`contrib-${contrib.id}`}>
                           <TableCell>
-                            <Chip icon={<AttachMoney />} label="Uplata" color="success" size="small" />
+                            <Chip icon={<AttachMoney />} label={t('labels.payment')} color="success" size="small" />
                           </TableCell>
                           <TableCell>{contrib.purpose} - {formatPrice(contrib.amount)}</TableCell>
                           <TableCell>
@@ -256,9 +246,9 @@ export default function MyActivitiesPage() {
                       return (
                         <TableRow key={`badge-${badge.id}-${idx}`}>
                           <TableCell>
-                            <Chip icon={<BadgeOutlined />} label="Značka" color="warning" size="small" />
+                            <Chip icon={<BadgeOutlined />} label={t('labels.badge')} color="warning" size="small" />
                           </TableCell>
-                          <TableCell>Osvojena značka: {badge.name}</TableCell>
+                          <TableCell>{t('labels.earnedBadge', { name: badge.name })}</TableCell>
                           <TableCell>-</TableCell>
                           <TableCell>{item.date.toLocaleDateString('hr-HR')}</TableCell>
                         </TableRow>
@@ -268,9 +258,9 @@ export default function MyActivitiesPage() {
                       return (
                         <TableRow key={`cert-${cert.id}`}>
                           <TableCell>
-                            <Chip icon={<ReceiptLong />} label="Zahvalnica" color="info" size="small" />
+                            <Chip icon={<ReceiptLong />} label={t('labels.certificate')} color="info" size="small" />
                           </TableCell>
-                          <TableCell>{cert.customMessage || 'Zahvalnica'}</TableCell>
+                          <TableCell>{cert.customMessage || t('labels.certificate')}</TableCell>
                           <TableCell>-</TableCell>
                           <TableCell>{item.date.toLocaleDateString('hr-HR')}</TableCell>
                         </TableRow>
@@ -290,17 +280,17 @@ export default function MyActivitiesPage() {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Iznos</TableCell>
-                  <TableCell>Svrha</TableCell>
-                  <TableCell>Bodovi</TableCell>
-                  <TableCell>Datum</TableCell>
+                  <TableCell>{t('tableHeaders.amount')}</TableCell>
+                  <TableCell>{t('tableHeaders.purpose')}</TableCell>
+                  <TableCell>{t('tableHeaders.points')}</TableCell>
+                  <TableCell>{t('tableHeaders.date')}</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {contributions.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={4} sx={{ textAlign: 'center', py: 4 }}>
-                      <Typography color="text.secondary">Nema uplata</Typography>
+                      <Typography color="text.secondary">{t('emptyStates.noPayments')}</Typography>
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -333,17 +323,17 @@ export default function MyActivitiesPage() {
               <Typography variant="h3" sx={{ fontWeight: 700, color: 'hsl(14 100% 45%)' }}>
                 {totalPoints}
               </Typography>
-              <Typography variant="body2" color="text.secondary">Ukupno bodova</Typography>
+              <Typography variant="body2" color="text.secondary">{t('summary.totalPoints')}</Typography>
             </Box>
           </Box>
 
           <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 2 }}>
-            Bodovi po aktivnostima
+            {t('summary.pointsByActivity')}
           </Typography>
           
           <Stack spacing={1}>
             {activities.length === 0 ? (
-              <Alert severity="info">Još niste zaradili bodove</Alert>
+              <Alert severity="info">{t('emptyStates.noPointsYet')}</Alert>
             ) : (
               <>
                 {activities.filter(a => a.points && a.points > 0).map((activity) => (
@@ -373,7 +363,7 @@ export default function MyActivitiesPage() {
       <TabPanel value={activeTab} index={3}>
         <Card sx={{ p: 3 }}>
           {earnedBadges.length === 0 ? (
-            <Alert severity="info">Još niste osvojili nijednu značku</Alert>
+            <Alert severity="info">{t('emptyStates.noBadgesYet')}</Alert>
           ) : (
             <Stack spacing={2}>
               {earnedBadges.map((badge: any, idx) => (
@@ -385,7 +375,7 @@ export default function MyActivitiesPage() {
                     <Typography variant="h6" fontWeight={600}>{badge.name}</Typography>
                     <Typography variant="body2" color="text.secondary">{badge.description}</Typography>
                     <Typography variant="caption" color="text.secondary">
-                      Osvojeno: {new Date(badge.earnedAt).toLocaleDateString('hr-HR')}
+                      {t('labels.earned')}: {new Date(badge.earnedAt).toLocaleDateString('hr-HR')}
                     </Typography>
                   </Box>
                 </Box>
@@ -398,7 +388,7 @@ export default function MyActivitiesPage() {
       <TabPanel value={activeTab} index={4}>
         <Card sx={{ p: 3 }}>
           {certificates.length === 0 ? (
-            <Alert severity="info">Još nemate primljenih zahvalnica</Alert>
+            <Alert severity="info">{t('emptyStates.noCertificatesYet')}</Alert>
           ) : (
             <Stack spacing={2}>
               {certificates.map((cert: UserCertificate) => (
@@ -407,15 +397,15 @@ export default function MyActivitiesPage() {
                     <ReceiptLong sx={{ fontSize: 32 }} />
                   </Avatar>
                   <Box sx={{ flex: 1 }}>
-                    <Typography variant="h6" fontWeight={600}>Zahvalnica</Typography>
-                    <Typography variant="body2" color="text.secondary">{cert.customMessage || 'Zahvaljujemo na doprinosu'}</Typography>
+                    <Typography variant="h6" fontWeight={600}>{t('labels.certificate')}</Typography>
+                    <Typography variant="body2" color="text.secondary">{cert.customMessage || t('labels.thankYouMessage')}</Typography>
                     <Typography variant="caption" color="text.secondary">
-                      Izdato: {new Date(cert.issuedAt).toLocaleDateString('hr-HR')}
+                      {t('labels.issued')}: {new Date(cert.issuedAt).toLocaleDateString('hr-HR')}
                     </Typography>
                   </Box>
                   {cert.generatedPdfPath && (
                     <a href={cert.generatedPdfPath} target="_blank" rel="noopener noreferrer">
-                      <Chip icon={<Visibility />} label="Pogledaj" clickable color="primary" size="small" />
+                      <Chip icon={<Visibility />} label={t('labels.view')} clickable color="primary" size="small" />
                     </a>
                   )}
                 </Box>
