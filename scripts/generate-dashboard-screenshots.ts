@@ -33,10 +33,21 @@ async function generateScreenshots() {
     console.log(`Navigating to ${APP_URL}...`);
     await page.goto(APP_URL, { waitUntil: 'networkidle', timeout: 60000 });
     
+    // Step 1: Enter tenant code if needed
+    const tenantVerifyButton = await page.$('[data-testid="button-verify-tenant"]');
+    if (tenantVerifyButton) {
+      console.log('Entering tenant code...');
+      await page.fill('[data-testid="input-tenant-code"] input', 'DEMO2025');
+      await page.click('[data-testid="button-verify-tenant"]');
+      await page.waitForTimeout(2000);
+    }
+    
+    // Step 2: Login
     console.log('Logging in...');
-    await page.fill('[data-testid="input-username"], input[name="username"]', USERNAME);
-    await page.fill('[data-testid="input-password"], input[type="password"]', PASSWORD);
-    await page.click('[data-testid="button-login"], button[type="submit"]');
+    await page.waitForSelector('[data-testid="input-username"] input', { timeout: 10000 });
+    await page.fill('[data-testid="input-username"] input', USERNAME);
+    await page.fill('[data-testid="input-password"] input', PASSWORD);
+    await page.click('[data-testid="button-login"]');
     
     await page.waitForURL('**/dashboard**', { timeout: 30000 }).catch(() => {
       console.log('Waiting for dashboard to load...');

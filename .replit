@@ -4,7 +4,7 @@ hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
 
 [nix]
 channel = "stable-24_05"
-packages = ["pandoc", "texliveSmall", "imagemagick", "gh", "gut"]
+packages = ["pandoc", "texliveSmall", "imagemagick", "gh", "gut", "glib", "nss", "nspr", "atk", "at-spi2-atk", "cups", "libdrm", "libxkbcommon", "pango", "cairo", "alsa-lib", "xorg.libXcomposite", "xorg.libXdamage", "xorg.libXfixes", "xorg.libXrandr", "xorg.libxcb", "xorg.libX11", "xorg.libXext", "mesa", "expat", "xorg.libXrender", "xorg.libXtst", "xorg.libXi"]
 
 [deployment]
 deploymentTarget = "autoscale"

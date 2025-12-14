@@ -6,7 +6,12 @@
  */
 
 import { db } from './db';
-import { workGroups, workGroupMembers, tasks, users, tenants } from '@shared/schema';
+import { 
+  workGroups, workGroupMembers, tasks, users, tenants,
+  announcements, events, activities, userBadges, activityLog,
+  messages, eventRsvps, taskComments, userCertificates,
+  userPreferences, financialContributions
+} from '@shared/schema';
 import { eq, and, or } from 'drizzle-orm';
 import { storage } from './storage';
 
@@ -101,7 +106,7 @@ export async function seedDemoData() {
         }
         console.log('✅ Added admin to all work groups');
 
-        // 4. Create demo tasks
+        // 4. Create demo tasks with various statuses
         const demoTasks = [
           {
             tenantId: DEFAULT_TENANT_ID,
@@ -116,6 +121,17 @@ export async function seedDemoData() {
           },
           {
             tenantId: DEFAULT_TENANT_ID,
+            workGroupId: createdGroups[0].id,
+            title: 'Organizacija stolova za iftar',
+            description: 'Pripremiti stolove i stolice',
+            assignedUserIds: [adminUser.id],
+            status: 'u_toku' as const,
+            dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+            estimatedCost: '0.00',
+            pointsValue: 30
+          },
+          {
+            tenantId: DEFAULT_TENANT_ID,
             workGroupId: createdGroups[1].id,
             title: 'Čišćenje glavne sale',
             description: 'Detaljno čišćenje glavne molione sale',
@@ -127,6 +143,17 @@ export async function seedDemoData() {
           },
           {
             tenantId: DEFAULT_TENANT_ID,
+            workGroupId: createdGroups[1].id,
+            title: 'Popravka klime',
+            description: 'Servis klima uređaja u sali',
+            assignedUserIds: [adminUser.id],
+            status: 'na_cekanju' as const,
+            dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+            estimatedCost: '200.00',
+            pointsValue: 20
+          },
+          {
+            tenantId: DEFAULT_TENANT_ID,
             workGroupId: createdGroups[2].id,
             title: 'Priprema tečaja Kur\'ana',
             description: 'Organizacija tečaja čitanja Kur\'ana za omladinu',
@@ -135,11 +162,121 @@ export async function seedDemoData() {
             dueDate: null,
             estimatedCost: '100.00',
             pointsValue: 40
+          },
+          {
+            tenantId: DEFAULT_TENANT_ID,
+            workGroupId: createdGroups[2].id,
+            title: 'Nabavka udžbenika',
+            description: 'Kupiti udžbenike za vjeronauku',
+            assignedUserIds: [adminUser.id],
+            status: 'zavrsen' as const,
+            dueDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+            estimatedCost: '120.00',
+            pointsValue: 25
+          },
+          {
+            tenantId: DEFAULT_TENANT_ID,
+            workGroupId: createdGroups[0].id,
+            title: 'Dekoracija za bajram',
+            description: 'Ukrašavanje džamije za bajram',
+            assignedUserIds: [adminUser.id],
+            status: 'zavrsen' as const,
+            dueDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+            estimatedCost: '80.00',
+            pointsValue: 35
+          },
+          {
+            tenantId: DEFAULT_TENANT_ID,
+            workGroupId: createdGroups[1].id,
+            title: 'Farbanje ograde',
+            description: 'Farbanje ograde oko džamije',
+            assignedUserIds: [adminUser.id],
+            status: 'zavrsen' as const,
+            dueDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
+            estimatedCost: '300.00',
+            pointsValue: 60
           }
         ];
 
         await db.insert(tasks).values(demoTasks);
         console.log(`✅ Created ${demoTasks.length} demo tasks`);
+
+        // 5. Create demo announcements
+        const existingAnnouncements = await db.select().from(announcements).where(eq(announcements.tenantId, DEFAULT_TENANT_ID));
+        if (existingAnnouncements.length === 0) {
+          const demoAnnouncements = [
+            {
+              tenantId: DEFAULT_TENANT_ID,
+              title: 'Dobrodošli u DžematApp',
+              content: '<p>Dragi članovi džemata, dobrodošli u našu novu aplikaciju za upravljanje zajednicom. Ovdje možete pratiti sve aktivnosti, obavijesti i događaje.</p>',
+              authorId: adminUser.id,
+              status: 'published' as const,
+              publishDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+              isFeatured: true
+            },
+            {
+              tenantId: DEFAULT_TENANT_ID,
+              title: 'Raspored Ramazanskih aktivnosti',
+              content: '<p>Objavljujemo raspored iftar-a i teravija za ovaj Ramazan. Pozivamo sve članove da aktivno učestvuju.</p>',
+              authorId: adminUser.id,
+              status: 'published' as const,
+              publishDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+              isFeatured: false
+            },
+            {
+              tenantId: DEFAULT_TENANT_ID,
+              title: 'Nova sekcija za mlade',
+              content: '<p>Otvorena je nova sekcija za mlade članove džemata. Pridružite se i budite dio aktivnosti!</p>',
+              authorId: adminUser.id,
+              status: 'published' as const,
+              publishDate: new Date(),
+              isFeatured: false
+            }
+          ];
+          await db.insert(announcements).values(demoAnnouncements);
+          console.log(`✅ Created ${demoAnnouncements.length} demo announcements`);
+        }
+
+        // 6. Create demo events
+        const existingEvents = await db.select().from(events).where(eq(events.tenantId, DEFAULT_TENANT_ID));
+        if (existingEvents.length === 0) {
+          const demoEvents = [
+            {
+              tenantId: DEFAULT_TENANT_ID,
+              name: 'Kahva sa....',
+              description: 'Druženje uz kahvu i razgovor',
+              location: 'Stadion pored džamije',
+              dateTime: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
+              createdById: adminUser.id
+            },
+            {
+              tenantId: DEFAULT_TENANT_ID,
+              name: 'Zajednički iftar',
+              description: 'Pozivamo sve članove na zajednički iftar',
+              location: 'Sala džemata',
+              dateTime: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+              createdById: adminUser.id
+            },
+            {
+              tenantId: DEFAULT_TENANT_ID,
+              name: 'Predavanje za mlade',
+              description: 'Edukativno predavanje za mlade članove',
+              location: 'Mala sala',
+              dateTime: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+              createdById: adminUser.id
+            },
+            {
+              tenantId: DEFAULT_TENANT_ID,
+              name: 'Vikend izlet',
+              description: 'Porodični izlet za članove džemata',
+              location: 'Priroda',
+              dateTime: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
+              createdById: adminUser.id
+            }
+          ];
+          await db.insert(events).values(demoEvents);
+          console.log(`✅ Created ${demoEvents.length} demo events`);
+        }
       } else {
         console.log('ℹ️ Demo data already exists');
       }
