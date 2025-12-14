@@ -17,7 +17,7 @@ interface MobileAppBarProps {
 
 export function MobileAppBar({ title = 'DžematApp', showBack }: MobileAppBarProps) {
   const { user, logout } = useAuth();
-  const { t } = useTranslation();
+  const { t } = useTranslation(['navigation', 'common']);
   const [location, setLocation] = useLocation();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   
@@ -217,17 +217,17 @@ export function MobileAppBar({ title = 'DžematApp', showBack }: MobileAppBarPro
               >
                 <MenuItem onClick={handleProfile} data-testid="menuitem-profile">
                   <Person sx={{ mr: 1 }} />
-                  {t('common.profile', 'Profil')}
+                  {t('navigation:appBar.myProfile')}
                 </MenuItem>
                 {user?.isAdmin && (
                   <MenuItem onClick={handleSettings} data-testid="menuitem-settings">
                     <Settings sx={{ mr: 1 }} />
-                    {t('common.settings', 'Podešavanja')}
+                    {t('navigation:settings')}
                   </MenuItem>
                 )}
                 <MenuItem onClick={handleLogout} data-testid="menuitem-logout">
                   <Logout sx={{ mr: 1 }} />
-                  {t('common.logout', 'Odjavi se')}
+                  {t('navigation:appBar.logout')}
                 </MenuItem>
               </Menu>
             </>

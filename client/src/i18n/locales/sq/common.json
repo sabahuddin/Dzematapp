@@ -67,7 +67,8 @@
     "enterSubject": "Shkruani titullin e mesazhit",
     "sending": "Duke dërguar...",
     "messageSent": "Mesazhi u dërgua me sukses",
-    "messageSendError": "Nuk është e mundur të dërgohet mesazhi"
+    "messageSendError": "Nuk është e mundur të dërgohet mesazhi",
+    "viewAll": "Shiko të gjitha"
   },
   "messages": {
     "saveSuccess": "U ruajt me sukses",
@@ -94,5 +95,19 @@
     "message": "Mesazh",
     "media": "Media",
     "important_date_reminder": "Datë e Rëndësishme"
+  },
+  "months": {
+    "jan": "Jan",
+    "feb": "Shk",
+    "mar": "Mar",
+    "apr": "Pri",
+    "may": "Maj",
+    "jun": "Qer",
+    "jul": "Kor",
+    "aug": "Gus",
+    "sep": "Sht",
+    "oct": "Tet",
+    "nov": "Nën",
+    "dec": "Dhj"
   }
 }

@@ -78,6 +78,12 @@
   "feed": {
     "empty": "No activities"
   },
+  "announcements": {
+    "empty": "No announcements"
+  },
+  "messages": {
+    "empty": "No messages"
+  },
   "totalPointsLabel": "total points",
   "pointsLabel": "points",
   "toNextBadge": "to next badge",

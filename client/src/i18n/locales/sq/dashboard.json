@@ -78,6 +78,12 @@
   "feed": {
     "empty": "Nuk ka aktivitete"
   },
+  "announcements": {
+    "empty": "Nuk ka njoftime"
+  },
+  "messages": {
+    "empty": "Nuk ka mesazhe"
+  },
   "totalPointsLabel": "pikë totale",
   "pointsLabel": "pikë",
   "toNextBadge": "deri te shenja e ardhshme",

@@ -78,6 +78,12 @@
   "feed": {
     "empty": "Nema aktivnosti"
   },
+  "announcements": {
+    "empty": "Nema obavijesti"
+  },
+  "messages": {
+    "empty": "Nema poruka"
+  },
   "totalPointsLabel": "ukupno bodova",
   "pointsLabel": "bodova",
   "toNextBadge": "do sljedeće značke",

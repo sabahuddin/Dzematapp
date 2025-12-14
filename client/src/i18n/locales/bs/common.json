@@ -67,7 +67,8 @@
     "enterSubject": "Unesite naslov poruke",
     "sending": "Slanje...",
     "messageSent": "Poruka je uspješno poslana",
-    "messageSendError": "Nije moguće poslati poruku"
+    "messageSendError": "Nije moguće poslati poruku",
+    "viewAll": "Vidi sve"
   },
   "messages": {
     "saveSuccess": "Uspješno sačuvano",
@@ -94,5 +95,19 @@
     "message": "Poruka",
     "media": "Medija",
     "important_date_reminder": "Važan datum"
+  },
+  "months": {
+    "jan": "Jan",
+    "feb": "Feb",
+    "mar": "Mar",
+    "apr": "Apr",
+    "may": "Maj",
+    "jun": "Jun",
+    "jul": "Jul",
+    "aug": "Aug",
+    "sep": "Sep",
+    "oct": "Okt",
+    "nov": "Nov",
+    "dec": "Dec"
   }
 }

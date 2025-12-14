@@ -67,7 +67,8 @@
     "enterSubject": "Enter message subject",
     "sending": "Sending...",
     "messageSent": "Message sent successfully",
-    "messageSendError": "Failed to send message"
+    "messageSendError": "Failed to send message",
+    "viewAll": "View all"
   },
   "messages": {
     "saveSuccess": "Saved successfully",
@@ -94,5 +95,19 @@
     "message": "Message",
     "media": "Media",
     "important_date_reminder": "Important Date"
+  },
+  "months": {
+    "jan": "Jan",
+    "feb": "Feb",
+    "mar": "Mar",
+    "apr": "Apr",
+    "may": "May",
+    "jun": "Jun",
+    "jul": "Jul",
+    "aug": "Aug",
+    "sep": "Sep",
+    "oct": "Oct",
+    "nov": "Nov",
+    "dec": "Dec"
   }
 }

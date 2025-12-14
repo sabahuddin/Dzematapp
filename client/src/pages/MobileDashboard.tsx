@@ -140,13 +140,13 @@ export default function MobileDashboard() {
 
   const getEntityTypeBadgeLabel = (type: string) => {
     const labels: Record<string, string> = {
-      'announcement': t('common:entityTypes.announcement', 'Obavijest'),
-      'event': t('common:entityTypes.event', 'Događaj'),
-      'shop_item': t('common:entityTypes.shop_item', 'Trgovina'),
-      'task': t('common:entityTypes.task', 'Zadatak'),
-      'message': t('common:entityTypes.message', 'Poruka'),
-      'media': t('common:entityTypes.media', 'Medija'),
-      'important_date_reminder': t('common:entityTypes.important_date_reminder', 'Važan datum'),
+      'announcement': t('common:entityTypes.announcement'),
+      'event': t('common:entityTypes.event'),
+      'shop_item': t('common:entityTypes.shop_item'),
+      'task': t('common:entityTypes.task'),
+      'message': t('common:entityTypes.message'),
+      'media': t('common:entityTypes.media'),
+      'important_date_reminder': t('common:entityTypes.important_date_reminder'),
     };
     return labels[type] || type;
   };
@@ -184,17 +184,17 @@ export default function MobileDashboard() {
         )}
         {prayerError && (
           <Alert severity="error" sx={{ mb: 2 }}>
-            {t('dashboard:errors.prayerTimesFailed', 'Nije moguće učitati vaktiju')}
+            {t('dashboard:errors.prayerTimesFailed')}
           </Alert>
         )}
         {prayerTime && <HeroPrayerCard prayerTime={prayerTime} />}
 
         {/* Feed Section */}
         <SectionCard 
-          title={t('dashboard:communityActivities', 'Aktivnosti zajednice')}
+          title={t('dashboard:communityActivities')}
           icon={<Article />}
           linkTo="/feed"
-          linkText={t('common.viewAll', 'Vidi sve')}
+          linkText={t('common:common.viewAll')}
         >
           {feedLoading && (
             <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
@@ -204,7 +204,7 @@ export default function MobileDashboard() {
           
           {feedError && (
             <Alert severity="error">
-              {t('dashboard:errors.feedFailed', 'Nije moguće učitati aktivnosti')}
+              {t('dashboard:errors.feedFailed')}
             </Alert>
           )}
 
@@ -214,17 +214,17 @@ export default function MobileDashboard() {
 
           {!feedLoading && !feedError && feedItems.length === 0 && (
             <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
-              {t('dashboard:feed.empty', 'Nema aktivnosti')}
+              {t('dashboard:feed.empty')}
             </Typography>
           )}
         </SectionCard>
 
         {/* Announcements Section */}
         <SectionCard 
-          title={t('dashboard:announcements', 'Obavijesti')}
+          title={t('dashboard:announcements')}
           icon={<Campaign />}
           linkTo="/announcements"
-          linkText={t('common.viewAll', 'Vidi sve')}
+          linkText={t('common:common.viewAll')}
         >
           {announcementsLoading && (
             <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
@@ -234,7 +234,7 @@ export default function MobileDashboard() {
 
           {!announcementsLoading && announcements.length === 0 && (
             <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
-              {t('dashboard:announcements.empty', 'Nema obavijesti')}
+              {t('dashboard:announcements.empty')}
             </Typography>
           )}
 
@@ -334,7 +334,7 @@ export default function MobileDashboard() {
 
         {/* User Activities Section - Events, Shop, Tasks, etc. */}
         <SectionCard 
-          title={t('dashboard:myActivities', 'Moje aktivnosti')}
+          title={t('dashboard:myActivities')}
           icon={<Article />}
         >
           {feedLoading && (
@@ -345,7 +345,7 @@ export default function MobileDashboard() {
 
           {!feedLoading && userActivities.length === 0 && (
             <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
-              {t('dashboard:feed.empty', 'Nema aktivnosti')}
+              {t('dashboard:feed.empty')}
             </Typography>
           )}
 
@@ -471,10 +471,10 @@ export default function MobileDashboard() {
 
         {/* Membership Fees Section */}
         <SectionCard 
-          title={t('membershipFees:myPayments.title', 'Moja članarina')}
+          title={t('membershipFees:myPayments.title')}
           icon={<Receipt />}
           linkTo="/finances"
-          linkText={t('membershipFees:myPayments.viewHistory', 'Vidi historiju')}
+          linkText={t('membershipFees:myPayments.viewHistory')}
         >
           {paymentsLoading && (
             <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
@@ -487,7 +487,7 @@ export default function MobileDashboard() {
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Box>
                   <Typography variant="body2" color="text.secondary">
-                    {t('membershipFees:myPayments.paidMonths', 'Uplaćeni mjeseci')} ({currentYear})
+                    {t('membershipFees:myPayments.paidMonths')} ({currentYear})
                   </Typography>
                   <Typography variant="h5" fontWeight="bold" color="primary">
                     {paidMonthsCount} / 12
@@ -495,7 +495,7 @@ export default function MobileDashboard() {
                 </Box>
                 <Box sx={{ textAlign: 'right' }}>
                   <Typography variant="body2" color="text.secondary">
-                    {t('membershipFees:myPayments.totalPaid', 'Ukupno uplaćeno')}
+                    {t('membershipFees:myPayments.totalPaid')}
                   </Typography>
                   <Typography variant="h5" fontWeight="bold" color="success.main">
                     {formatPrice(totalPaidThisYear)}
@@ -508,7 +508,12 @@ export default function MobileDashboard() {
                 {[1,2,3,4,5,6,7,8,9,10,11,12].map((month) => {
                   const payment = thisYearPayments.find((p: any) => p.coverageMonth === month);
                   const isPaid = !!payment;
-                  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Maj', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec'];
+                  const monthNames = [
+                    t('common:months.jan'), t('common:months.feb'), t('common:months.mar'),
+                    t('common:months.apr'), t('common:months.may'), t('common:months.jun'),
+                    t('common:months.jul'), t('common:months.aug'), t('common:months.sep'),
+                    t('common:months.oct'), t('common:months.nov'), t('common:months.dec')
+                  ];
                   return (
                     <Chip
                       key={month}
@@ -532,10 +537,10 @@ export default function MobileDashboard() {
 
         {/* Messages Section */}
         <SectionCard 
-          title={t('dashboard:myMessages', 'Moje poruke')}
+          title={t('dashboard:myMessages')}
           icon={<Mail />}
           linkTo="/messages"
-          linkText={t('common.viewAll', 'Vidi sve')}
+          linkText={t('common:common.viewAll')}
         >
           {messagesLoading && (
             <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
@@ -545,7 +550,7 @@ export default function MobileDashboard() {
 
           {!messagesLoading && messages.length === 0 && (
             <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
-              {t('dashboard:messages.empty', 'Nema poruka')}
+              {t('dashboard:messages.empty')}
             </Typography>
           )}
 

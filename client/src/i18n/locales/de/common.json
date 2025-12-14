@@ -67,7 +67,8 @@
     "enterSubject": "Betreff eingeben",
     "sending": "Wird gesendet...",
     "messageSent": "Nachricht wurde erfolgreich gesendet",
-    "messageSendError": "Nachricht konnte nicht gesendet werden"
+    "messageSendError": "Nachricht konnte nicht gesendet werden",
+    "viewAll": "Alle anzeigen"
   },
   "messages": {
     "saveSuccess": "Erfolgreich gespeichert",
@@ -94,5 +95,19 @@
     "message": "Nachricht",
     "media": "Medien",
     "important_date_reminder": "Wichtiges Datum"
+  },
+  "months": {
+    "jan": "Jan",
+    "feb": "Feb",
+    "mar": "Mär",
+    "apr": "Apr",
+    "may": "Mai",
+    "jun": "Jun",
+    "jul": "Jul",
+    "aug": "Aug",
+    "sep": "Sep",
+    "oct": "Okt",
+    "nov": "Nov",
+    "dec": "Dez"
   }
 }

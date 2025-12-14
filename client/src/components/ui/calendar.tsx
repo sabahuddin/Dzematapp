@@ -1,7 +1,7 @@
 import * as React from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { DayPicker } from "react-day-picker"
-import { bs, de, enUS, sq, tr } from "date-fns/locale"
+import { bs, de, enUS, sq, tr, Locale } from "date-fns/locale"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
@@ -14,7 +14,7 @@ const localeMap: Record<string, Locale> = {
   tr: tr,
 };
 
-function getDateFnsLocale(): Locale {
+function getDateFnsLocale() {
   const lang = localStorage.getItem('language') || 'bs';
   return localeMap[lang] || bs;
 }

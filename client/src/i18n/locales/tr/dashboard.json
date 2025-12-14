@@ -78,6 +78,12 @@
   "feed": {
     "empty": "Aktivite yok"
   },
+  "announcements": {
+    "empty": "Duyuru yok"
+  },
+  "messages": {
+    "empty": "Mesaj yok"
+  },
   "totalPointsLabel": "toplam puan",
   "pointsLabel": "puan",
   "toNextBadge": "sonraki rozete kalan",

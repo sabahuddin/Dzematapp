@@ -78,6 +78,12 @@
   "feed": {
     "empty": "Keine Aktivitäten"
   },
+  "announcements": {
+    "empty": "Keine Ankündigungen"
+  },
+  "messages": {
+    "empty": "Keine Nachrichten"
+  },
   "totalPointsLabel": "Gesamtpunkte",
   "pointsLabel": "Punkte",
   "toNextBadge": "bis zum nächsten Abzeichen",
