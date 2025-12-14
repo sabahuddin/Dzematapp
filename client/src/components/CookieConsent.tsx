@@ -88,7 +88,7 @@ export default function CookieConsent({ onAccept, onReject }: CookieConsentProps
           <Typography variant="body2" color="text.secondary">
             Koristimo kolačiće za analitiku kako bismo poboljšali vaše iskustvo. 
             Vaši podaci su anonimni i sigurni.{" "}
-            <Link href="/privacy" underline="hover" sx={{ color: "primary.main" }}>
+            <Link href="/datenschutz.html" target="_blank" underline="hover" sx={{ color: "primary.main" }}>
               Politika privatnosti
             </Link>
           </Typography>
