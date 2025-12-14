@@ -70,7 +70,9 @@
     "sending": "Slanje...",
     "messageSent": "Poruka je uspješno poslana",
     "messageSendError": "Nije moguće poslati poruku",
-    "viewAll": "Vidi sve"
+    "viewAll": "Vidi sve",
+    "preview": "Pregled",
+    "previewContent": "Pregled sadržaja"
   },
   "messages": {
     "saveSuccess": "Uspješno sačuvano",

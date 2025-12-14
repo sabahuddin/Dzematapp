@@ -70,7 +70,9 @@
     "sending": "Wird gesendet...",
     "messageSent": "Nachricht wurde erfolgreich gesendet",
     "messageSendError": "Nachricht konnte nicht gesendet werden",
-    "viewAll": "Alle anzeigen"
+    "viewAll": "Alle anzeigen",
+    "preview": "Vorschau",
+    "previewContent": "Inhaltsvorschau"
   },
   "messages": {
     "saveSuccess": "Erfolgreich gespeichert",

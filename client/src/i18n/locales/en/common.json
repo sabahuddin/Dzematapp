@@ -70,7 +70,9 @@
     "sending": "Sending...",
     "messageSent": "Message sent successfully",
     "messageSendError": "Failed to send message",
-    "viewAll": "View all"
+    "viewAll": "View all",
+    "preview": "Preview",
+    "previewContent": "Content Preview"
   },
   "messages": {
     "saveSuccess": "Saved successfully",
