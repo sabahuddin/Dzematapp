@@ -1280,6 +1280,7 @@
     <script>
         const COOKIE_CONSENT_KEY = 'dzematapp_cookie_consent';
         const COOKIE_CONSENT_VERSION = '1.0';
+        const GA_MEASUREMENT_ID = 'G-QR2L3RHG5C';
         
         function getCookieConsent() {
             try {
@@ -1314,38 +1315,24 @@
         }
         
         function initAnalytics() {
-            // Track page view if consent was given
-            const visitorId = localStorage.getItem('dzematapp_visitor_id') || generateVisitorId();
-            localStorage.setItem('dzematapp_visitor_id', visitorId);
+            if (window.gaInitialized) return;
             
-            const sessionId = sessionStorage.getItem('dzematapp_session_id') || generateSessionId();
-            sessionStorage.setItem('dzematapp_session_id', sessionId);
+            var script1 = document.createElement('script');
+            script1.async = true;
+            script1.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_MEASUREMENT_ID;
+            document.head.appendChild(script1);
             
-            fetch('https://app.dzematapp.com/api/analytics/track', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    site: 'marketing',
-                    path: window.location.pathname,
-                    visitorId: visitorId,
-                    sessionId: sessionId,
-                    referrer: document.referrer || null,
-                    userAgent: navigator.userAgent
-                })
-            }).catch(() => {});
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            window.gtag = gtag;
+            gtag('js', new Date());
+            gtag('config', GA_MEASUREMENT_ID);
+            
+            window.gaInitialized = true;
         }
         
-        function generateVisitorId() {
-            return 'v_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
-        }
-        
-        function generateSessionId() {
-            return 's_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
-        }
-        
-        // Check consent on page load
         document.addEventListener('DOMContentLoaded', function() {
-            const consent = getCookieConsent();
+            var consent = getCookieConsent();
             if (consent === 'pending') {
                 document.getElementById('cookieConsent').style.display = 'block';
             } else if (consent === 'accepted') {
