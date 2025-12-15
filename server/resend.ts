@@ -51,6 +51,8 @@ export async function sendContactEmail(data: {
   name: string;
   email: string;
   dzemat?: string;
+  city?: string;
+  country?: string;
   message: string;
 }) {
   const { client, fromEmail } = await getUncachableResendClient();
@@ -65,6 +67,8 @@ export async function sendContactEmail(data: {
       <p><strong>Ime:</strong> ${data.name}</p>
       <p><strong>Email:</strong> ${data.email}</p>
       <p><strong>Džemat:</strong> ${data.dzemat || 'Nije navedeno'}</p>
+      <p><strong>Grad:</strong> ${data.city || 'Nije navedeno'}</p>
+      <p><strong>Država:</strong> ${data.country || 'Nije navedeno'}</p>
       <hr>
       <h3>Poruka:</h3>
       <p>${data.message.replace(/\n/g, '<br>')}</p>
@@ -75,6 +79,8 @@ Nova poruka sa kontakt forme
 Ime: ${data.name}
 Email: ${data.email}
 Džemat: ${data.dzemat || 'Nije navedeno'}
+Grad: ${data.city || 'Nije navedeno'}
+Država: ${data.country || 'Nije navedeno'}
 
 Poruka:
 ${data.message}

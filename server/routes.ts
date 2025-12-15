@@ -168,13 +168,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Contact form endpoint (public, no auth required)
   app.post("/api/contact", async (req, res) => {
     try {
-      const { name, email, dzemat, message } = req.body;
+      const { name, email, dzemat, city, country, message } = req.body;
       
       if (!name || !email || !message) {
         return res.status(400).json({ message: "Name, email and message are required" });
       }
       
-      await sendContactEmail({ name, email, dzemat, message });
+      await sendContactEmail({ name, email, dzemat, city, country, message });
       
       res.json({ success: true, message: "Message sent successfully" });
     } catch (error) {
