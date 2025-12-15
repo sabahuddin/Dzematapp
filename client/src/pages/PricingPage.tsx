@@ -197,6 +197,15 @@ export default function PricingPage() {
           })}
         </Box>
 
+        {/* Regional pricing note */}
+        <Typography 
+          variant="body2" 
+          color="text.secondary" 
+          sx={{ textAlign: 'center', mt: -4, mb: 4, fontStyle: 'italic' }}
+        >
+          *Cijene za džemate u Bosni i Hercegovini, Crnoj Gori, Kosovu, Srbiji i Makedoniji.
+        </Typography>
+
         {/* Feature Comparison */}
         <Box sx={{ mt: 8 }}>
           <Typography variant="h4" sx={{ fontWeight: 700, mb: 4, textAlign: 'center' }}>
