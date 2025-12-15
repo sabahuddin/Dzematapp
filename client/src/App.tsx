@@ -790,7 +790,7 @@ function Router() {
       
       <Route path="/my-activities">
         <ProtectedRoute>
-          <MyActivitiesPage />
+          <RecognitionsPage />
         </ProtectedRoute>
       </Route>
       
