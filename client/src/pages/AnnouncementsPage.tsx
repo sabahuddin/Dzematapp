@@ -339,7 +339,7 @@ export default function AnnouncementsPage() {
                       />
                     ))}
                     <Typography variant="caption" sx={{ color: '#757575', ml: 'auto' }}>
-                      {announcement.publishDate ? new Date(announcement.publishDate).toLocaleDateString('bs-BA') : '-'}
+                      {announcement.publishDate ? new Date(announcement.publishDate).toLocaleDateString('de-DE') : '-'}
                     </Typography>
                   </Box>
                 </Box>

@@ -278,8 +278,8 @@ export default function MessagesPage() {
       <div 
         className="flex items-center gap-3 p-4 border-b"
         style={{
-          backgroundColor: 'var(--semantic-success-bg)',
-          borderBottom: '2px solid var(--semantic-success-border)'
+          backgroundColor: '#FFFFFF',
+          borderBottom: '2px solid #E8EAF6'
         }}
       >
         <Button 
@@ -313,7 +313,7 @@ export default function MessagesPage() {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4" style={{ backgroundColor: 'var(--semantic-success-bg)' }}>
+      <div className="flex-1 overflow-y-auto p-4 space-y-4" style={{ backgroundColor: '#F5F7FA' }}>
         {threadMessages.map((message) => {
           const isMine = message.senderId === user?.id;
           
@@ -325,11 +325,11 @@ export default function MessagesPage() {
               <div className={`max-w-[70%] ${isMine ? 'order-2' : 'order-1'}`}>
                 <div
                   style={{
-                    backgroundColor: isMine ? 'var(--bubble-self-bg)' : 'var(--bubble-other-bg)',
-                    color: isMine ? 'var(--bubble-self-text)' : 'var(--bubble-other-text)',
-                    borderRadius: 'var(--radius-md)',
+                    backgroundColor: isMine ? '#3949AB' : '#FFFFFF',
+                    color: isMine ? '#FFFFFF' : '#0D1B2A',
+                    borderRadius: '12px',
                     padding: '12px',
-                    border: isMine ? 'none' : '1px solid var(--bubble-other-border)'
+                    border: isMine ? 'none' : '1px solid #E0E0E0'
                   }}
                 >
                   <p className="text-sm whitespace-pre-wrap">{message.content}</p>
@@ -348,8 +348,8 @@ export default function MessagesPage() {
       <div 
         className="p-4 border-t"
         style={{
-          backgroundColor: 'var(--semantic-success-bg)',
-          borderTop: '2px solid var(--semantic-success-border)'
+          backgroundColor: '#FFFFFF',
+          borderTop: '2px solid #E8EAF6'
         }}
       >
         <div className="flex gap-2">
