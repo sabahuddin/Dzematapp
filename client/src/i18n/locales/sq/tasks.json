@@ -176,7 +176,7 @@
     "reject": "Refuzo",
     "noRequests": "Nuk ka kërkesa për qasje"
   },
-  "archive": "Arkivo",
+  "archiveAction": "Arkivo",
   "unarchive": "Rikthe nga arkivi",
   "delete": "Fshi",
   "joinToComment": "Bashkohuni në këtë seksion për të komentuar.",

@@ -176,7 +176,7 @@
     "reject": "Reddet",
     "noRequests": "Erişim isteği yok"
   },
-  "archive": "Arşivle",
+  "archiveAction": "Arşivle",
   "unarchive": "Arşivden geri yükle",
   "delete": "Sil",
   "joinToComment": "Yorum yapabilmek için bu bölüme katılın.",

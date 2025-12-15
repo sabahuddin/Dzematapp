@@ -1322,7 +1322,7 @@ export default function TaskManagerPage() {
                 data-testid="button-archive-section"
                 sx={{ mr: 1 }}
               >
-                {selectedWorkGroup?.archived ? t('unarchive') : t('archive')}
+                {selectedWorkGroup?.archived ? t('unarchive') : t('archiveAction')}
               </Button>
               <Button 
                 onClick={handleDeleteWorkGroup}
@@ -2320,7 +2320,15 @@ function TaskDetailDialog({
   };
 
   const getStatusLabel = (status: string) => {
-    return t(`task.status.${status}`) || status;
+    const statusKeyMap: Record<string, string> = {
+      'u_toku': 'u_toku',
+      'na_cekanju': 'na_cekanju',
+      'završeno': 'zavrseno',
+      'otkazano': 'otkazano',
+      'arhiva': 'arhiva'
+    };
+    const key = statusKeyMap[status] || status;
+    return t(`task.status.${key}`) || status;
   };
 
   const getAssignedUserName = (userId: string) => {
@@ -3141,7 +3149,15 @@ function TaskManagementContent({ workGroup, currentUser, onClose }: TaskManageme
   };
 
   const getStatusLabel = (status: string) => {
-    return t(`task.status.${status}`) || status;
+    const statusKeyMap: Record<string, string> = {
+      'u_toku': 'u_toku',
+      'na_cekanju': 'na_cekanju',
+      'završeno': 'zavrseno',
+      'otkazano': 'otkazano',
+      'arhiva': 'arhiva'
+    };
+    const key = statusKeyMap[status] || status;
+    return t(`task.status.${key}`) || status;
   };
 
   const getAssignedUserNames = (userIds: string[]) => {

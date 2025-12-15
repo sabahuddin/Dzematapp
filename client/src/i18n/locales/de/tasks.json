@@ -176,7 +176,7 @@
     "reject": "Ablehnen",
     "noRequests": "Keine Zugriffsanfragen"
   },
-  "archive": "Archivieren",
+  "archiveAction": "Archivieren",
   "unarchive": "Aus Archiv wiederherstellen",
   "delete": "Löschen",
   "joinToComment": "Treten Sie dieser Gruppe bei, um kommentieren zu können.",

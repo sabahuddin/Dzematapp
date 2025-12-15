@@ -176,7 +176,7 @@
     "reject": "Odbij",
     "noRequests": "Nema zahtjeva za pristup"
   },
-  "archive": "Arhiviraj",
+  "archiveAction": "Arhiviraj",
   "unarchive": "Vrati iz arhive",
   "delete": "Obriši",
   "joinToComment": "Postanite član sekcije da biste mogli komentirati.",

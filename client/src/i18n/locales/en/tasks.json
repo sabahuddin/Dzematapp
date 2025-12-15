@@ -176,7 +176,7 @@
     "reject": "Reject",
     "noRequests": "No access requests"
   },
-  "archive": "Archive",
+  "archiveAction": "Archive",
   "unarchive": "Restore from archive",
   "delete": "Delete",
   "joinToComment": "Join this section to be able to comment.",
