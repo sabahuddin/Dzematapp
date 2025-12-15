@@ -51,8 +51,8 @@ app.set('trust proxy', 1);
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: false, limit: '5mb' }));
 
-// CORS for marketing site contact form (dzematapp.com -> app.dzematapp.com)
-app.use('/api/contact', (req, res, next) => {
+// CORS for marketing site (dzematapp.com -> app.dzematapp.com)
+const marketingCorsMiddleware = (req: any, res: any, next: any) => {
   const allowedOrigins = ['https://dzematapp.com', 'https://www.dzematapp.com'];
   const origin = req.headers.origin;
   if (origin && allowedOrigins.includes(origin)) {
@@ -60,12 +60,19 @@ app.use('/api/contact', (req, res, next) => {
   }
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Credentials', 'false');
   
   if (req.method === 'OPTIONS') {
     return res.sendStatus(200);
   }
   next();
-});
+};
+
+// Apply CORS to contact form endpoint
+app.use('/api/contact', marketingCorsMiddleware);
+
+// Apply CORS to analytics tracking endpoint (for marketing site tracking)
+app.use('/api/analytics/track', marketingCorsMiddleware);
 
 // Session store: ALWAYS use database if DATABASE_URL is available (for production/Replit)
 // Only use MemoryStore if there's no database configured
