@@ -20,7 +20,6 @@ import {
 } from '@mui/icons-material';
 import { format } from 'date-fns';
 import { User, Badge, UserBadge } from '@shared/schema';
-import { BadgeIconDisplay } from './BadgeIcons';
 import { useAuth } from '../hooks/useAuth';
 
 interface IssuedBadgeData extends UserBadge {
@@ -129,8 +128,8 @@ export default function IssuedBadgesTab() {
                       </Box>
                     </TableCell>
                     <TableCell>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                        <BadgeIconDisplay iconId={issuedBadge.badge.icon} size={24} />
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <span style={{ fontSize: '24px' }}>{issuedBadge.badge.icon || '🏅'}</span>
                         <Box>
                           <Typography variant="body2" fontWeight="medium">
                             {issuedBadge.badge.name}
