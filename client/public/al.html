@@ -106,33 +106,36 @@
         .lang-dropdown a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; font-size: 0.95rem; opacity: 1 !important; }
         .lang-dropdown a:hover { background: #f5f5fa; }
         .lang-flags { display: flex; gap: 3px; }
-        @media (max-width: 768px) { .navbar { padding: 12px 20px; } .navbar-content { gap: 12px; flex-wrap: wrap; justify-content: center; } .navbar a { font-size: 0.9rem; } .lang-switcher { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); } .lang-flags { display: none; } .lang-globe { display: block; } .logo-text { font-size: 2.5rem; } .hero-subtitle { font-size: 1.1rem; } .section-title { font-size: 1.75rem; } .footer-content { flex-direction: column; text-align: center; } }
+        .navbar-wrapper { max-width: 1200px; width: 100%; display: flex; justify-content: center; align-items: center; position: relative; }
+        @media (max-width: 768px) { .navbar { padding: 12px 16px; } .navbar-wrapper { justify-content: space-between; } .navbar-content { gap: 10px; flex-wrap: nowrap; } .navbar a { font-size: 0.85rem; } .lang-switcher { position: static; margin-left: 8px; } .lang-flags { display: none; } .lang-globe { display: block; } .logo-text { font-size: 2.5rem; } .hero-subtitle { font-size: 1.1rem; } .section-title { font-size: 1.75rem; } .footer-content { flex-direction: column; text-align: center; } }
     </style>
 </head>
 <body>
     <nav class="navbar">
-        <div class="navbar-content">
-            <a href="#home">Ballina</a>
-            <a href="#moduli">Modulet</a>
-            <a href="#pricing">Cmimet</a>
-            <a href="https://app.dzematapp.com">Demo</a>
-            <a href="#kontakt">Kontakti</a>
-        </div>
-        <div class="lang-switcher">
-            <span class="lang-globe" onclick="toggleLangDropdown()">🌐</span>
-            <div class="lang-dropdown" id="langDropdown">
-                <a href="index.html">🇧🇦 Bosanski</a>
-                <a href="en.html">🇬🇧 English</a>
-                <a href="de.html">🇩🇪 Deutsch</a>
-                <a href="al.html" class="active">🇦🇱 Shqip</a>
-                <a href="tr.html">🇹🇷 Türkçe</a>
+        <div class="navbar-wrapper">
+            <div class="navbar-content">
+                <a href="#home">Ballina</a>
+                <a href="#moduli">Modulet</a>
+                <a href="#pricing">Cmimet</a>
+                <a href="https://app.dzematapp.com">Demo</a>
+                <a href="#kontakt">Kontakti</a>
             </div>
-            <div class="lang-flags">
-                <a href="index.html" title="Bosanski">🇧🇦</a>
-                <a href="en.html" title="English">🇬🇧</a>
-                <a href="de.html" title="Deutsch">🇩🇪</a>
-                <a href="al.html" class="active" title="Shqip">🇦🇱</a>
-                <a href="tr.html" title="Türkçe">🇹🇷</a>
+            <div class="lang-switcher">
+                <span class="lang-globe" onclick="toggleLangDropdown()">🌐</span>
+                <div class="lang-dropdown" id="langDropdown">
+                    <a href="index.html">🇧🇦 Bosanski</a>
+                    <a href="en.html">🇬🇧 English</a>
+                    <a href="de.html">🇩🇪 Deutsch</a>
+                    <a href="al.html" class="active">🇦🇱 Shqip</a>
+                    <a href="tr.html">🇹🇷 Türkçe</a>
+                </div>
+                <div class="lang-flags">
+                    <a href="index.html" title="Bosanski">🇧🇦</a>
+                    <a href="en.html" title="English">🇬🇧</a>
+                    <a href="de.html" title="Deutsch">🇩🇪</a>
+                    <a href="al.html" class="active" title="Shqip">🇦🇱</a>
+                    <a href="tr.html" title="Türkçe">🇹🇷</a>
+                </div>
             </div>
         </div>
     </nav>
