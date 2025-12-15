@@ -1610,8 +1610,8 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       
       const templateData = [
         ["Ime", "Prezime", "Korisničko ime", "Šifra", "Email", "Telefon", "Ulica i broj", "Broj pošte", "Naziv mjesta", "Član od", "Status članstva"],
-        ["Marko", "Marković", "marko.markovic", "password123", "marko@example.com", "+387 61 123 456", "Ulica Maršala Tita 15", "71000", "Sarajevo", "2024-01-15", "aktivan"],
-        ["Ana", "Anić", "ana.anic", "password123", "ana@example.com", "+387 62 234 567", "Koning Tvrtka 22", "72000", "Zenica", "2023-06-20", "aktivan"]
+        ["Tarik", "Hasanović", "tarik.hasanovic", "password123", "tarik@example.com", "+387 61 123 456", "Ulica Maršala Tita 15", "71000", "Sarajevo", "2024-01-15", "aktivan"],
+        ["Hana", "Hasanović", "hana.hasanovic", "password123", "hana@example.com", "+387 62 234 567", "Kralja Tvrtka 22", "72000", "Zenica", "2023-06-20", "aktivan"]
       ];
 
       const worksheet = XLSX.utils.aoa_to_sheet(templateData);
