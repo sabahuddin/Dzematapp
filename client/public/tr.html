@@ -448,5 +448,34 @@
         }
         setInterval(() => { currentSlide = (currentSlide + 1) % totalSlides; goToSlide(currentSlide); }, 6000);
     </script>
+    
+    <!-- Cookie Consent & Analytics -->
+    <div id="cookieConsent" style="display:none; position:fixed; bottom:0; left:0; right:0; background:#1a1a2e; color:#fff; padding:16px 20px; z-index:9999; box-shadow:0 -4px 20px rgba(0,0,0,0.2);">
+        <div style="max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+            <p style="margin:0; font-size:0.95rem;">Deneyiminizi iyilestirmek icin cerezler kullaniyoruz. <a href="datenschutz.html" style="color:#1E88E5;">Daha fazla bilgi</a></p>
+            <div style="display:flex; gap:12px;">
+                <button onclick="rejectCookies()" style="background:transparent; border:1px solid #fff; color:#fff; padding:10px 20px; border-radius:8px; cursor:pointer; font-size:0.9rem;">Reddet</button>
+                <button onclick="acceptCookies()" style="background:#3949AB; border:none; color:#fff; padding:10px 24px; border-radius:8px; cursor:pointer; font-size:0.9rem; font-weight:600;">Kabul Et</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function() {
+            var CONSENT_KEY = 'dzematapp_cookie_consent';
+            var API_URL = 'https://app.dzematapp.com';
+            function getConsent() { return localStorage.getItem(CONSENT_KEY); }
+            function setConsent(val) { localStorage.setItem(CONSENT_KEY, val); }
+            function generateId(prefix) { return prefix + Math.random().toString(36).substring(2) + Date.now().toString(36); }
+            function getVisitorId() { var id = localStorage.getItem('dzematapp_visitor_id'); if (!id) { id = generateId('v_'); localStorage.setItem('dzematapp_visitor_id', id); } return id; }
+            function getSessionId() { var id = sessionStorage.getItem('dzematapp_session_id'); if (!id) { id = generateId('s_'); sessionStorage.setItem('dzematapp_session_id', id); } return id; }
+            function trackPageView() {
+                if (getConsent() !== 'accepted') return;
+                fetch(API_URL + '/api/analytics/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ site: 'marketing', path: window.location.pathname, visitorId: getVisitorId(), sessionId: getSessionId(), referrer: document.referrer || null }) }).catch(function() {});
+            }
+            window.acceptCookies = function() { setConsent('accepted'); document.getElementById('cookieConsent').style.display = 'none'; trackPageView(); };
+            window.rejectCookies = function() { setConsent('rejected'); document.getElementById('cookieConsent').style.display = 'none'; };
+            if (!getConsent()) { document.getElementById('cookieConsent').style.display = 'block'; } else if (getConsent() === 'accepted') { trackPageView(); }
+        })();
+    </script>
 </body>
 </html>
