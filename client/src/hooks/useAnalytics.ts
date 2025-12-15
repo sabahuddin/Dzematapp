@@ -2,40 +2,24 @@ import { useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { getCookieConsent } from "@/components/CookieConsent";
 
-declare global {
-  interface Window {
-    dataLayer: any[];
-    gtag: (...args: any[]) => void;
+const API_URL = window.location.origin;
+
+function generateVisitorId(): string {
+  let visitorId = localStorage.getItem('dzematapp_visitor_id');
+  if (!visitorId) {
+    visitorId = 'v_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
+    localStorage.setItem('dzematapp_visitor_id', visitorId);
   }
+  return visitorId;
 }
 
-let gaInitialized = false;
-
-export function initGA() {
-  if (gaInitialized) return;
-  
-  const measurementId = import.meta.env.VITE_GA_MEASUREMENT_ID;
-  if (!measurementId) {
-    console.warn('[Analytics] Missing VITE_GA_MEASUREMENT_ID');
-    return;
+function generateSessionId(): string {
+  let sessionId = sessionStorage.getItem('dzematapp_session_id');
+  if (!sessionId) {
+    sessionId = 's_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
+    sessionStorage.setItem('dzematapp_session_id', sessionId);
   }
-
-  const script1 = document.createElement('script');
-  script1.async = true;
-  script1.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
-  document.head.appendChild(script1);
-
-  const script2 = document.createElement('script');
-  script2.textContent = `
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', '${measurementId}');
-  `;
-  document.head.appendChild(script2);
-  
-  gaInitialized = true;
-  console.log('[Analytics] Google Analytics initialized');
+  return sessionId;
 }
 
 export async function trackPageView(path?: string) {
@@ -44,17 +28,26 @@ export async function trackPageView(path?: string) {
     return;
   }
 
-  if (!gaInitialized) {
-    initGA();
-  }
-
-  const measurementId = import.meta.env.VITE_GA_MEASUREMENT_ID;
   const currentPath = path || window.location.pathname;
+  const site = window.location.hostname.includes('app.') ? 'app' : 'marketing';
 
-  if (typeof window !== 'undefined' && window.gtag && measurementId) {
-    window.gtag('config', measurementId, {
-      page_path: currentPath
+  try {
+    await fetch(`${API_URL}/api/analytics/track`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        site,
+        path: currentPath,
+        visitorId: generateVisitorId(),
+        sessionId: generateSessionId(),
+        referrer: document.referrer || null,
+      }),
     });
+  } catch (error) {
+    // Silently fail - analytics should not break the app
+    console.debug('[Analytics] Track failed:', error);
   }
 }
 
@@ -64,13 +57,9 @@ export function trackEvent(
   label?: string, 
   value?: number
 ) {
-  if (typeof window === 'undefined' || !window.gtag) return;
-  
-  window.gtag('event', action, {
-    event_category: category,
-    event_label: label,
-    value: value,
-  });
+  // Simple event tracking - logs to console for now
+  // Can be extended to POST to backend if needed
+  console.debug('[Analytics] Event:', { action, category, label, value });
 }
 
 export function usePageTracking() {
