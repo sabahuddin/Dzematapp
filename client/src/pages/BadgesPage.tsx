@@ -404,6 +404,42 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
                 <Typography color="error" variant="caption">{form.formState.errors.criteriaValue.message}</Typography>
               )}
             </Box>
+
+            <Box>
+              <Typography variant="body2" sx={{ mb: 0.5, fontWeight: 500 }}>
+                {t('badges:icon')}
+              </Typography>
+              <Controller
+                name="icon"
+                control={form.control}
+                render={({ field }) => (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                    {['🏅', '🥇', '🥈', '🥉', '🏆', '⭐', '🌟', '💎', '👑', '🎖️', '🎯', '🔥', '💪', '🙌', '❤️', '🤲'].map((emoji) => (
+                      <Box
+                        key={emoji}
+                        onClick={() => field.onChange(emoji)}
+                        sx={{
+                          fontSize: '2rem',
+                          padding: '8px',
+                          borderRadius: '8px',
+                          cursor: 'pointer',
+                          border: field.value === emoji ? '3px solid #1E88E5' : '2px solid #e5e7eb',
+                          backgroundColor: field.value === emoji ? '#E3F2FD' : 'white',
+                          transition: 'all 0.2s',
+                          '&:hover': {
+                            borderColor: '#1E88E5',
+                            transform: 'scale(1.1)'
+                          }
+                        }}
+                        data-testid={`icon-${emoji}`}
+                      >
+                        {emoji}
+                      </Box>
+                    ))}
+                  </Box>
+                )}
+              />
+            </Box>
             
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '16px' }}>
               <button
