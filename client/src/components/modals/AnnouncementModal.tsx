@@ -186,7 +186,7 @@ export default function AnnouncementModal({
                   {t('announcements:modal.published')}
                 </Typography>
                 <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                  {new Date(announcement?.publishDate || Date.now()).toLocaleDateString('bs-BA', { 
+                  {new Date(announcement?.publishDate || Date.now()).toLocaleDateString('de-DE', { 
                     year: 'numeric', 
                     month: 'long', 
                     day: 'numeric'

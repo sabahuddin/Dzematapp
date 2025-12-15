@@ -209,15 +209,16 @@ export default function MessagesPage() {
                     onClick={() => handleConversationClick(conversation)}
                     className="p-4 cursor-pointer transition-all rounded-lg"
                     style={{
-                      backgroundColor: isUnread ? 'var(--semantic-info-bg)' : 'var(--semantic-success-bg)',
-                      border: '2px solid var(--semantic-success-border)',
-                      borderRadius: 'var(--radius-lg)'
+                      backgroundColor: isUnread ? '#E8EAF6' : '#FFFFFF',
+                      border: isUnread ? '2px solid #3949AB' : '1px solid #E0E0E0',
+                      borderRadius: '16px',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
                     }}
                     onMouseEnter={(e) => {
-                      if (!isUnread) e.currentTarget.style.backgroundColor = 'var(--semantic-success-bg-hover)';
+                      e.currentTarget.style.backgroundColor = isUnread ? '#E8EAF6' : '#F5F5FA';
                     }}
                     onMouseLeave={(e) => {
-                      if (!isUnread) e.currentTarget.style.backgroundColor = 'var(--semantic-success-bg)';
+                      e.currentTarget.style.backgroundColor = isUnread ? '#E8EAF6' : '#FFFFFF';
                     }}
                     data-testid={`conversation-${conversation.threadId}`}
                   >
