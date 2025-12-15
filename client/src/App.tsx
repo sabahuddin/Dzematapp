@@ -788,12 +788,7 @@ function Router() {
         </ProtectedRoute>
       </Route>
       
-      <Route path="/my-activities">
-        <ProtectedRoute>
-          <ActivityLogPage />
-        </ProtectedRoute>
-      </Route>
-      
+            
       <Route path="/my-badges">
         <ProtectedRoute>
           <MyBadgesPage />
