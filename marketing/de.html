@@ -493,5 +493,48 @@
             }
         });
     </script>
+    
+    <!-- Cookie Consent Banner -->
+    <div id="cookieConsent" class="cookie-consent" style="display: none;">
+        <div class="cookie-content">
+            <div class="cookie-text">
+                <span class="cookie-icon">🍪</span>
+                <div>
+                    <strong>Cookies</strong>
+                    <p>Wir verwenden Cookies für Analysen und zur Verbesserung der Benutzererfahrung. Ihre Daten sind anonym.</p>
+                </div>
+            </div>
+            <div class="cookie-buttons">
+                <button onclick="acceptCookies()" class="cookie-accept">Akzeptieren</button>
+                <button onclick="rejectCookies()" class="cookie-reject">Ablehnen</button>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .cookie-consent { position: fixed; bottom: 0; left: 0; right: 0; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; padding: 20px; z-index: 9999; box-shadow: 0 -4px 20px rgba(0,0,0,0.3); }
+        .cookie-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+        .cookie-text { display: flex; align-items: center; gap: 16px; flex: 1; }
+        .cookie-icon { font-size: 2.5rem; }
+        .cookie-text strong { display: block; margin-bottom: 4px; font-size: 1.1rem; }
+        .cookie-text p { margin: 0; font-size: 0.9rem; opacity: 0.9; }
+        .cookie-buttons { display: flex; gap: 12px; }
+        .cookie-accept { background: #26A69A; color: white; border: none; padding: 12px 28px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        .cookie-accept:hover { background: #2bbbad; }
+        .cookie-reject { background: transparent; color: white; border: 2px solid rgba(255,255,255,0.3); padding: 12px 28px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .cookie-reject:hover { border-color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.1); }
+        @media (max-width: 768px) { .cookie-content { flex-direction: column; text-align: center; } .cookie-text { flex-direction: column; } .cookie-buttons { width: 100%; justify-content: center; } }
+    </style>
+    
+    <script>
+        const COOKIE_CONSENT_KEY = 'dzematapp_cookie_consent';
+        const COOKIE_CONSENT_VERSION = '1.0';
+        function getCookieConsent() { try { const stored = localStorage.getItem(COOKIE_CONSENT_KEY); if (stored) { const data = JSON.parse(stored); if (data.version === COOKIE_CONSENT_VERSION) return data.status; } } catch (e) {} return 'pending'; }
+        function setCookieConsent(status) { localStorage.setItem(COOKIE_CONSENT_KEY, JSON.stringify({ status: status, version: COOKIE_CONSENT_VERSION, timestamp: new Date().toISOString() })); }
+        function acceptCookies() { setCookieConsent('accepted'); document.getElementById('cookieConsent').style.display = 'none'; initAnalytics(); }
+        function rejectCookies() { setCookieConsent('rejected'); document.getElementById('cookieConsent').style.display = 'none'; }
+        function initAnalytics() { const visitorId = localStorage.getItem('dzematapp_visitor_id') || ('v_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36)); localStorage.setItem('dzematapp_visitor_id', visitorId); const sessionId = sessionStorage.getItem('dzematapp_session_id') || ('s_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36)); sessionStorage.setItem('dzematapp_session_id', sessionId); fetch('https://app.dzematapp.com/api/analytics/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ site: 'marketing', path: window.location.pathname, visitorId: visitorId, sessionId: sessionId, referrer: document.referrer || null, userAgent: navigator.userAgent }) }).catch(() => {}); }
+        document.addEventListener('DOMContentLoaded', function() { const consent = getCookieConsent(); if (consent === 'pending') { document.getElementById('cookieConsent').style.display = 'block'; } else if (consent === 'accepted') { initAnalytics(); } });
+    </script>
 </body>
 </html>
