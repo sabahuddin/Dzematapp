@@ -34,13 +34,20 @@
             border-bottom: 1px solid #e2e8f0;
         }
         
-        .navbar-content {
+        .navbar-wrapper {
             max-width: 1200px;
             margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar-content {
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 40px;
+            flex: 1;
         }
         
         .navbar a {
@@ -56,10 +63,11 @@
         }
         
         .lang-switcher {
-            position: absolute;
-            right: 20px;
+            position: relative;
             display: flex;
+            align-items: center;
             gap: 3px;
+            flex-shrink: 0;
         }
         
         .lang-switcher a {
@@ -704,24 +712,30 @@
         
         @media (max-width: 768px) {
             .navbar {
-                flex-direction: column;
-                padding: 12px 20px;
+                padding: 12px 16px;
+            }
+            .navbar-wrapper {
+                gap: 12px;
             }
             .navbar-content {
-                gap: 15px;
+                gap: 12px;
                 flex-wrap: wrap;
-                justify-content: center;
+                justify-content: flex-start;
+                flex: 1;
+            }
+            .navbar-content a {
+                font-size: 0.9rem;
             }
             .lang-switcher {
-                position: absolute;
-                right: 20px;
-                top: 12px;
+                position: relative;
             }
             .lang-flags {
                 display: none;
             }
             .lang-globe {
-                display: block;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
             .logo-text { font-size: 2.5rem; }
             .hero-subtitle { font-size: 1.1rem; }
@@ -735,28 +749,30 @@
 </head>
 <body>
     <nav class="navbar">
-        <div class="navbar-content">
-            <a href="#home">Home</a>
-            <a href="#moduli">Moduli</a>
-            <a href="#pricing">Cijena</a>
-            <a href="https://app.dzematapp.com">Demo</a>
-            <a href="#kontakt">Kontakt</a>
-        </div>
-        <div class="lang-switcher">
-            <div class="lang-flags">
-                <a href="index.html" class="active" title="Bosanski">🇧🇦</a>
-                <a href="en.html" title="English">🇬🇧</a>
-                <a href="de.html" title="Deutsch">🇩🇪</a>
-                <a href="al.html" title="Shqip">🇦🇱</a>
-                <a href="tr.html" title="Türkçe">🇹🇷</a>
+        <div class="navbar-wrapper">
+            <div class="navbar-content">
+                <a href="#home">Home</a>
+                <a href="#moduli">Moduli</a>
+                <a href="#pricing">Cijena</a>
+                <a href="https://app.dzematapp.com">Demo</a>
+                <a href="#kontakt">Kontakt</a>
             </div>
-            <div class="lang-globe" onclick="toggleLangDropdown()">🌐</div>
-            <div class="lang-dropdown" id="langDropdown">
-                <a href="index.html" class="active">🇧🇦 Bosanski</a>
-                <a href="en.html">🇬🇧 English</a>
-                <a href="de.html">🇩🇪 Deutsch</a>
-                <a href="al.html">🇦🇱 Shqip</a>
-                <a href="tr.html">🇹🇷 Türkçe</a>
+            <div class="lang-switcher">
+                <div class="lang-flags">
+                    <a href="index.html" class="active" title="Bosanski">🇧🇦</a>
+                    <a href="en.html" title="English">🇬🇧</a>
+                    <a href="de.html" title="Deutsch">🇩🇪</a>
+                    <a href="al.html" title="Shqip">🇦🇱</a>
+                    <a href="tr.html" title="Türkçe">🇹🇷</a>
+                </div>
+                <div class="lang-globe" onclick="toggleLangDropdown()">🌐</div>
+                <div class="lang-dropdown" id="langDropdown">
+                    <a href="index.html" class="active">🇧🇦 Bosanski</a>
+                    <a href="en.html">🇬🇧 English</a>
+                    <a href="de.html">🇩🇪 Deutsch</a>
+                    <a href="al.html">🇦🇱 Shqip</a>
+                    <a href="tr.html">🇹🇷 Türkçe</a>
+                </div>
             </div>
         </div>
     </nav>
