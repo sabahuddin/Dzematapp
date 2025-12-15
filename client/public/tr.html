@@ -100,7 +100,13 @@
         .footer-links a { color: #fff; text-decoration: none; margin: 0 12px; font-size: 0.9rem; }
         .footer-links a:hover { text-decoration: underline; }
         .footer-copyright { font-size: 0.9rem; color: #888; }
-        @media (max-width: 768px) { .navbar { flex-direction: column; padding: 12px 20px; } .navbar-content { gap: 15px; flex-wrap: wrap; justify-content: center; } .lang-switcher { position: static; order: -1; margin-bottom: 10px; align-self: flex-end; } .logo-text { font-size: 2.5rem; } .hero-subtitle { font-size: 1.1rem; } .section-title { font-size: 1.75rem; } .footer-content { flex-direction: column; text-align: center; } }
+        .lang-globe { display: none; cursor: pointer; font-size: 1.5rem; padding: 4px 8px; background: rgba(57, 73, 171, 0.1); border-radius: 8px; }
+        .lang-dropdown { display: none; position: absolute; top: 100%; right: 0; background: #fff; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); padding: 8px; z-index: 1000; min-width: 140px; }
+        .lang-dropdown.show { display: block; }
+        .lang-dropdown a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; font-size: 0.95rem; opacity: 1 !important; }
+        .lang-dropdown a:hover { background: #f5f5fa; }
+        .lang-flags { display: flex; gap: 3px; }
+        @media (max-width: 768px) { .navbar { padding: 12px 20px; } .navbar-content { gap: 12px; flex-wrap: wrap; justify-content: center; } .navbar a { font-size: 0.9rem; } .lang-switcher { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); } .lang-flags { display: none; } .lang-globe { display: block; } .logo-text { font-size: 2.5rem; } .hero-subtitle { font-size: 1.1rem; } .section-title { font-size: 1.75rem; } .footer-content { flex-direction: column; text-align: center; } }
     </style>
 </head>
 <body>
@@ -113,13 +119,27 @@
             <a href="#kontakt">Iletisim</a>
         </div>
         <div class="lang-switcher">
-            <a href="index.html" title="Bosanski">🇧🇦</a>
-                        <a href="en.html" title="English">🇬🇧</a>
-            <a href="de.html" title="Deutsch">🇩🇪</a>
-            <a href="al.html" title="Shqip">🇦🇱</a>
-            <a href="tr.html" class="active" title="Türkçe">🇹🇷</a>
+            <span class="lang-globe" onclick="toggleLangDropdown()">🌐</span>
+            <div class="lang-dropdown" id="langDropdown">
+                <a href="index.html">🇧🇦 Bosanski</a>
+                <a href="en.html">🇬🇧 English</a>
+                <a href="de.html">🇩🇪 Deutsch</a>
+                <a href="al.html">🇦🇱 Shqip</a>
+                <a href="tr.html" class="active">🇹🇷 Türkçe</a>
+            </div>
+            <div class="lang-flags">
+                <a href="index.html" title="Bosanski">🇧🇦</a>
+                <a href="en.html" title="English">🇬🇧</a>
+                <a href="de.html" title="Deutsch">🇩🇪</a>
+                <a href="al.html" title="Shqip">🇦🇱</a>
+                <a href="tr.html" class="active" title="Türkçe">🇹🇷</a>
+            </div>
         </div>
     </nav>
+    <script>
+        function toggleLangDropdown() { document.getElementById('langDropdown').classList.toggle('show'); }
+        document.addEventListener('click', function(e) { if (!e.target.closest('.lang-switcher')) { document.getElementById('langDropdown').classList.remove('show'); } });
+    </script>
     
     <section class="hero" id="home">
         <div class="hero-content">
