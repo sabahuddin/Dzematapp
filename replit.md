@@ -1,144 +1,220 @@
-# Overview
+# DžematApp - Vodič za razvoj
 
-DžematApp is a mobile-first Progressive Web App (PWA) designed for mosque community management. It aims to enhance community engagement and administrative efficiency by providing a comprehensive platform for managing users, announcements, events, work groups ("Sekcije"), and tasks. Key capabilities include user management, event scheduling, a task manager with role-based interfaces, expense tracking, a shop module, prayer times, and a robust notification system. The application offers a native-app-like experience with offline support and a modern "Spiritual Tech Indigo" design.
+## Pregled projekta
 
-# User Preferences
+DžematApp je mobile-first Progressive Web App (PWA) za upravljanje džematskom zajednicom. Pruža sveobuhvatnu platformu za upravljanje korisnicima, objavama, događajima, radnim grupama i zadacima.
 
-- **Communication Style**: Simple, everyday language (Serbian/Croatian/Bosnian).
-- **Visual Design**: "Spiritual Tech Indigo" palette - Indigo (#3949AB), Tech Blue (#1E88E5), Tirkizna (#26A69A), with subtle shadows and 16px border radius.
-- **Layout Requirements**: Fixed TopBar and BottomNavigation with zero bounce/overscroll effect on iOS.
-- **Language**: Serbian/Croatian (Bosnian ijekavica dialect).
+---
 
-# Design System - "Spiritual Tech Indigo"
+## Brzi start
 
-## Color Palette
-- **Primary (Indigo)**: #3949AB - Used for TopBar, active navigation, primary actions
-- **Secondary (Tech Blue)**: #1E88E5 - Used for contained buttons, CTAs, links
-- **Accent (Tirkizna)**: #26A69A - Used for success states, confirmations
-- **Background (Soft Gray)**: #ECEFF1 - Main app background
-- **Surface (White)**: #FFFFFF - Cards, inputs on focus, modals
-- **Text Primary**: #0D1B2A - Main heading and body text
-- **Text Secondary**: #546E7A - Subtle/helper text
-- **Navigation Inactive**: #B0BEC5 - Bottom nav inactive icons
+### Pokretanje aplikacije
+```bash
+npm run dev
+```
 
-## Typography
-- **Font Family**: Inter (primary), Roboto (fallback), SF Pro (system)
-- **Weights**: 400 (body), 600 (subheadings, buttons), 700 (headings)
+### Git push na GitHub
+```bash
+git add . && git commit -m "Opis promjena" && git push origin main
+```
 
-## Component Styling
-- **Cards**: White (#FFFFFF) with subtle shadow (0 4px 6px -1px rgba(0,0,0,0.05)), 16px border-radius, no border
-- **Inputs**: Filled style with soft gray (#ECEFF1) background, no border, white on focus with indigo ring
-- **Buttons**: Tech Blue contained (#1E88E5), Indigo outlined (#3949AB), 10px border-radius
-- **TopBar**: Indigo (#3949AB) background with white text/icons
-- **BottomNavigation**: White background, gray inactive icons (#B0BEC5), Indigo active icon (#3949AB)
+### Sa tokenom:
+```bash
+git push https://$GITHUB_TOKEN@github.com/sabahuddin/Dzematapp.git main
+```
 
-## Dark Mode
-- Deep Navy palette based on #0D1B2A and #1C2A3A
+---
 
-# System Architecture
+## Korisničke preference
 
-## Frontend
-The frontend is a React with TypeScript application, built with Vite, Material-UI (MUI), shadcn/ui, and Tailwind CSS. It uses Wouter for routing, React Query for server state management, and context-based authentication with localStorage. The design is mobile-first, featuring a fixed layout with a 64px TopBar and 88px BottomNavigation, using a custom `useEdgeLockScroll` hook for iOS bounce prevention. The PWA is configured for offline support and installability, utilizing the "Spiritual Tech Indigo" design system with Inter font family.
+| Postavka | Vrijednost |
+|----------|------------|
+| Jezik | Bosanski (ijekavica) |
+| Stil komunikacije | Jednostavan, svakodnevni jezik |
+| Border radius | 16px |
 
-## Backend
-The backend is an Express.js application written in TypeScript, providing a REST API. It uses Drizzle ORM for type-safe database interactions with PostgreSQL. It includes centralized error handling.
+---
 
-## Data Storage
-A PostgreSQL database, hosted on Hetzner, is used for all persistent data storage, managed via Drizzle ORM. The application automatically synchronizes the database schema on every startup, ensuring all tables and columns exist, with a fail-fast approach if migration fails in production.
+## Dizajn sistem - "Spiritual Tech Indigo"
 
-## Authentication and Authorization
-The system employs session-based authentication with username/password, supporting guest access. Role-based access control includes Admin, Executive Board Member, Member, and Family Member roles.
+### Boje
 
-## Multi-Tenancy Architecture
-DžematApp operates as a SaaS platform with strict tenant isolation:
-- **SuperAdmin Global Tenant** (`tenant-superadmin-global`): A hidden tenant for SuperAdmin users with global management scope.
-- **Regular Tenants**: Each organization receives a dedicated, isolated tenant with no data inheritance.
-- **User Isolation**: Users belong to a single tenant; SuperAdmins can manage all tenants.
-- **Tenant Creation**: New tenants are provisioned empty, with an automatically generated admin user (`admin/admin123`).
-- **Security**: Session-based authentication uses `session.tenantId` for authoritative tenant sourcing, preventing cross-tenant data manipulation in all POST/PUT operations.
+| Namjena | Boja | Hex |
+|---------|------|-----|
+| Primary (Indigo) | TopBar, aktivna navigacija | `#3949AB` |
+| Secondary (Tech Blue) | Dugmad, CTA, linkovi | `#1E88E5` |
+| Accent (Tirkizna) | Success stanja | `#26A69A` |
+| Background | Pozadina aplikacije | `#ECEFF1` |
+| Surface | Kartice, modali | `#FFFFFF` |
+| Text Primary | Naslovi, tekst | `#0D1B2A` |
+| Text Secondary | Pomoćni tekst | `#546E7A` |
+| Nav Inactive | Neaktivne ikone | `#B0BEC5` |
 
-## Key Features
-- **User & Profile Management**: CRUD operations, bulk upload, dynamic filtering.
-- **Announcements & Events**: Content management, event calendar, RSVP, guest-viewable.
-- **Task Manager**: Multi-user task assignments, work group management ("Sekcije"), role-based interfaces.
-- **Expense Tracking**: Members can upload receipts.
-- **Shop Module**: DžematShop for products and marketplace listings.
-- **Prayer Times (Vaktija)**: Calendar with CSV upload.
-- **Internationalization (i18n)**: Multi-language support (Bosnian, German, English, Albanian).
-- **Guest Access**: Public interfaces for announcements, events, prayer times, and membership applications.
-- **Notification System**: Displays unread content counts and application status messages.
-- **Moderator Proposal System**: For work group activity proposals.
-- **Imam Q&A**: System for submitting and archiving questions.
-- **Badges & Recognition**: System for member achievements.
-- **Zahvale (Certificates)**: Template management and issuance.
-- **Media/Livestream**: Management for live streams and media.
-- **Documents**: Upload and management system.
-- **Activity Feed**: Real-time display of community activities.
-- **Analytics Module**: SuperAdmin-only analytics dashboard with page view tracking, visitor statistics, device/browser/OS breakdown, and geographic distribution.
-- **Cookie Consent**: GDPR-compliant cookie consent banner with localStorage persistence, required before analytics tracking activates.
+### Tipografija
+- **Font**: Inter (primary), Roboto (fallback)
+- **Težine**: 400 (body), 600 (podnaslovi, dugmad), 700 (naslovi)
+
+### Komponente
+- **Kartice**: Bijele, sjena `0 4px 6px -1px rgba(0,0,0,0.05)`, radius 16px
+- **Inputi**: Filled stil, siva pozadina `#ECEFF1`, bijela na focus
+- **Dugmad**: Tech Blue contained, Indigo outlined, radius 10px
+- **TopBar**: Indigo pozadina, bijeli tekst/ikone, visina 64px
+- **BottomNav**: Bijela pozadina, visina 88px
+
+---
+
+## Arhitektura
+
+### Frontend
+- **Framework**: React + TypeScript + Vite
+- **UI**: Material-UI + shadcn/ui + Tailwind CSS
+- **Routing**: Wouter
+- **State**: React Query + Context API
+- **PWA**: Offline podrška, installability
+
+### Backend
+- **Framework**: Express.js + TypeScript
+- **ORM**: Drizzle ORM
+- **Baza**: PostgreSQL (Hetzner hosting)
+- **Sesije**: PostgreSQL session store
+
+### Autentifikacija
+- Session-based sa username/password
+- Guest pristup za javne stranice
+- Role: Admin, Član IO, Član, Član porodice, SuperAdmin
+
+---
+
+## Multi-Tenancy
+
+| Tenant | Opis |
+|--------|------|
+| `tenant-superadmin-global` | Skriven, za SuperAdmin |
+| Regular tenanti | Izolovani, bez dijeljenja podataka |
+
+- Novi tenant dobija prazan prostor + auto-generiran admin (`admin/admin123`)
+- `session.tenantId` je autoritativan izvor za tenant
+
+---
+
+## Moduli aplikacije
+
+### Osnovni moduli
+- **Korisnici**: CRUD, bulk upload, filtriranje, članski broj
+- **Objave**: Content management, kategorije
+- **Događaji**: Kalendar, RSVP, poeni za prisustvo
+- **Vaktija**: Molitvena vremena, CSV upload
+
+### Radne grupe (Sekcije)
+- Task manager sa multi-user assignments
+- Moderatorski prijedlozi
+- Komentari na zadatke
+
+### Shop modul
+- DžematShop proizvodi
+- Marketplace (prodaja/poklon)
+- Zahtjevi za kupovinu
+
+### Članarina
+- Mjesečna/godišnja plaćanja
+- Grid prikaz po mjesecima
+- Excel bulk upload
+
+### Dodatni moduli
+- **Imam Q&A**: Pitanja i arhiva odgovora
+- **Zahvale**: Certifikati, template management
+- **Dokumenti**: Upload i upravljanje
+- **Livestream**: Video integracija
+- **Bedževi**: Gamifikacija, poeni
+- **Analitika**: SuperAdmin dashboard
+
+---
+
+## Analytics sistem
+
+### Cookie Consent (GDPR)
+- Komponenta: `CookieConsent.tsx`
+- Storage: `dzematapp_cookie_consent` u localStorage
+- Stanja: pending, accepted, rejected
+
+### Praćenje posjeta
+- Tabela: `page_views`
+- Endpointi:
+  - `POST /api/analytics/track` - javni, za tracking
+  - `GET /api/analytics/stats` - samo SuperAdmin
+
+### CORS za marketing site
+Marketing site (dzematapp.com) šalje analitiku na app.dzematapp.com:
+- Origin: `https://dzematapp.com`, `https://www.dzematapp.com`
+- Metode: POST, OPTIONS
+
+---
+
+## Ključne datoteke
+
+| Putanja | Opis |
+|---------|------|
+| `client/src/App.tsx` | Glavni router, auth context |
+| `client/src/pages/` | Sve stranice |
+| `client/src/components/` | UI komponente |
+| `server/routes.ts` | API endpointi |
+| `server/storage.ts` | Database operacije |
+| `server/index.ts` | Express setup, CORS |
+| `shared/schema.ts` | Drizzle shema, tipovi |
+
+---
+
+## API Endpointi (Pregled)
+
+### Autentifikacija
+- `POST /api/auth/login` - Korisnik login
+- `POST /api/auth/superadmin/login` - SuperAdmin login
+- `POST /api/auth/logout` - Logout
+- `GET /api/auth/session` - Provjera sesije
+
+### CRUD Pattern
+Većina modula slijedi pattern:
+- `GET /api/{modul}` - Lista
+- `GET /api/{modul}/:id` - Pojedinačni
+- `POST /api/{modul}` - Kreiranje
+- `PATCH /api/{modul}/:id` - Update
+- `DELETE /api/{modul}/:id` - Brisanje
+
+---
+
+## Pending integracije
+
+### Paddle Payment (ČEKA SE)
+- **Status**: Čeka se Paddle registracija
+- **Planovi**: Basic €29/mo, Standard €39/mo, Full €49/mo
+- **Potrebno**: Vendor ID, API Key, Product IDs
+
+---
 
 ## Mobile App
-A companion React Native + Expo application for iOS and Android is located in the `mobile/` directory, featuring Expo Router, login/authentication, dashboard, tab navigation, and a robust API client, all built with TypeScript.
 
-# External Dependencies
+Lokacija: `mobile/` direktorij
+- Framework: React Native + Expo
+- Router: Expo Router
+- Autentifikacija: Ista kao web
+- API klijent: TypeScript
 
-## Core Frameworks
-- **@tanstack/react-query**: Server state management.
-- **wouter**: Lightweight client-side routing.
+---
 
-## UI and Styling
-- **@mui/material**: Material Design components.
-- **@mui/x-data-grid**: Advanced data grid.
-- **@mui/x-date-pickers**: Date and time pickers.
-- **@radix-ui**: Primitive UI components for shadcn/ui.
-- **tailwindcss**: Utility-first CSS framework.
-- **class-variance-authority**: Component variant styling.
+## Napomene za razvoj
 
-## Database and Backend
-- **pg**: PostgreSQL TCP driver.
-- **drizzle-orm**: Type-safe ORM.
-- **drizzle-kit**: Database migration tools.
-- **express**: Node.js web framework.
+### Ne mijenjati
+- `server/vite.ts` i `vite.config.ts`
+- `package.json` (koristiti packager tool)
+- `drizzle.config.ts`
 
-## Development Tools
-- **typescript**: Static type checking.
-- **vite**: Frontend build tool.
+### Konvencije
+- Koristiti postojeće UI komponente
+- Ikone: `lucide-react` (akcije), `react-icons/si` (logotipovi)
+- Forme: `react-hook-form` + `zod` validacija
+- Queries: `@tanstack/react-query` v5 (object forma)
 
-## Validation and Forms
-- **zod**: Schema validation.
-- **@hookform/resolvers**: Form validation resolvers.
-- **react-hook-form**: Form state management.
-
-## Internationalization
-- **react-i18next**: Internationalization framework for React.
-
-## Custom Utilities
-- **useEdgeLockScroll**: Custom hook for iOS Safari bounce prevention.
-- **usePageTracking**: Analytics hook that tracks page views with consent awareness.
-- **useAnalytics**: Provides consent status and manual tracking functions.
-
-## Analytics & Privacy
-
-### Cookie Consent System
-- **Component**: `CookieConsent.tsx` - GDPR-compliant banner displayed on first visit
-- **Storage Key**: `dzematapp_cookie_consent` in localStorage with version tracking
-- **States**: `pending`, `accepted`, `rejected`
-- **Behavior**: Analytics tracking only activates after explicit user consent
-
-### Analytics Tracking
-- **Database Table**: `page_views` stores site, path, visitor/session IDs, device info, OS, browser, country
-- **API Endpoints**:
-  - `POST /api/analytics/track` - Public endpoint to record page views (requires cookie consent on client)
-  - `GET /api/analytics/stats` - SuperAdmin only, returns aggregated statistics with filters
-- **Frontend Integration**: `usePageTracking` hook in App.tsx tracks route changes via wouter's `useLocation`
-- **Visitor Tracking**: Anonymous visitor ID (localStorage) and session ID (sessionStorage)
-- **Site Detection**: Automatically detects `marketing` (dzematapp.com) vs `app` (app.dzematapp.com)
-
-# Pending Integrations
-
-## Paddle Payment Integration (PENDING)
-- **Status**: Awaiting user to complete Paddle registration
-- **Plans to create in Paddle**: Basic €29/mo, Standard €39/mo, Full €49/mo
-- **Required from user**: Vendor ID, API Key, Product IDs
-- **Implementation**: Add checkout buttons to marketing site, webhooks for subscription status in app.dzematapp.com
-- **Note**: Paddle is Merchant of Record - handles VAT/taxes automatically (as specified in AGB documents)
+### Test ID atributi
+- Interaktivni elementi: `{action}-{target}` (npr. `button-submit`)
+- Display elementi: `{type}-{content}` (npr. `text-username`)
+- Dinamički: `{type}-{description}-{id}` (npr. `card-product-123`)
