@@ -88,7 +88,7 @@ export default function Sidebar({ open, collapsed, onToggle, onClose, width }: S
     { path: '/super-admin/panel', label: 'Super Admin Panel', icon: AdminPanelSettings, superAdminOnly: true },
     { path: '/feed', label: t('navigation:menu.feed'), icon: DynamicFeed },
     { path: '/users', label: t('navigation:menu.users'), icon: People, adminOnly: true },
-    { path: '/my-activities', label: t('navigation:menu.myActivities'), icon: Timeline, memberOnly: true },
+    { path: '/my-activities', label: t('navigation:menu.myActivities'), icon: Timeline },
     { path: '/finances', label: t('navigation:menu.finances'), icon: AttachMoney, adminOnly: true },
     { path: '/membership-fees', label: t('navigation:menu.membershipFees'), icon: Receipt, adminOnly: true },
     { path: '/my-clanarina', label: t('navigation:menu.myMembership'), icon: Receipt, memberOnly: true },
