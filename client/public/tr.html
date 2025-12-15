@@ -62,7 +62,9 @@
         .slideshow-dot.active { background: #3949AB; }
         .slideshow-dot:hover { background: #78909C; }
         .pricing-section { background: #ffffff; padding: 80px 20px; }
-        .pricing-highlight { text-align: center; color: #1E88E5; font-size: 1.1rem; font-weight: 600; margin-top: -32px; margin-bottom: 48px; }
+        .pricing-highlight { text-align: center; margin-top: -32px; margin-bottom: 48px; }
+        .pricing-highlight a { display: inline-block; background: linear-gradient(135deg, #1E88E5 0%, #3949AB 100%); color: #ffffff; font-size: 1.1rem; font-weight: 600; padding: 14px 32px; border-radius: 50px; text-decoration: none; box-shadow: 0 4px 15px rgba(30, 136, 229, 0.3); transition: transform 0.2s, box-shadow 0.2s; }
+        .pricing-highlight a:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(30, 136, 229, 0.4); }
         .pricing-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; max-width: 1200px; margin: 0 auto; }
         @media (max-width: 1100px) { .pricing-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 600px) { .pricing-grid { grid-template-columns: 1fr; } }
@@ -275,7 +277,7 @@
     <section class="pricing-section" id="pricing">
         <h2 class="section-title">Caminiz icin dogru plani secin</h2>
         <p class="section-subtitle">Ucretsiz erismden kapsamli cozume</p>
-        <p class="pricing-highlight">14 gun ucretsiz Full surum</p>
+        <p class="pricing-highlight"><a href="https://app.dzematapp.com">14 gün ücretsiz Full sürüm</a></p>
         
         <div class="pricing-grid">
             <div class="pricing-card">
