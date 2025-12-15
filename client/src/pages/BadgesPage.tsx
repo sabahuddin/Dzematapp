@@ -28,6 +28,7 @@ import {
   EmojiEvents
 } from '@mui/icons-material';
 import { Badge, insertBadgeSchema } from '@shared/schema';
+import { BADGE_ICONS, BadgeIconDisplay } from '../components/BadgeIcons';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/use-toast';
 import { apiRequest, queryClient } from '../lib/queryClient';
@@ -70,7 +71,7 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
       description: '',
       criteriaType: 'points_total',
       criteriaValue: 0,
-      icon: '🏅',
+      icon: 'award',
     }
   });
 
@@ -183,7 +184,7 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
         description: '',
         criteriaType: 'points_total',
         criteriaValue: 0,
-        icon: '🏅',
+        icon: 'award',
       });
     }
     setDialogOpen(true);
@@ -413,29 +414,53 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
                 name="icon"
                 control={form.control}
                 render={({ field }) => (
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                    {['🏅', '🥇', '🥈', '🥉', '🏆', '⭐', '🌟', '💎', '👑', '🎖️', '🎯', '🔥', '💪', '🙌', '❤️', '🤲'].map((emoji) => (
-                      <Box
-                        key={emoji}
-                        onClick={() => field.onChange(emoji)}
-                        sx={{
-                          fontSize: '2rem',
-                          padding: '8px',
-                          borderRadius: '8px',
-                          cursor: 'pointer',
-                          border: field.value === emoji ? '3px solid #1E88E5' : '2px solid #e5e7eb',
-                          backgroundColor: field.value === emoji ? '#E3F2FD' : 'white',
-                          transition: 'all 0.2s',
-                          '&:hover': {
-                            borderColor: '#1E88E5',
-                            transform: 'scale(1.1)'
-                          }
-                        }}
-                        data-testid={`icon-${emoji}`}
-                      >
-                        {emoji}
-                      </Box>
-                    ))}
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5 }}>
+                    {BADGE_ICONS.map((iconConfig) => {
+                      const IconComponent = iconConfig.Icon;
+                      const isSelected = field.value === iconConfig.id;
+                      return (
+                        <Box
+                          key={iconConfig.id}
+                          onClick={() => field.onChange(iconConfig.id)}
+                          sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            padding: '12px',
+                            borderRadius: '12px',
+                            cursor: 'pointer',
+                            border: isSelected ? '3px solid #1E88E5' : '2px solid #e5e7eb',
+                            backgroundColor: isSelected ? '#E3F2FD' : 'white',
+                            transition: 'all 0.2s',
+                            minWidth: '70px',
+                            '&:hover': {
+                              borderColor: '#1E88E5',
+                              transform: 'scale(1.05)',
+                              boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                            }
+                          }}
+                          data-testid={`icon-${iconConfig.id}`}
+                        >
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              width: 48,
+                              height: 48,
+                              borderRadius: '50%',
+                              backgroundColor: `${iconConfig.color}20`,
+                              mb: 0.5
+                            }}
+                          >
+                            <IconComponent size={28} style={{ color: iconConfig.color }} strokeWidth={2} />
+                          </Box>
+                          <Typography variant="caption" sx={{ fontSize: '0.7rem', color: 'text.secondary' }}>
+                            {iconConfig.name}
+                          </Typography>
+                        </Box>
+                      );
+                    })}
                   </Box>
                 )}
               />
@@ -501,9 +526,7 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
                 <TableRow key={badge.id}>
                   <TableCell>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                      <Box sx={{ fontSize: '2rem', lineHeight: 1 }}>
-                        {badge.icon || '🏅'}
-                      </Box>
+                      <BadgeIconDisplay iconId={badge.icon} size={28} />
                       <Typography variant="body1" sx={{ fontWeight: 600 }} data-testid={`badge-name-${badge.id}`}>
                         {badge.name}
                       </Typography>
