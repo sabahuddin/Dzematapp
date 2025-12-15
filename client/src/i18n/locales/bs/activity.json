@@ -1,6 +1,7 @@
 {
   "title": "Log aktivnosti",
   "myActivities": "Moje aktivnosti",
+  "uploading": "Učitavanje...",
   "myActivitiesDescription": "Pregled svih vaših aktivnosti, bodova i priznanja",
   "activityType": "Tip aktivnosti",
   "date": "Datum",
@@ -177,6 +178,10 @@
     "editBadge": "Uredi značku",
     "addNewBadge": "Dodaj novu značku",
     "name": "Naziv",
+    "icon": "Ikona",
+    "uploadIcon": "Učitaj ikonu",
+    "iconUploaded": "Ikona uspješno učitana",
+    "iconUploadFailed": "Greška pri učitavanju ikone",
     "criteriaType": "Tip kriterija",
     "totalPoints": "Ukupno bodova",
     "contributionAmount": "Iznos doprinosa",

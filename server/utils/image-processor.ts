@@ -19,6 +19,7 @@ export const IMAGE_CONFIGS = {
   thumbnail: { width: 300, height: 169, quality: 75, format: 'webp' as const },
   task: { width: 1200, height: 675, quality: 85, format: 'webp' as const },
   certificate: { width: 1200, height: 800, quality: 90, format: 'webp' as const },
+  badge: { width: 200, height: 200, quality: 85, format: 'webp' as const },
 };
 
 export async function processImage(

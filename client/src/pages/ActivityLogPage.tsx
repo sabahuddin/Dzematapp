@@ -112,6 +112,7 @@ export default function ActivityLogPage() {
   const [selectedCertificate, setSelectedCertificate] = useState<UserCertificate | null>(null);
   const [deleteCertificateOpen, setDeleteCertificateOpen] = useState(false);
   const [certificateToDelete, setCertificateToDelete] = useState<UserCertificate | null>(null);
+  const [badgeIconUploading, setBadgeIconUploading] = useState(false);
 
   if (featureAccess.upgradeRequired && !currentUser?.isAdmin) {
     return <UpgradeCTA moduleId="activity-log" requiredPlan={featureAccess.requiredPlan || 'full'} currentPlan={featureAccess.currentPlan || 'standard'} />;
@@ -774,6 +775,7 @@ export default function ActivityLogPage() {
               <Table>
                 <TableHead>
                   <TableRow>
+                    <TableCell sx={{ width: 60 }}>{t('activity:badgesSection.icon')}</TableCell>
                     <SortableHeaderCell sortKey="name" onSort={badgesSort.handleSort} currentSortKey={badgesSort.sortKey} currentSortDirection={badgesSort.sortDirection}>{t('activity:badgesSection.name')}</SortableHeaderCell>
                     <SortableHeaderCell sortKey="description" onSort={badgesSort.handleSort} currentSortKey={badgesSort.sortKey} currentSortDirection={badgesSort.sortDirection}>{t('common:description')}</SortableHeaderCell>
                     <SortableHeaderCell sortKey="criteriaType" onSort={badgesSort.handleSort} currentSortKey={badgesSort.sortKey} currentSortDirection={badgesSort.sortDirection}>{t('activity:badgesSection.criteriaType')}</SortableHeaderCell>
@@ -784,6 +786,13 @@ export default function ActivityLogPage() {
                 <TableBody>
                   {badgesSort.sortedData?.map((badge: any) => (
                     <TableRow key={badge.id}>
+                      <TableCell>
+                        {badge.icon ? (
+                          <Avatar src={badge.icon} alt={badge.name} sx={{ width: 40, height: 40 }} />
+                        ) : (
+                          <Box sx={{ fontSize: '1.5rem', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🏆</Box>
+                        )}
+                      </TableCell>
                       <TableCell>{badge.name}</TableCell>
                       <TableCell><Typography variant="body2" color="text.secondary">{badge.description}</Typography></TableCell>
                       <TableCell>{badge.criteriaType}</TableCell>
@@ -1164,6 +1173,57 @@ export default function ActivityLogPage() {
                 helperText={badgeForm.formState.errors.description?.message} 
                 data-testid="input-badge-description" 
               />
+              <Box>
+                <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>{t('activity:badgesSection.icon')}</Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  {badgeForm.watch('icon') ? (
+                    <Avatar src={badgeForm.watch('icon') as string} alt="Badge icon" sx={{ width: 60, height: 60 }} />
+                  ) : (
+                    <Box sx={{ width: 60, height: 60, fontSize: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: '#f5f5f5', borderRadius: 1 }}>🏆</Box>
+                  )}
+                  <Button
+                    component="label"
+                    variant="outlined"
+                    startIcon={<Upload />}
+                    disabled={badgeIconUploading}
+                    data-testid="button-upload-badge-icon"
+                  >
+                    {badgeIconUploading ? t('activity:uploading') : t('activity:badgesSection.uploadIcon')}
+                    <input
+                      type="file"
+                      hidden
+                      accept="image/*"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        setBadgeIconUploading(true);
+                        try {
+                          const formData = new FormData();
+                          formData.append('icon', file);
+                          const response = await fetch('/api/upload/badge-icon', {
+                            method: 'POST',
+                            body: formData,
+                            credentials: 'include',
+                          });
+                          if (!response.ok) throw new Error('Upload failed');
+                          const data = await response.json();
+                          badgeForm.setValue('icon', data.iconUrl);
+                          toast({ title: t('activity:success'), description: t('activity:badgesSection.iconUploaded') });
+                        } catch (error) {
+                          toast({ title: t('activity:error'), description: t('activity:badgesSection.iconUploadFailed'), variant: 'destructive' });
+                        } finally {
+                          setBadgeIconUploading(false);
+                        }
+                      }}
+                    />
+                  </Button>
+                  {badgeForm.watch('icon') && (
+                    <IconButton size="small" onClick={() => badgeForm.setValue('icon', null)} sx={{ color: '#d32f2f' }}>
+                      <Delete fontSize="small" />
+                    </IconButton>
+                  )}
+                </Box>
+              </Box>
               <FormControl fullWidth>
                 <InputLabel>{t('activity:badgesSection.criteriaType')}</InputLabel>
                 <Select 

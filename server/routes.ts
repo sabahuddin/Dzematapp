@@ -291,6 +291,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Badge icon upload route - with WebP compression
+  app.post("/api/upload/badge-icon", requireAuth, upload.single('icon'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
+
+      const tenantId = req.session?.tenantId || req.user?.tenantId || 'shared';
+      const iconUrl = await processAndSaveToFolder(req.file.buffer, 'badges', 'badge-icon', IMAGE_CONFIGS.badge, tenantId);
+      console.log(`✅ Badge icon saved: ${Math.round(req.file.size / 1024)}KB -> WebP (tenant: ${tenantId})`);
+      
+      res.json({ 
+        message: "Badge icon uploaded successfully",
+        iconUrl: iconUrl 
+      });
+    } catch (error) {
+      console.error('❌ Badge icon upload error:', error);
+      res.status(500).json({ message: "Failed to upload badge icon" });
+    }
+  });
+
   // Authentication routes
   // Regular user login (requires tenant code)
   app.post("/api/auth/login", async (req, res) => {
