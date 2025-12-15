@@ -43,11 +43,11 @@
     "deleted": "Značka je obrisana",
     "errorSaving": "Greška pri spremanju značke",
     "errorDeleting": "Greška pri brisanju značke",
-    "errorLoading": "Greška pri učitavanju znački. Molimo pokušajte ponovo.",
+    "errorLoading": "Greška pri učitavanju znački. molimo pokušajte ponovo.",
     "confirmDelete": "Jeste li sigurni da želite obrisati ovu značku?",
     "allBadgesChecked": "Značke provjerene za sve korisnike",
     "errorCheckingBadges": "Greška prilikom provjere znački",
-    "checkAllConfirm": "Ova akcija će provjeriti i dodijeliti značke za SVE korisnike. Može potrajati nekoliko sekundi. Nastaviti?"
+    "checkAllConfirm": "Ova akcija će provjeriti i dodijeliti značke za SVE korisnike. može potrajati nekoliko sekundi. nastaviti?"
   },
   "validation": {
     "nameRequired": "Naziv je obavezan",
@@ -56,7 +56,7 @@
     "criteriaValuePositive": "Vrijednost mora biti pozitivna",
     "allFieldsRequired": "Molimo popunite sva obavezna polja."
   },
-  "emptyState": "Nema definisanih znački. Dodajte novu značku koristeći dugme \"Dodaj značku\".",
+  "emptyState": "Nema definisanih znački. dodajte novu značku koristeći dugme \"dodaj značku\".",
   "accessDenied": "Nemate dozvolu za pristup ovoj stranici.",
   "cancel": "Otkaži",
   "save": "Spremi",

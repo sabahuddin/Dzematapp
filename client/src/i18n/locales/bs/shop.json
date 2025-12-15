@@ -1,7 +1,7 @@
 {
   "title": "Trgovina",
   "tabs": {
-    "dzematShop": "Džemat Trgovina",
+    "dzematShop": "Džemat trgovina",
     "sell": "Prodajem",
     "gift": "Poklanjam",
     "services": "Usluge",
@@ -76,7 +76,7 @@
     "addProduct": "Dodaj artikal",
     "editProduct": "Uredi artikal",
     "editListing": "Uredi oglas",
-    "addSaleListing": "Dodaj oglas za Prodaju",
+    "addSaleListing": "Dodaj oglas za prodaju",
     "addGiftListing": "Dodaj poklon",
     "addService": "Dodaj uslugu",
     "editService": "Uredi uslugu",
@@ -127,10 +127,10 @@
     "ownerNotFound": "Vlasnik nije pronađen"
   },
   "messages": {
-    "newOrder": "Nova narudžba iz DžematShop",
+    "newOrder": "Nova narudžba iz džematshop",
     "orderContent": "{{user}} želi kupiti: {{product}}{{quantity}}",
     "quantityLabel": " (Količina: {{quantity}})",
-    "shopMessage": "Poruka sa Shop-a"
+    "shopMessage": "Poruka sa shop-a"
   },
   "search": {
     "label": "Pretraži",

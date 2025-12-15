@@ -18,7 +18,7 @@
     "maghrib": "Akšam",
     "isha": "Jacija"
   },
-  "csvFormat": "CSV fajl mora sadržavati kolone: Datum, Dan, Zora, Izlazak sunca, Podne, Ikindija, Akšam, Jacija",
+  "csvFormat": "CSV fajl mora sadržavati kolone: datum, dan, zora, izlazak sunca, podne, ikindija, akšam, jacija",
   "dateFormat": "Format datuma: dd.mm.yyyy (npr. 21.10.2025)",
   "selectedFile": "Odabrani fajl:",
   "uploading": "Učitavam...",

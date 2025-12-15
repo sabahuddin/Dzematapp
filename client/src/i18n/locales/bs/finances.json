@@ -47,7 +47,7 @@
     "created": "Uplata je kreirana",
     "updated": "Uplata je ažurirana",
     "deleted": "Uplata je obrisana",
-    "errorLoading": "Greška pri učitavanju finansijskih uplate. Molimo pokušajte ponovo.",
+    "errorLoading": "Greška pri učitavanju finansijskih uplate. molimo pokušajte ponovo.",
     "errorSaving": "Greška pri spremanju uplate",
     "errorDeleting": "Greška pri brisanju uplate",
     "confirmDelete": "Jeste li sigurni da želite obrisati ovu uplatu?"
@@ -56,7 +56,7 @@
     "userRequired": "Korisnik je obavezan",
     "dateRequired": "Datum je obavezan"
   },
-  "exportToExcel": "Exportuj u Excel",
+  "exportToExcel": "Exportuj u excel",
   "purposeButton": "Svrha",
   "purposeMessages": {
     "created": "Svrha je kreirana",

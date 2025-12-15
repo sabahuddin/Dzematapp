@@ -1,5 +1,5 @@
 {
-  "pageTitle": "DžematApp - Gost pristup",
+  "pageTitle": "DžematApp - gost pristup",
   "backToLogin": "Nazad na prijavu",
   "tabs": {
     "announcements": "Obavještenja",
@@ -57,7 +57,7 @@
     "widowed": "Udovac/Udovica",
     "spouseName": "Ime bračnog partnera",
     "children": "Djeca (imena i godine rođenja, opciono)",
-    "childrenPlaceholder": "Npr: Amir (2010), Amina (2015)",
+    "childrenPlaceholder": "Npr: amir (2010), amina (2015)",
     "membershipData": "Podaci o članstvu",
     "monthlyFee": "Visina mjesečne članarine",
     "recommended": "preporučeno",
@@ -71,8 +71,8 @@
     "securityQuestion": "Sigurnosno pitanje",
     "captchaQuestion": "Koliko je",
     "captchaPlaceholder": "Unesite odgovor",
-    "captchaError": "Neispravan odgovor na sigurnosno pitanje. Pokušajte ponovo.",
-    "submitError": "Greška pri slanju zahtjeva. Pokušajte ponovo.",
+    "captchaError": "Neispravan odgovor na sigurnosno pitanje. pokušajte ponovo.",
+    "submitError": "Greška pri slanju zahtjeva. pokušajte ponovo.",
     "submitting": "Slanje...",
     "submit": "Pošalji zahtjev",
     "successTitle": "Zahtjev uspješno poslan!",

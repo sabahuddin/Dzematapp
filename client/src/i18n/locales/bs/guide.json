@@ -1,13 +1,13 @@
 {
   "pageHeader": {
-    "title": "Vodič kroz DžematApp",
+    "title": "Vodič kroz džematapp",
     "subtitle": "Kompletno uputstvo za korištenje aplikacije",
     "downloadPdf": "Preuzmi PDF"
   },
   "introduction": {
     "title": "O aplikaciji",
-    "paragraph1": "DžematApp je sveobuhvatna web aplikacija razvijena za modernu administraciju džemata. Aplikacija omogućava efikasno upravljanje svim aspektima džemata na jednom mjestu - od evidencije članova i finansija, preko organizacije događaja i sekcija, do komunikacije sa članovima i praćenja njihove aktivnosti.",
-    "paragraph2": "Sistem koristi moderan dizajn, intuitivan interfejs i podržava notifikacije u realnom vremenu. Aplikacija je dostupna sa bilo kojeg uređaja preko web pretraživača, a podaci se sigurno čuvaju u bazi podataka sa automatskim backup-om."
+    "paragraph1": "DžematApp je sveobuhvatna web aplikacija razvijena za modernu administraciju džemata. aplikacija omogućava efikasno upravljanje svim aspektima džemata na jednom mjestu - od evidencije članova i finansija, preko organizacije događaja i sekcija, do komunikacije sa članovima i praćenja njihove aktivnosti.",
+    "paragraph2": "Sistem koristi moderan dizajn, intuitivan interfejs i podržava notifikacije u realnom vremenu. aplikacija je dostupna sa bilo kojeg uređaja preko web pretraživača, a podaci se sigurno čuvaju u bazi podataka sa automatskim backup-om."
   },
   "rolesSection": {
     "title": "Uloge korisnika",
@@ -16,28 +16,28 @@
     "roles": {
       "admin": {
         "name": "Admin",
-        "description": "Administratori imaju potpunu kontrolu nad aplikacijom. Mogu upravljati svim modulima, kreirati i brisati sadržaj, dodjeljivati uloge, mijenjati postavke sistema. Admin vidi sve podatke svih članova i ima pristup svim izvještajima i statistikama.",
+        "description": "Administratori imaju potpunu kontrolu nad aplikacijom. mogu upravljati svim modulima, kreirati i brisati sadržaj, dodjeljivati uloge, mijenjati postavke sistema. admin vidi sve podatke svih članova i ima pristup svim izvještajima i statistikama.",
         "permissions": "Puna kontrola: korisnici, finansije, projekti, značke, bodovi, svi moduli"
       },
       "memberIO": {
         "name": "Član iO (Izvršni odbor)",
-        "description": "Članovi izvršnog odbora imaju viši nivo pristupa od regularnih članova. Mogu vidjeti sve članove džemata i pristupiti proširenim informacijama. Ova uloga je namijenjena članovima upravnog odbora džemata.",
+        "description": "Članovi izvršnog odbora imaju viši nivo pristupa od regularnih članova. mogu vidjeti sve članove džemata i pristupiti proširenim informacijama. ova uloga je namijenjena članovima upravnog odbora džemata.",
         "permissions": "Prošireni pregled: svi članovi, svi događaji, sve sekcije"
       },
       "member": {
         "name": "Član",
-        "description": "Standardni članovi džemata imaju pristup osnovnim funkcijama aplikacije. Mogu vidjeti obavijesti, događaje, sekcije u kojima su članovi, svoje zadatke, poruke i vlastiti profil. Ovo je najčešća uloga koja se dodjeljuje većini članova.",
+        "description": "Standardni članovi džemata imaju pristup osnovnim funkcijama aplikacije. mogu vidjeti obavijesti, događaje, sekcije u kojima su članovi, svoje zadatke, poruke i vlastiti profil. ovo je najčešća uloga koja se dodjeljuje većini članova.",
         "permissions": "Standardni pristup: dashboard, obavijesti, događaji, svoje sekcije, poruke, profil"
       },
       "familyMember": {
         "name": "Član porodice",
-        "description": "Ova uloga je namijenjena članovima porodice regularnih članova (supružnici, djeca). Imaju ograničen pristup aplikaciji - uglavnom mogu vidjeti obavijesti, događaje i osnovne informacije.",
+        "description": "Ova uloga je namijenjena članovima porodice regularnih članova (supružnici, djeca). imaju ograničen pristup aplikaciji - uglavnom mogu vidjeti obavijesti, događaje i osnovne informacije.",
         "permissions": "Ograničeni pristup: dashboard, obavijesti, događaji"
       }
     }
   },
   "tableOfContents": {
-    "title": "Sadržaj - Moduli aplikacije"
+    "title": "Sadržaj - moduli aplikacije"
   },
   "detailedExplanation": "Detaljno objašnjenje modula",
   "keyFeatures": "Ključne funkcionalnosti:",
@@ -51,87 +51,87 @@
     "dashboard": {
       "title": "Dashboard (Kontrolna ploča)",
       "shortDesc": "Pregled aktivnosti i statistike džemata",
-      "description": "Dashboard je centralno mjesto aplikacije gdje svaki korisnik dobiva personalizovani pregled najvažnjih informacija. Ovo je prva stranica koju vidite nakon prijavljivanja i služi kao brzi pregled svih aktivnosti u džematu.",
+      "description": "Dashboard je centralno mjesto aplikacije gdje svaki korisnik dobiva personalizovani pregled najvažnjih informacija. ovo je prva stranica koju vidite nakon prijavljivanja i služi kao brzi pregled svih aktivnosti u džematu.",
       "features": [
         "Pregled današnjih vaktija (vremena klanjanja) na vrhu stranice",
-        "Prilagodljivi brzi pristup (Quick Access) sa do 8 omiljenih funkcija",
+        "Prilagodljivi brzi pristup (quick access) sa do 8 omiljenih funkcija",
         "Prikaz najnovijih obavijesti sa mogućnošću brzog čitanja",
         "Kalendar nadolazećih događaja sa RSVP informacijama",
         "Notifikacije za nepročitane poruke i nove sadržaje"
       ],
-      "admin": "Admin vidi proširenu statistiku: ukupan broj članova, broj aktivnih korisnika, statistiku obavijesti i događaja, aktivne zadatke u sekcijama, i trendove aktivnosti. Dashboard adminu omogućava brz uvid u sve aspekte džemata na jednom mjestu.",
-      "member": "Članovi vide personalizovani dashboard sa svojim sekcijama, dodijeljenim zadacima, nepročitanim porukama, nadolazećim događajima i najnovijim obavijestima. Svaki član može prilagoditi svoj Quick Access widget sa najčešće korištenim funkcijama."
+      "admin": "Admin vidi proširenu statistiku: ukupan broj članova, broj aktivnih korisnika, statistiku obavijesti i događaja, aktivne zadatke u sekcijama, i trendove aktivnosti. dashboard adminu omogućava brz uvid u sve aspekte džemata na jednom mjestu.",
+      "member": "Članovi vide personalizovani dashboard sa svojim sekcijama, dodijeljenim zadacima, nepročitanim porukama, nadolazećim događajima i najnovijim obavijestima. svaki član može prilagoditi svoj quick access widget sa najčešće korištenim funkcijama."
     },
     "users": {
       "title": "Korisnici",
       "shortDesc": "Upravljanje članovima i profilima",
-      "description": "Modul za upravljanje svim članovima džemata i njihovim porodičnim vezama. Ovdje se čuvaju detaljni profili članova sa kontakt informacijama, kategorijama pripadnosti i historijom aktivnosti. Sistem podržava kreiranje porodičnih veza između članova.",
+      "description": "Modul za upravljanje svim članovima džemata i njihovim porodičnim vezama. ovdje se čuvaju detaljni profili članova sa kontakt informacijama, kategorijama pripadnosti i historijom aktivnosti. sistem podržava kreiranje porodičnih veza između članova.",
       "features": [
         "Detaljni profili sa fotografijom, kontakt podacima i zanimanjem",
-        "Sistem uloga: Admin, Član IO (Izvršni odbor), Član, Član porodice",
-        "Kategorije članova: Muškarci, Žene, Roditelji, Djeca",
+        "Sistem uloga: admin, član IO (izvršni odbor), član, član porodice",
+        "Kategorije članova: muškarci, žene, roditelji, djeca",
         "Porodične veze (supružnik, dijete, roditelj, brat, sestra)",
         "Status članstva: aktivan, pasivan, član porodice",
         "Praćenje datuma učlanjenja i razloga neaktivnosti"
       ],
-      "admin": "Admin ima punu kontrolu nad korisnicima: može kreirati nove naloge, uređivati sve podatke (ime, prezime, email, telefon, adresu, zanimanje), dodjeljivati uloge i kategorije, postavljati status aktivnosti, kreirati porodične veze između članova. Admin vidi sve članove i može ih filtrirati po različitim kriterijima. Sistem također podržava bulk upload korisnika putem Excel fajla.",
-      "member": "Svaki član može pregledati i urediti svoj profil - promijeniti svoje osnovne podatke kao što su ime, prezime, email, telefon, zanimanje i adresa. Članovi mogu vidjeti profile drugih članova (zavisno od postavki privatnosti) ali ne mogu mijenjati tuđe podatke niti dodjeljivati uloge."
+      "admin": "Admin ima punu kontrolu nad korisnicima: može kreirati nove naloge, uređivati sve podatke (ime, prezime, email, telefon, adresu, zanimanje), dodjeljivati uloge i kategorije, postavljati status aktivnosti, kreirati porodične veze između članova. admin vidi sve članove i može ih filtrirati po različitim kriterijima. sistem također podržava bulk upload korisnika putem excel fajla.",
+      "member": "Svaki član može pregledati i urediti svoj profil - promijeniti svoje osnovne podatke kao što su ime, prezime, email, telefon, zanimanje i adresa. članovi mogu vidjeti profile drugih članova (zavisno od postavki privatnosti) ali ne mogu mijenjati tuđe podatke niti dodjeljivati uloge."
     },
     "announcements": {
       "title": "Obavijesti",
       "shortDesc": "Obavijesti i informacije za članove",
-      "description": "Sistem za objavljivanje važnih informacija i komunikaciju sa članovima džemata. Obavijesti mogu biti opće ili kategorizovane, sa mogućnošću formatiranja teksta, dodavanja slika i planiranja objavljivanja.",
+      "description": "Sistem za objavljivanje važnih informacija i komunikaciju sa članovima džemata. obavijesti mogu biti opće ili kategorizovane, sa mogućnošću formatiranja teksta, dodavanja slika i planiranja objavljivanja.",
       "features": [
-        "Kategorizacija obavijesti: Džemat, IZBCH (Islamska zajednica BiH Švicarska), IZ (Islamska zajednica), Ostalo",
+        "Kategorizacija obavijesti: džemat, izbch (islamska zajednica bih švicarska), IZ (islamska zajednica), ostalo",
         "Bogati uređivač teksta za profesionalno formatiranje sadržaja",
         "Mogućnost odmah objavljivanja ili zakazivanja za određeni datum i vrijeme",
         "Status obavijesti: published (objavljeno), archived (arhivirano)",
         "Automatske notifikacije članovima za nove obavijesti",
         "Javno dostupne obavijesti - vidljive i gostima bez prijavljivanja"
       ],
-      "admin": "Administratori kreiraju, uređuju i brišu obavijesti. Mogu koristiti bogati uređivač teksta za formatiranje (bold, italic, liste, naslovi), dodati kategorije, postaviti status i odlučiti hoće li obavijest biti odmah objavljena ili zakazana za kasnije. Admin vidi statistiku pregleda obavijesti.",
-      "member": "Članovi mogu pregledati sve objavljene obavijesti, filtrirati ih po kategorijama i primaju notifikacije kada se objavi nova obavijest. Sistem prati koje obavijesti je član već pročitao i prikazuje broj novih obavijesti u navigaciji.",
+      "admin": "Administratori kreiraju, uređuju i brišu obavijesti. mogu koristiti bogati uređivač teksta za formatiranje (bold, italic, liste, naslovi), dodati kategorije, postaviti status i odlučiti hoće li obavijest biti odmah objavljena ili zakazana za kasnije. admin vidi statistiku pregleda obavijesti.",
+      "member": "Članovi mogu pregledati sve objavljene obavijesti, filtrirati ih po kategorijama i primaju notifikacije kada se objavi nova obavijest. sistem prati koje obavijesti je član već pročitao i prikazuje broj novih obavijesti u navigaciji.",
       "all": "Gosti (neprijavljeni korisnici) mogu vidjeti sve objavljene obavijesti što omogućava informisanje šire zajednice bez potrebe za prijavljivanjem u sistem."
     },
     "events": {
       "title": "Događaji",
       "shortDesc": "Organizacija događaja i RSVP sistem",
-      "description": "Kompletni sistem za upravljanje događajima u džematu sa kalendarom, RSVP funkcionalnostima i važnim datumima. Omogućava organizaciju iftara, mevluda, edukativnih programa, sportskih aktivnosti i drugih društvenih događaja.",
+      "description": "Kompletni sistem za upravljanje događajima u džematu sa kalendarom, RSVP funkcionalnostima i važnim datumima. omogućava organizaciju iftara, mevluda, edukativnih programa, sportskih aktivnosti i drugih društvenih događaja.",
       "features": [
         "Kalendar sa mjesečnim prikazom i označavanjem datuma događaja",
         "RSVP sistem sa mogućnošću prijavljivanja odraslih i djece",
-        "Kategorije: Iftar, Mevlud, Edukacija, Sport, Humanitarno, Omladina, GAM",
-        "Važni datumi (Bajram, Ramadan, itd.) koji se ponavljaju svake godine",
+        "Kategorije: iftar, mevlud, edukacija, sport, humanitarno, omladina, GAM",
+        "Važni datumi (bajram, ramadan, itd.) koji se ponavljaju svake godine",
         "Automatsko slanje podsjentika prije događaja",
         "Mogućnost dodavanja događaja u lični kalendar",
         "Evidencija potvrđenih dolazaka sa brojem osoba"
       ],
-      "admin": "Admin kreira događaje sa svim detaljima: naziv, opis, lokacija, datum i vrijeme, kategorija, maksimalan broj učesnika. Može vidjeti listu svih koji su potvrdili dolazak (RSVP), broj odraslih i djece. Admin upravlja važnim datumima koje sistem automatski prikazuje svake godine. Može slati podsjetike članovima prije događaja.",
-      "member": "Članovi pregledaju nadolazeće i prošle događaje, mogu potvrditi svoj dolazak (RSVP) sa brojem odraslih i djece, primaju notifikacije za nove događaje i podsjetike. Svaki član može dodati događaj u svoj lični kalendar (Google Calendar, Apple Calendar, itd.). Sistem ne dozvoljava retroaktivno prijavljivanje na prošle događaje.",
-      "all": "Gosti mogu vidjeti sve objavljene događaje što omogućava uključivanje šire zajednice. Gosti mogu potvrditi dolazak na javne događaje bez prijavljivanja."
+      "admin": "Admin kreira događaje sa svim detaljima: naziv, opis, lokacija, datum i vrijeme, kategorija, maksimalan broj učesnika. može vidjeti listu svih koji su potvrdili dolazak (rsvp), broj odraslih i djece. admin upravlja važnim datumima koje sistem automatski prikazuje svake godine. može slati podsjetike članovima prije događaja.",
+      "member": "Članovi pregledaju nadolazeće i prošle događaje, mogu potvrditi svoj dolazak (rsvp) sa brojem odraslih i djece, primaju notifikacije za nove događaje i podsjetike. svaki član može dodati događaj u svoj lični kalendar (google calendar, apple calendar, itd.). sistem ne dozvoljava retroaktivno prijavljivanje na prošle događaje.",
+      "all": "Gosti mogu vidjeti sve objavljene događaje što omogućava uključivanje šire zajednice. gosti mogu potvrditi dolazak na javne događaje bez prijavljivanja."
     },
     "workgroups": {
       "title": "Sekcije (Radne grupe)",
       "shortDesc": "Sekcije i dodjeljivanje zadataka",
-      "description": "Sistem za organizaciju članova u radne grupe prema aktivnostima i područjima rada. Svaka sekcija može imati svoje zadatke, moderatore i članove. Sekcije mogu biti javne (vidljive svima) ili privatne (pristup samo odobrenim članovima).",
+      "description": "Sistem za organizaciju članova u radne grupe prema aktivnostima i područjima rada. svaka sekcija može imati svoje zadatke, moderatore i članove. sekcije mogu biti javne (vidljive svima) ili privatne (pristup samo odobrenim članovima).",
       "features": [
-        "Kreiranje neograničenog broja sekcija (npr. Administracija, Halal hrana, Iftar, Čišćenje)",
+        "Kreiranje neograničenog broja sekcija (npr. administracija, halal hrana, iftar, čišćenje)",
         "Javne i privatne sekcije sa kontrolom pristupa",
         "Sistem moderatora - članovi sa pravima upravljanja sekcijom",
         "Multi-user zadaci - dodjeljivanje zadatka većem broju članova odjednom",
-        "Praćenje statusa zadataka: U toku, Na čekanju odobrenja, Završeno",
-        "Prioriteti zadataka: Nizak, Srednji, Visok",
+        "Praćenje statusa zadataka: U toku, na čekanju odobrenja, završeno",
+        "Prioriteti zadataka: nizak, srednji, visok",
         "Rokovi za izvršenje zadataka",
         "Sistem bodova za završene zadatke"
       ],
-      "admin": "Admin kreira sekcije, postavlja im naziv, opis i vidljivost (javno/privatno). Dodaje članove u sekcije i postavlja moderatore. Admin može kreirati zadatke sa prioritetom, rokom i opisom, te ih dodijeliti jednom članu, višestrukim članovima odjednom ili svim članovima sekcije. Admin odobrava zadatke koje članovi označe kao završene.",
-      "moderator": "Moderatori sekcije imaju ista prava kao admin unutar svoje sekcije. Mogu kreirati zadatke, dodjeljivati ih članovima, odobravati završene zadatke i upravljati članstvom u sekciji. Moderatori ne mogu brisati sekciju ali mogu u potpunosti upravljati njenim zadacima.",
-      "member": "Članovi vide sve sekcije u kojima su članovi, mogu pregledati zadatke dodijeljene njima, označiti zadatke kao završene (nakon čega čekaju admin/moderator odobrenje) i zaraditi bodove. Članovi mogu zatražiti pristup privatnim sekcijama, a admin/moderator odobrava zahtjeve."
+      "admin": "Admin kreira sekcije, postavlja im naziv, opis i vidljivost (javno/privatno). dodaje članove u sekcije i postavlja moderatore. admin može kreirati zadatke sa prioritetom, rokom i opisom, te ih dodijeliti jednom članu, višestrukim članovima odjednom ili svim članovima sekcije. admin odobrava zadatke koje članovi označe kao završene.",
+      "moderator": "Moderatori sekcije imaju ista prava kao admin unutar svoje sekcije. mogu kreirati zadatke, dodjeljivati ih članovima, odobravati završene zadatke i upravljati članstvom u sekciji. moderatori ne mogu brisati sekciju ali mogu u potpunosti upravljati njenim zadacima.",
+      "member": "Članovi vide sve sekcije u kojima su članovi, mogu pregledati zadatke dodijeljene njima, označiti zadatke kao završene (nakon čega čekaju admin/moderator odobrenje) i zaraditi bodove. članovi mogu zatražiti pristup privatnim sekcijama, a admin/moderator odobrava zahtjeve."
     },
     "messages": {
       "title": "Poruke",
       "shortDesc": "Komunikacija administratora sa članovima",
-      "description": "Interni messaging sistem koji omogućava administraciji da šalje poruke članovima. Poruke mogu biti poslane svim članovima odjednom ili targetirane prema specifičnim kategorijama (Muškarci, Žene, Roditelji, Djeca).",
+      "description": "Interni messaging sistem koji omogućava administraciji da šalje poruke članovima. poruke mogu biti poslane svim članovima odjednom ili targetirane prema specifičnim kategorijama (muškarci, žene, roditelji, djeca).",
       "features": [
         "Slanje poruka svim članovima ili specifičnim kategorijama",
         "Bogati uređivač teksta za formatiranje poruka",
@@ -140,78 +140,78 @@
         "Arhiva svih poslanih i primljenih poruka",
         "Brojač nepročitanih poruka u navigaciji"
       ],
-      "admin": "Administratori mogu kreirati nove poruke koristeći bogati uređivač teksta. Prilikom slanja biraju ciljnu grupu: svi članovi, ili specifične kategorije (samo muškarci, samo žene, samo roditelji, samo djeca). Admin vidi statistiku koliko članova je primilo i pročitalo poruku. Poruke se čuvaju u arhivi i mogu se pretraživati.",
-      "member": "Članovi primaju poruke od administracije u svom inbox-u. Sistem automatski notificira članove o novim porukama pokazujući crveni bedž sa brojem nepročitanih. Članovi mogu čitati, arhivirati i pretraživati svoje poruke. Ne mogu slati poruke drugim članovima - ovo je jednosmjerni komunikacijski kanal od administracije ka članovima."
+      "admin": "Administratori mogu kreirati nove poruke koristeći bogati uređivač teksta. prilikom slanja biraju ciljnu grupu: svi članovi, ili specifične kategorije (samo muškarci, samo žene, samo roditelji, samo djeca). admin vidi statistiku koliko članova je primilo i pročitalo poruku. poruke se čuvaju u arhivi i mogu se pretraživati.",
+      "member": "Članovi primaju poruke od administracije u svom inbox-u. sistem automatski notificira članove o novim porukama pokazujući crveni bedž sa brojem nepročitanih. članovi mogu čitati, arhivirati i pretraživati svoje poruke. ne mogu slati poruke drugim članovima - ovo je jednosmjerni komunikacijski kanal od administracije ka članovima."
     },
     "askImam": {
-      "title": "Pitanja za Imama",
+      "title": "Pitanja za imama",
       "shortDesc": "Pitanja za imama džemata",
-      "description": "Privatni sistem koji omogućava članovima da postavljaju islamska pitanja imamu džemata. Svaki član može postaviti pitanje, pratiti njegov status i dobiti odgovor. Pitanja su privatna - svaki član vidi samo svoja pitanja.",
+      "description": "Privatni sistem koji omogućava članovima da postavljaju islamska pitanja imamu džemata. svaki član može postaviti pitanje, pratiti njegov status i dobiti odgovor. pitanja su privatna - svaki član vidi samo svoja pitanja.",
       "features": [
         "Privatnost - svaki član vidi samo svoja pitanja",
         "Kategorije pitanja za lakšu organizaciju",
-        "Status pitanja: Aktivno ili Arhivirano (odgovoreno)",
+        "Status pitanja: aktivno ili arhivirano (odgovoreno)",
         "Notifikacije kada je pitanje arhivirano (odgovoreno)",
         "Historija svih postavljenih pitanja",
         "Brojač novih odgovora u navigaciji"
       ],
-      "admin": "Admin (imam) vidi sva pitanja svih članova. Može pregledati aktivna pitanja, odgovoriti na njih (van aplikacije - telefonom, emailom ili uživo) i zatim arhivirati pitanje što automatski notificira člana da je odgovor dat. Admin može filtrirati pitanja po statusu i kategoriji, te vidjeti ko je postavio svako pitanje.",
-      "member": "Članovi mogu postaviti novo pitanje sa detaljnim opisom. Primaju notifikaciju kada admin arhivira njihovo pitanje što označava da je odgovor dat. Svaki član vidi samo svoja pitanja - ne može vidjeti šta drugi članovi pitaju. Ovo osigurava privatnost pri postavljanju ličnih ili osjetljivih islamskih pitanja."
+      "admin": "Admin (imam) vidi sva pitanja svih članova. može pregledati aktivna pitanja, odgovoriti na njih (van aplikacije - telefonom, emailom ili uživo) i zatim arhivirati pitanje što automatski notificira člana da je odgovor dat. admin može filtrirati pitanja po statusu i kategoriji, te vidjeti ko je postavio svako pitanje.",
+      "member": "Članovi mogu postaviti novo pitanje sa detaljnim opisom. primaju notifikaciju kada admin arhivira njihovo pitanje što označava da je odgovor dat. svaki član vidi samo svoja pitanja - ne može vidjeti šta drugi članovi pitaju. ovo osigurava privatnost pri postavljanju ličnih ili osjetljivih islamskih pitanja."
     },
     "requests": {
-      "title": "Zahtjevi i Prijave",
+      "title": "Zahtjevi i prijave",
       "shortDesc": "Zahtjevi članova prema džematu",
-      "description": "Centralni sistem za podnošenje i obradu različitih vrsta zahtjeva članova prema džematu. Uključuje zahtjeve za materijalnu pomoć, organizaciju vjenčanja, rođenja, smrti, kao i prijave za novo članstvo.",
+      "description": "Centralni sistem za podnošenje i obradu različitih vrsta zahtjeva članova prema džematu. uključuje zahtjeve za materijalnu pomoć, organizaciju vjenčanja, rođenja, smrti, kao i prijave za novo članstvo.",
       "features": [
-        "Tipovi zahtjeva: Materijalna pomoć, Vjenčanje, Rodenje, Smrt, Razno, Članstvo",
-        "Status praćenje: Na čekanju, Odobreno, Odbijeno",
+        "Tipovi zahtjeva: materijalna pomoć, vjenčanje, rodenje, smrt, razno, članstvo",
+        "Status praćenje: na čekanju, odobreno, odbijeno",
         "Detaljni opisi zahtjeva sa dodatnim informacijama",
         "Notifikacije o promjeni statusa zahtjeva",
         "Historija svih zahtjeva sa datumima i odlukama",
         "Javna prijava za članstvo - dostupna i gostima"
       ],
-      "admin": "Admin vidi sve zahtjeve svih članova organizovane po tipovima i statusu. Može pregledati detalje svakog zahtjeva, odobriti ga ili odbiti sa napomenom. Sistem omogućava filtriranje zahtjeva po tipu, statusu i članu. Admin dobija notifikacije za nove zahtjeve i može vidjeti statistiku zahtjeva po mjesecima.",
-      "member": "Članovi podnose zahtjeve džematu sa detaljnim opisom svoje situacije ili potrebe. Nakon podnošenja, mogu pratiti status svog zahtjeva (na čekanju, odobreno, odbijeno) i primaju notifikacije kada admin promijeni status. Članovi vide historiju svih svojih zahtjeva sa datumima podnošenja i odluka.",
-      "all": "Gosti (neprijavljeni korisnici) mogu podnijeti prijavu za članstvo u džematu bez potrebe za postojećim nalogom. Unose svoje osnovne podatke (ime, prezime, email, telefon) i razlog prijave. Admin onda procesira prijavu i kreira korisnički nalog ako je prijava odobrena."
+      "admin": "Admin vidi sve zahtjeve svih članova organizovane po tipovima i statusu. može pregledati detalje svakog zahtjeva, odobriti ga ili odbiti sa napomenom. sistem omogućava filtriranje zahtjeva po tipu, statusu i članu. admin dobija notifikacije za nove zahtjeve i može vidjeti statistiku zahtjeva po mjesecima.",
+      "member": "Članovi podnose zahtjeve džematu sa detaljnim opisom svoje situacije ili potrebe. nakon podnošenja, mogu pratiti status svog zahtjeva (na čekanju, odobreno, odbijeno) i primaju notifikacije kada admin promijeni status. članovi vide historiju svih svojih zahtjeva sa datumima podnošenja i odluka.",
+      "all": "Gosti (neprijavljeni korisnici) mogu podnijeti prijavu za članstvo u džematu bez potrebe za postojećim nalogom. unose svoje osnovne podatke (ime, prezime, email, telefon) i razlog prijave. admin onda procesira prijavu i kreira korisnički nalog ako je prijava odobrena."
     },
     "shop": {
       "title": "DžematShop (Prodavnica)",
       "shortDesc": "Prodaja i kupovina među članovima",
-      "description": "Interni marketplace gdje članovi mogu kupovati i prodavati artikle unutar džemata. Admin objavljuje artikle u ime članova, a zainteresovani kupci kontaktiraju prodavca direktno. Sve cijene su u CHF (švicarski franak).",
+      "description": "Interni marketplace gdje članovi mogu kupovati i prodavati artikle unutar džemata. admin objavljuje artikle u ime članova, a zainteresovani kupci kontaktiraju prodavca direktno. sve cijene su u CHF (švicarski franak).",
       "features": [
         "Artikli sa fotografijama, opisom i cijenom u CHF",
         "Kategorije proizvoda za lakšu pretragu",
-        "Status proizvoda: Aktivan ili Završeno (prodato)",
+        "Status proizvoda: aktivan ili završeno (prodato)",
         "Kontakt informacije prodavca",
         "Notifikacije za nove artikle",
         "Galerija slika za svaki proizvod",
         "Filtriranje po kategorijama i statusu"
       ],
-      "admin": "Admin dodaje nove proizvode sa svim detaljima: naziv, cijena (CHF), detaljan opis, fotografije (može više slika) i kontakt informacije prodavca. Može uređivati postojeće proizvode, mijenjati cijene, dodavati nove slike. Kada se artikal proda, admin ga označava kao \"Završeno\". Admin dobija notifikacije kada član klikne na dugme \"Kupi\" što označava interes.",
-      "member": "Članovi pregledaju sve aktivne proizvode, mogu filtrirati po kategorijama i vidjeti detaljne opise sa slikama. Kada pronađu artikal koji ih zanima, klikaju na \"Kupi\" što otvara kontakt informacije prodavca. Član onda kontaktira prodavca direktno (telefonom, emailom ili uživo) da dogovore detalje kupovine. Sistem notificira članove o novim proizvodima."
+      "admin": "Admin dodaje nove proizvode sa svim detaljima: naziv, cijena (chf), detaljan opis, fotografije (može više slika) i kontakt informacije prodavca. može uređivati postojeće proizvode, mijenjati cijene, dodavati nove slike. kada se artikal proda, admin ga označava kao \"završeno\". admin dobija notifikacije kada član klikne na dugme \"kupi\" što označava interes.",
+      "member": "Članovi pregledaju sve aktivne proizvode, mogu filtrirati po kategorijama i vidjeti detaljne opise sa slikama. kada pronađu artikal koji ih zanima, klikaju na \"kupi\" što otvara kontakt informacije prodavca. član onda kontaktira prodavca direktno (telefonom, emailom ili uživo) da dogovore detalje kupovine. sistem notificira članove o novim proizvodima."
     },
     "vaktija": {
-      "title": "Vaktija (Prayer Times)",
+      "title": "Vaktija (prayer times)",
       "shortDesc": "Vremena klanjanja za svaki dan",
-      "description": "Prikaz islamskih vremena klanjanja (namaza) za svaki dan. Vaktije se mogu učitati automatski iz CSV fajla sa SwissMosque.ch web stranice i prikazuju se organizovano po mjesecima.",
+      "description": "Prikaz islamskih vremena klanjanja (namaza) za svaki dan. vaktije se mogu učitati automatski iz CSV fajla sa swissmosque.ch web stranice i prikazuju se organizovano po mjesecima.",
       "features": [
-        "Automatsko učitavanje iz CSV fajla (format SwissMosque.ch)",
+        "Automatsko učitavanje iz CSV fajla (format swissmosque.ch)",
         "Mjesečni prikaz vaktija u accordion formatu",
-        "Današnja vaktija istaknuta na Dashboard-u",
-        "Prikaz svih pet dnevnih namaza: Zora, Izlazak sunca, Podne, Ikindija, Akšam, Jacija",
+        "Današnja vaktija istaknuta na dashboard-u",
+        "Prikaz svih pet dnevnih namaza: zora, izlazak sunca, podne, ikindija, akšam, jacija",
         "Mogućnost brisanja svih vaktija i ponovnog učitavanja",
         "Dostupnost svim korisnicima, uključujući goste"
       ],
-      "admin": "Admin učitava vaktije putem CSV fajla koji se preuzima sa SwissMosque.ch stranice. Sistem automatski parsira fajl i učitava sve vaktije za godinu. Admin može obrisati sve postojeće vaktije i učitati nove (npr. na početku nove godine). Sistem je dizajniran da automatski prepoznaje format datuma i vremena iz CSV fajla.",
-      "member": "Članovi pregledaju vaktije organizovane po mjesecima u accordion formatu (samo jedan mjesec može biti otvoren istovremeno za pregledniji prikaz). Današnja vaktija je automatski prikazana na vrhu Dashboard-a čim se korisnik prijavi, omogućavajući brz pristup najvažnijoj informaciji.",
-      "all": "Svi korisnici (uključujući goste) imaju pristup vaktijama. To znači da i ljudi koji nisu članovi džemata mogu provjeriti vremena klanjanja, što čini informaciju javno dostupnom široj zajednici."
+      "admin": "Admin učitava vaktije putem CSV fajla koji se preuzima sa swissmosque.ch stranice. sistem automatski parsira fajl i učitava sve vaktije za godinu. admin može obrisati sve postojeće vaktije i učitati nove (npr. na početku nove godine). sistem je dizajniran da automatski prepoznaje format datuma i vremena iz CSV fajla.",
+      "member": "Članovi pregledaju vaktije organizovane po mjesecima u accordion formatu (samo jedan mjesec može biti otvoren istovremeno za pregledniji prikaz). današnja vaktija je automatski prikazana na vrhu dashboard-a čim se korisnik prijavi, omogućavajući brz pristup najvažnijoj informaciji.",
+      "all": "Svi korisnici (uključujući goste) imaju pristup vaktijama. to znači da i ljudi koji nisu članovi džemata mogu provjeriti vremena klanjanja, što čini informaciju javno dostupnom široj zajednici."
     },
     "finances": {
       "title": "Finansije",
       "shortDesc": "Evidencija finansijskih uplata članova",
-      "description": "Evidencija svih finansijskih priloga članova džemata. Sistem omogućava praćenje uplata, kategorizaciju po svrsi i povezivanje sa projektima. Sve transakcije se evidentiraju i čuvaju u bazi podataka.",
+      "description": "Evidencija svih finansijskih priloga članova džemata. sistem omogućava praćenje uplata, kategorizaciju po svrsi i povezivanje sa projektima. sve transakcije se evidentiraju i čuvaju u bazi podataka.",
       "features": [
-        "Kategorije uplata: Članarina, Donacija, Vakuf, Sergija, Ostalo",
+        "Kategorije uplata: članarina, donacija, vakuf, sergija, ostalo",
         "Povezivanje uplata sa projektima",
         "Automatsko ažuriranje iznosa projekta prilikom dodavanja uplate",
         "Filtriranje uplata po kategorijama, članovima i projektima",
@@ -219,45 +219,45 @@
         "Sistem bodova - svaki CHF donosi bodove članu",
         "Historija svih transakcija sa datumima"
       ],
-      "admin": "Admin dodaje uplate sa svim detaljima: član koji je uplatio, iznos u CHF, svrha (kategorija), datum uplate, opciono povezivanje sa projektom. Može uređivati postojeće uplate i brisati ih u slučaju greške. Admin vidi sve uplate svih članova, može filtrirati po kategorijama i izvući izvještaje. Sistem automatski dodjeljuje bodove članovima za njihove uplate.",
-      "member": "Članovi mogu pregledati samo svoje uplate i njihovu historiju. Vide koliko su ukupno uplatili, po kojim kategorijama i koji projekti su podržani njihovim uplatama. Ne mogu dodavati, mijenjati ili brisati uplate - to može samo admin. Članovi vide bodove koje su zaradili kroz svoje finansijske priloge."
+      "admin": "Admin dodaje uplate sa svim detaljima: član koji je uplatio, iznos u CHF, svrha (kategorija), datum uplate, opciono povezivanje sa projektom. može uređivati postojeće uplate i brisati ih u slučaju greške. admin vidi sve uplate svih članova, može filtrirati po kategorijama i izvući izvještaje. sistem automatski dodjeljuje bodove članovima za njihove uplate.",
+      "member": "Članovi mogu pregledati samo svoje uplate i njihovu historiju. vide koliko su ukupno uplatili, po kojim kategorijama i koji projekti su podržani njihovim uplatama. ne mogu dodavati, mijenjati ili brisati uplate - to može samo admin. članovi vide bodove koje su zaradili kroz svoje finansijske priloge."
     },
     "membershipFees": {
       "title": "Članarina",
       "shortDesc": "Evidencija i praćenje članarina",
-      "description": "Sistem za evidenciju i praćenje godišnjih članarina članova džemata. Omogućava adminu da vodi preciznu evidenciju ko je platio članarinu, za koji period i koliko duguje.",
+      "description": "Sistem za evidenciju i praćenje godišnjih članarina članova džemata. omogućava adminu da vodi preciznu evidenciju ko je platio članarinu, za koji period i koliko duguje.",
       "features": [
         "Godišnja članarina sa podešavanjem iznosa",
         "Automatsko kreiranje uplata za sve članove",
-        "Praćenje statusa: Plaćeno, Neplaćeno, Djelomično plaćeno",
+        "Praćenje statusa: plaćeno, neplaćeno, djelomično plaćeno",
         "Filtriranje po statusu plaćanja i godini",
-        "Import članova iz Excel fajla",
+        "Import članova iz excel fajla",
         "Izvještaji o naplati članarine",
         "Povezivanje sa finansijskim modulom"
       ],
-      "admin": "Admin postavlja godišnji iznos članarine i kreira uplate za sve aktivne članove. Može označiti uplatu kao plaćenu kada član uplati, vidjeti ko nije platio i slati podsjetike. Admin ima pregled svih članarina po godinama sa mogućnošću filtriranja po statusu. Može importovati članove iz Excel fajla za masovno kreiranje.",
-      "member": "Članovi vide status svoje članarine - da li je plaćena, koliko duguju i za koji period. Mogu pristupiti historiji svojih uplata članarine kroz godine. Članovi primaju podsjetike kada im se približi rok za plaćanje."
+      "admin": "Admin postavlja godišnji iznos članarine i kreira uplate za sve aktivne članove. može označiti uplatu kao plaćenu kada član uplati, vidjeti ko nije platio i slati podsjetike. admin ima pregled svih članarina po godinama sa mogućnošću filtriranja po statusu. može importovati članove iz excel fajla za masovno kreiranje.",
+      "member": "Članovi vide status svoje članarine - da li je plaćena, koliko duguju i za koji period. mogu pristupiti historiji svojih uplata članarine kroz godine. članovi primaju podsjetike kada im se približi rok za plaćanje."
     },
     "projects": {
       "title": "Projekti",
       "shortDesc": "Projekti džemata i donacije",
-      "description": "Upravljanje većim projektima džemata koji zahtijevaju sakupljanje sredstava. Svaki projekat ima ciljani iznos, trenutni napredak i mogućnost povezivanja finansijskih priloga direktno sa projektom.",
+      "description": "Upravljanje većim projektima džemata koji zahtijevaju sakupljanje sredstava. svaki projekat ima ciljani iznos, trenutni napredak i mogućnost povezivanja finansijskih priloga direktno sa projektom.",
       "features": [
         "Kreiranje projekata sa ciljanim iznosom u CHF",
         "Automatsko praćenje trenutnog iznosa kroz povezane uplate",
         "Vizualni prikaz napretka (progress bar)",
-        "Status projekata: Aktivan, Završen, Obustavljen",
+        "Status projekata: aktivan, završen, obustavljen",
         "Detaljan opis i svrha projekta",
         "Statistika donacija po projektu",
         "Javna vidljivost projekata"
       ],
-      "admin": "Admin kreira nove projekte sa nazivom, detaljnim opisom, ciljnim iznosom i statusom. Kada član uplati novac, admin može povezati tu uplatu sa projektom, što automatski ažurira trenutni iznos projekta. Admin može uređivati projekte, mijenjati status i vidjeti listu svih donacija povezanih sa projektom. Sistem automatski računa procenat ispunjenja cilja.",
-      "member": "Članovi pregledaju sve projekte džemata, vide napredak sakupljanja sredstava i mogu se informisati o svrsi projekta. Kada član uplati novac i admin ga poveže sa projektom, to se evidentira kao doprinos projektu i član dobija posebnu aktivnost u Activity Log-u. Članovi vide transparentan prikaz kako se njihovi prilozi koriste."
+      "admin": "Admin kreira nove projekte sa nazivom, detaljnim opisom, ciljnim iznosom i statusom. kada član uplati novac, admin može povezati tu uplatu sa projektom, što automatski ažurira trenutni iznos projekta. admin može uređivati projekte, mijenjati status i vidjeti listu svih donacija povezanih sa projektom. sistem automatski računa procenat ispunjenja cilja.",
+      "member": "Članovi pregledaju sve projekte džemata, vide napredak sakupljanja sredstava i mogu se informisati o svrsi projekta. kada član uplati novac i admin ga poveže sa projektom, to se evidentira kao doprinos projektu i član dobija posebnu aktivnost u activity log-u. članovi vide transparentan prikaz kako se njihovi prilozi koriste."
     },
     "taskManager": {
-      "title": "Task Manager",
+      "title": "Task manager",
       "shortDesc": "Centralni pregled svih zadataka",
-      "description": "Centralni pregled svih zadataka iz svih sekcija na jednom mjestu. Task Manager omogućava adminu i moderatorima brz uvid u sve aktivne zadatke, njihove statuse i rokove bez potrebe da pregledaju svaku sekciju pojedinačno.",
+      "description": "Centralni pregled svih zadataka iz svih sekcija na jednom mjestu. task manager omogućava adminu i moderatorima brz uvid u sve aktivne zadatke, njihove statuse i rokove bez potrebe da pregledaju svaku sekciju pojedinačno.",
       "features": [
         "Kanban prikaz zadataka po statusima",
         "Filtriranje po sekciji, prioritetu i roku",
@@ -267,29 +267,29 @@
         "Export izvještaja o zadacima",
         "Statistika završenih zadataka"
       ],
-      "admin": "Admin vidi sve zadatke iz svih sekcija na jednom mjestu. Može brzo odobriti zadatke koji čekaju odobrenje, vidjeti preopterećene članove, identificirati zakašnjele zadatke i pratiti produktivnost sekcija. Task Manager služi kao kontrolna ploča za upravljanje radom u džematu.",
-      "moderator": "Moderatori vide zadatke iz sekcija kojima upravljaju. Mogu brzo pregledati status svih zadataka, odobriti završene i kreirati nove bez navigacije kroz pojedinačne sekcije."
+      "admin": "Admin vidi sve zadatke iz svih sekcija na jednom mjestu. može brzo odobriti zadatke koji čekaju odobrenje, vidjeti preopterećene članove, identificirati zakašnjele zadatke i pratiti produktivnost sekcija. task manager služi kao kontrolna ploča za upravljanje radom u džematu.",
+      "moderator": "Moderatori vide zadatke iz sekcija kojima upravljaju. mogu brzo pregledati status svih zadataka, odobriti završene i kreirati nove bez navigacije kroz pojedinačne sekcije."
     },
     "recognitions": {
       "title": "Priznanja (Leaderboard)",
       "shortDesc": "Rangiranje i priznanja za aktivne članove",
-      "description": "Sistem za javno priznanje najaktivnijih članova džemata. Leaderboard prikazuje rangiranje članova po bodovima, značkama i doprinosima, motivirajući članove na aktivnije učešće.",
+      "description": "Sistem za javno priznanje najaktivnijih članova džemata. leaderboard prikazuje rangiranje članova po bodovima, značkama i doprinosima, motivirajući članove na aktivnije učešće.",
       "features": [
         "Leaderboard sa rangiranjem po bodovima",
         "Prikaz top 10, 20 ili svih članova",
-        "Kategorije: Ukupno bodova, Zadaci, Događaji, Donacije",
+        "Kategorije: ukupno bodova, zadaci, događaji, donacije",
         "Mjesečni i godišnji pregledi",
         "Vizualni prikaz osvojenih značaka",
         "Medalje za top 3 pozicije",
         "Personalizovani rang svakog člana"
       ],
-      "admin": "Admin može vidjeti detaljnu statistiku svih članova, analizirati trendove aktivnosti i koristiti podatke za nagrađivanje. Može vidjeti koji članovi su najaktivniji u kojim kategorijama i planirati priznanja.",
-      "member": "Članovi vide svoju poziciju na leaderboard-u i mogu se takmičiti za bolje mjesto. Vide ko su najaktivniji članovi džemata i mogu se inspirisati njihovim primjerom. Sistem gamifikacije motiviše aktivnije učešće."
+      "admin": "Admin može vidjeti detaljnu statistiku svih članova, analizirati trendove aktivnosti i koristiti podatke za nagrađivanje. može vidjeti koji članovi su najaktivniji u kojim kategorijama i planirati priznanja.",
+      "member": "Članovi vide svoju poziciju na leaderboard-u i mogu se takmičiti za bolje mjesto. vide ko su najaktivniji članovi džemata i mogu se inspirisati njihovim primjerom. sistem gamifikacije motiviše aktivnije učešće."
     },
     "eventCheckin": {
-      "title": "Event Check-in (QR kod)",
+      "title": "Event check-in (QR kod)",
       "shortDesc": "Prijava prisustva putem QR koda",
-      "description": "Sistem za brzu prijavu prisustva na događajima putem skeniranja QR koda. Svaki događaj ima jedinstveni QR kod koji članovi skeniraju pri dolasku, čime automatski potvrđuju prisustvo i zarađuju bodove.",
+      "description": "Sistem za brzu prijavu prisustva na događajima putem skeniranja QR koda. svaki događaj ima jedinstveni QR kod koji članovi skeniraju pri dolasku, čime automatski potvrđuju prisustvo i zarađuju bodove.",
       "features": [
         "Jedinstveni QR kod za svaki događaj",
         "Skeniranje putem kamere mobitela",
@@ -299,46 +299,46 @@
         "Statistika posjećenosti događaja",
         "Štampanje QR kodova za postere"
       ],
-      "admin": "Admin generiše QR kod za svaki događaj i može ga štampati ili dijeliti digitalno. Vidi real-time listu ko je skenirao kod i pristupio događaju. Može ručno dodati prisutne koji nemaju aplikaciju. Sistem automatski dodjeljuje bodove svima koji se prijave.",
-      "member": "Članovi skeniraju QR kod pri dolasku na događaj i automatski potvrđuju svoje prisustvo. Sistem im odmah dodjeljuje bodove i prikazuje potvrdu prijave. Ne trebaju se ručno prijavljivati - dovoljno je skenirati kod.",
-      "all": "Gosti mogu također skenirati QR kod i unijeti svoje ime za prijavu prisustva. Ovo omogućava praćenje ukupnog broja posjetilaca, uključujući one koji nisu članovi džemata."
+      "admin": "Admin generiše QR kod za svaki događaj i može ga štampati ili dijeliti digitalno. vidi real-time listu ko je skenirao kod i pristupio događaju. može ručno dodati prisutne koji nemaju aplikaciju. sistem automatski dodjeljuje bodove svima koji se prijave.",
+      "member": "Članovi skeniraju QR kod pri dolasku na događaj i automatski potvrđuju svoje prisustvo. sistem im odmah dodjeljuje bodove i prikazuje potvrdu prijave. ne trebaju se ručno prijavljivati - dovoljno je skenirati kod.",
+      "all": "Gosti mogu također skenirati QR kod i unijeti svoje ime za prijavu prisustva. ovo omogućava praćenje ukupnog broja posjetilaca, uključujući one koji nisu članovi džemata."
     },
     "activity": {
-      "title": "Aktivnosti (Activity Log)",
+      "title": "Aktivnosti (activity log)",
       "shortDesc": "Praćenje aktivnosti i bodova",
-      "description": "Kompletna evidencija svih aktivnosti članova u aplikaciji. Sistem automatski prati ko je šta uradio, kada i koliko bodova je zaradio. Ovo omogućava transparentnost i gamifikaciju kroz sistem nagrada.",
+      "description": "Kompletna evidencija svih aktivnosti članova u aplikaciji. sistem automatski prati ko je šta uradio, kada i koliko bodova je zaradio. ovo omogućava transparentnost i gamifikaciju kroz sistem nagrada.",
       "features": [
         "Automatsko logovanje svih aktivnosti",
-        "Tipovi aktivnosti: Završen zadatak, Prisustvo na događaju, Finansijski prilog, Doprinos projektu",
+        "Tipovi aktivnosti: završen zadatak, prisustvo na događaju, finansijski prilog, doprinos projektu",
         "Dodjela bodova za različite aktivnosti",
         "Filtriranje aktivnosti po korisniku i tipu",
         "Prikaz datuma i vremena svake aktivnosti",
         "Povezivanje aktivnosti sa entitetima (zadatak, događaj, projekat)",
         "Izvještaji o najaktivnijim članovima"
       ],
-      "admin": "Admin vidi kompletnu aktivnost svih članova. Može filtrirati po članu da vidi sve aktivnosti jedne osobe, ili po tipu aktivnosti da vidi npr. sve završene zadatke. Admin koristi ove podatke za izvještaje o angažmanu članova, praćenje trendova i nagrađivanje najaktivnijih članova. Može vidjeti statistiku aktivnosti po mjesecima.",
-      "member": "Članovi vide svoju ličnu historiju aktivnosti - šta su sve radili u aplikaciji i koliko bodova su zaradili za svaku aktivnost. Ovo uključuje završene zadatke, prisustva na događajima, finansijske priloge i doprinose projektima. Članovi mogu pratiti svoj napredak i vidjeti koliko su aktivni u džematu."
+      "admin": "Admin vidi kompletnu aktivnost svih članova. može filtrirati po članu da vidi sve aktivnosti jedne osobe, ili po tipu aktivnosti da vidi npr. sve završene zadatke. admin koristi ove podatke za izvještaje o angažmanu članova, praćenje trendova i nagrađivanje najaktivnijih članova. može vidjeti statistiku aktivnosti po mjesecima.",
+      "member": "Članovi vide svoju ličnu historiju aktivnosti - šta su sve radili u aplikaciji i koliko bodova su zaradili za svaku aktivnost. ovo uključuje završene zadatke, prisustva na događajima, finansijske priloge i doprinose projektima. članovi mogu pratiti svoj napredak i vidjeti koliko su aktivni u džematu."
     },
     "badges": {
       "title": "Značke (Badges)",
       "shortDesc": "Sistem znački i postignuća",
-      "description": "Sistem nagrada i priznanja za aktivne članove džemata. Značke se dodjeljuju automatski (na osnovu postignuća) ili ručno (od strane admina) za poseban doprinos zajednici.",
+      "description": "Sistem nagrada i priznanja za aktivne članove džemata. značke se dodjeljuju automatski (na osnovu postignuća) ili ručno (od strane admina) za poseban doprinos zajednici.",
       "features": [
         "Kreiranje znački sa nazivom, opisom i kriterijima",
         "Automatska dodjela na osnovu uslova (npr. 100 bodova, 10 završenih zadataka)",
         "Ručna dodjela od strane admina za posebna postignuća",
         "Prikaz osvojenih znački na profilu člana",
-        "Različiti tipovi znački: Bronzana, Srebrna, Zlatna, Specijalna",
+        "Različiti tipovi znački: bronzana, srebrna, zlatna, specijalna",
         "Javna vidljivost osvojenih znački",
         "Notifikacije kada član osvoji novu značku"
       ],
-      "admin": "Admin kreira nove značke definišući njihov naziv, opis, uslove za osvajanje i tip. Može postaviti automatske kriterije (npr. \"Osvoji 500 bodova\" ili \"Završi 20 zadataka\") ili ručno dodijeliti značke članovima za poseban doprinos. Admin vidi statistiku ko je osvojio koje značke i može uređivati ili brisati postojeće značke.",
-      "member": "Članovi automatski dobijaju značke kada ispune postavljene uslove. Primaju notifikaciju kada osvoje novu značku i mogu vidjeti sve svoje značke na profilu. Značke služe kao motivacija za aktivno učešće u životu džemata i vidljivo su priznanje za njihov doprinos zajednici."
+      "admin": "Admin kreira nove značke definišući njihov naziv, opis, uslove za osvajanje i tip. može postaviti automatske kriterije (npr. \"osvoji 500 bodova\" ili \"završi 20 zadataka\") ili ručno dodijeliti značke članovima za poseban doprinos. admin vidi statistiku ko je osvojio koje značke i može uređivati ili brisati postojeće značke.",
+      "member": "Članovi automatski dobijaju značke kada ispune postavljene uslove. primaju notifikaciju kada osvoje novu značku i mogu vidjeti sve svoje značke na profilu. značke služe kao motivacija za aktivno učešće u životu džemata i vidljivo su priznanje za njihov doprinos zajednici."
     },
     "points": {
       "title": "Sistem bodova",
       "shortDesc": "Gamifikacija kroz sistem bodova",
-      "description": "Gamifikacijski sistem koji nagrađuje aktivnost članova kroz dodjeljivanje bodova. Bodovi se dodjeljuju automatski za različite aktivnosti i mogu se koristiti za rangiranje članova ili dodjelu posebnih privilegija.",
+      "description": "Gamifikacijski sistem koji nagrađuje aktivnost članova kroz dodjeljivanje bodova. bodovi se dodjeljuju automatski za različite aktivnosti i mogu se koristiti za rangiranje članova ili dodjelu posebnih privilegija.",
       "features": [
         "Bodovi za prisustvo na događajima (RSVP)",
         "Bodovi za završene zadatke u sekcijama",
@@ -348,13 +348,13 @@
         "Leaderboard (tabela rangiranja) članova",
         "Ukupan broj bodova vidljiv na profilu"
       ],
-      "admin": "Admin u Postavkama bodova definiše koliko bodova se dodjeljuje za svaku aktivnost: koliko za prisustvo na događaju, koliko za završen zadatak, koliko bodova po CHF za finansijske priloge. Admin može u bilo kojem trenutku promijeniti ove vrijednosti. Sistem automatski primjenjuje nova pravila na buduće aktivnosti. Admin vidi leaderboard svih članova rangiranih po bodovima.",
-      "member": "Članovi automatski sakupljaju bodove kroz svoje aktivnosti. Svaki put kada prisustvuju događaju, završe zadatak ili daju finansijski prilog, dobijaju određen broj bodova. Vide svoj ukupan broj bodova na profilu i poziciju na leaderboard-u. Bodovi služe kao motivacija za aktivnije učešće i daju vidljivost doprinosu svakog člana."
+      "admin": "Admin u postavkama bodova definiše koliko bodova se dodjeljuje za svaku aktivnost: koliko za prisustvo na događaju, koliko za završen zadatak, koliko bodova po CHF za finansijske priloge. admin može u bilo kojem trenutku promijeniti ove vrijednosti. sistem automatski primjenjuje nova pravila na buduće aktivnosti. admin vidi leaderboard svih članova rangiranih po bodovima.",
+      "member": "Članovi automatski sakupljaju bodove kroz svoje aktivnosti. svaki put kada prisustvuju događaju, završe zadatak ili daju finansijski prilog, dobijaju određen broj bodova. vide svoj ukupan broj bodova na profilu i poziciju na leaderboard-u. bodovi služe kao motivacija za aktivnije učešće i daju vidljivost doprinosu svakog člana."
     },
     "certificates": {
       "title": "Zahvale (Priznanja)",
       "shortDesc": "Izdavanje zahvalnica i priznanja",
-      "description": "Sistem za kreiranje i izdavanje zahvalnica članovima za njihov doprinos džematu. Administratori mogu dizajnirati template-e sa pozadinskim slikama i personalizovati svaku zahvalnicu sa imenom člana, opisom doprinosa i datumom izdavanja.",
+      "description": "Sistem za kreiranje i izdavanje zahvalnica članovima za njihov doprinos džematu. administratori mogu dizajnirati template-e sa pozadinskim slikama i personalizovati svaku zahvalnicu sa imenom člana, opisom doprinosa i datumom izdavanja.",
       "features": [
         "Kreiranje template-a sa PNG pozadinskim slikama",
         "Personalizacija za svakog člana (ime, prezime, opis)",
@@ -364,47 +364,47 @@
         "Pregled ličnih zahvalnica za svakog člana",
         "Mogućnost ponovnog izdavanja iste zahvalnice"
       ],
-      "admin": "Admin kreira template-e zahvalnica uploadujući PNG pozadinske slike profesionalnog izgleda. Za svaku zahvalnicu može postaviti naziv template-a i opis. Kada želi izdati zahvalnicu članu, bira template, bira člana iz liste, unosi detaljan opis za šta se priznanje dodjeljuje i sistem automatski generiše personalizovanu zahvalnicu sa imenom člana i trenutnim datumom. Admin vidi sve izdane zahvalnice svih članova i može ih preuzeti kao PDF.",
-      "member": "Članovi pristupaju svom modulu 'Moje zahvale' gdje vide sve zahvalnice koje su im izdane tokom članstva. Za svaku zahvalnicu vide template pozadinu, svoj tekst i datum izdavanja. Mogu preuzeti svoje zahvalnice u PDF formatu za čuvanje ili štampanje. Sistem čuva kompletnu historiju svih zahvalnica člana."
+      "admin": "Admin kreira template-e zahvalnica uploadujući PNG pozadinske slike profesionalnog izgleda. za svaku zahvalnicu može postaviti naziv template-a i opis. kada želi izdati zahvalnicu članu, bira template, bira člana iz liste, unosi detaljan opis za šta se priznanje dodjeljuje i sistem automatski generiše personalizovanu zahvalnicu sa imenom člana i trenutnim datumom. admin vidi sve izdane zahvalnice svih članova i može ih preuzeti kao PDF.",
+      "member": "Članovi pristupaju svom modulu 'moje zahvale' gdje vide sve zahvalnice koje su im izdane tokom članstva. za svaku zahvalnicu vide template pozadinu, svoj tekst i datum izdavanja. mogu preuzeti svoje zahvalnice u PDF formatu za čuvanje ili štampanje. sistem čuva kompletnu historiju svih zahvalnica člana."
     },
     "documents": {
       "title": "Dokumenti",
       "shortDesc": "Centralna biblioteka važnih dokumenata",
-      "description": "Centralizovana biblioteka za čuvanje i dijeljenje važnih dokumenata džemata. Administratori mogu uploadovati PDF dokumente (statuti, pravilnici, zapisnici, izvještaji) i učiniti ih dostupnim članovima sa kontrolom vidljivosti.",
+      "description": "Centralizovana biblioteka za čuvanje i dijeljenje važnih dokumenata džemata. administratori mogu uploadovati PDF dokumente (statuti, pravilnici, zapisnici, izvještaji) i učiniti ih dostupnim članovima sa kontrolom vidljivosti.",
       "features": [
         "Upload PDF dokumenta sa opisom i kategorijom",
-        "Kontrola vidljivosti: Svi članovi ili Samo admini/IO",
-        "Kategorije: Statut, Zapisnik, Izvještaj, Pravilnik, Ostalo",
+        "Kontrola vidljivosti: svi članovi ili samo admini/io",
+        "Kategorije: statut, zapisnik, izvještaj, pravilnik, ostalo",
         "Datum uploada i informacija ko je dodao dokument",
         "Pregled i preuzimanje dokumenata",
         "Pretraga po nazivu ili kategoriji",
         "Sigurno čuvanje u bazi podataka"
       ],
-      "admin": "Admin uploaduje dokumente sa nazivom, detaljnim opisom, kategorijom i postavkom vidljivosti. Može odlučiti da li će dokument biti vidljiv svim članovima ili samo administratorima i članovima IO. Admin može uređivati postojeće dokumente (naziv, opis, kategorija, vidljivost) ili ih brisati. Vidi kompletnu listu svih dokumenata sa info ko je i kada uploadovao.",
-      "member": "Članovi pregledaju dokumente koji su im dostupni prema postavkama vidljivosti. Mogu filtrirati dokumente po kategorijama, pretraživati po nazivu i preuzimati PDF dokumente na svoj uređaj. Svaki član vidi datum uploada i kratak opis dokumenta prije nego što ga preuzme. Članovi ne mogu uploadovati ili mijenjati dokumente."
+      "admin": "Admin uploaduje dokumente sa nazivom, detaljnim opisom, kategorijom i postavkom vidljivosti. može odlučiti da li će dokument biti vidljiv svim članovima ili samo administratorima i članovima IO. admin može uređivati postojeće dokumente (naziv, opis, kategorija, vidljivost) ili ih brisati. vidi kompletnu listu svih dokumenata sa info ko je i kada uploadovao.",
+      "member": "Članovi pregledaju dokumente koji su im dostupni prema postavkama vidljivosti. mogu filtrirati dokumente po kategorijama, pretraživati po nazivu i preuzimati PDF dokumente na svoj uređaj. svaki član vidi datum uploada i kratak opis dokumenta prije nego što ga preuzme. članovi ne mogu uploadovati ili mijenjati dokumente."
     },
     "media": {
       "title": "Media (Livestream)",
       "shortDesc": "YouTube livestream prijenosi programa",
-      "description": "Modul za livestream prenose džumua, predavanja i drugih programa putem YouTube platforme. Administratori postavljaju YouTube link koji se prikazuje svim članovima i gostima u realnom vremenu.",
+      "description": "Modul za livestream prenose džumua, predavanja i drugih programa putem youtube platforme. administratori postavljaju youtube link koji se prikazuje svim članovima i gostima u realnom vremenu.",
       "features": [
-        "Embedovani YouTube video player",
+        "Embedovani youtube video player",
         "Automatska detekcija live prenosa",
         "Dostupno svim korisnicima uključujući goste",
         "Postavke livestream linka od strane admina",
         "Full-screen opcija za bolji prikaz",
         "Automatsko ažuriranje bez potrebe za osvježavanjem stranice"
       ],
-      "admin": "Admin u Livestream postavkama unosi YouTube link (URL) kanala ili videa koji se koristi za prenose. Link se automatski embeduje u aplikaciju i postaje dostupan svim korisnicima. Admin može u bilo kojem trenutku promijeniti link na novi kanal ili video. Nema potrebe za tehničkim znanjem - samo se kopira YouTube URL i sistem ga automatski prikazuje.",
-      "member": "Članovi pristupaju Livestream modulu gdje mogu gledati live prenose džumua, mevluda, predavanja i drugih programa direktno iz aplikacije. Video player ima standardne kontrole (play, pause, volume, full-screen) i automatski detektuje kada je prenos uživo. Nije potrebna YouTube registracija za gledanje.",
-      "all": "Gosti (neprijavljeni korisnici) takođe imaju pristup livestream modulu što omogućava široj zajednici da prati program džemata bez potrebe za prijavljivanjem. Ovo proširuje doseg prenosa i omogućava uključivanje svih zainteresovanih."
+      "admin": "Admin u livestream postavkama unosi youtube link (url) kanala ili videa koji se koristi za prenose. link se automatski embeduje u aplikaciju i postaje dostupan svim korisnicima. admin može u bilo kojem trenutku promijeniti link na novi kanal ili video. nema potrebe za tehničkim znanjem - samo se kopira youtube URL i sistem ga automatski prikazuje.",
+      "member": "Članovi pristupaju livestream modulu gdje mogu gledati live prenose džumua, mevluda, predavanja i drugih programa direktno iz aplikacije. video player ima standardne kontrole (play, pause, volume, full-screen) i automatski detektuje kada je prenos uživo. nije potrebna youtube registracija za gledanje.",
+      "all": "Gosti (neprijavljeni korisnici) takođe imaju pristup livestream modulu što omogućava široj zajednici da prati program džemata bez potrebe za prijavljivanjem. ovo proširuje doseg prenosa i omogućava uključivanje svih zainteresovanih."
     },
     "sponsors": {
       "title": "Sponzori",
       "shortDesc": "Sponzorstva i promocija firmi u džematu",
-      "description": "Modul za upravljanje sponzorstvima džemata. Omogućava firmama i fizičkim licima da podrže džemat kroz sponzorske pakete (Bronzani, Srebreni, Zlatni) sa godišnjom trajanjem. Sponzori dobijaju vidljivost na stranici sponzora sa svojim logom, kontakt informacijama i linkom na web stranicu.",
+      "description": "Modul za upravljanje sponzorstvima džemata. omogućava firmama i fizičkim licima da podrže džemat kroz sponzorske pakete (bronzani, srebreni, zlatni) sa godišnjom trajanjem. sponzori dobijaju vidljivost na stranici sponzora sa svojim logom, kontakt informacijama i linkom na web stranicu.",
       "features": [
-        "Tri nivoa sponzorstva: Bronzani, Srebreni i Zlatni",
+        "Tri nivoa sponzorstva: bronzani, srebreni i zlatni",
         "Godišnje trajanje sponzorstva (automatski 1 godina od odobrenja)",
         "Prikaz loga sponzora, kontakt podataka i web stranice",
         "Workflow odobrenja: prijava → pregled admina → odobrenje/odbijanje",
@@ -412,14 +412,14 @@
         "Javna vidljivost odobrenih sponzora",
         "Mogućnost prijave za fizička lica i firme"
       ],
-      "admin": "Admin postavlja cijene za svaki nivo sponzorstva (Bronzani, Srebreni, Zlatni) u CHF. Kada stigne prijava za sponzorstvo, admin je pregleda, može dodati napomenu i odlučuje hoće li je odobriti ili odbiti. Odobreni sponzori automatski dobijaju trajanje od godinu dana. Admin može uređivati podatke sponzora i brisati istekla sponzorstva.",
-      "member": "Članovi mogu vidjeti sve aktivne sponzore džemata organizovane po nivoima. Za svakog sponzora vide logo, naziv, kontakt informacije (telefon, email, web stranica) sa mogućnošću direktnog kontakta. Članovi mogu podnijeti prijavu za sponzorstvo u ime svoje firme ili kao fizičko lice.",
-      "all": "Gosti mogu vidjeti aktivne sponzore i podnijeti prijavu za sponzorstvo bez prijavljivanja. Ovo omogućava široj zajednici da podrži džemat i dobije promociju unutar zajednice."
+      "admin": "Admin postavlja cijene za svaki nivo sponzorstva (bronzani, srebreni, zlatni) u CHF. kada stigne prijava za sponzorstvo, admin je pregleda, može dodati napomenu i odlučuje hoće li je odobriti ili odbiti. odobreni sponzori automatski dobijaju trajanje od godinu dana. admin može uređivati podatke sponzora i brisati istekla sponzorstva.",
+      "member": "Članovi mogu vidjeti sve aktivne sponzore džemata organizovane po nivoima. za svakog sponzora vide logo, naziv, kontakt informacije (telefon, email, web stranica) sa mogućnošću direktnog kontakta. članovi mogu podnijeti prijavu za sponzorstvo u ime svoje firme ili kao fizičko lice.",
+      "all": "Gosti mogu vidjeti aktivne sponzore i podnijeti prijavu za sponzorstvo bez prijavljivanja. ovo omogućava široj zajednici da podrži džemat i dobije promociju unutar zajednice."
     },
     "settings": {
       "title": "Postavke",
       "shortDesc": "Postavke aplikacije i profila",
-      "description": "Konfiguracija osnovnih informacija o džematu, postavki aplikacije i ličnih podataka korisnika. Ovdje se nalaze sve administrativne postavke koje kontrolišu kako aplikacija funkcioniše.",
+      "description": "Konfiguracija osnovnih informacija o džematu, postavki aplikacije i ličnih podataka korisnika. ovdje se nalaze sve administrativne postavke koje kontrolišu kako aplikacija funkcioniše.",
       "features": [
         "Osnovni podaci o džematu (naziv, adresa, kontakt)",
         "Email i telefon za kontakt",
@@ -429,16 +429,16 @@
         "Postavke notifikacija",
         "Logo i vizualni identitet"
       ],
-      "admin": "Admin ima pristup svim postavkama: može uređivati informacije o džematu (naziv, adresu, grad, poštanski broj, telefon, email), postaviti YouTube link za livestream, konfigurisati vrijednosti bodova za različite aktivnosti, postaviti logo džemata. Admin može promijeniti svoju lozinku i postavke svog profila.",
-      "member": "Članovi imaju ograničen pristup postavkama - mogu promijeniti svoju lozinku i urediti osnovne podatke svog profila (ime, prezime, email, telefon, zanimanje, adresa). Ne mogu mijenjati postavke aplikacije ili informacije o džematu."
+      "admin": "Admin ima pristup svim postavkama: može uređivati informacije o džematu (naziv, adresu, grad, poštanski broj, telefon, email), postaviti youtube link za livestream, konfigurisati vrijednosti bodova za različite aktivnosti, postaviti logo džemata. admin može promijeniti svoju lozinku i postavke svog profila.",
+      "member": "Članovi imaju ograničen pristup postavkama - mogu promijeniti svoju lozinku i urediti osnovne podatke svog profila (ime, prezime, email, telefon, zanimanje, adresa). ne mogu mijenjati postavke aplikacije ili informacije o džematu."
     }
   },
   "additionalInfo": {
     "title": "Dodatne informacije i savjeti",
-    "notifications": "Aplikacija prikazuje crvene bedž indikatore za novi sadržaj u različitim modulima. Broj u bedžu pokazuje koliko novih stavki postoji.",
+    "notifications": "Aplikacija prikazuje crvene bedž indikatore za novi sadržaj u različitim modulima. broj u bedžu pokazuje koliko novih stavki postoji.",
     "autoRefresh": "Notifikacije i brojači se automatski osvježavaju svakih 30 sekundi bez potrebe za ručnim osvježavanjem stranice.",
     "dateFormat": "Svi datumi u aplikaciji prikazuju se u evropskom formatu dd.mm.yyyy (dan.mjesec.godina).",
-    "currency": "Sve cijene u DžematShop i Finansije modulima izražene su u CHF (švicarski franak).",
+    "currency": "Sve cijene u džematshop i finansije modulima izražene su u CHF (švicarski franak).",
     "guestAccess": "Određeni sadržaji (obavijesti, događaji, vaktije) dostupni su i gostima bez prijavljivanja.",
     "security": "Aplikacija koristi enkripciju podataka, sigurne lozinke i redovne backup-e.",
     "support": "Za tehničku pomoć ili pitanja o korištenju aplikacije, kontaktirajte administratora džemata.",

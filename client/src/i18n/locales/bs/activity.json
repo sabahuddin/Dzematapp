@@ -11,7 +11,7 @@
   "unknown": "Nepoznato",
   "searchPlaceholder": "Pretraži po korisniku ili opisu...",
   "filterByType": "Filter po tipu",
-  "errorLoading": "Greška pri učitavanju log-a aktivnosti. Molimo pokušajte ponovo.",
+  "errorLoading": "Greška pri učitavanju log-a aktivnosti. molimo pokušajte ponovo.",
   "types": {
     "contribution_made": "Uplata izvršena",
     "task_completed": "Zadatak završen",
@@ -48,7 +48,7 @@
   "lastMonth": "Prošli mjesec",
   "thisYear": "Ova godina",
   "overview": "Pregled",
-  "exportToExcel": "Exportuj u Excel",
+  "exportToExcel": "Exportuj u excel",
   "tabs": {
     "all": "Sve",
     "activities": "Aktivnosti",

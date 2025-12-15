@@ -14,7 +14,7 @@
   "noDocumentsAvailable": "Nema dostupnih dokumenata",
   "selectFile": "Odaberi fajl",
   "selectPdfFile": "Odaberi PDF fajl",
-  "allowedFormats": "Dozvoljeni formati: PDF, DOC, DOCX, XLS, XLSX",
+  "allowedFormats": "Dozvoljeni formati: PDF, DOC, docx, XLS, XLSX",
   "uploadSuccess": "Dokument uspješno učitan",
   "uploadError": "Greška pri učitavanju dokumenta",
   "loading": "Učitavanje...",

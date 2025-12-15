@@ -1,7 +1,7 @@
 {
   "title": "Dashboard",
   "welcome": "Dobrodošli, {{name}}!",
-  "welcomeAdmin": "Dobrodošli u DžematApp Admin Panel",
+  "welcomeAdmin": "Dobrodošli u džematapp admin panel",
   "quickAccess": "Brzi pristup",
   "customize": "Prilagodi",
   "statistics": {
@@ -58,7 +58,7 @@
   "viewAll": "Prikaži sve",
   "viewDetails": "Pogledaj detalje",
   "loading": "Učitavanje...",
-  "error": "Greška pri učitavanju podataka. Molimo pokušajte ponovo.",
+  "error": "Greška pri učitavanju podataka. molimo pokušajte ponovo.",
   "eventCalendar": "Kalendar događaja",
   "noEvents": "Nema nadolazećih događaja",
   "noAnnouncements": "Nema novih obavijesti",

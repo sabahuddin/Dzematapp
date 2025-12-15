@@ -60,8 +60,8 @@
     "passwordHelper": "Ostavite prazno da zadržite postojeću šifru",
     "memberSinceHelper": "Ostavite prazno za današnji datum",
     "categoriesPlaceholder": "Odaberite ili unesite kategoriju",
-    "skillsPlaceholder": "Unesite vještine (npr. Programiranje, Dizajn...)",
-    "skillsHelper": "Unesite vještine i pritisnite Enter",
+    "skillsPlaceholder": "Unesite vještine (npr. programiranje, dizajn...)",
+    "skillsHelper": "Unesite vještine i pritisnite enter",
     "cancel": "Odustani",
     "save": "Spremi"
   },
@@ -146,10 +146,10 @@
   "membershipFeeAmountLabel": "Iznos članarine",
   "membershipFeeAmountPlaceholder": "npr. 30",
   "monthlyMembershipFee": "Mjesečna članarina",
-  "exportToExcel": "Exportuj u Excel",
+  "exportToExcel": "Exportuj u excel",
   "bulkUploadModal": {
-    "title": "Bulk Upload Korisnika",
-    "downloadTemplate": "Preuzmi Template",
+    "title": "Bulk upload korisnika",
+    "downloadTemplate": "Preuzmi template",
     "downloading": "Preuzimanje...",
     "dropzoneText": "Prevucite fajl ovdje ili kliknite za upload",
     "supportedFormats": "Podržani formati: .xlsx, .xls",
@@ -159,12 +159,12 @@
     "errorCount": "Greške: {{count}} redova",
     "successfullyImported": "Uspješno importovani korisnici:",
     "row": "Red",
-    "nameAndSurname": "Ime i Prezime",
+    "nameAndSurname": "Ime i prezime",
     "usernameColumn": "Korisničko ime",
     "importErrors": "Greške pri importu:",
     "errors": "Greške",
     "close": "Zatvori",
-    "uploadFile": "Upload Fajl",
+    "uploadFile": "Upload fajl",
     "upload": "Upload...",
     "success": "Uspjeh",
     "partialSuccess": "Djelimičan uspjeh",
@@ -174,7 +174,7 @@
     "usersImported": "Uspješno importovano {{count}} korisnika",
     "usersImportedWithErrors": "Importovano {{success}} korisnika, {{errors}} greški",
     "uploadError": "Greška pri upload-u fajla",
-    "invalidFileType": "Molimo uploadujte Excel fajl (.xlsx ili .xls)",
+    "invalidFileType": "Molimo uploadujte excel fajl (.xlsx ili .xls)",
     "noUsersToExport": "Nema korisnika za export"
   }
 }

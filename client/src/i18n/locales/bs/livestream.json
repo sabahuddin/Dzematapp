@@ -21,11 +21,11 @@
     "open": "Otvori livestream"
   },
   "info": {
-    "title": "O Live Prijenosu",
+    "title": "O live prijenosu",
     "description": "Livestream funkcionalnost omogućava svim članovima džemata i zainteresovanim osobama da prate važna dešavanja direktno sa bilo kojeg uređaja.",
     "platformsLabel": "Podržane platforme:",
     "platforms": {
-      "youtube": "YouTube Live",
+      "youtube": "YouTube live",
       "facebook": "Facebook live",
       "twitch": "Twitch",
       "embed": "Direktan embed kod",

@@ -33,7 +33,7 @@
     "successMessage": "Hvala vam na prijavi akike.",
     "successDescription": "Javićemo vam se kako bi potvrdili termin i mjesto akike.",
     "submitAnother": "Pošalji novu prijavu",
-    "error": "Greška pri slanju zahtjeva. Pokušajte ponovo."
+    "error": "Greška pri slanju zahtjeva. pokušajte ponovo."
   },
   "marriage": {
     "title": "Šerijatsko vjenčanje",
@@ -86,7 +86,7 @@
     "successMessage": "Hvala vam na prijavi šerijatskog vjenčanja.",
     "successDescription": "Pregledaćemo vašu prijavu i kontaktirati vas uskoro.",
     "submitAnother": "Pošalji novu prijavu",
-    "error": "Greška pri slanju prijave. Pokušajte ponovo."
+    "error": "Greška pri slanju prijave. pokušajte ponovo."
   },
   "myApplications": {
     "title": "Moje prijave",

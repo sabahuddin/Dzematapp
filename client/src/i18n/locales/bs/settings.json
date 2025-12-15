@@ -41,7 +41,7 @@
       "facebookUrlLabel": "Facebook URL",
       "instagramUrlLabel": "Instagram URL",
       "youtubeUrlLabel": "YouTube URL",
-      "twitterUrlLabel": "X (Twitter) URL",
+      "twitterUrlLabel": "X (twitter) URL",
       "livestreamUrl": "Livestream URL",
       "livestreamUrlPlaceholder": "YouTube link ili embed kod",
       "livestreamEnabled": "Omogući livestream",
@@ -65,20 +65,20 @@
     "howItWorks": {
       "title": "📋 Kako funkcionira sistem bodova?",
       "payments": {
-        "title": "💰 Finansijske Uplate (CHF)",
-        "description": "Svaki uplačeni CHF donosi bodove. Bodovi se dodjeljuju odmah nakon unošenja uplate (Članarina, Donacija, Vakuf, Sergija, Ostalo)."
+        "title": "💰 finansijske uplate (chf)",
+        "description": "Svaki uplačeni CHF donosi bodove. bodovi se dodjeljuju odmah nakon unošenja uplate (članarina, donacija, vakuf, sergija, ostalo)."
       },
       "tasks": {
         "title": "✅ Završeni zadaci",
-        "description": "Kada član označi zadatak kao završen, čeka se odobrenje admina (0 bodova). Tek kada admin odobri zadatak, svi dodijeljeni članovi dobijaju pun broj bodova."
+        "description": "Kada član označi zadatak kao završen, čeka se odobrenje admina (0 bodova). tek kada admin odobri zadatak, svi dodijeljeni članovi dobijaju pun broj bodova."
       },
       "events": {
-        "title": "🎉 RSVP na Događaj",
-        "description": "Kada član potvrdi prisustvo na događaju (RSVP), odmah dobija bodove. Bodovi se ne oduzimaju ako član kasnije otkaže prisustvo."
+        "title": "🎉 RSVP na događaj",
+        "description": "Kada član potvrdi prisustvo na događaju (rsvp), odmah dobija bodove. bodovi se ne oduzimaju ako član kasnije otkaže prisustvo."
       },
       "calculation": {
         "title": "🔢 Primjer obračuna",
-        "description": "Ako je postavljeno: 1 CHF = 10 bodova, 1 zadatak = 50 bodova, 1 događaj = 20 bodova, član koji plati 100 CHF dobija 1000 bodova, završi 5 zadataka dobija 250 bodova, prisustvuje 3 događaja dobija 60 bodova. Ukupno: 1310 bodova."
+        "description": "Ako je postavljeno: 1 CHF = 10 bodova, 1 zadatak = 50 bodova, 1 događaj = 20 bodova, član koji plati 100 CHF dobija 1000 bodova, završi 5 zadataka dobija 250 bodova, prisustvuje 3 događaja dobija 60 bodova. ukupno: 1310 bodova."
       }
     },
     "fields": {
@@ -95,7 +95,7 @@
       "successDescription": "Postavke bodova su ažurirane",
       "error": "Greška",
       "errorDescription": "Greška pri spremanju postavki",
-      "loadError": "Greška pri učitavanju postavki bodova. Molimo pokušajte ponovo."
+      "loadError": "Greška pri učitavanju postavki bodova. molimo pokušajte ponovo."
     }
   },
   "livestreamSettings": {
@@ -103,15 +103,15 @@
     "subtitle": "Omogućite direktan prenos događaja, hutbi i programa uživo",
     "loading": "Učitavanje...",
     "whatIsLivestream": {
-      "title": "Šta je Livestream?",
+      "title": "Šta je livestream?",
       "description1": "Livestream omogućava vašoj zajednici da prati događaje, hutbe i programe u realnom vremenu putem interneta, bez potrebe da fizički prisustvuju.",
       "description2": "Korisnici mogu pratiti livestream direktno iz aplikacije, što omogućava pristup osobama koje su odsutne, bolesne ili udaljene."
     },
     "howToUse": {
-      "title": "Kako koristiti Livestream",
+      "title": "Kako koristiti livestream",
       "step1": {
         "title": "Izaberite platformu za streaming",
-        "description": "YouTube Live, Facebook Live, Twitch ili druga platforma"
+        "description": "YouTube live, facebook live, twitch ili druga platforma"
       },
       "step2": {
         "title": "Pokrenite stream na platformi",
@@ -119,7 +119,7 @@
       },
       "step3": {
         "title": "Kopirajte URL ili embed kod",
-        "description": "Kopirajte link sa YouTube/Facebook ili embed iframe kod"
+        "description": "Kopirajte link sa youtube/facebook ili embed iframe kod"
       },
       "step4": {
         "title": "Zalijepite u polje ispod",
@@ -133,19 +133,19 @@
     "supportedFormats": {
       "title": "Podržani formati",
       "youtube": "YouTube URL (https://youtube.com/watch?v=...)",
-      "youtubeLive": "YouTube Live URL (https://youtube.com/live/...)",
+      "youtubeLive": "YouTube live URL (https://youtube.com/live/...)",
       "iframe": "iFrame embed kod (<iframe src=\"...\"></iframe>)",
-      "otherUrls": "Drugi URL-ovi će biti prikazani kao vanjski linkovi"
+      "otherUrls": "Drugi url-ovi će biti prikazani kao vanjski linkovi"
     },
     "examples": {
       "title": "Primjeri embed kodova",
       "youtube": "YouTube: https://www.youtube.com/watch?v=dQw4w9WgXcQ",
       "youtubeShort": "YouTube kratki: https://youtu.be/dQw4w9WgXcQ",
       "iframe": "iFrame: <iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/dQw4w9WgXcQ\"></iframe>",
-      "youtubeAccordion": "YouTube Live",
-      "youtubeDescription": "Zamijenite vIDEO_ID sa ID-jem vašeg YouTube Live video zapisa",
+      "youtubeAccordion": "YouTube live",
+      "youtubeDescription": "Zamijenite video_id sa id-jem vašeg youtube live video zapisa",
       "facebookAccordion": "Facebook live",
-      "facebookDescription": "Zamijenite vIDEO_URL sa linkom do vašeg Facebook Live događaja",
+      "facebookDescription": "Zamijenite video_url sa linkom do vašeg facebook live događaja",
       "directAccordion": "Direktan URL",
       "directDescription": "Možete koristiti i direktan link do video zapisa"
     },
@@ -161,8 +161,8 @@
       "livestreamEnabledHelper": "Kada je omogućeno, korisnici će vidjeti livestream",
       "livestreamTitle": "Naslov livestream-a (opciono)",
       "livestreamTitleHelper": "Prikazuje se iznad video playera (npr. 'Džuma hutba uživo')",
-      "livestreamUrl": "Livestream URL ili Embed kod",
-      "livestreamUrlHelper": "YouTube link, Facebook link, ili iframe embed kod",
+      "livestreamUrl": "Livestream URL ili embed kod",
+      "livestreamUrlHelper": "YouTube link, facebook link, ili iframe embed kod",
       "livestreamDescription": "Opis prenošenja (\"Ovdje možete pratiti...\")",
       "livestreamDescriptionPlaceholder": "Unesite tekst koji će biti prikazan kao opis prenošenja",
       "livestreamDescriptionHelper": "Ovaj tekst će biti prikazan na stranici kada nema aktivnog prenošenja"

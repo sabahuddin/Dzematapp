@@ -1,7 +1,7 @@
 {
   "title": "Članarina",
   "settings": "Postavke",
-  "bulkUpload": "Bulk Upload",
+  "bulkUpload": "Bulk upload",
   "addPayment": "Dodaj uplatu",
   "searchMembers": "Pretraži po imenu...",
   "year": "Godina",
@@ -33,7 +33,7 @@
   },
   "templateColumns": {
     "registryNumber": "Članski broj",
-    "fullName": "Ime i Prezime",
+    "fullName": "Ime i prezime",
     "amount": "Iznos",
     "year": "Godina",
     "month": "Mjesec"
@@ -51,9 +51,9 @@
     "cancel": "Otkaži"
   },
   "bulkUploadDialog": {
-    "title": "Bulk Upload Uplata",
-    "description": "Uploadajte Excel ili CSV fajl sa uplatama.",
-    "columns": "Kolone: Članski broj, Ime i Prezime, Iznos, Godina, Mjesec",
+    "title": "Bulk upload uplata",
+    "description": "Uploadajte excel ili CSV fajl sa uplatama.",
+    "columns": "Kolone: članski broj, ime i prezime, iznos, godina, mjesec",
     "downloadTemplate": "Preuzmi template",
     "selectFile": "Izaberi fajl",
     "uploading": "Učitavanje...",
@@ -107,7 +107,7 @@
     "paymentDate": "Datum uplate",
     "paid": "Plaćeno",
     "unpaid": "Neplaćeno",
-    "feeNotSet": "Vaša članarina još nije postavljena. Kontaktirajte administratora za više informacija.",
+    "feeNotSet": "Vaša članarina još nije postavljena. kontaktirajte administratora za više informacija.",
     "allPaymentsHistory": "Historija svih uplata"
   },
   "months": {

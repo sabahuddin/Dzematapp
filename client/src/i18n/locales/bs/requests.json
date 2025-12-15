@@ -1,5 +1,5 @@
 {
-  "title": "Zahtjevi i Prijave",
+  "title": "Zahtjevi i prijave",
   "newRequest": "Novi zahtjev",
   "loading": "Učitavanje...",
   "noRequests": "Nemate podnesenih zahtjeva",
@@ -16,10 +16,10 @@
     "rejected": "Odbijeno"
   },
   "dialog": {
-    "title": "Novi zahtjev / Prijava",
+    "title": "Novi zahtjev / prijava",
     "selectType": "Odaberi tip zahtjeva",
     "noteLabel": "Napomena (opciono)",
-    "formNotAvailable": "Forma za ovaj tip zahtjeva će biti dostupna uskoro. Molimo kontaktirajte administratora za više informacija.",
+    "formNotAvailable": "Forma za ovaj tip zahtjeva će biti dostupna uskoro. molimo kontaktirajte administratora za više informacija.",
     "cancel": "Otkaži",
     "submit": "Pošalji",
     "submitting": "Slanje..."

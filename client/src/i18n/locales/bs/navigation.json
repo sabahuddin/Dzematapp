@@ -29,7 +29,7 @@
     "badges": "Značke",
     "projects": "Projekti",
     "myCertificates": "Moje zahvale",
-    "certificateTemplates": "Zahvalnice - Templatei",
+    "certificateTemplates": "Zahvalnice - templatei",
     "issueCertificates": "Izdaj zahvalnicu",
     "allCertificates": "Sve zahvale",
     "livestreamSettings": "Livestream uprav.",
@@ -38,7 +38,7 @@
     "mediaGroup": "Media"
   },
   "appBar": {
-    "welcome": "Dobrodošli u DžematApp Admin Panel",
+    "welcome": "Dobrodošli u džematapp admin panel",
     "administrator": "Administrator",
     "user": "Korisnik",
     "myProfile": "Moj profil",
@@ -54,7 +54,7 @@
   "quickAccess": "Brzi pristup",
   "customizeQuickAccess": "Prilagodi brzi pristup",
   "quickAccessDescription": "Izaberite do 8 najčešće korištenih stranica za brzi pristup sa dashboard-a.",
-  "quickAccessLimit": "Dostigli ste maksimalni broj brzih linkova (8). Uklonite neki da dodate novi.",
+  "quickAccessLimit": "Dostigli ste maksimalni broj brzih linkova (8). uklonite neki da dodate novi.",
   "cancel": "Otkaži",
   "save": "Sačuvaj",
   "saving": "Čuvam...",
