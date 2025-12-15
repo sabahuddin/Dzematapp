@@ -32,10 +32,7 @@ import SettingsPage from "@/pages/SettingsPage";
 import VaktijaPage from "@/pages/VaktijaPage";
 import GuidePage from "@/pages/GuidePage";
 import FinancesPage from "@/pages/FinancesPage";
-import ActivityLogPage from "@/pages/ActivityLogPage";
-import MyActivitiesPage from "@/pages/MyActivitiesPage";
 import BadgesPage from "@/pages/BadgesPage";
-import MyBadgesPage from "@/pages/MyBadgesPage";
 import BadgesAdminPage from "@/pages/BadgesAdminPage";
 import ProjectsPage from "@/pages/ProjectsPage";
 import CertificateTemplatesPage from "@/pages/CertificateTemplatesPage";
@@ -784,19 +781,13 @@ function Router() {
       
       <Route path="/activity-log">
         <ProtectedRoute>
-          <ActivityLogPage />
+          <RecognitionsPage />
         </ProtectedRoute>
       </Route>
       
       <Route path="/my-activities">
         <ProtectedRoute>
-          <MyActivitiesPage />
-        </ProtectedRoute>
-      </Route>
-      
-      <Route path="/my-badges">
-        <ProtectedRoute>
-          <MyBadgesPage />
+          <RecognitionsPage />
         </ProtectedRoute>
       </Route>
       
@@ -808,13 +799,6 @@ function Router() {
         </AdminRoute>
       </Route>
       
-      <Route path="/badges-admin">
-        <AdminRoute>
-          <ModuleGuard moduleId="badges">
-            <BadgesAdminPage />
-          </ModuleGuard>
-        </AdminRoute>
-      </Route>
       
       <Route path="/projects">
         <ProtectedRoute>
