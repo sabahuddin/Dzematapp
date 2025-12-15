@@ -500,12 +500,14 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
               {badges.map((badge: Badge) => (
                 <TableRow key={badge.id}>
                   <TableCell>
-                    <Chip
-                      icon={<span style={{ fontSize: '18px', marginLeft: '4px' }}>{badge.icon || '🏅'}</span>}
-                      label={badge.name}
-                      color="warning"
-                      data-testid={`badge-name-${badge.id}`}
-                    />
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                      <Box sx={{ fontSize: '2rem', lineHeight: 1 }}>
+                        {badge.icon || '🏅'}
+                      </Box>
+                      <Typography variant="body1" sx={{ fontWeight: 600 }} data-testid={`badge-name-${badge.id}`}>
+                        {badge.name}
+                      </Typography>
+                    </Box>
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2" data-testid={`badge-desc-${badge.id}`}>
