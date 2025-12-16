@@ -1,33 +1,38 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+import { AppColors, BorderRadius, Spacing, Typography, Colors } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 
+// Member-focused modules (no admin modules)
 const MODULES = [
-  { id: 'announcements', label: 'Obavijesti', icon: '📢' },
-  { id: 'events', label: 'Događaji', icon: '📅' },
-  { id: 'tasks', label: 'Zadaci', icon: '✓' },
-  { id: 'members', label: 'Članovi', icon: '👥' },
-  { id: 'shop', label: 'Trgovina', icon: '🛍️' },
-  { id: 'finance', label: 'Finansije', icon: '💰' },
+  { id: 'vaktija', label: 'Vaktija', icon: '🕌', route: '/(tabs)/vaktija', color: AppColors.accent },
+  { id: 'messages', label: 'Poruke', icon: '💬', route: '/(tabs)/messages', color: AppColors.info },
+  { id: 'activities', label: 'Moje aktivnosti', icon: '⭐', route: '/(tabs)/activities', color: AppColors.primary },
+  { id: 'membership', label: 'Članarina', icon: '💳', route: '/(tabs)/membership', color: AppColors.success },
 ];
 
 export default function ModulesScreen() {
   const router = useRouter();
+  const colorScheme = useColorScheme();
+  const colors = Colors[colorScheme ?? 'light'];
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Moduli</Text>
+    <ScrollView 
+      style={[styles.container, { backgroundColor: colors.background }]}
+      contentContainerStyle={styles.content}
+    >
+      <Text style={[styles.sectionTitle, { color: colors.text }]}>Dodatni moduli</Text>
       <View style={styles.grid}>
         {MODULES.map((module) => (
           <TouchableOpacity
             key={module.id}
-            style={styles.moduleCard}
-            onPress={() => {
-              // Navigate to module
-            }}
+            style={[styles.moduleCard, { backgroundColor: colors.surface, borderLeftColor: module.color }]}
+            onPress={() => router.push(module.route as any)}
+            activeOpacity={0.7}
           >
             <Text style={styles.moduleIcon}>{module.icon}</Text>
-            <Text style={styles.moduleLabel}>{module.label}</Text>
+            <Text style={[styles.moduleLabel, { color: colors.text }]}>{module.label}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -38,40 +43,40 @@ export default function ModulesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
   },
   content: {
-    padding: 16,
+    padding: Spacing.md,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#2e7d32',
-    marginBottom: 24,
+  sectionTitle: {
+    ...Typography.h3,
+    marginBottom: Spacing.md,
   },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 12,
+    gap: Spacing.sm,
   },
   moduleCard: {
     width: '48%',
     backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.lg,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderLeftWidth: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   moduleIcon: {
     fontSize: 40,
-    marginBottom: 8,
+    marginBottom: Spacing.sm,
   },
   moduleLabel: {
-    fontSize: 14,
+    ...Typography.body,
     fontWeight: '600',
     textAlign: 'center',
-    color: '#333',
   },
 });

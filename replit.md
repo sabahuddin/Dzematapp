@@ -194,10 +194,30 @@ Većina modula slijedi pattern:
 ## Mobile App
 
 Lokacija: `mobile/` direktorij
-- Framework: React Native + Expo
-- Router: Expo Router
-- Autentifikacija: Ista kao web
-- API klijent: TypeScript
+- **Framework**: React Native + Expo
+- **Router**: Expo Router
+- **Tema**: Indigo dizajn (identičan PWA)
+- **Korisnici**: Isključivo za članove (ne-admin korisnike)
+- **Admin funkcije**: Dostupne samo u web aplikaciji
+
+### Mobile ekrani
+| Ekran | Fajl | Opis |
+|-------|------|------|
+| Login | `app/login.tsx` | Tenant kod + prijava |
+| Početna | `app/(tabs)/index.tsx` | Statistika, vaktija |
+| Objave | `app/(tabs)/announcements.tsx` | Pregled objava |
+| Događaji | `app/(tabs)/events.tsx` | Kalendar, RSVP |
+| Vaktija | `app/(tabs)/vaktija.tsx` | Molitvena vremena |
+| Poruke | `app/(tabs)/messages.tsx` | Razgovori |
+| Aktivnosti | `app/(tabs)/activities.tsx` | Bodovi, značke |
+| Članarina | `app/(tabs)/membership.tsx` | Status plaćanja |
+| Moduli | `app/(tabs)/modules.tsx` | Dodatni moduli |
+| Profil | `app/(tabs)/profile.tsx` | Korisnički podaci |
+
+### Mobile API klijent
+- Lokacija: `mobile/services/api.ts`, `mobile/services/auth.ts`
+- Session cookie podrška
+- Graceful error handling na svim ekranima
 
 ---
 

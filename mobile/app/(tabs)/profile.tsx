@@ -3,9 +3,15 @@ import { View, StyleSheet, ScrollView, Text, TouchableOpacity, Alert, ActivityIn
 import { useRouter } from 'expo-router';
 import { authService, User } from '@/services/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AppColors, BorderRadius, Spacing, Typography, Colors } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+
+const USER_STORAGE_KEY = 'dzematapp_user';
 
 export default function ProfileScreen() {
   const router = useRouter();
+  const colorScheme = useColorScheme();
+  const colors = Colors[colorScheme ?? 'light'];
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -15,7 +21,7 @@ export default function ProfileScreen() {
 
   const loadUserProfile = async () => {
     try {
-      const userJson = await AsyncStorage.getItem('user');
+      const userJson = await AsyncStorage.getItem(USER_STORAGE_KEY);
       if (userJson) {
         setUser(JSON.parse(userJson));
       }
@@ -28,7 +34,7 @@ export default function ProfileScreen() {
 
   const handleLogout = async () => {
     Alert.alert('Potvrda', 'Jeste li sigurni da se želite odjaviti?', [
-      { text: 'Otkaži' },
+      { text: 'Otkaži', style: 'cancel' },
       {
         text: 'Odjava',
         style: 'destructive',
@@ -42,39 +48,67 @@ export default function ProfileScreen() {
 
   if (loading) {
     return (
-      <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#2e7d32" />
+      <View style={[styles.centerContainer, { backgroundColor: colors.background }]}>
+        <ActivityIndicator size="large" color={AppColors.primary} />
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <View style={styles.profileHeader}>
+    <ScrollView 
+      style={[styles.container, { backgroundColor: colors.background }]}
+      contentContainerStyle={styles.content}
+    >
+      {/* Profile Header */}
+      <View style={[styles.profileHeader, { backgroundColor: colors.surface }]}>
         <View style={styles.avatar}>
           <Text style={styles.avatarText}>
-            {user?.firstName[0]}{user?.lastName[0]}
+            {user?.firstName?.[0] || ''}{user?.lastName?.[0] || ''}
           </Text>
         </View>
-        <Text style={styles.name}>
+        <Text style={[styles.name, { color: colors.text }]}>
           {user?.firstName} {user?.lastName}
         </Text>
-        <Text style={styles.email}>{user?.email}</Text>
+        {user?.email && (
+          <Text style={[styles.email, { color: colors.textSecondary }]}>{user.email}</Text>
+        )}
       </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Informacije</Text>
-        <View style={styles.infoRow}>
-          <Text style={styles.infoLabel}>Korisničko ime</Text>
-          <Text style={styles.infoValue}>{user?.username}</Text>
+      {/* Info Section */}
+      <View style={[styles.section, { backgroundColor: colors.surface }]}>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>Informacije</Text>
+        
+        <View style={[styles.infoRow, { borderTopColor: colors.border }]}>
+          <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Korisničko ime</Text>
+          <Text style={[styles.infoValue, { color: colors.text }]}>{user?.username}</Text>
         </View>
-        {user?.isAdmin && (
-          <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Uloga</Text>
-            <Text style={styles.infoValue}>Administrator</Text>
+        
+        {user?.phone && (
+          <View style={[styles.infoRow, { borderTopColor: colors.border }]}>
+            <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Telefon</Text>
+            <Text style={[styles.infoValue, { color: colors.text }]}>{user.phone}</Text>
+          </View>
+        )}
+        
+        {user?.roles && user.roles.length > 0 && (
+          <View style={[styles.infoRow, { borderTopColor: colors.border }]}>
+            <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Uloga</Text>
+            <Text style={[styles.infoValue, { color: colors.text }]}>
+              {user.roles.includes('clan') ? 'Član' : user.roles.join(', ')}
+            </Text>
           </View>
         )}
       </View>
+
+      {/* Actions */}
+      <TouchableOpacity 
+        style={[styles.actionButton, { backgroundColor: colors.surface, borderColor: AppColors.primary }]}
+        onPress={() => {
+          // TODO: Navigate to edit profile
+        }}
+      >
+        <Text style={[styles.actionButtonText, { color: AppColors.primary }]}>Uredi profil</Text>
+      </TouchableOpacity>
 
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.logoutButtonText}>Odjava</Text>
@@ -86,91 +120,98 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
   },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
   },
   content: {
-    padding: 16,
+    padding: Spacing.md,
   },
   profileHeader: {
     alignItems: 'center',
-    marginBottom: 32,
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    paddingVertical: 24,
-    paddingHorizontal: 16,
+    marginBottom: Spacing.lg,
+    borderRadius: BorderRadius.lg,
+    paddingVertical: Spacing.xl,
+    paddingHorizontal: Spacing.md,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   avatar: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#2e7d32',
+    backgroundColor: AppColors.primary,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: Spacing.md,
   },
   avatarText: {
     color: '#fff',
     fontSize: 32,
-    fontWeight: 'bold',
+    fontWeight: '700',
   },
   name: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 4,
+    ...Typography.h2,
+    marginBottom: Spacing.xs,
   },
   email: {
-    fontSize: 14,
-    color: '#666',
+    ...Typography.body,
   },
   section: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    marginBottom: 16,
+    borderRadius: BorderRadius.lg,
+    marginBottom: Spacing.md,
     overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 12,
+    ...Typography.h3,
+    paddingHorizontal: Spacing.md,
+    paddingTop: Spacing.md,
+    paddingBottom: Spacing.sm,
   },
   infoRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
     borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
   },
   infoLabel: {
-    fontSize: 14,
-    color: '#666',
+    ...Typography.body,
   },
   infoValue: {
-    fontSize: 14,
+    ...Typography.body,
     fontWeight: '600',
-    color: '#333',
+  },
+  actionButton: {
+    borderRadius: BorderRadius.md,
+    paddingVertical: Spacing.md,
+    alignItems: 'center',
+    marginBottom: Spacing.sm,
+    borderWidth: 2,
+  },
+  actionButtonText: {
+    ...Typography.button,
   },
   logoutButton: {
-    backgroundColor: '#d32f2f',
-    borderRadius: 12,
-    paddingVertical: 14,
+    backgroundColor: AppColors.error,
+    borderRadius: BorderRadius.md,
+    paddingVertical: Spacing.md,
     alignItems: 'center',
-    marginTop: 24,
+    marginTop: Spacing.md,
   },
   logoutButtonText: {
+    ...Typography.button,
     color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
   },
 });

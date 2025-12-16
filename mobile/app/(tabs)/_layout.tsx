@@ -1,41 +1,78 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { Colors } from '@/constants/theme';
+import { Colors, AppColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const tintColor = colorScheme === 'dark' ? '#fff' : '#2e7d32';
+  const colors = Colors[colorScheme ?? 'light'];
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: tintColor,
-        tabBarInactiveTintColor: '#999',
-        headerShown: false,
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: AppColors.navInactive,
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: AppColors.primary,
+        },
+        headerTintColor: '#FFFFFF',
+        headerTitleStyle: {
+          fontWeight: '600',
+        },
         tabBarStyle: {
           borderTopWidth: 1,
-          borderTopColor: '#e0e0e0',
-          backgroundColor: colorScheme === 'dark' ? '#1a1a1a' : '#fff',
+          borderTopColor: colors.border,
+          backgroundColor: colors.surface,
+          height: 88,
+          paddingBottom: 24,
+          paddingTop: 8,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '500',
         },
       }}
     >
+      {/* Main tab screens */}
       <Tabs.Screen
         name="index"
         options={{
           title: 'Početna',
-          tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="home" size={24} color={color} />
+          headerTitle: 'DžematApp',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="home" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="announcements"
+        options={{
+          title: 'Objave',
+          headerTitle: 'Objave',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="bullhorn" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="events"
+        options={{
+          title: 'Događaji',
+          headerTitle: 'Događaji',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="calendar" size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="modules"
         options={{
-          title: 'Moduli',
-          tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="view-grid" size={24} color={color} />
+          title: 'Više',
+          headerTitle: 'Moduli',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="view-grid" size={size} color={color} />
           ),
         }}
       />
@@ -43,9 +80,46 @@ export default function TabLayout() {
         name="profile"
         options={{
           title: 'Profil',
-          tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="account" size={24} color={color} />
+          headerTitle: 'Moj profil',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="account" size={size} color={color} />
           ),
+        }}
+      />
+      
+      {/* Hidden screens - accessible from modules */}
+      <Tabs.Screen
+        name="vaktija"
+        options={{
+          href: null,
+          headerTitle: 'Vaktija',
+        }}
+      />
+      <Tabs.Screen
+        name="messages"
+        options={{
+          href: null,
+          headerTitle: 'Poruke',
+        }}
+      />
+      <Tabs.Screen
+        name="activities"
+        options={{
+          href: null,
+          headerTitle: 'Moje aktivnosti',
+        }}
+      />
+      <Tabs.Screen
+        name="membership"
+        options={{
+          href: null,
+          headerTitle: 'Članarina',
+        }}
+      />
+      <Tabs.Screen
+        name="explore"
+        options={{
+          href: null,
         }}
       />
     </Tabs>

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, Text, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, ScrollView, Text, ActivityIndicator, RefreshControl } from 'react-native';
 import { apiClient } from '@/services/api';
+import { AppColors, BorderRadius, Spacing, Typography, Colors } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 
 interface DashboardStats {
   userCount: number;
@@ -9,72 +11,140 @@ interface DashboardStats {
   tasksCount: number;
 }
 
+interface PrayerTime {
+  fajr: string;
+  sunrise: string;
+  dhuhr: string;
+  asr: string;
+  maghrib: string;
+  isha: string;
+}
+
 export default function DashboardScreen() {
+  const colorScheme = useColorScheme();
+  const colors = Colors[colorScheme ?? 'light'];
   const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [prayerTime, setPrayerTime] = useState<PrayerTime | null>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    loadDashboardStats();
+    loadDashboardData();
   }, []);
 
-  const loadDashboardStats = async () => {
+  const loadDashboardData = async () => {
     try {
-      const response = await apiClient.get('/api/statistics');
-      setStats(response.data);
+      const [statsResponse, prayerResponse] = await Promise.all([
+        apiClient.get<DashboardStats>('/api/statistics').catch(() => ({ data: null })),
+        apiClient.get<PrayerTime>('/api/prayer-times/today').catch(() => ({ data: null }))
+      ]);
+      if (statsResponse?.data) {
+        setStats(statsResponse.data);
+      }
+      if (prayerResponse?.data) {
+        setPrayerTime(prayerResponse.data);
+      }
     } catch (error) {
-      console.error('Error loading stats:', error);
+      console.error('Error loading dashboard:', error);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
+  };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    loadDashboardData();
   };
 
   if (loading) {
     return (
-      <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#2e7d32" />
+      <View style={[styles.centerContainer, { backgroundColor: colors.background }]}>
+        <ActivityIndicator size="large" color={AppColors.primary} />
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <View style={styles.header}>
-        <Text style={styles.greeting}>DžematApp</Text>
-        <Text style={styles.subtitle}>Dobrodošli u vašu zajednicu</Text>
+    <ScrollView 
+      style={[styles.container, { backgroundColor: colors.background }]}
+      contentContainerStyle={styles.content}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[AppColors.primary]} />
+      }
+    >
+      {/* Welcome Section */}
+      <View style={styles.welcomeSection}>
+        <Text style={[styles.greeting, { color: colors.text }]}>Dobrodošli</Text>
+        <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
+          Vaša zajednica na dlanu
+        </Text>
       </View>
 
+      {/* Prayer Times Card */}
+      {prayerTime && (
+        <View style={[styles.prayerCard, { backgroundColor: colors.surface }]}>
+          <View style={styles.prayerHeader}>
+            <Text style={styles.prayerIcon}>🕌</Text>
+            <Text style={[styles.prayerTitle, { color: colors.text }]}>Današnja vaktija</Text>
+          </View>
+          <View style={styles.prayerGrid}>
+            <PrayerTimeItem name="Sabah" time={prayerTime.fajr} colors={colors} />
+            <PrayerTimeItem name="Izlazak" time={prayerTime.sunrise} colors={colors} />
+            <PrayerTimeItem name="Podne" time={prayerTime.dhuhr} colors={colors} />
+            <PrayerTimeItem name="Ikindija" time={prayerTime.asr} colors={colors} />
+            <PrayerTimeItem name="Akšam" time={prayerTime.maghrib} colors={colors} />
+            <PrayerTimeItem name="Jacija" time={prayerTime.isha} colors={colors} />
+          </View>
+        </View>
+      )}
+
+      {/* Stats Grid */}
+      <Text style={[styles.sectionTitle, { color: colors.text }]}>Pregled</Text>
       <View style={styles.statsGrid}>
         <StatCard
           title="Članovi"
-          value={stats?.userCount.toString() || '0'}
+          value={stats?.userCount?.toString() || '0'}
           icon="👥"
-          color="#2e7d32"
+          color={AppColors.primary}
+          bgColor={colors.surface}
+          textColor={colors.text}
         />
         <StatCard
           title="Obavijesti"
-          value={stats?.newAnnouncementsCount.toString() || '0'}
+          value={stats?.newAnnouncementsCount?.toString() || '0'}
           icon="📢"
-          color="#1976d2"
+          color={AppColors.secondary}
+          bgColor={colors.surface}
+          textColor={colors.text}
         />
         <StatCard
           title="Događaji"
-          value={stats?.upcomingEventsCount.toString() || '0'}
+          value={stats?.upcomingEventsCount?.toString() || '0'}
           icon="📅"
-          color="#f57c00"
+          color={AppColors.warning}
+          bgColor={colors.surface}
+          textColor={colors.text}
         />
         <StatCard
           title="Zadaci"
-          value={stats?.tasksCount.toString() || '0'}
+          value={stats?.tasksCount?.toString() || '0'}
           icon="✓"
-          color="#c62828"
+          color={AppColors.accent}
+          bgColor={colors.surface}
+          textColor={colors.text}
         />
       </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Aktivnosti</Text>
-        <Text style={styles.emptyState}>Učitavanje aktivnosti...</Text>
-      </View>
     </ScrollView>
+  );
+}
+
+function PrayerTimeItem({ name, time, colors }: { name: string; time: string; colors: any }) {
+  return (
+    <View style={styles.prayerItem}>
+      <Text style={[styles.prayerName, { color: colors.textSecondary }]}>{name}</Text>
+      <Text style={[styles.prayerValue, { color: colors.text }]}>{time}</Text>
+    </View>
   );
 }
 
@@ -83,17 +153,21 @@ function StatCard({
   value,
   icon,
   color,
+  bgColor,
+  textColor,
 }: {
   title: string;
   value: string;
   icon: string;
   color: string;
+  bgColor: string;
+  textColor: string;
 }) {
   return (
-    <View style={[styles.statCard, { borderLeftColor: color }]}>
+    <View style={[styles.statCard, { backgroundColor: bgColor, borderLeftColor: color }]}>
       <Text style={styles.statIcon}>{icon}</Text>
-      <Text style={styles.statValue}>{value}</Text>
-      <Text style={styles.statTitle}>{title}</Text>
+      <Text style={[styles.statValue, { color: textColor }]}>{value}</Text>
+      <Text style={[styles.statTitle, { color: AppColors.textSecondary }]}>{title}</Text>
     </View>
   );
 }
@@ -101,73 +175,98 @@ function StatCard({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
   },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
   },
   content: {
-    padding: 16,
+    padding: Spacing.md,
   },
-  header: {
-    marginBottom: 24,
+  welcomeSection: {
+    marginBottom: Spacing.lg,
   },
   greeting: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#2e7d32',
-    marginBottom: 4,
+    ...Typography.h1,
+    marginBottom: Spacing.xs,
   },
   subtitle: {
-    fontSize: 14,
-    color: '#666',
+    ...Typography.body,
   },
+  sectionTitle: {
+    ...Typography.h3,
+    marginBottom: Spacing.md,
+    marginTop: Spacing.md,
+  },
+  // Prayer Card
+  prayerCard: {
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.md,
+    marginBottom: Spacing.md,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  prayerHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: Spacing.md,
+  },
+  prayerIcon: {
+    fontSize: 24,
+    marginRight: Spacing.sm,
+  },
+  prayerTitle: {
+    ...Typography.h3,
+  },
+  prayerGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  prayerItem: {
+    width: '33.33%',
+    alignItems: 'center',
+    paddingVertical: Spacing.sm,
+  },
+  prayerName: {
+    ...Typography.caption,
+    marginBottom: 2,
+  },
+  prayerValue: {
+    ...Typography.body,
+    fontWeight: '600',
+  },
+  // Stats Grid
   statsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 12,
-    marginBottom: 24,
+    gap: Spacing.sm,
   },
   statCard: {
     width: '48%',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.md,
     borderLeftWidth: 4,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   statIcon: {
     fontSize: 32,
-    marginBottom: 8,
+    marginBottom: Spacing.sm,
   },
   statValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 28,
+    fontWeight: '700',
   },
   statTitle: {
-    fontSize: 12,
-    color: '#666',
-    marginTop: 4,
-  },
-  section: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 12,
-  },
-  emptyState: {
-    fontSize: 14,
-    color: '#999',
-    textAlign: 'center',
-    paddingVertical: 24,
+    ...Typography.caption,
+    marginTop: Spacing.xs,
   },
 });

@@ -1,83 +1,91 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { apiClient } from './api';
 
+const USER_STORAGE_KEY = 'dzematapp_user';
+
 export interface User {
   id: string;
+  username: string;
   firstName: string;
   lastName: string;
-  email: string;
-  username: string;
+  email: string | null;
+  phone: string | null;
+  photo: string | null;
   isAdmin: boolean;
+  roles: string[];
   tenantId: string;
 }
 
 export interface AuthResponse {
   user: User;
-  token?: string;
 }
 
-export class AuthService {
-  private static instance: AuthService;
+class AuthService {
+  private user: User | null = null;
 
-  private constructor() {}
-
-  static getInstance(): AuthService {
-    if (!AuthService.instance) {
-      AuthService.instance = new AuthService();
-    }
-    return AuthService.instance;
+  constructor() {
+    this.loadUser();
   }
 
-  async login(username: string, password: string): Promise<AuthResponse> {
+  private async loadUser() {
     try {
-      const response = await apiClient.post<AuthResponse>('/api/auth/login', {
-        username,
-        password,
-      });
-      
-      if (response.data.token) {
-        await AsyncStorage.setItem('authToken', response.data.token);
-        apiClient.setToken(response.data.token);
+      const userData = await AsyncStorage.getItem(USER_STORAGE_KEY);
+      if (userData) {
+        this.user = JSON.parse(userData);
       }
-      
-      await AsyncStorage.setItem('user', JSON.stringify(response.data.user));
-      return response.data;
     } catch (error) {
-      throw error;
+      console.error('Error loading user:', error);
     }
+  }
+
+  getBaseUrl() {
+    return apiClient.getBaseUrl();
+  }
+
+  getUser() {
+    return this.user;
+  }
+
+  async login(username: string, password: string, tenantId: string | null): Promise<User> {
+    const response = await apiClient.post<AuthResponse>('/api/auth/login', {
+      username,
+      password,
+      tenantId,
+    });
+
+    this.user = response.data.user;
+    await AsyncStorage.setItem(USER_STORAGE_KEY, JSON.stringify(this.user));
+    return this.user;
   }
 
   async logout(): Promise<void> {
     try {
-      await apiClient.post('/api/auth/logout', {});
+      await apiClient.post('/api/auth/logout');
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
-      await AsyncStorage.removeItem('authToken');
-      await AsyncStorage.removeItem('user');
-      apiClient.clearToken();
+      this.user = null;
+      apiClient.clearSession();
+      await AsyncStorage.removeItem(USER_STORAGE_KEY);
     }
   }
 
-  async getSession(): Promise<User | null> {
+  async checkSession(): Promise<User | null> {
     try {
       const response = await apiClient.get<{ user: User }>('/api/auth/session');
-      return response.data.user;
+      this.user = response.data.user;
+      await AsyncStorage.setItem(USER_STORAGE_KEY, JSON.stringify(this.user));
+      return this.user;
     } catch (error) {
+      this.user = null;
+      await AsyncStorage.removeItem(USER_STORAGE_KEY);
       return null;
     }
   }
 
-  async loadStoredAuth(): Promise<void> {
-    try {
-      const token = await AsyncStorage.getItem('authToken');
-      if (token) {
-        apiClient.setToken(token);
-      }
-    } catch (error) {
-      console.error('Load stored auth error:', error);
-    }
+  isLoggedIn(): boolean {
+    return this.user !== null;
   }
 }
 
-export const authService = AuthService.getInstance();
+export const authService = new AuthService();
