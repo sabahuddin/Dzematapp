@@ -5,7 +5,9 @@ import path from "path";
 import { promises as fs } from "fs";
 import * as XLSX from "xlsx";
 import { ZodError } from "zod";
+import { eq } from "drizzle-orm";
 import { storage } from "./storage";
+import { db } from "./db";
 import { requireAuth, requireAdmin, requireSuperAdmin, requireAuthOrSuperAdmin } from "./index";
 import { seedDefaultTenant } from "./seed-tenant";
 import { seedDemoData } from "./seed-demo-data";
@@ -13,7 +15,8 @@ import { requireFeature, getTenantSubscriptionInfo } from "./feature-access";
 import { generateCertificate, saveCertificate } from "./certificateService";
 import { processAndSaveToFolder, IMAGE_CONFIGS, generateImageFilename } from "./utils/image-processor";
 import { sendContactEmail } from "./resend";
-import { type User, insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema, insertImportantDateSchema, insertContributionPurposeSchema, insertFinancialContributionSchema, insertActivityLogSchema, insertEventAttendanceSchema, insertPointsSettingsSchema, insertBadgeSchema, insertUserBadgeSchema, insertProjectSchema, insertProposalSchema, insertReceiptSchema, insertCertificateTemplateSchema, insertUserCertificateSchema, insertMembershipApplicationSchema, insertAkikaApplicationSchema, insertMarriageApplicationSchema, insertServiceSchema, insertSponsorSchema, insertTenantSchema, insertPageViewSchema } from "@shared/schema";
+import { sendPushToTenant, sendPushToUser, sendPushToUsers } from "./pushNotifications";
+import { type User, users, insertUserSchema, insertAnnouncementSchema, insertEventSchema, insertWorkGroupSchema, insertWorkGroupMemberSchema, insertTaskSchema, insertAccessRequestSchema, insertTaskCommentSchema, insertAnnouncementFileSchema, insertFamilyRelationshipSchema, insertMessageSchema, insertOrganizationSettingsSchema, insertDocumentSchema, insertRequestSchema, insertShopProductSchema, insertMarketplaceItemSchema, insertProductPurchaseRequestSchema, insertPrayerTimeSchema, insertImportantDateSchema, insertContributionPurposeSchema, insertFinancialContributionSchema, insertActivityLogSchema, insertEventAttendanceSchema, insertPointsSettingsSchema, insertBadgeSchema, insertUserBadgeSchema, insertProjectSchema, insertProposalSchema, insertReceiptSchema, insertCertificateTemplateSchema, insertUserCertificateSchema, insertMembershipApplicationSchema, insertAkikaApplicationSchema, insertMarriageApplicationSchema, insertServiceSchema, insertSponsorSchema, insertTenantSchema, insertPageViewSchema } from "@shared/schema";
 
 // Upload directories
 const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'photos');
@@ -1552,6 +1555,32 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     });
   });
 
+  // Push notification token registration
+  app.post("/api/push/register", requireAuth, async (req, res) => {
+    try {
+      const { pushToken } = req.body;
+      if (!pushToken) {
+        return res.status(400).json({ message: "Push token required" });
+      }
+      
+      await db.update(users).set({ pushToken }).where(eq(users.id, req.user!.id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error registering push token:", error);
+      res.status(500).json({ message: "Failed to register push token" });
+    }
+  });
+
+  app.post("/api/push/unregister", requireAuth, async (req, res) => {
+    try {
+      await db.update(users).set({ pushToken: null }).where(eq(users.id, req.user!.id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error unregistering push token:", error);
+      res.status(500).json({ message: "Failed to unregister push token" });
+    }
+  });
+
   // Session check route
   app.get("/api/auth/session", async (req, res) => {
     const session = req.session as any;
@@ -2062,6 +2091,15 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         tenantId
       });
       const announcement = await storage.createAnnouncement(announcementData);
+      
+      // Send push notification to all tenant members
+      sendPushToTenant(
+        tenantId,
+        "Nova objava",
+        announcement.title,
+        { type: "announcement", id: announcement.id }
+      ).catch(err => console.error("Push notification error:", err));
+      
       res.json(announcement);
     } catch (error) {
       res.status(400).json({ message: "Invalid announcement data" });
@@ -2172,6 +2210,15 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       console.log('[CREATE EVENT] Validated:', eventData);
       const event = await storage.createEvent(eventData);
       console.log('[CREATE EVENT] Success:', event.id);
+      
+      // Send push notification for new event
+      sendPushToTenant(
+        tenantId,
+        "Novi događaj",
+        event.name,
+        { type: "event", id: event.id }
+      ).catch(err => console.error("Push notification error:", err));
+      
       res.json(event);
     } catch (error: any) {
       console.error('❌ [CREATE EVENT] Error:', error);
@@ -3372,6 +3419,18 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       }
 
       const message = await storage.createMessage(messageData);
+      
+      // Send push notification to recipient
+      if (messageData.recipientId) {
+        const senderName = `${req.user.firstName} ${req.user.lastName}`;
+        sendPushToUser(
+          messageData.recipientId,
+          "Nova poruka",
+          `${senderName}: ${messageData.subject || 'Poruka'}`,
+          { type: "message", id: message.id }
+        ).catch(err => console.error("Push notification error:", err));
+      }
+      
       res.json(message);
     } catch (error) {
       res.status(400).json({ message: "Invalid message data" });

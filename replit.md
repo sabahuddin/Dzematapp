@@ -231,6 +231,19 @@ Lokacija: `mobile/` direktorij
 - Session cookie podrška
 - Graceful error handling na svim ekranima
 
+### Push Notifikacije
+- **Mobile servis**: `mobile/services/notifications.ts`
+- **Backend servis**: `server/pushNotifications.ts`
+- **Expo Push**: Koristi Expo Push Notification servis
+- **Automatske notifikacije**:
+  - Nova objava → svi članovi tenanta
+  - Novi događaj → svi članovi tenanta
+  - Nova poruka → primatelj poruke
+- **API endpointi**:
+  - `POST /api/push/register` - Registracija push tokena
+  - `POST /api/push/unregister` - Deregistracija tokena
+- **Polje u bazi**: `push_token` u users tabeli
+
 ---
 
 ## Napomene za razvoj
