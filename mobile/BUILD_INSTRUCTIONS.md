@@ -1,24 +1,55 @@
-# DžematApp iOS & Android Build Instructions
+# DžematApp Mobile - Upute za pokretanje
 
-## Setup
+## BRZI START (Expo Go testiranje)
 
-### 1. Preuzmi Projekat
-- Download mobile direktorijum sa Replit
-- `cd mobile`
-- `npm install`
+### Zahtjevi
+- Node.js 18+ 
+- Expo Go aplikacija na telefonu (iOS/Android)
+- MacBook i iPhone moraju biti na istoj WiFi mreži
 
-### 2. Konfiguracija
+### Instalacija i pokretanje
 
-Kreiraj `.env` fajl:
 ```bash
-cp .env.example .env
+# 1. Raspakiraj arhivu
+tar -xzf mobile-complete.tar.gz
+cd mobile
+
+# 2. Obriši stari node_modules ako postoji
+rm -rf node_modules package-lock.json
+
+# 3. Instaliraj dependencies
+npm install
+
+# 4. Pokreni Expo (sa čistim cacheom)
+npx expo start -c
 ```
 
-Ažuriraj vrednosti:
+### Ako se pojavi pitanje za login
+Izaberi **"Proceed anonymously"** (strelica dolje + Enter)
+
+### Testiranje na iPhoneu
+1. Otvori Expo Go aplikaciju na iPhoneu
+2. Skeniraj QR kod koji se pojavi u terminalu
+3. Aplikacija će se učitati
+
+### Testni podaci za prijavu
+- **Tenant kod:** default-tenant-demo
+- **Korisničko ime:** ali.alic
+- **Lozinka:** password123
+
+### Rješavanje problema
+
+**Ako Expo ne radi:**
+```bash
+rm -rf node_modules .expo
+npm install
+npx expo start -c
 ```
-API_BASE_URL=YOUR_BACKEND_URL
-EXPO_PUBLIC_API_BASE_URL=YOUR_BACKEND_URL
-```
+
+**Ako se ne povezuje na API:**
+Provjeri da je web aplikacija pokrenuta na Replitu.
+
+---
 
 ## iOS Build (for App Store)
 
@@ -88,9 +119,7 @@ pod install
 - Download manual signing certificate
 - Team ID treba biti postavljen
 
-**"Architecture mismatch"**
-- In Xcode: Build Settings → Architectures
-- Set to: `arm64 arm64e`
+---
 
 ## Android Build (for Play Store)
 
@@ -129,57 +158,12 @@ pod install
 4. **Upload to Play Console:**
    - Go to play.google.com/console
    - Create new app: "DžematApp"
-   - Content rating (IARC rating)
-   - Target audience
-   - Upload `.aab` file to Internal Testing track
-   - Test sa colleagues
-   - Move to Production
+   - Upload `.aab` file
    - Submit for review
 
-5. **Configure Store Listing:**
-   - App icon (512x512)
-   - Screenshots (landscape & portrait)
-   - Description
-   - Privacy policy URL
-   - Contact email
+---
 
-### Common Issues
-
-**"Gradle build failed"**
-```bash
-cd android
-./gradlew clean
-./gradlew build
-cd ..
-```
-
-**"Signing failed"**
-- Verify keystore path in `keystore.properties`
-- Verify passwords are correct
-- Use correct alias name
-
-## Manual Testing
-
-Before submitting:
-
-### iOS
-1. Run na actual device:
-   ```bash
-   npm run ios -- --device <device_name>
-   ```
-2. Test login flow
-3. Navigate through tabs
-4. Check API connectivity
-
-### Android
-1. Connect Android device (USB Debugging enabled)
-2. Run:
-   ```bash
-   npm run android
-   ```
-3. Test same flows as iOS
-
-## EAS Build (Alternative)
+## EAS Build (Alternative - Cloud Build)
 
 Umesto lokalne kompilacije, koristi Expo's cloud build:
 
@@ -191,33 +175,12 @@ eas build --platform ios
 eas build --platform android
 ```
 
-(Zahteva Expo account i paid subscription)
+(Zahteva Expo account)
 
-## Version Management
+---
 
-Update version u `app.json`:
-```json
-{
-  "expo": {
-    "version": "1.0.1"
-  }
-}
-```
-
-iOS: Også update `ios/DzematApp.xcodeproj` Build Settings → Current Project Version
-
-Android: Update `android/app/build.gradle`:
-```gradle
-defaultConfig {
-    versionCode 2
-    versionName "1.0.1"
-}
-```
-
-## Support
-
-Za probleme, kontaktiraj dev team sa:
-- Xcode version: `xcode-select --version`
-- Node version: `node --version`
-- CocoaPods: `pod --version`
-- Gradle: `./gradlew --version`
+## Verzije paketa (Expo SDK 54 kompatibilne)
+- React: 18.3.1
+- React Native: 0.76.5
+- Expo: ~54.0.0
+- Expo Router: ~4.0.0
