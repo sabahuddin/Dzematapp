@@ -1,0 +1,42 @@
+› Stopped server
+sabahuddin@Sabahuddins-MacBook-Pro-2 mobile % git add . && git commit -m "Add metro.config.js" && git push https://$GITHUB_TOKEN@github.com/sabahuddin/Dzematapp.git main
+[main f0ad14d] Add metro.config.js
+ 38 files changed, 12672 insertions(+), 981 deletions(-)
+ delete mode 100644 mobile/.env.example
+ create mode 100644 mobile/.expo/README.md
+ create mode 100644 mobile/.expo/devices.json
+ delete mode 100644 mobile/.gitignore
+ delete mode 100644 mobile/.vscode/extensions.json
+ delete mode 100644 mobile/.vscode/settings.json
+ delete mode 100644 mobile/README.md
+ delete mode 100644 mobile/app.json
+ delete mode 100644 mobile/app/(tabs)/explore.tsx
+ delete mode 100644 mobile/app/modal.tsx
+ delete mode 100644 mobile/assets/images/android-icon-background.png
+ delete mode 100644 mobile/assets/images/android-icon-foreground.png
+ delete mode 100644 mobile/assets/images/android-icon-monochrome.png
+ delete mode 100644 mobile/assets/images/favicon.png
+ delete mode 100644 mobile/assets/images/icon.png
+ delete mode 100644 mobile/assets/images/partial-react-logo.png
+ delete mode 100644 mobile/assets/images/react-logo.png
+ delete mode 100644 mobile/assets/images/react-logo@2x.png
+ delete mode 100644 mobile/assets/images/react-logo@3x.png
+ delete mode 100644 mobile/assets/images/splash-icon.png
+ delete mode 100644 mobile/components/external-link.tsx
+ delete mode 100644 mobile/components/haptic-tab.tsx
+ delete mode 100644 mobile/components/hello-wave.tsx
+ delete mode 100644 mobile/components/parallax-scroll-view.tsx
+ delete mode 100644 mobile/components/themed-text.tsx
+ delete mode 100644 mobile/components/themed-view.tsx
+ delete mode 100644 mobile/components/ui/collapsible.tsx
+ delete mode 100644 mobile/components/ui/icon-symbol.ios.tsx
+ delete mode 100644 mobile/components/ui/icon-symbol.tsx
+ delete mode 100644 mobile/eas.json
+ delete mode 100644 mobile/eslint.config.js
+ delete mode 100644 mobile/hooks/use-color-scheme.ts
+ delete mode 100644 mobile/hooks/use-color-scheme.web.ts
+ delete mode 100644 mobile/hooks/use-theme-color.ts
+ create mode 100644 mobile/package-lock.json
+ delete mode 100755 mobile/scripts/reset-project.js
+ delete mode 100644 mobile/types/index.ts
+Password for 'https://github.com': 
