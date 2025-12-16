@@ -341,6 +341,9 @@ app.use((req, res, next) => {
   
   const server = await registerRoutes(app);
 
+  // Serve downloads folder statically BEFORE Vite catch-all
+  app.use('/downloads', express.static(path.join(process.cwd(), 'public', 'downloads')));
+
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
