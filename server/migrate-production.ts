@@ -621,8 +621,9 @@ async function addMissingColumns(client: any): Promise<void> {
   // COMPLETE list of ALL columns from schema.ts verification
   // Generated from scripts/verify-schema.ts analysis
   const columnFixes = [
-    // USERS - gender column
+    // USERS - gender and push_token columns
     `ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "gender" text`,
+    `ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "push_token" text`,
     
     // TENANTS - 7 missing columns
     `ALTER TABLE "tenants" ADD COLUMN IF NOT EXISTS "domain" text`,
