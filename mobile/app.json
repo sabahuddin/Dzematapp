@@ -1,38 +1,40 @@
 {
   "expo": {
     "name": "DžematApp",
-    "slug": "dzemat-app",
+    "slug": "dzematapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "dzematapp",
-    "userInterfaceStyle": "automatic",
-    "newArchEnabled": false,
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#3949AB"
+    },
     "ios": {
-      "supportsTablet": false,
-      "bundleIdentifier": "com.dzemat.app",
-      "buildNumber": "1"
+      "supportsTablet": true,
+      "bundleIdentifier": "com.dzematapp.mobile"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.png",
-        "backgroundColor": "#e8f5e9"
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#3949AB"
       },
-      "package": "com.dzemat.app"
+      "package": "com.dzematapp.mobile"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true
-    },
-    "extra": {
-      "router": {
-        "origin": false
-      },
-      "eas": {
-        "projectId": "dzemat-app"
-      }
     }
   }
 }

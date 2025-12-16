@@ -1,204 +1,206 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  View, 
-  StyleSheet, 
-  TextInput, 
-  TouchableOpacity, 
-  Alert, 
-  ActivityIndicator, 
+import { useState, useEffect } from 'react';
+import {
+  View,
   Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
   KeyboardAvoidingView,
   Platform,
-  ScrollView
+  ActivityIndicator,
+  Alert,
+  ScrollView,
+  Image,
 } from 'react-native';
-import { useRouter } from 'expo-router';
-import { authService } from '@/services/auth';
-import { AppColors, BorderRadius, Spacing, Typography } from '@/constants/theme';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const TENANT_STORAGE_KEY = 'dzematapp_tenant_id';
+import { router } from 'expo-router';
+import { useAuth } from '../services/auth';
+import { AppColors, Spacing, BorderRadius, Typography, Shadows } from '../constants/theme';
 
 export default function LoginScreen() {
-  const router = useRouter();
+  const { verifyTenant, login, tenantId, isAuthenticated } = useAuth();
+  
+  const [step, setStep] = useState<'tenant' | 'login'>(tenantId ? 'login' : 'tenant');
+  const [tenantCode, setTenantCode] = useState('');
+  const [tenantName, setTenantName] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [tenantCode, setTenantCode] = useState('');
   const [loading, setLoading] = useState(false);
-  const [verifyingTenant, setVerifyingTenant] = useState(false);
-  const [showTenantSetup, setShowTenantSetup] = useState(true);
-  const [storedTenantId, setStoredTenantId] = useState<string | null>(null);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    checkStoredTenant();
-  }, []);
-
-  const checkStoredTenant = async () => {
-    try {
-      const savedTenantId = await AsyncStorage.getItem(TENANT_STORAGE_KEY);
-      if (savedTenantId) {
-        setStoredTenantId(savedTenantId);
-        setShowTenantSetup(false);
-      }
-    } catch (error) {
-      console.error('Error checking tenant:', error);
+    if (tenantId) {
+      setStep('login');
     }
-  };
+  }, [tenantId]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.replace('/(tabs)');
+    }
+  }, [isAuthenticated]);
 
   const handleVerifyTenant = async () => {
     if (!tenantCode.trim()) {
-      Alert.alert('Greška', 'Molimo unesite kod organizacije');
-      return;
-    }
-
-    setVerifyingTenant(true);
-    try {
-      const response = await fetch(`${authService.getBaseUrl()}/api/tenants/verify-code`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tenantCode: tenantCode.trim().toUpperCase() })
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        await AsyncStorage.setItem(TENANT_STORAGE_KEY, data.tenantId);
-        setStoredTenantId(data.tenantId);
-        setShowTenantSetup(false);
-        setTenantCode('');
-      } else {
-        const errorData = await response.json();
-        Alert.alert('Greška', errorData.message || 'Nevažeći kod organizacije');
-      }
-    } catch (error) {
-      Alert.alert('Greška', 'Greška pri provjeri koda. Pokušajte ponovo.');
-    } finally {
-      setVerifyingTenant(false);
-    }
-  };
-
-  const handleChangeTenant = async () => {
-    await AsyncStorage.removeItem(TENANT_STORAGE_KEY);
-    setStoredTenantId(null);
-    setShowTenantSetup(true);
-  };
-
-  const handleLogin = async () => {
-    if (!username || !password) {
-      Alert.alert('Greška', 'Molimo unesite korisničko ime i lozinku');
+      setError('Unesite kod organizacije');
       return;
     }
 
     setLoading(true);
-    try {
-      await authService.login(username, password, storedTenantId);
-      router.replace('/(tabs)');
-    } catch (error: any) {
-      Alert.alert('Greška pri prijavi', error.response?.data?.message || 'Molimo pokušajte ponovo');
-    } finally {
-      setLoading(false);
+    setError('');
+
+    const result = await verifyTenant(tenantCode);
+    
+    if (result.success) {
+      setTenantName(result.tenantName || '');
+      setStep('login');
+    } else {
+      setError('Kod organizacije nije pronađen');
     }
+    
+    setLoading(false);
   };
 
-  if (showTenantSetup) {
-    return (
-      <KeyboardAvoidingView 
-        style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
-        <ScrollView contentContainerStyle={styles.scrollContent}>
-          <View style={styles.header}>
-            <View style={styles.logoContainer}>
-              <Text style={styles.logoText}>🕌</Text>
-            </View>
-            <Text style={styles.title}>DžematApp</Text>
-            <Text style={styles.subtitle}>Vaša zajednica na dlanu</Text>
-          </View>
+  const handleLogin = async () => {
+    if (!username.trim() || !password.trim()) {
+      setError('Unesite korisničko ime i lozinku');
+      return;
+    }
 
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Dobrodošli</Text>
-            <Text style={styles.cardDescription}>
-              Unesite kod vaše organizacije da biste se povezali
-            </Text>
+    setLoading(true);
+    setError('');
 
-            <TextInput
-              style={styles.input}
-              placeholder="Kod organizacije (npr. DEMO)"
-              value={tenantCode}
-              onChangeText={setTenantCode}
-              autoCapitalize="characters"
-              editable={!verifyingTenant}
-              placeholderTextColor={AppColors.textSecondary}
-            />
+    const result = await login(username, password);
+    
+    if (result.success) {
+      router.replace('/(tabs)');
+    } else {
+      setError(result.error || 'Prijava neuspješna');
+    }
+    
+    setLoading(false);
+  };
 
-            <TouchableOpacity
-              style={[styles.button, verifyingTenant && styles.buttonDisabled]}
-              onPress={handleVerifyTenant}
-              disabled={verifyingTenant}
-            >
-              {verifyingTenant ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <Text style={styles.buttonText}>Nastavi</Text>
-              )}
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    );
-  }
+  const handleChangeTenant = async () => {
+    const { clearTenant } = useAuth();
+    await clearTenant();
+    setStep('tenant');
+    setTenantCode('');
+    setTenantName('');
+    setUsername('');
+    setPassword('');
+    setError('');
+  };
 
   return (
     <KeyboardAvoidingView 
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.header}>
-          <View style={styles.logoContainer}>
+      <ScrollView 
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.logoContainer}>
+          <View style={styles.logoCircle}>
             <Text style={styles.logoText}>🕌</Text>
           </View>
-          <Text style={styles.title}>DžematApp</Text>
-          <Text style={styles.subtitle}>Prijavite se na svoj račun</Text>
+          <Text style={styles.appName}>DžematApp</Text>
+          <Text style={styles.tagline}>Vaša zajednica na dlanu</Text>
         </View>
 
-        <View style={styles.card}>
-          <TextInput
-            style={styles.input}
-            placeholder="Korisničko ime"
-            value={username}
-            onChangeText={setUsername}
-            autoCapitalize="none"
-            editable={!loading}
-            placeholderTextColor={AppColors.textSecondary}
-          />
+        <View style={styles.formCard}>
+          {step === 'tenant' ? (
+            <>
+              <Text style={styles.formTitle}>Unesite kod organizacije</Text>
+              <Text style={styles.formSubtitle}>
+                Unesite kod koji ste dobili od vaše džematske organizacije
+              </Text>
 
-          <TextInput
-            style={styles.input}
-            placeholder="Lozinka"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            editable={!loading}
-            placeholderTextColor={AppColors.textSecondary}
-          />
+              {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-          <TouchableOpacity
-            style={[styles.button, loading && styles.buttonDisabled]}
-            onPress={handleLogin}
-            disabled={loading}
-          >
-            {loading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.buttonText}>Prijavi se</Text>
-            )}
-          </TouchableOpacity>
+              <TextInput
+                style={styles.input}
+                placeholder="Kod organizacije (npr. DEMO)"
+                placeholderTextColor={AppColors.textSecondary}
+                value={tenantCode}
+                onChangeText={(text) => {
+                  setTenantCode(text.toUpperCase());
+                  setError('');
+                }}
+                autoCapitalize="characters"
+                autoCorrect={false}
+                editable={!loading}
+              />
 
-          <TouchableOpacity
-            style={styles.linkButton}
-            onPress={handleChangeTenant}
-          >
-            <Text style={styles.linkText}>Promijeni organizaciju</Text>
-          </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.button, loading && styles.buttonDisabled]}
+                onPress={handleVerifyTenant}
+                disabled={loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color={AppColors.white} />
+                ) : (
+                  <Text style={styles.buttonText}>Nastavi</Text>
+                )}
+              </TouchableOpacity>
+            </>
+          ) : (
+            <>
+              <Text style={styles.formTitle}>Prijava</Text>
+              {tenantName ? (
+                <Text style={styles.tenantBadge}>{tenantName}</Text>
+              ) : null}
+
+              {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+              <TextInput
+                style={styles.input}
+                placeholder="Korisničko ime"
+                placeholderTextColor={AppColors.textSecondary}
+                value={username}
+                onChangeText={(text) => {
+                  setUsername(text);
+                  setError('');
+                }}
+                autoCapitalize="none"
+                autoCorrect={false}
+                editable={!loading}
+              />
+
+              <TextInput
+                style={styles.input}
+                placeholder="Lozinka"
+                placeholderTextColor={AppColors.textSecondary}
+                value={password}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  setError('');
+                }}
+                secureTextEntry
+                editable={!loading}
+              />
+
+              <TouchableOpacity
+                style={[styles.button, loading && styles.buttonDisabled]}
+                onPress={handleLogin}
+                disabled={loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color={AppColors.white} />
+                ) : (
+                  <Text style={styles.buttonText}>Prijavi se</Text>
+                )}
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.changeTenantButton}
+                onPress={handleChangeTenant}
+                disabled={loading}
+              >
+                <Text style={styles.changeTenantText}>Promijeni organizaciju</Text>
+              </TouchableOpacity>
+            </>
+          )}
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -208,71 +210,85 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: AppColors.background,
+    backgroundColor: AppColors.primary,
   },
   scrollContent: {
     flexGrow: 1,
     justifyContent: 'center',
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.xl,
+    padding: Spacing.lg,
   },
-  header: {
+  logoContainer: {
     alignItems: 'center',
     marginBottom: Spacing.xl,
   },
-  logoContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: AppColors.primary,
+  logoCircle: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: AppColors.white,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: Spacing.md,
+    ...Shadows.card,
   },
   logoText: {
-    fontSize: 40,
+    fontSize: 48,
   },
-  title: {
-    ...Typography.h1,
-    color: AppColors.primary,
+  appName: {
+    fontSize: Typography.fontSize.xxxl,
+    fontWeight: Typography.fontWeight.bold,
+    color: AppColors.white,
     marginBottom: Spacing.xs,
   },
-  subtitle: {
-    ...Typography.body,
-    color: AppColors.textSecondary,
+  tagline: {
+    fontSize: Typography.fontSize.md,
+    color: 'rgba(255,255,255,0.8)',
   },
-  card: {
-    backgroundColor: AppColors.surface,
+  formCard: {
+    backgroundColor: AppColors.white,
     borderRadius: BorderRadius.lg,
     padding: Spacing.lg,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 4,
+    ...Shadows.card,
   },
-  cardTitle: {
-    ...Typography.h2,
+  formTitle: {
+    fontSize: Typography.fontSize.xl,
+    fontWeight: Typography.fontWeight.semibold,
     color: AppColors.textPrimary,
+    marginBottom: Spacing.sm,
     textAlign: 'center',
-    marginBottom: Spacing.xs,
   },
-  cardDescription: {
-    ...Typography.body,
+  formSubtitle: {
+    fontSize: Typography.fontSize.sm,
     color: AppColors.textSecondary,
+    marginBottom: Spacing.lg,
+    textAlign: 'center',
+  },
+  tenantBadge: {
+    fontSize: Typography.fontSize.sm,
+    color: AppColors.primary,
+    backgroundColor: `${AppColors.primary}15`,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.xs,
+    borderRadius: BorderRadius.full,
     textAlign: 'center',
     marginBottom: Spacing.lg,
+    alignSelf: 'center',
+    overflow: 'hidden',
+  },
+  errorText: {
+    fontSize: Typography.fontSize.sm,
+    color: AppColors.error,
+    marginBottom: Spacing.md,
+    textAlign: 'center',
   },
   input: {
-    borderWidth: 1,
-    borderColor: AppColors.border,
+    backgroundColor: AppColors.background,
     borderRadius: BorderRadius.md,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.md,
-    fontSize: 16,
-    backgroundColor: AppColors.background,
-    marginBottom: Spacing.md,
+    fontSize: Typography.fontSize.md,
     color: AppColors.textPrimary,
+    marginBottom: Spacing.md,
   },
   button: {
     backgroundColor: AppColors.secondary,
@@ -280,20 +296,22 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.md,
     alignItems: 'center',
     marginTop: Spacing.sm,
+    ...Shadows.button,
   },
   buttonDisabled: {
     opacity: 0.7,
   },
   buttonText: {
-    ...Typography.button,
-    color: '#FFFFFF',
+    fontSize: Typography.fontSize.md,
+    fontWeight: Typography.fontWeight.semibold,
+    color: AppColors.white,
   },
-  linkButton: {
+  changeTenantButton: {
     marginTop: Spacing.lg,
     alignItems: 'center',
   },
-  linkText: {
-    ...Typography.bodySmall,
+  changeTenantText: {
+    fontSize: Typography.fontSize.sm,
     color: AppColors.secondary,
   },
 });

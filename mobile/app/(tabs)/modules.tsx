@@ -1,183 +1,110 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, Text, TouchableOpacity, SafeAreaView } from 'react-native';
-import { useRouter } from 'expo-router';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { AppColors, Spacing, BorderRadius, Typography, Shadows } from '../../constants/theme';
 
-type IconName = React.ComponentProps<typeof MaterialCommunityIcons>['name'];
-
-interface Module {
+interface ModuleItem {
   id: string;
-  label: string;
-  icon: IconName;
+  name: string;
+  icon: keyof typeof Ionicons.glyphMap;
   route: string;
+  color: string;
 }
 
-interface UserData {
-  id: string;
-  isAdmin?: boolean;
-  roles?: string[];
-}
+const modules: ModuleItem[] = [
+  { id: 'profile', name: 'Profil', icon: 'person-circle', route: '/(tabs)/profile', color: '#3949AB' },
+  { id: 'sections', name: 'Sekcije', icon: 'people', route: '/sections', color: '#5C6BC0' },
+  { id: 'shop', name: 'Shop', icon: 'cart', route: '/shop', color: '#1E88E5' },
+  { id: 'vaktija', name: 'Vaktija', icon: 'moon', route: '/vaktija', color: '#26A69A' },
+  { id: 'documents', name: 'Dokumenti', icon: 'document-text', route: '/documents', color: '#9C27B0' },
+  { id: 'imam-qa', name: 'Pitaj imama', icon: 'help-circle', route: '/imam-qa', color: '#FF7043' },
+  { id: 'membership', name: 'Članarina', icon: 'wallet', route: '/membership', color: '#5C6BC0' },
+  { id: 'badges', name: 'Značke', icon: 'ribbon', route: '/badges', color: '#FFA726' },
+  { id: 'certificates', name: 'Zahvale', icon: 'medal', route: '/certificates', color: '#EC407A' },
+  { id: 'activities', name: 'Aktivnosti', icon: 'pulse', route: '/activities', color: '#26C6DA' },
+  { id: 'livestream', name: 'Livestream', icon: 'videocam', route: '/livestream', color: '#EF5350' },
+  { id: 'feed', name: 'Feed', icon: 'newspaper', route: '/feed', color: '#66BB6A' },
+  { id: 'sponsors', name: 'Sponzori', icon: 'business', route: '/sponsors', color: '#8D6E63' },
+  { id: 'notifications', name: 'Obavještenja', icon: 'notifications', route: '/notifications', color: '#7E57C2' },
+  { id: 'applications', name: 'Prijave', icon: 'create', route: '/applications', color: '#42A5F5' },
+  { id: 'projects', name: 'Projekti', icon: 'briefcase', route: '/projects', color: '#78909C' },
+  { id: 'guide', name: 'Vodič', icon: 'book', route: '/guide', color: '#4DB6AC' },
+];
 
 export default function ModulesScreen() {
-  const router = useRouter();
-  const [user, setUser] = useState<UserData | null>(null);
-
-  useEffect(() => {
-    loadUser();
-  }, []);
-
-  const loadUser = async () => {
-    try {
-      const userData = await AsyncStorage.getItem('dzematapp_user');
-      if (userData) setUser(JSON.parse(userData));
-    } catch (error) {
-      console.error('Error loading user:', error);
-    }
-  };
-
-  const isAdmin = user?.isAdmin || user?.roles?.includes('admin') || user?.roles?.includes('imam');
-
-  const MODULES: Module[] = [
-    { id: 'feed', label: 'Feed', icon: 'newspaper-variant-outline', route: '/(tabs)/feed' },
-    { id: 'profile', label: 'Profil', icon: 'account-outline', route: '/(tabs)/profile' },
-    { id: 'activities', label: 'Moje aktivnosti', icon: 'star-outline', route: '/(tabs)/activities' },
-    { id: 'membership', label: 'Moja članarina', icon: 'credit-card-outline', route: '/(tabs)/membership' },
-    { id: 'projects', label: 'Projekti', icon: 'bank-outline', route: '/(tabs)/projects' },
-    { id: 'announcements', label: 'Objave', icon: 'bullhorn-outline', route: '/(tabs)/announcements' },
-    { id: 'events', label: 'Događaji', icon: 'calendar-outline', route: '/(tabs)/events' },
-    { id: 'sections', label: 'Sekcije', icon: 'clipboard-list-outline', route: '/(tabs)/sections' },
-    { id: 'messages', label: 'Poruke', icon: 'message-text-outline', route: '/(tabs)/messages' },
-    { id: 'imam-qa', label: 'Pitaj imama', icon: 'account-question-outline', route: '/(tabs)/imam-qa' },
-    { id: 'documents', label: 'Dokumenti', icon: 'folder-outline', route: '/(tabs)/documents' },
-    { id: 'shop', label: 'Shop', icon: 'cart-outline', route: '/(tabs)/shop' },
-    { id: 'sponsors', label: 'Sponzori', icon: 'heart-outline', route: '/(tabs)/sponsors' },
-    { id: 'applications', label: 'Prijave', icon: 'file-document-edit-outline', route: '/(tabs)/applications' },
-    { id: 'vaktija', label: 'Vaktija', icon: 'mosque', route: '/(tabs)/vaktija' },
-    { id: 'guide', label: 'Vodič', icon: 'book-open-page-variant-outline', route: '/(tabs)/guide' },
-    { id: 'livestream', label: 'Livestream', icon: 'video-outline', route: '/(tabs)/livestream' },
-  ];
-
-  const handleLogout = async () => {
-    try {
-      await AsyncStorage.removeItem('dzematapp_user');
-      await AsyncStorage.removeItem('dzematapp_tenant');
-      router.replace('/login');
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
+  const handleModulePress = (module: ModuleItem) => {
+    router.push(module.route as any);
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.topBar}>
-        <Text style={styles.topBarTitle}>Moduli</Text>
-      </View>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <Text style={styles.title}>Moduli</Text>
+      <Text style={styles.subtitle}>Pristupite svim funkcionalnostima aplikacije</Text>
       
-      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-        <View style={styles.grid}>
-          {MODULES.map((module) => (
-            <TouchableOpacity
-              key={module.id}
-              style={styles.moduleCard}
-              onPress={() => router.push(module.route as any)}
-              activeOpacity={0.7}
-            >
-              <View style={styles.iconContainer}>
-                <MaterialCommunityIcons name={module.icon} size={28} color="#3949AB" />
-              </View>
-              <Text style={styles.moduleLabel}>{module.label}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        <View style={styles.divider} />
-
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <MaterialCommunityIcons name="logout" size={20} color="#D32F2F" />
-          <Text style={styles.logoutText}>Odjava</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </SafeAreaView>
+      <View style={styles.grid}>
+        {modules.map(module => (
+          <TouchableOpacity
+            key={module.id}
+            style={styles.moduleCard}
+            onPress={() => handleModulePress(module)}
+            activeOpacity={0.7}
+          >
+            <View style={[styles.iconContainer, { backgroundColor: `${module.color}20` }]}>
+              <Ionicons name={module.icon} size={28} color={module.color} />
+            </View>
+            <Text style={styles.moduleName}>{module.name}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#3949AB',
-  },
-  topBar: {
-    backgroundColor: '#3949AB',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  topBarTitle: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '700',
-  },
   container: {
     flex: 1,
-    backgroundColor: '#ECEFF1',
+    backgroundColor: AppColors.background,
   },
   content: {
-    padding: 12,
-    paddingBottom: 40,
+    padding: Spacing.md,
+  },
+  title: {
+    fontSize: Typography.fontSize.xxl,
+    fontWeight: Typography.fontWeight.bold,
+    color: AppColors.textPrimary,
+    marginBottom: Spacing.xs,
+  },
+  subtitle: {
+    fontSize: Typography.fontSize.md,
+    color: AppColors.textSecondary,
+    marginBottom: Spacing.lg,
   },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
+    justifyContent: 'space-between',
   },
   moduleCard: {
     width: '31%',
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 14,
+    backgroundColor: AppColors.white,
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.md,
+    marginBottom: Spacing.md,
     alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 90,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
+    ...Shadows.card,
   },
   iconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: 'rgba(57, 73, 171, 0.1)',
-    alignItems: 'center',
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     justifyContent: 'center',
-    marginBottom: 8,
+    alignItems: 'center',
+    marginBottom: Spacing.sm,
   },
-  moduleLabel: {
-    fontSize: 11,
-    fontWeight: '600',
+  moduleName: {
+    fontSize: Typography.fontSize.sm,
+    fontWeight: Typography.fontWeight.medium,
+    color: AppColors.textPrimary,
     textAlign: 'center',
-    color: '#0D1B2A',
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#E0E0E0',
-    marginVertical: 24,
-  },
-  logoutButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: 24,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#D32F2F',
-    gap: 8,
-  },
-  logoutText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#D32F2F',
   },
 });

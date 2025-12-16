@@ -1,89 +1,100 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { useEffect, useState, useCallback } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState, useRef } from 'react';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { authService } from '@/services/auth';
-import { 
-  registerForPushNotificationsAsync, 
-  registerPushTokenWithServer,
-  addNotificationReceivedListener,
-  addNotificationResponseListener
-} from '@/services/notifications';
-
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { AuthContext, AuthContextType, User } from '../services/auth';
+import { apiClient } from '../services/api';
+import { AppColors } from '../constants/theme';
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
-  const notificationListener = useRef<any>();
-  const responseListener = useRef<any>();
+  const [user, setUser] = useState<User | null>(null);
+  const [tenantId, setTenantId] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    checkAuth();
+  const initialize = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const state = await apiClient.initialize();
+      setUser(state.user);
+      setTenantId(state.tenantId);
+      setIsAuthenticated(state.isAuthenticated);
+    } catch (error) {
+      console.error('Failed to initialize:', error);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
   useEffect(() => {
-    if (isLoggedIn) {
-      setupPushNotifications();
-    }
-    
-    return () => {
-      if (notificationListener.current) {
-        notificationListener.current.remove();
-      }
-      if (responseListener.current) {
-        responseListener.current.remove();
-      }
-    };
-  }, [isLoggedIn]);
+    initialize();
+  }, [initialize]);
 
-  const setupPushNotifications = async () => {
-    try {
-      const token = await registerForPushNotificationsAsync();
-      if (token) {
-        await registerPushTokenWithServer(token);
-      }
-      
-      notificationListener.current = addNotificationReceivedListener(notification => {
-        console.log('Notification received:', notification);
-      });
-
-      responseListener.current = addNotificationResponseListener(response => {
-        console.log('Notification response:', response);
-      });
-    } catch (error) {
-      console.error('Error setting up push notifications:', error);
+  const login = useCallback(async (username: string, password: string) => {
+    const result = await apiClient.login(username, password);
+    if (result.success && result.user) {
+      setUser(result.user);
+      setIsAuthenticated(true);
     }
+    return { success: result.success, error: result.error };
+  }, []);
+
+  const logout = useCallback(async () => {
+    await apiClient.logout();
+    setUser(null);
+    setIsAuthenticated(false);
+  }, []);
+
+  const verifyTenant = useCallback(async (tenantCode: string) => {
+    const result = await apiClient.verifyTenant(tenantCode);
+    if (result.success) {
+      setTenantId(result.tenantId || null);
+    }
+    return { success: result.success, tenantName: result.tenantName };
+  }, []);
+
+  const clearTenant = useCallback(async () => {
+    await apiClient.clearTenant();
+    setTenantId(null);
+  }, []);
+
+  const authContext: AuthContextType = {
+    user,
+    tenantId,
+    isAuthenticated,
+    isLoading,
+    login,
+    logout,
+    verifyTenant,
+    clearTenant,
+    initialize,
   };
 
-  const checkAuth = async () => {
-    await authService.loadStoredAuth();
-    const session = await authService.getSession();
-    setIsLoggedIn(!!session);
-  };
-
-  if (isLoggedIn === null) {
-    return null; // Loading state
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={AppColors.primary} />
+        <StatusBar style="light" backgroundColor={AppColors.primary} />
+      </View>
+    );
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        {!isLoggedIn ? (
-          <Stack.Screen name="login" options={{ headerShown: false }} />
-        ) : (
-          <>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-          </>
-        )}
+    <AuthContext.Provider value={authContext}>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="login" />
+        <Stack.Screen name="(tabs)" />
       </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+      <StatusBar style="light" backgroundColor={AppColors.primary} />
+    </AuthContext.Provider>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: AppColors.background,
+  },
+});

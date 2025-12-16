@@ -1,101 +1,203 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Use environment variable or default to production URL
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://dzematapp.replit.app';
+const API_BASE_URL = 'https://app.dzematapp.com';
+
+const STORAGE_KEYS = {
+  SESSION: 'dzematapp_session',
+  TENANT_ID: 'dzematapp_tenant_id',
+  USER: 'dzematapp_user',
+};
+
+interface User {
+  id: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  isAdmin: boolean;
+  tenantId: string;
+  photoUrl?: string;
+  gender?: string;
+  dateOfBirth?: string;
+  city?: string;
+  streetAddress?: string;
+  postalCode?: string;
+  occupation?: string;
+  registryNumber?: string;
+  totalPoints?: number;
+}
+
+interface AuthState {
+  user: User | null;
+  tenantId: string | null;
+  isAuthenticated: boolean;
+}
 
 class ApiClient {
-  private baseUrl: string;
   private sessionCookie: string | null = null;
+  private tenantId: string | null = null;
 
-  constructor() {
-    this.baseUrl = API_BASE_URL;
-    this.loadSession();
-  }
-
-  private async loadSession() {
+  async initialize(): Promise<AuthState> {
     try {
-      this.sessionCookie = await AsyncStorage.getItem('session_cookie');
+      this.sessionCookie = await AsyncStorage.getItem(STORAGE_KEYS.SESSION);
+      this.tenantId = await AsyncStorage.getItem(STORAGE_KEYS.TENANT_ID);
+      const userJson = await AsyncStorage.getItem(STORAGE_KEYS.USER);
+      const user = userJson ? JSON.parse(userJson) : null;
+      
+      if (this.sessionCookie && user) {
+        const isValid = await this.verifySession();
+        if (isValid) {
+          return { user, tenantId: this.tenantId, isAuthenticated: true };
+        }
+      }
+      
+      return { user: null, tenantId: this.tenantId, isAuthenticated: false };
     } catch (error) {
-      console.error('Error loading session:', error);
+      console.error('Failed to initialize API client:', error);
+      return { user: null, tenantId: null, isAuthenticated: false };
     }
   }
 
-  getBaseUrl() {
-    return this.baseUrl;
+  async verifyTenant(tenantCode: string): Promise<{ success: boolean; tenantId?: string; tenantName?: string }> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/tenants/verify-code`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tenantCode: tenantCode.trim().toUpperCase() }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        this.tenantId = data.tenantId;
+        await AsyncStorage.setItem(STORAGE_KEYS.TENANT_ID, data.tenantId);
+        return { success: true, tenantId: data.tenantId, tenantName: data.tenantName };
+      }
+      return { success: false };
+    } catch (error) {
+      console.error('Failed to verify tenant:', error);
+      return { success: false };
+    }
   }
 
-  setSessionCookie(cookie: string) {
-    this.sessionCookie = cookie;
-    AsyncStorage.setItem('session_cookie', cookie);
+  async login(username: string, password: string): Promise<{ success: boolean; user?: User; error?: string }> {
+    try {
+      if (!this.tenantId) {
+        return { success: false, error: 'Tenant nije postavljen' };
+      }
+
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-Tenant-ID': this.tenantId,
+        },
+        body: JSON.stringify({ username, password, tenantId: this.tenantId }),
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        
+        const setCookie = response.headers.get('set-cookie');
+        if (setCookie) {
+          this.sessionCookie = setCookie;
+          await AsyncStorage.setItem(STORAGE_KEYS.SESSION, setCookie);
+        }
+        
+        await AsyncStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(data.user));
+        
+        return { success: true, user: data.user };
+      } else {
+        const error = await response.json().catch(() => ({ message: 'Prijava neuspješna' }));
+        return { success: false, error: error.message || 'Pogrešno korisničko ime ili lozinka' };
+      }
+    } catch (error) {
+      console.error('Login failed:', error);
+      return { success: false, error: 'Greška pri povezivanju sa serverom' };
+    }
   }
 
-  clearSession() {
+  async logout(): Promise<void> {
+    try {
+      await fetch(`${API_BASE_URL}/api/auth/logout`, {
+        method: 'POST',
+        headers: this.getHeaders(),
+        credentials: 'include',
+      });
+    } catch (error) {
+      console.error('Logout request failed:', error);
+    }
+    
     this.sessionCookie = null;
-    AsyncStorage.removeItem('session_cookie');
+    await AsyncStorage.removeItem(STORAGE_KEYS.SESSION);
+    await AsyncStorage.removeItem(STORAGE_KEYS.USER);
   }
 
-  private async request<T>(url: string, options: RequestInit = {}): Promise<{ data: T; headers: Headers }> {
+  async clearTenant(): Promise<void> {
+    this.tenantId = null;
+    await AsyncStorage.removeItem(STORAGE_KEYS.TENANT_ID);
+  }
+
+  private async verifySession(): Promise<boolean> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/session`, {
+        method: 'GET',
+        headers: this.getHeaders(),
+        credentials: 'include',
+      });
+      return response.ok;
+    } catch {
+      return false;
+    }
+  }
+
+  private getHeaders(): Record<string, string> {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...(options.headers as Record<string, string> || {}),
     };
-
+    if (this.tenantId) {
+      headers['X-Tenant-ID'] = this.tenantId;
+    }
     if (this.sessionCookie) {
       headers['Cookie'] = this.sessionCookie;
     }
+    return headers;
+  }
 
-    const response = await fetch(`${this.baseUrl}${url}`, {
-      ...options,
-      headers,
+  async get<T>(endpoint: string): Promise<T> {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      method: 'GET',
+      headers: this.getHeaders(),
       credentials: 'include',
     });
-
-    // Store session cookie from response
-    const setCookie = response.headers.get('set-cookie');
-    if (setCookie) {
-      this.setSessionCookie(setCookie);
-    }
-
+    
     if (!response.ok) {
-      if (response.status === 401) {
-        this.clearSession();
-      }
-      const errorData = await response.json().catch(() => ({}));
-      throw { response: { status: response.status, data: errorData } };
+      throw new Error(`API Error: ${response.status}`);
     }
-
-    const data = await response.json();
-    return { data, headers: response.headers };
+    
+    return response.json();
   }
 
-  async get<T>(url: string) {
-    return this.request<T>(url, { method: 'GET' });
-  }
-
-  async post<T>(url: string, body?: any) {
-    return this.request<T>(url, {
+  async post<T>(endpoint: string, data?: unknown): Promise<T> {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: 'POST',
-      body: body ? JSON.stringify(body) : undefined,
+      headers: this.getHeaders(),
+      body: data ? JSON.stringify(data) : undefined,
+      credentials: 'include',
     });
+    
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.status}`);
+    }
+    
+    return response.json();
   }
 
-  async put<T>(url: string, body?: any) {
-    return this.request<T>(url, {
-      method: 'PUT',
-      body: body ? JSON.stringify(body) : undefined,
-    });
-  }
-
-  async patch<T>(url: string, body?: any) {
-    return this.request<T>(url, {
-      method: 'PATCH',
-      body: body ? JSON.stringify(body) : undefined,
-    });
-  }
-
-  async delete<T>(url: string) {
-    return this.request<T>(url, { method: 'DELETE' });
+  getTenantId(): string | null {
+    return this.tenantId;
   }
 }
 
 export const apiClient = new ApiClient();
+export type { User, AuthState };

@@ -1,8 +1,17 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { View, StyleSheet, ScrollView, Text, ActivityIndicator, RefreshControl, TouchableOpacity, TextInput } from 'react-native';
-import { apiClient } from '@/services/api';
-import { AppColors, BorderRadius, Spacing, Typography, Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useState, useEffect, useMemo } from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  RefreshControl,
+  TouchableOpacity,
+  ActivityIndicator,
+  TextInput,
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { apiClient } from '../../services/api';
+import { AppColors, Spacing, BorderRadius, Typography, Shadows } from '../../constants/theme';
 
 interface Announcement {
   id: string;
@@ -11,11 +20,10 @@ interface Announcement {
   category: string | null;
   isPinned: boolean;
   createdAt: string;
+  photoUrl?: string;
 }
 
 export default function AnnouncementsScreen() {
-  const colorScheme = useColorScheme();
-  const colors = Colors[colorScheme ?? 'light'];
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -37,134 +45,143 @@ export default function AnnouncementsScreen() {
     });
   }, [announcements, searchQuery, selectedCategory]);
 
-  useEffect(() => {
-    loadAnnouncements();
-  }, []);
-
-  const loadAnnouncements = async () => {
+  const loadData = async () => {
     try {
-      const response = await apiClient.get<Announcement[]>('/api/announcements');
-      setAnnouncements(response.data || []);
+      const data = await apiClient.get<Announcement[]>('/api/announcements');
+      setAnnouncements(data || []);
     } catch (error) {
-      console.error('Error loading announcements:', error);
-      setAnnouncements([]);
+      console.error('Failed to load announcements:', error);
     } finally {
       setLoading(false);
-      setRefreshing(false);
     }
   };
 
-  const onRefresh = () => {
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const onRefresh = async () => {
     setRefreshing(true);
-    loadAnnouncements();
+    await loadData();
+    setRefreshing(false);
   };
 
-  const formatDate = (dateStr: string) => {
+  const stripHtml = (html: string): string => {
+    return html.replace(/<[^>]*>/g, '').trim();
+  };
+
+  const formatDate = (dateStr: string): string => {
     const date = new Date(dateStr);
-    return date.toLocaleDateString('hr-HR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    return date.toLocaleDateString('bs-BA', { 
+      day: 'numeric', 
+      month: 'long', 
+      year: 'numeric' 
+    });
   };
 
   if (loading) {
     return (
-      <View style={[styles.centerContainer, { backgroundColor: colors.background }]}>
+      <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={AppColors.primary} />
       </View>
     );
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      {/* Search Bar */}
-      <View style={[styles.searchContainer, { backgroundColor: colors.surface }]}>
-        <TextInput
-          style={[styles.searchInput, { backgroundColor: colors.background, color: colors.text }]}
-          placeholder="Pretraži objave..."
-          placeholderTextColor={colors.textSecondary}
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-        {categories.length > 0 && (
-          <ScrollView 
-            horizontal 
-            showsHorizontalScrollIndicator={false} 
-            style={styles.categoryScroll}
-            contentContainerStyle={styles.categoryScrollContent}
-          >
-            <TouchableOpacity
-              style={[styles.categoryChip, !selectedCategory && styles.categoryChipActive]}
-              onPress={() => setSelectedCategory(null)}
-            >
-              <Text style={[styles.chipText, !selectedCategory && styles.chipTextActive]}>Sve</Text>
+    <View style={styles.container}>
+      <View style={styles.searchContainer}>
+        <View style={styles.searchInputContainer}>
+          <Ionicons name="search" size={20} color={AppColors.textSecondary} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Pretraži objave..."
+            placeholderTextColor={AppColors.textSecondary}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+          {searchQuery ? (
+            <TouchableOpacity onPress={() => setSearchQuery('')}>
+              <Ionicons name="close-circle" size={20} color={AppColors.textSecondary} />
             </TouchableOpacity>
-            {categories.map((cat) => (
-              <TouchableOpacity
-                key={cat}
-                style={[styles.categoryChip, selectedCategory === cat && styles.categoryChipActive]}
-                onPress={() => setSelectedCategory(cat)}
-              >
-                <Text style={[styles.chipText, selectedCategory === cat && styles.chipTextActive]}>{cat}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        )}
+          ) : null}
+        </View>
       </View>
 
+      {categories.length > 0 && (
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false} 
+          style={styles.categoriesContainer}
+          contentContainerStyle={styles.categoriesContent}
+        >
+          <TouchableOpacity
+            style={[styles.categoryChip, !selectedCategory && styles.categoryChipActive]}
+            onPress={() => setSelectedCategory(null)}
+          >
+            <Text style={[styles.categoryText, !selectedCategory && styles.categoryTextActive]}>
+              Sve
+            </Text>
+          </TouchableOpacity>
+          {categories.map(cat => (
+            <TouchableOpacity
+              key={cat}
+              style={[styles.categoryChip, selectedCategory === cat && styles.categoryChipActive]}
+              onPress={() => setSelectedCategory(cat)}
+            >
+              <Text style={[styles.categoryText, selectedCategory === cat && styles.categoryTextActive]}>
+                {cat}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      )}
+
       <ScrollView
-        contentContainerStyle={styles.content}
+        style={styles.list}
+        contentContainerStyle={styles.listContent}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[AppColors.primary]} />
         }
       >
-      {filteredAnnouncements.length === 0 ? (
-        <View style={[styles.emptyState, { backgroundColor: colors.surface }]}>
-          <Text style={styles.emptyIcon}>📢</Text>
-          <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
-            Nema objava za prikaz
-          </Text>
-        </View>
-      ) : (
-        filteredAnnouncements.map((announcement) => (
-          <TouchableOpacity
-            key={announcement.id}
-            style={[
-              styles.card,
-              { backgroundColor: colors.surface },
-              announcement.isPinned && styles.pinnedCard
-            ]}
-            onPress={() => setExpandedId(expandedId === announcement.id ? null : announcement.id)}
-            activeOpacity={0.8}
-          >
-            <View style={styles.cardHeader}>
-              {announcement.isPinned && (
-                <Text style={styles.pinnedBadge}>📌</Text>
-              )}
-              <Text style={[styles.cardTitle, { color: colors.text }]} numberOfLines={expandedId === announcement.id ? undefined : 2}>
-                {announcement.title}
-              </Text>
-            </View>
-            
-            <Text 
-              style={[styles.cardContent, { color: colors.textSecondary }]} 
-              numberOfLines={expandedId === announcement.id ? undefined : 3}
+        {filteredAnnouncements.length === 0 ? (
+          <View style={styles.emptyState}>
+            <Ionicons name="megaphone-outline" size={64} color={AppColors.navInactive} />
+            <Text style={styles.emptyText}>Nema objava</Text>
+          </View>
+        ) : (
+          filteredAnnouncements.map(announcement => (
+            <TouchableOpacity
+              key={announcement.id}
+              style={styles.card}
+              onPress={() => setExpandedId(expandedId === announcement.id ? null : announcement.id)}
+              activeOpacity={0.7}
             >
-              {announcement.content}
-            </Text>
-            
-            <View style={styles.cardFooter}>
-              <Text style={[styles.cardDate, { color: colors.textSecondary }]}>
-                {formatDate(announcement.createdAt)}
-              </Text>
+              <View style={styles.cardHeader}>
+                {announcement.isPinned && (
+                  <Ionicons name="pin" size={16} color={AppColors.primary} style={styles.pinIcon} />
+                )}
+                <Text style={styles.cardTitle} numberOfLines={expandedId === announcement.id ? undefined : 2}>
+                  {announcement.title}
+                </Text>
+              </View>
+              
               {announcement.category && (
-                <View style={[styles.categoryBadge, { backgroundColor: AppColors.primary + '20' }]}>
-                  <Text style={[styles.categoryText, { color: AppColors.primary }]}>
-                    {announcement.category}
-                  </Text>
+                <View style={styles.categoryBadge}>
+                  <Text style={styles.categoryBadgeText}>{announcement.category}</Text>
                 </View>
               )}
-            </View>
-          </TouchableOpacity>
-        ))
-      )}
+              
+              <Text 
+                style={styles.cardContent} 
+                numberOfLines={expandedId === announcement.id ? undefined : 3}
+              >
+                {stripHtml(announcement.content)}
+              </Text>
+              
+              <Text style={styles.cardDate}>{formatDate(announcement.createdAt)}</Text>
+            </TouchableOpacity>
+          ))
+        )}
       </ScrollView>
     </View>
   );
@@ -173,107 +190,115 @@ export default function AnnouncementsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: AppColors.background,
   },
-  centerContainer: {
+  loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  content: {
-    padding: Spacing.md,
-  },
-  emptyState: {
-    alignItems: 'center',
-    padding: Spacing.xl,
-    borderRadius: BorderRadius.lg,
-  },
-  emptyIcon: {
-    fontSize: 48,
-    marginBottom: Spacing.md,
-  },
-  emptyText: {
-    ...Typography.body,
-    textAlign: 'center',
-  },
-  card: {
-    borderRadius: BorderRadius.lg,
-    padding: Spacing.md,
-    marginBottom: Spacing.sm,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  pinnedCard: {
-    borderLeftWidth: 4,
-    borderLeftColor: AppColors.warning,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: Spacing.sm,
-  },
-  pinnedBadge: {
-    marginRight: Spacing.xs,
-  },
-  cardTitle: {
-    ...Typography.h3,
-    flex: 1,
-  },
-  cardContent: {
-    ...Typography.body,
-    marginBottom: Spacing.sm,
-  },
-  cardFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  cardDate: {
-    ...Typography.caption,
-  },
-  categoryBadge: {
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: Spacing.xs,
-    borderRadius: BorderRadius.sm,
-  },
-  categoryText: {
-    ...Typography.caption,
-    fontWeight: '600',
+    backgroundColor: AppColors.background,
   },
   searchContainer: {
     padding: Spacing.md,
-    paddingBottom: Spacing.sm,
+    backgroundColor: AppColors.white,
+  },
+  searchInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: AppColors.background,
+    borderRadius: BorderRadius.md,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
   },
   searchInput: {
-    borderRadius: BorderRadius.md,
-    padding: Spacing.md,
-    fontSize: 16,
-    marginBottom: Spacing.sm,
+    flex: 1,
+    marginLeft: Spacing.sm,
+    fontSize: Typography.fontSize.md,
+    color: AppColors.textPrimary,
   },
-  categoryScroll: {
-    marginTop: Spacing.xs,
+  categoriesContainer: {
+    backgroundColor: AppColors.white,
+    maxHeight: 50,
   },
-  categoryScrollContent: {
-    gap: Spacing.xs,
+  categoriesContent: {
+    paddingHorizontal: Spacing.md,
+    paddingBottom: Spacing.sm,
   },
   categoryChip: {
     paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
+    paddingVertical: Spacing.xs,
     borderRadius: BorderRadius.full,
     backgroundColor: AppColors.background,
-    marginRight: Spacing.xs,
+    marginRight: Spacing.sm,
   },
   categoryChipActive: {
     backgroundColor: AppColors.primary,
   },
-  chipText: {
-    ...Typography.bodySmall,
+  categoryText: {
+    fontSize: Typography.fontSize.sm,
     color: AppColors.textSecondary,
   },
-  chipTextActive: {
-    color: '#fff',
-    fontWeight: '600',
+  categoryTextActive: {
+    color: AppColors.white,
+  },
+  list: {
+    flex: 1,
+  },
+  listContent: {
+    padding: Spacing.md,
+  },
+  emptyState: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: Spacing.xxl,
+  },
+  emptyText: {
+    fontSize: Typography.fontSize.md,
+    color: AppColors.textSecondary,
+    marginTop: Spacing.md,
+  },
+  card: {
+    backgroundColor: AppColors.white,
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.md,
+    marginBottom: Spacing.md,
+    ...Shadows.card,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  pinIcon: {
+    marginRight: Spacing.xs,
+    marginTop: 2,
+  },
+  cardTitle: {
+    flex: 1,
+    fontSize: Typography.fontSize.lg,
+    fontWeight: Typography.fontWeight.semibold,
+    color: AppColors.textPrimary,
+  },
+  categoryBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: `${AppColors.primary}15`,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 2,
+    borderRadius: BorderRadius.sm,
+    marginTop: Spacing.xs,
+  },
+  categoryBadgeText: {
+    fontSize: Typography.fontSize.xs,
+    color: AppColors.primary,
+  },
+  cardContent: {
+    fontSize: Typography.fontSize.md,
+    color: AppColors.textSecondary,
+    marginTop: Spacing.sm,
+    lineHeight: 22,
+  },
+  cardDate: {
+    fontSize: Typography.fontSize.xs,
+    color: AppColors.navInactive,
+    marginTop: Spacing.sm,
   },
 });
