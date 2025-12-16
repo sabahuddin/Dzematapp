@@ -43,6 +43,8 @@ async function syncSchema() {
     `ALTER TABLE organization_settings ADD COLUMN IF NOT EXISTS maintenance_message TEXT`,
     
     // users - add missing columns
+    `ALTER TABLE users ADD COLUMN IF NOT EXISTS gender VARCHAR(10)`,
+    `ALTER TABLE users ADD COLUMN IF NOT EXISTS push_token TEXT`,
     `ALTER TABLE users ADD COLUMN IF NOT EXISTS tenant_code VARCHAR(50)`,
     `ALTER TABLE users ADD COLUMN IF NOT EXISTS last_viewed_shop TIMESTAMP`,
     `ALTER TABLE users ADD COLUMN IF NOT EXISTS last_viewed_events TIMESTAMP`,
@@ -174,6 +176,34 @@ async function syncSchema() {
     `ALTER TABLE messages ADD COLUMN IF NOT EXISTS reply_to_id VARCHAR(255)`,
     `ALTER TABLE messages ADD COLUMN IF NOT EXISTS reactions JSONB DEFAULT '{}'::jsonb`,
   ];
+
+  // Create page_views table if it doesn't exist
+  const createPageViewsTable = `
+    CREATE TABLE IF NOT EXISTS page_views (
+      id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+      tenant_id VARCHAR(255),
+      page_path TEXT NOT NULL,
+      page_title TEXT,
+      referrer TEXT,
+      user_agent TEXT,
+      ip_address VARCHAR(45),
+      country VARCHAR(100),
+      city VARCHAR(100),
+      device_type VARCHAR(50),
+      browser VARCHAR(100),
+      os VARCHAR(100),
+      session_id VARCHAR(255),
+      user_id VARCHAR(255),
+      created_at TIMESTAMP DEFAULT NOW()
+    )
+  `;
+  
+  try {
+    await pool.query(createPageViewsTable);
+    console.log('✅ page_views table created or already exists');
+  } catch (error: any) {
+    console.error('❌ Failed to create page_views table:', error.message);
+  }
 
   let successCount = 0;
   let errorCount = 0;
