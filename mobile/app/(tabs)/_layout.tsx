@@ -1,211 +1,73 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Colors, AppColors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Tabs, useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { View, ActivityIndicator, Platform } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const USER_STORAGE_KEY = 'dzematapp_user';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-  const colors = Colors[colorScheme ?? 'light'];
+  const router = useRouter();
+  const [checking, setChecking] = useState(true);
+
+  useEffect(() => { checkLoginStatus(); }, []);
+
+  const checkLoginStatus = async () => {
+    try {
+      const userData = await AsyncStorage.getItem(USER_STORAGE_KEY);
+      if (!userData) {
+        router.replace('/login');
+        return;
+      }
+      setChecking(false);
+    } catch (error) {
+      console.error('Auth check error:', error);
+      router.replace('/login');
+    }
+  };
+
+  if (checking) {
+    return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#ECEFF1' }}><ActivityIndicator size="large" color="#3949AB" /></View>;
+  }
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: AppColors.navInactive,
-        headerShown: true,
-        headerStyle: {
-          backgroundColor: AppColors.primary,
-        },
-        headerTintColor: '#FFFFFF',
-        headerTitleStyle: {
-          fontWeight: '600',
-        },
+        tabBarActiveTintColor: '#3949AB',
+        tabBarInactiveTintColor: '#B0BEC5',
+        headerShown: false,
         tabBarStyle: {
-          borderTopWidth: 1,
-          borderTopColor: colors.border,
-          backgroundColor: colors.surface,
-          height: 88,
-          paddingBottom: 24,
-          paddingTop: 8,
+          backgroundColor: '#FFFFFF',
+          borderTopColor: '#E0E0E0',
+          height: Platform.OS === 'ios' ? 84 : 60,
+          paddingBottom: Platform.OS === 'ios' ? 24 : 8,
+          paddingTop: 6,
         },
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: '500',
-        },
+        tabBarLabelStyle: { fontSize: 11, fontWeight: '500' },
       }}
     >
-      {/* Main tab screens */}
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Početna',
-          headerTitle: 'DžematApp',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="home" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="announcements"
-        options={{
-          title: 'Objave',
-          headerTitle: 'Objave',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="bullhorn" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="events"
-        options={{
-          title: 'Događaji',
-          headerTitle: 'Događaji',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="calendar" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="modules"
-        options={{
-          title: 'Više',
-          headerTitle: 'Moduli',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="view-grid" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: 'Profil',
-          headerTitle: 'Moj profil',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="account" size={size} color={color} />
-          ),
-        }}
-      />
-      
-      {/* Hidden screens - accessible from modules */}
-      <Tabs.Screen
-        name="vaktija"
-        options={{
-          href: null,
-          headerTitle: 'Vaktija',
-        }}
-      />
-      <Tabs.Screen
-        name="messages"
-        options={{
-          href: null,
-          headerTitle: 'Poruke',
-        }}
-      />
-      <Tabs.Screen
-        name="activities"
-        options={{
-          href: null,
-          headerTitle: 'Moje aktivnosti',
-        }}
-      />
-      <Tabs.Screen
-        name="membership"
-        options={{
-          href: null,
-          headerTitle: 'Članarina',
-        }}
-      />
-      <Tabs.Screen
-        name="shop"
-        options={{
-          href: null,
-          headerTitle: 'Shop',
-        }}
-      />
-      <Tabs.Screen
-        name="sections"
-        options={{
-          href: null,
-          headerTitle: 'Sekcije',
-        }}
-      />
-      <Tabs.Screen
-        name="imam-qa"
-        options={{
-          href: null,
-          headerTitle: 'Pitaj imama',
-        }}
-      />
-      <Tabs.Screen
-        name="documents"
-        options={{
-          href: null,
-          headerTitle: 'Dokumenti',
-        }}
-      />
-      <Tabs.Screen
-        name="notifications"
-        options={{
-          href: null,
-          headerTitle: 'Obavještenja',
-        }}
-      />
-      <Tabs.Screen
-        name="certificates"
-        options={{
-          href: null,
-          headerTitle: 'Moje zahvale',
-        }}
-      />
-      <Tabs.Screen
-        name="applications"
-        options={{
-          href: null,
-          headerTitle: 'Prijave',
-        }}
-      />
-      <Tabs.Screen
-        name="badges"
-        options={{
-          href: null,
-          headerTitle: 'Moje značke',
-        }}
-      />
-      <Tabs.Screen
-        name="guide"
-        options={{
-          href: null,
-          headerTitle: 'Vodič',
-        }}
-      />
-      <Tabs.Screen
-        name="livestream"
-        options={{
-          href: null,
-          headerTitle: 'Livestream',
-        }}
-      />
-      <Tabs.Screen
-        name="sponsors"
-        options={{
-          href: null,
-          headerTitle: 'Sponzori',
-        }}
-      />
-      <Tabs.Screen
-        name="feed"
-        options={{
-          href: null,
-          headerTitle: 'Feed',
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          href: null,
-        }}
-      />
+      <Tabs.Screen name="index" options={{ title: 'Početna', tabBarIcon: ({ color }) => <MaterialCommunityIcons name="home" size={24} color={color} /> }} />
+      <Tabs.Screen name="announcements" options={{ title: 'Objave', tabBarIcon: ({ color }) => <MaterialCommunityIcons name="bullhorn" size={24} color={color} /> }} />
+      <Tabs.Screen name="events" options={{ title: 'Događaji', tabBarIcon: ({ color }) => <MaterialCommunityIcons name="calendar" size={24} color={color} /> }} />
+      <Tabs.Screen name="modules" options={{ title: 'Više', tabBarIcon: ({ color }) => <MaterialCommunityIcons name="view-grid" size={24} color={color} /> }} />
+      <Tabs.Screen name="profile" options={{ title: 'Profil', tabBarIcon: ({ color }) => <MaterialCommunityIcons name="account" size={24} color={color} /> }} />
+      <Tabs.Screen name="vaktija" options={{ href: null }} />
+      <Tabs.Screen name="messages" options={{ href: null }} />
+      <Tabs.Screen name="activities" options={{ href: null }} />
+      <Tabs.Screen name="membership" options={{ href: null }} />
+      <Tabs.Screen name="shop" options={{ href: null }} />
+      <Tabs.Screen name="sections" options={{ href: null }} />
+      <Tabs.Screen name="imam-qa" options={{ href: null }} />
+      <Tabs.Screen name="documents" options={{ href: null }} />
+      <Tabs.Screen name="notifications" options={{ href: null }} />
+      <Tabs.Screen name="certificates" options={{ href: null }} />
+      <Tabs.Screen name="applications" options={{ href: null }} />
+      <Tabs.Screen name="badges" options={{ href: null }} />
+      <Tabs.Screen name="guide" options={{ href: null }} />
+      <Tabs.Screen name="livestream" options={{ href: null }} />
+      <Tabs.Screen name="sponsors" options={{ href: null }} />
+      <Tabs.Screen name="feed" options={{ href: null }} />
+      <Tabs.Screen name="explore" options={{ href: null }} />
     </Tabs>
   );
 }

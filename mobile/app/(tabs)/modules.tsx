@@ -1,8 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { AppColors, BorderRadius, Spacing, Typography, Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 type IconName = React.ComponentProps<typeof MaterialCommunityIcons>['name'];
@@ -36,27 +34,21 @@ const MODULES: Module[] = [
 
 export default function ModulesScreen() {
   const router = useRouter();
-  const colorScheme = useColorScheme();
-  const colors = Colors[colorScheme ?? 'light'];
 
   return (
-    <ScrollView 
-      style={[styles.container, { backgroundColor: colors.background }]}
-      contentContainerStyle={styles.content}
-    >
-      <Text style={[styles.sectionTitle, { color: colors.text }]}>Dodatni moduli</Text>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.grid}>
         {MODULES.map((module) => (
           <TouchableOpacity
             key={module.id}
-            style={[styles.moduleCard, { backgroundColor: colors.surface }]}
+            style={styles.moduleCard}
             onPress={() => router.push(module.route as any)}
             activeOpacity={0.7}
           >
             <View style={styles.iconContainer}>
-              <MaterialCommunityIcons name={module.icon} size={32} color={AppColors.primary} />
+              <MaterialCommunityIcons name={module.icon} size={26} color="#3949AB" />
             </View>
-            <Text style={[styles.moduleLabel, { color: colors.text }]}>{module.label}</Text>
+            <Text style={styles.moduleLabel}>{module.label}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -67,44 +59,42 @@ export default function ModulesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#ECEFF1',
   },
   content: {
-    padding: Spacing.md,
-  },
-  sectionTitle: {
-    ...Typography.h3,
-    marginBottom: Spacing.md,
+    padding: 12,
   },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: Spacing.sm,
+    gap: 8,
   },
   moduleCard: {
-    width: '48%',
+    width: '31%',
     backgroundColor: '#fff',
-    borderRadius: BorderRadius.lg,
-    padding: Spacing.lg,
+    borderRadius: 12,
+    padding: 12,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
+    shadowRadius: 2,
+    elevation: 1,
   },
   iconContainer: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     backgroundColor: 'rgba(57, 73, 171, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: Spacing.sm,
+    marginBottom: 6,
   },
   moduleLabel: {
-    ...Typography.body,
+    fontSize: 11,
     fontWeight: '600',
     textAlign: 'center',
+    color: '#0D1B2A',
   },
 });
