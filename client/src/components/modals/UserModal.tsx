@@ -440,20 +440,19 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                select
-                fullWidth
-                variant="outlined"
-                label={t('gender')}
-                value={formData.gender}
-                onChange={handleChange('gender')}
-                SelectProps={{ native: true }}
-                data-testid="input-gender"
-              >
-                <option value="">{t('selectGender')}</option>
-                <option value="M">{t('genderMale')}</option>
-                <option value="Ž">{t('genderFemale')}</option>
-              </TextField>
+              <FormControl fullWidth>
+                <InputLabel>{t('gender')}</InputLabel>
+                <Select
+                  value={formData.gender}
+                  label={t('gender')}
+                  onChange={(e) => handleChange('gender')(e as any)}
+                  data-testid="input-gender"
+                >
+                  <MenuItem value="">{t('selectGender')}</MenuItem>
+                  <MenuItem value="M">{t('genderMale')}</MenuItem>
+                  <MenuItem value="Ž">{t('genderFemale')}</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
 
             {/* Row 3: Korisničko ime i Šifra (50-50) */}
