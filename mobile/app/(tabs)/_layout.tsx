@@ -38,24 +38,25 @@ export default function TabLayout() {
         headerShown: false,
         tabBarStyle: {
           backgroundColor: '#FFFFFF',
-          borderTopColor: '#E0E0E0',
-          height: Platform.OS === 'ios' ? 84 : 60,
-          paddingBottom: Platform.OS === 'ios' ? 24 : 8,
+          borderTopColor: '#ECEFF1',
+          borderTopWidth: 1,
+          height: Platform.OS === 'ios' ? 80 : 60,
+          paddingBottom: Platform.OS === 'ios' ? 20 : 6,
           paddingTop: 6,
         },
-        tabBarLabelStyle: { fontSize: 11, fontWeight: '500' },
+        tabBarLabelStyle: { fontSize: 10, fontWeight: '500' },
       }}
     >
-      <Tabs.Screen name="index" options={{ title: 'Početna', tabBarIcon: ({ color }) => <MaterialCommunityIcons name="home" size={24} color={color} /> }} />
-      <Tabs.Screen name="announcements" options={{ title: 'Objave', tabBarIcon: ({ color }) => <MaterialCommunityIcons name="bullhorn" size={24} color={color} /> }} />
-      <Tabs.Screen name="events" options={{ title: 'Događaji', tabBarIcon: ({ color }) => <MaterialCommunityIcons name="calendar" size={24} color={color} /> }} />
-      <Tabs.Screen name="modules" options={{ title: 'Više', tabBarIcon: ({ color }) => <MaterialCommunityIcons name="view-grid" size={24} color={color} /> }} />
-      <Tabs.Screen name="profile" options={{ title: 'Profil', tabBarIcon: ({ color }) => <MaterialCommunityIcons name="account" size={24} color={color} /> }} />
+      <Tabs.Screen name="index" options={{ title: 'Početna', tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="home" size={size} color={color} /> }} />
+      <Tabs.Screen name="announcements" options={{ title: 'Objave', tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="bullhorn" size={size} color={color} /> }} />
+      <Tabs.Screen name="events" options={{ title: 'Događaji', tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="calendar" size={size} color={color} /> }} />
+      <Tabs.Screen name="shop" options={{ title: 'Shop', tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="store" size={size} color={color} /> }} />
+      <Tabs.Screen name="modules" options={{ title: 'Više', tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="view-grid" size={size} color={color} /> }} />
+      <Tabs.Screen name="profile" options={{ href: null }} />
       <Tabs.Screen name="vaktija" options={{ href: null }} />
       <Tabs.Screen name="messages" options={{ href: null }} />
       <Tabs.Screen name="activities" options={{ href: null }} />
       <Tabs.Screen name="membership" options={{ href: null }} />
-      <Tabs.Screen name="shop" options={{ href: null }} />
       <Tabs.Screen name="sections" options={{ href: null }} />
       <Tabs.Screen name="imam-qa" options={{ href: null }} />
       <Tabs.Screen name="documents" options={{ href: null }} />
