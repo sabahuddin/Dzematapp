@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { Tabs, Redirect, router } from 'expo-router';
-import { TouchableOpacity, View, Image, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, View, Image, Text, StyleSheet, Modal, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../../services/auth';
-import { AppColors, Spacing, BorderRadius, Typography } from '../../constants/theme';
+import { AppColors, Spacing, BorderRadius, Typography, Shadows } from '../../constants/theme';
 
 const logoImage = require('../../assets/logo.png');
 
@@ -15,8 +17,25 @@ function HeaderLeft() {
 }
 
 function HeaderRight() {
-  const { user } = useAuth();
+  const { user, logout, clearTenant } = useAuth();
+  const [menuVisible, setMenuVisible] = useState(false);
   const unreadCount = 3;
+
+  const handleLogout = async () => {
+    setMenuVisible(false);
+    await logout();
+    router.replace('/login');
+  };
+
+  const handleProfile = () => {
+    setMenuVisible(false);
+    router.push('/(tabs)/profile');
+  };
+
+  const handleSettings = () => {
+    setMenuVisible(false);
+    router.push('/(tabs)/profile');
+  };
 
   return (
     <View style={styles.headerRight}>
@@ -34,7 +53,7 @@ function HeaderRight() {
         )}
       </TouchableOpacity>
       
-      <TouchableOpacity onPress={() => router.push('/(tabs)/profile')}>
+      <TouchableOpacity onPress={() => setMenuVisible(true)}>
         {user?.photoUrl ? (
           <Image source={{ uri: user.photoUrl }} style={styles.profilePhoto} />
         ) : (
@@ -43,12 +62,38 @@ function HeaderRight() {
           </View>
         )}
       </TouchableOpacity>
+
+      <Modal
+        visible={menuVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setMenuVisible(false)}
+      >
+        <Pressable style={styles.modalOverlay} onPress={() => setMenuVisible(false)}>
+          <View style={styles.dropdownMenu}>
+            <TouchableOpacity style={styles.menuItem} onPress={handleProfile}>
+              <Ionicons name="person-outline" size={20} color={AppColors.textPrimary} />
+              <Text style={styles.menuItemText}>Profil</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={handleSettings}>
+              <Ionicons name="settings-outline" size={20} color={AppColors.textPrimary} />
+              <Text style={styles.menuItemText}>Podešavanja</Text>
+            </TouchableOpacity>
+            <View style={styles.menuDivider} />
+            <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
+              <Ionicons name="log-out-outline" size={20} color={AppColors.error} />
+              <Text style={[styles.menuItemText, { color: AppColors.error }]}>Odjava</Text>
+            </TouchableOpacity>
+          </View>
+        </Pressable>
+      </Modal>
     </View>
   );
 }
 
 export default function TabLayout() {
   const { isAuthenticated, tenantId } = useAuth();
+  const insets = useSafeAreaInsets();
 
   if (!tenantId || !isAuthenticated) {
     return <Redirect href="/login" />;
@@ -58,7 +103,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerStyle: {
-          backgroundColor: 'rgba(57, 73, 171, 0.85)',
+          backgroundColor: 'rgba(57, 73, 171, 0.9)',
           elevation: 0,
           shadowOpacity: 0,
         },
@@ -152,10 +197,12 @@ export default function TabLayout() {
 const styles = StyleSheet.create({
   headerLeft: {
     marginLeft: Spacing.md,
+    marginBottom: 3,
   },
   headerLogo: {
     width: 36,
     height: 36,
+    borderRadius: 8,
   },
   headerRight: {
     flexDirection: 'row',
@@ -220,5 +267,36 @@ const styles = StyleSheet.create({
   },
   backButton: {
     marginLeft: Spacing.md,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-end',
+    paddingTop: 90,
+    paddingRight: Spacing.md,
+  },
+  dropdownMenu: {
+    backgroundColor: AppColors.white,
+    borderRadius: BorderRadius.lg,
+    minWidth: 180,
+    ...Shadows.card,
+    paddingVertical: Spacing.xs,
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.md,
+  },
+  menuItemText: {
+    fontSize: Typography.fontSize.md,
+    color: AppColors.textPrimary,
+    marginLeft: Spacing.sm,
+  },
+  menuDivider: {
+    height: 1,
+    backgroundColor: AppColors.navBorder,
+    marginHorizontal: Spacing.sm,
   },
 });

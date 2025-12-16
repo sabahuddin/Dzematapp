@@ -228,28 +228,30 @@ export default function HomeScreen() {
           activeOpacity={0.9}
           onPress={() => router.push('/(tabs)/announcements')}
         >
-          {currentFeed.imageUrl ? (
-            <Image 
-              source={{ uri: currentFeed.imageUrl }} 
-              style={styles.feedImage}
-              resizeMode="cover"
-            />
-          ) : (
-            <View style={styles.feedImagePlaceholder}>
-              <Ionicons 
-                name={currentFeed.type === 'event' ? 'calendar' : 'megaphone'} 
-                size={40} 
-                color={AppColors.primary} 
+          <View style={styles.feedRow}>
+            {currentFeed.imageUrl ? (
+              <Image 
+                source={{ uri: currentFeed.imageUrl }} 
+                style={styles.feedImage}
+                resizeMode="cover"
               />
+            ) : (
+              <View style={styles.feedImagePlaceholder}>
+                <Ionicons 
+                  name={currentFeed.type === 'event' ? 'calendar' : 'megaphone'} 
+                  size={32} 
+                  color={AppColors.primary} 
+                />
+              </View>
+            )}
+            <View style={styles.feedContent}>
+              <View style={styles.feedBadge}>
+                <Text style={styles.feedBadgeText}>
+                  {currentFeed.type === 'event' ? 'Događaj' : 'Obavijest'}
+                </Text>
+              </View>
+              <Text style={styles.feedTitle} numberOfLines={2}>{currentFeed.title}</Text>
             </View>
-          )}
-          <View style={styles.feedOverlay}>
-            <View style={styles.feedBadge}>
-              <Text style={styles.feedBadgeText}>
-                {currentFeed.type === 'event' ? 'Događaj' : 'Obavijest'}
-              </Text>
-            </View>
-            <Text style={styles.feedTitle} numberOfLines={2}>{currentFeed.title}</Text>
           </View>
           <View style={styles.feedDots}>
             {feedItems.map((_, index) => (
@@ -391,35 +393,32 @@ const styles = StyleSheet.create({
     color: AppColors.primary,
   },
   feedSection: {
-    height: 180,
+    backgroundColor: AppColors.white,
     borderRadius: BorderRadius.lg,
     marginBottom: Spacing.md,
-    overflow: 'hidden',
-    backgroundColor: AppColors.white,
+    padding: Spacing.md,
     ...Shadows.card,
   },
+  feedRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   feedImage: {
-    width: '100%',
-    height: '100%',
-    position: 'absolute',
+    width: 80,
+    height: 80,
+    borderRadius: BorderRadius.md,
   },
   feedImagePlaceholder: {
-    width: '100%',
-    height: '100%',
+    width: 80,
+    height: 80,
+    borderRadius: BorderRadius.md,
     backgroundColor: `${AppColors.primary}15`,
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'absolute',
   },
-  feedOverlay: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: Spacing.md,
-    paddingBottom: Spacing.lg,
-    background: 'linear-gradient(transparent, rgba(0,0,0,0.7))',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+  feedContent: {
+    flex: 1,
+    marginLeft: Spacing.md,
   },
   feedBadge: {
     backgroundColor: AppColors.primary,
@@ -436,26 +435,23 @@ const styles = StyleSheet.create({
   },
   feedTitle: {
     fontSize: Typography.fontSize.lg,
-    fontWeight: Typography.fontWeight.bold,
-    color: AppColors.white,
+    fontWeight: Typography.fontWeight.semibold,
+    color: AppColors.textPrimary,
   },
   feedDots: {
-    position: 'absolute',
-    bottom: Spacing.xs,
-    left: 0,
-    right: 0,
     flexDirection: 'row',
     justifyContent: 'center',
+    marginTop: Spacing.sm,
   },
   feedDot: {
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: 'rgba(255,255,255,0.5)',
+    backgroundColor: AppColors.navInactive,
     marginHorizontal: 3,
   },
   feedDotActive: {
-    backgroundColor: AppColors.white,
+    backgroundColor: AppColors.primary,
     width: 18,
   },
   section: {

@@ -24,11 +24,6 @@ const modules: ModuleItem[] = [
   { id: 'activities', name: 'Aktivnosti', icon: 'pulse', route: '/activities', color: '#26C6DA' },
   { id: 'livestream', name: 'Livestream', icon: 'videocam', route: '/livestream', color: '#EF5350' },
   { id: 'feed', name: 'Feed', icon: 'newspaper', route: '/feed', color: '#66BB6A' },
-  { id: 'sponsors', name: 'Sponzori', icon: 'business', route: '/sponsors', color: '#8D6E63' },
-  { id: 'notifications', name: 'Obavještenja', icon: 'notifications', route: '/notifications', color: '#7E57C2' },
-  { id: 'applications', name: 'Prijave', icon: 'create', route: '/applications', color: '#42A5F5' },
-  { id: 'projects', name: 'Projekti', icon: 'briefcase', route: '/projects', color: '#78909C' },
-  { id: 'guide', name: 'Vodič', icon: 'book', route: '/guide', color: '#4DB6AC' },
 ];
 
 export default function ModulesScreen() {
@@ -38,9 +33,6 @@ export default function ModulesScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Moduli</Text>
-      <Text style={styles.subtitle}>Pristupite svim funkcionalnostima aplikacije</Text>
-      
       <View style={styles.grid}>
         {modules.map(module => (
           <TouchableOpacity
@@ -67,17 +59,6 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: Spacing.md,
-  },
-  title: {
-    fontSize: Typography.fontSize.xxl,
-    fontWeight: Typography.fontWeight.bold,
-    color: AppColors.textPrimary,
-    marginBottom: Spacing.xs,
-  },
-  subtitle: {
-    fontSize: Typography.fontSize.md,
-    color: AppColors.textSecondary,
-    marginBottom: Spacing.lg,
   },
   grid: {
     flexDirection: 'row',
