@@ -24,9 +24,13 @@ import {
   Chip,
   Tabs,
   Tab,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
 } from '@mui/material';
 import { Add, Edit, Delete } from '@mui/icons-material';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
@@ -363,20 +367,23 @@ export default function ProjectsPage() {
                   required
                   data-testid="input-current-amount"
                 />
-                <TextField
-                  select
-                  fullWidth
-                  label={t('status.label')}
-                  {...form.register('status')}
-                  error={!!form.formState.errors.status}
-                  helperText={form.formState.errors.status?.message || t('status.helper')}
-                  SelectProps={{ native: true }}
-                  required
-                  data-testid="select-status"
-                >
-                  <option value="active">{t('status.active')}</option>
-                  <option value="closed">{t('status.closed')}</option>
-                </TextField>
+                <Controller
+                  name="status"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormControl fullWidth error={!!form.formState.errors.status}>
+                      <InputLabel>{t('status.label')}</InputLabel>
+                      <Select
+                        {...field}
+                        label={t('status.label')}
+                        data-testid="select-status"
+                      >
+                        <MenuItem value="active">{t('status.active')}</MenuItem>
+                        <MenuItem value="closed">{t('status.closed')}</MenuItem>
+                      </Select>
+                    </FormControl>
+                  )}
+                />
               </Stack>
             </DialogContent>
             <DialogActions>

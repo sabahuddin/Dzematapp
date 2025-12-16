@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
@@ -25,7 +25,11 @@ import {
   DialogActions,
   Grid,
   Autocomplete,
-  Chip
+  Chip,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
 } from '@mui/material';
 import {
   Add,
@@ -453,20 +457,20 @@ export default function FinancesPage() {
                   fullWidth
                   data-testid="input-search"
                 />
-                <TextField
-                  select
-                  variant="outlined"
-                  value={categoryFilter}
-                  onChange={(e) => setCategoryFilter(e.target.value)}
-                  sx={{ minWidth: 200, '& select': { backgroundColor: '#fff', color: '#333' } }}
-                  SelectProps={{ native: true }}
-                  data-testid="select-category-filter"
-                >
-                  <option value="">{t("finances:allCategories")}</option>
-                  {purposesQuery.data?.map((purpose: ContributionPurpose) => (
-                    <option key={purpose.id} value={purpose.name}>{purpose.name}</option>
-                  ))}
-                </TextField>
+                <FormControl sx={{ minWidth: 200 }}>
+                  <InputLabel>{t("finances:category")}</InputLabel>
+                  <Select
+                    value={categoryFilter}
+                    label={t("finances:category")}
+                    onChange={(e) => setCategoryFilter(e.target.value)}
+                    data-testid="select-category-filter"
+                  >
+                    <MenuItem value="">{t("finances:allCategories")}</MenuItem>
+                    {purposesQuery.data?.map((purpose: ContributionPurpose) => (
+                      <MenuItem key={purpose.id} value={purpose.name}>{purpose.name}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Box>
             </Box>
           </Box>
@@ -764,43 +768,52 @@ export default function FinancesPage() {
                 />
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  select
-                  fullWidth
-                  label={t('finances:purposeLabel')}
-                  {...form.register('purpose')}
-                  error={!!form.formState.errors.purpose}
-                  helperText={form.formState.errors.purpose?.message}
-                  SelectProps={{ native: true }}
-                  sx={{ '& select': { backgroundColor: '#fff', color: '#333' } }}
-                  data-testid="select-purpose"
-                >
-                  <option value="">{t('finances:selectPurpose')}</option>
-                  {purposesQuery.data?.map((purpose: ContributionPurpose) => (
-                    <option key={purpose.id} value={purpose.name || (purpose as any).title || ''}>{purpose.name || (purpose as any).title || 'N/A'}</option>
-                  ))}
-                </TextField>
+                <Controller
+                  name="purpose"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormControl fullWidth error={!!form.formState.errors.purpose}>
+                      <InputLabel>{t('finances:purposeLabel')}</InputLabel>
+                      <Select
+                        {...field}
+                        label={t('finances:purposeLabel')}
+                        data-testid="select-purpose"
+                      >
+                        <MenuItem value="">{t('finances:selectPurpose')}</MenuItem>
+                        {purposesQuery.data?.map((purpose: ContributionPurpose) => (
+                          <MenuItem key={purpose.id} value={purpose.name || (purpose as any).title || ''}>{purpose.name || (purpose as any).title || 'N/A'}</MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )}
+                />
               </Grid>
               {form.watch('purpose')?.toLowerCase().includes('projekat') && (
                 <Grid size={{ xs: 12 }}>
-                  <TextField
-                    select
-                    fullWidth
-                    label={t('finances:selectProject')}
-                    {...form.register('projectId')}
-                    SelectProps={{ native: true }}
-                    sx={{ '& select': { backgroundColor: '#fff', color: '#333' } }}
-                    data-testid="select-project"
-                  >
-                    <option value="">{t('finances:selectProjectPlaceholder')}</option>
-                    {(projectsQuery.data as Project[] || [])
-                      .filter(p => p.status === 'active')
-                      .map(project => (
-                        <option key={project.id} value={project.id}>
-                          {project.name}
-                        </option>
-                      ))}
-                  </TextField>
+                  <Controller
+                    name="projectId"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormControl fullWidth>
+                        <InputLabel>{t('finances:selectProject')}</InputLabel>
+                        <Select
+                          {...field}
+                          value={field.value || ''}
+                          label={t('finances:selectProject')}
+                          data-testid="select-project"
+                        >
+                          <MenuItem value="">{t('finances:selectProjectPlaceholder')}</MenuItem>
+                          {(projectsQuery.data as Project[] || [])
+                            .filter(p => p.status === 'active')
+                            .map(project => (
+                              <MenuItem key={project.id} value={project.id}>
+                                {project.name}
+                              </MenuItem>
+                            ))}
+                        </Select>
+                      </FormControl>
+                    )}
+                  />
                 </Grid>
               )}
               <Grid size={{ xs: 12, sm: 6 }}>
