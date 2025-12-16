@@ -343,6 +343,17 @@ app.use((req, res, next) => {
 
   // Serve downloads folder statically BEFORE Vite catch-all
   app.use('/downloads', express.static(path.join(process.cwd(), 'public', 'downloads')));
+  
+  // Explicit download route for mobile app archive
+  app.get('/api/download-mobile', (_req, res) => {
+    const filePath = path.join(process.cwd(), 'public', 'downloads', 'mobile-complete.tar.gz');
+    res.download(filePath, 'mobile-complete.tar.gz', (err) => {
+      if (err) {
+        console.error('Download error:', err);
+        res.status(404).send('File not found');
+      }
+    });
+  });
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
