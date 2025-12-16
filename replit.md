@@ -211,7 +211,7 @@ Lokacija: `mobile/` direktorij
 | Poruke | `app/(tabs)/messages.tsx` | Razgovori, slanje poruka |
 | Aktivnosti | `app/(tabs)/activities.tsx` | Bodovi, značke |
 | Članarina | `app/(tabs)/membership.tsx` | Status plaćanja |
-| Moduli | `app/(tabs)/modules.tsx` | Navigacija na dodatne ekrane |
+| Moduli | `app/(tabs)/modules.tsx` | Navigacija na 16 dodatnih ekrana |
 | Profil | `app/(tabs)/profile.tsx` | Korisnički podaci, odjava, uređivanje profila |
 | Shop | `app/(tabs)/shop.tsx` | DžematShop + Marketplace sa dodavanjem oglasa |
 | Sekcije | `app/(tabs)/sections.tsx` | Radne grupe, zadaci, komentiranje |
@@ -219,7 +219,12 @@ Lokacija: `mobile/` direktorij
 | Dokumenti | `app/(tabs)/documents.tsx` | Pregled i download dokumenata |
 | Obavještenja | `app/(tabs)/notifications.tsx` | Lista nepročitanih obavještenja |
 | Moje zahvale | `app/(tabs)/certificates.tsx` | Pregled i download certifikata |
-| Prijave | `app/(tabs)/applications.tsx` | Prijave za Akiku, Vjenčanje
+| Prijave | `app/(tabs)/applications.tsx` | Prijave za Akiku, Vjenčanje |
+| Moje značke | `app/(tabs)/badges.tsx` | Bodovi i osvojene značke |
+| Feed | `app/(tabs)/feed.tsx` | Timeline aktivnosti zajednice |
+| Livestream | `app/(tabs)/livestream.tsx` | YouTube/Facebook prijenosi |
+| Sponzori | `app/(tabs)/sponsors.tsx` | Lista sponzora džemata |
+| Vodič | `app/(tabs)/guide.tsx` | Pomoć i upute za korištenje
 
 ### Mobile API klijent
 - Lokacija: `mobile/services/api.ts`, `mobile/services/auth.ts`

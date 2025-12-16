@@ -166,6 +166,41 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="badges"
+        options={{
+          href: null,
+          headerTitle: 'Moje značke',
+        }}
+      />
+      <Tabs.Screen
+        name="guide"
+        options={{
+          href: null,
+          headerTitle: 'Vodič',
+        }}
+      />
+      <Tabs.Screen
+        name="livestream"
+        options={{
+          href: null,
+          headerTitle: 'Livestream',
+        }}
+      />
+      <Tabs.Screen
+        name="sponsors"
+        options={{
+          href: null,
+          headerTitle: 'Sponzori',
+        }}
+      />
+      <Tabs.Screen
+        name="feed"
+        options={{
+          href: null,
+          headerTitle: 'Feed',
+        }}
+      />
+      <Tabs.Screen
         name="explore"
         options={{
           href: null,
