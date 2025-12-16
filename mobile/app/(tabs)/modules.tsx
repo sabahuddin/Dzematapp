@@ -10,6 +10,10 @@ const MODULES = [
   { id: 'messages', label: 'Poruke', icon: '💬', route: '/(tabs)/messages', color: AppColors.info },
   { id: 'activities', label: 'Moje aktivnosti', icon: '⭐', route: '/(tabs)/activities', color: AppColors.primary },
   { id: 'membership', label: 'Članarina', icon: '💳', route: '/(tabs)/membership', color: AppColors.success },
+  { id: 'shop', label: 'Shop', icon: '🛒', route: '/(tabs)/shop', color: AppColors.secondary },
+  { id: 'sections', label: 'Sekcije', icon: '📋', route: '/(tabs)/sections', color: '#FF7043' },
+  { id: 'imam-qa', label: 'Pitaj imama', icon: '🙋', route: '/(tabs)/imam-qa', color: '#7E57C2' },
+  { id: 'documents', label: 'Dokumenti', icon: '📁', route: '/(tabs)/documents', color: '#5C6BC0' },
 ];
 
 export default function ModulesScreen() {

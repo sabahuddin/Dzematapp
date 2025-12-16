@@ -33,12 +33,23 @@ export default function EventsScreen() {
 
   const loadEvents = async () => {
     try {
-      const [eventsResponse, rsvpsResponse] = await Promise.all([
-        apiClient.get<Event[]>('/api/events').catch(() => ({ data: [] })),
-        apiClient.get<EventRsvp[]>('/api/event-rsvp/my').catch(() => ({ data: [] }))
-      ]);
-      setEvents(eventsResponse.data || []);
-      setRsvps(rsvpsResponse.data || []);
+      const eventsResponse = await apiClient.get<Event[]>('/api/events').catch(() => ({ data: [] }));
+      const eventsData = eventsResponse.data || [];
+      setEvents(eventsData);
+      
+      // Load RSVPs for each event
+      const userRsvps: EventRsvp[] = [];
+      for (const event of eventsData) {
+        try {
+          const rsvpRes = await apiClient.get<{ status: string }>(`/api/events/${event.id}/user-rsvp`);
+          if (rsvpRes.data?.status) {
+            userRsvps.push({ eventId: event.id, status: rsvpRes.data.status });
+          }
+        } catch {
+          // No RSVP for this event
+        }
+      }
+      setRsvps(userRsvps);
     } catch (error) {
       console.error('Error loading events:', error);
       setEvents([]);
@@ -55,7 +66,7 @@ export default function EventsScreen() {
 
   const handleRsvp = async (eventId: string, status: 'going' | 'not_going') => {
     try {
-      await apiClient.post('/api/event-rsvp', { eventId, status });
+      await apiClient.post(`/api/events/${eventId}/rsvp`, { status });
       loadEvents();
       Alert.alert('Uspješno', status === 'going' ? 'Potvrđeno prisustvo' : 'Odbijeno prisustvo');
     } catch (error) {

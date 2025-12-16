@@ -117,6 +117,34 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="shop"
+        options={{
+          href: null,
+          headerTitle: 'Shop',
+        }}
+      />
+      <Tabs.Screen
+        name="sections"
+        options={{
+          href: null,
+          headerTitle: 'Sekcije',
+        }}
+      />
+      <Tabs.Screen
+        name="imam-qa"
+        options={{
+          href: null,
+          headerTitle: 'Pitaj imama',
+        }}
+      />
+      <Tabs.Screen
+        name="documents"
+        options={{
+          href: null,
+          headerTitle: 'Dokumenti',
+        }}
+      />
+      <Tabs.Screen
         name="explore"
         options={{
           href: null,
