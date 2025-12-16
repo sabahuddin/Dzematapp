@@ -1,7 +1,29 @@
-import { Tabs, Redirect } from 'expo-router';
+import { Tabs, Redirect, router } from 'expo-router';
+import { TouchableOpacity, View, Image, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../services/auth';
-import { AppColors } from '../../constants/theme';
+import { AppColors, Spacing } from '../../constants/theme';
+
+const logoImage = require('../../assets/logo.png');
+
+function HeaderLeft() {
+  return (
+    <View style={styles.headerLeft}>
+      <Image source={logoImage} style={styles.headerLogo} resizeMode="contain" />
+    </View>
+  );
+}
+
+function HeaderRight() {
+  return (
+    <TouchableOpacity 
+      style={styles.headerRight} 
+      onPress={() => router.push('/(tabs)/profile')}
+    >
+      <Ionicons name="person-circle-outline" size={28} color={AppColors.white} />
+    </TouchableOpacity>
+  );
+}
 
 export default function TabLayout() {
   const { isAuthenticated, tenantId } = useAuth();
@@ -22,6 +44,8 @@ export default function TabLayout() {
         headerTitleStyle: {
           fontWeight: '600',
         },
+        headerLeft: () => <HeaderLeft />,
+        headerRight: () => <HeaderRight />,
         tabBarStyle: {
           backgroundColor: AppColors.white,
           borderTopColor: AppColors.navBorder,
@@ -88,8 +112,24 @@ export default function TabLayout() {
         name="profile"
         options={{
           href: null,
+          headerLeft: () => null,
+          headerRight: () => null,
+          headerTitle: 'Moj profil',
         }}
       />
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  headerLeft: {
+    marginLeft: Spacing.md,
+  },
+  headerLogo: {
+    width: 32,
+    height: 32,
+  },
+  headerRight: {
+    marginRight: Spacing.md,
+  },
+});

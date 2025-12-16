@@ -8,7 +8,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
-  Alert,
   ScrollView,
   Image,
 } from 'react-native';
@@ -16,8 +15,10 @@ import { router } from 'expo-router';
 import { useAuth } from '../services/auth';
 import { AppColors, Spacing, BorderRadius, Typography, Shadows } from '../constants/theme';
 
+const logoImage = require('../assets/logo.png');
+
 export default function LoginScreen() {
-  const { verifyTenant, login, tenantId, isAuthenticated } = useAuth();
+  const { verifyTenant, login, tenantId, isAuthenticated, clearTenant } = useAuth();
   
   const [step, setStep] = useState<'tenant' | 'login'>(tenantId ? 'login' : 'tenant');
   const [tenantCode, setTenantCode] = useState('');
@@ -81,7 +82,6 @@ export default function LoginScreen() {
   };
 
   const handleChangeTenant = async () => {
-    const { clearTenant } = useAuth();
     await clearTenant();
     setStep('tenant');
     setTenantCode('');
@@ -101,9 +101,7 @@ export default function LoginScreen() {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.logoContainer}>
-          <View style={styles.logoCircle}>
-            <Text style={styles.logoText}>🕌</Text>
-          </View>
+          <Image source={logoImage} style={styles.logo} resizeMode="contain" />
           <Text style={styles.appName}>DžematApp</Text>
           <Text style={styles.tagline}>Vaša zajednica na dlanu</Text>
         </View>
@@ -221,18 +219,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: Spacing.xl,
   },
-  logoCircle: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: AppColors.white,
-    justifyContent: 'center',
-    alignItems: 'center',
+  logo: {
+    width: 120,
+    height: 120,
     marginBottom: Spacing.md,
-    ...Shadows.card,
-  },
-  logoText: {
-    fontSize: 48,
   },
   appName: {
     fontSize: Typography.fontSize.xxxl,
