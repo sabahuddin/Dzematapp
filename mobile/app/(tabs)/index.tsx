@@ -3,6 +3,9 @@ import { View, StyleSheet, ScrollView, Text, ActivityIndicator, RefreshControl }
 import { apiClient } from '@/services/api';
 import { AppColors, BorderRadius, Spacing, Typography, Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
+type IconName = React.ComponentProps<typeof MaterialCommunityIcons>['name'];
 
 interface DashboardStats {
   userCount: number;
@@ -85,7 +88,9 @@ export default function DashboardScreen() {
       {prayerTime && (
         <View style={[styles.prayerCard, { backgroundColor: colors.surface }]}>
           <View style={styles.prayerHeader}>
-            <Text style={styles.prayerIcon}>🕌</Text>
+            <View style={styles.prayerIconContainer}>
+              <MaterialCommunityIcons name="mosque" size={24} color={AppColors.primary} />
+            </View>
             <Text style={[styles.prayerTitle, { color: colors.text }]}>Današnja vaktija</Text>
           </View>
           <View style={styles.prayerGrid}>
@@ -105,7 +110,7 @@ export default function DashboardScreen() {
         <StatCard
           title="Članovi"
           value={stats?.userCount?.toString() || '0'}
-          icon="👥"
+          icon="account-group-outline"
           color={AppColors.primary}
           bgColor={colors.surface}
           textColor={colors.text}
@@ -113,7 +118,7 @@ export default function DashboardScreen() {
         <StatCard
           title="Obavijesti"
           value={stats?.newAnnouncementsCount?.toString() || '0'}
-          icon="📢"
+          icon="bullhorn-outline"
           color={AppColors.secondary}
           bgColor={colors.surface}
           textColor={colors.text}
@@ -121,15 +126,15 @@ export default function DashboardScreen() {
         <StatCard
           title="Događaji"
           value={stats?.upcomingEventsCount?.toString() || '0'}
-          icon="📅"
-          color={AppColors.warning}
+          icon="calendar-outline"
+          color={AppColors.primary}
           bgColor={colors.surface}
           textColor={colors.text}
         />
         <StatCard
           title="Zadaci"
           value={stats?.tasksCount?.toString() || '0'}
-          icon="✓"
+          icon="checkbox-marked-circle-outline"
           color={AppColors.accent}
           bgColor={colors.surface}
           textColor={colors.text}
@@ -158,14 +163,16 @@ function StatCard({
 }: {
   title: string;
   value: string;
-  icon: string;
+  icon: IconName;
   color: string;
   bgColor: string;
   textColor: string;
 }) {
   return (
-    <View style={[styles.statCard, { backgroundColor: bgColor, borderLeftColor: color }]}>
-      <Text style={styles.statIcon}>{icon}</Text>
+    <View style={[styles.statCard, { backgroundColor: bgColor }]}>
+      <View style={[styles.statIconContainer, { backgroundColor: `${color}15` }]}>
+        <MaterialCommunityIcons name={icon} size={28} color={color} />
+      </View>
       <Text style={[styles.statValue, { color: textColor }]}>{value}</Text>
       <Text style={[styles.statTitle, { color: AppColors.textSecondary }]}>{title}</Text>
     </View>
@@ -215,8 +222,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: Spacing.md,
   },
-  prayerIcon: {
-    fontSize: 24,
+  prayerIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(57, 73, 171, 0.1)',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginRight: Spacing.sm,
   },
   prayerTitle: {
@@ -249,7 +261,6 @@ const styles = StyleSheet.create({
     width: '48%',
     borderRadius: BorderRadius.lg,
     padding: Spacing.md,
-    borderLeftWidth: 4,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -257,8 +268,12 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
-  statIcon: {
-    fontSize: 32,
+  statIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: Spacing.sm,
   },
   statValue: {
