@@ -68,6 +68,7 @@ export default function TabLayout() {
       <Tabs.Screen name="livestream" options={{ href: null }} />
       <Tabs.Screen name="sponsors" options={{ href: null }} />
       <Tabs.Screen name="feed" options={{ href: null }} />
+      <Tabs.Screen name="projects" options={{ href: null }} />
       <Tabs.Screen name="explore" options={{ href: null }} />
     </Tabs>
   );
