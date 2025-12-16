@@ -1,0 +1,54 @@
+
+› Stopped server
+sabahuddin@Sabahuddins-MacBook-Pro-2 mobile % rm -rf ~/Dzematapp
+git clone https://github.com/sabahuddin/Dzematapp.git ~/Dzematapp
+cd ~/Dzematapp/mobile
+npm install
+npx expo start --offline --clear
+Cloning into '/Users/sabahuddin/Dzematapp'...
+fatal: Unable to read current working directory: No such file or directory
+fatal: remote helper 'https' aborted session
+cd: no such file or directory: /Users/sabahuddin/Dzematapp/mobile
+/usr/local/lib/node_modules/npm/lib/cli/validate-engines.js:29
+    throw err
+    ^
+
+Error: ENOENT: no such file or directory, uv_cwd
+    at process.wrappedCwd (node:internal/bootstrap/switches/does_own_process_state:142:28)
+    at process.cwd (/usr/local/lib/node_modules/npm/node_modules/graceful-fs/polyfills.js:10:19)
+    at new Config (/usr/local/lib/node_modules/npm/node_modules/@npmcli/config/lib/index.js:79:19)
+    at new Npm (/usr/local/lib/node_modules/npm/lib/npm.js:67:19)
+    at module.exports (/usr/local/lib/node_modules/npm/lib/cli/entry.js:14:15)
+    at module.exports (/usr/local/lib/node_modules/npm/lib/cli/validate-engines.js:37:10)
+    at module.exports (/usr/local/lib/node_modules/npm/lib/cli.js:12:31)
+    at Object.<anonymous> (/usr/local/lib/node_modules/npm/bin/npm-cli.js:2:25)
+    at Module._compile (node:internal/modules/cjs/loader:1761:14)
+    at Object..js (node:internal/modules/cjs/loader:1893:10) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'uv_cwd'
+}
+
+Node.js v24.12.0
+/usr/local/lib/node_modules/npm/lib/cli/validate-engines.js:29
+    throw err
+    ^
+
+Error: ENOENT: no such file or directory, uv_cwd
+    at process.wrappedCwd (node:internal/bootstrap/switches/does_own_process_state:142:28)
+    at process.cwd (/usr/local/lib/node_modules/npm/node_modules/graceful-fs/polyfills.js:10:19)
+    at new Config (/usr/local/lib/node_modules/npm/node_modules/@npmcli/config/lib/index.js:79:19)
+    at new Npm (/usr/local/lib/node_modules/npm/lib/npm.js:67:19)
+    at module.exports (/usr/local/lib/node_modules/npm/lib/cli/entry.js:14:15)
+    at module.exports (/usr/local/lib/node_modules/npm/lib/cli/validate-engines.js:37:10)
+    at module.exports (/usr/local/lib/node_modules/npm/lib/cli.js:12:31)
+    at Object.<anonymous> (/usr/local/lib/node_modules/npm/bin/npx-cli.js:130:1)
+    at Module._compile (node:internal/modules/cjs/loader:1761:14)
+    at Object..js (node:internal/modules/cjs/loader:1893:10) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'uv_cwd'
+}
+
+Node.js v24.12.0
+sabahuddin@Sabahuddins-MacBook-Pro-2 mobile % 
