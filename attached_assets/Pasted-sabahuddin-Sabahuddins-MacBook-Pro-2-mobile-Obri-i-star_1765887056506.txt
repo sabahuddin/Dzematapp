@@ -1,0 +1,56 @@
+sabahuddin@Sabahuddins-MacBook-Pro-2 mobile % # Obriši stari folder i ponovo preuzmi
+cd ..
+rm -rf mobile mobile-complete.tar.gz
+
+# Preuzmi novu verziju
+curl -O https://f19b3c56-d4d7-43e9-a7f9-ba9f1193c7f4-00-3ljqq65obpbmp.janeway.replit.dev/downloads/mobile-complete.tar.gz
+
+# Raspakiraj i instaliraj
+tar -xzf mobile-complete.tar.gz
+cd mobile
+npm install
+
+# Pokreni sa čistim cacheom
+npx expo start -c
+zsh: command not found: #
+zsh: command not found: #
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  7480    0  7480    0     0   4652      0 --:--:--  0:00:01 --:--:--  4654
+zsh: command not found: #
+tar: Error opening archive: Unrecognized archive format
+cd: no such file or directory: mobile
+
+up to date, audited 740 packages in 6s
+
+120 packages are looking for funding
+  run `npm fund` for details
+
+13 vulnerabilities (3 low, 7 moderate, 3 high)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues possible (including breaking changes), run:
+  npm audit fix --force
+
+Some issues need review, and may require choosing
+a different dependency.
+
+Run `npm audit` for details.
+zsh: command not found: #
+Need to install the following packages:
+expo@54.0.29
+Ok to proceed? (y) y
+
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+Starting project at /Users/sabahuddin/Dzematapp
+ConfigError: Cannot determine the project's Expo SDK version because the module `expo` is not installed. Install it with `npm install expo` and try again.
+sabahuddin@Sabahuddins-MacBook-Pro-2 Dzematapp % rm -rf mobile mobile-complete.tar.gz 
+sabahuddin@Sabahuddins-MacBook-Pro-2 Dzematapp % curl -L -o mobile-complete.tar.gz "https://f19b3c56-d4d7-43e9-a7f9-ba9f1193c7f4-00-3ljqq65obpbmp.janeway.replit.dev/downloads/mobile-complete.tar.
+dquote> 
