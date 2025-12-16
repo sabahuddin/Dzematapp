@@ -11,6 +11,7 @@ export interface AuthContextType {
   verifyTenant: (tenantCode: string) => Promise<{ success: boolean; tenantName?: string }>;
   clearTenant: () => Promise<void>;
   initialize: () => Promise<void>;
+  updateUser: (userData: Partial<User>) => void;
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);

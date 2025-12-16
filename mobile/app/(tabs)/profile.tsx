@@ -7,15 +7,34 @@ import {
   TouchableOpacity,
   Alert,
   Image,
+  TextInput,
+  Switch,
+  Modal,
+  ActivityIndicator,
 } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from '../../services/auth';
+import { apiClient } from '../../services/api';
 import { AppColors, Spacing, BorderRadius, Typography, Shadows } from '../../constants/theme';
 
 export default function ProfileScreen() {
-  const { user, logout, clearTenant } = useAuth();
+  const { user, logout, clearTenant, updateUser } = useAuth();
   const [loggingOut, setLoggingOut] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+  
+  const [editForm, setEditForm] = useState({
+    firstName: user?.firstName || '',
+    lastName: user?.lastName || '',
+    email: user?.email || '',
+    phone: user?.phone || '',
+    city: user?.city || '',
+    streetAddress: user?.streetAddress || '',
+    occupation: user?.occupation || '',
+  });
 
   const handleLogout = () => {
     Alert.alert(
@@ -54,6 +73,57 @@ export default function ProfileScreen() {
     );
   };
 
+  const handlePickPhoto = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    
+    if (!permissionResult.granted) {
+      Alert.alert('Dozvola potrebna', 'Potrebna je dozvola za pristup fotografijama.');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      try {
+        setSaving(true);
+        const formData = new FormData();
+        formData.append('photo', {
+          uri: result.assets[0].uri,
+          type: 'image/jpeg',
+          name: 'profile.jpg',
+        } as any);
+        
+        await apiClient.post('/api/users/photo', formData);
+        Alert.alert('Uspjeh', 'Fotografija je uspješno ažurirana.');
+      } catch (error) {
+        Alert.alert('Greška', 'Nije moguće učitati fotografiju.');
+      } finally {
+        setSaving(false);
+      }
+    }
+  };
+
+  const handleSaveProfile = async () => {
+    setSaving(true);
+    try {
+      await apiClient.patch(`/api/users/${user?.id}`, editForm);
+      if (updateUser) {
+        updateUser({ ...user, ...editForm });
+      }
+      setEditModalVisible(false);
+      Alert.alert('Uspjeh', 'Profil je uspješno ažuriran.');
+    } catch (error) {
+      Alert.alert('Greška', 'Nije moguće spremiti promjene.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const getInitials = (): string => {
     if (!user) return '?';
     return `${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}`.toUpperCase();
@@ -70,8 +140,8 @@ export default function ProfileScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <View style={styles.header}>
-        <View style={styles.avatarContainer}>
+      <View style={styles.profileHeader}>
+        <TouchableOpacity style={styles.avatarContainer} onPress={() => setEditModalVisible(true)}>
           {user?.photoUrl ? (
             <Image source={{ uri: user.photoUrl }} style={styles.avatar} />
           ) : (
@@ -79,7 +149,10 @@ export default function ProfileScreen() {
               <Text style={styles.avatarText}>{getInitials()}</Text>
             </View>
           )}
-        </View>
+          <View style={styles.editBadge}>
+            <Ionicons name="pencil" size={12} color={AppColors.white} />
+          </View>
+        </TouchableOpacity>
         <Text style={styles.name}>{user?.firstName} {user?.lastName}</Text>
         <Text style={styles.username}>@{user?.username}</Text>
         {user?.registryNumber && (
@@ -89,16 +162,6 @@ export default function ProfileScreen() {
           </View>
         )}
       </View>
-
-      {user?.totalPoints !== undefined && (
-        <View style={styles.pointsCard}>
-          <Ionicons name="star" size={32} color="#FFA726" />
-          <View style={styles.pointsInfo}>
-            <Text style={styles.pointsLabel}>Ukupno bodova</Text>
-            <Text style={styles.pointsValue}>{user.totalPoints}</Text>
-          </View>
-        </View>
-      )}
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Osobni podaci</Text>
@@ -114,24 +177,144 @@ export default function ProfileScreen() {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Postavke</Text>
+        <Text style={styles.sectionTitle}>Podešavanja</Text>
         <View style={styles.card}>
-          <MenuItem
-            icon="swap-horizontal"
-            label="Promijeni organizaciju"
-            onPress={handleChangeTenant}
-          />
-          <MenuItem
-            icon="log-out"
-            label="Odjava"
-            onPress={handleLogout}
-            isDestructive
-            isLast
-          />
+          <TouchableOpacity style={styles.menuItem} onPress={() => setEditModalVisible(true)}>
+            <Ionicons name="create-outline" size={22} color={AppColors.primary} style={styles.menuIcon} />
+            <Text style={styles.menuLabel}>Uredi profil</Text>
+            <Ionicons name="chevron-forward" size={20} color={AppColors.navInactive} />
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={styles.menuItem} onPress={handlePickPhoto}>
+            <Ionicons name="camera-outline" size={22} color={AppColors.primary} style={styles.menuIcon} />
+            <Text style={styles.menuLabel}>Promijeni fotografiju</Text>
+            <Ionicons name="chevron-forward" size={20} color={AppColors.navInactive} />
+          </TouchableOpacity>
+          
+          <View style={styles.menuItem}>
+            <Ionicons name="moon-outline" size={22} color={AppColors.primary} style={styles.menuIcon} />
+            <Text style={styles.menuLabel}>Tamna tema</Text>
+            <Switch
+              value={darkMode}
+              onValueChange={setDarkMode}
+              trackColor={{ false: AppColors.navInactive, true: AppColors.primary }}
+              thumbColor={AppColors.white}
+            />
+          </View>
+          
+          <TouchableOpacity style={styles.menuItem} onPress={handleChangeTenant}>
+            <Ionicons name="swap-horizontal" size={22} color={AppColors.textPrimary} style={styles.menuIcon} />
+            <Text style={styles.menuLabel}>Promijeni organizaciju</Text>
+            <Ionicons name="chevron-forward" size={20} color={AppColors.navInactive} />
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={[styles.menuItem, styles.menuItemLast]} onPress={handleLogout}>
+            <Ionicons name="log-out-outline" size={22} color={AppColors.error} style={styles.menuIcon} />
+            <Text style={[styles.menuLabel, styles.menuLabelDestructive]}>Odjava</Text>
+            <Ionicons name="chevron-forward" size={20} color={AppColors.navInactive} />
+          </TouchableOpacity>
         </View>
       </View>
 
       <Text style={styles.version}>DžematApp v1.0.0</Text>
+
+      <Modal
+        visible={editModalVisible}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setEditModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalHeader}>
+            <TouchableOpacity onPress={() => setEditModalVisible(false)}>
+              <Text style={styles.modalCancel}>Odustani</Text>
+            </TouchableOpacity>
+            <Text style={styles.modalTitle}>Uredi profil</Text>
+            <TouchableOpacity onPress={handleSaveProfile} disabled={saving}>
+              {saving ? (
+                <ActivityIndicator size="small" color={AppColors.primary} />
+              ) : (
+                <Text style={styles.modalSave}>Spremi</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+          
+          <ScrollView style={styles.modalContent}>
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Ime</Text>
+              <TextInput
+                style={styles.input}
+                value={editForm.firstName}
+                onChangeText={(text) => setEditForm({ ...editForm, firstName: text })}
+                placeholder="Unesite ime"
+              />
+            </View>
+            
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Prezime</Text>
+              <TextInput
+                style={styles.input}
+                value={editForm.lastName}
+                onChangeText={(text) => setEditForm({ ...editForm, lastName: text })}
+                placeholder="Unesite prezime"
+              />
+            </View>
+            
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Email</Text>
+              <TextInput
+                style={styles.input}
+                value={editForm.email}
+                onChangeText={(text) => setEditForm({ ...editForm, email: text })}
+                placeholder="Unesite email"
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+            </View>
+            
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Telefon</Text>
+              <TextInput
+                style={styles.input}
+                value={editForm.phone}
+                onChangeText={(text) => setEditForm({ ...editForm, phone: text })}
+                placeholder="Unesite telefon"
+                keyboardType="phone-pad"
+              />
+            </View>
+            
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Grad</Text>
+              <TextInput
+                style={styles.input}
+                value={editForm.city}
+                onChangeText={(text) => setEditForm({ ...editForm, city: text })}
+                placeholder="Unesite grad"
+              />
+            </View>
+            
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Adresa</Text>
+              <TextInput
+                style={styles.input}
+                value={editForm.streetAddress}
+                onChangeText={(text) => setEditForm({ ...editForm, streetAddress: text })}
+                placeholder="Unesite adresu"
+              />
+            </View>
+            
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Zanimanje</Text>
+              <TextInput
+                style={styles.input}
+                value={editForm.occupation}
+                onChangeText={(text) => setEditForm({ ...editForm, occupation: text })}
+                placeholder="Unesite zanimanje"
+              />
+            </View>
+          </ScrollView>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
@@ -158,38 +341,6 @@ function InfoRow({
   );
 }
 
-function MenuItem({ 
-  icon, 
-  label, 
-  onPress, 
-  isDestructive = false,
-  isLast = false 
-}: { 
-  icon: keyof typeof Ionicons.glyphMap; 
-  label: string; 
-  onPress: () => void;
-  isDestructive?: boolean;
-  isLast?: boolean;
-}) {
-  return (
-    <TouchableOpacity 
-      style={[styles.menuItem, !isLast && styles.menuItemBorder]} 
-      onPress={onPress}
-    >
-      <Ionicons 
-        name={icon} 
-        size={22} 
-        color={isDestructive ? AppColors.error : AppColors.textPrimary} 
-        style={styles.menuIcon} 
-      />
-      <Text style={[styles.menuLabel, isDestructive && styles.menuLabelDestructive]}>
-        {label}
-      </Text>
-      <Ionicons name="chevron-forward" size={20} color={AppColors.navInactive} />
-    </TouchableOpacity>
-  );
-}
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -198,53 +349,67 @@ const styles = StyleSheet.create({
   content: {
     paddingBottom: Spacing.xxl,
   },
-  header: {
-    backgroundColor: AppColors.primary,
-    paddingTop: Spacing.xxl,
-    paddingBottom: Spacing.xl,
+  profileHeader: {
+    paddingTop: Spacing.xl,
+    paddingBottom: Spacing.lg,
     paddingHorizontal: Spacing.lg,
     alignItems: 'center',
+    backgroundColor: AppColors.background,
   },
   avatarContainer: {
     marginBottom: Spacing.md,
+    position: 'relative',
   },
   avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    borderWidth: 4,
-    borderColor: AppColors.white,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 3,
+    borderColor: AppColors.primary,
   },
   avatarPlaceholder: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: AppColors.white,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: AppColors.primary,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 4,
-    borderColor: 'rgba(255,255,255,0.3)',
+    borderWidth: 3,
+    borderColor: `${AppColors.primary}50`,
   },
   avatarText: {
-    fontSize: Typography.fontSize.xxxl,
-    fontWeight: Typography.fontWeight.bold,
-    color: AppColors.primary,
-  },
-  name: {
     fontSize: Typography.fontSize.xxl,
     fontWeight: Typography.fontWeight.bold,
     color: AppColors.white,
+  },
+  editBadge: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: AppColors.secondary,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: AppColors.background,
+  },
+  name: {
+    fontSize: Typography.fontSize.xl,
+    fontWeight: Typography.fontWeight.bold,
+    color: AppColors.textPrimary,
     marginBottom: Spacing.xs,
   },
   username: {
     fontSize: Typography.fontSize.md,
-    color: 'rgba(255,255,255,0.8)',
+    color: AppColors.textSecondary,
     marginBottom: Spacing.sm,
   },
   memberBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: AppColors.white,
+    backgroundColor: `${AppColors.primary}15`,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.xs,
     borderRadius: BorderRadius.full,
@@ -254,28 +419,6 @@ const styles = StyleSheet.create({
     color: AppColors.primary,
     marginLeft: Spacing.xs,
     fontWeight: Typography.fontWeight.medium,
-  },
-  pointsCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: AppColors.white,
-    marginHorizontal: Spacing.md,
-    marginTop: -Spacing.lg,
-    padding: Spacing.lg,
-    borderRadius: BorderRadius.lg,
-    ...Shadows.card,
-  },
-  pointsInfo: {
-    marginLeft: Spacing.md,
-  },
-  pointsLabel: {
-    fontSize: Typography.fontSize.sm,
-    color: AppColors.textSecondary,
-  },
-  pointsValue: {
-    fontSize: Typography.fontSize.xxl,
-    fontWeight: Typography.fontWeight.bold,
-    color: AppColors.textPrimary,
   },
   section: {
     marginTop: Spacing.lg,
@@ -323,10 +466,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.md,
-  },
-  menuItemBorder: {
     borderBottomWidth: 1,
     borderBottomColor: AppColors.navBorder,
+  },
+  menuItemLast: {
+    borderBottomWidth: 0,
   },
   menuIcon: {
     marginRight: Spacing.md,
@@ -344,5 +488,55 @@ const styles = StyleSheet.create({
     color: AppColors.navInactive,
     textAlign: 'center',
     marginTop: Spacing.xl,
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: AppColors.background,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.md,
+    backgroundColor: AppColors.white,
+    borderBottomWidth: 1,
+    borderBottomColor: AppColors.navBorder,
+  },
+  modalCancel: {
+    fontSize: Typography.fontSize.md,
+    color: AppColors.textSecondary,
+  },
+  modalTitle: {
+    fontSize: Typography.fontSize.lg,
+    fontWeight: Typography.fontWeight.semibold,
+    color: AppColors.textPrimary,
+  },
+  modalSave: {
+    fontSize: Typography.fontSize.md,
+    fontWeight: Typography.fontWeight.semibold,
+    color: AppColors.primary,
+  },
+  modalContent: {
+    padding: Spacing.md,
+  },
+  inputGroup: {
+    marginBottom: Spacing.md,
+  },
+  inputLabel: {
+    fontSize: Typography.fontSize.sm,
+    fontWeight: Typography.fontWeight.medium,
+    color: AppColors.textSecondary,
+    marginBottom: Spacing.xs,
+  },
+  input: {
+    backgroundColor: AppColors.white,
+    borderRadius: BorderRadius.md,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.md,
+    fontSize: Typography.fontSize.md,
+    color: AppColors.textPrimary,
+    borderWidth: 1,
+    borderColor: AppColors.navBorder,
   },
 });

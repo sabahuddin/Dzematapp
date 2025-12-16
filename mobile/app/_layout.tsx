@@ -58,6 +58,10 @@ export default function RootLayout() {
     setTenantId(null);
   }, []);
 
+  const updateUser = useCallback((userData: Partial<User>) => {
+    setUser((prev) => prev ? { ...prev, ...userData } : null);
+  }, []);
+
   const authContext: AuthContextType = {
     user,
     tenantId,
@@ -68,6 +72,7 @@ export default function RootLayout() {
     verifyTenant,
     clearTenant,
     initialize,
+    updateUser,
   };
 
   if (isLoading) {
