@@ -14,12 +14,6 @@ function HeaderLeft() {
   );
 }
 
-function HeaderCenter() {
-  return (
-    <Text style={styles.headerTitle}>DžematApp</Text>
-  );
-}
-
 function HeaderRight() {
   const { user } = useAuth();
   const unreadCount = 3;
@@ -32,7 +26,7 @@ function HeaderRight() {
       </View>
       
       <TouchableOpacity style={styles.notificationBtn} onPress={() => router.push('/notifications')}>
-        <Ionicons name="notifications-outline" size={24} color={AppColors.textPrimary} />
+        <Ionicons name="notifications-outline" size={24} color={AppColors.white} />
         {unreadCount > 0 && (
           <View style={styles.notificationBadge}>
             <Text style={styles.notificationBadgeText}>{unreadCount}</Text>
@@ -64,15 +58,15 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerStyle: {
-          backgroundColor: AppColors.background,
+          backgroundColor: 'rgba(57, 73, 171, 0.85)',
           elevation: 0,
           shadowOpacity: 0,
         },
-        headerTintColor: AppColors.textPrimary,
+        headerTintColor: AppColors.white,
         headerTitleStyle: {
           fontWeight: '600',
-          color: AppColors.primary,
         },
+        headerTitle: '',
         headerLeft: () => <HeaderLeft />,
         headerRight: () => <HeaderRight />,
         tabBarStyle: {
@@ -95,7 +89,6 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Početna',
-          headerTitle: () => <HeaderCenter />,
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'home' : 'home-outline'} size={24} color={color} />
           ),
@@ -104,8 +97,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="announcements"
         options={{
-          title: 'Objave',
-          headerTitle: 'Objave',
+          title: 'Obavijesti',
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'megaphone' : 'megaphone-outline'} size={24} color={color} />
           ),
@@ -115,7 +107,6 @@ export default function TabLayout() {
         name="events"
         options={{
           title: 'Događaji',
-          headerTitle: 'Događaji',
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'calendar' : 'calendar-outline'} size={24} color={color} />
           ),
@@ -125,7 +116,6 @@ export default function TabLayout() {
         name="messages"
         options={{
           title: 'Poruke',
-          headerTitle: 'Poruke',
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'chatbubbles' : 'chatbubbles-outline'} size={24} color={color} />
           ),
@@ -135,7 +125,6 @@ export default function TabLayout() {
         name="modules"
         options={{
           title: 'Više',
-          headerTitle: 'Moduli',
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'grid' : 'grid-outline'} size={24} color={color} />
           ),
@@ -168,11 +157,6 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
   },
-  headerTitle: {
-    fontSize: Typography.fontSize.xl,
-    fontWeight: Typography.fontWeight.bold,
-    color: AppColors.primary,
-  },
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -182,7 +166,7 @@ const styles = StyleSheet.create({
   pointsBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFA72620',
+    backgroundColor: 'rgba(255, 167, 38, 0.25)',
     paddingHorizontal: Spacing.sm,
     paddingVertical: 4,
     borderRadius: BorderRadius.full,
@@ -216,14 +200,18 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.5)',
   },
   profilePhotoPlaceholder: {
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: AppColors.primary,
+    backgroundColor: 'rgba(255,255,255,0.3)',
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.5)',
   },
   profileInitial: {
     fontSize: Typography.fontSize.sm,

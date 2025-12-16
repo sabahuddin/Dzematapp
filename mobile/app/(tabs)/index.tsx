@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Dimensions,
-  FlatList,
+  Image,
 } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -17,6 +17,7 @@ import { useAuth } from '../../services/auth';
 import { AppColors, Spacing, BorderRadius, Typography, Shadows } from '../../constants/theme';
 
 const { width: screenWidth } = Dimensions.get('window');
+const API_BASE = 'https://app.dzematapp.com';
 
 interface PrayerTime {
   fajr: string;
@@ -28,9 +29,10 @@ interface PrayerTime {
 }
 
 interface FeedItem {
-  id: string;
+  id: number;
   type: string;
   title: string;
+  description?: string;
   imageUrl?: string;
 }
 
@@ -47,6 +49,12 @@ interface Task {
   workGroupName?: string;
 }
 
+interface Announcement {
+  id: string;
+  title: string;
+  photoUrl?: string;
+}
+
 export default function HomeScreen() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -57,31 +65,57 @@ export default function HomeScreen() {
   const [myTasks, setMyTasks] = useState<Task[]>([]);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [currentFeedIndex, setCurrentFeedIndex] = useState(0);
-  const feedRef = useRef<FlatList>(null);
+  const feedInterval = useRef<NodeJS.Timeout | null>(null);
+
+  const normalizeImageUrl = (url?: string): string | null => {
+    if (!url) return null;
+    if (url.startsWith('http')) return url;
+    if (url.startsWith('/uploads')) return `${API_BASE}${url}`;
+    return url;
+  };
 
   const loadData = async () => {
     try {
-      const [prayerData, eventsData, tasksData, messagesData] = await Promise.all([
+      const [prayerData, eventsData, tasksData, messagesData, announcementsData] = await Promise.all([
         apiClient.get<PrayerTime>('/api/prayer-times/today').catch(() => null),
         apiClient.get<Event[]>('/api/events').catch(() => []),
         apiClient.get<Task[]>('/api/tasks/my').catch(() => []),
         apiClient.get<{ unreadCount: number }>('/api/messages/unread-count').catch(() => ({ unreadCount: 0 })),
+        apiClient.get<Announcement[]>('/api/announcements').catch(() => []),
       ]);
 
       setPrayerTimes(prayerData);
       
-      const upcoming = eventsData?.find((e: Event) => new Date(e.startDate) > new Date());
+      const now = new Date();
+      const upcoming = eventsData?.find((e: Event) => new Date(e.startDate) > now);
       setNextEvent(upcoming || null);
       
       setMyTasks(tasksData?.slice(0, 3) || []);
       setUnreadMessages(messagesData?.unreadCount || 0);
 
-      const mockFeed: FeedItem[] = [
-        { id: '1', type: 'announcement', title: 'Nova objava iz džemata' },
-        { id: '2', type: 'event', title: 'Nadolazeći događaj' },
-        { id: '3', type: 'news', title: 'Vijesti iz zajednice' },
-      ];
-      setFeedItems(mockFeed);
+      const feed: FeedItem[] = [];
+      if (announcementsData && announcementsData.length > 0) {
+        announcementsData.slice(0, 5).forEach((a: Announcement, i: number) => {
+          feed.push({
+            id: i,
+            type: 'announcement',
+            title: a.title,
+            imageUrl: normalizeImageUrl(a.photoUrl) || undefined,
+          });
+        });
+      }
+      if (eventsData && eventsData.length > 0) {
+        eventsData.slice(0, 3).forEach((e: Event, i: number) => {
+          feed.push({
+            id: 100 + i,
+            type: 'event',
+            title: e.name,
+          });
+        });
+      }
+      setFeedItems(feed.length > 0 ? feed : [
+        { id: 1, type: 'info', title: 'Dobrodošli u DžematApp' },
+      ]);
     } catch (error) {
       console.error('Failed to load home data:', error);
     } finally {
@@ -95,18 +129,14 @@ export default function HomeScreen() {
 
   useEffect(() => {
     if (feedItems.length > 1) {
-      const interval = setInterval(() => {
+      feedInterval.current = setInterval(() => {
         setCurrentFeedIndex((prev) => (prev + 1) % feedItems.length);
-      }, 4000);
-      return () => clearInterval(interval);
+      }, 5000);
+      return () => {
+        if (feedInterval.current) clearInterval(feedInterval.current);
+      };
     }
   }, [feedItems.length]);
-
-  useEffect(() => {
-    if (feedRef.current && feedItems.length > 0) {
-      feedRef.current.scrollToIndex({ index: currentFeedIndex, animated: true });
-    }
-  }, [currentFeedIndex]);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -130,6 +160,7 @@ export default function HomeScreen() {
     ];
     
     for (const prayer of prayers) {
+      if (!prayer.time) continue;
       const [hours, minutes] = prayer.time.split(':').map(Number);
       const prayerMinutes = hours * 60 + minutes;
       if (prayerMinutes > currentTime) {
@@ -141,6 +172,7 @@ export default function HomeScreen() {
   };
 
   const nextPrayer = getNextPrayer();
+  const currentFeed = feedItems[currentFeedIndex];
 
   if (loading) {
     return (
@@ -157,10 +189,9 @@ export default function HomeScreen() {
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[AppColors.primary]} />
       }
+      showsVerticalScrollIndicator={false}
+      bounces={false}
     >
-      <Text style={styles.greeting}>Selam alejkum,</Text>
-      <Text style={styles.userName}>{user?.firstName} {user?.lastName}</Text>
-
       {prayerTimes && (
         <View style={styles.prayerSection}>
           <View style={styles.prayerGrid}>
@@ -182,7 +213,7 @@ export default function HomeScreen() {
                     {prayer.name}
                   </Text>
                   <Text style={[styles.prayerTime, isNext && styles.prayerTimeNext]}>
-                    {prayer.time}
+                    {prayer.time || '--:--'}
                   </Text>
                 </View>
               );
@@ -191,34 +222,35 @@ export default function HomeScreen() {
         </View>
       )}
 
-      {feedItems.length > 0 && (
-        <View style={styles.feedSection}>
-          <FlatList
-            ref={feedRef}
-            data={feedItems}
-            horizontal
-            pagingEnabled
-            showsHorizontalScrollIndicator={false}
-            keyExtractor={(item) => item.id}
-            scrollEnabled={false}
-            renderItem={({ item }) => (
-              <View style={styles.feedItem}>
-                <View style={styles.feedContent}>
-                  <Ionicons 
-                    name={item.type === 'event' ? 'calendar' : 'megaphone'} 
-                    size={24} 
-                    color={AppColors.primary} 
-                  />
-                  <Text style={styles.feedTitle}>{item.title}</Text>
-                </View>
-              </View>
-            )}
-            getItemLayout={(_, index) => ({
-              length: screenWidth - Spacing.md * 2,
-              offset: (screenWidth - Spacing.md * 2) * index,
-              index,
-            })}
-          />
+      {feedItems.length > 0 && currentFeed && (
+        <TouchableOpacity 
+          style={styles.feedSection} 
+          activeOpacity={0.9}
+          onPress={() => router.push('/(tabs)/announcements')}
+        >
+          {currentFeed.imageUrl ? (
+            <Image 
+              source={{ uri: currentFeed.imageUrl }} 
+              style={styles.feedImage}
+              resizeMode="cover"
+            />
+          ) : (
+            <View style={styles.feedImagePlaceholder}>
+              <Ionicons 
+                name={currentFeed.type === 'event' ? 'calendar' : 'megaphone'} 
+                size={40} 
+                color={AppColors.primary} 
+              />
+            </View>
+          )}
+          <View style={styles.feedOverlay}>
+            <View style={styles.feedBadge}>
+              <Text style={styles.feedBadgeText}>
+                {currentFeed.type === 'event' ? 'Događaj' : 'Obavijest'}
+              </Text>
+            </View>
+            <Text style={styles.feedTitle} numberOfLines={2}>{currentFeed.title}</Text>
+          </View>
           <View style={styles.feedDots}>
             {feedItems.map((_, index) => (
               <View 
@@ -227,7 +259,7 @@ export default function HomeScreen() {
               />
             ))}
           </View>
-        </View>
+        </TouchableOpacity>
       )}
 
       {nextEvent && (
@@ -313,22 +345,13 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: Spacing.md,
+    paddingBottom: Spacing.xxl,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: AppColors.background,
-  },
-  greeting: {
-    fontSize: Typography.fontSize.md,
-    color: AppColors.textSecondary,
-  },
-  userName: {
-    fontSize: Typography.fontSize.xxl,
-    fontWeight: Typography.fontWeight.bold,
-    color: AppColors.textPrimary,
-    marginBottom: Spacing.lg,
   },
   prayerSection: {
     backgroundColor: AppColors.primary,
@@ -368,41 +391,72 @@ const styles = StyleSheet.create({
     color: AppColors.primary,
   },
   feedSection: {
-    marginBottom: Spacing.md,
-  },
-  feedItem: {
-    width: screenWidth - Spacing.md * 2,
-    height: 100,
-    backgroundColor: AppColors.white,
+    height: 180,
     borderRadius: BorderRadius.lg,
-    justifyContent: 'center',
+    marginBottom: Spacing.md,
+    overflow: 'hidden',
+    backgroundColor: AppColors.white,
     ...Shadows.card,
   },
-  feedContent: {
-    flexDirection: 'row',
+  feedImage: {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+  },
+  feedImagePlaceholder: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: `${AppColors.primary}15`,
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: Spacing.lg,
+    position: 'absolute',
+  },
+  feedOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: Spacing.md,
+    paddingBottom: Spacing.lg,
+    background: 'linear-gradient(transparent, rgba(0,0,0,0.7))',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  feedBadge: {
+    backgroundColor: AppColors.primary,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 2,
+    borderRadius: BorderRadius.sm,
+    alignSelf: 'flex-start',
+    marginBottom: Spacing.xs,
+  },
+  feedBadgeText: {
+    fontSize: Typography.fontSize.xs,
+    fontWeight: Typography.fontWeight.semibold,
+    color: AppColors.white,
   },
   feedTitle: {
     fontSize: Typography.fontSize.lg,
-    fontWeight: Typography.fontWeight.medium,
-    color: AppColors.textPrimary,
-    marginLeft: Spacing.md,
+    fontWeight: Typography.fontWeight.bold,
+    color: AppColors.white,
   },
   feedDots: {
+    position: 'absolute',
+    bottom: Spacing.xs,
+    left: 0,
+    right: 0,
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: Spacing.sm,
   },
   feedDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: AppColors.navInactive,
-    marginHorizontal: 4,
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: 'rgba(255,255,255,0.5)',
+    marginHorizontal: 3,
   },
   feedDotActive: {
-    backgroundColor: AppColors.primary,
+    backgroundColor: AppColors.white,
+    width: 18,
   },
   section: {
     backgroundColor: AppColors.white,
