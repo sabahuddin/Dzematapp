@@ -1,0 +1,45 @@
+ed-on-this-device.
+ WARN  🚨 React Native's New Architecture is always enabled in Expo Go, but it is explicitly disabled in your project's app config. This may lead to unexpected behavior when creating a production or development build. Remove "newArchEnabled": false from your app.json.
+Learn more: https://docs.expo.dev/guides/new-architecture/
+ WARN  [Layout children]: Too many screens defined. Route "announcements" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "events" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "vaktija" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "messages" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "activities" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "membership" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "sections" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "imam-qa" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "documents" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "notifications" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "certificates" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "applications" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "badges" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "feed" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "livestream" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "sponsors" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "guide" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "shop" is extraneous.
+ ERROR  [TypeError: Cannot read property 'toString' of undefined] 
+
+Code: index.tsx
+  65 |         <StatCard
+  66 |           title="Zadaci"
+> 67 |           value={stats?.tasksCount.toString() || '0'}
+     |                                            ^
+  68 |           icon="✓"
+  69 |           color="#c62828"
+  70 |         />
+Call Stack
+  DashboardScreen (app/(tabs)/index.tsx:67:44) 
+
+Code: _layout.tsx
+  32 |
+  33 |   return (
+> 34 |     <Tabs screenOptions={{ tabBarActiveTintColor: '#3949AB', tabBarInactiveTintColor: '#B0BEC5', headerStyle: { backgroundColor: '#3949AB' }, headerTintColor: '#fff', tabBarStyle: { height: 88, paddingBottom: Platform.OS === 'ios' ? 24 : 8 } }}>
+     |     ^
+  35 |       <Tabs.Screen name="index" options={{ title: 'Početna', tabBarIcon: ({ color }) => <MaterialCommunityIcons name="home" size={28} color={color} /> }} />
+  36 |       <Tabs.Screen name="modules" options={{ title: 'Moduli', tabBarIcon: ({ color }) => <MaterialCommunityIcons name="apps" size={28} color={color} /> }} />
+  37 |       <Tabs.Screen name="profile" options={{ title: 'Profil', tabBarIcon: ({ color }) => <MaterialCommunityIcons name="account" size={28} color={color} /> }} />
+Call Stack
+  TabLayout (app/(tabs)/_layout.tsx:34:5)
+  RootLayout (app/_layout.tsx:25:7)
