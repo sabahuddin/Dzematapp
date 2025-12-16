@@ -1,0 +1,100 @@
+[ORG-SETTINGS] Getting settings for tenant: default-tenant-demo
+[STORAGE] ✅ Found existing org settings: fe93405c-6d88-4363-8dec-75b45f796008
+[ORG-SETTINGS] ✅ Success: fe93405c-6d88-4363-8dec-75b45f796008
+1:07:29 PM [express] GET /api/organization-settings 304 in 32ms :: {"id":"fe93405c-6d88-4363-8dec-75…
+1:07:29 PM [express] GET /api/auth/session 401 in 5ms :: {"message":"Not authenticated"}
+1:07:29 PM [express] POST /api/analytics/track 500 in 58ms :: {"message":"Failed to track page view"}
+[LOGIN] Received credentials: {
+  username: 'admin',
+  passwordLength: 5,
+  tenantCode: undefined,
+  tenantId: 'default-tenant-demo'
+}
+1:07:38 PM [express] POST /api/auth/login 500 in 9ms :: {"message":"Internal server error"}
+[ORG-SETTINGS] Getting settings for tenant: default-tenant-demo
+1:08:30 PM [express] GET /api/auth/session 401 in 3ms :: {"message":"Not authenticated"}
+[STORAGE] ✅ Found existing org settings: fe93405c-6d88-4363-8dec-75b45f796008
+[ORG-SETTINGS] ✅ Success: fe93405c-6d88-4363-8dec-75b45f796008
+1:08:30 PM [express] GET /api/organization-settings 200 in 7ms :: {"id":"fe93405c-6d88-4363-8dec-75b…
+1:08:54 PM [express] POST /api/analytics/track 500 in 60ms :: {"message":"Failed to track page view"}
+1:08:58 PM [express] POST /api/tenants/verify-code 200 in 6ms :: {"tenantId":"default-tenant-demo","…
+[LOGIN] Received credentials: {
+  username: 'admin',
+  passwordLength: 8,
+  tenantCode: undefined,
+  tenantId: 'default-tenant-demo'
+}
+1:09:06 PM [express] POST /api/auth/login 500 in 20ms :: {"message":"Internal server error"}
+}
+Seed error: error: column "gender" does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async seedDefaultTenant (file:///app/dist/index.js:3806:32)
+    at async startSeeding (file:///app/dist/index.js:12428:5) {
+  length: 107,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '156',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3716',
+  routine: 'errorMissingColumn'
+}
+[ANALYTICS] Error tracking page view: error: relation "page_views" does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.createPageView (file:///app/dist/index.js:3620:23)
+    at async file:///app/dist/index.js:10733:7 {
+  length: 109,
+  severity: 'ERROR',
+  code: '42P01',
+  detail: undefined,
+  hint: undefined,
+  position: '13',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '1449',
+  routine: 'parserOpenTable'
+}
+[ANALYTICS] Error tracking page view: error: relation "page_views" does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.createPageView (file:///app/dist/index.js:3620:23)
+    at async file:///app/dist/index.js:10733:7 {
+  length: 109,
+  severity: 'ERROR',
+  code: '42P01',
+  detail: undefined,
+  hint: undefined,
+  position: '13',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '1449',
+  routine: 'parserOpenTable'
+}
