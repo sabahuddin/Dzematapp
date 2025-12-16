@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, Text, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, ScrollView, Text, TouchableOpacity, Alert, ActivityIndicator, Modal, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
 import { authService, User } from '@/services/auth';
+import { apiClient } from '@/services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppColors, BorderRadius, Spacing, Typography, Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -14,6 +15,9 @@ export default function ProfileScreen() {
   const colors = Colors[colorScheme ?? 'light'];
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editForm, setEditForm] = useState({ firstName: '', lastName: '', phone: '', email: '' });
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     loadUserProfile();
@@ -23,7 +27,14 @@ export default function ProfileScreen() {
     try {
       const userJson = await AsyncStorage.getItem(USER_STORAGE_KEY);
       if (userJson) {
-        setUser(JSON.parse(userJson));
+        const userData = JSON.parse(userJson);
+        setUser(userData);
+        setEditForm({
+          firstName: userData.firstName || '',
+          lastName: userData.lastName || '',
+          phone: userData.phone || '',
+          email: userData.email || ''
+        });
       }
     } catch (error) {
       console.error('Error loading profile:', error);
@@ -44,6 +55,31 @@ export default function ProfileScreen() {
         },
       },
     ]);
+  };
+
+  const handleSaveProfile = async () => {
+    if (!user) return;
+    
+    setSaving(true);
+    try {
+      await apiClient.put(`/api/users/${user.id}`, {
+        firstName: editForm.firstName,
+        lastName: editForm.lastName,
+        phone: editForm.phone,
+        email: editForm.email
+      });
+      
+      const updatedUser = { ...user, ...editForm };
+      setUser(updatedUser);
+      await AsyncStorage.setItem(USER_STORAGE_KEY, JSON.stringify(updatedUser));
+      
+      setShowEditModal(false);
+      Alert.alert('Uspješno', 'Profil je ažuriran.');
+    } catch (error) {
+      Alert.alert('Greška', 'Nije moguće ažurirati profil.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   if (loading) {
@@ -103,9 +139,7 @@ export default function ProfileScreen() {
       {/* Actions */}
       <TouchableOpacity 
         style={[styles.actionButton, { backgroundColor: colors.surface, borderColor: AppColors.primary }]}
-        onPress={() => {
-          // TODO: Navigate to edit profile
-        }}
+        onPress={() => setShowEditModal(true)}
       >
         <Text style={[styles.actionButtonText, { color: AppColors.primary }]}>Uredi profil</Text>
       </TouchableOpacity>
@@ -113,6 +147,72 @@ export default function ProfileScreen() {
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.logoutButtonText}>Odjava</Text>
       </TouchableOpacity>
+
+      {/* Edit Profile Modal */}
+      <Modal visible={showEditModal} animationType="slide" transparent>
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
+            <View style={styles.modalHeader}>
+              <Text style={[styles.modalTitle, { color: colors.text }]}>Uredi profil</Text>
+              <TouchableOpacity onPress={() => setShowEditModal(false)}>
+                <Text style={styles.closeButton}>✕</Text>
+              </TouchableOpacity>
+            </View>
+
+            <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Ime</Text>
+            <TextInput
+              style={[styles.input, { backgroundColor: colors.background, color: colors.text }]}
+              value={editForm.firstName}
+              onChangeText={(text) => setEditForm({ ...editForm, firstName: text })}
+              placeholderTextColor={colors.textSecondary}
+            />
+
+            <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Prezime</Text>
+            <TextInput
+              style={[styles.input, { backgroundColor: colors.background, color: colors.text }]}
+              value={editForm.lastName}
+              onChangeText={(text) => setEditForm({ ...editForm, lastName: text })}
+              placeholderTextColor={colors.textSecondary}
+            />
+
+            <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Telefon</Text>
+            <TextInput
+              style={[styles.input, { backgroundColor: colors.background, color: colors.text }]}
+              value={editForm.phone}
+              onChangeText={(text) => setEditForm({ ...editForm, phone: text })}
+              keyboardType="phone-pad"
+              placeholderTextColor={colors.textSecondary}
+            />
+
+            <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Email</Text>
+            <TextInput
+              style={[styles.input, { backgroundColor: colors.background, color: colors.text }]}
+              value={editForm.email}
+              onChangeText={(text) => setEditForm({ ...editForm, email: text })}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              placeholderTextColor={colors.textSecondary}
+            />
+
+            <View style={styles.modalButtons}>
+              <TouchableOpacity style={styles.cancelBtn} onPress={() => setShowEditModal(false)}>
+                <Text style={styles.cancelBtnText}>Odustani</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.saveBtn, saving && styles.btnDisabled]}
+                onPress={handleSaveProfile}
+                disabled={saving}
+              >
+                {saving ? (
+                  <ActivityIndicator color="#fff" size="small" />
+                ) : (
+                  <Text style={styles.saveBtnText}>Spremi</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
@@ -214,4 +314,17 @@ const styles = StyleSheet.create({
     ...Typography.button,
     color: '#fff',
   },
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
+  modalContent: { borderTopLeftRadius: BorderRadius.xl, borderTopRightRadius: BorderRadius.xl, padding: Spacing.lg, paddingBottom: Spacing.xl * 2 },
+  modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: Spacing.lg },
+  modalTitle: { ...Typography.h2 },
+  closeButton: { fontSize: 24, color: AppColors.textSecondary, padding: Spacing.sm },
+  inputLabel: { ...Typography.bodySmall, fontWeight: '600', marginBottom: Spacing.xs, marginTop: Spacing.sm },
+  input: { borderRadius: BorderRadius.md, padding: Spacing.md, fontSize: 16 },
+  modalButtons: { flexDirection: 'row', gap: Spacing.md, marginTop: Spacing.lg },
+  cancelBtn: { flex: 1, padding: Spacing.md, borderRadius: BorderRadius.md, borderWidth: 1, borderColor: AppColors.border, alignItems: 'center' },
+  cancelBtnText: { ...Typography.body, color: AppColors.textSecondary },
+  saveBtn: { flex: 1, padding: Spacing.md, borderRadius: BorderRadius.md, backgroundColor: AppColors.secondary, alignItems: 'center' },
+  saveBtnText: { ...Typography.button, color: '#fff' },
+  btnDisabled: { opacity: 0.7 },
 });

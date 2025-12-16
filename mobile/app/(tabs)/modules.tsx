@@ -8,12 +8,15 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 const MODULES = [
   { id: 'vaktija', label: 'Vaktija', icon: '🕌', route: '/(tabs)/vaktija', color: AppColors.accent },
   { id: 'messages', label: 'Poruke', icon: '💬', route: '/(tabs)/messages', color: AppColors.info },
+  { id: 'notifications', label: 'Obavještenja', icon: '🔔', route: '/(tabs)/notifications', color: '#FF5722' },
   { id: 'activities', label: 'Moje aktivnosti', icon: '⭐', route: '/(tabs)/activities', color: AppColors.primary },
   { id: 'membership', label: 'Članarina', icon: '💳', route: '/(tabs)/membership', color: AppColors.success },
+  { id: 'certificates', label: 'Moje zahvale', icon: '🎖️', route: '/(tabs)/certificates', color: '#FFC107' },
   { id: 'shop', label: 'Shop', icon: '🛒', route: '/(tabs)/shop', color: AppColors.secondary },
   { id: 'sections', label: 'Sekcije', icon: '📋', route: '/(tabs)/sections', color: '#FF7043' },
   { id: 'imam-qa', label: 'Pitaj imama', icon: '🙋', route: '/(tabs)/imam-qa', color: '#7E57C2' },
   { id: 'documents', label: 'Dokumenti', icon: '📁', route: '/(tabs)/documents', color: '#5C6BC0' },
+  { id: 'applications', label: 'Prijave', icon: '📝', route: '/(tabs)/applications', color: '#00897B' },
 ];
 
 export default function ModulesScreen() {

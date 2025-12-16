@@ -205,18 +205,21 @@ Lokacija: `mobile/` direktorij
 |-------|------|------|
 | Login | `app/login.tsx` | Tenant kod + prijava |
 | Početna | `app/(tabs)/index.tsx` | Statistika, vaktija |
-| Objave | `app/(tabs)/announcements.tsx` | Pregled objava |
+| Objave | `app/(tabs)/announcements.tsx` | Pregled objava, pretraga, filtriranje |
 | Događaji | `app/(tabs)/events.tsx` | Kalendar, RSVP funkcionalnost |
 | Vaktija | `app/(tabs)/vaktija.tsx` | Molitvena vremena |
 | Poruke | `app/(tabs)/messages.tsx` | Razgovori, slanje poruka |
 | Aktivnosti | `app/(tabs)/activities.tsx` | Bodovi, značke |
 | Članarina | `app/(tabs)/membership.tsx` | Status plaćanja |
 | Moduli | `app/(tabs)/modules.tsx` | Navigacija na dodatne ekrane |
-| Profil | `app/(tabs)/profile.tsx` | Korisnički podaci, odjava |
+| Profil | `app/(tabs)/profile.tsx` | Korisnički podaci, odjava, uređivanje profila |
 | Shop | `app/(tabs)/shop.tsx` | DžematShop + Marketplace sa dodavanjem oglasa |
 | Sekcije | `app/(tabs)/sections.tsx` | Radne grupe, zadaci, komentiranje |
 | Pitaj imama | `app/(tabs)/imam-qa.tsx` | Postavljanje pitanja, odgovori |
 | Dokumenti | `app/(tabs)/documents.tsx` | Pregled i download dokumenata |
+| Obavještenja | `app/(tabs)/notifications.tsx` | Lista nepročitanih obavještenja |
+| Moje zahvale | `app/(tabs)/certificates.tsx` | Pregled i download certifikata |
+| Prijave | `app/(tabs)/applications.tsx` | Prijave za Akiku, Vjenčanje
 
 ### Mobile API klijent
 - Lokacija: `mobile/services/api.ts`, `mobile/services/auth.ts`

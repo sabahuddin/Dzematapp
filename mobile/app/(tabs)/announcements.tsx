@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, Text, ActivityIndicator, RefreshControl, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect, useMemo } from 'react';
+import { View, StyleSheet, ScrollView, Text, ActivityIndicator, RefreshControl, TouchableOpacity, TextInput } from 'react-native';
 import { apiClient } from '@/services/api';
 import { AppColors, BorderRadius, Spacing, Typography, Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -20,6 +20,22 @@ export default function AnnouncementsScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const categories = useMemo(() => {
+    return [...new Set(announcements.map(a => a.category).filter(Boolean))] as string[];
+  }, [announcements]);
+
+  const filteredAnnouncements = useMemo(() => {
+    return announcements.filter(a => {
+      const matchesSearch = !searchQuery || 
+        a.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        a.content.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory = !selectedCategory || a.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [announcements, searchQuery, selectedCategory]);
 
   useEffect(() => {
     loadAnnouncements();
@@ -57,14 +73,49 @@ export default function AnnouncementsScreen() {
   }
 
   return (
-    <ScrollView
-      style={[styles.container, { backgroundColor: colors.background }]}
-      contentContainerStyle={styles.content}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[AppColors.primary]} />
-      }
-    >
-      {announcements.length === 0 ? (
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      {/* Search Bar */}
+      <View style={[styles.searchContainer, { backgroundColor: colors.surface }]}>
+        <TextInput
+          style={[styles.searchInput, { backgroundColor: colors.background, color: colors.text }]}
+          placeholder="Pretraži objave..."
+          placeholderTextColor={colors.textSecondary}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
+        {categories.length > 0 && (
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false} 
+            style={styles.categoryScroll}
+            contentContainerStyle={styles.categoryScrollContent}
+          >
+            <TouchableOpacity
+              style={[styles.categoryChip, !selectedCategory && styles.categoryChipActive]}
+              onPress={() => setSelectedCategory(null)}
+            >
+              <Text style={[styles.chipText, !selectedCategory && styles.chipTextActive]}>Sve</Text>
+            </TouchableOpacity>
+            {categories.map((cat) => (
+              <TouchableOpacity
+                key={cat}
+                style={[styles.categoryChip, selectedCategory === cat && styles.categoryChipActive]}
+                onPress={() => setSelectedCategory(cat)}
+              >
+                <Text style={[styles.chipText, selectedCategory === cat && styles.chipTextActive]}>{cat}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        )}
+      </View>
+
+      <ScrollView
+        contentContainerStyle={styles.content}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[AppColors.primary]} />
+        }
+      >
+      {filteredAnnouncements.length === 0 ? (
         <View style={[styles.emptyState, { backgroundColor: colors.surface }]}>
           <Text style={styles.emptyIcon}>📢</Text>
           <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
@@ -72,7 +123,7 @@ export default function AnnouncementsScreen() {
           </Text>
         </View>
       ) : (
-        announcements.map((announcement) => (
+        filteredAnnouncements.map((announcement) => (
           <TouchableOpacity
             key={announcement.id}
             style={[
@@ -114,7 +165,8 @@ export default function AnnouncementsScreen() {
           </TouchableOpacity>
         ))
       )}
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
@@ -188,6 +240,40 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     ...Typography.caption,
+    fontWeight: '600',
+  },
+  searchContainer: {
+    padding: Spacing.md,
+    paddingBottom: Spacing.sm,
+  },
+  searchInput: {
+    borderRadius: BorderRadius.md,
+    padding: Spacing.md,
+    fontSize: 16,
+    marginBottom: Spacing.sm,
+  },
+  categoryScroll: {
+    marginTop: Spacing.xs,
+  },
+  categoryScrollContent: {
+    gap: Spacing.xs,
+  },
+  categoryChip: {
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: BorderRadius.full,
+    backgroundColor: AppColors.background,
+    marginRight: Spacing.xs,
+  },
+  categoryChipActive: {
+    backgroundColor: AppColors.primary,
+  },
+  chipText: {
+    ...Typography.bodySmall,
+    color: AppColors.textSecondary,
+  },
+  chipTextActive: {
+    color: '#fff',
     fontWeight: '600',
   },
 });

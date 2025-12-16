@@ -145,6 +145,27 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="notifications"
+        options={{
+          href: null,
+          headerTitle: 'Obavještenja',
+        }}
+      />
+      <Tabs.Screen
+        name="certificates"
+        options={{
+          href: null,
+          headerTitle: 'Moje zahvale',
+        }}
+      />
+      <Tabs.Screen
+        name="applications"
+        options={{
+          href: null,
+          headerTitle: 'Prijave',
+        }}
+      />
+      <Tabs.Screen
         name="explore"
         options={{
           href: null,
