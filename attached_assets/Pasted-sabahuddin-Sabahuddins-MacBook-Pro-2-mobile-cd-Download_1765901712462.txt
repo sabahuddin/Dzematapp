@@ -1,0 +1,49 @@
+sabahuddin@Sabahuddins-MacBook-Pro-2 mobile % cd ~/Downloads/mobile
+rm -rf node_modules package-lock.json
+npm install
+npx expo start
+npm warn ERESOLVE overriding peer dependency
+npm warn ERESOLVE overriding peer dependency
+npm error code ERESOLVE
+npm error ERESOLVE could not resolve
+npm error
+npm error While resolving: react-native@0.81.4
+npm error Found: @types/react@18.2.79
+npm error node_modules/@types/react
+npm error   peerOptional @types/react@"^19.1.0" from @react-native/virtualized-lists@0.81.4
+npm error   node_modules/react-native/node_modules/@react-native/virtualized-lists
+npm error     @react-native/virtualized-lists@"0.81.4" from react-native@0.81.4
+npm error     node_modules/react-native
+npm error       react-native@"0.81.4" from the root project
+npm error       28 more (@expo/vector-icons, expo-font, expo, ...)
+npm error
+npm error Could not resolve dependency:
+npm error peerOptional @types/react@"^19.1.0" from react-native@0.81.4
+npm error node_modules/react-native
+npm error   react-native@"0.81.4" from the root project
+npm error   peer react-native@"*" from @expo/vector-icons@14.1.0
+npm error   node_modules/@expo/vector-icons
+npm error     @expo/vector-icons@"^14.0.0" from the root project
+npm error   27 more (expo-font, expo, ...)
+npm error
+npm error Conflicting peer dependency: @types/react@19.2.7
+npm error node_modules/@types/react
+npm error   peerOptional @types/react@"^19.1.0" from react-native@0.81.4
+npm error   node_modules/react-native
+npm error     react-native@"0.81.4" from the root project
+npm error     peer react-native@"*" from @expo/vector-icons@14.1.0
+npm error     node_modules/@expo/vector-icons
+npm error       @expo/vector-icons@"^14.0.0" from the root project
+npm error     27 more (expo-font, expo, ...)
+npm error
+npm error Fix the upstream dependency conflict, or retry
+npm error this command with --force or --legacy-peer-deps
+npm error to accept an incorrect (and potentially broken) dependency resolution.
+npm error
+npm error
+npm error For a full report see:
+npm error /Users/sabahuddin/.npm/_logs/2025-12-16T16_14_27_448Z-eresolve-report.txt
+npm error A complete log of this run can be found in: /Users/sabahuddin/.npm/_logs/2025-12-16T16_14_27_448Z-debug-0.log
+Starting project at /Users/sabahuddin/Downloads/mobile
+ConfigError: Cannot determine the project's Expo SDK version because the module `expo` is not installed. Install it with `npm install expo` and try again.
+sabahuddin@Sabahuddins-MacBook-Pro-2 mobile % 
