@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, Text, TouchableOpacity } from 'react-native';
 import { AppColors, BorderRadius, Spacing, Typography, Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
+type IconName = React.ComponentProps<typeof MaterialCommunityIcons>['name'];
 
 interface GuideSection {
   id: string;
   title: string;
-  icon: string;
+  icon: IconName;
   content: string[];
 }
 
@@ -14,7 +17,7 @@ const GUIDE_SECTIONS: GuideSection[] = [
   {
     id: 'getting-started',
     title: 'Početak korištenja',
-    icon: '🚀',
+    icon: 'rocket-launch-outline',
     content: [
       'Dobrodošli u DžematApp - vašu mobilnu aplikaciju za praćenje aktivnosti džemata.',
       'Prijavite se koristeći svoj korisnički račun koji ste dobili od administratora.',
@@ -24,17 +27,17 @@ const GUIDE_SECTIONS: GuideSection[] = [
   {
     id: 'announcements',
     title: 'Objave',
-    icon: '📢',
+    icon: 'bullhorn-outline',
     content: [
       'Na ekranu Objave možete pratiti sve novosti i obavještenja vašeg džemata.',
-      'Prikvačene objave su označene ikonom 📌 i uvijek se prikazuju na vrhu.',
+      'Prikvačene objave su označene ikonom i uvijek se prikazuju na vrhu.',
       'Koristite pretragu za brzo pronalaženje objava.',
     ],
   },
   {
     id: 'events',
     title: 'Događaji',
-    icon: '📅',
+    icon: 'calendar-outline',
     content: [
       'Pratite nadolazeće događaje i aktivnosti džemata.',
       'Prijavite se na događaje pomoću RSVP dugmeta.',
@@ -44,7 +47,7 @@ const GUIDE_SECTIONS: GuideSection[] = [
   {
     id: 'membership',
     title: 'Članarina',
-    icon: '💳',
+    icon: 'credit-card-outline',
     content: [
       'Pratite status vaše članarine na ekranu Članarina.',
       'Zelena boja označava plaćene mjesece, crvena neplaćene.',
@@ -54,7 +57,7 @@ const GUIDE_SECTIONS: GuideSection[] = [
   {
     id: 'sections',
     title: 'Sekcije i zadaci',
-    icon: '📋',
+    icon: 'clipboard-list-outline',
     content: [
       'Sekcije su radne grupe u okviru džemata.',
       'Ako ste član neke sekcije, možete vidjeti dodijeljene zadatke.',
@@ -64,7 +67,7 @@ const GUIDE_SECTIONS: GuideSection[] = [
   {
     id: 'shop',
     title: 'Shop i Marketplace',
-    icon: '🛒',
+    icon: 'cart-outline',
     content: [
       'DžematShop nudi proizvode koje džemat prodaje.',
       'Marketplace omogućava članovima da prodaju ili poklone stvari.',
@@ -74,7 +77,7 @@ const GUIDE_SECTIONS: GuideSection[] = [
   {
     id: 'badges',
     title: 'Značke i bodovi',
-    icon: '🏅',
+    icon: 'medal-outline',
     content: [
       'Bodove osvajate kroz aktivnosti u džematu.',
       'Prisustvo na događajima, ispunjavanje zadataka i doprinosi donose bodove.',
@@ -84,7 +87,7 @@ const GUIDE_SECTIONS: GuideSection[] = [
   {
     id: 'imam-qa',
     title: 'Pitaj imama',
-    icon: '🙋',
+    icon: 'account-question-outline',
     content: [
       'Postavite pitanja imamu putem aplikacije.',
       'Pitanja možete postaviti anonimno.',
@@ -94,7 +97,7 @@ const GUIDE_SECTIONS: GuideSection[] = [
   {
     id: 'profile',
     title: 'Profil',
-    icon: '👤',
+    icon: 'account-outline',
     content: [
       'Uredite svoje podatke na ekranu Profil.',
       'Možete promijeniti ime, prezime, telefon i email.',
@@ -114,7 +117,7 @@ export default function GuideScreen() {
       contentContainerStyle={styles.content}
     >
       <View style={[styles.headerCard, { backgroundColor: AppColors.primary }]}>
-        <Text style={styles.headerIcon}>📖</Text>
+        <MaterialCommunityIcons name="book-open-page-variant-outline" size={48} color="#fff" style={{ marginBottom: Spacing.sm }} />
         <Text style={styles.headerTitle}>Vodič za korištenje</Text>
         <Text style={styles.headerSubtitle}>Naučite kako koristiti DžematApp</Text>
       </View>
@@ -127,11 +130,15 @@ export default function GuideScreen() {
           activeOpacity={0.8}
         >
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionIcon}>{section.icon}</Text>
+            <View style={styles.sectionIconContainer}>
+              <MaterialCommunityIcons name={section.icon} size={24} color={AppColors.primary} />
+            </View>
             <Text style={[styles.sectionTitle, { color: colors.text }]}>{section.title}</Text>
-            <Text style={[styles.expandIcon, { color: colors.textSecondary }]}>
-              {expandedId === section.id ? '▲' : '▼'}
-            </Text>
+            <MaterialCommunityIcons 
+              name={expandedId === section.id ? 'chevron-up' : 'chevron-down'} 
+              size={20} 
+              color={colors.textSecondary} 
+            />
           </View>
           
           {expandedId === section.id && (
@@ -147,7 +154,7 @@ export default function GuideScreen() {
       ))}
 
       <View style={[styles.contactCard, { backgroundColor: colors.surface }]}>
-        <Text style={styles.contactIcon}>💬</Text>
+        <MaterialCommunityIcons name="help-circle-outline" size={32} color={AppColors.secondary} style={{ marginBottom: Spacing.sm }} />
         <Text style={[styles.contactTitle, { color: colors.text }]}>Trebate pomoć?</Text>
         <Text style={[styles.contactText, { color: colors.textSecondary }]}>
           Za dodatna pitanja ili tehničku podršku, kontaktirajte administratora vašeg džemata.
@@ -166,7 +173,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: Spacing.lg,
   },
-  headerIcon: { fontSize: 48, marginBottom: Spacing.sm },
+  headerIcon: { marginBottom: Spacing.sm },
   headerTitle: { ...Typography.h2, color: '#fff', marginBottom: Spacing.xs },
   headerSubtitle: { ...Typography.body, color: 'rgba(255,255,255,0.8)' },
   sectionCard: {
@@ -180,7 +187,15 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   sectionHeader: { flexDirection: 'row', alignItems: 'center' },
-  sectionIcon: { fontSize: 24, marginRight: Spacing.sm },
+  sectionIconContainer: { 
+    width: 40, 
+    height: 40, 
+    borderRadius: 20, 
+    backgroundColor: 'rgba(57, 73, 171, 0.1)', 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    marginRight: Spacing.sm 
+  },
   sectionTitle: { ...Typography.body, fontWeight: '600', flex: 1 },
   expandIcon: { fontSize: 12 },
   sectionContent: { marginTop: Spacing.md, paddingLeft: Spacing.md },
@@ -191,7 +206,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: Spacing.md,
   },
-  contactIcon: { fontSize: 32, marginBottom: Spacing.sm },
+  contactIcon: { marginBottom: Spacing.sm },
   contactTitle: { ...Typography.h3, marginBottom: Spacing.xs },
   contactText: { ...Typography.body, textAlign: 'center' },
 });

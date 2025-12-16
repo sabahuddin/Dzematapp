@@ -4,6 +4,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { apiClient } from '@/services/api';
 import { AppColors, BorderRadius, Spacing, Typography, Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
+type IconName = React.ComponentProps<typeof MaterialCommunityIcons>['name'];
 
 interface Badge {
   id: string;
@@ -152,7 +155,9 @@ export default function BadgesScreen() {
                 key={badge.id} 
                 style={[styles.badgeCard, { backgroundColor: colors.surface, borderColor: getBadgeColor(badge.criteriaType) }]}
               >
-                <Text style={styles.badgeIcon}>{badge.icon || '🏆'}</Text>
+                <View style={[styles.badgeIconContainer, { backgroundColor: `${getBadgeColor(badge.criteriaType)}20` }]}>
+                  <MaterialCommunityIcons name="medal" size={32} color={getBadgeColor(badge.criteriaType)} />
+                </View>
                 <Text style={[styles.badgeName, { color: colors.text }]}>{badge.name}</Text>
                 <Text style={[styles.badgeDesc, { color: colors.textSecondary }]} numberOfLines={2}>
                   {badge.description}
@@ -176,7 +181,9 @@ export default function BadgesScreen() {
                 key={badge.id} 
                 style={[styles.badgeCard, styles.lockedBadge, { backgroundColor: colors.surface }]}
               >
-                <Text style={[styles.badgeIcon, styles.lockedIcon]}>{badge.icon || '🏆'}</Text>
+                <View style={[styles.badgeIconContainer, { backgroundColor: 'rgba(176, 190, 197, 0.2)' }]}>
+                  <MaterialCommunityIcons name="medal-outline" size={32} color={AppColors.navInactive} />
+                </View>
                 <Text style={[styles.badgeName, { color: colors.textSecondary }]}>{badge.name}</Text>
                 <Text style={[styles.badgeDesc, { color: colors.textSecondary }]} numberOfLines={2}>
                   {badge.description}
@@ -192,7 +199,7 @@ export default function BadgesScreen() {
 
       {badges.length === 0 && (
         <View style={[styles.emptyState, { backgroundColor: colors.surface }]}>
-          <Text style={styles.emptyIcon}>🏅</Text>
+          <MaterialCommunityIcons name="medal-outline" size={48} color={AppColors.primary} />
           <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
             Nema dostupnih značaka
           </Text>
@@ -225,9 +232,15 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: 'transparent',
   },
-  lockedBadge: { opacity: 0.6 },
-  badgeIcon: { fontSize: 40, marginBottom: Spacing.sm },
-  lockedIcon: { opacity: 0.5 },
+  lockedBadge: { opacity: 0.7 },
+  badgeIconContainer: { 
+    width: 56, 
+    height: 56, 
+    borderRadius: 28, 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    marginBottom: Spacing.sm 
+  },
   badgeName: { ...Typography.body, fontWeight: '600', textAlign: 'center', marginBottom: Spacing.xs },
   badgeDesc: { ...Typography.caption, textAlign: 'center', marginBottom: Spacing.xs },
   earnedDate: { ...Typography.caption, fontWeight: '600' },

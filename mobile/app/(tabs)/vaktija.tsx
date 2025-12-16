@@ -3,6 +3,9 @@ import { View, StyleSheet, ScrollView, Text, ActivityIndicator, RefreshControl }
 import { apiClient } from '@/services/api';
 import { AppColors, BorderRadius, Spacing, Typography, Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
+type IconName = React.ComponentProps<typeof MaterialCommunityIcons>['name'];
 
 interface PrayerTime {
   id: string;
@@ -15,13 +18,13 @@ interface PrayerTime {
   isha: string;
 }
 
-const PRAYER_NAMES = [
-  { key: 'fajr', name: 'Sabah', icon: '🌙' },
-  { key: 'sunrise', name: 'Izlazak sunca', icon: '🌅' },
-  { key: 'dhuhr', name: 'Podne', icon: '☀️' },
-  { key: 'asr', name: 'Ikindija', icon: '🌤️' },
-  { key: 'maghrib', name: 'Akšam', icon: '🌆' },
-  { key: 'isha', name: 'Jacija', icon: '🌃' },
+const PRAYER_NAMES: { key: string; name: string; icon: IconName }[] = [
+  { key: 'fajr', name: 'Sabah', icon: 'weather-night' },
+  { key: 'sunrise', name: 'Izlazak sunca', icon: 'weather-sunset-up' },
+  { key: 'dhuhr', name: 'Podne', icon: 'weather-sunny' },
+  { key: 'asr', name: 'Ikindija', icon: 'white-balance-sunny' },
+  { key: 'maghrib', name: 'Akšam', icon: 'weather-sunset-down' },
+  { key: 'isha', name: 'Jacija', icon: 'moon-waning-crescent' },
 ];
 
 export default function VaktijaScreen() {
@@ -97,7 +100,7 @@ export default function VaktijaScreen() {
           <View style={styles.prayerGrid}>
             {PRAYER_NAMES.map(prayer => (
               <View key={prayer.key} style={styles.prayerItem}>
-                <Text style={styles.prayerIcon}>{prayer.icon}</Text>
+                <MaterialCommunityIcons name={prayer.icon} size={24} color="rgba(255,255,255,0.9)" />
                 <Text style={styles.prayerName}>{prayer.name}</Text>
                 <Text style={styles.prayerTime}>
                   {(todayPrayer as any)[prayer.key]}
@@ -108,7 +111,7 @@ export default function VaktijaScreen() {
         </View>
       ) : (
         <View style={[styles.emptyState, { backgroundColor: colors.surface }]}>
-          <Text style={styles.emptyIcon}>🕌</Text>
+          <MaterialCommunityIcons name="mosque" size={48} color={AppColors.primary} />
           <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
             Vaktija nije dostupna
           </Text>
@@ -182,7 +185,6 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.sm,
   },
   prayerIcon: {
-    fontSize: 24,
     marginBottom: Spacing.xs,
   },
   prayerName: {
@@ -200,7 +202,6 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.lg,
   },
   emptyIcon: {
-    fontSize: 48,
     marginBottom: Spacing.md,
   },
   emptyText: {

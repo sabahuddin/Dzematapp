@@ -13,7 +13,9 @@ import {
 import { apiClient } from '@/services/api';
 import { AppColors, BorderRadius, Spacing, Typography, Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
+type IconName = React.ComponentProps<typeof MaterialCommunityIcons>['name'];
 type ApplicationType = 'akika' | 'marriage';
 
 interface ApplicationForm {
@@ -29,9 +31,9 @@ interface ApplicationForm {
   notes?: string;
 }
 
-const APPLICATION_TYPES = [
-  { id: 'akika' as ApplicationType, label: 'Akika', icon: '👶', description: 'Prijava za organizaciju akike za novorođenče' },
-  { id: 'marriage' as ApplicationType, label: 'Vjenčanje', icon: '💒', description: 'Prijava za organizaciju vjenčanja' },
+const APPLICATION_TYPES: { id: ApplicationType; label: string; icon: IconName; description: string }[] = [
+  { id: 'akika', label: 'Akika', icon: 'baby-carriage', description: 'Prijava za organizaciju akike za novorođenče' },
+  { id: 'marriage', label: 'Vjenčanje', icon: 'heart-multiple-outline', description: 'Prijava za organizaciju vjenčanja' },
 ];
 
 export default function ApplicationsScreen() {
@@ -115,12 +117,14 @@ export default function ApplicationsScreen() {
           style={[styles.typeCard, { backgroundColor: colors.surface }]}
           onPress={() => handleSelectType(appType.id)}
         >
-          <Text style={styles.typeIcon}>{appType.icon}</Text>
+          <View style={styles.typeIconContainer}>
+            <MaterialCommunityIcons name={appType.icon} size={32} color={AppColors.primary} />
+          </View>
           <View style={styles.typeContent}>
             <Text style={[styles.typeLabel, { color: colors.text }]}>{appType.label}</Text>
             <Text style={[styles.typeDesc, { color: colors.textSecondary }]}>{appType.description}</Text>
           </View>
-          <Text style={styles.arrow}>→</Text>
+          <MaterialCommunityIcons name="chevron-right" size={24} color={AppColors.secondary} />
         </TouchableOpacity>
       ))}
 
@@ -260,7 +264,15 @@ const styles = StyleSheet.create({
     shadowRadius: 4, 
     elevation: 2 
   },
-  typeIcon: { fontSize: 40, marginRight: Spacing.md },
+  typeIconContainer: { 
+    width: 56, 
+    height: 56, 
+    borderRadius: 28, 
+    backgroundColor: 'rgba(57, 73, 171, 0.1)', 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    marginRight: Spacing.md 
+  },
   typeContent: { flex: 1 },
   typeLabel: { ...Typography.h3, marginBottom: Spacing.xs },
   typeDesc: { ...Typography.bodySmall },

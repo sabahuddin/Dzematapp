@@ -4,6 +4,9 @@ import { apiClient } from '@/services/api';
 import { AppColors, BorderRadius, Spacing, Typography, Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
+type IconName = React.ComponentProps<typeof MaterialCommunityIcons>['name'];
 
 interface ActivityLog {
   id: string;
@@ -98,13 +101,13 @@ export default function ActivitiesScreen() {
     return date.toLocaleDateString('hr-HR', { day: '2-digit', month: '2-digit', year: 'numeric' });
   };
 
-  const getActivityIcon = (type: string) => {
+  const getActivityIcon = (type: string): IconName => {
     switch (type) {
-      case 'task': return '✓';
-      case 'event': return '📅';
-      case 'contribution': return '💰';
-      case 'badge': return '🏆';
-      default: return '⭐';
+      case 'task': return 'checkbox-marked-circle-outline';
+      case 'event': return 'calendar-check-outline';
+      case 'contribution': return 'hand-heart-outline';
+      case 'badge': return 'medal-outline';
+      default: return 'star-outline';
     }
   };
 
@@ -156,7 +159,9 @@ export default function ActivitiesScreen() {
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.badgesScroll}>
             {badges.map((badge) => (
               <View key={badge.id} style={[styles.badgeCard, { backgroundColor: colors.surface }]}>
-                <Text style={styles.badgeIcon}>{badge.icon || '🏆'}</Text>
+                <View style={styles.badgeIconContainer}>
+                  <MaterialCommunityIcons name="medal" size={28} color={AppColors.primary} />
+                </View>
                 <Text style={[styles.badgeName, { color: colors.text }]}>{badge.name}</Text>
                 <Text style={[styles.badgeDate, { color: colors.textSecondary }]}>
                   {formatDate(badge.earnedAt)}
@@ -171,7 +176,7 @@ export default function ActivitiesScreen() {
       <Text style={[styles.sectionTitle, { color: colors.text }]}>Nedavne aktivnosti</Text>
       {activities.length === 0 ? (
         <View style={[styles.emptyState, { backgroundColor: colors.surface }]}>
-          <Text style={styles.emptyIcon}>⭐</Text>
+          <MaterialCommunityIcons name="star-outline" size={48} color={AppColors.primary} />
           <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
             Nema zabilježenih aktivnosti
           </Text>
@@ -179,8 +184,8 @@ export default function ActivitiesScreen() {
       ) : (
         activities.slice(0, 20).map((activity) => (
           <View key={activity.id} style={[styles.activityCard, { backgroundColor: colors.surface }]}>
-            <View style={styles.activityIcon}>
-              <Text style={styles.activityIconText}>{getActivityIcon(activity.entityType)}</Text>
+            <View style={[styles.activityIcon, { backgroundColor: 'rgba(57, 73, 171, 0.1)' }]}>
+              <MaterialCommunityIcons name={getActivityIcon(activity.entityType)} size={20} color={AppColors.primary} />
             </View>
             <View style={styles.activityContent}>
               <Text style={[styles.activityAction, { color: colors.text }]}>{activity.action}</Text>
@@ -265,8 +270,13 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
-  badgeIcon: {
-    fontSize: 32,
+  badgeIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: 'rgba(57, 73, 171, 0.1)',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: Spacing.xs,
   },
   badgeName: {
@@ -284,7 +294,6 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.lg,
   },
   emptyIcon: {
-    fontSize: 48,
     marginBottom: Spacing.md,
   },
   emptyText: {
