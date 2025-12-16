@@ -23,11 +23,7 @@ export interface AuthResponse {
 class AuthService {
   private user: User | null = null;
 
-  constructor() {
-    this.loadUser();
-  }
-
-  private async loadUser() {
+  async loadStoredAuth() {
     try {
       const userData = await AsyncStorage.getItem(USER_STORAGE_KEY);
       if (userData) {
@@ -35,6 +31,17 @@ class AuthService {
       }
     } catch (error) {
       console.error('Error loading user:', error);
+    }
+  }
+
+  async getSession(): Promise<User | null> {
+    try {
+      const response = await apiClient.get<{ user: User }>('/api/auth/session');
+      this.user = response.data.user;
+      await AsyncStorage.setItem(USER_STORAGE_KEY, JSON.stringify(this.user));
+      return this.user;
+    } catch (error) {
+      return null;
     }
   }
 
@@ -67,19 +74,6 @@ class AuthService {
       this.user = null;
       apiClient.clearSession();
       await AsyncStorage.removeItem(USER_STORAGE_KEY);
-    }
-  }
-
-  async checkSession(): Promise<User | null> {
-    try {
-      const response = await apiClient.get<{ user: User }>('/api/auth/session');
-      this.user = response.data.user;
-      await AsyncStorage.setItem(USER_STORAGE_KEY, JSON.stringify(this.user));
-      return this.user;
-    } catch (error) {
-      this.user = null;
-      await AsyncStorage.removeItem(USER_STORAGE_KEY);
-      return null;
     }
   }
 
