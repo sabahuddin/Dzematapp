@@ -1,0 +1,22 @@
+iOS Bundled 10274ms node_modules/expo-router/entry.js (1509 modules)
+ WARN  [Reanimated] Reduced motion setting is enabled on this device. This warning is visible only in the development mode. Some animations will be disabled by default. You can override the behavior for individual animations, see https://docs.swmansion.com/react-native-reanimated/docs/guides/troubleshooting#reduced-motion-setting-is-enabled-on-this-device.
+ WARN  🚨 React Native's New Architecture is always enabled in Expo Go, but it is explicitly disabled in your project's app config. This may lead to unexpected behavior when creating a production or development build. Remove "newArchEnabled": false from your app.json.
+Learn more: https://docs.expo.dev/guides/new-architecture/
+ WARN  [Layout children]: Too many screens defined. Route "announcements" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "events" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "vaktija" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "messages" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "activities" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "membership" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "sections" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "imam-qa" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "documents" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "notifications" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "certificates" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "applications" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "badges" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "feed" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "livestream" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "sponsors" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "guide" is extraneous.
+ WARN  [Layout children]: Too many screens defined. Route "shop" is extraneous.
