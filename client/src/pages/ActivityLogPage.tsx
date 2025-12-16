@@ -42,6 +42,8 @@ import {
   AttachMoney,
   EmojiEvents,
   Work,
+  Assignment,
+  Star,
   Download,
   ReceiptLong,
   BadgeOutlined,
@@ -675,21 +677,47 @@ export default function ActivityLogPage() {
               </Box>
             )}
 
-            {/* Total Points Card - Only for member view */}
+            {/* Points by Category Card - Only for member view */}
             {!currentUser?.isAdmin && (
-              <Card sx={{ mb: 3, p: 3, bgcolor: 'hsl(36 100% 94%)', borderLeft: '4px solid hsl(14 100% 45%)' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <TrendingUp sx={{ fontSize: 48, color: 'hsl(14 100% 45%)' }} />
-                  <Box>
-                    <Typography variant="h3" sx={{ fontWeight: 700, color: 'hsl(14 100% 45%)' }}>
-                      {((activityLogsQuery.data as ActivityLog[]) || []).reduce((sum, entry) => sum + (entry.points || 0), 0)}
-                    </Typography>
-                    <Typography variant="body1" color="text.secondary">
-                      {t('activity:pointsSection.totalPoints')}
-                    </Typography>
-                  </Box>
-                </Box>
-              </Card>
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+                  {t('activity:pointsSection.pointsByCategory')}
+                </Typography>
+                <Grid container spacing={2}>
+                  {(() => {
+                    const activities = (activityLogsQuery.data as ActivityLog[]) || [];
+                    const pointsByCategory: Record<string, number> = {};
+                    activities.forEach(entry => {
+                      const type = entry.activityType || 'other';
+                      pointsByCategory[type] = (pointsByCategory[type] || 0) + (entry.points || 0);
+                    });
+                    
+                    const categoryConfig: Record<string, { label: string; color: string; icon: any }> = {
+                      'task_completed': { label: t('activity:pointsSection.tasksCompleted'), color: '#4CAF50', icon: <Assignment /> },
+                      'event_rsvp': { label: t('activity:pointsSection.eventRsvp'), color: '#2196F3', icon: <Event /> },
+                      'contribution_made': { label: t('activity:pointsSection.contribution'), color: '#FF9800', icon: <TrendingUp /> },
+                      'badge_earned': { label: t('activity:pointsSection.badgeEarned'), color: '#9C27B0', icon: <EmojiEvents /> },
+                    };
+                    
+                    return Object.entries(pointsByCategory).map(([type, points]) => {
+                      const config = categoryConfig[type] || { label: type, color: '#757575', icon: <Star /> };
+                      return (
+                        <Grid size={{ xs: 6, sm: 3 }} key={type}>
+                          <Card sx={{ p: 2, textAlign: 'center', borderTop: `4px solid ${config.color}` }}>
+                            <Box sx={{ color: config.color, mb: 1 }}>{config.icon}</Box>
+                            <Typography variant="h4" sx={{ fontWeight: 700, color: config.color }}>
+                              {points}
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary">
+                              {config.label}
+                            </Typography>
+                          </Card>
+                        </Grid>
+                      );
+                    });
+                  })()}
+                </Grid>
+              </Box>
             )}
 
             {/* Activity Log Table */}

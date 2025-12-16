@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -110,7 +110,7 @@ export default function FinancesPage() {
       amount: '0',
       paymentDate: new Date().toISOString().split('T')[0],
       purpose: '',
-      paymentMethod: t('finances:paymentMethods.cash'),
+      paymentMethod: '',
       notes: '',
       createdById: currentUser?.id || '',
       pointsValue: 0
@@ -252,11 +252,11 @@ export default function FinancesPage() {
         amount: contribution.amount,
         paymentDate: contribution.paymentDate ? new Date(contribution.paymentDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
         purpose: contribution.purpose,
-        paymentMethod: contribution.paymentMethod,
+        paymentMethod: '',
         notes: contribution.notes || '',
         projectId: contribution.projectId || undefined,
-        createdById: contribution.createdById,
-        pointsValue: contribution.pointsValue || 0
+        createdById: contribution.createdById || undefined,
+        pointsValue: contribution.pointsValue || Math.floor(Number(contribution.amount) / 10)
       });
     } else {
       setSelectedContribution(null);
@@ -265,7 +265,7 @@ export default function FinancesPage() {
         amount: '0',
         paymentDate: new Date().toISOString().split('T')[0],
         purpose: '',
-        paymentMethod: t('finances:paymentMethods.cash'),
+        paymentMethod: '',
         notes: '',
         projectId: undefined,
         createdById: currentUser?.id || '',
@@ -274,6 +274,14 @@ export default function FinancesPage() {
     }
     setDialogOpen(true);
   };
+
+  // Auto-calculate points when amount changes (10:1 ratio)
+  const watchAmount = form.watch('amount');
+  useEffect(() => {
+    const amount = Number(watchAmount) || 0;
+    const autoPoints = Math.floor(amount / 10);
+    form.setValue('pointsValue', autoPoints);
+  }, [watchAmount]);
 
   const handleCloseDialog = () => {
     setDialogOpen(false);
@@ -773,42 +781,28 @@ export default function FinancesPage() {
                   ))}
                 </TextField>
               </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  select
-                  fullWidth
-                  label={t('finances:paymentMethod')}
-                  {...form.register('paymentMethod')}
-                  error={!!form.formState.errors.paymentMethod}
-                  helperText={form.formState.errors.paymentMethod?.message}
-                  SelectProps={{ native: true }}
-                  sx={{ '& select': { backgroundColor: '#fff', color: '#333' } }}
-                  data-testid="select-payment-method"
-                >
-                  <option value={t('finances:paymentMethods.cash')}>{t('finances:paymentMethods.cash')}</option>
-                  <option value={t('finances:paymentMethods.bank')}>{t('finances:paymentMethods.bank')}</option>
-                </TextField>
-              </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  select
-                  fullWidth
-                  label={t('finances:projectOptional')}
-                  {...form.register('projectId')}
-                  SelectProps={{ native: true }}
-                  sx={{ '& select': { backgroundColor: '#fff', color: '#333' } }}
-                  data-testid="select-project"
-                >
-                  <option value="">{t('finances:noProject')}</option>
-                  {(projectsQuery.data as Project[] || [])
-                    .filter(p => p.status === 'active')
-                    .map(project => (
-                      <option key={project.id} value={project.id}>
-                        {project.name}
-                      </option>
-                    ))}
-                </TextField>
-              </Grid>
+              {form.watch('purpose')?.toLowerCase().includes('projekat') && (
+                <Grid size={{ xs: 12 }}>
+                  <TextField
+                    select
+                    fullWidth
+                    label={t('finances:selectProject')}
+                    {...form.register('projectId')}
+                    SelectProps={{ native: true }}
+                    sx={{ '& select': { backgroundColor: '#fff', color: '#333' } }}
+                    data-testid="select-project"
+                  >
+                    <option value="">{t('finances:selectProjectPlaceholder')}</option>
+                    {(projectsQuery.data as Project[] || [])
+                      .filter(p => p.status === 'active')
+                      .map(project => (
+                        <option key={project.id} value={project.id}>
+                          {project.name}
+                        </option>
+                      ))}
+                  </TextField>
+                </Grid>
+              )}
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth

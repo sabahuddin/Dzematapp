@@ -75,6 +75,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
     city: '',
     postalCode: '',
     dateOfBirth: '',
+    gender: '',
     membershipDate: '',
     status: 'aktivan',
     inactiveReason: '',
@@ -142,6 +143,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
         city: user.city || '',
         postalCode: user.postalCode || '',
         dateOfBirth: convertDateToISO(user.dateOfBirth),
+        gender: (user as any).gender || '',
         membershipDate: user.membershipDate ? new Date(user.membershipDate).toISOString().split('T')[0] : '',
         status: user.status || 'aktivan',
         inactiveReason: user.inactiveReason || '',
@@ -166,6 +168,7 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
         city: '',
         postalCode: '',
         dateOfBirth: '1900-01-01',
+        gender: '',
         membershipDate: '1900-01-01',
         status: 'aktivan',
         inactiveReason: '',
@@ -418,8 +421,8 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
               />
             </Grid>
 
-            {/* Row 2: Datum rođenja (full width) */}
-            <Grid size={{ xs: 12 }}>
+            {/* Row 2: Datum rođenja i Spol (50-50) */}
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 fullWidth
                 variant="outlined"
@@ -431,6 +434,22 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
                 inputProps={{ step: 1 }}
                 data-testid="input-dateOfBirth"
               />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField
+                select
+                fullWidth
+                variant="outlined"
+                label={t('gender')}
+                value={formData.gender}
+                onChange={handleChange('gender')}
+                SelectProps={{ native: true }}
+                data-testid="input-gender"
+              >
+                <option value="">{t('selectGender')}</option>
+                <option value="M">{t('genderMale')}</option>
+                <option value="Ž">{t('genderFemale')}</option>
+              </TextField>
             </Grid>
 
             {/* Row 3: Korisničko ime i Šifra (50-50) */}

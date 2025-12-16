@@ -17,6 +17,7 @@ export const users = pgTable("users", {
   city: text("city"),
   postalCode: text("postal_code"),
   dateOfBirth: text("date_of_birth"),
+  gender: text("gender"), // M, Ž
   occupation: text("occupation"),
   membershipDate: timestamp("membership_date").defaultNow(),
   status: text("status").notNull().default("aktivan"), // aktivan, pasivan, član porodice
