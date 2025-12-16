@@ -218,6 +218,19 @@ async function createMissingTables(client: any): Promise<void> {
       "updated_at" timestamp NOT NULL DEFAULT now()
     )`,
     
+    // page_views - Analytics tracking
+    `CREATE TABLE IF NOT EXISTS "page_views" (
+      "id" serial PRIMARY KEY,
+      "page_path" text NOT NULL,
+      "referrer" text,
+      "user_agent" text,
+      "ip_address" text,
+      "session_id" text,
+      "tenant_id" varchar REFERENCES "tenants"("id") ON DELETE CASCADE,
+      "user_id" varchar REFERENCES "users"("id"),
+      "created_at" timestamp DEFAULT now()
+    )`,
+    
     // akika_applications
     `CREATE TABLE IF NOT EXISTS "akika_applications" (
       "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -608,6 +621,9 @@ async function addMissingColumns(client: any): Promise<void> {
   // COMPLETE list of ALL columns from schema.ts verification
   // Generated from scripts/verify-schema.ts analysis
   const columnFixes = [
+    // USERS - gender column
+    `ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "gender" text`,
+    
     // TENANTS - 7 missing columns
     `ALTER TABLE "tenants" ADD COLUMN IF NOT EXISTS "domain" text`,
     `ALTER TABLE "tenants" ADD COLUMN IF NOT EXISTS "contact_email" text`,
