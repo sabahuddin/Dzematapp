@@ -1,0 +1,45 @@
+Logs for your project will appear below. Press Ctrl+C to exit.
+Unable to run simctl:
+Error: xcrun simctl help exited with non-zero code: 72
+Unable to resolve asset "./assets/icon.png" from "icon" in your app.json or app.config.js
+Offline and no cached development certificate found, unable to sign manifest
+iOS Bundled 9461ms node_modules/expo-router/entry.js (1511 modules)
+ WARN  [Reanimated] Reduced motion setting is enabled on this device. This warning is visible only in the development mode. Some animations will be disabled by default. You can override the behavior for individual animations, see https://docs.swmansion.com/react-native-reanimated/docs/guides/troubleshooting#reduced-motion-setting-is-enabled-on-this-device.
+ WARN  🚨 React Native's New Architecture is always enabled in Expo Go, but it is explicitly disabled in your project's app config. This may lead to unexpected behavior when creating a production or development build. Remove "newArchEnabled": false from your app.json.
+Learn more: https://docs.expo.dev/guides/new-architecture/
+ ERROR  Error loading stats: {"response": {"data": {}, "status": 404}} 
+
+Code: index.tsx
+  23 |       setStats(response.data);
+  24 |     } catch (error) {
+> 25 |       console.error('Error loading stats:', error);
+     |                    ^
+  26 |     } finally {
+  27 |       setLoading(false);
+  28 |     }
+Call Stack
+  loadDashboardStats (app/(tabs)/index.tsx:25:20)
+ ERROR  Logout error: {"response": {"data": {}, "status": 404}} 
+
+Code: auth.ts
+  52 |       await apiClient.post('/api/auth/logout', {});
+  53 |     } catch (error) {
+> 54 |       console.error('Logout error:', error);
+     |                    ^
+  55 |     } finally {
+  56 |       await AsyncStorage.removeItem('authToken');
+  57 |       await AsyncStorage.removeItem('user');
+Call Stack
+  AuthService#logout (services/auth.ts:54:20)
+ ERROR  [Error: Uncaught (in promise, id: 0) TypeError: _api.apiClient.clearToken is not a function (it is undefined)] 
+
+Code: auth.ts
+  56 |       await AsyncStorage.removeItem('authToken');
+  57 |       await AsyncStorage.removeItem('user');
+> 58 |       apiClient.clearToken();
+     |                           ^
+  59 |     }
+  60 |   }
+  61 |
+Call Stack
+  AuthService#logout (services/auth.ts:58:27)
