@@ -1,0 +1,100 @@
+12:56:17 PM [express] POST /api/analytics/track 500 in 57ms :: {"message":"Failed to track page view"}
+[ORG-SETTINGS] Getting settings for tenant: default-tenant-demo
+12:56:17 PM [express] GET /api/auth/session 401 in 7ms :: {"message":"Not authenticated"}
+[STORAGE] ✅ Found existing org settings: fe93405c-6d88-4363-8dec-75b45f796008
+[ORG-SETTINGS] ✅ Success: fe93405c-6d88-4363-8dec-75b45f796008
+12:56:17 PM [express] GET /api/organization-settings 304 in 10ms :: {"id":"fe93405c-6d88-4363-8dec-75…
+12:56:21 PM [express] POST /api/tenants/verify-code 200 in 8ms :: {"tenantId":"default-tenant-demo","…
+[LOGIN] Received credentials: {
+  username: 'admin',
+  passwordLength: 8,
+  tenantCode: undefined,
+  tenantId: 'default-tenant-demo'
+}
+12:56:27 PM [express] POST /api/auth/login 500 in 7ms :: {"message":"Internal server error"}
+12:57:12 PM [express] GET /api/auth/session 401 in 3ms :: {"message":"Not authenticated"}
+[ORG-SETTINGS] Getting settings for tenant: default-tenant-demo
+[STORAGE] ✅ Found existing org settings: fe93405c-6d88-4363-8dec-75b45f796008
+[ORG-SETTINGS] ✅ Success: fe93405c-6d88-4363-8dec-75b45f796008
+12:57:12 PM [express] GET /api/organization-settings 304 in 7ms :: {"id":"fe93405c-6d88-4363-8dec-75b…
+[AUTH MIDDLEWARE] Error loading user from session: error: column "gender" does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.getUser (file:///app/dist/index.js:1428:20)
+    at async file:///app/dist/index.js:12348:16 {
+  length: 107,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '156',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3716',
+  routine: 'errorMissingColumn'
+}
+[ANALYTICS] Error tracking page view: error: relation "page_views" does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.createPageView (file:///app/dist/index.js:3620:23)
+    at async file:///app/dist/index.js:10733:7 {
+  length: 109,
+  severity: 'ERROR',
+  code: '42P01',
+  detail: undefined,
+  hint: undefined,
+  position: '13',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '1449',
+  routine: 'parserOpenTable'
+}
+12:57:12 PM [express] POST /api/analytics/track 500 in 36ms :: {"message":"Failed to track page view"}
+12:57:12 PM [express] POST /api/analytics/track 500 in 34ms :: {"message":"Failed to track page view"}
+[LOGIN] Received credentials: {
+  username: 'admin',
+  passwordLength: 8,
+  tenantCode: undefined,
+  tenantId: 'default-tenant-demo'
+}
+12:57:23 PM [express] POST /api/auth/login 500 in 28ms :: {"message":"Internal server error"}
+[ANALYTICS] Error tracking page view: error: relation "page_views" does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+    at async DatabaseStorage.createPageView (file:///app/dist/index.js:3620:23)
+    at async file:///app/dist/index.js:10733:7 {
+  length: 109,
+  severity: 'ERROR',
+  code: '42P01',
+  detail: undefined,
+  hint: undefined,
+  position: '13',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '1449',
+  routine: 'parserOpenTable'
+}
