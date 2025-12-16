@@ -110,7 +110,6 @@ export default function FinancesPage() {
       amount: '0',
       paymentDate: new Date().toISOString().split('T')[0],
       purpose: '',
-      paymentMethod: '',
       notes: '',
       createdById: currentUser?.id || '',
       pointsValue: 0
@@ -121,7 +120,12 @@ export default function FinancesPage() {
   const saveContributionMutation = useMutation({
     mutationFn: async (data: z.infer<typeof formSchema>) => {
       // Ensure userId is set for non-admins
-      const payload = currentUser?.isAdmin ? data : { ...data, userId: currentUser?.id || '' };
+      let payload = currentUser?.isAdmin ? { ...data } : { ...data, userId: currentUser?.id || '' };
+      
+      // Only include projectId when purpose is "Projekat"
+      if (!payload.purpose?.toLowerCase().includes('projekat')) {
+        delete (payload as any).projectId;
+      }
       
       if (selectedContribution) {
         return await apiRequest(`/api/financial-contributions/${selectedContribution.id}`, 'PATCH', payload);
@@ -252,7 +256,6 @@ export default function FinancesPage() {
         amount: contribution.amount,
         paymentDate: contribution.paymentDate ? new Date(contribution.paymentDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
         purpose: contribution.purpose,
-        paymentMethod: '',
         notes: contribution.notes || '',
         projectId: contribution.projectId || undefined,
         createdById: contribution.createdById || undefined,
@@ -265,7 +268,6 @@ export default function FinancesPage() {
         amount: '0',
         paymentDate: new Date().toISOString().split('T')[0],
         purpose: '',
-        paymentMethod: '',
         notes: '',
         projectId: undefined,
         createdById: currentUser?.id || '',
@@ -357,13 +359,12 @@ export default function FinancesPage() {
       contribution.purpose,
       getProjectName(contribution.projectId) || '-',
       contribution.paymentDate ? new Date(contribution.paymentDate).toLocaleDateString('hr-HR') : '-',
-      contribution.paymentMethod || '-',
       contribution.notes || '-'
     ]);
 
     // Calculate total
     const total = filteredContributions.reduce((sum, c) => sum + Number(c.amount), 0);
-    const summaryRow = [t('finances:export.total'), formatPrice(total), '', '', '', '', ''];
+    const summaryRow = [t('finances:export.total'), formatPrice(total), '', '', '', ''];
 
     exportToExcel({
       title: t('finances:export.title'),
@@ -375,7 +376,6 @@ export default function FinancesPage() {
         t('finances:export.headers.purpose'),
         t('finances:export.headers.project'),
         t('finances:export.headers.paymentDate'),
-        t('finances:export.headers.paymentMethod'),
         t('finances:export.headers.notes')
       ],
       data: financeData,

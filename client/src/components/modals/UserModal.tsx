@@ -295,6 +295,10 @@ export default function UserModal({ open, onClose, onSave, user, isMemberView = 
     if (!finalFormData.inactiveReason || finalFormData.inactiveReason === '') {
       finalFormData.inactiveReason = null;
     }
+    // Clean up gender
+    if (!finalFormData.gender || finalFormData.gender === '') {
+      finalFormData.gender = null;
+    }
     
     // Ensure categories is an empty array if not set
     if (!finalFormData.categories || finalFormData.categories.length === 0) {

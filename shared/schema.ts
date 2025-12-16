@@ -626,7 +626,7 @@ export const financialContributions = pgTable("financial_contributions", {
   amount: text("amount").notNull(), // decimal as text, in CHF
   paymentDate: timestamp("payment_date").notNull(),
   purpose: text("purpose").notNull(), // Reference to contribution purpose name
-  paymentMethod: text("payment_method").notNull(), // Gotovina, Banka
+  paymentMethod: text("payment_method"), // Legacy field - no longer used in form
   notes: text("notes"),
   projectId: varchar("project_id").references((): any => projects.id), // Optional link to project (Feature 4)
   pointsValue: integer("points_value").default(0), // Points awarded for this contribution (admin-set)
