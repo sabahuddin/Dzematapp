@@ -5585,8 +5585,8 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         return res.status(403).json({ message: "Only IO members and admins can approve proposals" });
       }
       
-      const { reviewComment } = req.body;
-      const updated = await storage.approveProposal(req.params.id, tenantId, user.id, reviewComment);
+      const { reviewComment, targetWorkGroupId } = req.body;
+      const updated = await storage.approveProposal(req.params.id, tenantId, user.id, reviewComment, targetWorkGroupId);
       res.json(updated);
     } catch (error) {
       console.error('Error approving proposal:', error);

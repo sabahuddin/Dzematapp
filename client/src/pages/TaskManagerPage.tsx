@@ -679,8 +679,8 @@ export default function TaskManagerPage() {
   });
 
   const approveProposalMutation = useMutation({
-    mutationFn: async ({ id, comment }: { id: string; comment?: string }) => {
-      return await apiRequest(`/api/proposals/${id}/approve`, 'POST', { comment });
+    mutationFn: async ({ id, comment, targetWorkGroupId }: { id: string; comment?: string; targetWorkGroupId?: string }) => {
+      return await apiRequest(`/api/proposals/${id}/approve`, 'PATCH', { reviewComment: comment, targetWorkGroupId });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/proposals'] });
@@ -1485,7 +1485,7 @@ interface ProposalsReviewContentProps {
   proposals: any[];
   workGroups: any[];
   users: any[];
-  onApprove: (data: { id: string; comment?: string }) => void;
+  onApprove: (data: { id: string; comment?: string; targetWorkGroupId?: string }) => void;
   onReject: (data: { id: string; comment: string }) => void;
   isLoading: boolean;
   readOnly?: boolean;
@@ -1498,11 +1498,13 @@ function ProposalsReviewContent({ proposals, workGroups, users, onApprove, onRej
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
   const [reviewAction, setReviewAction] = useState<'approve' | 'reject'>('approve');
   const [reviewComment, setReviewComment] = useState('');
+  const [targetWorkGroupId, setTargetWorkGroupId] = useState('');
 
   const handleOpenReview = (proposal: any, action: 'approve' | 'reject') => {
     setSelectedProposal(proposal);
     setReviewAction(action);
     setReviewComment('');
+    setTargetWorkGroupId(proposal.workGroupId || '');
     setReviewDialogOpen(true);
   };
 
@@ -1510,7 +1512,11 @@ function ProposalsReviewContent({ proposals, workGroups, users, onApprove, onRej
     if (!selectedProposal) return;
     
     if (reviewAction === 'approve') {
-      onApprove({ id: selectedProposal.id, comment: reviewComment || undefined });
+      onApprove({ 
+        id: selectedProposal.id, 
+        comment: reviewComment || undefined,
+        targetWorkGroupId: targetWorkGroupId || undefined
+      });
     } else {
       if (!reviewComment.trim()) {
         return; // Reject zahtijeva komentar
@@ -1521,6 +1527,7 @@ function ProposalsReviewContent({ proposals, workGroups, users, onApprove, onRej
     setReviewDialogOpen(false);
     setSelectedProposal(null);
     setReviewComment('');
+    setTargetWorkGroupId('');
   };
 
   const getWorkGroupName = (workGroupId: string) => {
@@ -1649,6 +1656,23 @@ function ProposalsReviewContent({ proposals, workGroups, users, onApprove, onRej
           {reviewAction === 'approve' ? 'Odobri Prijedlog' : 'Odbij Prijedlog'}
         </DialogTitle>
         <DialogContent>
+          {reviewAction === 'approve' && (
+            <FormControl fullWidth sx={{ mt: 1, mb: 2 }}>
+              <InputLabel>Dodijeli sekciji</InputLabel>
+              <Select
+                value={targetWorkGroupId}
+                onChange={(e) => setTargetWorkGroupId(e.target.value)}
+                label="Dodijeli sekciji"
+                data-testid="select-target-workgroup"
+              >
+                {workGroups.map((wg: any) => (
+                  <MenuItem key={wg.id} value={wg.id}>
+                    {wg.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
           <TextField
             label={reviewAction === 'approve' ? 'Komentar (Opciono)' : 'Razlog odbijanja (Obavezno)'}
             value={reviewComment}
@@ -1657,7 +1681,7 @@ function ProposalsReviewContent({ proposals, workGroups, users, onApprove, onRej
             multiline
             rows={4}
             required={reviewAction === 'reject'}
-            sx={{ mt: 1 }}
+            sx={{ mt: reviewAction === 'approve' ? 0 : 1 }}
             data-testid="input-review-comment"
           />
         </DialogContent>

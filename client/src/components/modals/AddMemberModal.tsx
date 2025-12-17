@@ -9,10 +9,8 @@ import {
   Button,
   IconButton,
   Box,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
+  TextField,
+  Autocomplete,
   Typography,
   CircularProgress,
   Alert
@@ -31,7 +29,7 @@ interface AddMemberModalProps {
 
 export default function AddMemberModal({ open, onClose, workGroup }: AddMemberModalProps) {
   const { t } = useTranslation(['tasks', 'common']);
-  const [selectedUserId, setSelectedUserId] = useState('');
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -63,7 +61,7 @@ export default function AddMemberModal({ open, onClose, workGroup }: AddMemberMo
         title: t('common:common.success'), 
         description: t('addMemberModal.memberAdded') 
       });
-      setSelectedUserId('');
+      setSelectedUser(null);
       onClose();
     },
     onError: (error: any) => {
@@ -89,7 +87,7 @@ export default function AddMemberModal({ open, onClose, workGroup }: AddMemberMo
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    if (!selectedUserId) {
+    if (!selectedUser) {
       toast({ 
         title: t('common:common.error'), 
         description: t('addMemberModal.selectUserRequired'), 
@@ -97,11 +95,11 @@ export default function AddMemberModal({ open, onClose, workGroup }: AddMemberMo
       });
       return;
     }
-    addMemberMutation.mutate(selectedUserId);
+    addMemberMutation.mutate(selectedUser.id);
   };
 
   const handleClose = () => {
-    setSelectedUserId('');
+    setSelectedUser(null);
     onClose();
   };
 
@@ -158,29 +156,28 @@ export default function AddMemberModal({ open, onClose, workGroup }: AddMemberMo
                   {t('addMemberModal.selectUserDescription')}
                 </Typography>
                 
-                <FormControl fullWidth required>
-                  <InputLabel>{t('addMemberModal.selectUser')}</InputLabel>
-                  <Select
-                    value={selectedUserId}
-                    onChange={(e) => setSelectedUserId(e.target.value)}
-                    label={t('addMemberModal.selectUser')}
-                    data-testid="select-user"
-                  >
-                    {availableUsers.length === 0 ? (
-                      <MenuItem disabled>
-                        <Typography color="text.secondary">
-                          {t('addMemberModal.noUsersAvailable')}
-                        </Typography>
-                      </MenuItem>
-                    ) : (
-                      availableUsers.map((user: User) => (
-                        <MenuItem key={user.id} value={user.id} data-testid={`option-user-${user.id}`}>
-                          {user.firstName} {user.lastName} ({user.email})
-                        </MenuItem>
-                      ))
-                    )}
-                  </Select>
-                </FormControl>
+                <Autocomplete
+                  options={availableUsers}
+                  value={selectedUser}
+                  onChange={(_, newValue) => setSelectedUser(newValue)}
+                  getOptionLabel={(option) => `${option.firstName} ${option.lastName} (${option.email})`}
+                  filterOptions={(options, { inputValue }) => {
+                    const searchTerm = inputValue.toLowerCase();
+                    return options.filter((option) =>
+                      `${option.firstName} ${option.lastName} ${option.email}`.toLowerCase().includes(searchTerm)
+                    );
+                  }}
+                  noOptionsText={t('addMemberModal.noUsersAvailable')}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label={t('addMemberModal.selectUser')}
+                      required
+                      data-testid="select-user"
+                    />
+                  )}
+                  data-testid="autocomplete-user"
+                />
 
                 {availableUsers.length === 0 && (
                   <Alert severity="info">
@@ -204,7 +201,7 @@ export default function AddMemberModal({ open, onClose, workGroup }: AddMemberMo
           <Button 
             type="submit" 
             variant="contained"
-            disabled={!selectedUserId || addMemberMutation.isPending || availableUsers.length === 0}
+            disabled={!selectedUser || addMemberMutation.isPending || availableUsers.length === 0}
             data-testid="button-add-member"
           >
             {addMemberMutation.isPending ? (

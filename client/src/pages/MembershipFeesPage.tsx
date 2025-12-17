@@ -301,7 +301,7 @@ export default function MembershipFeesPage() {
     createPaymentMutation.mutate(newPayment);
   };
 
-  const downloadTemplate = () => {
+  const downloadTemplate = (templateType?: 'monthly' | 'yearly') => {
     const templateYear = selectedYear === 'all' ? currentYear : selectedYear;
     const regNumCol = t('membershipFees:templateColumns.registryNumber');
     const fullNameCol = t('membershipFees:templateColumns.fullName');
@@ -309,20 +309,37 @@ export default function MembershipFeesPage() {
     const yearCol = t('membershipFees:templateColumns.year');
     const monthCol = t('membershipFees:templateColumns.month');
     
-    const templateData = [
-      { [regNumCol]: 1, [fullNameCol]: 'John Doe', [amountCol]: 30, [yearCol]: templateYear, [monthCol]: 1 },
-      { [regNumCol]: 1, [fullNameCol]: 'John Doe', [amountCol]: 30, [yearCol]: templateYear, [monthCol]: 2 },
-      { [regNumCol]: 1, [fullNameCol]: 'John Doe', [amountCol]: 30, [yearCol]: templateYear, [monthCol]: 3 },
-      { [regNumCol]: 2, [fullNameCol]: 'Jane Smith', [amountCol]: 50, [yearCol]: templateYear, [monthCol]: 1 },
-    ];
+    const isMonthly = templateType === 'monthly' || (!templateType && orgSettings?.membershipFeeType === 'monthly');
+    
+    let templateData: any[];
+    let cols: { wch: number }[];
+    let filename: string;
+    
+    if (isMonthly) {
+      templateData = [
+        { [regNumCol]: 1, [fullNameCol]: 'Samir Halilović', [amountCol]: 30, [yearCol]: templateYear, [monthCol]: 1 },
+        { [regNumCol]: 1, [fullNameCol]: 'Samir Halilović', [amountCol]: 30, [yearCol]: templateYear, [monthCol]: 2 },
+        { [regNumCol]: 1, [fullNameCol]: 'Samir Halilović', [amountCol]: 30, [yearCol]: templateYear, [monthCol]: 3 },
+        { [regNumCol]: 2, [fullNameCol]: 'Samira Halilović', [amountCol]: 50, [yearCol]: templateYear, [monthCol]: 1 },
+      ];
+      cols = [{ wch: 15 }, { wch: 25 }, { wch: 10 }, { wch: 10 }, { wch: 10 }];
+      filename = `membership_fees_template_monthly_${templateYear}.xlsx`;
+    } else {
+      templateData = [
+        { [regNumCol]: 1, [fullNameCol]: 'Samir Halilović', [amountCol]: 360, [yearCol]: templateYear },
+        { [regNumCol]: 2, [fullNameCol]: 'Samira Halilović', [amountCol]: 600, [yearCol]: templateYear },
+      ];
+      cols = [{ wch: 15 }, { wch: 25 }, { wch: 10 }, { wch: 10 }];
+      filename = `membership_fees_template_yearly_${templateYear}.xlsx`;
+    }
     
     const worksheet = XLSX.utils.json_to_sheet(templateData);
-    worksheet['!cols'] = [{ wch: 15 }, { wch: 25 }, { wch: 10 }, { wch: 10 }, { wch: 10 }];
+    worksheet['!cols'] = cols;
     
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, t('membershipFees:title'));
     
-    XLSX.writeFile(workbook, `membership_fees_template_${templateYear}.xlsx`);
+    XLSX.writeFile(workbook, filename);
   };
 
   if (!currentUser?.isAdmin) {
@@ -434,7 +451,7 @@ export default function MembershipFeesPage() {
                   <TableCell align="center" sx={{ fontWeight: 'bold', minWidth: 80 }}>
                     {t('membershipFees:title')}
                   </TableCell>
-                  {selectedYear !== 'all' && MONTHS.map((month, idx) => (
+                  {selectedYear !== 'all' && orgSettings?.membershipFeeType === 'monthly' && MONTHS.map((month, idx) => (
                     <TableCell key={idx} align="center" sx={{ fontWeight: 'bold', minWidth: 50 }}>
                       {month}
                     </TableCell>
@@ -464,7 +481,7 @@ export default function MembershipFeesPage() {
                     <TableCell align="center" sx={{ fontWeight: 'medium' }}>
                       {member.membershipFeeAmount ? `${member.membershipFeeAmount}` : '-'}
                     </TableCell>
-                    {selectedYear !== 'all' && [1,2,3,4,5,6,7,8,9,10,11,12].map((monthNum) => {
+                    {selectedYear !== 'all' && orgSettings?.membershipFeeType === 'monthly' && [1,2,3,4,5,6,7,8,9,10,11,12].map((monthNum) => {
                       const amount = member[monthNum as keyof GridMember] as string;
                       const isPaid = parseFloat(amount) > 0;
                       return (
@@ -529,7 +546,9 @@ export default function MembershipFeesPage() {
                   <TableCell sx={{ fontWeight: 'bold' }}>{t('membershipFees:member')}</TableCell>
                   <TableCell align="center" sx={{ fontWeight: 'bold' }}>{t('membershipFees:amount')}</TableCell>
                   <TableCell align="center" sx={{ fontWeight: 'bold' }}>{t('membershipFees:year')}</TableCell>
-                  <TableCell align="center" sx={{ fontWeight: 'bold' }}>{t('membershipFees:month')}</TableCell>
+                  {orgSettings?.membershipFeeType === 'monthly' && (
+                    <TableCell align="center" sx={{ fontWeight: 'bold' }}>{t('membershipFees:month')}</TableCell>
+                  )}
                   <TableCell align="center" sx={{ fontWeight: 'bold' }}>{t('membershipFees:paymentDate')}</TableCell>
                   <TableCell align="center" sx={{ fontWeight: 'bold' }}>{t('membershipFees:actions')}</TableCell>
                 </TableRow>
@@ -546,7 +565,9 @@ export default function MembershipFeesPage() {
                       </TableCell>
                       <TableCell align="center">{payment.amount}</TableCell>
                       <TableCell align="center">{payment.coverageYear}</TableCell>
-                      <TableCell align="center">{payment.coverageMonth ? MONTHS[payment.coverageMonth - 1] : '-'}</TableCell>
+                      {orgSettings?.membershipFeeType === 'monthly' && (
+                        <TableCell align="center">{payment.coverageMonth ? MONTHS[payment.coverageMonth - 1] : '-'}</TableCell>
+                      )}
                       <TableCell align="center">{payment.paidAt ? new Date(payment.paidAt).toLocaleDateString('bs-BA') : '-'}</TableCell>
                       <TableCell align="center">
                         <IconButton
@@ -649,14 +670,25 @@ export default function MembershipFeesPage() {
               style={{ display: 'none' }}
             />
             
-            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', mt: 2 }}>
-              <Button
-                variant="outlined"
-                startIcon={<Download />}
-                onClick={downloadTemplate}
-              >
-                {t('membershipFees:bulkUploadDialog.downloadTemplate')}
-              </Button>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center', mt: 2 }}>
+              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'center' }}>
+                <Button
+                  variant="outlined"
+                  startIcon={<Download />}
+                  onClick={() => downloadTemplate('monthly')}
+                  size="small"
+                >
+                  {t('membershipFees:bulkUploadDialog.downloadTemplateMonthly')}
+                </Button>
+                <Button
+                  variant="outlined"
+                  startIcon={<Download />}
+                  onClick={() => downloadTemplate('yearly')}
+                  size="small"
+                >
+                  {t('membershipFees:bulkUploadDialog.downloadTemplateYearly')}
+                </Button>
+              </Box>
               <Button
                 variant="contained"
                 startIcon={<Upload />}

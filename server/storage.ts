@@ -418,7 +418,7 @@ export interface IStorage {
   getProposalsByWorkGroup(workGroupId: string, tenantId: string): Promise<Proposal[]>;
   getProposalsByStatus(status: string, tenantId: string): Promise<Proposal[]>;
   updateProposal(id: string, tenantId: string, updates: Partial<InsertProposal>): Promise<Proposal | undefined>;
-  approveProposal(id: string, tenantId: string, reviewedById: string, reviewComment?: string): Promise<Proposal | undefined>;
+  approveProposal(id: string, tenantId: string, reviewedById: string, reviewComment?: string, targetWorkGroupId?: string): Promise<Proposal | undefined>;
   rejectProposal(id: string, tenantId: string, reviewedById: string, reviewComment: string): Promise<Proposal | undefined>;
 
   // Receipts (Expense Receipts System)
@@ -2799,14 +2799,20 @@ export class DatabaseStorage implements IStorage {
     return p;
   }
 
-  async approveProposal(id: string, tenantId: string, reviewedById: string, reviewComment?: string): Promise<Proposal | undefined> {
+  async approveProposal(id: string, tenantId: string, reviewedById: string, reviewComment?: string, targetWorkGroupId?: string): Promise<Proposal | undefined> {
+    const updateData: any = { 
+      status: 'approved', 
+      reviewedById, 
+      reviewComment: reviewComment || null,
+      reviewedAt: new Date() 
+    };
+    
+    if (targetWorkGroupId) {
+      updateData.workGroupId = targetWorkGroupId;
+    }
+    
     const [p] = await db.update(proposals)
-      .set({ 
-        status: 'approved', 
-        reviewedById, 
-        reviewComment: reviewComment || null,
-        reviewedAt: new Date() 
-      })
+      .set(updateData)
       .where(and(eq(proposals.id, id), eq(proposals.tenantId, tenantId)))
       .returning();
     return p;

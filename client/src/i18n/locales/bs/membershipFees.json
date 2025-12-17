@@ -55,6 +55,8 @@
     "description": "Uploadajte excel ili CSV fajl sa uplatama.",
     "columns": "Kolone: članski broj, ime i prezime, iznos, godina, mjesec",
     "downloadTemplate": "Preuzmi template",
+    "downloadTemplateMonthly": "Template (mjesečno)",
+    "downloadTemplateYearly": "Template (godišnje)",
     "selectFile": "Izaberi fajl",
     "uploading": "Učitavanje...",
     "close": "Zatvori"
