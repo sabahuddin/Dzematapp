@@ -7104,7 +7104,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       console.log('[MEMBERSHIP] Creating payment:', { userId, amount, coverageYear, coverageMonth, autoDistribute });
       
       // Get organization settings to determine fee type
-      const orgSettings = await storage.getTenant(tenantId);
+      const orgSettings = await storage.getOrganizationSettings(tenantId);
       const feeType = orgSettings?.membershipFeeType || 'monthly';
       
       // If autoDistribute is enabled, user has a membership fee set, AND fee type is monthly
@@ -7373,7 +7373,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       const targetYear = isAllYears ? undefined : (year ? parseInt(year as string) : new Date().getFullYear());
       
       // Get organization settings to determine fee type (monthly/yearly)
-      const orgSettings = await storage.getTenant(tenantId);
+      const orgSettings = await storage.getOrganizationSettings(tenantId);
       const feeType = orgSettings?.membershipFeeType || 'monthly';
       
       // Get all active users
