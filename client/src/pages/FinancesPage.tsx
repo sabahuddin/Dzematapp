@@ -66,6 +66,7 @@ export default function FinancesPage() {
   const [editingPurpose, setEditingPurpose] = useState<ContributionPurpose | null>(null);
   const [editPurposeName, setEditPurposeName] = useState('');
   const [editPurposeDesc, setEditPurposeDesc] = useState('');
+  const [userSearchInput, setUserSearchInput] = useState('');
 
   if (featureAccess.upgradeRequired) {
     return <UpgradeCTA moduleId="finances" requiredPlan={featureAccess.requiredPlan || 'standard'} currentPlan={featureAccess.currentPlan || 'basic'} />;
@@ -253,6 +254,7 @@ export default function FinancesPage() {
 
 
   const handleOpenDialog = (contribution?: FinancialContribution) => {
+    setUserSearchInput('');
     if (contribution) {
       setSelectedContribution(contribution);
       form.reset({
@@ -292,6 +294,7 @@ export default function FinancesPage() {
   const handleCloseDialog = () => {
     setDialogOpen(false);
     setSelectedContribution(null);
+    setUserSearchInput('');
     form.reset();
   };
 
@@ -730,18 +733,22 @@ export default function FinancesPage() {
                           const nameB = `${b.firstName} ${b.lastName}`.toLowerCase();
                           return nameA.localeCompare(nameB, 'bs');
                         })
+                        .filter(option => {
+                          if (!userSearchInput) return true;
+                          const searchTerm = userSearchInput.toLowerCase();
+                          return `${option.firstName} ${option.lastName}`.toLowerCase().includes(searchTerm);
+                        })
                     }
                     getOptionLabel={(option) => `${option.firstName} ${option.lastName}`}
-                    filterOptions={(options, { inputValue }) => {
-                      const searchTerm = inputValue.toLowerCase();
-                      return options.filter(option => 
-                        `${option.firstName} ${option.lastName}`.toLowerCase().includes(searchTerm)
-                      );
+                    inputValue={userSearchInput}
+                    onInputChange={(event, newInputValue) => {
+                      setUserSearchInput(newInputValue);
                     }}
                     value={(usersQuery.data as User[] || []).find(u => u.id === form.watch('userId')) || null}
                     onChange={(event, newValue) => {
                       form.setValue('userId', newValue?.id || '');
                     }}
+                    isOptionEqualToValue={(option, value) => option.id === value.id}
                     renderInput={(params) => (
                       <TextField
                         {...params}
