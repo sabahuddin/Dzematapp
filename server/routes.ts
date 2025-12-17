@@ -7074,7 +7074,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   app.post("/api/membership-fees/payments", requireAdmin, async (req, res) => {
     try {
       const tenantId = req.user!.tenantId;
-      const { userId, coverageYear, coverageMonth, notes, autoDistribute } = req.body;
+      const { userId, coverageYear, coverageMonth, notes, autoDistribute, pointsValue } = req.body;
       const amount = parseFloat(req.body.amount) || 0;
       
       console.log('[MEMBERSHIP] Creating payment:', { userId, amount, coverageYear, coverageMonth, autoDistribute });
@@ -7105,6 +7105,19 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
             });
             payments.push(payment);
             
+            // Create activity log only for the first payment
+            if (i === 0) {
+              const points = pointsValue || 0;
+              await storage.createActivityLog({
+                userId,
+                activityType: 'membership_payment',
+                description: `Članarina: ${amount} CHF (${monthsCovered} mjeseci)${points > 0 ? ` - ${points} bodova` : ''}`,
+                points,
+                relatedEntityId: payment.id,
+                tenantId
+              });
+            }
+            
             // Move to next month
             currentMonth++;
             if (currentMonth > 12) {
@@ -7112,6 +7125,9 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
               currentYear++;
             }
           }
+          
+          // Recalculate user's total points
+          await storage.recalculateUserPoints(userId, tenantId);
           
           return res.status(201).json({ 
             distributed: true, 
@@ -7130,6 +7146,20 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         coverageMonth: coverageMonth || null,
         notes: notes || null
       });
+      
+      // Create activity log for single payment
+      const points = pointsValue || 0;
+      await storage.createActivityLog({
+        userId,
+        activityType: 'membership_payment',
+        description: `Članarina: ${amount} CHF${points > 0 ? ` - ${points} bodova` : ''}`,
+        points,
+        relatedEntityId: payment.id,
+        tenantId
+      });
+      
+      // Recalculate user's total points
+      await storage.recalculateUserPoints(userId, tenantId);
       
       res.status(201).json(payment);
     } catch (error) {
