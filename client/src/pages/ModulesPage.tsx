@@ -46,7 +46,7 @@ export default function ModulesPage() {
   const modules: ModuleItem[] = [
     { icon: <Feed sx={{ fontSize: 48 }} />, label: t('menu.feed'), description: '', route: '/feed', testId: 'module-feed' },
     { icon: <Person sx={{ fontSize: 48 }} />, label: t('menu.profile'), description: '', route: '/my-profile', testId: 'module-profile' },
-    { icon: <People sx={{ fontSize: 48 }} />, label: user?.isAdmin ? t('menu.users') : t('menu.myActivities'), description: '', route: user?.isAdmin ? '/users' : '/my-activities', testId: 'module-users' },
+    { icon: <People sx={{ fontSize: 48 }} />, label: user?.isAdmin ? t('menu.users') : t('menu.myActivities'), description: '', route: user?.isAdmin ? '/users' : '/activity-log', testId: 'module-users' },
     { icon: <BarChart sx={{ fontSize: 48 }} />, label: t('menu.finances'), description: '', route: '/finances', testId: 'module-finances', adminOnly: true },
     { icon: <Receipt sx={{ fontSize: 48 }} />, label: user?.isAdmin ? t('menu.membershipFees') : t('menu.myMembership'), description: '', route: user?.isAdmin ? '/membership-fees' : '/my-clanarina', testId: 'module-membership-fees' },
     { icon: <BarChart sx={{ fontSize: 48 }} />, label: t('menu.activityLog'), description: '', route: '/activity-log', testId: 'module-activity', adminOnly: true },
