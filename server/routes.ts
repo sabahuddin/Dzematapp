@@ -4,7 +4,7 @@ import multer from "multer";
 import path from "path";
 import { promises as fs } from "fs";
 import * as XLSX from "xlsx";
-import { ZodError } from "zod";
+import { z, ZodError } from "zod";
 import { eq } from "drizzle-orm";
 import { storage } from "./storage";
 import { db } from "./db";
