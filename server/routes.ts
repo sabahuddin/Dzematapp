@@ -4511,30 +4511,37 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   app.put("/api/contribution-purposes/:id", requireAdmin, requireFeature("finances"), async (req, res) => {
     try {
       const tenantId = req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      console.log('[UPDATE CONTRIBUTION PURPOSE] Request body:', req.body);
+      console.log('[UPDATE CONTRIBUTION PURPOSE] ID:', req.params.id);
       
-      // Zod validation schema for update - strict to reject unknown fields
+      // Zod validation schema for update - passthrough to allow extra fields
       const updatePurposeSchema = z.object({
         name: z.string().transform(s => s.trim()).refine(s => s.length > 0, "Name is required"),
         description: z.string().nullable().optional().transform(s => s?.trim() || null)
-      }).strict();
+      }).passthrough();
       
       const validated = updatePurposeSchema.parse(req.body);
       
+      // Production DB has 'title' NOT NULL - update both name and title
       const sanitizedData = {
         name: validated.name,
+        title: validated.name, // Map name -> title for prod DB compatibility
         description: validated.description
       };
       
-      const updated = await storage.updateContributionPurpose(req.params.id, tenantId, sanitizedData);
+      console.log('[UPDATE CONTRIBUTION PURPOSE] Sanitized data:', sanitizedData);
+      const updated = await storage.updateContributionPurposeWithTitle(req.params.id, tenantId, sanitizedData);
       if (!updated) {
         return res.status(404).json({ message: "Contribution purpose not found" });
       }
+      console.log('[UPDATE CONTRIBUTION PURPOSE] Success:', updated.id);
       res.json(updated);
     } catch (error: any) {
+      console.error('❌ [UPDATE CONTRIBUTION PURPOSE] Error:', error);
       if (error?.name === 'ZodError') {
         return res.status(400).json({ message: "Validation failed", errors: error.errors });
       }
-      res.status(500).json({ message: "Failed to update contribution purpose" });
+      res.status(500).json({ message: "Failed to update contribution purpose", error: error?.message });
     }
   });
 
@@ -4632,9 +4639,12 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       await storage.recalculateUserPoints(validated.userId, tenantId);
 
       res.status(201).json(contribution);
-    } catch (error) {
-      console.error('Error creating financial contribution:', error);
-      res.status(500).json({ message: "Failed to create financial contribution" });
+    } catch (error: any) {
+      console.error('❌ [CREATE FINANCIAL CONTRIBUTION] Error:', error);
+      console.error('Stack:', error?.stack);
+      console.error('Request body:', req.body);
+      const errorMsg = error?.message || String(error);
+      res.status(500).json({ message: "Failed to create financial contribution", error: errorMsg });
     }
 });
 

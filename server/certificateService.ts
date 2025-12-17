@@ -7,33 +7,42 @@ import { fileURLToPath } from 'url';
 
 // Register custom font for certificate text rendering
 let fontRegistered = false;
+let fontFamily = 'sans-serif'; // Default fallback
 
 function registerFont() {
-  if (fontRegistered) return true;
+  if (fontRegistered) return fontFamily;
   
   // Try to register custom font
   const possiblePaths = [
     path.join(process.cwd(), 'public', 'fonts', 'DejaVuSans-Bold.ttf'),
     '/app/public/fonts/DejaVuSans-Bold.ttf',
     path.join(process.cwd(), 'server', 'fonts', 'DejaVuSans-Bold.ttf'),
+    '/home/runner/workspace/public/fonts/DejaVuSans-Bold.ttf',
   ];
   
+  console.log('[Certificate] Current working directory:', process.cwd());
+  console.log('[Certificate] Checking font paths:', possiblePaths);
+  
   for (const fontPath of possiblePaths) {
+    console.log(`[Certificate] Checking path: ${fontPath}, exists: ${existsSync(fontPath)}`);
     if (existsSync(fontPath)) {
       try {
         GlobalFonts.registerFromPath(fontPath, 'CustomFont');
-        console.log(`[Certificate] Custom font registered from: ${fontPath}`);
+        console.log(`[Certificate] ✅ Custom font registered from: ${fontPath}`);
+        fontFamily = 'CustomFont';
         fontRegistered = true;
-        return true;
+        return fontFamily;
       } catch (error) {
-        console.error(`[Certificate] Failed to register custom font:`, error);
+        console.error(`[Certificate] ❌ Failed to register custom font:`, error);
       }
     }
   }
   
-  console.log('[Certificate] Using system fonts (custom font not found)');
+  // List available system fonts for debugging
+  console.log('[Certificate] Available font families:', GlobalFonts.families.map((f: any) => f.family).join(', '));
+  console.log('[Certificate] ⚠️ Using fallback font: sans-serif');
   fontRegistered = true;
-  return true;
+  return fontFamily;
 }
 
 export interface CertificateGenerationOptions {
@@ -61,7 +70,8 @@ export async function generateCertificate(options: CertificateGenerationOptions)
   console.log(`[Certificate] Options received:`, JSON.stringify(options, null, 2));
   
   // Register font before generating certificate
-  registerFont();
+  const registeredFontFamily = registerFont();
+  console.log(`[Certificate] Using font family: ${registeredFontFamily}`);
 
   // Normalize path - strip leading '/' to avoid path.join issues
   const relPath = templateImagePath.replace(/^\//, '');
@@ -94,14 +104,16 @@ export async function generateCertificate(options: CertificateGenerationOptions)
   // Clear the canvas to ensure transparency
   ctx.clearRect(0, 0, imageWidth, imageHeight);
 
-  // Set up text rendering - try custom font first, fallback to system fonts
-  let fontSpec = `bold ${fontSize}px CustomFont`;
+  // Set up text rendering - use registered font family
+  let fontSpec = `bold ${fontSize}px ${registeredFontFamily}`;
   ctx.font = fontSpec;
+  console.log(`[Certificate] Set font to: ${ctx.font}`);
   
-  // If custom font didn't work, fallback to Arial or system fonts
-  if (!ctx.font.includes('CustomFont')) {
+  // If font wasn't applied correctly, try fallback
+  if (!ctx.font || ctx.font === '') {
     fontSpec = `bold ${fontSize}px Arial, sans-serif`;
     ctx.font = fontSpec;
+    console.log(`[Certificate] Fallback font applied: ${ctx.font}`);
   }
   
   ctx.fillStyle = fontColor;

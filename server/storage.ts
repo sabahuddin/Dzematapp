@@ -349,6 +349,7 @@ export interface IStorage {
   createContributionPurposeWithTitle(data: { tenantId: string; name?: string; title?: string; description?: string; createdById?: string; isDefault?: boolean }): Promise<ContributionPurpose>;
   deleteContributionPurpose(id: string, tenantId: string): Promise<boolean>;
   updateContributionPurpose(id: string, tenantId: string, updates: { name?: string; description?: string }): Promise<ContributionPurpose | undefined>;
+  updateContributionPurposeWithTitle(id: string, tenantId: string, updates: { name?: string; title?: string; description?: string }): Promise<ContributionPurpose | undefined>;
 
   // Financial Contributions (Feature 1)
   createFinancialContribution(contribution: InsertFinancialContribution): Promise<FinancialContribution>;
@@ -2322,6 +2323,57 @@ export class DatabaseStorage implements IStorage {
       .where(and(eq(contributionPurposes.id, id), eq(contributionPurposes.tenantId, tenantId)))
       .returning();
     return updated;
+  }
+
+  async updateContributionPurposeWithTitle(id: string, tenantId: string, updates: { name?: string; title?: string; description?: string }): Promise<ContributionPurpose | undefined> {
+    const nameValue = updates.name || updates.title || '';
+    
+    try {
+      // Try with 'title' column first (production DB)
+      const result = await db.execute(sql`
+        UPDATE contribution_purposes 
+        SET name = ${nameValue}, title = ${nameValue}, description = ${updates.description || null}
+        WHERE id = ${id} AND tenant_id = ${tenantId}
+        RETURNING *
+      `);
+      
+      if (result.rows.length === 0) return undefined;
+      
+      const row = result.rows[0] as any;
+      return {
+        id: row.id,
+        tenantId: row.tenant_id,
+        name: row.name || row.title,
+        description: row.description,
+        isDefault: row.is_default,
+        createdById: row.created_by_id,
+        createdAt: row.created_at,
+      };
+    } catch (error: any) {
+      // If 'title' column doesn't exist, update without it
+      if (error?.code === '42703' && error?.message?.includes('title')) {
+        const result = await db.execute(sql`
+          UPDATE contribution_purposes 
+          SET name = ${nameValue}, description = ${updates.description || null}
+          WHERE id = ${id} AND tenant_id = ${tenantId}
+          RETURNING *
+        `);
+        
+        if (result.rows.length === 0) return undefined;
+        
+        const row = result.rows[0] as any;
+        return {
+          id: row.id,
+          tenantId: row.tenant_id,
+          name: row.name,
+          description: row.description,
+          isDefault: row.is_default,
+          createdById: row.created_by_id,
+          createdAt: row.created_at,
+        };
+      }
+      throw error;
+    }
   }
 
   // Activity Log (Feature 1)
