@@ -315,9 +315,16 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
   const loadImageDimensions = (imageUrl: string) => {
     const img = new Image();
     img.onload = () => {
+      console.log('[CERT] Image loaded, dimensions:', img.width, 'x', img.height);
       setImageDimensions({ width: img.width, height: img.height });
     };
-    img.src = imageUrl;
+    img.onerror = () => {
+      console.log('[CERT] Failed to load image:', imageUrl);
+    };
+    // Ensure full URL for images
+    const fullUrl = imageUrl.startsWith('/') ? imageUrl : `/${imageUrl}`;
+    console.log('[CERT] Loading image from:', fullUrl);
+    img.src = fullUrl;
   };
 
 
