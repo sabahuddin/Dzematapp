@@ -206,5 +206,13 @@
     "addError": "Greška pri dodavanju člana",
     "alreadyMember": "Korisnik je već član ove sekcije",
     "loadError": "Greška pri učitavanju podataka. molimo zatvorite i pokušajte ponovo."
+  },
+  "taskDetail": {
+    "comments": "Komentari",
+    "addComment": "Dodaj komentar...",
+    "add": "Dodaj",
+    "noComments": "Nema komentara",
+    "markPending": "Vrati na čekanje",
+    "approveComplete": "Potvrdi završetak"
   }
 }
