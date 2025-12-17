@@ -7103,12 +7103,17 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       
       console.log('[MEMBERSHIP] Creating payment:', { userId, amount, coverageYear, coverageMonth, autoDistribute });
       
-      // If autoDistribute is enabled and user has a membership fee set
-      if (autoDistribute && coverageMonth) {
+      // Get organization settings to determine fee type
+      const orgSettings = await storage.getTenant(tenantId);
+      const feeType = orgSettings?.membershipFeeType || 'monthly';
+      
+      // If autoDistribute is enabled, user has a membership fee set, AND fee type is monthly
+      // For yearly mode, we don't auto-distribute - just create one payment for the whole year
+      if (autoDistribute && coverageMonth && feeType === 'monthly') {
         const user = await storage.getUser(userId, tenantId);
         const monthlyFee = user?.membershipFeeAmount ? parseFloat(String(user.membershipFeeAmount)) : 0;
         
-        console.log('[MEMBERSHIP] Auto-distribute check:', { monthlyFee, amount, shouldDistribute: monthlyFee > 0 && amount > monthlyFee });
+        console.log('[MEMBERSHIP] Auto-distribute check:', { monthlyFee, amount, feeType, shouldDistribute: monthlyFee > 0 && amount > monthlyFee });
         
         if (monthlyFee && monthlyFee > 0 && amount > monthlyFee) {
           // Calculate how many months this payment covers
@@ -7161,22 +7166,25 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         }
       }
       
-      // Standard single payment
+      // Standard single payment (for yearly mode OR single monthly payment)
       const payment = await storage.createMembershipPayment({
         tenantId,
         userId,
         amount,
         coverageYear,
-        coverageMonth: coverageMonth || null,
+        coverageMonth: feeType === 'yearly' ? null : (coverageMonth || null),
         notes: notes || null
       });
       
       // Create activity log for single payment
       const points = pointsValue || 0;
+      const desc = feeType === 'yearly' 
+        ? `Godišnja članarina: ${amount} CHF${points > 0 ? ` - ${points} bodova` : ''}`
+        : `Članarina: ${amount} CHF${points > 0 ? ` - ${points} bodova` : ''}`;
       await storage.createActivityLog({
         userId,
         activityType: 'membership_payment',
-        description: `Članarina: ${amount} CHF${points > 0 ? ` - ${points} bodova` : ''}`,
+        description: desc,
         points,
         relatedEntityId: payment.id,
         tenantId
@@ -7364,6 +7372,10 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       const isAllYears = year === 'all';
       const targetYear = isAllYears ? undefined : (year ? parseInt(year as string) : new Date().getFullYear());
       
+      // Get organization settings to determine fee type (monthly/yearly)
+      const orgSettings = await storage.getTenant(tenantId);
+      const feeType = orgSettings?.membershipFeeType || 'monthly';
+      
       // Get all active users
       const allUsers = await storage.getAllUsers(tenantId);
       const activeUsers = allUsers.filter(u => u.status === 'aktivan' && !u.isAdmin);
@@ -7385,16 +7397,18 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         // Calculate total paid
         const totalPaid = userPayments.reduce((sum, p) => sum + parseFloat(p.amount || '0'), 0);
         
-        // Get member's fee settings
+        // Get member's fee amount from their profile
         const feeAmount = parseFloat((user as any).membershipFeeAmount || '0');
-        const feeType = (user as any).membershipFeeType || 'monthly';
         
-        // Calculate expected amount for the year
+        // Calculate expected amount based on ORGANIZATION fee type (not user)
+        // If feeType is 'yearly', the membershipFeeAmount is the yearly total
+        // If feeType is 'monthly', the membershipFeeAmount is the monthly rate (multiply by 12)
         let expectedAmount = 0;
         if (feeAmount > 0) {
           if (feeType === 'monthly') {
             expectedAmount = feeAmount * 12;
           } else {
+            // Yearly - the membershipFeeAmount IS the yearly amount
             expectedAmount = feeAmount;
           }
         }

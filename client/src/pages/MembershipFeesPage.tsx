@@ -767,32 +767,36 @@ export default function MembershipFeesPage() {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid size={{ xs: 12 }}>
-              <FormControl fullWidth>
-                <InputLabel>{t('membershipFees:addPaymentDialog.month')}</InputLabel>
-                <Select
-                  value={newPayment.coverageMonth}
-                  onChange={(e) => setNewPayment({ ...newPayment, coverageMonth: e.target.value as number })}
-                  label={t('membershipFees:addPaymentDialog.month')}
-                >
-                  {MONTHS.map((month, idx) => (
-                    <MenuItem key={idx + 1} value={idx + 1}>{month}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid size={{ xs: 12 }}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={newPayment.autoDistribute}
-                    onChange={(e) => setNewPayment({ ...newPayment, autoDistribute: e.target.checked })}
-                    color="primary"
+            {orgSettings?.membershipFeeType === 'monthly' && (
+              <>
+                <Grid size={{ xs: 12 }}>
+                  <FormControl fullWidth>
+                    <InputLabel>{t('membershipFees:addPaymentDialog.month')}</InputLabel>
+                    <Select
+                      value={newPayment.coverageMonth}
+                      onChange={(e) => setNewPayment({ ...newPayment, coverageMonth: e.target.value as number })}
+                      label={t('membershipFees:addPaymentDialog.month')}
+                    >
+                      {MONTHS.map((month, idx) => (
+                        <MenuItem key={idx + 1} value={idx + 1}>{month}</MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={newPayment.autoDistribute}
+                        onChange={(e) => setNewPayment({ ...newPayment, autoDistribute: e.target.checked })}
+                        color="primary"
+                      />
+                    }
+                    label={t('membershipFees:addPaymentDialog.autoDistribute')}
                   />
-                }
-                label={t('membershipFees:addPaymentDialog.autoDistribute')}
-              />
-            </Grid>
+                </Grid>
+              </>
+            )}
           </Grid>
         </DialogContent>
         <DialogActions>
