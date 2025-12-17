@@ -2522,7 +2522,7 @@ export class DatabaseStorage implements IStorage {
         }
         case 'points':
         case 'points_total': {
-          const user = await this.getUser(userId);
+          const user = await this.getUser(userId, tenantId);
           qualifies = (user?.totalPoints || 0) >= badge.criteriaValue;
           console.log(`[BADGE CHECK] User ${userId} has ${user?.totalPoints || 0} points, badge requires ${badge.criteriaValue}, qualifies: ${qualifies}`);
           break;
@@ -2569,7 +2569,7 @@ export class DatabaseStorage implements IStorage {
         }
         case 'points':
         case 'points_total': {
-          const user = await this.getUser(userId);
+          const user = await this.getUser(userId, tenantId);
           stillQualifies = (user?.totalPoints || 0) >= badge.criteriaValue;
           break;
         }
