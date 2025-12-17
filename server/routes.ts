@@ -4600,30 +4600,32 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       }
 
       // Log activity with admin-set points (or 0 if not set)
+      // Create only ONE activity log entry (not duplicate for project contributions)
       const points = validated.pointsValue || 0;
       
-      await storage.createActivityLog({
-        userId: validated.userId,
-        activityType: 'contribution_made',
-        description: `Uplata: ${validated.amount} CHF (${validated.purpose})${points > 0 ? ` - ${points} bodova` : ''}`,
-        points,
-        relatedEntityId: contribution.id,
-        tenantId
-      });
-
-      // If contribution is for a project, create additional activity log
       if (validated.projectId) {
+        // For project contributions, use project_contribution type with combined description
         const project = await storage.getProject(validated.projectId, tenantId);
         if (project) {
           await storage.createActivityLog({
             userId: validated.userId,
             activityType: 'project_contribution',
-            description: `Doprinos projektu: ${project.name} (${validated.amount} CHF)`,
-            points: 0,
+            description: `Doprinos projektu: ${project.name} (${validated.amount} CHF)${points > 0 ? ` - ${points} bodova` : ''}`,
+            points,
             relatedEntityId: contribution.id,
             tenantId
           });
         }
+      } else {
+        // For non-project contributions, use contribution_made type
+        await storage.createActivityLog({
+          userId: validated.userId,
+          activityType: 'contribution_made',
+          description: `Uplata: ${validated.amount} CHF (${validated.purpose})${points > 0 ? ` - ${points} bodova` : ''}`,
+          points,
+          relatedEntityId: contribution.id,
+          tenantId
+        });
       }
 
       // Recalculate user's total points
