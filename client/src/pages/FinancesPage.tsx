@@ -722,8 +722,22 @@ export default function FinancesPage() {
               {currentUser?.isAdmin && (
                 <Grid size={{ xs: 12 }}>
                   <Autocomplete
-                    options={(usersQuery.data as User[]) || []}
+                    options={
+                      ((usersQuery.data as User[]) || [])
+                        .slice()
+                        .sort((a, b) => {
+                          const nameA = `${a.firstName} ${a.lastName}`.toLowerCase();
+                          const nameB = `${b.firstName} ${b.lastName}`.toLowerCase();
+                          return nameA.localeCompare(nameB, 'bs');
+                        })
+                    }
                     getOptionLabel={(option) => `${option.firstName} ${option.lastName}`}
+                    filterOptions={(options, { inputValue }) => {
+                      const searchTerm = inputValue.toLowerCase();
+                      return options.filter(option => 
+                        `${option.firstName} ${option.lastName}`.toLowerCase().includes(searchTerm)
+                      );
+                    }}
                     value={(usersQuery.data as User[] || []).find(u => u.id === form.watch('userId')) || null}
                     onChange={(event, newValue) => {
                       form.setValue('userId', newValue?.id || '');

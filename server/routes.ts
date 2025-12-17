@@ -5227,23 +5227,25 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
 });
 
   // User Badges Routes (Feature 2)
-  app.get("/api/user-badges/:userId", requireAuth, async (req, res) => {
+  // IMPORTANT: Static routes MUST come before parameterized routes!
+  app.get("/api/user-badges/all", requireAdmin, async (req, res) => {
     try {
-      const badges = await storage.getUserBadges(req.params.userId, req.user!.tenantId);
-      res.json(badges);
+      const allUserBadges = await storage.getAllUserBadges(req.user!.tenantId);
+      res.json(allUserBadges);
     } catch (error) {
-      res.status(500).json({ message: "Failed to get user badges" });
+      res.status(500).json({ message: "Failed to get all user badges" });
     }
-});
+  });
 
-  app.post("/api/user-badges/check/:userId", requireAdmin, async (req, res) => {
+  // Alias route for /api/user-badges (same as /all)
+  app.get("/api/user-badges", requireAdmin, async (req, res) => {
     try {
-      const awarded = await storage.checkAndAwardBadges(req.params.userId, req.user!.tenantId);
-      res.json(awarded);
+      const allUserBadges = await storage.getAllUserBadges(req.user!.tenantId);
+      res.json(allUserBadges);
     } catch (error) {
-      res.status(500).json({ message: "Failed to check and award badges" });
+      res.status(500).json({ message: "Failed to get all user badges" });
     }
-});
+  });
 
   app.post("/api/user-badges/check-all", requireAdmin, async (req, res) => {
     try {
@@ -5256,20 +5258,30 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
       
       res.json({ 
         message: `Badges checked and awarded for ${users.length} users`
-});
+      });
     } catch (error) {
       res.status(500).json({ message: "Failed to check badges for all users" });
     }
-});
+  });
 
-  app.get("/api/user-badges/all", requireAdmin, async (req, res) => {
+  app.post("/api/user-badges/check/:userId", requireAdmin, async (req, res) => {
     try {
-      const allUserBadges = await storage.getAllUserBadges(req.user!.tenantId);
-      res.json(allUserBadges);
+      const awarded = await storage.checkAndAwardBadges(req.params.userId, req.user!.tenantId);
+      res.json(awarded);
     } catch (error) {
-      res.status(500).json({ message: "Failed to get all user badges" });
+      res.status(500).json({ message: "Failed to check and award badges" });
     }
-});
+  });
+
+  // Parameterized route MUST come AFTER static routes
+  app.get("/api/user-badges/:userId", requireAuth, async (req, res) => {
+    try {
+      const badges = await storage.getUserBadges(req.params.userId, req.user!.tenantId);
+      res.json(badges);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get user badges" });
+    }
+  });
 
   // Projects Routes (Feature 4)
   app.get("/api/projects", requireAuthOrSuperAdmin, requireFeature("projects"), async (req, res) => {
