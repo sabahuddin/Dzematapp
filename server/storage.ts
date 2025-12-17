@@ -2864,6 +2864,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteCertificateTemplate(id: string, tenantId: string): Promise<boolean> {
+    // First, delete all user certificates that use this template (to avoid foreign key constraint violation)
+    await db.delete(userCertificates).where(and(eq(userCertificates.templateId, id), eq(userCertificates.tenantId, tenantId)));
+    
+    // Then delete the template itself
     const result = await db.delete(certificateTemplates).where(and(eq(certificateTemplates.id, id), eq(certificateTemplates.tenantId, tenantId))).returning();
     return result.length > 0;
   }

@@ -86,6 +86,7 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [templateToDelete, setTemplateToDelete] = useState<string | null>(null);
+  const [imageDimensions, setImageDimensions] = useState({ width: 1024, height: 724 });
 
   const { register, handleSubmit: hookFormSubmit, reset, watch, control, formState: { errors } } = useForm<TemplateFormData>({
     resolver: zodResolver(templateFormSchema),
@@ -253,6 +254,8 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
     if (template) {
       setSelectedTemplate(template);
       setPreviewUrl(template.templateImagePath);
+      // Load dimensions for existing template image
+      loadImageDimensions(template.templateImagePath);
       reset({
         name: template.name,
         description: template.description || "",
@@ -266,6 +269,7 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
       setSelectedTemplate(null);
       setPreviewUrl(null);
       setSelectedFile(null);
+      setImageDimensions({ width: 1024, height: 724 }); // Reset to default
       reset();
     }
     setModalOpen(true);
@@ -293,10 +297,27 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
       setSelectedFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPreviewUrl(reader.result as string);
+        const dataUrl = reader.result as string;
+        setPreviewUrl(dataUrl);
+        
+        // Get actual image dimensions
+        const img = new Image();
+        img.onload = () => {
+          setImageDimensions({ width: img.width, height: img.height });
+        };
+        img.src = dataUrl;
       };
       reader.readAsDataURL(file);
     }
+  };
+  
+  // Load dimensions for existing template image
+  const loadImageDimensions = (imageUrl: string) => {
+    const img = new Image();
+    img.onload = () => {
+      setImageDimensions({ width: img.width, height: img.height });
+    };
+    img.src = imageUrl;
   };
 
 
@@ -488,8 +509,8 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
                             position: 'absolute',
                             border: '2px solid hsl(4 90% 58%)',
                             backgroundColor: 'hsla(4, 90%, 58%, 0.1)',
-                            left: `${((watch('textPositionX') || 0) / 1024) * 100}%`,
-                            top: `${((watch('textPositionY') || 0) / 724) * 100}%`,
+                            left: `${((watch('textPositionX') || 0) / imageDimensions.width) * 100}%`,
+                            top: `${((watch('textPositionY') || 0) / imageDimensions.height) * 100}%`,
                             transform: 'translate(-50%, -50%)',
                             fontSize: `${Math.min((watch('fontSize') || 48) / 10, 16)}px`,
                             color: watch('fontColor') || '#000000',
@@ -527,8 +548,8 @@ export default function CertificateTemplatesPage({ hideHeader = false }: Certifi
                         position: 'absolute',
                         border: '2px solid hsl(4 90% 58%)',
                         backgroundColor: 'hsla(4, 90%, 58%, 0.1)',
-                        left: `${((watch('textPositionX') || 0) / 1024) * 100}%`,
-                        top: `${((watch('textPositionY') || 0) / 724) * 100}%`,
+                        left: `${((watch('textPositionX') || 0) / imageDimensions.width) * 100}%`,
+                        top: `${((watch('textPositionY') || 0) / imageDimensions.height) * 100}%`,
                         transform: 'translate(-50%, -50%)',
                         fontSize: `${Math.min((watch('fontSize') || 48) / 10, 16)}px`,
                         color: watch('fontColor') || '#000000',
