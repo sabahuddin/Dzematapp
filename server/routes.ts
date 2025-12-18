@@ -196,6 +196,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.log('⚠️ No uploads directory found!');
   }
 
+  // API endpoint for badge images - fallback for Docker/production environments
+  app.get('/api/badges/image/:filename', (req, res) => {
+    const { filename } = req.params;
+    
+    // Security: only allow specific badge filenames
+    const allowedBadges = [
+      'bronze_vakif.png', 'silver_vakif.png', 'gold_vakif.png', 'diamond_vakif.png',
+      'bronze_sponzor.png', 'silver_sponzor.png', 'gold_sponzor.png', 'diamond_sponzor.png',
+      'bronze_volonter.png', 'silver_volonter.png', 'gold_volonter.png', 'diamond_volonter.png',
+      'bronze_aktivista.png', 'silver_aktivista.png', 'gold_aktivista.png', 'diamond_aktivista.png'
+    ];
+    
+    if (!allowedBadges.includes(filename)) {
+      return res.status(404).json({ error: 'Badge not found' });
+    }
+    
+    // Try multiple paths
+    const badgePaths = [
+      '/app/public/uploads/badges',
+      path.join(process.cwd(), 'public', 'uploads', 'badges'),
+      path.join(import.meta.dirname || '.', '..', 'public', 'uploads', 'badges'),
+      path.join(import.meta.dirname || '.', 'public', 'uploads', 'badges'),
+    ];
+    
+    for (const basePath of badgePaths) {
+      const filePath = path.join(basePath, filename);
+      if (existsSync(filePath)) {
+        res.setHeader('Content-Type', 'image/png');
+        res.setHeader('Cache-Control', 'public, max-age=31536000'); // 1 year cache
+        return res.sendFile(filePath);
+      }
+    }
+    
+    console.log('❌ Badge not found:', filename, 'Checked:', badgePaths);
+    res.status(404).json({ error: 'Badge image not found' });
+  });
+
   // Contact form endpoint (public, no auth required)
   app.post("/api/contact", async (req, res) => {
     try {

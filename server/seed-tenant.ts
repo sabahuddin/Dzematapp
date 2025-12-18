@@ -255,27 +255,28 @@ export const TENANT_IDS = {
 };
 
 // Default badge definitions - will be seeded for all tenants
+// Uses /api/badges/image/ endpoint for Docker/Coolify compatibility
 const DEFAULT_BADGES = [
   // Vakif (contributions)
-  { name: 'Bronzani Vakif', description: 'Ostvaren za ukupne donacije od 100 ili više', icon: '/uploads/badges/bronze_vakif.png', criteriaType: 'contributions_amount', criteriaValue: 100 },
-  { name: 'Srebreni Vakif', description: 'Ostvaren za ukupne donacije od 500 ili više', icon: '/uploads/badges/silver_vakif.png', criteriaType: 'contributions_amount', criteriaValue: 500 },
-  { name: 'Zlatni Vakif', description: 'Ostvaren za ukupne donacije od 1000 ili više', icon: '/uploads/badges/gold_vakif.png', criteriaType: 'contributions_amount', criteriaValue: 1000 },
-  { name: 'Dijamantni Vakif', description: 'Ostvaren za ukupne donacije od 5000 ili više', icon: '/uploads/badges/diamond_vakif.png', criteriaType: 'contributions_amount', criteriaValue: 5000 },
+  { name: 'Bronzani Vakif', description: 'Ostvaren za ukupne donacije od 100 ili više', icon: '/api/badges/image/bronze_vakif.png', criteriaType: 'contributions_amount', criteriaValue: 100 },
+  { name: 'Srebreni Vakif', description: 'Ostvaren za ukupne donacije od 500 ili više', icon: '/api/badges/image/silver_vakif.png', criteriaType: 'contributions_amount', criteriaValue: 500 },
+  { name: 'Zlatni Vakif', description: 'Ostvaren za ukupne donacije od 1000 ili više', icon: '/api/badges/image/gold_vakif.png', criteriaType: 'contributions_amount', criteriaValue: 1000 },
+  { name: 'Dijamantni Vakif', description: 'Ostvaren za ukupne donacije od 5000 ili više', icon: '/api/badges/image/diamond_vakif.png', criteriaType: 'contributions_amount', criteriaValue: 5000 },
   // Sponzor (contributions - higher tiers)
-  { name: 'Bronzani Sponzor', description: 'Ostvaren za sponzorstvo od 200 ili više', icon: '/uploads/badges/bronze_sponzor.png', criteriaType: 'contributions_amount', criteriaValue: 200 },
-  { name: 'Srebreni Sponzor', description: 'Ostvaren za sponzorstvo od 1000 ili više', icon: '/uploads/badges/silver_sponzor.png', criteriaType: 'contributions_amount', criteriaValue: 1000 },
-  { name: 'Zlatni Sponzor', description: 'Ostvaren za sponzorstvo od 3000 ili više', icon: '/uploads/badges/gold_sponzor.png', criteriaType: 'contributions_amount', criteriaValue: 3000 },
-  { name: 'Dijamantni Sponzor', description: 'Ostvaren za sponzorstvo od 10000 ili više', icon: '/uploads/badges/diamond_sponzor.png', criteriaType: 'contributions_amount', criteriaValue: 10000 },
+  { name: 'Bronzani Sponzor', description: 'Ostvaren za sponzorstvo od 200 ili više', icon: '/api/badges/image/bronze_sponzor.png', criteriaType: 'contributions_amount', criteriaValue: 200 },
+  { name: 'Srebreni Sponzor', description: 'Ostvaren za sponzorstvo od 1000 ili više', icon: '/api/badges/image/silver_sponzor.png', criteriaType: 'contributions_amount', criteriaValue: 1000 },
+  { name: 'Zlatni Sponzor', description: 'Ostvaren za sponzorstvo od 3000 ili više', icon: '/api/badges/image/gold_sponzor.png', criteriaType: 'contributions_amount', criteriaValue: 3000 },
+  { name: 'Dijamantni Sponzor', description: 'Ostvaren za sponzorstvo od 10000 ili više', icon: '/api/badges/image/diamond_sponzor.png', criteriaType: 'contributions_amount', criteriaValue: 10000 },
   // Volonter (tasks completed)
-  { name: 'Bronzani Volonter', description: 'Ostvaren za 5 završenih zadataka', icon: '/uploads/badges/bronze_volonter.png', criteriaType: 'tasks_completed', criteriaValue: 5 },
-  { name: 'Srebreni Volonter', description: 'Ostvaren za 20 završenih zadataka', icon: '/uploads/badges/silver_volonter.png', criteriaType: 'tasks_completed', criteriaValue: 20 },
-  { name: 'Zlatni Volonter', description: 'Ostvaren za 50 završenih zadataka', icon: '/uploads/badges/gold_volonter.png', criteriaType: 'tasks_completed', criteriaValue: 50 },
-  { name: 'Dijamantni Volonter', description: 'Ostvaren za 100 završenih zadataka', icon: '/uploads/badges/diamond_volonter.png', criteriaType: 'tasks_completed', criteriaValue: 100 },
+  { name: 'Bronzani Volonter', description: 'Ostvaren za 5 završenih zadataka', icon: '/api/badges/image/bronze_volonter.png', criteriaType: 'tasks_completed', criteriaValue: 5 },
+  { name: 'Srebreni Volonter', description: 'Ostvaren za 20 završenih zadataka', icon: '/api/badges/image/silver_volonter.png', criteriaType: 'tasks_completed', criteriaValue: 20 },
+  { name: 'Zlatni Volonter', description: 'Ostvaren za 50 završenih zadataka', icon: '/api/badges/image/gold_volonter.png', criteriaType: 'tasks_completed', criteriaValue: 50 },
+  { name: 'Dijamantni Volonter', description: 'Ostvaren za 100 završenih zadataka', icon: '/api/badges/image/diamond_volonter.png', criteriaType: 'tasks_completed', criteriaValue: 100 },
   // Aktivista (events attended)
-  { name: 'Bronzani Aktivista', description: 'Ostvaren za prisustvo na 5 događaja', icon: '/uploads/badges/bronze_aktivista.png', criteriaType: 'events_attended', criteriaValue: 5 },
-  { name: 'Srebreni Aktivista', description: 'Ostvaren za prisustvo na 20 događaja', icon: '/uploads/badges/silver_aktivista.png', criteriaType: 'events_attended', criteriaValue: 20 },
-  { name: 'Zlatni Aktivista', description: 'Ostvaren za prisustvo na 50 događaja', icon: '/uploads/badges/gold_aktivista.png', criteriaType: 'events_attended', criteriaValue: 50 },
-  { name: 'Dijamantni Aktivista', description: 'Ostvaren za prisustvo na 100 događaja', icon: '/uploads/badges/diamond_aktivista.png', criteriaType: 'events_attended', criteriaValue: 100 },
+  { name: 'Bronzani Aktivista', description: 'Ostvaren za prisustvo na 5 događaja', icon: '/api/badges/image/bronze_aktivista.png', criteriaType: 'events_attended', criteriaValue: 5 },
+  { name: 'Srebreni Aktivista', description: 'Ostvaren za prisustvo na 20 događaja', icon: '/api/badges/image/silver_aktivista.png', criteriaType: 'events_attended', criteriaValue: 20 },
+  { name: 'Zlatni Aktivista', description: 'Ostvaren za prisustvo na 50 događaja', icon: '/api/badges/image/gold_aktivista.png', criteriaType: 'events_attended', criteriaValue: 50 },
+  { name: 'Dijamantni Aktivista', description: 'Ostvaren za prisustvo na 100 događaja', icon: '/api/badges/image/diamond_aktivista.png', criteriaType: 'events_attended', criteriaValue: 100 },
 ];
 
 export async function seedBadgesForTenant(tenantId: string) {
