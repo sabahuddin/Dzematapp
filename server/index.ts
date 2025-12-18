@@ -318,9 +318,34 @@ const startSeeding = async () => {
   }
 };
 
+// Migrate badge icon paths from static to API endpoint (one-time migration)
+async function migrateBadgeIconPaths() {
+  try {
+    const { db } = await import('./db');
+    const { sql } = await import('drizzle-orm');
+    
+    // Update all badges that still use the old static path
+    const result = await db.execute(sql`
+      UPDATE badges 
+      SET icon = REPLACE(icon, '/uploads/badges/', '/api/badges/image/') 
+      WHERE icon LIKE '/uploads/badges/%'
+    `);
+    
+    const count = (result as any)?.rowCount || 0;
+    if (count > 0) {
+      console.log(`🔄 Migrated ${count} badge icon paths to API endpoint`);
+    }
+  } catch (error) {
+    console.error('⚠️ Badge path migration skipped:', error);
+  }
+}
+
 // Seed badges for all existing tenants
 async function seedBadgesForAllTenants() {
   try {
+    // First migrate any old paths
+    await migrateBadgeIconPaths();
+    
     const { db } = await import('./db');
     const { tenants } = await import('@shared/schema');
     
