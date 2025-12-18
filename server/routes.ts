@@ -165,15 +165,19 @@ function mapNameTitleFields(data: Record<string, any>): Record<string, any> {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Serve uploads directory as static files
-  // Try multiple paths to handle both dev and production environments
+  // Docker production: /app/public/uploads
+  // Development: relative paths from project root
   const currentDir = import.meta.dirname || process.cwd();
   const projectRoot = path.resolve(currentDir, '..');
   const possibleUploadPaths = [
+    '/app/public/uploads',                                 // Docker production (absolute)
+    path.join(process.cwd(), 'public', 'uploads'),         // Docker/Dev: cwd/public/uploads
     path.join(projectRoot, 'public', 'uploads'),           // Development: ../public/uploads
-    path.join(process.cwd(), 'public', 'uploads'),         // Alt: cwd/public/uploads
-    path.join(process.cwd(), 'dist', 'public', 'uploads'), // Production: dist/public/uploads
+    path.join(process.cwd(), 'dist', 'public', 'uploads'), // Build output: dist/public/uploads
     path.join(currentDir, 'public', 'uploads'),            // Symlink: server/public/uploads
   ];
+  
+  console.log('🔍 Checking upload paths, cwd:', process.cwd(), 'dirname:', currentDir);
   
   // Find and serve from all existing upload paths
   let foundPath = false;
@@ -183,11 +187,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log('📂 Serving uploads from:', uploadsPath);
       foundPath = true;
       break; // Use first found path
+    } else {
+      console.log('   ❌ Not found:', uploadsPath);
     }
   }
   
   if (!foundPath) {
-    console.log('⚠️ No uploads directory found, checked:', possibleUploadPaths);
+    console.log('⚠️ No uploads directory found!');
   }
 
   // Contact form endpoint (public, no auth required)
