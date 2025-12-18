@@ -4,6 +4,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
+import i18n from '../i18n';
 import {
   Box,
   Button,
@@ -47,6 +48,13 @@ const badgeFormSchema = insertBadgeSchema.omit({ tenantId: true }).extend({
 });
 
 type BadgeFormData = z.infer<typeof badgeFormSchema>;
+
+const getCriteriaTypeLabel = (criteriaType: string): string => {
+  const lng = i18n.language || 'bs';
+  const bundle = i18n.getResourceBundle(lng, 'badges') || i18n.getResourceBundle('bs', 'badges');
+  const criteriaTypes = bundle?.criteriaTypes as Record<string, string> | undefined;
+  return criteriaTypes?.[criteriaType] || criteriaType;
+};
 
 const BadgeIcon = ({ icon, size = 24 }: { icon?: string | null; size?: number }) => {
   const [imgError, setImgError] = useState(false);
@@ -502,7 +510,7 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2" color="text.secondary" data-testid={`badge-type-${badge.id}`}>
-                      {(t('badges:criteriaTypes', { returnObjects: true }) as Record<string, string>)[badge.criteriaType] || badge.criteriaType}
+                      {getCriteriaTypeLabel(badge.criteriaType)}
                     </Typography>
                   </TableCell>
                   <TableCell>
