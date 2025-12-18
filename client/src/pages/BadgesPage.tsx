@@ -502,7 +502,7 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2" color="text.secondary" data-testid={`badge-type-${badge.id}`}>
-                      {t(`badges:criteriaTypes.${badge.criteriaType}`, badge.criteriaType)}
+                      {t(`badges:criteriaTypes.${badge.criteriaType}`, { defaultValue: badge.criteriaType })}
                     </Typography>
                   </TableCell>
                   <TableCell>
