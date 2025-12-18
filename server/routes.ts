@@ -2,7 +2,7 @@ import express, { type Express } from "express";
 import { createServer, type Server } from "http";
 import multer from "multer";
 import path from "path";
-import { promises as fs } from "fs";
+import { promises as fs, existsSync } from "fs";
 import * as XLSX from "xlsx";
 import { z, ZodError } from "zod";
 import { eq } from "drizzle-orm";
@@ -165,8 +165,20 @@ function mapNameTitleFields(data: Record<string, any>): Record<string, any> {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Serve uploads directory as static files
+  // In production, public/uploads may be at different locations
   const uploadsPath = path.join(process.cwd(), 'public', 'uploads');
-  app.use('/uploads', express.static(uploadsPath));
+  const distUploadsPath = path.join(process.cwd(), 'dist', 'public', 'uploads');
+  
+  // Try both paths - production may use dist/public/uploads
+  if (existsSync(distUploadsPath)) {
+    app.use('/uploads', express.static(distUploadsPath));
+    console.log('📂 Serving uploads from:', distUploadsPath);
+  }
+  // Also serve from public/uploads (development or if files exist there)
+  if (existsSync(uploadsPath)) {
+    app.use('/uploads', express.static(uploadsPath));
+    console.log('📂 Serving uploads from:', uploadsPath);
+  }
 
   // Contact form endpoint (public, no auth required)
   app.post("/api/contact", async (req, res) => {
