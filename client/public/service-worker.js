@@ -1,5 +1,5 @@
-const CACHE_NAME = 'dzematapp-v9-indigo-splash';
-const RUNTIME_CACHE = 'dzematapp-runtime-v9';
+const CACHE_NAME = 'dzematapp-v10-criteria-fix';
+const RUNTIME_CACHE = 'dzematapp-runtime-v10';
 
 // Resources to cache on install
 const PRECACHE_URLS = [
