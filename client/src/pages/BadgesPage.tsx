@@ -48,6 +48,30 @@ const badgeFormSchema = insertBadgeSchema.omit({ tenantId: true }).extend({
 
 type BadgeFormData = z.infer<typeof badgeFormSchema>;
 
+const BadgeIcon = ({ icon, size = 24 }: { icon?: string | null; size?: number }) => {
+  if (!icon) return <span style={{ fontSize: size }}>🏅</span>;
+  
+  if (icon.startsWith('/') || icon.startsWith('http')) {
+    return (
+      <img 
+        src={icon} 
+        alt="Badge" 
+        style={{ 
+          width: size, 
+          height: size, 
+          objectFit: 'contain',
+          borderRadius: '50%'
+        }} 
+        onError={(e) => {
+          (e.target as HTMLImageElement).style.display = 'none';
+        }}
+      />
+    );
+  }
+  
+  return <span style={{ fontSize: size }}>{icon}</span>;
+};
+
 export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {}) {
   const { user: currentUser } = useAuth();
   const { toast } = useToast();
@@ -464,12 +488,12 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
               {badges.map((badge: Badge) => (
                 <TableRow key={badge.id}>
                   <TableCell>
-                    <Chip
-                      icon={<span style={{ fontSize: '18px', marginLeft: '4px' }}>{badge.icon || '🏅'}</span>}
-                      label={badge.name}
-                      color="warning"
-                      data-testid={`badge-name-${badge.id}`}
-                    />
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <BadgeIcon icon={badge.icon} size={32} />
+                      <Typography variant="body2" fontWeight={600}>
+                        {badge.name}
+                      </Typography>
+                    </Box>
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2" data-testid={`badge-desc-${badge.id}`}>
