@@ -49,7 +49,9 @@ const badgeFormSchema = insertBadgeSchema.omit({ tenantId: true }).extend({
 type BadgeFormData = z.infer<typeof badgeFormSchema>;
 
 const BadgeIcon = ({ icon, size = 24 }: { icon?: string | null; size?: number }) => {
-  if (!icon) return <span style={{ fontSize: size }}>🏅</span>;
+  const [imgError, setImgError] = useState(false);
+  
+  if (!icon || imgError) return <span style={{ fontSize: size }}>🏅</span>;
   
   if (icon.startsWith('/') || icon.startsWith('http')) {
     return (
@@ -62,9 +64,7 @@ const BadgeIcon = ({ icon, size = 24 }: { icon?: string | null; size?: number })
           objectFit: 'contain',
           borderRadius: '50%'
         }} 
-        onError={(e) => {
-          (e.target as HTMLImageElement).style.display = 'none';
-        }}
+        onError={() => setImgError(true)}
       />
     );
   }
