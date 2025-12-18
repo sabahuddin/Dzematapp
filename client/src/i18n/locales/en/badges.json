@@ -29,9 +29,11 @@
   "selectType": "-- Select type --",
   "criteriaTypes": {
     "points": "Total points",
-    "tasks_completed": "Number of completed tasks",
-    "contributions_amount": "Total contribution amount",
-    "events_attended": "Number of attended events"
+    "points_total": "Total points",
+    "tasks_completed": "Completed tasks",
+    "contributions_amount": "Donation amount",
+    "donation_total": "Donation amount",
+    "events_attended": "Events attended"
   },
   "helperTexts": {
     "criteriaType": "Type of activity required to earn badge",

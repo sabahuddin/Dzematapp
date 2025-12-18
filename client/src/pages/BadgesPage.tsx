@@ -48,19 +48,6 @@ const badgeFormSchema = insertBadgeSchema.omit({ tenantId: true }).extend({
 
 type BadgeFormData = z.infer<typeof badgeFormSchema>;
 
-// Helper function to translate criteria type
-const getCriteriaTypeLabel = (criteriaType: string): string => {
-  const labels: Record<string, string> = {
-    'points_total': 'Ukupni bodovi',
-    'points': 'Ukupni bodovi',
-    'tasks_completed': 'Završeni zadaci',
-    'contributions_amount': 'Iznos donacija',
-    'donation_total': 'Iznos donacija',
-    'events_attended': 'Prisustvo događajima',
-  };
-  return labels[criteriaType] || criteriaType;
-};
-
 const BadgeIcon = ({ icon, size = 24 }: { icon?: string | null; size?: number }) => {
   const [imgError, setImgError] = useState(false);
   
@@ -515,7 +502,7 @@ export default function BadgesPage({ hideHeader = false }: BadgesPageProps = {})
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2" color="text.secondary" data-testid={`badge-type-${badge.id}`}>
-                      {getCriteriaTypeLabel(badge.criteriaType)}
+                      {t(`badges:criteriaTypes.${badge.criteriaType}`, badge.criteriaType)}
                     </Typography>
                   </TableCell>
                   <TableCell>

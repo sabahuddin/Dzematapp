@@ -29,9 +29,11 @@
   "selectType": "-- Tür Seç --",
   "criteriaTypes": {
     "points": "Toplam Puan",
-    "tasks_completed": "Tamamlanan Görev Sayısı",
-    "contributions_amount": "Toplam Ödeme Tutarı",
-    "events_attended": "Katılınan Etkinlik Sayısı"
+    "points_total": "Toplam Puan",
+    "tasks_completed": "Tamamlanan Görevler",
+    "contributions_amount": "Bağış Tutarı",
+    "donation_total": "Bağış Tutarı",
+    "events_attended": "Katılınan Etkinlikler"
   },
   "helperTexts": {
     "criteriaType": "Rozet kazanmak için gereken aktivite türü",

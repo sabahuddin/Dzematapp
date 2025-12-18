@@ -29,9 +29,11 @@
   "selectType": "-- Zgjidhni llojin --",
   "criteriaTypes": {
     "points": "Pikë totale",
-    "tasks_completed": "Numri i detyrave të përfunduara",
-    "contributions_amount": "Shuma totale e pagesave",
-    "events_attended": "Numri i ngjarjeve të ndjekura"
+    "points_total": "Pikë totale",
+    "tasks_completed": "Detyra të përfunduara",
+    "contributions_amount": "Shuma e donacioneve",
+    "donation_total": "Shuma e donacioneve",
+    "events_attended": "Ngjarje të ndjekura"
   },
   "helperTexts": {
     "criteriaType": "Lloji i aktivitetit të nevojshëm për të marrë distinktiv",

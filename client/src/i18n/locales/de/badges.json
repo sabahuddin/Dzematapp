@@ -29,9 +29,11 @@
   "selectType": "-- Typ auswählen --",
   "criteriaTypes": {
     "points": "Gesamtpunkte",
-    "tasks_completed": "Anzahl abgeschlossener Aufgaben",
-    "contributions_amount": "Gesamtbeitragsbetrag",
-    "events_attended": "Anzahl besuchter Veranstaltungen"
+    "points_total": "Gesamtpunkte",
+    "tasks_completed": "Erledigte Aufgaben",
+    "contributions_amount": "Spendenbetrag",
+    "donation_total": "Spendenbetrag",
+    "events_attended": "Besuchte Veranstaltungen"
   },
   "helperTexts": {
     "criteriaType": "Art der Aktivität, die zum Verdienen des Abzeichens erforderlich ist",
