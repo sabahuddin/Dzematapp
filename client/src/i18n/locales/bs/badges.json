@@ -20,18 +20,20 @@
   "tableHeaders": {
     "name": "Naziv",
     "description": "Opis",
-    "criteriaType": "Tip kriterija",
+    "criteriaType": "Kriterij",
     "value": "Vrijednost",
     "actions": "Akcije"
   },
-  "criteriaType": "Tip kriterija",
+  "criteriaType": "Kriterij",
   "criteriaValue": "Vrijednost",
   "selectType": "-- Odaberi tip --",
   "criteriaTypes": {
     "points": "Ukupni bodovi",
-    "tasks_completed": "Broj izvršenih zadataka",
-    "contributions_amount": "Ukupan iznos uplate",
-    "events_attended": "Broj posjećenih događaja"
+    "points_total": "Ukupni bodovi",
+    "tasks_completed": "Završeni zadaci",
+    "contributions_amount": "Iznos donacija",
+    "donation_total": "Iznos donacija",
+    "events_attended": "Prisustvo događajima"
   },
   "helperTexts": {
     "criteriaType": "Tip aktivnosti potreban za dobijanje značke",

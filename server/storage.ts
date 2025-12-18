@@ -2483,6 +2483,9 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteBadge(id: string, tenantId: string): Promise<boolean> {
+    // First delete all user_badges referencing this badge
+    await db.delete(userBadges).where(eq(userBadges.badgeId, id));
+    // Then delete the badge
     const result = await db.delete(badges).where(and(eq(badges.id, id), eq(badges.tenantId, tenantId))).returning();
     return result.length > 0;
   }
