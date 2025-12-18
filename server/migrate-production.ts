@@ -25,6 +25,35 @@ export async function migrateProductionSchema(): Promise<void> {
       console.log("ℹ️  No broken data to clean up");
     }
 
+    // Fix badge names - second word should be lowercase
+    console.log("📋 Fixing badge names (lowercase second word)...");
+    try {
+      const badgeNameFixes = [
+        ["Bronzani Vakif", "Bronzani vakif"],
+        ["Srebreni Vakif", "Srebreni vakif"],
+        ["Zlatni Vakif", "Zlatni vakif"],
+        ["Dijamantni Vakif", "Dijamantni vakif"],
+        ["Bronzani Sponzor", "Bronzani sponzor"],
+        ["Srebreni Sponzor", "Srebreni sponzor"],
+        ["Zlatni Sponzor", "Zlatni sponzor"],
+        ["Dijamantni Sponzor", "Dijamantni sponzor"],
+        ["Bronzani Volonter", "Bronzani volonter"],
+        ["Srebreni Volonter", "Srebreni volonter"],
+        ["Zlatni Volonter", "Zlatni volonter"],
+        ["Dijamantni Volonter", "Dijamantni volonter"],
+        ["Bronzani Aktivista", "Bronzani aktivista"],
+        ["Srebreni Aktivista", "Srebreni aktivista"],
+        ["Zlatni Aktivista", "Zlatni aktivista"],
+        ["Dijamantni Aktivista", "Dijamantni aktivista"],
+      ];
+      for (const [oldName, newName] of badgeNameFixes) {
+        await client.query("UPDATE badges SET name = $1 WHERE name = $2", [newName, oldName]);
+      }
+      console.log("✅ Badge names fixed");
+    } catch (error: any) {
+      console.log("ℹ️  Badge name fix skipped:", error.message);
+    }
+
     // Fix certificate_templates type and content columns (production has them as NOT NULL without default)
     console.log("🔧 Fixing certificate_templates columns...");
     try {
