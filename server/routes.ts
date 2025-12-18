@@ -196,40 +196,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.log('⚠️ No uploads directory found!');
   }
 
-  // API endpoint for badge images - fallback for Docker/production environments
-  app.get('/api/badges/image/:filename', (req, res) => {
+  // API endpoint for badge images - uses embedded base64 for Docker/Coolify compatibility
+  app.get('/api/badges/image/:filename', async (req, res) => {
     const { filename } = req.params;
     
-    // Security: only allow specific badge filenames
+    // Remove .png extension to get the key
+    const badgeKey = filename.replace('.png', '');
+    
+    // Security: only allow specific badge names
     const allowedBadges = [
-      'bronze_vakif.png', 'silver_vakif.png', 'gold_vakif.png', 'diamond_vakif.png',
-      'bronze_sponzor.png', 'silver_sponzor.png', 'gold_sponzor.png', 'diamond_sponzor.png',
-      'bronze_volonter.png', 'silver_volonter.png', 'gold_volonter.png', 'diamond_volonter.png',
-      'bronze_aktivista.png', 'silver_aktivista.png', 'gold_aktivista.png', 'diamond_aktivista.png'
+      'bronze_vakif', 'silver_vakif', 'gold_vakif', 'diamond_vakif',
+      'bronze_sponzor', 'silver_sponzor', 'gold_sponzor', 'diamond_sponzor',
+      'bronze_volonter', 'silver_volonter', 'gold_volonter', 'diamond_volonter',
+      'bronze_aktivista', 'silver_aktivista', 'gold_aktivista', 'diamond_aktivista'
     ];
     
-    if (!allowedBadges.includes(filename)) {
+    if (!allowedBadges.includes(badgeKey)) {
       return res.status(404).json({ error: 'Badge not found' });
     }
     
-    // Try multiple paths
+    try {
+      // Import embedded base64 images
+      const { BADGE_IMAGES } = await import('./badge-images.js');
+      const base64Data = BADGE_IMAGES[badgeKey];
+      
+      if (base64Data) {
+        const imageBuffer = Buffer.from(base64Data, 'base64');
+        res.setHeader('Content-Type', 'image/png');
+        res.setHeader('Cache-Control', 'public, max-age=31536000'); // 1 year cache
+        return res.send(imageBuffer);
+      }
+    } catch (error) {
+      console.log('⚠️ Embedded badges not available, trying file system');
+    }
+    
+    // Fallback to file system
     const badgePaths = [
       '/app/public/uploads/badges',
       path.join(process.cwd(), 'public', 'uploads', 'badges'),
       path.join(import.meta.dirname || '.', '..', 'public', 'uploads', 'badges'),
-      path.join(import.meta.dirname || '.', 'public', 'uploads', 'badges'),
     ];
     
     for (const basePath of badgePaths) {
       const filePath = path.join(basePath, filename);
       if (existsSync(filePath)) {
         res.setHeader('Content-Type', 'image/png');
-        res.setHeader('Cache-Control', 'public, max-age=31536000'); // 1 year cache
+        res.setHeader('Cache-Control', 'public, max-age=31536000');
         return res.sendFile(filePath);
       }
     }
     
-    console.log('❌ Badge not found:', filename, 'Checked:', badgePaths);
     res.status(404).json({ error: 'Badge image not found' });
   });
 
