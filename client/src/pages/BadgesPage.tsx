@@ -49,11 +49,53 @@ const badgeFormSchema = insertBadgeSchema.omit({ tenantId: true }).extend({
 
 type BadgeFormData = z.infer<typeof badgeFormSchema>;
 
+const CRITERIA_TYPE_LABELS: Record<string, Record<string, string>> = {
+  bs: {
+    points: 'Ukupni bodovi',
+    points_total: 'Ukupni bodovi',
+    tasks_completed: 'Završeni zadaci',
+    contributions_amount: 'Iznos donacija',
+    donation_total: 'Iznos donacija',
+    events_attended: 'Prisustvo događajima',
+  },
+  en: {
+    points: 'Total points',
+    points_total: 'Total points',
+    tasks_completed: 'Completed tasks',
+    contributions_amount: 'Donation amount',
+    donation_total: 'Donation amount',
+    events_attended: 'Events attended',
+  },
+  de: {
+    points: 'Gesamtpunkte',
+    points_total: 'Gesamtpunkte',
+    tasks_completed: 'Erledigte Aufgaben',
+    contributions_amount: 'Spendenbetrag',
+    donation_total: 'Spendenbetrag',
+    events_attended: 'Besuchte Veranstaltungen',
+  },
+  tr: {
+    points: 'Toplam Puan',
+    points_total: 'Toplam Puan',
+    tasks_completed: 'Tamamlanan Görevler',
+    contributions_amount: 'Bağış Tutarı',
+    donation_total: 'Bağış Tutarı',
+    events_attended: 'Katılınan Etkinlikler',
+  },
+  sq: {
+    points: 'Pikë totale',
+    points_total: 'Pikë totale',
+    tasks_completed: 'Detyra të përfunduara',
+    contributions_amount: 'Shuma e donacioneve',
+    donation_total: 'Shuma e donacioneve',
+    events_attended: 'Ngjarje të ndjekura',
+  },
+};
+
 const getCriteriaTypeLabel = (criteriaType: string): string => {
   const lng = i18n.language || 'bs';
-  const bundle = i18n.getResourceBundle(lng, 'badges') || i18n.getResourceBundle('bs', 'badges');
-  const criteriaTypes = bundle?.criteriaTypes as Record<string, string> | undefined;
-  return criteriaTypes?.[criteriaType] || criteriaType;
+  const labels = CRITERIA_TYPE_LABELS[lng] || CRITERIA_TYPE_LABELS['bs'];
+  return labels[criteriaType] || criteriaType;
 };
 
 const BadgeIcon = ({ icon, size = 24 }: { icon?: string | null; size?: number }) => {
