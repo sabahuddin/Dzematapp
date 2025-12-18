@@ -165,19 +165,29 @@ function mapNameTitleFields(data: Record<string, any>): Record<string, any> {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Serve uploads directory as static files
-  // In production, public/uploads may be at different locations
-  const uploadsPath = path.join(process.cwd(), 'public', 'uploads');
-  const distUploadsPath = path.join(process.cwd(), 'dist', 'public', 'uploads');
+  // Try multiple paths to handle both dev and production environments
+  const currentDir = import.meta.dirname || process.cwd();
+  const projectRoot = path.resolve(currentDir, '..');
+  const possibleUploadPaths = [
+    path.join(projectRoot, 'public', 'uploads'),           // Development: ../public/uploads
+    path.join(process.cwd(), 'public', 'uploads'),         // Alt: cwd/public/uploads
+    path.join(process.cwd(), 'dist', 'public', 'uploads'), // Production: dist/public/uploads
+    path.join(currentDir, 'public', 'uploads'),            // Symlink: server/public/uploads
+  ];
   
-  // Try both paths - production may use dist/public/uploads
-  if (existsSync(distUploadsPath)) {
-    app.use('/uploads', express.static(distUploadsPath));
-    console.log('📂 Serving uploads from:', distUploadsPath);
+  // Find and serve from all existing upload paths
+  let foundPath = false;
+  for (const uploadsPath of possibleUploadPaths) {
+    if (existsSync(uploadsPath)) {
+      app.use('/uploads', express.static(uploadsPath));
+      console.log('📂 Serving uploads from:', uploadsPath);
+      foundPath = true;
+      break; // Use first found path
+    }
   }
-  // Also serve from public/uploads (development or if files exist there)
-  if (existsSync(uploadsPath)) {
-    app.use('/uploads', express.static(uploadsPath));
-    console.log('📂 Serving uploads from:', uploadsPath);
+  
+  if (!foundPath) {
+    console.log('⚠️ No uploads directory found, checked:', possibleUploadPaths);
   }
 
   // Contact form endpoint (public, no auth required)
