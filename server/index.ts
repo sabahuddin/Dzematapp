@@ -11,7 +11,7 @@ import type { User } from "@shared/schema";
 import { tenantContextMiddleware, DEFAULT_TENANT_ID } from "./tenant-context";
 import { seedSubscriptionPlans } from "./subscription-plans-seed";
 import { seedDemoData } from "./seed-demo-data";
-import { seedDefaultTenant } from "./seed-tenant";
+import { seedDefaultTenant, seedBadgesForTenant, TENANT_IDS } from "./seed-tenant";
 import { ensurePublicPathSymlink } from "./public-path-fix";
 import { serveStaticFiles } from "./middleware";
 import { migrateProductionSchema, verifyAllTablesExist } from "./migrate-production";
@@ -287,10 +287,34 @@ const startSeeding = async () => {
     await seedDefaultTenant();
     seedSubscriptionPlans();
     seedDemoData();
+    
+    // Seed default badges for all tenants
+    await seedBadgesForAllTenants();
   } catch (err) {
     console.error('Seed error:', err);
   }
 };
+
+// Seed badges for all existing tenants
+async function seedBadgesForAllTenants() {
+  try {
+    const { db } = await import('./db');
+    const { tenants } = await import('@shared/schema');
+    
+    const allTenants = await db.select().from(tenants);
+    console.log(`🏅 Seeding badges for ${allTenants.length} tenants...`);
+    
+    for (const tenant of allTenants) {
+      // Skip SuperAdmin global tenant
+      if (tenant.id === TENANT_IDS.SUPERADMIN_GLOBAL) continue;
+      await seedBadgesForTenant(tenant.id);
+    }
+    
+    console.log('✅ Badge seeding complete for all tenants');
+  } catch (error) {
+    console.error('❌ Badge seeding failed:', error);
+  }
+}
 
 app.use((req, res, next) => {
   const start = Date.now();
