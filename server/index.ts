@@ -1,4 +1,5 @@
 import path from "path";
+import fs from "fs";
 import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
 import MemoryStore from "memorystore";
@@ -15,6 +16,25 @@ import { seedDefaultTenant, seedBadgesForTenant, TENANT_IDS } from "./seed-tenan
 import { ensurePublicPathSymlink } from "./public-path-fix";
 import { serveStaticFiles } from "./middleware";
 import { migrateProductionSchema, verifyAllTablesExist } from "./migrate-production";
+
+// Fix file permissions for static assets (badges, uploads)
+function fixStaticAssetPermissions() {
+  const badgesPath = path.join(process.cwd(), 'public', 'uploads', 'badges');
+  try {
+    if (fs.existsSync(badgesPath)) {
+      const files = fs.readdirSync(badgesPath);
+      for (const file of files) {
+        if (file.endsWith('.png') || file.endsWith('.jpg') || file.endsWith('.jpeg')) {
+          const filePath = path.join(badgesPath, file);
+          fs.chmodSync(filePath, 0o644);
+        }
+      }
+      console.log(`✅ Fixed permissions for ${files.length} badge images`);
+    }
+  } catch (error) {
+    console.log('ℹ️  Could not fix badge permissions:', error);
+  }
+}
 
 // Extend Express Request interface to include user
 declare global {
@@ -36,6 +56,9 @@ const app = express();
 
 // Fix production bundled code path resolution before anything else
 ensurePublicPathSymlink();
+
+// Fix permissions for badge images on startup
+fixStaticAssetPermissions();
 
 // In production, when bundled by esbuild, import.meta.dirname becomes "."
 // We need to override the working directory context for serveStatic to find public files
