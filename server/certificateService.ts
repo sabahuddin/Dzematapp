@@ -73,16 +73,27 @@ export async function generateCertificate(options: CertificateGenerationOptions)
     throw new Error(`Font file not found: ${fontPath}`);
   }
 
-  // Read font file to check size
-  const fontStats = await fs.stat(fontPath);
-  console.log(`[Certificate] Font file: ${fontPath}, size: ${fontStats.size} bytes`);
+  // Read font file and convert to base64 for embedding in SVG
+  const fontBuffer = await fs.readFile(fontPath);
+  const fontBase64 = fontBuffer.toString('base64');
+  console.log(`[Certificate] Font file: ${fontPath}, size: ${fontBuffer.length} bytes`);
 
-  // Create SVG with text - use exact internal font name "DejaVu Sans"
+  // Create SVG with embedded font as base64 data URI
   const svg = `<svg width="${imageWidth}" height="${imageHeight}" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style type="text/css">
+      @font-face {
+        font-family: 'CertFont';
+        src: url('data:font/truetype;base64,${fontBase64}') format('truetype');
+        font-weight: bold;
+        font-style: normal;
+      }
+    </style>
+  </defs>
   <text 
     x="${textPositionX}" 
     y="${textPositionY}" 
-    font-family="DejaVu Sans, sans-serif" 
+    font-family="CertFont" 
     font-size="${fontSize}" 
     fill="${fontColor}" 
     text-anchor="${textAnchor}" 
@@ -91,24 +102,20 @@ export async function generateCertificate(options: CertificateGenerationOptions)
   >${escapedName}</text>
 </svg>`;
 
-  console.log(`[Certificate] SVG content:\n${svg}`);
+  console.log(`[Certificate] SVG with embedded font created, SVG length: ${svg.length}`);
 
-  // Render SVG to PNG using resvg with custom font
-  // Enable system fonts as fallback in case custom font fails
+  // Render SVG to PNG using resvg - font is embedded in SVG
   const resvg = new Resvg(svg, {
     font: {
-      fontFiles: [fontPath],
-      loadSystemFonts: true,
-      defaultFontFamily: 'DejaVu Sans',
-      sansSerifFamily: 'DejaVu Sans',
+      loadSystemFonts: false,
     },
   });
   
-  console.log(`[Certificate] Resvg initialized, rendering...`);
+  console.log(`[Certificate] Resvg rendering with embedded font...`);
 
   const pngData = resvg.render();
   const textOverlay = pngData.asPng();
-  console.log(`[Certificate] Text overlay rendered, size: ${textOverlay.length} bytes`);
+  console.log(`[Certificate] Text overlay size: ${textOverlay.length} bytes`);
 
   // Composite the text over the template
   const finalImage = await sharp(templateBuffer)
