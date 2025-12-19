@@ -14,7 +14,8 @@ RUN npm run build
 FROM node:20-alpine AS runner
 
 # Install runtime dependencies for canvas and fonts
-RUN apk add --no-cache cairo pango libjpeg-turbo giflib librsvg fontconfig ttf-dejavu
+RUN apk add --no-cache cairo pango libjpeg-turbo giflib librsvg fontconfig ttf-dejavu \
+    && fc-cache -f -v
 
 WORKDIR /app
 
