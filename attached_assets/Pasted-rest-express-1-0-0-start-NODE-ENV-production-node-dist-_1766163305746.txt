@@ -1,0 +1,278 @@
+rest-express@1.0.0 start
+> NODE_ENV=production node dist/index.js
+🔗 Created symlink: /app/server/public -> ../public
+✅ Using PostgreSQL session store
+🔄 Starting database schema synchronization...
+🔄 Running production schema migration...
+🧹 Cleaning up broken data references...
+✅ Cleaned up broken data references
+📋 Fixing badge names (lowercase second word)...
+✅ Badge names fixed
+🔧 Fixing certificate_templates columns...
+✅ Fixed certificate_templates columns
+ℹ️  Tables already exist, applying column fixes...
+📋 Creating missing tables...
+✅ Table creation complete: 26 processed, 0 already existed
+📋 Migrating unique constraints to per-tenant...
+✅ Unique constraints migrated to per-tenant
+📋 Adding membership payment unique constraint...
+✅ Membership payment constraint added
+📋 Updating admin usernames to new standard...
+✅ Admin usernames and names updated
+📋 Adding missing columns to existing tables...
+✅ Processed 216 column fixes (0 skipped)
+📋 Fixing NOT NULL constraints on created_by_id columns...
+✅ Fixed 4 NOT NULL constraints
+📋 Fixing NOT NULL constraints on legacy 'title' columns...
+✅ Fixed events.start_date NOT NULL constraint
+✅ Synced events.date_time → start_date
+✅ Fixed 1 legacy 'title' NOT NULL constraints
+📋 Fixing membership_applications nullable fields...
+✓ country
+✓ email
+✓ employment_status
+✓ occupation
+✓ skills_hobbies
+✓ spouse_name
+✓ spouse_phone
+✓ children_info
+✓ reviewed_by_id
+✓ reviewed_at
+✓ review_notes
+✓ photo
+✅ Fixed 12 membership_applications nullable constraints
+📋 Assigning registry numbers to existing members...
+✅ Assigned registry numbers to 0 existing members
+📋 Migrating user foreign key constraints to CASCADE...
+✅ Migrated 26 foreign key constraints to CASCADE
+📋 Migrating title->name for legacy tables...
+✅ Migrated events: copied title->name
+✅ Migrated 1 tables (title->name)
+📋 Syncing membership settings currency with organization...
+✅ Membership currency synced with organization settings
+📋 Adding default_currency column to tenants...
+✅ default_currency column added
+📋 Fixing tenant enabled_modules with correct module IDs...
+✅ Tenant enabled_modules fixed for full-tier tenants
+✅ Schema migration complete
+📋 Verifying all schema tables exist...
+✅ All 47 tables verified
+✅ Database schema synchronized successfully!
+🔍 Checking upload paths, cwd: /app dirname: /app/dist
+📂 Serving uploads from: /app/public/uploads
+[INIT] Registering /api/auth/superadmin/login endpoint
+📂 Serving static files from: /app/dist/public
+4:52:31 PM [express] serving on port 3000
+✅ Admin user already exists
+🌱 Starting default tenant seed...
+📋 Creating subscription plans...
+📋 Updating existing subscription plans with latest modules...
+✅ Full plan modules updated
+🔐 Creating SuperAdmin global tenant...
+ℹ️  SuperAdmin global tenant already exists
+🏢 Creating default tenant...
+ℹ️  Default tenant already exists: Demo Džemat
+👤 Creating SuperAdmin user...
+ℹ️  SuperAdmin user already exists
+👤 Creating demo tenant admin...
+ℹ️  Demo admin user already exists
+✅ Seed completed successfully!
+📊 Default Tenant ID: default-tenant-demo
+Name: Demo Džemat
+Tier: full
+Status: active
+🌱 Seeding demo data for Demo Džemat...
+🏅 Seeding badges for 9 tenants...
+🏅 Seeding badges for tenant: cdede0a0-ae2f-46ff-bc8b-ce564797f974...
+ℹ️ Demo users already exist
+ℹ️  Badges already exist for tenant cdede0a0-ae2f-46ff-bc8b-ce564797f974 (16 badges)
+🏅 Seeding badges for tenant: eff2c096-9919-4f84-aa50-6e22b5ea2daf...
+ℹ️ Demo data already exists
+✅ Demo data seed completed!
+ℹ️  Badges already exist for tenant eff2c096-9919-4f84-aa50-6e22b5ea2daf (16 badges)
+🏅 Seeding badges for tenant: fd1a86ee-a02b-45fa-b47e-63fe420645b7...
+ℹ️  Badges already exist for tenant fd1a86ee-a02b-45fa-b47e-63fe420645b7 (16 badges)
+🏅 Seeding badges for tenant: default-tenant-demo...
+ℹ️  Badges already exist for tenant default-tenant-demo (16 badges)
+🏅 Seeding badges for tenant: 101da89b-26c5-46fe-96b3-5191c793da8a...
+ℹ️  Badges already exist for tenant 101da89b-26c5-46fe-96b3-5191c793da8a (16 badges)
+🏅 Seeding badges for tenant: 7f01db00-756c-47d0-819b-d1b9e5f5822e...
+ℹ️  Badges already exist for tenant 7f01db00-756c-47d0-819b-d1b9e5f5822e (16 badges)
+🏅 Seeding badges for tenant: 1a3195d8-bc32-4bb9-a1c8-9bca078a7aa0...
+ℹ️  Badges already exist for tenant 1a3195d8-bc32-4bb9-a1c8-9bca078a7aa0 (16 badges)
+🏅 Seeding badges for tenant: 41beaa51-e68e-4f5e-aa58-ba3af7f8538a...
+ℹ️  Badges already exist for tenant 41beaa51-e68e-4f5e-aa58-ba3af7f8538a (16 badges)
+✅ Badge seeding complete for all tenants
+🧹 [AUTO-PURGE] Starting automatic demo user cleanup...
+[AUTO-PURGE] Found 9 tenants
+[AUTO-PURGE] Processing tenant: SuperAdmin Global
+[AUTO-PURGE] Processing tenant: Džemat GAM
+[AUTO-PURGE] Processing tenant: Džemat Oslo
+[AUTO-PURGE] Processing tenant: IK Graz
+[AUTO-PURGE] Skipping demo tenant Demo Džemat
+[AUTO-PURGE] Processing tenant: Zajednica Bošnjaka Georgia
+[AUTO-PURGE] Processing tenant: Bosnian Islamic Center of Saint Louis
+[AUTO-PURGE] Processing tenant: Džemat Ponikve
+[AUTO-PURGE] Processing tenant: Zapadna Norveška
+[AUTO-PURGE] ✅ Automatic demo user cleanup completed!
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[MESSAGES/UNREAD-COUNT] Debug: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+sessionTenantId: 'default-tenant-demo',
+userTenantId: 'default-tenant-demo',
+reqTenantId: 'default-tenant-demo',
+resolvedTenantId: 'default-tenant-demo'
+}
+4:52:36 PM [express] GET /api/messages/unread-count 304 in 18ms :: {"count":0}
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+4:52:36 PM [express] GET /api/notifications/unread 304 in 37ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+4:52:51 PM [express] GET /api/certificates/unviewed-count 304 in 14ms :: {"count":0}
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[MESSAGES/UNREAD-COUNT] Debug: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+sessionTenantId: 'default-tenant-demo',
+userTenantId: 'default-tenant-demo',
+reqTenantId: 'default-tenant-demo',
+resolvedTenantId: 'default-tenant-demo'
+}
+4:53:06 PM [express] GET /api/messages/unread-count 304 in 15ms :: {"count":0}
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+4:53:06 PM [express] GET /api/notifications/unread 304 in 40ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+4:53:21 PM [express] GET /api/certificates/unviewed-count 304 in 12ms :: {"count":0}
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[MESSAGES/UNREAD-COUNT] Debug: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+sessionTenantId: 'default-tenant-demo',
+userTenantId: 'default-tenant-demo',
+reqTenantId: 'default-tenant-demo',
+resolvedTenantId: 'default-tenant-demo'
+}
+4:53:36 PM [express] GET /api/messages/unread-count 304 in 16ms :: {"count":0}
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+4:53:36 PM [express] GET /api/notifications/unread 304 in 43ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+4:53:51 PM [express] GET /api/certificates/unviewed-count 304 in 13ms :: {"count":0}
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[MESSAGES/UNREAD-COUNT] Debug: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+sessionTenantId: 'default-tenant-demo',
+userTenantId: 'default-tenant-demo',
+reqTenantId: 'default-tenant-demo',
+npm warn config production Use `--omit=dev` instead.
+resolvedTenantId: 'default-tenant-demo'
+}
+4:54:06 PM [express] GET /api/messages/unread-count 304 in 15ms :: {"count":0}
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+4:54:07 PM [express] GET /api/notifications/unread 304 in 40ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+4:54:21 PM [express] GET /api/certificates/unviewed-count 304 in 10ms :: {"count":0}
