@@ -1,0 +1,75 @@
+Sada imamo kristalno jasnu sliku problema iz tvog loga.
+
+[Certificate] Font: 40px "DzematCertFont" [Certificate] Text width: 0px
+
+Iako si definisao ime fonta kao "DzematCertFont", tvoj Canvas sistem ga ne prepoznaje ili ga nije uspio povezati sa fizičkim .ttf fajlom na serveru. Kada je širina 0 px, Canvas koristi "fallback" font koji u tvom Docker okruženju (Debian/Alpine) zapravo ne postoji, pa rezultat bude prazan prostor.
+
+Evo konačnog koda za certificateService.ts koji će ovo riješiti jer koristi apsolutne putanje i direktnu registraciju koju zahtijeva @napi-rs/canvas:
+
+✅ Ispravljeni certificateService.ts
+TypeScript
+import { createCanvas, GlobalFonts } from '@napi-rs/canvas';
+import sharp from 'sharp';
+import path from 'path';
+import fs from 'fs';
+
+// 1. Registracija fonta sa APSOLUTNOM putanjom
+// Koristimo ime "DzematCertFont" jer ga tvoj log već traži
+const fontPath = path.join(process.cwd(), 'public', 'fonts', 'DejaVuSans-Bold.ttf');
+
+if (fs.existsSync(fontPath)) {
+    // Registracija MORA biti uspješna prije nego kreneš crtati
+    const success = GlobalFonts.registerFromPath(fontPath, 'DzematCertFont');
+    console.log(`[Certificate] Font registration (DzematCertFont): ${success ? 'USPJEŠNA' : 'NEUSPJEŠNA'}`);
+} else {
+    console.error(`[Certificate] KRITIČNA GREŠKA: Font fajl nije pronađen na: ${fontPath}`);
+}
+
+export async function generateCertificate(options: any) {
+    const { templateImagePath, recipientName, fontSize, fontColor, textPositionX, textPositionY } = options;
+
+    // 2. Kreiramo overlay iste veličine kao template (prema logu 1200x800)
+    const width = 1200;
+    const height = 800;
+    const canvas = createCanvas(width, height);
+    const ctx = canvas.getContext('2d');
+
+    // 3. Postavljanje fonta - PAZI NA NAVODNIKE
+    ctx.font = `bold ${fontSize}px "DzematCertFont"`;
+    ctx.fillStyle = fontColor || '#4CAF50';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    // 4. VERIFIKACIJA ŠIRINE - Ključni korak za logove
+    const metrics = ctx.measureText(recipientName);
+    console.log(`[Certificate] VERIFIKACIJA: Ime="${recipientName}", Izmjerena širina=${metrics.width}px`);
+
+    if (metrics.width === 0) {
+        console.error(`[Certificate] UPOZORENJE: Širina teksta je 0! Font "DzematCertFont" nije ispravno primijenjen.`);
+    }
+
+    // 5. Crtanje
+    ctx.fillText(recipientName, textPositionX, textPositionY);
+
+    const textOverlayBuffer = canvas.toBuffer('image/png');
+
+    // 6. Spajanje sa Sharp-om koristeći apsolutnu putanju template-a
+    const fullTemplatePath = path.join(process.cwd(), 'public', templateImagePath);
+    
+    return await sharp(fullTemplatePath)
+        .composite([{ 
+            input: textOverlayBuffer, 
+            top: 0, 
+            left: 0 
+        }])
+        .png()
+        .toBuffer();
+}
+🛠 Šta još moraš uraditi?
+Provjera lokacije fonta: Uvjeri se da se tvoj font nalazi tačno u public/fonts/DejaVuSans-Bold.ttf unutar tvog projekta.
+Docker Rebuild: Budući da Coolify kešira slojeve, uradi "Force Rebuild without cache" kako bi bio siguran da je novi font fajl ubačen u kontejner.
+Baza Podataka: Ne zaboravi riješiti onaj 500 error za analytics tako što ćeš dodati kolonu site u tabelu page_views (pomoću db:push ili ručnog SQL-a u bazi).
+Zašto je širina bila 0 px?
+U tvom prethodnom pokušaju, sistem je tražio font pod imenom "DzematCertFont", ali taj nadimak (alias) nije bio ispravno povezan sa .ttf fajlom u memoriji Canvas-a. Ovaj novi kod koristi GlobalFonts.registerFromPath koji eksplicitno pravi tu vezu.
+
+Čim deploy-aš ovo, javi mi da li log sada pokazuje Izmjerena širina=XXXpx (bilo šta veće od nule).

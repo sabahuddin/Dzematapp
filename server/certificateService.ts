@@ -1,33 +1,54 @@
 import sharp from 'sharp';
 import { createCanvas, GlobalFonts } from '@napi-rs/canvas';
 import path from 'path';
-import { promises as fs, existsSync } from 'fs';
+import { promises as fs, existsSync, readFileSync } from 'fs';
 
-// Font configuration - use unique name to avoid collision with system fonts
+// Font configuration
 const FONT_FAMILY = 'DzematCertFont';
 const fontPath = path.join(process.cwd(), 'public', 'fonts', 'DejaVuSans-Bold.ttf');
 
-// Register font synchronously at module load
+// Register font using BUFFER method (more reliable in Docker)
 console.log('[Certificate] Font path:', fontPath);
 console.log('[Certificate] Font exists:', existsSync(fontPath));
 
+let fontRegistered = false;
+
 if (existsSync(fontPath)) {
-  const isRegistered = GlobalFonts.registerFromPath(fontPath, FONT_FAMILY);
-  console.log('[Certificate] Font registration result:', isRegistered);
-  console.log('[Certificate] Registered font family name:', FONT_FAMILY);
-  console.log('[Certificate] Available font families:', GlobalFonts.families.map((f: any) => f.family).join(', '));
-  
-  // Verify font works by doing a test render
-  const testCanvas = createCanvas(100, 50);
-  const testCtx = testCanvas.getContext('2d');
-  testCtx.font = `20px "${FONT_FAMILY}"`;
-  const testWidth = testCtx.measureText('Test').width;
-  console.log('[Certificate] Font verification - Test text width:', testWidth, 'px');
-  
-  if (testWidth === 0) {
-    console.error('[Certificate] ⚠️ WARNING: Font registered but not rendering!');
-  } else {
-    console.log('[Certificate] ✅ Font working correctly');
+  try {
+    // Read font file into buffer
+    const fontBuffer = readFileSync(fontPath);
+    console.log('[Certificate] Font buffer size:', fontBuffer.length, 'bytes');
+    
+    // Register using buffer (more reliable than path in Docker)
+    GlobalFonts.register(fontBuffer, FONT_FAMILY);
+    console.log('[Certificate] Font registered via buffer as:', FONT_FAMILY);
+    
+    // List all registered fonts
+    const families = GlobalFonts.families.map((f: any) => f.family);
+    console.log('[Certificate] Available font families:', families.join(', '));
+    
+    // Check if our font is in the list
+    fontRegistered = families.includes(FONT_FAMILY);
+    console.log('[Certificate] Our font in list:', fontRegistered);
+    
+    // Verify font works by doing a test render
+    const testCanvas = createCanvas(200, 50);
+    const testCtx = testCanvas.getContext('2d');
+    testCtx.font = `bold 20px "${FONT_FAMILY}"`;
+    const testWidth = testCtx.measureText('TestČĆŽŠĐ').width;
+    console.log('[Certificate] Font verification - Test text width:', testWidth, 'px');
+    
+    if (testWidth === 0) {
+      console.error('[Certificate] ⚠️ WARNING: Font registered but not rendering!');
+      // Try without quotes
+      testCtx.font = `bold 20px ${FONT_FAMILY}`;
+      const testWidth2 = testCtx.measureText('Test').width;
+      console.log('[Certificate] Retry without quotes - width:', testWidth2, 'px');
+    } else {
+      console.log('[Certificate] ✅ Font working correctly');
+    }
+  } catch (e) {
+    console.error('[Certificate] ❌ Font registration error:', e);
   }
 } else {
   console.error('[Certificate] ❌ Font file not found:', fontPath);
