@@ -1,0 +1,60 @@
+Na osnovu tvojih logova, problem je sada precizno lociran. Iako sistem kaže da je generisanje završeno, postoji kritična greška u načinu na koji se tekst renderira unutar Docker okruženja.
+
+🔍 Analiza problema iz logova
+Font je učitan: Log potvrđuje da je /app/public/fonts/DejaVuSans-Bold.ttf pronađen i ima ispravnu veličinu (297,206 bajtova).
+SVG metoda: Log kaže SVG created with embedded Base64 font. Ovo je glavni uzrok problema. Na Linuxu (posebno u Dockeru), sharp koristi biblioteku librsvg koja često ne zna procesirati Base64 fontove unutar SVG-a ili nema pristup sistemskom fontu da bi renderirala tekst.
+Rezultat: Ti dobiješ sliku, ali je tekst na njoj nevidljiv ili su umjesto njega kockice jer librsvg nije uspio nacrtati karaktere.
+✅ Rješenje: Izbaciti SVG i koristiti direktni Canvas Buffer
+Umjesto da kreiraš SVG string i daješ ga sharp biblioteci, trebaš iscrtati tekst direktno u buffer koristeći @napi-rs/canvas i taj buffer proslijediti u composite.
+
+Izmijeni certificateService.ts na ovaj način:
+
+TypeScript
+import { createCanvas, GlobalFonts } from '@napi-rs/canvas';
+import sharp from 'sharp';
+import path from 'path';
+
+// 1. Registracija fonta (izvan funkcije, samo jednom)
+const fontPath = path.join(process.cwd(), 'public', 'fonts', 'DejaVuSans-Bold.ttf');
+GlobalFonts.registerFromPath(fontPath, 'DejaVu Sans');
+
+export async function generateCertificate(options: any) {
+    const { templateImagePath, recipientName, fontSize, fontColor, textPositionX, textPositionY } = options;
+
+    // 2. Kreiranje platna (Canvas) iste veličine kao template (1200x800 prema logu)
+    const width = 1200; 
+    const height = 800;
+    const canvas = createCanvas(width, height);
+    const ctx = canvas.getContext('2d');
+
+    // 3. Crtanje teksta direktno na Canvas
+    ctx.font = `bold ${fontSize}px "DejaVu Sans"`;
+    ctx.fillStyle = fontColor;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    
+    // Loguj širinu teksta - ako je > 0, font radi!
+    const metrics = ctx.measureText(recipientName);
+    console.log(`[Certificate] Native Canvas Text Width: ${metrics.width}px`);
+
+    ctx.fillText(recipientName, textPositionX, textPositionY);
+
+    // 4. Pretvori Canvas u PNG Buffer
+    const textOverlayBuffer = canvas.toBuffer('image/png');
+
+    // 5. Kompozicija sa Sharp-om
+    const finalImage = await sharp(path.join(process.cwd(), 'public', templateImagePath))
+        .composite([{ 
+            input: textOverlayBuffer, 
+            top: 0, 
+            left: 0 
+        }])
+        .png()
+        .toBuffer();
+
+    return finalImage;
+}
+Zašto će ovo raditi?
+Nema SVG-a: Izbjegavamo librsvg i njegove probleme sa fontovima u Dockeru.
+Native Rendering: @napi-rs/canvas koristi sopstveni engine za crtanje koji smo upravo povezali sa tvojim .ttf fajlom.
+Tačnost: Canvas buffer je prozirna slika (overlay) koja se savršeno lijepi preko tvog template-a pomoću sharp biblioteke.
