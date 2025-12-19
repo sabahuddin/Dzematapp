@@ -1,5 +1,5 @@
-const CACHE_NAME = 'dzematapp-v10-criteria-fix';
-const RUNTIME_CACHE = 'dzematapp-runtime-v10';
+const CACHE_NAME = 'dzematapp-v11-network-first';
+const RUNTIME_CACHE = 'dzematapp-runtime-v11';
 
 // Resources to cache on install
 const PRECACHE_URLS = [
@@ -141,16 +141,14 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Static assets - cache first, network fallback
-  event.respondWith(
-    caches.match(request)
-      .then((cachedResponse) => {
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-
-        return fetch(request).then((response) => {
-          // Cache successful responses
+  // Static assets - network first for JS/CSS (to get latest code), cache first for others
+  const isCodeAsset = url.pathname.endsWith('.js') || url.pathname.endsWith('.css');
+  
+  if (isCodeAsset) {
+    // Network first for JS/CSS - ensures fresh code on deploy
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
           if (response.status === 200) {
             const responseClone = response.clone();
             caches.open(RUNTIME_CACHE).then((cache) => {
@@ -158,9 +156,29 @@ self.addEventListener('fetch', (event) => {
             });
           }
           return response;
-        });
-      })
-  );
+        })
+        .catch(() => caches.match(request))
+    );
+  } else {
+    // Cache first for images, fonts, etc.
+    event.respondWith(
+      caches.match(request)
+        .then((cachedResponse) => {
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+          return fetch(request).then((response) => {
+            if (response.status === 200) {
+              const responseClone = response.clone();
+              caches.open(RUNTIME_CACHE).then((cache) => {
+                cache.put(request, responseClone);
+              });
+            }
+            return response;
+          });
+        })
+    );
+  }
 });
 
 // Handle messages from clients
