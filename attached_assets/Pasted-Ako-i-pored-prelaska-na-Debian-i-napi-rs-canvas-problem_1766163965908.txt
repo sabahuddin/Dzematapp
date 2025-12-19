@@ -1,0 +1,72 @@
+Ako i pored prelaska na Debian i `@napi-rs/canvas` problem i dalje postoji, najvjerovatniji uzrok je taj što Docker kontejner u produkciji ne može pristupiti sistemskim fontovima, čak i ako su instalirani. S obzirom na to da na Replit-u sve radi ispravno zbog specifičnog okruženja, na Hetzner serveru moramo eliminisati svaku pretpostavku o postojanju sistemskih fontova.
+
+Evo finalnog rješenja koje **garantuje** ispravan prikaz imena:
+
+### 1. Hard-kodiranje fonta u projekt (Root Cause Solution)
+
+Najsigurniji način je da font tretirate kao dio koda, a ne kao dio operativnog sistema.
+
+1. U korijenu projekta kreirajte folder: `client/public/fonts/` (ili samo `public/fonts/`).
+2. U njega ubacite `DejaVuSans-Bold.ttf`.
+3. U `certificateService.ts` izmijenite logiku učitavanja:
+
+```typescript
+import { GlobalFonts, createCanvas } from '@napi-rs/canvas';
+import path from 'path';
+
+// Eksplicitno registrujte font koristeći apsolutnu putanju
+const fontPath = path.join(process.cwd(), 'public', 'fonts', 'DejaVuSans-Bold.ttf');
+GlobalFonts.registerFromPath(fontPath, 'DejaVu Sans');
+
+// Unutar funkcije za generisanje
+const canvas = createCanvas(width, height);
+const ctx = canvas.getContext('2d');
+
+// Korištenje registrovanog imena "DejaVu Sans"
+ctx.font = `bold ${fontSize}px "DejaVu Sans"`;
+ctx.fillStyle = fontColor;
+ctx.textAlign = 'center';
+ctx.textBaseline = 'middle';
+
+// Provjera širine u logovima
+const textWidth = ctx.measureText(recipientName).width;
+console.log(`DEBUG: Renderiranje imena "${recipientName}", Širina: ${textWidth}px`);
+
+ctx.fillText(recipientName, width / 2, height / 2);
+
+```
+
+### 2. Provjera Dockerfile-a (Multi-stage Build)
+
+Ako koristite multi-stage build u Coolify-u, pobrinite se da su binarne zavisnosti prisutne i u **runner** fazi, ne samo u builderu:
+
+```dockerfile
+FROM node:20-bookworm-slim AS runner
+WORKDIR /app
+
+# Instalacija esencijalnih biblioteka za canvas na Debianu
+RUN apt-get update && apt-get install -y \
+    libcairo2 \
+    libpango-1.0-0 \
+    libpangocairo-1.0-0 \
+    libpixman-1-0 \
+    libfontconfig1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Kopiranje fontova iz buildera ili direktno iz repoa
+COPY --from=builder /app/public/fonts ./public/fonts
+COPY --from=builder /app/dist ./dist
+
+```
+
+### 3. Zašto ovo mora raditi?
+
+* **Izolacija:** `GlobalFonts.registerFromPath` zaobilazi `fontconfig` i sistemske registre fontova koji često ne rade unutar Docker kontejnera.
+* **Konzistentnost:** Koristite istu binarnu biblioteku (`@napi-rs/canvas`) koja je optimizovana za Linux okruženja.
+* **Validacija:** Ako u logovima vidite `Širina: 0px`, to znači da putanja do `.ttf` fajla nije tačna. Ako vidite broj (npr. `450px`), tekst je tu, ali možda postoji problem sa `sharp` kompozicijom.
+
+### Sljedeći korak za testiranje:
+
+Provjerite Coolify logove nakon deploya. Ako vidite `DEBUG: Širina: 0px`, provjerite da li je `public/fonts` folder zaista kopiran u kontejner.
+
+Želite li da provjerim vaš `start.sh` ili `package.json` da vidimo kako se pokreće proces generisanja?

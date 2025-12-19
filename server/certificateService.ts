@@ -1,6 +1,27 @@
 import sharp from 'sharp';
 import path from 'path';
-import { promises as fs } from 'fs';
+import { promises as fs, readFileSync, existsSync } from 'fs';
+
+// Cache the font as Base64 to avoid repeated disk I/O
+let fontBase64Cache: string | null = null;
+
+function getFontBase64(): string {
+  if (fontBase64Cache) return fontBase64Cache;
+  
+  const fontPath = path.join(process.cwd(), 'public', 'fonts', 'DejaVuSans-Bold.ttf');
+  console.log('[Certificate] Loading font from:', fontPath);
+  
+  if (!existsSync(fontPath)) {
+    console.error('[Certificate] ❌ Font file not found at:', fontPath);
+    throw new Error(`Font file not found: ${fontPath}`);
+  }
+  
+  const fontBuffer = readFileSync(fontPath);
+  fontBase64Cache = fontBuffer.toString('base64');
+  console.log('[Certificate] ✅ Font loaded and cached, size:', fontBuffer.length, 'bytes');
+  
+  return fontBase64Cache;
+}
 
 export interface CertificateGenerationOptions {
   templateImagePath: string;
@@ -25,6 +46,9 @@ export async function generateCertificate(options: CertificateGenerationOptions)
 
   console.log(`[Certificate] ===== STARTING CERTIFICATE GENERATION =====`);
   console.log(`[Certificate] Options received:`, JSON.stringify(options, null, 2));
+
+  // Load and cache font as Base64
+  const fontBase64 = getFontBase64();
 
   // Normalize path - strip leading '/' to avoid path.join issues
   const relPath = templateImagePath.replace(/^\//, '');
@@ -60,7 +84,6 @@ export async function generateCertificate(options: CertificateGenerationOptions)
 
   // Calculate text anchor based on alignment
   let textAnchor = 'middle';
-  let xPos = textPositionX;
   if (textAlign === 'left') {
     textAnchor = 'start';
   } else if (textAlign === 'right') {
@@ -68,36 +91,35 @@ export async function generateCertificate(options: CertificateGenerationOptions)
   }
 
   console.log(`[Certificate] Drawing text: "${recipientName}"`);
-  console.log(`[Certificate] Position: (${xPos}, ${textPositionY})`);
+  console.log(`[Certificate] Position: (${textPositionX}, ${textPositionY})`);
   console.log(`[Certificate] Font size: ${fontSize}px, Color: ${fontColor}, Align: ${textAlign}`);
 
-  // Create SVG text overlay using sharp's built-in SVG support
-  // Using DejaVu Sans as it's commonly available, with fallbacks
-  const svgText = `
-    <svg width="${imageWidth}" height="${imageHeight}" xmlns="http://www.w3.org/2000/svg">
-      <style>
-        @font-face {
-          font-family: 'CertFont';
-          src: local('DejaVu Sans Bold'), local('DejaVuSans-Bold'), local('Liberation Sans Bold'), local('Arial Bold'), local('sans-serif');
-        }
-        .cert-text {
-          font-family: 'DejaVu Sans', 'Liberation Sans', 'Arial', sans-serif;
-          font-weight: bold;
-          font-size: ${fontSize}px;
-          fill: ${fontColor};
-        }
-      </style>
-      <text 
-        x="${xPos}" 
-        y="${textPositionY}" 
-        text-anchor="${textAnchor}" 
-        dominant-baseline="middle"
-        class="cert-text"
-      >${escapedName}</text>
-    </svg>
-  `;
+  // Create SVG with embedded Base64 font - this bypasses all system font dependencies
+  const svgText = `<?xml version="1.0" encoding="UTF-8"?>
+<svg width="${imageWidth}" height="${imageHeight}" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style type="text/css">
+      @font-face {
+        font-family: 'EmbeddedFont';
+        src: url('data:font/truetype;base64,${fontBase64}') format('truetype');
+        font-weight: bold;
+        font-style: normal;
+      }
+    </style>
+  </defs>
+  <text 
+    x="${textPositionX}" 
+    y="${textPositionY}" 
+    font-family="EmbeddedFont" 
+    font-size="${fontSize}px" 
+    font-weight="bold"
+    fill="${fontColor}"
+    text-anchor="${textAnchor}" 
+    dominant-baseline="middle"
+  >${escapedName}</text>
+</svg>`;
 
-  console.log(`[Certificate] SVG overlay created`);
+  console.log(`[Certificate] SVG created with embedded Base64 font`);
 
   // Convert SVG to PNG buffer
   const textOverlay = await sharp(Buffer.from(svgText))
