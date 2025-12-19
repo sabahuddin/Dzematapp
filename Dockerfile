@@ -1,5 +1,8 @@
 FROM node:20-alpine AS builder
 
+# Install build dependencies for native modules (canvas)
+RUN apk add --no-cache python3 make g++ pkgconfig cairo-dev pango-dev jpeg-dev giflib-dev librsvg-dev
+
 WORKDIR /app
 
 COPY package*.json ./
@@ -9,6 +12,9 @@ COPY . .
 RUN npm run build
 
 FROM node:20-alpine AS runner
+
+# Install runtime dependencies for canvas and fonts
+RUN apk add --no-cache cairo pango libjpeg-turbo giflib librsvg fontconfig ttf-dejavu
 
 WORKDIR /app
 
