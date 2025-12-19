@@ -64,24 +64,18 @@ export async function generateCertificate(options: CertificateGenerationOptions)
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
 
-  // Create SVG text overlay
+  // Create SVG text overlay - use only system fonts available in Alpine Linux
   const svgText = `
     <svg width="${imageWidth}" height="${imageHeight}" xmlns="http://www.w3.org/2000/svg">
-      <style>
-        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@700&amp;display=swap');
-        .name-text {
-          font-family: 'Open Sans', 'DejaVu Sans', Arial, sans-serif;
-          font-weight: bold;
-          font-size: ${fontSize}px;
-          fill: ${fontColor};
-        }
-      </style>
       <text 
         x="${textPositionX}" 
         y="${textPositionY}" 
         text-anchor="${textAnchor}" 
         dominant-baseline="middle"
-        class="name-text"
+        font-family="DejaVu Sans, sans-serif"
+        font-weight="bold"
+        font-size="${fontSize}px"
+        fill="${fontColor}"
       >${escapedName}</text>
     </svg>
   `;

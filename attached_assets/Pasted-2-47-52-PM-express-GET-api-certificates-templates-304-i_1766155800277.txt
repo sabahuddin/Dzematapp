@@ -1,0 +1,54 @@
+2:47:52 PM [express] GET /api/certificates/templates 304 in 12ms :: [{"id":"cabbf7c6-961c-4d2b-9a25-…
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[ISSUE CERTIFICATE] isSuperAdmin: false, bodyTenantId: undefined, using tenantId: default-tenant-demo
+[ISSUE CERTIFICATE] Template data: {
+"id": "2ac247fc-3538-4d6c-8c54-fea6ef7d95a6",
+"name": "Mekteb",
+"textPositionX": 580,
+"textPositionY": 401,
+"fontSize": 113,
+"fontColor": "#4CAF50",
+"textAlign": "center"
+}
+[Certificates] Processing certificate for user ed40e906-6c13-413e-b17f-a22470c98561: Zlata Zlatic
+[Certificate] ===== STARTING CERTIFICATE GENERATION =====
+[Certificate] Options received: {
+"templateImagePath": "/uploads/default-tenant-demo/certificates/certificate-template-1764861467279-c2hnzg.webp",
+"recipientName": "Zlata Zlatic",
+"textPositionX": 580,
+"textPositionY": 401,
+"fontSize": 113,
+"fontColor": "#4CAF50",
+"textAlign": "center"
+}
+[Certificate] Reading template from: /app/public/uploads/default-tenant-demo/certificates/certificate-template-1764861467279-c2hnzg.webp
+[Certificate] Template file exists
+[Certificate] Template buffer size: 71600 bytes
+[Certificate] Image dimensions: 1200x800
+[Certificate] Drawing text with SVG: "Zlata Zlatic"
+[Certificate] Position: (580, 401)
+[Certificate] Font size: 113px
+[Certificate] Color: #4CAF50, Align: center
+[Certificate] SVG buffer size: 563 bytes
+[Certificate] Final image buffer size: 364317 bytes
+[Certificate] ===== CERTIFICATE GENERATION COMPLETE =====
+[Certificates] Saved certificate for Zlata Zlatic to /uploads/default-tenant-demo/certificates/generated/certificate-ed40e906-6c13-413e-b17f-a22470c98561-1766155685889-758920686.png
+[Certificates] Created DB record for Zlata Zlatic: certId=fbfd9e42-c0a5-4fa0-9e35-bcaea18ffa66, userId=ed40e906-6c13-413e-b17f-a22470c98561, imageUrl=/uploads/default-tenant-demo/certificates/generated/certificate-ed40e906-6c13-413e-b17f-a22470c98561-1766155685889-758920686.png
+2:48:05 PM [express] POST /api/certificates/issue 201 in 164ms :: {"message":"Certificates issued su…
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
