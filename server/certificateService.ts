@@ -1,57 +1,20 @@
 import sharp from 'sharp';
-import { createCanvas, GlobalFonts } from '@napi-rs/canvas';
 import path from 'path';
-import { promises as fs, existsSync, readFileSync } from 'fs';
+import { promises as fs, existsSync } from 'fs';
+import { chromium, Browser } from 'playwright';
 
-// Font configuration
-const FONT_FAMILY = 'DzematCertFont';
-const fontPath = path.join(process.cwd(), 'public', 'fonts', 'DejaVuSans-Bold.ttf');
+let browser: Browser | null = null;
 
-// Register font using BUFFER method (more reliable in Docker)
-console.log('[Certificate] Font path:', fontPath);
-console.log('[Certificate] Font exists:', existsSync(fontPath));
-
-let fontRegistered = false;
-
-if (existsSync(fontPath)) {
-  try {
-    // Read font file into buffer
-    const fontBuffer = readFileSync(fontPath);
-    console.log('[Certificate] Font buffer size:', fontBuffer.length, 'bytes');
-    
-    // Register using buffer (more reliable than path in Docker)
-    GlobalFonts.register(fontBuffer, FONT_FAMILY);
-    console.log('[Certificate] Font registered via buffer as:', FONT_FAMILY);
-    
-    // List all registered fonts
-    const families = GlobalFonts.families.map((f: any) => f.family);
-    console.log('[Certificate] Available font families:', families.join(', '));
-    
-    // Check if our font is in the list
-    fontRegistered = families.includes(FONT_FAMILY);
-    console.log('[Certificate] Our font in list:', fontRegistered);
-    
-    // Verify font works by doing a test render
-    const testCanvas = createCanvas(200, 50);
-    const testCtx = testCanvas.getContext('2d');
-    testCtx.font = `bold 20px "${FONT_FAMILY}"`;
-    const testWidth = testCtx.measureText('TestČĆŽŠĐ').width;
-    console.log('[Certificate] Font verification - Test text width:', testWidth, 'px');
-    
-    if (testWidth === 0) {
-      console.error('[Certificate] ⚠️ WARNING: Font registered but not rendering!');
-      // Try without quotes
-      testCtx.font = `bold 20px ${FONT_FAMILY}`;
-      const testWidth2 = testCtx.measureText('Test').width;
-      console.log('[Certificate] Retry without quotes - width:', testWidth2, 'px');
-    } else {
-      console.log('[Certificate] ✅ Font working correctly');
-    }
-  } catch (e) {
-    console.error('[Certificate] ❌ Font registration error:', e);
+async function getBrowser(): Promise<Browser> {
+  if (!browser) {
+    console.log('[Certificate] Launching Chromium browser...');
+    browser = await chromium.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+    console.log('[Certificate] ✅ Chromium browser launched');
   }
-} else {
-  console.error('[Certificate] ❌ Font file not found:', fontPath);
+  return browser;
 }
 
 export interface CertificateGenerationOptions {
@@ -75,7 +38,7 @@ export async function generateCertificate(options: CertificateGenerationOptions)
     textAlign
   } = options;
 
-  console.log(`[Certificate] ===== STARTING CERTIFICATE GENERATION =====`);
+  console.log(`[Certificate] ===== STARTING CERTIFICATE GENERATION (Playwright) =====`);
   console.log(`[Certificate] Options received:`, JSON.stringify(options, null, 2));
 
   // Normalize path - strip leading '/' to avoid path.join issues
@@ -85,75 +48,104 @@ export async function generateCertificate(options: CertificateGenerationOptions)
   console.log(`[Certificate] Reading template from: ${templatePath}`);
   
   // Check if template file exists
-  try {
-    await fs.access(templatePath);
-    console.log(`[Certificate] Template file exists`);
-  } catch (e) {
+  if (!existsSync(templatePath)) {
     console.error(`[Certificate] ERROR: Template file not found at ${templatePath}`);
     throw new Error(`Template file not found: ${templatePath}`);
   }
   
-  const templateBuffer = await fs.readFile(templatePath);
-  console.log(`[Certificate] Template buffer size: ${templateBuffer.length} bytes`);
-  
   // Get template image metadata
+  const templateBuffer = await fs.readFile(templatePath);
   const metadata = await sharp(templateBuffer).metadata();
   const imageWidth = metadata.width || 1200;
   const imageHeight = metadata.height || 800;
   console.log(`[Certificate] Image dimensions: ${imageWidth}x${imageHeight}`);
 
-  // Create canvas for text overlay
-  const canvas = createCanvas(imageWidth, imageHeight);
-  const ctx = canvas.getContext('2d');
+  // Convert template to base64 for embedding in HTML
+  const templateBase64 = templateBuffer.toString('base64');
+  const mimeType = templatePath.endsWith('.webp') ? 'image/webp' : 
+                   templatePath.endsWith('.png') ? 'image/png' : 'image/jpeg';
 
-  // Clear canvas (transparent background)
-  ctx.clearRect(0, 0, imageWidth, imageHeight);
-
-  // Set up text rendering - use registered font name
-  // Note: Font is already bold, so we don't need "bold" prefix
-  ctx.font = `${fontSize}px "${FONT_FAMILY}"`;
-  ctx.fillStyle = fontColor;
-  ctx.textBaseline = 'middle';
+  // Calculate text position based on alignment
+  let textX = textPositionX;
+  let cssTextAlign = textAlign;
+  let transform = '';
   
-  // Set text alignment
   if (textAlign === 'center') {
-    ctx.textAlign = 'center';
+    transform = 'translateX(-50%)';
   } else if (textAlign === 'right') {
-    ctx.textAlign = 'right';
-  } else {
-    ctx.textAlign = 'left';
+    transform = 'translateX(-100%)';
   }
 
-  // Measure text width for debugging
-  const textMetrics = ctx.measureText(recipientName);
-  console.log(`[Certificate] Drawing text: "${recipientName}"`);
-  console.log(`[Certificate] Position: (${textPositionX}, ${textPositionY})`);
-  console.log(`[Certificate] Font: ${fontSize}px "${FONT_FAMILY}"`);
-  console.log(`[Certificate] Color: ${fontColor}, Align: ${textAlign}`);
-  console.log(`[Certificate] Text width: ${textMetrics.width}px`);
+  // Create HTML with the certificate
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+          width: ${imageWidth}px;
+          height: ${imageHeight}px;
+          overflow: hidden;
+        }
+        .container {
+          position: relative;
+          width: ${imageWidth}px;
+          height: ${imageHeight}px;
+        }
+        .template {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: ${imageWidth}px;
+          height: ${imageHeight}px;
+        }
+        .name {
+          position: absolute;
+          left: ${textX}px;
+          top: ${textPositionY}px;
+          transform: ${transform};
+          font-family: 'DejaVu Sans', 'Arial', 'Helvetica', sans-serif;
+          font-size: ${fontSize}px;
+          font-weight: bold;
+          color: ${fontColor};
+          white-space: nowrap;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <img class="template" src="data:${mimeType};base64,${templateBase64}" />
+        <div class="name">${recipientName}</div>
+      </div>
+    </body>
+    </html>
+  `;
 
-  // Draw text
-  ctx.fillText(recipientName, textPositionX, textPositionY);
+  console.log(`[Certificate] Generated HTML, launching browser...`);
 
-  // Convert canvas to PNG buffer
-  const textOverlay = canvas.toBuffer('image/png');
-  console.log(`[Certificate] Text overlay size: ${textOverlay.length} bytes`);
-
-  // Composite the text over the template
-  const finalImage = await sharp(templateBuffer)
-    .composite([
-      {
-        input: textOverlay,
-        blend: 'over'
-      }
-    ])
-    .png()
-    .toBuffer();
-
-  console.log(`[Certificate] Final image buffer size: ${finalImage.length} bytes`);
-  console.log(`[Certificate] ===== CERTIFICATE GENERATION COMPLETE =====`);
-
-  return finalImage;
+  // Use Playwright to render HTML to image
+  const browserInstance = await getBrowser();
+  const page = await browserInstance.newPage();
+  
+  try {
+    await page.setViewportSize({ width: imageWidth, height: imageHeight });
+    await page.setContent(html, { waitUntil: 'networkidle' });
+    
+    // Take screenshot
+    const screenshot = await page.screenshot({ 
+      type: 'png',
+      fullPage: false,
+      clip: { x: 0, y: 0, width: imageWidth, height: imageHeight }
+    });
+    
+    console.log(`[Certificate] Screenshot taken, size: ${screenshot.length} bytes`);
+    console.log(`[Certificate] ===== CERTIFICATE GENERATION COMPLETE =====`);
+    
+    return screenshot;
+  } finally {
+    await page.close();
+  }
 }
 
 export async function saveCertificate(certificateBuffer: Buffer, filename: string, tenantId: string): Promise<string> {
@@ -165,3 +157,10 @@ export async function saveCertificate(certificateBuffer: Buffer, filename: strin
   
   return `/uploads/${tenantId}/certificates/generated/${filename}`;
 }
+
+// Cleanup browser on process exit
+process.on('exit', async () => {
+  if (browser) {
+    await browser.close();
+  }
+});
