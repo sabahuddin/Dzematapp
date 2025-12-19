@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -29,7 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Award, Search } from "lucide-react";
+import { Award, Search, Building2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -49,6 +49,12 @@ interface CertificateTemplate {
   templateImagePath: string;
 }
 
+interface Tenant {
+  id: string;
+  name: string;
+  slug: string;
+}
+
 interface IssueCertificatesPageProps {
   hideHeader?: boolean;
 }
@@ -61,15 +67,52 @@ export default function IssueCertificatesPage({ hideHeader = false }: IssueCerti
   const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
   const [selectedTemplate, setSelectedTemplate] = useState<string>("");
   const [customMessage, setCustomMessage] = useState("");
+  const [selectedTenantId, setSelectedTenantId] = useState<string>("");
 
-  // Fetch users - SCOPED BY TENANT
-  const { data: users = [], isLoading: usersLoading } = useQuery<User[]>({
-    queryKey: ['/api/users', currentUser?.tenantId],
+  const isSuperAdmin = currentUser?.isSuperAdmin === true;
+
+  // Fetch tenants for SuperAdmin
+  const { data: tenants = [] } = useQuery<Tenant[]>({
+    queryKey: ['/api/tenants'],
+    enabled: isSuperAdmin,
   });
 
-  // Fetch templates
+  // For regular admin, use their tenant. For SuperAdmin, use selected tenant
+  const effectiveTenantId = isSuperAdmin ? selectedTenantId : currentUser?.tenantId;
+
+  // Reset selections when tenant changes
+  useEffect(() => {
+    setSelectedUsers(new Set());
+    setSelectedTemplate("");
+  }, [effectiveTenantId]);
+
+  // Fetch users - SCOPED BY EFFECTIVE TENANT
+  // SuperAdmin needs to pass tenantId as query param to get users from specific tenant
+  const { data: users = [], isLoading: usersLoading } = useQuery<User[]>({
+    queryKey: ['/api/users', effectiveTenantId],
+    queryFn: async () => {
+      const url = isSuperAdmin && effectiveTenantId 
+        ? `/api/users?tenantId=${effectiveTenantId}`
+        : '/api/users';
+      const res = await fetch(url, { credentials: 'include' });
+      if (!res.ok) throw new Error('Failed to fetch users');
+      return res.json();
+    },
+    enabled: !!effectiveTenantId,
+  });
+
+  // Fetch templates - SCOPED BY EFFECTIVE TENANT
   const { data: templates = [], isLoading: templatesLoading } = useQuery<CertificateTemplate[]>({
-    queryKey: ['/api/certificates/templates'],
+    queryKey: ['/api/certificates/templates', effectiveTenantId],
+    queryFn: async () => {
+      const url = isSuperAdmin && effectiveTenantId 
+        ? `/api/certificates/templates?tenantId=${effectiveTenantId}`
+        : '/api/certificates/templates';
+      const res = await fetch(url, { credentials: 'include' });
+      if (!res.ok) throw new Error('Failed to fetch templates');
+      return res.json();
+    },
+    enabled: !!effectiveTenantId,
   });
 
   // Issue certificates mutation
@@ -81,11 +124,15 @@ export default function IssueCertificatesPage({ hideHeader = false }: IssueCerti
       if (selectedUsers.size === 0) {
         throw new Error("Nije izabran nijedan korisnik");
       }
+      if (!effectiveTenantId) {
+        throw new Error("Tenant nije izabran");
+      }
 
       return apiRequest('/api/certificates/issue', 'POST', {
         templateId: selectedTemplate,
         userIds: Array.from(selectedUsers),
         customMessage: customMessage || null,
+        tenantId: isSuperAdmin ? effectiveTenantId : undefined,
       });
     },
     onSuccess: (data: any) => {
@@ -96,6 +143,7 @@ export default function IssueCertificatesPage({ hideHeader = false }: IssueCerti
       setSelectedUsers(new Set());
       setSelectedTemplate("");
       setCustomMessage("");
+      queryClient.invalidateQueries({ queryKey: ['/api/certificates'] });
     },
     onError: (error: Error) => {
       toast({
@@ -134,12 +182,75 @@ export default function IssueCertificatesPage({ hideHeader = false }: IssueCerti
     user.email?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Filter out SuperAdmin tenant from the list
+  const availableTenants = tenants.filter(t => t.id !== 'tenant-superadmin-global');
+
+  // Show tenant selector for SuperAdmin
+  if (isSuperAdmin && !selectedTenantId) {
+    return (
+      <div className={hideHeader ? "space-y-6" : "container mx-auto p-6 space-y-6"}>
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Building2 className="h-5 w-5" />
+              Izbor Džemata
+            </CardTitle>
+            <CardDescription>
+              Kao SuperAdmin, prvo izaberite džemat za koji želite izdati zahvalnice
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Džemat</label>
+              <Select value={selectedTenantId} onValueChange={setSelectedTenantId}>
+                <SelectTrigger data-testid="select-tenant">
+                  <SelectValue placeholder="Izaberite džemat" />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableTenants.map((tenant) => (
+                    <SelectItem key={tenant.id} value={tenant.id}>
+                      {tenant.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   if (usersLoading || templatesLoading) {
     return <div className="p-8">Učitavanje...</div>;
   }
 
   return (
     <div className={hideHeader ? "space-y-6" : "container mx-auto p-6 space-y-6"}>
+      {/* Tenant indicator for SuperAdmin */}
+      {isSuperAdmin && selectedTenantId && (
+        <Card className="bg-blue-50 border-blue-200">
+          <CardContent className="py-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Building2 className="h-4 w-4 text-blue-600" />
+                <span className="text-sm font-medium text-blue-800">
+                  Izdajete zahvalnice za: {availableTenants.find(t => t.id === selectedTenantId)?.name}
+                </span>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => setSelectedTenantId("")}
+                data-testid="button-change-tenant"
+              >
+                Promijeni džemat
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Template Selection */}
       <Card>
         <CardHeader>

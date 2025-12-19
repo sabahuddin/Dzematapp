@@ -1706,16 +1706,28 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   app.get("/api/users", requireAuth, async (req, res) => {
     try {
       const session = req.session as any;
+      const isSuperAdmin = session.isSuperAdmin === true;
+      const queryTenantId = req.query.tenantId as string | undefined;
+      
       console.log("[GET /api/users] DEBUG:", {
         "req.user.tenantId": req.user?.tenantId,
         "session.tenantId": session.tenantId,
         "req.tenantId": req.tenantId,
+        "queryTenantId": queryTenantId,
+        "isSuperAdmin": isSuperAdmin,
         "username": req.user?.username,
         "userId": req.user?.id
       });
       
-      // CRITICAL: Use session.tenantId as authoritative source
-      const tenantId = session.tenantId || req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      // SuperAdmin can specify any tenant via query parameter
+      let tenantId: string;
+      if (isSuperAdmin && queryTenantId) {
+        tenantId = queryTenantId;
+        console.log("[GET /api/users] SuperAdmin accessing tenant:", tenantId);
+      } else {
+        // Regular users: use session.tenantId as authoritative source
+        tenantId = session.tenantId || req.user?.tenantId || req.tenantId || "default-tenant-demo";
+      }
       console.log("[GET /api/users] Using tenantId:", tenantId);
       
       const users = await storage.getAllUsers(tenantId);
@@ -5816,7 +5828,15 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   // Certificate Templates Routes (Zahvalnice)
   app.get("/api/certificates/templates", requireAdmin, requireFeature("certificates"), async (req, res) => {
     try {
-      const templates = await storage.getAllCertificateTemplates(req.user!.tenantId);
+      const session = req.session as any;
+      const isSuperAdmin = session.isSuperAdmin === true;
+      const queryTenantId = req.query.tenantId as string | undefined;
+      
+      // SuperAdmin can specify any tenant via query parameter
+      const tenantId = (isSuperAdmin && queryTenantId) ? queryTenantId : req.user!.tenantId;
+      console.log(`[GET /api/certificates/templates] isSuperAdmin: ${isSuperAdmin}, queryTenantId: ${queryTenantId}, using tenantId: ${tenantId}`);
+      
+      const templates = await storage.getAllCertificateTemplates(tenantId);
       res.json(templates);
     } catch (error) {
       console.error('Error getting certificate templates:', error);
@@ -5953,8 +5973,13 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
 
   app.post("/api/certificates/issue", requireAdmin, requireFeature("certificates"), async (req, res) => {
     try {
-      const { templateId, userIds, customMessage } = req.body;
-      const tenantId = req.user!.tenantId;
+      const session = req.session as any;
+      const isSuperAdmin = session.isSuperAdmin === true;
+      const { templateId, userIds, customMessage, tenantId: bodyTenantId } = req.body;
+      
+      // SuperAdmin can specify tenant in body, otherwise use session tenant
+      const tenantId = (isSuperAdmin && bodyTenantId) ? bodyTenantId : req.user!.tenantId;
+      console.log(`[ISSUE CERTIFICATE] isSuperAdmin: ${isSuperAdmin}, bodyTenantId: ${bodyTenantId}, using tenantId: ${tenantId}`);
       
       if (!templateId || !userIds || !Array.isArray(userIds) || userIds.length === 0) {
         return res.status(400).json({ message: "Template ID and user IDs are required" });
