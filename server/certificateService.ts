@@ -1,21 +1,12 @@
+import { Resvg } from '@resvg/resvg-js';
 import sharp from 'sharp';
 import path from 'path';
 import { promises as fs, existsSync } from 'fs';
-import { chromium, Browser } from 'playwright';
 
-let browser: Browser | null = null;
-
-async function getBrowser(): Promise<Browser> {
-  if (!browser) {
-    console.log('[Certificate] Launching Chromium browser...');
-    browser = await chromium.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
-    });
-    console.log('[Certificate] ✅ Chromium browser launched');
-  }
-  return browser;
-}
+// Font path
+const fontPath = path.join(process.cwd(), 'public', 'fonts', 'DejaVuSans-Bold.ttf');
+console.log('[Certificate] Font path:', fontPath);
+console.log('[Certificate] Font exists:', existsSync(fontPath));
 
 export interface CertificateGenerationOptions {
   templateImagePath: string;
@@ -38,7 +29,7 @@ export async function generateCertificate(options: CertificateGenerationOptions)
     textAlign
   } = options;
 
-  console.log(`[Certificate] ===== STARTING CERTIFICATE GENERATION (Playwright) =====`);
+  console.log(`[Certificate] ===== STARTING CERTIFICATE GENERATION (resvg) =====`);
   console.log(`[Certificate] Options received:`, JSON.stringify(options, null, 2));
 
   // Normalize path - strip leading '/' to avoid path.join issues
@@ -60,92 +51,75 @@ export async function generateCertificate(options: CertificateGenerationOptions)
   const imageHeight = metadata.height || 800;
   console.log(`[Certificate] Image dimensions: ${imageWidth}x${imageHeight}`);
 
-  // Convert template to base64 for embedding in HTML
-  const templateBase64 = templateBuffer.toString('base64');
-  const mimeType = templatePath.endsWith('.webp') ? 'image/webp' : 
-                   templatePath.endsWith('.png') ? 'image/png' : 'image/jpeg';
-
-  // Calculate text position based on alignment
-  let textX = textPositionX;
-  let cssTextAlign = textAlign;
-  let transform = '';
-  
-  if (textAlign === 'center') {
-    transform = 'translateX(-50%)';
+  // Determine text-anchor based on alignment
+  let textAnchor = 'middle';
+  if (textAlign === 'left') {
+    textAnchor = 'start';
   } else if (textAlign === 'right') {
-    transform = 'translateX(-100%)';
+    textAnchor = 'end';
   }
 
-  // Create HTML with the certificate
-  const html = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-          width: ${imageWidth}px;
-          height: ${imageHeight}px;
-          overflow: hidden;
-        }
-        .container {
-          position: relative;
-          width: ${imageWidth}px;
-          height: ${imageHeight}px;
-        }
-        .template {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: ${imageWidth}px;
-          height: ${imageHeight}px;
-        }
-        .name {
-          position: absolute;
-          left: ${textX}px;
-          top: ${textPositionY}px;
-          transform: ${transform};
-          font-family: 'DejaVu Sans', 'Arial', 'Helvetica', sans-serif;
-          font-size: ${fontSize}px;
-          font-weight: bold;
-          color: ${fontColor};
-          white-space: nowrap;
-        }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <img class="template" src="data:${mimeType};base64,${templateBase64}" />
-        <div class="name">${recipientName}</div>
-      </div>
-    </body>
-    </html>
-  `;
+  // Escape special characters for XML
+  const escapedName = recipientName
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
 
-  console.log(`[Certificate] Generated HTML, launching browser...`);
+  // Create SVG with text
+  const svg = `
+    <svg width="${imageWidth}" height="${imageHeight}" xmlns="http://www.w3.org/2000/svg">
+      <text 
+        x="${textPositionX}" 
+        y="${textPositionY}" 
+        font-family="DejaVuSans" 
+        font-size="${fontSize}" 
+        fill="${fontColor}" 
+        text-anchor="${textAnchor}" 
+        dominant-baseline="middle"
+        font-weight="bold"
+      >${escapedName}</text>
+    </svg>`;
 
-  // Use Playwright to render HTML to image
-  const browserInstance = await getBrowser();
-  const page = await browserInstance.newPage();
-  
-  try {
-    await page.setViewportSize({ width: imageWidth, height: imageHeight });
-    await page.setContent(html, { waitUntil: 'networkidle' });
-    
-    // Take screenshot
-    const screenshot = await page.screenshot({ 
-      type: 'png',
-      fullPage: false,
-      clip: { x: 0, y: 0, width: imageWidth, height: imageHeight }
-    });
-    
-    console.log(`[Certificate] Screenshot taken, size: ${screenshot.length} bytes`);
-    console.log(`[Certificate] ===== CERTIFICATE GENERATION COMPLETE =====`);
-    
-    return screenshot;
-  } finally {
-    await page.close();
+  console.log(`[Certificate] Created SVG for text rendering`);
+  console.log(`[Certificate] Font file path: ${fontPath}`);
+
+  // Check font exists
+  if (!existsSync(fontPath)) {
+    console.error(`[Certificate] ERROR: Font file not found at ${fontPath}`);
+    throw new Error(`Font file not found: ${fontPath}`);
   }
+
+  // Render SVG to PNG using resvg with custom font
+  const resvg = new Resvg(svg, {
+    font: {
+      fontFiles: [fontPath],
+      defaultFontFamily: 'DejaVuSans',
+      loadSystemFonts: false,
+    },
+  });
+
+  const pngData = resvg.render();
+  const textOverlay = pngData.asPng();
+  console.log(`[Certificate] Text overlay rendered, size: ${textOverlay.length} bytes`);
+
+  // Composite the text over the template
+  const finalImage = await sharp(templateBuffer)
+    .composite([
+      {
+        input: textOverlay,
+        top: 0,
+        left: 0
+      }
+    ])
+    .png()
+    .toBuffer();
+
+  console.log(`[Certificate] Final image buffer size: ${finalImage.length} bytes`);
+  console.log(`[Certificate] ===== CERTIFICATE GENERATION COMPLETE =====`);
+
+  return finalImage;
 }
 
 export async function saveCertificate(certificateBuffer: Buffer, filename: string, tenantId: string): Promise<string> {
@@ -157,10 +131,3 @@ export async function saveCertificate(certificateBuffer: Buffer, filename: strin
   
   return `/uploads/${tenantId}/certificates/generated/${filename}`;
 }
-
-// Cleanup browser on process exit
-process.on('exit', async () => {
-  if (browser) {
-    await browser.close();
-  }
-});

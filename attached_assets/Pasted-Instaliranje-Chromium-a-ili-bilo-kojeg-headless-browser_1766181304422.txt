@@ -1,0 +1,74 @@
+Instaliranje Chromium-a (ili bilo kojeg headless browsera kao što je Playwright ili Puppeteer) unutar Dockera je legitiman "plan B". To bi značilo da odustaješ od direktnog crtanja na serveru i umjesto toga koristiš browser da renderuje mali komad HTML/CSS-a (koji sigurno prikazuje fontove) i uslika ga (screenshot).
+
+Međutim, to bi dramatično povećalo tvoj Docker image (za oko 300-500 MB) i usporilo generisanje jer browser troši puno RAM-a.
+
+Prije nego što pređeš na tu tešku artiljeriju, evo rješenja koje je "zlatna sredina" i koje rješava problem 0 px širine u Dockeru bez instalacije Chromium-a.
+
+✅ Rješenje: Prelazak na @resvg/resvg-js
+Kao što je pomenuto u tvojoj dokumentaciji pod "Alternativna rješenja", resvg je superioran jer ima sopstveni engine za procesiranje fontova koji ne zavisi od sistemskih biblioteka kao što su fontconfig ili pango.
+
+Zašto ovo radi? sharp i canvas u Dockeru često ne vide fontove jer Linux okruženje ne dozvoljava pristup sistemskim "registrima" fontova. resvg ti dozvoljava da mu bukvalno predaš .ttf fajl i kažeš: "Koristi ovo unutar ovog SVG-a".
+
+Korak 1: Instaliraj biblioteku
+Bash
+npm install @resvg/resvg-js
+Korak 2: Implementacija u certificateService.ts
+TypeScript
+import { Resvg } from '@resvg/resvg-js';
+import sharp from 'sharp';
+import path from 'path';
+
+export async function generateCertificate(options: any) {
+    const { templateImagePath, recipientName, fontSize, fontColor, textPositionX, textPositionY } = options;
+
+    // 1. Definišemo SVG sa tvojim parametrima
+    // Pazi: Ime fonta ovdje stavljamo kao "CustomFont"
+    const svg = `
+    <svg width="1200" height="800" xmlns="http://www.w3.org/2000/svg">
+      <text 
+        x="${textPositionX}" 
+        y="${textPositionY}" 
+        font-family="CustomFont" 
+        font-size="${fontSize}" 
+        fill="${fontColor}" 
+        text-anchor="middle" 
+        dominant-baseline="middle"
+        font-weight="bold"
+      >
+        ${recipientName}
+      </text>
+    </svg>`;
+
+    // 2. Konfiguracija resvg-a sa TVOJIM .ttf fajlom
+    const resvg = new Resvg(svg, {
+        font: {
+            fontFiles: [path.join(process.cwd(), 'public/fonts/DejaVuSans-Bold.ttf')],
+            defaultFontFamily: 'CustomFont',
+            loadSystemFonts: false, // KLJUČNO: Ne oslanjaj se na Docker sistem
+        },
+    });
+
+    // 3. Renderuj SVG u PNG buffer
+    const pngData = resvg.render();
+    const pngBuffer = pngData.asPng();
+
+    // 4. Zalijepi preko template-a pomoću sharp-a
+    const fullTemplatePath = path.join(process.cwd(), 'public', templateImagePath);
+    
+    return await sharp(fullTemplatePath)
+        .composite([{ input: pngBuffer, top: 0, left: 0 }])
+        .png()
+        .toBuffer();
+}
+🛠 Šta dobijaš ovim pristupom?
+Nema više 0 px: resvg ne koristi sistemski pretraživač fontova, već direktno čita tvoj .ttf fajl.
+Lagan Image: Docker image ostaje mali jer ti ne treba Chromium.
+Performanse: Ovo je mnogo brže od podizanja Chromium-a za svaku zahvalnicu.
+Dodatni savjet za Bazu Podataka
+Dok ovo rješavaš, jesi li provjerio tabelu page_views? Logovi su pokazali da ti fali kolona site. Ako koristiš PostgreSQL (Neon) kao što piše u dokumentaciji, možeš u terminalu (ili Neon konzoli) pokrenuti:
+
+SQL
+ALTER TABLE page_views ADD COLUMN site TEXT;
+Ovo će popraviti 500 error koji ti se stalno pojavljuje u logovima pri svakom učitavanju stranice.
+
+Šta misliš o ovom resvg rješenju? Čini se kao najsigurniji put bez komplikovanja Docker image-a sa Chromium-om.
