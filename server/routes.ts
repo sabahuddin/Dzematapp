@@ -5828,15 +5828,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
   // Certificate Templates Routes (Zahvalnice)
   app.get("/api/certificates/templates", requireAdmin, requireFeature("certificates"), async (req, res) => {
     try {
-      const session = req.session as any;
-      const isSuperAdmin = session.isSuperAdmin === true;
-      const queryTenantId = req.query.tenantId as string | undefined;
-      
-      // SuperAdmin can specify any tenant via query parameter
-      const tenantId = (isSuperAdmin && queryTenantId) ? queryTenantId : req.user!.tenantId;
-      console.log(`[GET /api/certificates/templates] isSuperAdmin: ${isSuperAdmin}, queryTenantId: ${queryTenantId}, using tenantId: ${tenantId}`);
-      
-      const templates = await storage.getAllCertificateTemplates(tenantId);
+      const templates = await storage.getAllCertificateTemplates(req.user!.tenantId);
       res.json(templates);
     } catch (error) {
       console.error('Error getting certificate templates:', error);
