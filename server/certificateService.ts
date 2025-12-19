@@ -4,44 +4,33 @@ import path from 'path';
 import { promises as fs } from 'fs';
 import { existsSync } from 'fs';
 
-// Initialize font registration
-let fontInitialized = false;
+// Font name constant
+const FONT_NAME = 'CertificateFont';
+let fontRegistered = false;
 
-function initializeFont(): string {
-  if (fontInitialized) return 'DejaVu Sans';
+// Register embedded font at module load
+function ensureFontRegistered(): void {
+  if (fontRegistered) return;
   
-  console.log('[Certificate] Initializing fonts...');
-  console.log('[Certificate] Available fonts:', GlobalFonts.families.map((f: any) => f.family).join(', '));
+  // Use font embedded in the project - this is the most reliable approach
+  const embeddedFontPath = path.join(process.cwd(), 'public', 'fonts', 'DejaVuSans-Bold.ttf');
   
-  // Try to register custom font
-  const fontPaths = [
-    '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',
-    '/usr/share/fonts/dejavu/DejaVuSans-Bold.ttf',
-    path.join(process.cwd(), 'public', 'fonts', 'DejaVuSans-Bold.ttf'),
-  ];
+  console.log('[Certificate] Registering embedded font from:', embeddedFontPath);
   
-  for (const fontPath of fontPaths) {
-    if (existsSync(fontPath)) {
-      try {
-        GlobalFonts.registerFromPath(fontPath, 'CertificateFont');
-        console.log(`[Certificate] ✅ Registered font from: ${fontPath}`);
-        fontInitialized = true;
-        return 'CertificateFont';
-      } catch (e) {
-        console.log(`[Certificate] Failed to register ${fontPath}:`, e);
-      }
+  if (existsSync(embeddedFontPath)) {
+    try {
+      GlobalFonts.registerFromPath(embeddedFontPath, FONT_NAME);
+      console.log('[Certificate] ✅ Font registered successfully:', FONT_NAME);
+      fontRegistered = true;
+    } catch (e) {
+      console.error('[Certificate] ❌ Failed to register font:', e);
     }
+  } else {
+    console.error('[Certificate] ❌ Font file not found at:', embeddedFontPath);
   }
   
-  // Use available system font
-  const availableFonts = GlobalFonts.families.map((f: any) => f.family);
-  if (availableFonts.includes('DejaVu Sans')) {
-    fontInitialized = true;
-    return 'DejaVu Sans';
-  }
-  
-  fontInitialized = true;
-  return 'sans-serif';
+  // Log available fonts for debugging
+  console.log('[Certificate] Available fonts:', GlobalFonts.families.map((f: any) => f.family).join(', '));
 }
 
 export interface CertificateGenerationOptions {
@@ -68,9 +57,8 @@ export async function generateCertificate(options: CertificateGenerationOptions)
   console.log(`[Certificate] ===== STARTING CERTIFICATE GENERATION =====`);
   console.log(`[Certificate] Options received:`, JSON.stringify(options, null, 2));
 
-  // Initialize font
-  const fontFamily = initializeFont();
-  console.log(`[Certificate] Using font family: ${fontFamily}`);
+  // Ensure font is registered
+  ensureFontRegistered();
 
   // Normalize path - strip leading '/' to avoid path.join issues
   const relPath = templateImagePath.replace(/^\//, '');
@@ -103,8 +91,8 @@ export async function generateCertificate(options: CertificateGenerationOptions)
   // Clear canvas (transparent background)
   ctx.clearRect(0, 0, imageWidth, imageHeight);
 
-  // Set up text rendering
-  ctx.font = `bold ${fontSize}px "${fontFamily}"`;
+  // Set up text rendering with embedded font
+  ctx.font = `bold ${fontSize}px "${FONT_NAME}"`;
   ctx.fillStyle = fontColor;
   ctx.textBaseline = 'middle';
   
@@ -119,7 +107,7 @@ export async function generateCertificate(options: CertificateGenerationOptions)
 
   console.log(`[Certificate] Drawing text: "${recipientName}"`);
   console.log(`[Certificate] Position: (${textPositionX}, ${textPositionY})`);
-  console.log(`[Certificate] Font: bold ${fontSize}px "${fontFamily}"`);
+  console.log(`[Certificate] Font: bold ${fontSize}px "${FONT_NAME}"`);
   console.log(`[Certificate] Color: ${fontColor}, Align: ${textAlign}`);
 
   // Draw text

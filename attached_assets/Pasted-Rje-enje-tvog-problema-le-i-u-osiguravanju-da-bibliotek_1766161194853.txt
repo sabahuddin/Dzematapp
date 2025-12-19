@@ -1,0 +1,41 @@
+Rješenje tvog problema leži u osiguravanju da biblioteka za renderiranje ima direktan pristup fontu unutar izolovanog Docker okruženja. Prelazak na Debian Bookworm Slim je bio odličan prvi korak jer Alpine Linux često ima problema sa kompleksnim binarnim zavisnostima poput onih koje zahtijevaju sharp i canvas.
+
+Evo najsigurnijeg rješenja koje će eliminisati zavisnost od sistemskih fontova servera:
+
+1. Eksplicitno učitavanje fonta iz projekta (Preporučeno)
+Umjesto da se oslanjaš na fontove instalirane u OS-u, ugradi font direktno u svoj repozitorij. Ovo garantuje da će canvas uvijek pronaći font, bez obzira na to gdje se aplikacija vrti.
+
+Koraci:
+Kreiraj folder public/fonts/ i u njega stavi DejaVuSans-Bold.ttf.
+U certificateService.ts koristi GlobalFonts.registerFromPath:
+TypeScript
+import { GlobalFonts, createCanvas } from '@napi-rs/canvas';
+import path from 'path';
+
+// Registruj font eksplicitno pri pokretanju servisa
+const fontPath = path.join(process.cwd(), 'public', 'fonts', 'DejaVuSans-Bold.ttf');
+GlobalFonts.registerFromPath(fontPath, 'DejaVu Sans'); 
+
+// Kasnije u kodu za crtanje:
+ctx.font = `bold ${fontSize}px "DejaVu Sans"`;
+ctx.textAlign = 'center';
+ctx.fillText(recipientName, width / 2, height / 2);
+2. Zašto je Debian bolji izbor u tvom slučaju?
+Problem sa Alpine Linuxom je što koristi musl libc, dok većina prekompiliranih binarnih datoteka (uključujući sharp i @napi-rs/canvas) očekuje glibc.
+Replit koristi NixOS (glibc), zato ti je tamo radilo.
+Debian koristi glibc, što znači da će se binarne biblioteke ponašati predvidivo i moći će koristiti fontconfig i pango za pravilno iscrtavanje teksta.
+3. Provjera u Dockerfile-u
+Provjeri da li tvoj Dockerfile ispravno instalira biblioteke potrebne za canvas na Debianu:
+
+Dockerfile
+# U runner fazi dodaj ove zavisnosti za Debian
+RUN apt-get update && apt-get install -y \
+    libcairo2 \
+    libpango-1.0-0 \
+    libpangocairo-1.0-0 \
+    libpixman-1-0 \
+    && rm -rf /var/lib/apt/lists/*
+Šta je tvoj sljedeći korak?
+Najbrže ćeš znati da li je problem riješen ako u logove dodaš ispis širine teksta. Ako ctx.measureText(recipientName).width vrati vrijednost veću od 0, font je uspješno učitan i tekst će biti vidljiv na slici.
+
+Moja preporuka: Idi sa opcijom 1 (ugrađeni font) jer je to najotpornija metoda za SaaS aplikacije koje se sele sa servera na server.
