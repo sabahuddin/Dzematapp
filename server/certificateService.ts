@@ -1,4 +1,3 @@
-import { Resvg } from '@resvg/resvg-js';
 import sharp from 'sharp';
 import path from 'path';
 import { promises as fs, existsSync } from 'fs';
@@ -29,7 +28,7 @@ export async function generateCertificate(options: CertificateGenerationOptions)
     textAlign
   } = options;
 
-  console.log(`[Certificate] ===== STARTING CERTIFICATE GENERATION (resvg) =====`);
+  console.log(`[Certificate] ===== STARTING CERTIFICATE GENERATION (sharp text) =====`);
   console.log(`[Certificate] Options received:`, JSON.stringify(options, null, 2));
 
   // Normalize path - strip leading '/' to avoid path.join issues
@@ -51,79 +50,48 @@ export async function generateCertificate(options: CertificateGenerationOptions)
   const imageHeight = metadata.height || 800;
   console.log(`[Certificate] Image dimensions: ${imageWidth}x${imageHeight}`);
 
-  // Determine text-anchor based on alignment
-  let textAnchor = 'middle';
-  if (textAlign === 'left') {
-    textAnchor = 'start';
-  } else if (textAlign === 'right') {
-    textAnchor = 'end';
-  }
-
-  // Escape special characters for XML
-  const escapedName = recipientName
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
-
-  // Check font exists first
+  // Check font exists
   if (!existsSync(fontPath)) {
     console.error(`[Certificate] ERROR: Font file not found at ${fontPath}`);
     throw new Error(`Font file not found: ${fontPath}`);
   }
+  console.log(`[Certificate] Using font: ${fontPath}`);
 
-  // Read font file and convert to base64 for embedding in SVG
-  const fontBuffer = await fs.readFile(fontPath);
-  const fontBase64 = fontBuffer.toString('base64');
-  console.log(`[Certificate] Font file: ${fontPath}, size: ${fontBuffer.length} bytes`);
+  // Use sharp's text() to create text image with custom font
+  // sharp uses libvips which has Pango/fontconfig support
+  const textImage = await sharp({
+    text: {
+      text: `<span foreground="${fontColor}" size="${fontSize * 1000}">${recipientName}</span>`,
+      font: 'DejaVu Sans Bold',
+      fontfile: fontPath,
+      rgba: true,
+      dpi: 300,
+    }
+  }).png().toBuffer();
 
-  // Create SVG with embedded font as base64 data URI
-  const svg = `<svg width="${imageWidth}" height="${imageHeight}" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <style type="text/css">
-      @font-face {
-        font-family: 'CertFont';
-        src: url('data:font/truetype;base64,${fontBase64}') format('truetype');
-        font-weight: bold;
-        font-style: normal;
-      }
-    </style>
-  </defs>
-  <text 
-    x="${textPositionX}" 
-    y="${textPositionY}" 
-    font-family="CertFont" 
-    font-size="${fontSize}" 
-    fill="${fontColor}" 
-    text-anchor="${textAnchor}" 
-    dominant-baseline="middle"
-    font-weight="bold"
-  >${escapedName}</text>
-</svg>`;
+  const textMeta = await sharp(textImage).metadata();
+  console.log(`[Certificate] Text image created: ${textMeta.width}x${textMeta.height}, size: ${textImage.length} bytes`);
 
-  console.log(`[Certificate] SVG with embedded font created, SVG length: ${svg.length}`);
+  // Calculate position based on alignment
+  let left = textPositionX;
+  if (textAlign === 'center' && textMeta.width) {
+    left = textPositionX - Math.floor(textMeta.width / 2);
+  } else if (textAlign === 'right' && textMeta.width) {
+    left = textPositionX - textMeta.width;
+  }
 
-  // Render SVG to PNG using resvg - font is embedded in SVG
-  const resvg = new Resvg(svg, {
-    font: {
-      loadSystemFonts: false,
-    },
-  });
-  
-  console.log(`[Certificate] Resvg rendering with embedded font...`);
+  // Adjust top position (textPositionY is baseline, we need top-left)
+  const top = textPositionY - Math.floor((textMeta.height || fontSize) / 2);
 
-  const pngData = resvg.render();
-  const textOverlay = pngData.asPng();
-  console.log(`[Certificate] Text overlay size: ${textOverlay.length} bytes`);
+  console.log(`[Certificate] Compositing at position: left=${left}, top=${top}`);
 
   // Composite the text over the template
   const finalImage = await sharp(templateBuffer)
     .composite([
       {
-        input: textOverlay,
-        top: 0,
-        left: 0
+        input: textImage,
+        top: Math.max(0, top),
+        left: Math.max(0, left),
       }
     ])
     .png()

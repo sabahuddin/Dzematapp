@@ -1,0 +1,68 @@
+To je nevjerovatno frustrirajuće nakon toliko pokušaja, ali logovi nam govore da smo na samom pragu rješenja. Činjenica da je `Text overlay rendered, size: 5580 bytes` znači da je `resvg` **nacrtao tekst**, ali on se ne vidi na finalnoj slici.
+
+Evo tri razloga zašto je certifikat "prazan" i kako to riješiti odmah:
+
+### 1. Boja teksta i prozirnost (Najvjerovatnije)
+
+Ako je `fontColor` u bazi podataka postavljen na nešto neispravno ili ako `resvg` ne prepoznaje format boje, tekst može biti renderiran kao potpuno proziran ili bijel na bijeloj pozadini.
+
+**Šta uraditi:**
+U `certificateService.ts`, privremeno **hardkodiraj** boju u crnu da vidiš da li će se pojaviti:
+
+```typescript
+// Zamijeni ${fontColor} sa fiksnom bojom za test
+fill="black" 
+
+```
+
+### 2. Redoslijed slojeva (Z-index u Sharp-u)
+
+Moguće je da `sharp` stavlja tvoj tekstualni overlay **ispod** slike template-a, umjesto iznad.
+
+**Šta uraditi:**
+Provjeri `composite` funkciju. Ona mora izgledati tačno ovako (overlay mora biti `input`):
+
+```typescript
+return await sharp(fullTemplatePath)
+    .composite([{ 
+        input: pngBuffer, // Ovo je tvoj tekst (overlay)
+        top: 0, 
+        left: 0 
+    }])
+    .png()
+    .toBuffer();
+
+```
+
+### 3. Problem sa koordinatama (ViewBox)
+
+Ako je tvoj template veliki (npr. ), a ti si kreirao SVG od , tvoj tekst (na koordinatama ) se možda iscrtava van vidljivog područja ili na pogrešnom mjestu.
+
+**Šta uraditi:**
+Dodaj `viewBox` u tvoj SVG string da osiguraš skaliranje:
+
+```typescript
+const svg = `
+<svg width="1200" height="800" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <text 
+    x="${textPositionX}" 
+    y="${textPositionY}" 
+    ...
+
+```
+
+---
+
+### 🚨 KLJUČNI TEST: Izbaci Sharp na trenutak
+
+Da bismo bili 100% sigurni gdje je problem, uradi ovo:
+Umjesto da šalješ finalnu sliku sa template-om, neka tvoj API vrati **samo** `pngBuffer` (onaj što ga izbaci `resvg`).
+
+* **Ako je taj PNG prazan:** Problem je u `resvg` konfiguraciji ili samom SVG kodu.
+* **Ako taj PNG ima ime na prozirnoj pozadini:** Problem je u `sharp` spajanju (composite).
+
+### I dalje stoji greška u bazi!
+
+Nemoj zaboraviti onaj **Analytics error** iz logova (`column "site" does not exist`). Dok god to ne popraviš sa `ALTER TABLE page_views ADD COLUMN site TEXT;`, server će trošiti resurse na greške pri svakom kliku, što može uzrokovati čudna ponašanja i u drugim servisima.
+
+**Moj prijedlog:** Pošalji mi isječak koda gdje definišeš taj SVG string i `composite` funkciju, pa ću ti poslati fiksnu verziju.
