@@ -7,24 +7,41 @@ import { fileURLToPath } from 'url';
 
 // Register custom font for certificate text rendering
 let fontRegistered = false;
-let fontFamily = 'sans-serif'; // Default fallback
+let fontFamily = 'DejaVu Sans'; // Use system font installed in Alpine
 
 function registerFont() {
   if (fontRegistered) return fontFamily;
   
-  // Try to register custom font
+  console.log('[Certificate] Current working directory:', process.cwd());
+  
+  // List available system fonts
+  const availableFonts = GlobalFonts.families.map((f: any) => f.family);
+  console.log('[Certificate] Available font families:', availableFonts.join(', '));
+  
+  // Priority list of fonts to try (system fonts in Alpine + custom)
+  const fontPriority = ['DejaVu Sans', 'DejaVuSans', 'Liberation Sans', 'Arial', 'sans-serif'];
+  
+  // Check if any preferred font is available
+  for (const preferredFont of fontPriority) {
+    if (availableFonts.some((f: string) => f.toLowerCase().includes(preferredFont.toLowerCase()))) {
+      fontFamily = preferredFont;
+      console.log(`[Certificate] ✅ Using system font: ${fontFamily}`);
+      fontRegistered = true;
+      return fontFamily;
+    }
+  }
+  
+  // Try to register custom font as fallback
   const possiblePaths = [
     path.join(process.cwd(), 'public', 'fonts', 'DejaVuSans-Bold.ttf'),
     '/app/public/fonts/DejaVuSans-Bold.ttf',
-    path.join(process.cwd(), 'server', 'fonts', 'DejaVuSans-Bold.ttf'),
-    '/home/runner/workspace/public/fonts/DejaVuSans-Bold.ttf',
+    '/usr/share/fonts/ttf-dejavu/DejaVuSans-Bold.ttf',
+    '/usr/share/fonts/dejavu/DejaVuSans-Bold.ttf',
   ];
   
-  console.log('[Certificate] Current working directory:', process.cwd());
-  console.log('[Certificate] Checking font paths:', possiblePaths);
+  console.log('[Certificate] Checking custom font paths:', possiblePaths);
   
   for (const fontPath of possiblePaths) {
-    console.log(`[Certificate] Checking path: ${fontPath}, exists: ${existsSync(fontPath)}`);
     if (existsSync(fontPath)) {
       try {
         GlobalFonts.registerFromPath(fontPath, 'CustomFont');
@@ -38,9 +55,8 @@ function registerFont() {
     }
   }
   
-  // List available system fonts for debugging
-  console.log('[Certificate] Available font families:', GlobalFonts.families.map((f: any) => f.family).join(', '));
   console.log('[Certificate] ⚠️ Using fallback font: sans-serif');
+  fontFamily = 'sans-serif';
   fontRegistered = true;
   return fontFamily;
 }
