@@ -67,38 +67,41 @@ export async function generateCertificate(options: CertificateGenerationOptions)
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&apos;');
 
-  // Create SVG with text
-  const svg = `
-    <svg width="${imageWidth}" height="${imageHeight}" xmlns="http://www.w3.org/2000/svg">
-      <text 
-        x="${textPositionX}" 
-        y="${textPositionY}" 
-        font-family="DejaVuSans" 
-        font-size="${fontSize}" 
-        fill="${fontColor}" 
-        text-anchor="${textAnchor}" 
-        dominant-baseline="middle"
-        font-weight="bold"
-      >${escapedName}</text>
-    </svg>`;
-
-  console.log(`[Certificate] Created SVG for text rendering`);
-  console.log(`[Certificate] Font file path: ${fontPath}`);
-
-  // Check font exists
+  // Check font exists first
   if (!existsSync(fontPath)) {
     console.error(`[Certificate] ERROR: Font file not found at ${fontPath}`);
     throw new Error(`Font file not found: ${fontPath}`);
   }
 
+  console.log(`[Certificate] Using font from: ${fontPath}`);
+
+  // Create SVG with text - use exact internal font name "DejaVu Sans"
+  // The font file DejaVuSans-Bold.ttf has internal name "DejaVu Sans" with Bold style
+  const svg = `<svg width="${imageWidth}" height="${imageHeight}" xmlns="http://www.w3.org/2000/svg">
+  <text 
+    x="${textPositionX}" 
+    y="${textPositionY}" 
+    font-family="DejaVu Sans" 
+    font-size="${fontSize}" 
+    fill="${fontColor}" 
+    text-anchor="${textAnchor}" 
+    dominant-baseline="middle"
+    font-weight="bold"
+  >${escapedName}</text>
+</svg>`;
+
+  console.log(`[Certificate] SVG created for: "${escapedName}"`);
+
   // Render SVG to PNG using resvg with custom font
   const resvg = new Resvg(svg, {
     font: {
       fontFiles: [fontPath],
-      defaultFontFamily: 'DejaVuSans',
       loadSystemFonts: false,
+      defaultFontFamily: 'DejaVu Sans',
     },
   });
+  
+  console.log(`[Certificate] Resvg rendering...`);
 
   const pngData = resvg.render();
   const textOverlay = pngData.asPng();
