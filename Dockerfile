@@ -15,6 +15,8 @@ FROM node:20-alpine AS runner
 
 # Install runtime dependencies for canvas and fonts
 RUN apk add --no-cache cairo pango libjpeg-turbo giflib librsvg fontconfig ttf-dejavu \
+    && mkdir -p /etc/fonts \
+    && echo '<?xml version="1.0"?><!DOCTYPE fontconfig SYSTEM "fonts.dtd"><fontconfig><dir>/usr/share/fonts</dir><cachedir>/var/cache/fontconfig</cachedir></fontconfig>' > /etc/fonts/fonts.conf \
     && fc-cache -f -v
 
 WORKDIR /app
