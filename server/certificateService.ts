@@ -1,50 +1,6 @@
 import sharp from 'sharp';
-import { createCanvas, GlobalFonts } from '@napi-rs/canvas';
 import path from 'path';
-import { promises as fs, readFileSync, existsSync } from 'fs';
-
-// Font configuration
-const FONT_NAME = 'DejaVuSansBold';
-let fontRegistered = false;
-
-// Register font synchronously at module load for Skia
-function initializeFont(): boolean {
-  if (fontRegistered) return true;
-  
-  const embeddedFontPath = path.join(process.cwd(), 'public', 'fonts', 'DejaVuSans-Bold.ttf');
-  
-  console.log('[Certificate] Font path:', embeddedFontPath);
-  console.log('[Certificate] Font exists:', existsSync(embeddedFontPath));
-  
-  if (!existsSync(embeddedFontPath)) {
-    console.error('[Certificate] ❌ Font file not found');
-    return false;
-  }
-  
-  try {
-    // Load font from buffer - more reliable for Skia backend
-    const fontBuffer = readFileSync(embeddedFontPath);
-    console.log('[Certificate] Font buffer size:', fontBuffer.length);
-    
-    // Register with Skia - use registerFromPath for @napi-rs/canvas
-    GlobalFonts.registerFromPath(embeddedFontPath, FONT_NAME);
-    
-    // Verify registration
-    const families = GlobalFonts.families;
-    const registered = families.some((f: any) => f.family === FONT_NAME);
-    console.log('[Certificate] Font families after registration:', families.map((f: any) => f.family).join(', '));
-    console.log('[Certificate] Font registered check:', registered);
-    
-    fontRegistered = registered;
-    return registered;
-  } catch (e) {
-    console.error('[Certificate] ❌ Font registration error:', e);
-    return false;
-  }
-}
-
-// Initialize font at module load
-initializeFont();
+import { promises as fs } from 'fs';
 
 export interface CertificateGenerationOptions {
   templateImagePath: string;
@@ -70,11 +26,6 @@ export async function generateCertificate(options: CertificateGenerationOptions)
   console.log(`[Certificate] ===== STARTING CERTIFICATE GENERATION =====`);
   console.log(`[Certificate] Options received:`, JSON.stringify(options, null, 2));
 
-  // Ensure font is initialized
-  if (!fontRegistered) {
-    initializeFont();
-  }
-
   // Normalize path - strip leading '/' to avoid path.join issues
   const relPath = templateImagePath.replace(/^\//, '');
   const templatePath = path.join(process.cwd(), 'public', relPath);
@@ -99,42 +50,60 @@ export async function generateCertificate(options: CertificateGenerationOptions)
   const imageHeight = metadata.height || 800;
   console.log(`[Certificate] Image dimensions: ${imageWidth}x${imageHeight}`);
 
-  // Create canvas for text overlay
-  const canvas = createCanvas(imageWidth, imageHeight);
-  const ctx = canvas.getContext('2d');
+  // Escape special XML characters in recipient name
+  const escapedName = recipientName
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
 
-  // Clear canvas (transparent background)
-  ctx.clearRect(0, 0, imageWidth, imageHeight);
-
-  // Set up text rendering - use font name without "bold" prefix since font itself is bold
-  const fontSpec = `${fontSize}px "${FONT_NAME}"`;
-  ctx.font = fontSpec;
-  ctx.fillStyle = fontColor;
-  ctx.textBaseline = 'middle';
-  
-  // Set text alignment
-  if (textAlign === 'center') {
-    ctx.textAlign = 'center';
+  // Calculate text anchor based on alignment
+  let textAnchor = 'middle';
+  let xPos = textPositionX;
+  if (textAlign === 'left') {
+    textAnchor = 'start';
   } else if (textAlign === 'right') {
-    ctx.textAlign = 'right';
-  } else {
-    ctx.textAlign = 'left';
+    textAnchor = 'end';
   }
 
   console.log(`[Certificate] Drawing text: "${recipientName}"`);
-  console.log(`[Certificate] Position: (${textPositionX}, ${textPositionY})`);
-  console.log(`[Certificate] Font spec: ${fontSpec}`);
-  console.log(`[Certificate] Color: ${fontColor}, Align: ${textAlign}`);
+  console.log(`[Certificate] Position: (${xPos}, ${textPositionY})`);
+  console.log(`[Certificate] Font size: ${fontSize}px, Color: ${fontColor}, Align: ${textAlign}`);
 
-  // Measure text width for debugging
-  const textMetrics = ctx.measureText(recipientName);
-  console.log(`[Certificate] Text width: ${textMetrics.width}px`);
+  // Create SVG text overlay using sharp's built-in SVG support
+  // Using DejaVu Sans as it's commonly available, with fallbacks
+  const svgText = `
+    <svg width="${imageWidth}" height="${imageHeight}" xmlns="http://www.w3.org/2000/svg">
+      <style>
+        @font-face {
+          font-family: 'CertFont';
+          src: local('DejaVu Sans Bold'), local('DejaVuSans-Bold'), local('Liberation Sans Bold'), local('Arial Bold'), local('sans-serif');
+        }
+        .cert-text {
+          font-family: 'DejaVu Sans', 'Liberation Sans', 'Arial', sans-serif;
+          font-weight: bold;
+          font-size: ${fontSize}px;
+          fill: ${fontColor};
+        }
+      </style>
+      <text 
+        x="${xPos}" 
+        y="${textPositionY}" 
+        text-anchor="${textAnchor}" 
+        dominant-baseline="middle"
+        class="cert-text"
+      >${escapedName}</text>
+    </svg>
+  `;
 
-  // Draw text
-  ctx.fillText(recipientName, textPositionX, textPositionY);
+  console.log(`[Certificate] SVG overlay created`);
 
-  // Convert canvas to PNG buffer
-  const textOverlay = canvas.toBuffer('image/png');
+  // Convert SVG to PNG buffer
+  const textOverlay = await sharp(Buffer.from(svgText))
+    .png()
+    .toBuffer();
+
   console.log(`[Certificate] Text overlay size: ${textOverlay.length} bytes`);
 
   // Composite the text over the template
