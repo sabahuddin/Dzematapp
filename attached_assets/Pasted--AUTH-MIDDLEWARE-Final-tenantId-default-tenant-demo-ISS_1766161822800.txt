@@ -1,0 +1,88 @@
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[ISSUE CERTIFICATE] isSuperAdmin: false, bodyTenantId: undefined, using tenantId: default-tenant-demo
+[ISSUE CERTIFICATE] Template data: {
+"id": "2ac247fc-3538-4d6c-8c54-fea6ef7d95a6",
+"name": "Mekteb",
+"textPositionX": 580,
+"textPositionY": 401,
+"fontSize": 40,
+"fontColor": "#4CAF50",
+"textAlign": "center"
+}
+[Certificates] Processing certificate for user cada4e01-1ce4-4479-ae1a-f4c1316081b5: Hasin Sin
+[Certificate] ===== STARTING CERTIFICATE GENERATION =====
+[Certificate] Options received: {
+"templateImagePath": "/uploads/default-tenant-demo/certificates/certificate-template-1764861467279-c2hnzg.webp",
+"recipientName": "Hasin Sin",
+"textPositionX": 580,
+"textPositionY": 401,
+"fontSize": 40,
+"fontColor": "#4CAF50",
+"textAlign": "center"
+}
+[Certificate] Registering embedded font from: /app/public/fonts/DejaVuSans-Bold.ttf
+[Certificate] ✅ Font registered successfully: CertificateFont
+[Certificate] Available fonts: CertificateFont
+[Certificate] Reading template from: /app/public/uploads/default-tenant-demo/certificates/certificate-template-1764861467279-c2hnzg.webp
+[Certificate] Template file exists
+[Certificate] Template buffer size: 71600 bytes
+[Certificate] Image dimensions: 1200x800
+[Certificate] Drawing text: "Hasin Sin"
+[Certificate] Position: (580, 401)
+[Certificate] Font: bold 40px "CertificateFont"
+[Certificate] Color: #4CAF50, Align: center
+[Certificate] Text width: 0px
+[Certificate] Text overlay size: 3830 bytes
+[Certificate] Final image buffer size: 364129 bytes
+[Certificate] ===== CERTIFICATE GENERATION COMPLETE =====
+[Certificates] Saved certificate for Hasin Sin to /uploads/default-tenant-demo/certificates/generated/certificate-cada4e01-1ce4-4479-ae1a-f4c1316081b5-1766161735609-364862833.png
+[Certificates] Created DB record for Hasin Sin: certId=16cf2c7c-23ce-4dc5-87e3-e53330054bb2, userId=cada4e01-1ce4-4479-ae1a-f4c1316081b5, imageUrl=/uploads/default-tenant-demo/certificates/generated/certificate-cada4e01-1ce4-4479-ae1a-f4c1316081b5-1766161735609-364862833.png
+4:28:55 PM [express] POST /api/certificates/issue 201 in 242ms :: {"message":"Certificates issued su…
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+4:28:55 PM [express] GET /api/certificates/all 200 in 7ms :: [{"id":"16cf2c7c-23ce-4dc5-87e3-e533300…
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+4:28:58 PM [express] PATCH /api/certificates/16cf2c7c-23ce-4dc5-87e3-e53330054bb2/viewed 200 in 11ms…
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+4:28:58 PM [express] GET /api/certificates/unviewed-count 304 in 8ms :: {"count":0}
+4:29:02 PM [express] GET /api/auth/session 401 in 2ms :: {"message":"Not authenticated"}
+[ORG-SETTINGS] Getting settings for tenant: default-tenant-demo
+[STORAGE] ✅ Found existing org settings: fe93405c-6d88-4363-8dec-75b45f796008
+[ORG-SETTINGS] ✅ Success: fe93405c-6d88-4363-8dec-75b45f796008
+4:29:03 PM [express] GET /api/organization-settings 200 in 6ms :: {"id":"fe93405c-6d88-4363-8dec-75b…
