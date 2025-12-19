@@ -1,0 +1,289 @@
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[MESSAGES/UNREAD-COUNT] Debug: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+sessionTenantId: 'default-tenant-demo',
+userTenantId: 'default-tenant-demo',
+reqTenantId: 'default-tenant-demo',
+resolvedTenantId: 'default-tenant-demo'
+}
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[ORG-SETTINGS] Getting settings for tenant: default-tenant-demo
+9:52:16 PM [express] GET /api/certificates/unviewed-count 304 in 26ms :: {"count":0}
+[STORAGE] ✅ Found existing org settings: fe93405c-6d88-4363-8dec-75b45f796008
+[ORG-SETTINGS] ✅ Success: fe93405c-6d88-4363-8dec-75b45f796008
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+9:52:16 PM [express] GET /api/organization-settings 304 in 21ms :: {"id":"fe93405c-6d88-4363-8dec-75…
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+9:52:16 PM [express] GET /api/messages/unread-count 304 in 46ms :: {"count":0}
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[GET /api/users] DEBUG: {
+'req.user.tenantId': 'default-tenant-demo',
+'session.tenantId': 'default-tenant-demo',
+'req.tenantId': 'default-tenant-demo',
+queryTenantId: undefined,
+isSuperAdmin: false,
+username: 'admin',
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba'
+}
+[GET /api/users] Using tenantId: default-tenant-demo
+9:52:16 PM [express] GET /api/activity-logs 304 in 65ms :: [{"id":"4363eb4c-f6d8-499a-8d17-27d1bea37…
+9:52:16 PM [express] GET /api/user-badges 304 in 42ms :: []
+[GET /api/users] Found 21 users for tenant: default-tenant-demo
+9:52:16 PM [express] GET /api/badges 304 in 59ms :: [{"id":"45ede1cb-34ec-49f1-8792-c4577cee233f","t…
+9:52:16 PM [express] GET /api/users 304 in 20ms :: [{"id":"a7f4f9ea-3fcd-4cf8-9877-9fe0f0bbd049","te…
+9:52:16 PM [express] GET /api/financial-contributions 304 in 38ms :: [{"id":"d3f60446-984e-41a6-886d…
+9:52:16 PM [express] GET /api/certificates/templates 304 in 44ms :: [{"id":"cabbf7c6-961c-4d2b-9a25-…
+9:52:16 PM [express] GET /api/certificates/all 200 in 79ms :: [{"id":"c8f4eafd-159c-42a0-8140-0d0fe4…
+9:52:16 PM [express] GET /api/notifications/unread 304 in 116ms :: {"shop":0,"events":0,"announcemen…
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+9:52:16 PM [express] GET /api/subscription/current 304 in 10ms :: {"tenantId":"default-tenant-demo",…
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+9:52:24 PM [express] GET /api/certificates/unviewed-count 304 in 7ms :: {"count":0}
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+9:52:24 PM [express] GET /api/activity-logs/user 304 in 3ms
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[ISSUE CERTIFICATE] isSuperAdmin: false, bodyTenantId: undefined, using tenantId: default-tenant-demo
+[ISSUE CERTIFICATE] Template data: {
+"id": "2ac247fc-3538-4d6c-8c54-fea6ef7d95a6",
+"name": "Mekteb",
+"textPositionX": 580,
+"textPositionY": 401,
+"fontSize": 40,
+"fontColor": "#4CAF50",
+"textAlign": "center"
+}
+[Certificates] Processing certificate for user cada4e01-1ce4-4479-ae1a-f4c1316081b5: Hasin Sin
+[Certificate] ===== STARTING CERTIFICATE GENERATION (Playwright) =====
+[Certificate] Options received: {
+"templateImagePath": "/uploads/default-tenant-demo/certificates/certificate-template-1764861467279-c2hnzg.webp",
+"recipientName": "Hasin Sin",
+"textPositionX": 580,
+"textPositionY": 401,
+"fontSize": 40,
+"fontColor": "#4CAF50",
+"textAlign": "center"
+}
+[Certificate] Reading template from: /app/public/uploads/default-tenant-demo/certificates/certificate-template-1764861467279-c2hnzg.webp
+[Certificate] Image dimensions: 1200x800
+[Certificate] Generated HTML, launching browser...
+[Certificate] Launching Chromium browser...
+9:52:24 PM [express] POST /api/certificates/issue 500 in 15ms :: {"message":"Failed to issue certifi…
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[MESSAGES/UNREAD-COUNT] Debug: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+sessionTenantId: 'default-tenant-demo',
+userTenantId: 'default-tenant-demo',
+reqTenantId: 'default-tenant-demo',
+resolvedTenantId: 'default-tenant-demo'
+}
+9:52:24 PM [express] GET /api/messages/unread-count 304 in 10ms :: {"count":0}
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+9:52:24 PM [express] GET /api/notifications/unread 304 in 11ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+9:52:46 PM [express] GET /api/certificates/unviewed-count 304 in 11ms :: {"count":0}
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[MESSAGES/UNREAD-COUNT] Debug: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+sessionTenantId: 'default-tenant-demo',
+userTenantId: 'default-tenant-demo',
+reqTenantId: 'default-tenant-demo',
+resolvedTenantId: 'default-tenant-demo'
+}
+9:52:46 PM [express] GET /api/messages/unread-count 304 in 13ms :: {"count":0}
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+9:52:46 PM [express] GET /api/notifications/unread 304 in 34ms :: {"shop":0,"events":0,"announcement…
+Error issuing certificates: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1200/chrome-headless-shell-linux64/chrome-headless-shell
+╔═════════════════════════════════════════════════════════════════════════╗
+║ Looks like Playwright Test or Playwright was just installed or updated. ║
+║ Please run the following command to download new browsers:              ║
+║                                                                         ║
+║     npx playwright install                                              ║
+║                                                                         ║
+║ <3 Playwright Team                                                      ║
+╚═════════════════════════════════════════════════════════════════════════╝
+at getBrowser (/app/dist/index.js:4441:30)
+at generateCertificate (/app/dist/index.js:4528:33)
+at async file:///app/dist/index.js:9784:35 {
+name: 'Error'
+}
