@@ -1,7 +1,10 @@
-FROM node:20-alpine AS builder
+FROM node:20-bookworm-slim AS builder
 
-# Install build dependencies for native modules (canvas)
-RUN apk add --no-cache python3 make g++ pkgconfig cairo-dev pango-dev jpeg-dev giflib-dev librsvg-dev
+# Install build dependencies for native modules
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 make g++ pkg-config \
+    libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -11,12 +14,13 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-FROM node:20-alpine AS runner
+FROM node:20-bookworm-slim AS runner
 
-# Install runtime dependencies for canvas and fonts
-RUN apk add --no-cache cairo pango libjpeg-turbo giflib librsvg fontconfig ttf-dejavu \
-    && mkdir -p /etc/fonts \
-    && echo '<?xml version="1.0"?><!DOCTYPE fontconfig SYSTEM "fonts.dtd"><fontconfig><dir>/usr/share/fonts</dir><cachedir>/var/cache/fontconfig</cachedir></fontconfig>' > /etc/fonts/fonts.conf \
+# Install runtime dependencies for canvas and fonts (glibc-based = proper font support)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libcairo2 libpango-1.0-0 libpangocairo-1.0-0 libjpeg62-turbo libgif7 librsvg2-2 \
+    fontconfig fonts-dejavu-core \
+    && rm -rf /var/lib/apt/lists/* \
     && fc-cache -f -v
 
 WORKDIR /app
