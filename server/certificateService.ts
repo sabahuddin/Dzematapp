@@ -1,42 +1,20 @@
 import sharp from 'sharp';
 import { createCanvas, GlobalFonts } from '@napi-rs/canvas';
 import path from 'path';
-import { promises as fs, readFileSync, existsSync } from 'fs';
+import { promises as fs, existsSync } from 'fs';
 
-// Font configuration - register once at module load
-const FONT_FAMILY = 'CertificateFont';
-let fontInitialized = false;
+// Font configuration - register once at module load using Gemini's recommended approach
+const FONT_FAMILY = 'DejaVu Sans';
+const fontPath = path.join(process.cwd(), 'public', 'fonts', 'DejaVuSans-Bold.ttf');
 
-function initializeFont(): void {
-  if (fontInitialized) return;
-  
-  const fontPath = path.join(process.cwd(), 'public', 'fonts', 'DejaVuSans-Bold.ttf');
-  console.log('[Certificate] Initializing font from:', fontPath);
-  
-  if (!existsSync(fontPath)) {
-    console.error('[Certificate] ❌ Font file not found at:', fontPath);
-    return;
-  }
-  
-  try {
-    // Load font data into buffer
-    const fontData = readFileSync(fontPath);
-    console.log('[Certificate] Font file size:', fontData.length, 'bytes');
-    
-    // Register using data buffer instead of path
-    GlobalFonts.register(fontData, FONT_FAMILY);
-    
-    console.log('[Certificate] ✅ Font registered as:', FONT_FAMILY);
-    console.log('[Certificate] Available fonts:', GlobalFonts.families.map((f: any) => f.family).join(', '));
-    
-    fontInitialized = true;
-  } catch (e) {
-    console.error('[Certificate] ❌ Font registration failed:', e);
-  }
+// Register font synchronously at module load
+if (existsSync(fontPath)) {
+  GlobalFonts.registerFromPath(fontPath, FONT_FAMILY);
+  console.log('[Certificate] ✅ Font registered:', FONT_FAMILY);
+  console.log('[Certificate] Available fonts:', GlobalFonts.families.map((f: any) => f.family).join(', '));
+} else {
+  console.error('[Certificate] ❌ Font file not found:', fontPath);
 }
-
-// Initialize font at module load
-initializeFont();
 
 export interface CertificateGenerationOptions {
   templateImagePath: string;
@@ -61,11 +39,6 @@ export async function generateCertificate(options: CertificateGenerationOptions)
 
   console.log(`[Certificate] ===== STARTING CERTIFICATE GENERATION =====`);
   console.log(`[Certificate] Options received:`, JSON.stringify(options, null, 2));
-
-  // Ensure font is initialized
-  if (!fontInitialized) {
-    initializeFont();
-  }
 
   // Normalize path - strip leading '/' to avoid path.join issues
   const relPath = templateImagePath.replace(/^\//, '');
