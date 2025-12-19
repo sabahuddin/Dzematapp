@@ -93,9 +93,10 @@ const CRITERIA_TYPE_LABELS: Record<string, Record<string, string>> = {
 };
 
 const getCriteriaTypeLabel = (criteriaType: string): string => {
-  const lng = i18n.language || 'bs';
+  const rawLng = i18n.language || 'bs';
+  const lng = rawLng.split('-')[0]; // Normalize "bs-BA" to "bs"
   const labels = CRITERIA_TYPE_LABELS[lng] || CRITERIA_TYPE_LABELS['bs'];
-  return labels[criteriaType] || criteriaType;
+  return labels[criteriaType?.trim()] || criteriaType;
 };
 
 const BadgeIcon = ({ icon, size = 24 }: { icon?: string | null; size?: number }) => {
