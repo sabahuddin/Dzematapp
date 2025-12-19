@@ -1,0 +1,91 @@
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+4:09:49 PM [express] GET /api/activity-logs 304 in 23ms :: [{"id":"4363eb4c-f6d8-499a-8d17-27d1bea37…
+4:09:49 PM [express] GET /api/subscription/current 304 in 20ms :: {"tenantId":"default-tenant-demo",…
+4:09:49 PM [express] GET /api/badges 304 in 39ms :: [{"id":"45ede1cb-34ec-49f1-8792-c4577cee233f","t…
+4:09:49 PM [express] GET /api/user-badges 304 in 10ms :: []
+4:09:49 PM [express] GET /api/certificates/templates 200 in 23ms :: [{"id":"cabbf7c6-961c-4d2b-9a25-…
+4:09:49 PM [express] GET /api/notifications/unread 304 in 80ms :: {"shop":0,"events":0,"announcement…
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[ISSUE CERTIFICATE] isSuperAdmin: false, bodyTenantId: undefined, using tenantId: default-tenant-demo
+[ISSUE CERTIFICATE] Template data: {
+"id": "2ac247fc-3538-4d6c-8c54-fea6ef7d95a6",
+"name": "Mekteb",
+"textPositionX": 580,
+"textPositionY": 401,
+"fontSize": 40,
+"fontColor": "#4CAF50",
+"textAlign": "center"
+}
+[Certificates] Processing certificate for user cada4e01-1ce4-4479-ae1a-f4c1316081b5: Hasin Sin
+[Certificate] ===== STARTING CERTIFICATE GENERATION =====
+[Certificate] Options received: {
+"templateImagePath": "/uploads/default-tenant-demo/certificates/certificate-template-1764861467279-c2hnzg.webp",
+"recipientName": "Hasin Sin",
+"textPositionX": 580,
+"textPositionY": 401,
+"fontSize": 40,
+"fontColor": "#4CAF50",
+"textAlign": "center"
+}
+[Certificate] Reading template from: /app/public/uploads/default-tenant-demo/certificates/certificate-template-1764861467279-c2hnzg.webp
+[Certificate] Template file exists
+[Certificate] Template buffer size: 71600 bytes
+[Certificate] Image dimensions: 1200x800
+[Certificate] Drawing text with SVG: "Hasin Sin"
+[Certificate] Position: (580, 401)
+[Certificate] Font size: 40px
+[Certificate] Color: #4CAF50, Align: center
+[Certificate] SVG buffer size: 238 bytes
+[Certificate] Final image buffer size: 364307 bytes
+[Certificate] ===== CERTIFICATE GENERATION COMPLETE =====
+[Certificates] Saved certificate for Hasin Sin to /uploads/default-tenant-demo/certificates/generated/certificate-cada4e01-1ce4-4479-ae1a-f4c1316081b5-1766160590959-98461842.png
+[Certificates] Created DB record for Hasin Sin: certId=551e9c04-9804-4671-87d3-b9fac25e42cd, userId=cada4e01-1ce4-4479-ae1a-f4c1316081b5, imageUrl=/uploads/default-tenant-demo/certificates/generated/certificate-cada4e01-1ce4-4479-ae1a-f4c1316081b5-1766160590959-98461842.png
+4:09:50 PM [express] POST /api/certificates/issue 201 in 138ms :: {"message":"Certificates issued su…
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+4:09:51 PM [express] GET /api/certificates/all 200 in 9ms :: [{"id":"551e9c04-9804-4671-87d3-b9fac25…
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
