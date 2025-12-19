@@ -1,65 +1,6 @@
 import sharp from 'sharp';
-import { createCanvas, GlobalFonts } from '@napi-rs/canvas';
 import path from 'path';
 import { promises as fs } from 'fs';
-import { existsSync } from 'fs';
-import { fileURLToPath } from 'url';
-
-// Register custom font for certificate text rendering
-let fontRegistered = false;
-let fontFamily = 'DejaVu Sans'; // Use system font installed in Alpine
-
-function registerFont() {
-  if (fontRegistered) return fontFamily;
-  
-  console.log('[Certificate] Current working directory:', process.cwd());
-  
-  // List available system fonts
-  const availableFonts = GlobalFonts.families.map((f: any) => f.family);
-  console.log('[Certificate] Available font families:', availableFonts.join(', '));
-  
-  // Priority list of fonts to try (system fonts in Alpine + custom)
-  const fontPriority = ['DejaVu Sans', 'DejaVuSans', 'Liberation Sans', 'Arial', 'sans-serif'];
-  
-  // Check if any preferred font is available
-  for (const preferredFont of fontPriority) {
-    if (availableFonts.some((f: string) => f.toLowerCase().includes(preferredFont.toLowerCase()))) {
-      fontFamily = preferredFont;
-      console.log(`[Certificate] ✅ Using system font: ${fontFamily}`);
-      fontRegistered = true;
-      return fontFamily;
-    }
-  }
-  
-  // Try to register custom font as fallback
-  const possiblePaths = [
-    path.join(process.cwd(), 'public', 'fonts', 'DejaVuSans-Bold.ttf'),
-    '/app/public/fonts/DejaVuSans-Bold.ttf',
-    '/usr/share/fonts/ttf-dejavu/DejaVuSans-Bold.ttf',
-    '/usr/share/fonts/dejavu/DejaVuSans-Bold.ttf',
-  ];
-  
-  console.log('[Certificate] Checking custom font paths:', possiblePaths);
-  
-  for (const fontPath of possiblePaths) {
-    if (existsSync(fontPath)) {
-      try {
-        GlobalFonts.registerFromPath(fontPath, 'CustomFont');
-        console.log(`[Certificate] ✅ Custom font registered from: ${fontPath}`);
-        fontFamily = 'CustomFont';
-        fontRegistered = true;
-        return fontFamily;
-      } catch (error) {
-        console.error(`[Certificate] ❌ Failed to register custom font:`, error);
-      }
-    }
-  }
-  
-  console.log('[Certificate] ⚠️ Using fallback font: sans-serif');
-  fontFamily = 'sans-serif';
-  fontRegistered = true;
-  return fontFamily;
-}
 
 export interface CertificateGenerationOptions {
   templateImagePath: string;
@@ -84,10 +25,6 @@ export async function generateCertificate(options: CertificateGenerationOptions)
 
   console.log(`[Certificate] ===== STARTING CERTIFICATE GENERATION =====`);
   console.log(`[Certificate] Options received:`, JSON.stringify(options, null, 2));
-  
-  // Register font before generating certificate
-  const registeredFontFamily = registerFont();
-  console.log(`[Certificate] Using font family: ${registeredFontFamily}`);
 
   // Normalize path - strip leading '/' to avoid path.join issues
   const relPath = templateImagePath.replace(/^\//, '');
@@ -113,50 +50,56 @@ export async function generateCertificate(options: CertificateGenerationOptions)
   const imageHeight = metadata.height || 800;
   console.log(`[Certificate] Image dimensions: ${imageWidth}x${imageHeight}`);
 
-  // Create canvas for text overlay
-  const canvas = createCanvas(imageWidth, imageHeight);
-  const ctx = canvas.getContext('2d');
-
-  // Clear the canvas to ensure transparency
-  ctx.clearRect(0, 0, imageWidth, imageHeight);
-
-  // Set up text rendering - use registered font family
-  let fontSpec = `bold ${fontSize}px ${registeredFontFamily}`;
-  ctx.font = fontSpec;
-  console.log(`[Certificate] Set font to: ${ctx.font}`);
+  // Use SVG for text overlay - this works reliably across all platforms
+  // Calculate text anchor based on alignment
+  let textAnchor = 'middle';
+  if (textAlign === 'left') textAnchor = 'start';
+  if (textAlign === 'right') textAnchor = 'end';
   
-  // If font wasn't applied correctly, try fallback
-  if (!ctx.font || ctx.font === '') {
-    fontSpec = `bold ${fontSize}px Arial, sans-serif`;
-    ctx.font = fontSpec;
-    console.log(`[Certificate] Fallback font applied: ${ctx.font}`);
-  }
-  
-  ctx.fillStyle = fontColor;
-  ctx.textAlign = textAlign;
-  ctx.textBaseline = 'middle';
+  // Escape special characters for SVG
+  const escapedName = recipientName
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 
-  console.log(`[Certificate] Drawing text: "${recipientName}"`);
+  // Create SVG text overlay
+  const svgText = `
+    <svg width="${imageWidth}" height="${imageHeight}" xmlns="http://www.w3.org/2000/svg">
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@700&amp;display=swap');
+        .name-text {
+          font-family: 'Open Sans', 'DejaVu Sans', Arial, sans-serif;
+          font-weight: bold;
+          font-size: ${fontSize}px;
+          fill: ${fontColor};
+        }
+      </style>
+      <text 
+        x="${textPositionX}" 
+        y="${textPositionY}" 
+        text-anchor="${textAnchor}" 
+        dominant-baseline="middle"
+        class="name-text"
+      >${escapedName}</text>
+    </svg>
+  `;
+
+  console.log(`[Certificate] Drawing text with SVG: "${recipientName}"`);
   console.log(`[Certificate] Position: (${textPositionX}, ${textPositionY})`);
-  console.log(`[Certificate] Font spec: ${fontSpec}`);
+  console.log(`[Certificate] Font size: ${fontSize}px`);
   console.log(`[Certificate] Color: ${fontColor}, Align: ${textAlign}`);
 
-  // Draw text at the configured position from template
-  ctx.fillText(recipientName, textPositionX, textPositionY);
-  
-  // Measure text to verify it was drawn
-  const textMetrics = ctx.measureText(recipientName);
-  console.log(`[Certificate] Text metrics - width: ${textMetrics.width}px`);
-
-  // Convert canvas to buffer
-  const textBuffer = canvas.toBuffer('image/png');
-  console.log(`[Certificate] Text overlay buffer size: ${textBuffer.length} bytes`);
+  // Convert SVG to buffer
+  const svgBuffer = Buffer.from(svgText);
+  console.log(`[Certificate] SVG buffer size: ${svgBuffer.length} bytes`);
 
   // Composite the text over the template
   const finalImage = await sharp(templateBuffer)
     .composite([
       {
-        input: textBuffer,
+        input: svgBuffer,
         blend: 'over'
       }
     ])
