@@ -3,15 +3,32 @@ import { createCanvas, GlobalFonts } from '@napi-rs/canvas';
 import path from 'path';
 import { promises as fs, existsSync } from 'fs';
 
-// Font configuration - register once at module load using Gemini's recommended approach
-const FONT_FAMILY = 'DejaVu Sans';
+// Font configuration - use unique name to avoid collision with system fonts
+const FONT_FAMILY = 'DzematCertFont';
 const fontPath = path.join(process.cwd(), 'public', 'fonts', 'DejaVuSans-Bold.ttf');
 
 // Register font synchronously at module load
+console.log('[Certificate] Font path:', fontPath);
+console.log('[Certificate] Font exists:', existsSync(fontPath));
+
 if (existsSync(fontPath)) {
-  GlobalFonts.registerFromPath(fontPath, FONT_FAMILY);
-  console.log('[Certificate] ✅ Font registered:', FONT_FAMILY);
-  console.log('[Certificate] Available fonts:', GlobalFonts.families.map((f: any) => f.family).join(', '));
+  const isRegistered = GlobalFonts.registerFromPath(fontPath, FONT_FAMILY);
+  console.log('[Certificate] Font registration result:', isRegistered);
+  console.log('[Certificate] Registered font family name:', FONT_FAMILY);
+  console.log('[Certificate] Available font families:', GlobalFonts.families.map((f: any) => f.family).join(', '));
+  
+  // Verify font works by doing a test render
+  const testCanvas = createCanvas(100, 50);
+  const testCtx = testCanvas.getContext('2d');
+  testCtx.font = `20px "${FONT_FAMILY}"`;
+  const testWidth = testCtx.measureText('Test').width;
+  console.log('[Certificate] Font verification - Test text width:', testWidth, 'px');
+  
+  if (testWidth === 0) {
+    console.error('[Certificate] ⚠️ WARNING: Font registered but not rendering!');
+  } else {
+    console.log('[Certificate] ✅ Font working correctly');
+  }
 } else {
   console.error('[Certificate] ❌ Font file not found:', fontPath);
 }

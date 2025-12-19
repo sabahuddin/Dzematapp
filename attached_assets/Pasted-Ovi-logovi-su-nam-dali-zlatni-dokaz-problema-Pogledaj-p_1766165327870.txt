@@ -1,0 +1,58 @@
+Ovi logovi su nam dali "zlatni dokaz" problema. Pogledaj pažljivo ovu liniju u svom logu:
+
+[Certificate] Text width: 0px
+
+Ovo je jasan znak da, iako je font učitan u memoriju (fajl postoji), Canvas engine ga ne koristi pri crtanju. Kada je širina 0 px, to znači da je sistem pokušao nacrtati tekst nepostojećim fontom i odustao.
+
+Evo tačnog rješenja kako to popraviti na produkciji:
+
+1. Ispravka Registracije Fonta
+U tvom kodu vjerovatno registruješ font, ali ga koristiš pod pogrešnim imenom ili ga registruješ prekasno. @napi-rs/canvas zahtijeva da se ime u ctx.font potpuno podudara sa imenom pod kojim je registrovan.
+
+U certificateService.ts uradi tačno ovo:
+
+TypeScript
+import { GlobalFonts, createCanvas } from '@napi-rs/canvas';
+import path from 'path';
+
+// 1. OBAVEZNO: Registruj font pod tačnim imenom "DejaVu Sans"
+// Provjeri da li je putanja tačna. Log kaže: /app/public/fonts/DejaVuSans-Bold.ttf
+const fontPath = path.join(process.cwd(), 'public', 'fonts', 'DejaVuSans-Bold.ttf');
+const isRegistered = GlobalFonts.registerFromPath(fontPath, 'DejaVu Sans');
+
+console.log(`[Certificate] Font registration status: ${isRegistered}`);
+
+export async function generateCertificate(options: any) {
+    // ... ostatak koda ...
+    const canvas = createCanvas(1200, 800);
+    const ctx = canvas.getContext('2d');
+
+    // 2. VAŽNO: Koristi TAČNO "DejaVu Sans" (bez .ttf, bez Bold u imenu ako si ga registrovao kao "DejaVu Sans")
+    ctx.font = `40px "DejaVu Sans"`; 
+    ctx.fillStyle = options.fontColor || '#4CAF50';
+    ctx.textAlign = 'center';
+
+    // Test širine - MORA BITI VEĆE OD 0
+    const testWidth = ctx.measureText(options.recipientName).width;
+    console.log(`[Certificate] VERIFIKACIJA - Ime: ${options.recipientName}, Širina: ${testWidth}px`);
+
+    ctx.fillText(options.recipientName, options.textPositionX, options.textPositionY);
+    // ...
+}
+2. Druga greška u logovima: Baza Podataka (Analytics)
+Primijetio sam i ovaj error u tvom logu: error: column "site" of relation "page_views" does not exist
+
+Ovo znači da tvoja SQL shema u produkciji nije usklađena sa kodom (Drizzle shemom).
+Šta uraditi: Pokreni npm run db:push (ili tvoju komandu za migraciju) na produkciji preko Coolify terminala kako bi dodao kolonu site u tabelu page_views.
+3. Zašto je Text width: 0px opasan?
+Kada Canvas vidi 0 px:
+On ne javlja grešku (error), nego nastavlja dalje.
+Rezultat je prozirni PNG (overlay) bez teksta.
+Sharp spoji taj prozirni sloj sa templateom, i dobiješ nazad samo čisti template.
+Rezime za deploy:
+Provjeri da li je font u repozitoriju na putanji public/fonts/DejaVuSans-Bold.ttf.
+Uvjeri se da je u ctx.font ime "DejaVu Sans" pod navodnicima i da se poklapa sa registracijom.
+Uradi Rebuild u Coolify-u bez cache-a.
+Nakon što ovo uradiš, log bi trebao ispisati nešto poput: [Certificate] VERIFIKACIJA - Ime: Haris Hasić, Širina: 245.5px
+
+Želiš li da ti napišem kompletan certificateService.ts fajl koji je 100% otporan na ove greške?
