@@ -1,11 +1,25 @@
 import sharp from 'sharp';
 import path from 'path';
 import { promises as fs, existsSync } from 'fs';
+import opentype from 'opentype.js';
+import { Resvg } from '@resvg/resvg-js';
 
 // Font path
 const fontPath = path.join(process.cwd(), 'public', 'fonts', 'DejaVuSans-Bold.ttf');
 console.log('[Certificate] Font path:', fontPath);
 console.log('[Certificate] Font exists:', existsSync(fontPath));
+
+// Cached font instance
+let cachedFont: opentype.Font | null = null;
+
+async function loadFont(): Promise<opentype.Font> {
+  if (cachedFont) return cachedFont;
+  
+  const fontBuffer = await fs.readFile(fontPath);
+  cachedFont = opentype.parse(fontBuffer.buffer as ArrayBuffer);
+  console.log('[Certificate] Font loaded with opentype.js:', cachedFont.names.fontFamily);
+  return cachedFont;
+}
 
 export interface CertificateGenerationOptions {
   templateImagePath: string;
@@ -28,7 +42,7 @@ export async function generateCertificate(options: CertificateGenerationOptions)
     textAlign
   } = options;
 
-  console.log(`[Certificate] ===== STARTING CERTIFICATE GENERATION (sharp text) =====`);
+  console.log(`[Certificate] ===== STARTING CERTIFICATE GENERATION (opentype.js) =====`);
   console.log(`[Certificate] Options received:`, JSON.stringify(options, null, 2));
 
   // Normalize path - strip leading '/' to avoid path.join issues
@@ -55,43 +69,64 @@ export async function generateCertificate(options: CertificateGenerationOptions)
     console.error(`[Certificate] ERROR: Font file not found at ${fontPath}`);
     throw new Error(`Font file not found: ${fontPath}`);
   }
-  console.log(`[Certificate] Using font: ${fontPath}`);
 
-  // Use sharp's text() to create text image with custom font
-  // sharp uses libvips which has Pango/fontconfig support
-  const textImage = await sharp({
-    text: {
-      text: `<span foreground="${fontColor}" size="${fontSize * 1000}">${recipientName}</span>`,
-      font: 'DejaVu Sans Bold',
-      fontfile: fontPath,
-      rgba: true,
-      dpi: 300,
-    }
-  }).png().toBuffer();
+  // Load font with opentype.js
+  const font = await loadFont();
+  console.log(`[Certificate] Font loaded: ${font.names.fontFamily}`);
 
-  const textMeta = await sharp(textImage).metadata();
-  console.log(`[Certificate] Text image created: ${textMeta.width}x${textMeta.height}, size: ${textImage.length} bytes`);
+  // Get text path from opentype.js - this converts text to SVG path data
+  const textPath = font.getPath(recipientName, 0, 0, fontSize);
+  const pathData = textPath.toPathData(2);
+  
+  // Get text bounding box for alignment
+  const bbox = textPath.getBoundingBox();
+  const textWidth = bbox.x2 - bbox.x1;
+  const textHeight = bbox.y2 - bbox.y1;
+  console.log(`[Certificate] Text bounding box: width=${textWidth}, height=${textHeight}`);
 
-  // Calculate position based on alignment
-  let left = textPositionX;
-  if (textAlign === 'center' && textMeta.width) {
-    left = textPositionX - Math.floor(textMeta.width / 2);
-  } else if (textAlign === 'right' && textMeta.width) {
-    left = textPositionX - textMeta.width;
+  // Calculate X position based on alignment
+  let adjustedX = textPositionX;
+  if (textAlign === 'center') {
+    adjustedX = textPositionX - textWidth / 2;
+  } else if (textAlign === 'right') {
+    adjustedX = textPositionX - textWidth;
   }
 
-  // Adjust top position (textPositionY is baseline, we need top-left)
-  const top = textPositionY - Math.floor((textMeta.height || fontSize) / 2);
+  // Adjust Y to account for baseline (opentype uses baseline at y=0)
+  // bbox.y1 is typically negative (above baseline), bbox.y2 is below
+  const adjustedY = textPositionY - bbox.y1 - textHeight / 2;
 
-  console.log(`[Certificate] Compositing at position: left=${left}, top=${top}`);
+  console.log(`[Certificate] Adjusted position: x=${adjustedX}, y=${adjustedY}`);
+
+  // Create SVG with the path data (no font needed - it's vector paths!)
+  const svg = `<svg width="${imageWidth}" height="${imageHeight}" xmlns="http://www.w3.org/2000/svg">
+  <path 
+    d="${pathData}" 
+    fill="${fontColor}"
+    transform="translate(${adjustedX}, ${adjustedY})"
+  />
+</svg>`;
+
+  console.log(`[Certificate] SVG with path data created, length: ${svg.length} chars`);
+
+  // Render SVG to PNG using resvg (no font loading needed!)
+  const resvg = new Resvg(svg, {
+    font: {
+      loadSystemFonts: false,
+    },
+  });
+  
+  const pngData = resvg.render();
+  const textOverlay = pngData.asPng();
+  console.log(`[Certificate] Text overlay rendered, size: ${textOverlay.length} bytes`);
 
   // Composite the text over the template
   const finalImage = await sharp(templateBuffer)
     .composite([
       {
-        input: textImage,
-        top: Math.max(0, top),
-        left: Math.max(0, left),
+        input: textOverlay,
+        top: 0,
+        left: 0
       }
     ])
     .png()
