@@ -1,0 +1,146 @@
+AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+10:41:42 PM [express] GET /api/subscription/current 304 in 53ms :: {"tenantId":"default-tenant-demo",…
+[GET /api/users] Found 21 users for tenant: default-tenant-demo
+10:41:42 PM [express] GET /api/financial-contributions 304 in 76ms :: [{"id":"d3f60446-984e-41a6-886d…
+10:41:42 PM [express] GET /api/users 304 in 46ms :: [{"id":"a7f4f9ea-3fcd-4cf8-9877-9fe0f0bbd049","te…
+10:41:42 PM [express] GET /api/user-badges 304 in 80ms :: []
+10:41:42 PM [express] GET /api/badges 200 in 67ms :: [{"id":"45ede1cb-34ec-49f1-8792-c4577cee233f","t…
+10:41:42 PM [express] POST /api/analytics/track 500 in 99ms :: {"message":"Failed to track page view"}
+10:41:42 PM [express] GET /api/activity-logs 304 in 56ms :: [{"id":"4363eb4c-f6d8-499a-8d17-27d1bea37…
+10:41:42 PM [express] GET /api/certificates/all 200 in 56ms :: [{"id":"11ff15c6-1b3e-41d4-8255-ddaf67…
+10:41:42 PM [express] GET /api/certificates/templates 200 in 58ms :: [{"id":"cabbf7c6-961c-4d2b-9a25-…
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+10:41:46 PM [express] DELETE /api/certificates/11ff15c6-1b3e-41d4-8255-ddaf67aaff82 200 in 10ms :: {"…
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+10:41:47 PM [express] GET /api/certificates/all 200 in 8ms :: []
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[ISSUE CERTIFICATE] isSuperAdmin: false, bodyTenantId: undefined, using tenantId: default-tenant-demo
+[ISSUE CERTIFICATE] Template data: {
+"id": "2ac247fc-3538-4d6c-8c54-fea6ef7d95a6",
+"name": "Mekteb",
+"textPositionX": 580,
+"textPositionY": 401,
+"fontSize": 40,
+"fontColor": "#4CAF50",
+"textAlign": "center"
+}
+[Certificates] Processing certificate for user a7f4f9ea-3fcd-4cf8-9877-9fe0f0bbd049: Haris Hasić
+[Certificate] ===== STARTING CERTIFICATE GENERATION (opentype.js) =====
+[Certificate] Options received: {
+"templateImagePath": "/uploads/default-tenant-demo/certificates/certificate-template-1764861467279-c2hnzg.webp",
+"recipientName": "Haris Hasić",
+"textPositionX": 580,
+"textPositionY": 401,
+"fontSize": 40,
+"fontColor": "#4CAF50",
+"textAlign": "center"
+}
+[Certificate] Reading template from: /app/public/uploads/default-tenant-demo/certificates/certificate-template-1764861467279-c2hnzg.webp
+[Certificate] Image dimensions: 1200x800
+10:41:54 PM [express] POST /api/certificates/issue 500 in 23ms :: {"message":"Failed to issue certifi…
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[MESSAGES/UNREAD-COUNT] Debug: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+sessionTenantId: 'default-tenant-demo',
+userTenantId: 'default-tenant-demo',
+reqTenantId: 'default-tenant-demo',
+resolvedTenantId: 'default-tenant-demo'
+}
+10:42:09 PM [express] GET /api/messages/unread-count 304 in 14ms :: {"count":0}
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+[AUTH MIDDLEWARE] User loaded: {
+userId: '60572500-4eef-4282-a898-a33be6c3f6ba',
+[ANALYTICS] Error tracking page view: error: column "site" of relation "page_views" does not exist
+at /app/node_modules/pg-pool/index.js:45:11
+at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:83:22
+at async DatabaseStorage.createPageView (file:///app/dist/index.js:3701:23)
+at async file:///app/dist/index.js:10998:7 {
+length: 127,
+severity: 'ERROR',
+code: '42703',
+detail: undefined,
+hint: undefined,
+position: '33',
+internalPosition: undefined,
+internalQuery: undefined,
+where: undefined,
+schema: undefined,
+table: undefined,
+column: undefined,
+dataType: undefined,
+constraint: undefined,
+file: 'parse_target.c',
+line: '1065',
+routine: 'checkInsertTargets'
+}
+Error issuing certificates: Error: Unsupported OpenType signature 
+at Object.parseBuffer [as parse] (/app/node_modules/opentype.js/dist/opentype.js:14230:16)
+at loadFont (file:///app/dist/index.js:4445:25)
+at async generateCertificate (file:///app/dist/index.js:4477:16)
+at async file:///app/dist/index.js:9754:35
+username: 'admin',
+userTenantId: 'default-tenant-demo',
+sessionTenantId: 'default-tenant-demo',
+sessionIsSuperAdmin: undefined,
+userIsSuperAdmin: true,
+resolvedIsSuperAdmin: false
+}
+[AUTH MIDDLEWARE] Final tenantId: default-tenant-demo
+10:42:09 PM [express] GET /api/certificates/unviewed-count 304 in 23ms :: {"count":0}
+10:42:09 PM [express] GET /api/notifications/unread 304 in 71ms :: {"shop":0,"events":0,"announcement

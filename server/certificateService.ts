@@ -4,8 +4,8 @@ import { promises as fs, existsSync } from 'fs';
 import opentype from 'opentype.js';
 import { Resvg } from '@resvg/resvg-js';
 
-// Font path
-const fontPath = path.join(process.cwd(), 'public', 'fonts', 'DejaVuSans-Bold.ttf');
+// Font path - using Roboto Bold (valid TTF file)
+const fontPath = path.join(process.cwd(), 'public', 'fonts', 'Roboto-Bold.ttf');
 console.log('[Certificate] Font path:', fontPath);
 console.log('[Certificate] Font exists:', existsSync(fontPath));
 

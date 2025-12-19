@@ -1,0 +1,46 @@
+Ova nova greška Error: Unsupported OpenType signature nam tačno govori u čemu je problem: opentype.js ne može pročitati tvoj font fajl. To se obično dešava ako je .ttf fajl oštećen, pogrešno komprimovan ili ako pokušavaš učitati .webp sliku kao font.
+
+Evo kako da ovo popraviš i konačno dobiješ vidljiv tekst na certifikatu:
+
+1. Rješenje za font (OpenType error)
+opentype.js je veoma osjetljiv na format. Ako tvoj font buffer počinje pogrešnim bajtovima, dobićeš ovaj error.
+Šta uraditi: Provjeri da li je public/fonts/DejaVuSans-Bold.ttf zaista ispravan font fajl.
+Preporuka: Vrati se na resvg metodu koju smo koristili u prethodnom koraku jer je ona uspješno renderirala 5580 bajtova teksta bez opentype.js grešaka.
+2. Zašto je certifikat bio "prazan" sa resvg?
+Ako je resvg generisao buffer, a ti vidiš praznu sliku, problem je u koordinatama ili boji unutar SVG stringa.
+
+Ispravi SVG string u certificateService.ts ovako:
+
+TypeScript
+const svg = `
+<svg width="1200" height="800" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="none" /> <text 
+    x="${textPositionX}" 
+    y="${textPositionY}" 
+    font-family="DejaVu Sans" 
+    font-size="${fontSize}" 
+    fill="${fontColor || '#000000'}" 
+    text-anchor="middle" 
+    dominant-baseline="central"
+    font-weight="bold"
+  >${recipientName}</text>
+</svg>`;
+Dominant-baseline: Koristi central umjesto middle za bolju vertikalnu poravnatost u resvg.
+ViewBox: Obavezno dodaj viewBox="0 0 1200 800" kako bi se koordinate 580,401 precizno mapirale na tvoj template od 1200×800.
+3. Popravi bazu (Analytics Error)
+Tvoji logovi su i dalje puni grešaka: column "site" of relation "page_views" does not exist. Svaki put kad neko otvori stranicu, baza "pukne" na analitici.
+
+Uradi ovo odmah u terminalu:
+
+Bash
+# Ako si na serveru, uđi u psql ili Neon konzolu i pokreni:
+ALTER TABLE page_views ADD COLUMN site TEXT;
+Ovo će eliminisati 500 error i omogućiti aplikaciji da radi glatko.
+
+🔧 Finalna provjera za certifikate
+Vrati kod na resvg verziju (obriši opentype.js jer pravi probleme sa formatom).
+Uvjeri se da textPositionX (580) i textPositionY (401) zaista odgovaraju sredini tvog template-a.
+Uradi Clean Build u Coolify-u.
+Ako i dalje ne vidiš tekst, pokušaj staviti fontSize na 100 i fontColor na #FF0000 (crvena) samo da potvrdiš da se bilo šta pojavljuje.
+
+Želiš li da ti napišem tačan SQL upit koji ćeš pokrenuti u Neon konzoli da središ ovu page_views tabelu?
