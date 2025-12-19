@@ -21,6 +21,7 @@ import {
 import { format } from 'date-fns';
 import { User, Badge, UserBadge } from '@shared/schema';
 import { useAuth } from '../hooks/useAuth';
+import { getCriteriaTypeLabel } from '@/lib/badgeUtils';
 
 interface IssuedBadgeData extends UserBadge {
   user: User;
@@ -55,15 +56,6 @@ export default function IssuedBadgesTab() {
     enabled: !!currentUser?.isAdmin,
   });
 
-  const getCriteriaTypeLabel = (criteriaType: string) => {
-    const labels: Record<string, string> = {
-      'tasks_completed': t('badges:criteriaTypes.tasks_completed'),
-      'contributions_amount': t('badges:criteriaTypes.contributions_amount'),
-      'events_attended': t('badges:criteriaTypes.events_attended'),
-      'points_total': t('badges:criteriaTypes.points_total')
-    };
-    return labels[criteriaType] || criteriaType;
-  };
 
   if (issuedBadgesQuery.isLoading) {
     return (

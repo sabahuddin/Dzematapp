@@ -70,6 +70,7 @@ import { UpgradeCTA } from '../components/UpgradeCTA';
 import { useCurrency } from '../contexts/CurrencyContext';
 import CertificateTemplatesPage from './CertificateTemplatesPage';
 import { queryClient, apiRequest } from '@/lib/queryClient';
+import { getCriteriaTypeLabel } from '@/lib/badgeUtils';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -823,7 +824,7 @@ export default function ActivityLogPage() {
                       </TableCell>
                       <TableCell>{badge.name}</TableCell>
                       <TableCell><Typography variant="body2" color="text.secondary">{badge.description}</Typography></TableCell>
-                      <TableCell>{badge.criteriaType}</TableCell>
+                      <TableCell>{getCriteriaTypeLabel(badge.criteriaType)}</TableCell>
                       <TableCell>{badge.criteriaValue}</TableCell>
                       <TableCell>
                         <Box sx={{ display: 'flex', gap: 0.5 }}>
