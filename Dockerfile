@@ -16,12 +16,13 @@ RUN npm run build
 
 FROM node:20-bookworm-slim AS runner
 
-# Install runtime dependencies for canvas (glibc-based = proper font support)
-# Note: Font is embedded in public/fonts/ so no system fonts needed
+# Install runtime dependencies for sharp/SVG rendering with fonts
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libcairo2 libpango-1.0-0 libpangocairo-1.0-0 libpixman-1-0 \
-    libjpeg62-turbo libgif7 librsvg2-2 \
-    && rm -rf /var/lib/apt/lists/*
+    libjpeg62-turbo libgif7 librsvg2-2 libvips42 \
+    fonts-dejavu-core fonts-liberation fontconfig \
+    && rm -rf /var/lib/apt/lists/* \
+    && fc-cache -f -v
 
 WORKDIR /app
 
