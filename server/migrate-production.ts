@@ -967,6 +967,7 @@ async function addMissingColumns(client: any): Promise<void> {
   const nullableConstraints = [
     `ALTER TABLE "contribution_purposes" ALTER COLUMN "created_by_id" DROP NOT NULL`,
     `ALTER TABLE "financial_contributions" ALTER COLUMN "created_by_id" DROP NOT NULL`,
+    `ALTER TABLE "financial_contributions" ALTER COLUMN "payment_method" DROP NOT NULL`,
     `ALTER TABLE "events" ALTER COLUMN "created_by_id" DROP NOT NULL`,
     `ALTER TABLE "projects" ALTER COLUMN "created_by_id" DROP NOT NULL`,
   ];
