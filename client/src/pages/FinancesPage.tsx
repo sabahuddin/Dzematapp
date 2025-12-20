@@ -115,7 +115,6 @@ export default function FinancesPage() {
       amount: '0',
       paymentDate: new Date().toISOString().split('T')[0],
       purpose: '',
-      paymentMethod: 'Gotovina',
       notes: '',
       createdById: currentUser?.id || '',
       pointsValue: 0
@@ -263,7 +262,6 @@ export default function FinancesPage() {
         amount: contribution.amount,
         paymentDate: contribution.paymentDate ? new Date(contribution.paymentDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
         purpose: contribution.purpose,
-        paymentMethod: contribution.paymentMethod || 'Gotovina',
         notes: contribution.notes || '',
         projectId: contribution.projectId || undefined,
         createdById: contribution.createdById || undefined,
@@ -276,7 +274,6 @@ export default function FinancesPage() {
         amount: '0',
         paymentDate: new Date().toISOString().split('T')[0],
         purpose: '',
-        paymentMethod: 'Gotovina',
         notes: '',
         projectId: undefined,
         createdById: currentUser?.id || '',
@@ -840,28 +837,6 @@ export default function FinancesPage() {
                   />
                 </Grid>
               )}
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Controller
-                  name="paymentMethod"
-                  control={form.control}
-                  render={({ field }) => (
-                    <FormControl fullWidth>
-                      <InputLabel>{t('finances:paymentMethod')}</InputLabel>
-                      <Select
-                        {...field}
-                        value={field.value || 'Gotovina'}
-                        label={t('finances:paymentMethod')}
-                        data-testid="select-payment-method"
-                      >
-                        <MenuItem value="Gotovina">{t('finances:paymentMethods.cash')}</MenuItem>
-                        <MenuItem value="Bankovni transfer">{t('finances:paymentMethods.bankTransfer')}</MenuItem>
-                        <MenuItem value="Kartica">{t('finances:paymentMethods.card')}</MenuItem>
-                        <MenuItem value="Ostalo">{t('finances:paymentMethods.other')}</MenuItem>
-                      </Select>
-                    </FormControl>
-                  )}
-                />
-              </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
