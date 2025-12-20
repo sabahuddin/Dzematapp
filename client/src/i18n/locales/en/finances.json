@@ -28,7 +28,10 @@
   "paymentMethod": "Payment method",
   "paymentMethods": {
     "cash": "Cash",
-    "bank": "Bank"
+    "bank": "Bank",
+    "bankTransfer": "Bank Transfer",
+    "card": "Card",
+    "other": "Other"
   },
   "notes": "Notes",
   "bonusPoints": "Add points",

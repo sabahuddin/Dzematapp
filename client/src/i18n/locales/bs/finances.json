@@ -29,7 +29,10 @@
   "paymentMethod": "Način plaćanja",
   "paymentMethods": {
     "cash": "Gotovina",
-    "bank": "Banka"
+    "bank": "Banka",
+    "bankTransfer": "Bankovni transfer",
+    "card": "Kartica",
+    "other": "Ostalo"
   },
   "notes": "Napomena",
   "bonusPoints": "Dodaj bodove",
