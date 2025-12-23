@@ -146,6 +146,8 @@ export default function FinancesPage() {
       }
       // Invalidate projects query as currentAmount may have changed
       queryClient.invalidateQueries({ queryKey: ['/api/projects'] });
+      // Invalidate auth session to refresh user points and badges
+      queryClient.invalidateQueries({ queryKey: ['/api/auth/session'] });
       toast({ title: t('common:common.success'), description: selectedContribution ? t('finances:messages.updated') : t('finances:messages.created') });
       handleCloseDialog();
     },
@@ -167,6 +169,8 @@ export default function FinancesPage() {
       }
       // Invalidate projects query as currentAmount may have changed
       queryClient.invalidateQueries({ queryKey: ['/api/projects'] });
+      // Invalidate auth session to refresh user points and badges
+      queryClient.invalidateQueries({ queryKey: ['/api/auth/session'] });
       toast({ title: t('common:common.success'), description: t('finances:messages.deleted') });
     },
     onError: () => {
