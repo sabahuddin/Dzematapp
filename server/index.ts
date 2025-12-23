@@ -416,6 +416,9 @@ app.use((req, res, next) => {
   // Serve downloads folder statically BEFORE Vite catch-all
   app.use('/downloads', express.static(path.join(process.cwd(), 'public', 'downloads')));
   
+  // Serve uploads folder statically for certificates, images, etc.
+  app.use('/uploads', express.static(path.join(process.cwd(), 'public', 'uploads')));
+  
   // Explicit download route for mobile app archive
   app.get('/api/download-mobile', (_req, res) => {
     const filePath = path.join(process.cwd(), 'public', 'downloads', 'mobile-complete.tar.gz');
