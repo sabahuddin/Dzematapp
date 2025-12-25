@@ -25,6 +25,19 @@ export async function migrateProductionSchema(): Promise<void> {
       console.log("ℹ️  No broken data to clean up");
     }
 
+    // Add contribution_type column to badges table if it doesn't exist
+    console.log("🔧 Adding contribution_type column to badges...");
+    try {
+      await client.query("ALTER TABLE badges ADD COLUMN contribution_type VARCHAR(50)");
+      // Automatically assign contribution types based on badge names
+      await client.query("UPDATE badges SET contribution_type = 'vakif' WHERE name LIKE '%vakif%' OR name LIKE '%vakuf%'");
+      await client.query("UPDATE badges SET contribution_type = 'sponsor' WHERE (name LIKE '%sponzor%' OR name LIKE '%sponsor%') AND contribution_type IS NULL");
+      console.log("✅ Added contribution_type column and set default values");
+    } catch (error: any) {
+      // Column might already exist - that's OK
+      console.log("ℹ️  contribution_type column already exists or couldn't be added");
+    }
+
     // Fix badge names - second word should be lowercase
     console.log("📋 Fixing badge names (lowercase second word)...");
     try {

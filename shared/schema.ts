@@ -664,6 +664,7 @@ export const badges = pgTable("badges", {
   icon: text("icon"), // Icon name or URL
   criteriaType: text("criteria_type").notNull(), // donation_total, tasks_completed, events_attended, points_total
   criteriaValue: integer("criteria_value").notNull(), // Threshold value
+  contributionType: text("contribution_type"), // 'vakif', 'sponsor', or null for all types
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

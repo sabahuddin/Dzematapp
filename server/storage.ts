@@ -2256,6 +2256,22 @@ export class DatabaseStorage implements IStorage {
     return contributions.reduce((sum, c) => sum + parseFloat(c.amount || '0'), 0);
   }
 
+  async getUserTotalDonationsByType(userId: string, tenantId: string, type: 'vakif' | 'sponsor'): Promise<number> {
+    const contributions = await this.getUserFinancialContributions(userId, tenantId);
+    
+    // Filter by contribution type
+    const filtered = contributions.filter(c => {
+      const purposeName = c.purpose?.toLowerCase() || '';
+      if (type === 'vakif') {
+        return purposeName.includes('vakif') || purposeName.includes('vakuf');
+      } else { // sponsor - all non-vakif contributions
+        return !purposeName.includes('vakif') && !purposeName.includes('vakuf');
+      }
+    });
+    
+    return filtered.reduce((sum, c) => sum + parseFloat(c.amount || '0'), 0);
+  }
+
   // Contribution Purposes (Feature 1)
   async getContributionPurposes(tenantId: string): Promise<ContributionPurpose[]> {
     return await db.select().from(contributionPurposes).where(eq(contributionPurposes.tenantId, tenantId)).orderBy(asc(contributionPurposes.name));
@@ -2561,7 +2577,14 @@ export class DatabaseStorage implements IStorage {
       
       switch (badge.criteriaType) {
         case 'contributions_amount': {
-          const total = await this.getUserTotalDonations(userId, tenantId);
+          let total: number;
+          if (badge.contributionType) {
+            // Filter by contribution type (vakif or sponsor)
+            total = await this.getUserTotalDonationsByType(userId, tenantId, badge.contributionType as 'vakif' | 'sponsor');
+          } else {
+            // All contributions
+            total = await this.getUserTotalDonations(userId, tenantId);
+          }
           qualifies = total >= badge.criteriaValue;
           break;
         }
@@ -2608,7 +2631,14 @@ export class DatabaseStorage implements IStorage {
 
       switch (badge.criteriaType) {
         case 'contributions_amount': {
-          const total = await this.getUserTotalDonations(userId, tenantId);
+          let total: number;
+          if (badge.contributionType) {
+            // Filter by contribution type (vakif or sponsor)
+            total = await this.getUserTotalDonationsByType(userId, tenantId, badge.contributionType as 'vakif' | 'sponsor');
+          } else {
+            // All contributions
+            total = await this.getUserTotalDonations(userId, tenantId);
+          }
           stillQualifies = total >= badge.criteriaValue;
           break;
         }
