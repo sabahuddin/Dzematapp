@@ -847,6 +847,12 @@ function Router() {
         </AdminRoute>
       </Route>
       
+      <Route path="/my-certificates">
+        <ProtectedRoute>
+          <MyCertificatesPage />
+        </ProtectedRoute>
+      </Route>
+      
       <Route path="/super-admin/panel">
         <SuperAdminRoute>
           <SuperAdminPanel />
