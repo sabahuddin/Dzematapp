@@ -698,6 +698,7 @@ export default function ActivityLogPage() {
                       'event_rsvp': { label: t('activity:pointsSection.eventRsvp'), color: '#2196F3', icon: <Event /> },
                       'contribution_made': { label: t('activity:pointsSection.contribution'), color: '#FF9800', icon: <TrendingUp /> },
                       'badge_earned': { label: t('activity:pointsSection.badgeEarned'), color: '#9C27B0', icon: <EmojiEvents /> },
+                      'project_contribution': { label: 'Podrška projektu', color: '#00BCD4', icon: <Assignment /> },
                     };
                     
                     return Object.entries(pointsByCategory).map(([type, points]) => {

@@ -30,7 +30,7 @@ export default function UserPointsDetailsPage() {
       'task_completed': 'Završen zadatak',
       'contribution_made': 'Finansijska uplata',
       'event_attendance': 'Prisustvo događaju',
-      'project_contribution': 'Doprinos projektu',
+      'project_contribution': 'Podrška projektu',
     };
     return labels[type] || type;
   };

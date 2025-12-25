@@ -207,7 +207,7 @@ export default function RecognitionsPage() {
       'task_completed': 'Završen zadatak',
       'contribution_made': 'Finansijska uplata',
       'event_attendance': 'Prisustvo događaju',
-      'project_contribution': 'Doprinos projektu',
+      'project_contribution': 'Podrška projektu',
     };
     return labels[type] || type;
   };
@@ -294,7 +294,7 @@ export default function RecognitionsPage() {
                   <MenuItem value="task_completed">Završen zadatak</MenuItem>
                   <MenuItem value="contribution_made">Finansijska uplata</MenuItem>
                   <MenuItem value="event_attendance">Prisustvo događaju</MenuItem>
-                  <MenuItem value="project_contribution">Doprinos projektu</MenuItem>
+                  <MenuItem value="project_contribution">Podrška projektu</MenuItem>
                 </Select>
               </FormControl>
             </Box>

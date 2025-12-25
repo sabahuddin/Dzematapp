@@ -16,31 +16,31 @@
   "types": {
     "contribution_made": "Uplata izvršena",
     "task_completed": "Zadatak završen",
-    "event_rsvp": "Prijava na događaj",
+    "event_rsvp": "Prisustvo događaju",
     "announcement_read": "Obavijest pročitana",
     "profile_updated": "Profil ažuriran",
-    "project_contribution": "Doprinos projektu",
+    "project_contribution": "Podrška projektu",
     "badge_earned": "Značka zaslužena"
   },
   "filterOptions": {
     "all": "Sve aktivnosti",
     "task_completed": "Zadaci izvršeni",
-    "event_rsvp": "RSVP događaji",
+    "event_rsvp": "Prisustvo događaju",
     "announcement_read": "Obavijesti pročitane",
     "contribution_made": "Uplate izvršene",
     "badge_earned": "Značke osvojene",
     "profile_updated": "Profil ažuriran",
-    "project_contribution": "Doprinosi projektima"
+    "project_contribution": "Podrška projektu"
   },
   "activityLabels": {
-    "task_completed": "Zadatak izvršen",
-    "event_rsvp": "Prijava na događaj",
+    "task_completed": "Zadatak završen",
+    "event_rsvp": "Prisustvo događaju",
     "event_attendance": "Prisustvo događaju",
     "announcement_read": "Obavijest pročitana",
     "contribution_made": "Uplata izvršena",
     "badge_earned": "Značka osvojena",
     "profile_updated": "Profil ažuriran",
-    "project_contribution": "Doprinos projektu"
+    "project_contribution": "Podrška projektu"
   },
   "noActivities": "Nema aktivnosti",
   "totalPoints": "Ukupno bodova: {{points}}",
