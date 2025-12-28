@@ -407,7 +407,9 @@ export default function DashboardHome() {
                           title={badge.name}
                           onClick={() => setLocation('/my-badges')}
                         >
-                          {badge.icon || '🏆'}
+                          {badge.icon?.startsWith('/') || badge.icon?.startsWith('http') ? (
+                            <img src={badge.icon} alt={badge.name} style={{ width: 48, height: 48, objectFit: 'contain' }} />
+                          ) : (badge.icon || '🏆')}
                         </Box>
                       );
                     })}

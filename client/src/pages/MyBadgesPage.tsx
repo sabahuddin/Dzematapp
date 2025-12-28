@@ -120,7 +120,9 @@ export default function MyBadgesPage() {
                         textAlign: 'center'
                       }}
                     >
-                      {badge.icon || '🏆'}
+                      {badge.icon?.startsWith('/') || badge.icon?.startsWith('http') ? (
+                        <img src={badge.icon} alt={badge.name} style={{ width: 64, height: 64, objectFit: 'contain' }} />
+                      ) : (badge.icon || '🏆')}
                     </Box>
                     <Box sx={{ flex: 1 }}>
                       <Typography variant="h5" sx={{ fontWeight: 700, color: colors.text, mb: 1 }}>
