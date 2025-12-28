@@ -116,6 +116,7 @@ export default function ActivityLogPage() {
   const [deleteCertificateOpen, setDeleteCertificateOpen] = useState(false);
   const [certificateToDelete, setCertificateToDelete] = useState<UserCertificate | null>(null);
   const [badgeIconUploading, setBadgeIconUploading] = useState(false);
+  const [issuedBadgesSearch, setIssuedBadgesSearch] = useState('');
 
   if (featureAccess.upgradeRequired && !currentUser?.isAdmin) {
     return <UpgradeCTA moduleId="activity-log" requiredPlan={featureAccess.requiredPlan || 'full'} currentPlan={featureAccess.currentPlan || 'standard'} />;
@@ -1144,32 +1145,56 @@ export default function ActivityLogPage() {
       {currentTabKey === 'issued-badges' && currentUser?.isAdmin && (
         <Card>
           <Box sx={{ p: 3 }}>
-            {allIssuedBadges.length === 0 ? (
-              <Alert severity="info">{t('activity:badgesSection.noBadgesAssigned')}</Alert>
-            ) : (
-              <TableContainer>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>{t('activity:user')}</TableCell>
-                      <TableCell>{t('activity:badgesSection.badge')}</TableCell>
-                      <TableCell>{t('activity:description')}</TableCell>
-                      <TableCell>{t('activity:badgesSection.assignmentDate')}</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {allIssuedBadges.map((item: any) => (
-                      <TableRow key={`${item.userId}-${item.badgeId}`}>
-                        <TableCell><Typography variant="body2">{item.user ? `${item.user.firstName} ${item.user.lastName}` : t('activity:badgesSection.unknownUser')}</Typography></TableCell>
-                        <TableCell><Typography variant="body2" sx={{ fontWeight: 600 }}>{item.badge?.name || t('activity:badgesSection.unknownBadge')}</Typography></TableCell>
-                        <TableCell><Typography variant="body2" color="text.secondary">{item.badge?.description || '-'}</Typography></TableCell>
-                        <TableCell>{item.earnedAt ? new Date(item.earnedAt).toLocaleDateString('hr-HR') : '-'}</TableCell>
+            <Box sx={{ mb: 3 }}>
+              <TextField
+                fullWidth
+                size="small"
+                label="Pretraži po korisniku ili znački"
+                placeholder="Ime, prezime ili naziv značke..."
+                value={issuedBadgesSearch}
+                onChange={(e) => setIssuedBadgesSearch(e.target.value)}
+                sx={{ maxWidth: 400 }}
+                data-testid="input-issued-badges-search"
+              />
+            </Box>
+            {(() => {
+              const searchLower = issuedBadgesSearch.toLowerCase().trim();
+              const filteredBadges = allIssuedBadges.filter((item: any) => {
+                if (!searchLower) return true;
+                const userName = item.user ? `${item.user.firstName} ${item.user.lastName}`.toLowerCase() : '';
+                const badgeName = (item.badge?.name || '').toLowerCase();
+                return userName.includes(searchLower) || badgeName.includes(searchLower);
+              });
+              
+              if (filteredBadges.length === 0) {
+                return <Alert severity="info">{issuedBadgesSearch ? 'Nema rezultata pretrage' : t('activity:badgesSection.noBadgesAssigned')}</Alert>;
+              }
+              
+              return (
+                <TableContainer>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>{t('activity:user')}</TableCell>
+                        <TableCell>{t('activity:badgesSection.badge')}</TableCell>
+                        <TableCell>{t('activity:description')}</TableCell>
+                        <TableCell>{t('activity:badgesSection.assignmentDate')}</TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            )}
+                    </TableHead>
+                    <TableBody>
+                      {filteredBadges.map((item: any) => (
+                        <TableRow key={`${item.userId}-${item.badgeId}`}>
+                          <TableCell><Typography variant="body2">{item.user ? `${item.user.firstName} ${item.user.lastName}` : t('activity:badgesSection.unknownUser')}</Typography></TableCell>
+                          <TableCell><Typography variant="body2" sx={{ fontWeight: 600 }}>{item.badge?.name || t('activity:badgesSection.unknownBadge')}</Typography></TableCell>
+                          <TableCell><Typography variant="body2" color="text.secondary">{item.badge?.description || '-'}</Typography></TableCell>
+                          <TableCell>{item.earnedAt ? new Date(item.earnedAt).toLocaleDateString('hr-HR') : '-'}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              );
+            })()}
           </Box>
         </Card>
       )}
