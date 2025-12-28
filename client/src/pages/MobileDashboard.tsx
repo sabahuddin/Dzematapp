@@ -35,7 +35,7 @@ export default function MobileDashboard() {
   });
 
   const { data: userBadgesData } = useQuery({
-    queryKey: ['/api/user-badges'],
+    queryKey: ['/api/user-badges', 'user'],
   });
 
   const allBadges = (badgesData as any[]) || [];

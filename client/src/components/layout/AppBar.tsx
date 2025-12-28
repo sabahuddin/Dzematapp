@@ -36,19 +36,8 @@ export default function AppBar({ onMenuClick }: AppBarProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isMobile = window.innerWidth < 900;
 
-  const { data: activityLog } = useQuery<any[]>({
-    queryKey: [`/api/activity-logs/user/${user?.id}`],
-    enabled: !!user?.id,
-  });
-
-  const { data: contributions } = useQuery<any[]>({
-    queryKey: [`/api/financial-contributions/user/${user?.id}`],
-    enabled: !!user?.id,
-  });
-
-  const activityLogPoints = activityLog?.reduce((sum: number, entry: any) => sum + (entry.points || 0), 0) || 0;
-  const contributionPoints = contributions?.reduce((sum: number, c: any) => sum + (c.pointsValue || 0), 0) || 0;
-  const totalPoints = activityLogPoints + contributionPoints;
+  // Display total points from user object
+  const totalPoints = user?.totalPoints || 0;
 
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
