@@ -5,7 +5,7 @@ import { type ActivityFeedItem, type PrayerTime, type Announcement, type Message
 import { HeroPrayerCard } from '../components/HeroPrayerCard';
 import { SectionCard } from '../components/SectionCard';
 import FeedSlideshow from '../components/FeedSlideshow';
-import { ArrowForward, Article, Campaign, Mail, Receipt } from '@mui/icons-material';
+import { ArrowForward, Article, Campaign, Mail, Receipt, EmojiEvents } from '@mui/icons-material';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { normalizeImageUrl } from '@/lib/imageUtils';
@@ -29,6 +29,22 @@ export default function MobileDashboard() {
     queryKey: ['/api/prayer-times/today'],
     retry: false,
   });
+
+  const { data: badgesData } = useQuery({
+    queryKey: ['/api/badges'],
+  });
+
+  const { data: userBadgesData } = useQuery({
+    queryKey: ['/api/user-badges'],
+  });
+
+  const allBadges = (badgesData as any[]) || [];
+  const userBadges = (userBadgesData as any[]) || [];
+  
+  const earnedBadges = userBadges.map((ub: any) => {
+    const badge = allBadges.find((b: any) => b.id === ub.badgeId);
+    return badge;
+  }).filter(Boolean);
 
   const { data: feedItems = [], isLoading: feedLoading, error: feedError } = useQuery<ActivityFeedItem[]>({
     queryKey: ['/api/activity-feed'],
@@ -174,8 +190,63 @@ export default function MobileDashboard() {
     }
   };
 
+  const getBadgeColor = (criteriaType: string) => {
+    switch (criteriaType) {
+      case 'points_total': return { bg: 'var(--semantic-award-bg)', text: 'var(--semantic-award-text)', border: 'var(--semantic-award-border)' };
+      case 'contributions_amount': return { bg: 'var(--semantic-success-bg)', text: 'var(--semantic-success-text)', border: 'var(--semantic-success-border)' };
+      case 'tasks_completed': return { bg: 'var(--semantic-info-bg)', text: 'var(--semantic-info-text)', border: 'var(--semantic-info-border)' };
+      case 'events_attended': return { bg: 'var(--semantic-celebration-bg)', text: 'var(--semantic-celebration-text)', border: 'var(--semantic-celebration-border)' };
+      default: return { bg: 'hsl(0 0% 96%)', text: '#616161', border: 'hsl(0 0% 74%)' };
+    }
+  };
+
   return (
     <>
+      {/* User Badges Section */}
+      {earnedBadges.length > 0 && (
+        <Card sx={{ mb: 2, mx: 2, mt: 2, bgcolor: '#ffffff', boxShadow: 2 }}>
+          <CardContent sx={{ pb: 2, '&:last-child': { pb: 2 } }}>
+            <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, textAlign: 'center', color: 'hsl(0 0% 25%)' }}>
+              ZNAČKE
+            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5, flexWrap: 'wrap', justifyContent: 'center' }}>
+              {earnedBadges.map((badge: any) => {
+                const colors = getBadgeColor(badge.criteriaType);
+                return (
+                  <Box
+                    key={badge.id}
+                    sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5, cursor: 'pointer' }}
+                    onClick={() => setLocation('/my-badges')}
+                  >
+                    <Box
+                      sx={{ 
+                        fontSize: '2rem',
+                        bgcolor: colors.bg,
+                        border: `2px solid ${colors.border}`,
+                        borderRadius: '50%',
+                        width: 56,
+                        height: 56,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: 1,
+                      }}
+                    >
+                      {badge.icon?.startsWith('/') || badge.icon?.startsWith('http') ? (
+                        <img src={badge.icon} alt={badge.name} style={{ width: 40, height: 40, objectFit: 'contain' }} />
+                      ) : (badge.icon || '🏆')}
+                    </Box>
+                    <Typography variant="caption" sx={{ fontSize: '0.65rem', textAlign: 'center', maxWidth: 70, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {badge.name}
+                    </Typography>
+                  </Box>
+                );
+              })}
+            </Box>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Hero Prayer Times */}
         {prayerLoading && (
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
@@ -473,7 +544,7 @@ export default function MobileDashboard() {
         <SectionCard 
           title={t('membershipFees:myPayments.title')}
           icon={<Receipt />}
-          linkTo="/membership-fees"
+          linkTo="/my-clanarina"
           linkText={t('membershipFees:myPayments.viewHistory')}
         >
           {paymentsLoading && (
