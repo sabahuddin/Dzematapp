@@ -473,7 +473,7 @@ export default function MobileDashboard() {
         <SectionCard 
           title={t('membershipFees:myPayments.title')}
           icon={<Receipt />}
-          linkTo="/finances"
+          linkTo="/membership-fees"
           linkText={t('membershipFees:myPayments.viewHistory')}
         >
           {paymentsLoading && (

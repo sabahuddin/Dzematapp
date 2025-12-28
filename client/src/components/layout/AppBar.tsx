@@ -9,18 +9,21 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
-  Avatar
+  Avatar,
+  Chip
 } from '@mui/material';
 import {
   Menu as MenuIcon,
   AccountCircle,
   Person,
-  Logout
+  Logout,
+  EmojiEvents
 } from '@mui/icons-material';
 import { useAuth } from '../../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
 import { queryClient } from '../../lib/queryClient';
 import { useLocation } from 'wouter';
+import { useQuery } from '@tanstack/react-query';
 
 interface AppBarProps {
   onMenuClick: () => void;
@@ -32,6 +35,20 @@ export default function AppBar({ onMenuClick }: AppBarProps) {
   const [, setLocation] = useLocation();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isMobile = window.innerWidth < 900;
+
+  const { data: activityLog } = useQuery<any[]>({
+    queryKey: [`/api/activity-logs/user/${user?.id}`],
+    enabled: !!user?.id,
+  });
+
+  const { data: contributions } = useQuery<any[]>({
+    queryKey: [`/api/financial-contributions/user/${user?.id}`],
+    enabled: !!user?.id,
+  });
+
+  const activityLogPoints = activityLog?.reduce((sum: number, entry: any) => sum + (entry.points || 0), 0) || 0;
+  const contributionPoints = contributions?.reduce((sum: number, c: any) => sum + (c.pointsValue || 0), 0) || 0;
+  const totalPoints = activityLogPoints + contributionPoints;
 
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -92,7 +109,26 @@ export default function AppBar({ onMenuClick }: AppBarProps) {
           </Typography>
         </Box>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          {user && !user.isAdmin && (
+            <Chip
+              icon={<EmojiEvents sx={{ fontSize: '16px !important' }} />}
+              label={totalPoints}
+              size="small"
+              sx={{
+                bgcolor: 'hsl(14 100% 94%)',
+                color: 'hsl(14 100% 45%)',
+                fontWeight: 700,
+                fontSize: '13px',
+                height: '32px',
+                '& .MuiChip-icon': {
+                  color: 'hsl(35 100% 50%) !important',
+                  marginLeft: '4px'
+                }
+              }}
+              data-testid="chip-total-points"
+            />
+          )}
           <IconButton
             size="large"
             onClick={handleProfileMenuOpen}
