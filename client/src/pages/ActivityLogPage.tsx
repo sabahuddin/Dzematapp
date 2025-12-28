@@ -702,7 +702,11 @@ export default function ActivityLogPage() {
                       'project_contribution': { label: 'Podrška projektu', color: '#00BCD4', icon: <Assignment /> },
                     };
                     
-                    return Object.entries(pointsByCategory).map(([type, points]) => {
+                    const hiddenCategories = ['profile_updated'];
+                    
+                    return Object.entries(pointsByCategory)
+                      .filter(([type]) => !hiddenCategories.includes(type))
+                      .map(([type, points]) => {
                       const config = categoryConfig[type] || { label: type, color: '#757575', icon: <Star /> };
                       return (
                         <Grid size={{ xs: 6, sm: 3 }} key={type}>

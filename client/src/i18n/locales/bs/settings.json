@@ -73,8 +73,8 @@
         "description": "Kada član označi zadatak kao završen, čeka se odobrenje admina (0 bodova). tek kada admin odobri zadatak, svi dodijeljeni članovi dobijaju pun broj bodova."
       },
       "events": {
-        "title": "🎉 RSVP na događaj",
-        "description": "Kada član potvrdi prisustvo na događaju (rsvp), odmah dobija bodove. bodovi se ne oduzimaju ako član kasnije otkaže prisustvo."
+        "title": "🎉 Prisustvo događaju",
+        "description": "Kada član potvrdi prisustvo na događaju, odmah dobija bodove. Bodovi se ne oduzimaju ako član kasnije otkaže prisustvo."
       },
       "calculation": {
         "title": "🔢 Primjer obračuna",
@@ -87,7 +87,7 @@
       "pointsPerTask": "Bodovi po zadatku",
       "pointsPerTaskHelper": "Koliko bodova član dobija za svaki završen i odobreni zadatak",
       "pointsPerEvent": "Bodovi po događaju",
-      "pointsPerEventHelper": "Koliko bodova član dobija za potvrdu prisustva (RSVP) na događaju"
+      "pointsPerEventHelper": "Koliko bodova član dobija za potvrdu prisustva na događaju"
     },
     "save": "Sačuvaj postavke",
     "toast": {
