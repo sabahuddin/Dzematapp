@@ -339,6 +339,30 @@ export default function DashboardHome() {
 
     return (
       <Box>
+        {/* User Points Display */}
+        {user && (
+          <Box sx={{ mb: 3, display: 'flex', justifyContent: 'center' }}>
+            <Chip
+              icon={<EmojiEvents sx={{ fontSize: '18px !important' }} />}
+              label={user.totalPoints}
+              size="medium"
+              sx={{
+                bgcolor: 'hsl(14 100% 94%)',
+                color: 'hsl(14 100% 45%)',
+                fontWeight: 700,
+                fontSize: '15px',
+                height: '40px',
+                paddingX: 2,
+                '& .MuiChip-icon': {
+                  color: 'hsl(35 100% 50%) !important',
+                  marginLeft: '6px'
+                }
+              }}
+              data-testid="chip-user-points-dashboard"
+            />
+          </Box>
+        )}
+
         {/* User Badges Section - Above Prayer Times */}
         {(() => {
           const allBadges = (badgesQuery.data as any[]) || [];
