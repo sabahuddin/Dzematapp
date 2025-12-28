@@ -126,7 +126,7 @@ export default function MyActivitiesPage() {
   };
 
   const allItemsSorted = [
-    ...activities.map(a => ({ type: 'activity' as const, data: a, date: new Date(a.createdAt) })),
+    ...activities.filter(a => a.activityType !== 'profile_updated').map(a => ({ type: 'activity' as const, data: a, date: new Date(a.createdAt) })),
     ...contributions.map(c => ({ type: 'contribution' as const, data: c, date: new Date(c.paymentDate || c.createdAt) })),
     ...earnedBadges.map(b => ({ type: 'badge' as const, data: b, date: new Date(b.earnedAt) })),
     ...certificates.map(c => ({ type: 'certificate' as const, data: c, date: new Date(c.issuedAt) })),

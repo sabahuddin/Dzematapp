@@ -60,7 +60,15 @@ export function MobileAppBar({ title = 'DžematApp', showBack }: MobileAppBarPro
     enabled: !!user?.id,
   });
 
-  const totalPoints = activityLog?.reduce((sum: number, entry: any) => sum + (entry.points || 0), 0) || 0;
+  const { data: contributions } = useQuery<any[]>({
+    queryKey: ['/api/financial-contributions/user', user?.id],
+    refetchInterval: 60000,
+    enabled: !!user?.id,
+  });
+
+  const activityLogPoints = activityLog?.reduce((sum: number, entry: any) => sum + (entry.points || 0), 0) || 0;
+  const contributionPoints = contributions?.reduce((sum: number, c: any) => sum + (c.pointsValue || 0), 0) || 0;
+  const totalPoints = activityLogPoints + contributionPoints;
 
   const totalNotifications = (notificationCounts?.shop || 0) +
     (notificationCounts?.events || 0) +

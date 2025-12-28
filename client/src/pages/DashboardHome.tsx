@@ -339,7 +339,7 @@ export default function DashboardHome() {
 
     return (
       <Box>
-        {/* User Badges Section */}
+        {/* User Badges Section - Above Prayer Times */}
         {(() => {
           const allBadges = (badgesQuery.data as any[]) || [];
           const userBadges = (userBadgesQuery.data as any[]) || [];
@@ -349,21 +349,12 @@ export default function DashboardHome() {
             return badge;
           }).filter(Boolean);
 
-          // Debug display
           if (badgesQuery.isLoading || userBadgesQuery.isLoading) {
-            return (
-              <Alert severity="info" sx={{ mb: 3 }}>
-                Učitavanje značaka...
-              </Alert>
-            );
+            return null;
           }
 
           if (badgesQuery.error || userBadgesQuery.error) {
-            return (
-              <Alert severity="error" sx={{ mb: 3 }}>
-                Greška pri učitavanju značaka. (Badges: {allBadges.length}, User badges: {userBadges.length})
-              </Alert>
-            );
+            return null;
           }
 
           if (earnedBadges.length > 0) {
@@ -380,36 +371,45 @@ export default function DashboardHome() {
             return (
               <Card sx={{ mb: 3, bgcolor: '#ffffff', boxShadow: 2 }}>
                 <CardContent sx={{ pb: 2, '&:last-child': { pb: 2 } }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
+                  <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, textAlign: 'center', color: 'hsl(0 0% 25%)' }}>
+                    ZNAČKE
+                  </Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, flexWrap: 'wrap', justifyContent: 'center' }}>
                     {earnedBadges.map((badge: any) => {
                       const colors = getBadgeColor(badge.criteriaType);
                       return (
                         <Box
                           key={badge.id}
-                          sx={{ 
-                            fontSize: '2.5rem',
-                            bgcolor: colors.bg,
-                            border: `3px solid ${colors.border}`,
-                            borderRadius: '50%',
-                            width: 64,
-                            height: 64,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            boxShadow: 2,
-                            cursor: 'pointer',
-                            transition: 'transform 0.2s',
-                            '&:hover': {
-                              transform: 'scale(1.1)',
-                              boxShadow: 4
-                            }
-                          }}
-                          title={badge.name}
-                          onClick={() => setLocation('/my-badges')}
+                          sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}
                         >
-                          {badge.icon?.startsWith('/') || badge.icon?.startsWith('http') ? (
-                            <img src={badge.icon} alt={badge.name} style={{ width: 48, height: 48, objectFit: 'contain' }} />
-                          ) : (badge.icon || '🏆')}
+                          <Box
+                            sx={{ 
+                              fontSize: '2.5rem',
+                              bgcolor: colors.bg,
+                              border: `3px solid ${colors.border}`,
+                              borderRadius: '50%',
+                              width: 64,
+                              height: 64,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              boxShadow: 2,
+                              cursor: 'pointer',
+                              transition: 'transform 0.2s',
+                              '&:hover': {
+                                transform: 'scale(1.1)',
+                                boxShadow: 4
+                              }
+                            }}
+                            onClick={() => setLocation('/my-badges')}
+                          >
+                            {badge.icon?.startsWith('/') || badge.icon?.startsWith('http') ? (
+                              <img src={badge.icon} alt={badge.name} style={{ width: 48, height: 48, objectFit: 'contain' }} />
+                            ) : (badge.icon || '🏆')}
+                          </Box>
+                          <Typography variant="caption" sx={{ fontSize: '0.5rem', textAlign: 'center', maxWidth: 80, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            {badge.name}
+                          </Typography>
                         </Box>
                       );
                     })}
