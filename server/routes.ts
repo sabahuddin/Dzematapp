@@ -2113,15 +2113,7 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
         return res.status(404).json({ message: "User not found" });
       }
 
-      // Log activity
-      await storage.createActivityLog({
-        userId: id,
-        activityType: 'profile_updated',
-        description: 'Profil ažuriran',
-        points: 0,
-        relatedEntityId: id,
-        tenantId: tenantId
-      });
+      // Don't log profile updates - not important for activity history
 
       res.json({ ...user, password: undefined });
     } catch (error) {

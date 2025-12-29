@@ -2539,7 +2539,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserBadges(userId: string, tenantId: string): Promise<UserBadge[]> {
-    return await db.select().from(userBadges).where(eq(userBadges.userId, userId));
+    return await db.select().from(userBadges).where(and(eq(userBadges.userId, userId), eq(userBadges.tenantId, tenantId)));
   }
 
   async getAllUserBadges(tenantId: string): Promise<Array<UserBadge & { user: User; badge: Badge }>> {
