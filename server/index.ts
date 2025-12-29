@@ -466,9 +466,22 @@ app.use((req, res, next) => {
     port,
     host: "0.0.0.0",
     reusePort: true,
-  }, () => {
+  }, async () => {
     log(`serving on port ${port}`);
     // Start seeding after server is listening
     seedingPromise = startSeeding();
+    
+    // One-time cleanup: Remove old profile_updated activity logs (can be removed after first deploy)
+    try {
+      const { db } = await import("./db");
+      const { activityLog } = await import("@shared/schema");
+      const { eq } = await import("drizzle-orm");
+      const result = await db.delete(activityLog).where(eq(activityLog.activityType, 'profile_updated'));
+      if (result.rowCount && result.rowCount > 0) {
+        log(`Cleanup: Deleted ${result.rowCount} profile_updated activity log entries`);
+      }
+    } catch (err) {
+      console.error('Cleanup failed:', err);
+    }
   });
 })();
