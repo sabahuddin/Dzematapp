@@ -90,8 +90,7 @@ export default function MyActivitiesPage() {
     return { ...badge, earnedAt: ub.earnedAt };
   }).filter(Boolean);
 
-  const totalPoints = activities.reduce((sum, a) => sum + (a.points || 0), 0) + 
-                     contributions.reduce((sum, c) => sum + (c.pointsValue || 0), 0);
+  const totalPoints = currentUser?.totalPoints || 0;
 
   const getActivityIcon = (type: string) => {
     switch (type) {

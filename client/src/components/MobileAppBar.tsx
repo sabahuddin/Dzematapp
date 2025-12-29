@@ -54,21 +54,8 @@ export function MobileAppBar({ title = 'DžematApp', showBack }: MobileAppBarPro
     enabled: !!user,
   });
 
-  const { data: activityLog } = useQuery<any[]>({
-    queryKey: ['/api/activity-logs/user', user?.id],
-    refetchInterval: 60000,
-    enabled: !!user?.id,
-  });
-
-  const { data: contributions } = useQuery<any[]>({
-    queryKey: ['/api/financial-contributions/user', user?.id],
-    refetchInterval: 60000,
-    enabled: !!user?.id,
-  });
-
-  const activityLogPoints = activityLog?.reduce((sum: number, entry: any) => sum + (entry.points || 0), 0) || 0;
-  const contributionPoints = contributions?.reduce((sum: number, c: any) => sum + (c.pointsValue || 0), 0) || 0;
-  const totalPoints = activityLogPoints + contributionPoints;
+  // Use user's totalPoints directly from auth context
+  const totalPoints = user?.totalPoints || 0;
 
   const totalNotifications = (notificationCounts?.shop || 0) +
     (notificationCounts?.events || 0) +
