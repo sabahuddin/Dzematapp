@@ -474,12 +474,41 @@ app.use((req, res, next) => {
     // One-time cleanup: Remove old profile_updated activity logs (can be removed after first deploy)
     try {
       const { db } = await import("./db");
-      const { activityLog } = await import("@shared/schema");
-      const { eq } = await import("drizzle-orm");
+      const { activityLog, userBadges, users } = await import("@shared/schema");
+      const { eq, isNull, sql } = await import("drizzle-orm");
       const result = await db.delete(activityLog).where(eq(activityLog.activityType, 'profile_updated'));
       if (result.rowCount && result.rowCount > 0) {
         log(`Cleanup: Deleted ${result.rowCount} profile_updated activity log entries`);
       }
+      
+      // One-time fix: Populate tenant_id in user_badges from users table
+      const fixResult = await db.execute(sql`
+        UPDATE user_badges 
+        SET tenant_id = users.tenant_id 
+        FROM users 
+        WHERE user_badges.user_id = users.id 
+        AND user_badges.tenant_id IS NULL
+      `);
+      if (fixResult.rowCount && fixResult.rowCount > 0) {
+        log(`Fix: Updated ${fixResult.rowCount} user_badges with tenant_id`);
+      }
+      
+      // One-time: Award badges to all users who qualify (runs async, won't block startup)
+      const { storage } = await import("./storage");
+      const { tenants } = await import("@shared/schema");
+      const { ne } = await import("drizzle-orm");
+      const allTenants = await db.select().from(tenants).where(ne(tenants.id, 'tenant-superadmin-global'));
+      for (const tenant of allTenants) {
+        const tenantUsers = await db.select().from(users).where(eq(users.tenantId, tenant.id));
+        for (const user of tenantUsers) {
+          try {
+            await storage.checkAndAwardBadges(user.id, tenant.id);
+          } catch (e) {
+            // Ignore individual user errors
+          }
+        }
+      }
+      log(`Badges: Checked and awarded badges for all users`);
     } catch (err) {
       console.error('Cleanup failed:', err);
     }
