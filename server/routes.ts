@@ -4956,6 +4956,17 @@ ALTER TABLE financial_contributions ADD CONSTRAINT fk_project FOREIGN KEY (proje
     }
 });
 
+  // One-time cleanup endpoint to delete profile_updated entries (Admin only)
+  app.delete("/api/activity-logs/cleanup-profile-updates", requireAdmin, async (req, res) => {
+    try {
+      const deleted = await storage.deleteActivityLogsByType('profile_updated', req.user!.tenantId);
+      res.json({ message: `Deleted ${deleted} profile_updated entries`, count: deleted });
+    } catch (error) {
+      console.error('Error cleaning up profile updates:', error);
+      res.status(500).json({ message: "Failed to cleanup profile updates" });
+    }
+  });
+
   // Event Attendance Routes (Feature 1)
   app.post("/api/event-attendance", requireAdmin, async (req, res) => {
     try {

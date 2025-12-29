@@ -391,6 +391,7 @@ export interface IStorage {
   removeUnqualifiedBadges(userId: string, tenantId: string): Promise<string[]>;
   deleteActivityLogByRelatedEntity(relatedEntityId: string, tenantId: string): Promise<number>;
   deleteActivityLogByUserAndType(userId: string, activityType: string, relatedEntityId: string, tenantId: string): Promise<number>;
+  deleteActivityLogsByType(activityType: string, tenantId: string): Promise<number>;
 
   // Projects (Feature 4)
   createProject(project: InsertProject & { createdById: string }): Promise<Project>;
@@ -2681,6 +2682,16 @@ export class DatabaseStorage implements IStorage {
         eq(activityLog.userId, userId),
         eq(activityLog.activityType, activityType),
         eq(activityLog.relatedEntityId, relatedEntityId),
+        eq(activityLog.tenantId, tenantId)
+      )
+    );
+    return result.rowCount || 0;
+  }
+
+  async deleteActivityLogsByType(activityType: string, tenantId: string): Promise<number> {
+    const result = await db.delete(activityLog).where(
+      and(
+        eq(activityLog.activityType, activityType),
         eq(activityLog.tenantId, tenantId)
       )
     );
