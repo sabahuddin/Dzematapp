@@ -262,8 +262,8 @@ export default function DashboardHome() {
   });
 
   const userBadgesQuery = useQuery({
-    queryKey: [`/api/user-badges/${user?.id}`],
-    enabled: !user?.isAdmin && !!user,
+    queryKey: ['/api/user-badges', user?.id],
+    enabled: !user?.isAdmin && !!user?.id,
   });
 
   // Fetch membership payments for admin dashboard
