@@ -206,49 +206,45 @@ export default function MobileDashboard() {
 
   return (
     <>
-      {/* User Badges Section */}
+      {/* User Badges Section - Compact */}
       {earnedBadges.length > 0 && (
-        <Card sx={{ mb: 2, mx: 2, mt: 2, bgcolor: '#ffffff', boxShadow: 2 }}>
-          <CardContent sx={{ pb: 2, '&:last-child': { pb: 2 } }}>
-            <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, textAlign: 'center', color: 'hsl(0 0% 25%)' }}>
-              ZNAČKE
-            </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5, flexWrap: 'wrap', justifyContent: 'center' }}>
-              {earnedBadges.map((badge: any) => {
-                const colors = getBadgeColor(badge.criteriaType);
-                return (
-                  <Box
-                    key={badge.id}
-                    sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5, cursor: 'pointer' }}
-                    onClick={() => setLocation('/my-badges')}
-                  >
-                    <Box
-                      sx={{ 
-                        fontSize: '2rem',
-                        bgcolor: colors.bg,
-                        border: `2px solid ${colors.border}`,
-                        borderRadius: '50%',
-                        width: 56,
-                        height: 56,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: 1,
-                      }}
-                    >
-                      {badge.icon?.startsWith('/') || badge.icon?.startsWith('http') ? (
-                        <img src={badge.icon} alt={badge.name} style={{ width: 40, height: 40, objectFit: 'contain' }} />
-                      ) : (badge.icon || '🏆')}
-                    </Box>
-                    <Typography variant="caption" sx={{ fontSize: '0.65rem', textAlign: 'center', maxWidth: 70, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {badge.name}
-                    </Typography>
-                  </Box>
-                );
-              })}
+        <Box 
+          sx={{ 
+            mx: 2, 
+            mt: 2, 
+            mb: 1,
+            p: 1,
+            bgcolor: '#ffffff', 
+            borderRadius: 2,
+            boxShadow: 1,
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            gap: 0.5,
+            cursor: 'pointer'
+          }}
+          onClick={() => setLocation('/my-badges')}
+        >
+          {earnedBadges.map((badge: any) => (
+            <Box
+              key={badge.id}
+              sx={{ 
+                width: 36,
+                height: 36,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              title={badge.name}
+            >
+              {badge.icon?.startsWith('/') || badge.icon?.startsWith('http') ? (
+                <img src={badge.icon} alt={badge.name} style={{ width: 32, height: 32, objectFit: 'contain' }} />
+              ) : (
+                <span style={{ fontSize: '1.5rem' }}>{badge.icon || '🏆'}</span>
+              )}
             </Box>
-          </CardContent>
-        </Card>
+          ))}
+        </Box>
       )}
 
       {/* Hero Prayer Times */}
