@@ -21,7 +21,7 @@ export default function MyBadgesPage() {
   });
 
   const userBadgesQuery = useQuery({
-    queryKey: ['/api/user-badges', user?.id],
+    queryKey: [`/api/user-badges/${user?.id}`],
     enabled: !!user?.id,
   });
 

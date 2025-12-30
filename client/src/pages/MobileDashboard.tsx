@@ -10,6 +10,7 @@ import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { normalizeImageUrl } from '@/lib/imageUtils';
 import { useCurrency } from '@/contexts/CurrencyContext';
+import { useAuth } from '@/hooks/useAuth';
 
 // Green placeholder image for content without photos
 const placeholderImg = '/placeholder.png';
@@ -34,8 +35,11 @@ export default function MobileDashboard() {
     queryKey: ['/api/badges'],
   });
 
+  const { user } = useAuth();
+  
   const { data: userBadgesData } = useQuery({
-    queryKey: ['/api/user-badges', 'user'],
+    queryKey: [`/api/user-badges/${user?.id}`],
+    enabled: !!user?.id,
   });
 
   const allBadges = (badgesData as any[]) || [];

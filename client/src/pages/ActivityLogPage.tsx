@@ -135,7 +135,7 @@ export default function ActivityLogPage() {
 
   const badgesQuery = useQuery({ queryKey: ['/api/badges'], enabled: !!currentUser });
   const userBadgesQuery = useQuery({
-    queryKey: ['/api/user-badges', currentUser?.id],
+    queryKey: [`/api/user-badges/${currentUser?.id}`],
     enabled: !!currentUser?.id,
   });
 
