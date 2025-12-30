@@ -206,44 +206,40 @@ export default function MobileDashboard() {
 
   return (
     <>
-      {/* User Badges Section - Compact */}
+      {/* User Badges Section - Same style as SectionCard */}
       {earnedBadges.length > 0 && (
         <Box 
           sx={{ 
-            mx: 2, 
-            mt: 2, 
-            mb: 1,
-            p: 1,
-            bgcolor: '#ffffff', 
-            borderRadius: 2,
-            boxShadow: 1,
-            display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'center',
-            gap: 0.5,
+            bgcolor: 'var(--card)',
+            border: '1px solid var(--border)',
+            borderRadius: 'var(--radius-lg)',
+            p: 2,
+            mb: 2,
             cursor: 'pointer'
           }}
           onClick={() => setLocation('/my-badges')}
         >
-          {earnedBadges.map((badge: any) => (
-            <Box
-              key={badge.id}
-              sx={{ 
-                width: 36,
-                height: 36,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-              title={badge.name}
-            >
-              {badge.icon?.startsWith('/') || badge.icon?.startsWith('http') ? (
-                <img src={badge.icon} alt={badge.name} style={{ width: 32, height: 32, objectFit: 'contain' }} />
-              ) : (
-                <span style={{ fontSize: '1.5rem' }}>{badge.icon || '🏆'}</span>
-              )}
-            </Box>
-          ))}
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 0.5 }}>
+            {earnedBadges.map((badge: any) => (
+              <Box
+                key={badge.id}
+                sx={{ 
+                  width: 36,
+                  height: 36,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                title={badge.name}
+              >
+                {badge.icon?.startsWith('/') || badge.icon?.startsWith('http') ? (
+                  <img src={badge.icon} alt={badge.name} style={{ width: 32, height: 32, objectFit: 'contain' }} />
+                ) : (
+                  <span style={{ fontSize: '1.5rem' }}>{badge.icon || '🏆'}</span>
+                )}
+              </Box>
+            ))}
+          </Box>
         </Box>
       )}
 

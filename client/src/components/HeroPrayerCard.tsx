@@ -69,7 +69,6 @@ export function HeroPrayerCard({ prayerTime }: HeroPrayerCardProps) {
       title={`${t('dashboard:todaysPrayerTimes')} - ${prayerTime.date}`}
       icon={<AccessTime />}
       linkTo="/vaktija"
-      variant="hero"
     >
       {/* Next Prayer Highlight - Kompaktniji */}
       {nextPrayer && (
