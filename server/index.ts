@@ -493,22 +493,40 @@ app.use((req, res, next) => {
         log(`Fix: Updated ${fixResult.rowCount} user_badges with tenant_id`);
       }
       
-      // One-time: Award badges to all users who qualify (runs async, won't block startup)
+      // One-time: Clean up and re-verify badges for all users
       const { storage } = await import("./storage");
-      const { tenants } = await import("@shared/schema");
-      const { ne } = await import("drizzle-orm");
+      const { tenants, badges } = await import("@shared/schema");
+      const { ne, and } = await import("drizzle-orm");
+      
+      // First: Remove duplicate user_badges (same user + same badge)
+      const duplicateCleanup = await db.execute(sql`
+        DELETE FROM user_badges a USING user_badges b
+        WHERE a.id < b.id 
+        AND a.user_id = b.user_id 
+        AND a.badge_id = b.badge_id
+      `);
+      if (duplicateCleanup.rowCount && duplicateCleanup.rowCount > 0) {
+        log(`Badges: Removed ${duplicateCleanup.rowCount} duplicate badges`);
+      }
+      
+      // Second: Remove badges user doesn't qualify for
       const allTenants = await db.select().from(tenants).where(ne(tenants.id, 'tenant-superadmin-global'));
+      let removedCount = 0;
       for (const tenant of allTenants) {
         const tenantUsers = await db.select().from(users).where(eq(users.tenantId, tenant.id));
         for (const user of tenantUsers) {
           try {
-            await storage.checkAndAwardBadges(user.id, tenant.id);
+            const removed = await storage.removeUnqualifiedBadges(user.id, tenant.id);
+            removedCount += removed.length;
           } catch (e) {
             // Ignore individual user errors
           }
         }
       }
-      log(`Badges: Checked and awarded badges for all users`);
+      if (removedCount > 0) {
+        log(`Badges: Removed ${removedCount} unqualified badges`);
+      }
+      log(`Badges: Verified badges for all users`);
     } catch (err) {
       console.error('Cleanup failed:', err);
     }
